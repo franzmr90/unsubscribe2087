@@ -147,3 +147,47 @@ measurement: **45–48 fps against a 46–52 fps baseline** across zones 1, 3, 1
   `sp:null` with strong mods and a `grant`, which is generic and needs no code.
 - **Republishing** needs the live artifact read first; the tool refuses a blind publish,
   and the gate wants the saved copy actually read through with the Read tool.
+
+---
+
+## Phase 4 — the market (committed separately from the story pass)
+
+Nonce's counter was a fixed exchange rate with a flat spread. It is now a small but
+honest market, and the Sats tab is where the game teaches how one works.
+
+- **A price that moves.** `G.mkt` tracks a ratio `r = price / fair value` rather than the
+  price itself; the ratio mean-reverts toward `1 + sentiment·0.55` and takes a random walk
+  on top. Fair value is `80 · cpi^1.05 · (1 + adopt/50)` — so the credit price of a sat
+  rises because credits are being printed, and rises *again* as adoption climbs. Tracking
+  the ratio instead of the level matters: a first-order filter chasing a rising level
+  always trails it, which produced a permanent fake discount in the first cut.
+- **Sentiment is the townspeople.** Lighting a node, winning a Unity campaign, finishing a
+  proof-of-work shrine, killing the Golden Bull and liquidating a shitcoiner all push it
+  up; selling a big stack, losing a campaign and posting collateral push it down. It decays
+  toward an anchor set by the town's lean, so opinion fades and arithmetic wins eventually.
+- **The four costs of a trade, all shown.** Spread (narrows with Bitcoiner rank and
+  adoption, floor 0.2%), a 0.4% taker fee, and slippage against a visible order-book depth,
+  so selling the lot never pays the number on the sign. Posting your own price instead pays
+  a 0.2% maker rebate and no fee — the lesson being that impatience is the priced thing.
+- **Limit orders** with escrow, four at a time, withdrawable.
+- **Mr. Float lends against sats** at 50% LTV and liquidates at 72%, with the liquidation
+  price shown *before* the trade rather than after.
+- **Cost basis in two currencies** — what your stack cost in credits and what those credits
+  would have bought in stims — because measuring a gain in a unit that is itself shrinking
+  is the joke the whole economy is built on.
+- **Chart** (`mktChart()` in `src/p4.js`): inline SVG, one emphasised price series against a
+  recessive fair-value line, on a **ratio (log) axis** — without it the inflation ramp
+  swamps every actual price move. Credits view and purchasing-power view.
+- Four new feats (buy under fair value, fill your own order, hold through a 20% fall,
+  get liquidated), three memos, and four Story-tab entries explaining spread, depth, the
+  fee, and what the two lines mean.
+
+**Palette note.** Run against the `dataviz` validator, this palette logs two deliberate
+FAILs: the de-emphasis grey must read as grey rather than as a second series, and
+`#f7931a` is the game's established colour for satoshis everywhere else, which outranks
+the validator's lightness band. Both are choices, not oversights.
+
+**Test gotcha fixed.** `tools/smoke.js` opened the sheet tabs without first clearing any
+dialog left over from the zone walk. `openSheet` draws nothing behind a dialog, so a tab
+would intermittently report zero characters and look broken. It now dismisses dialogs
+first.

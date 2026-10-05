@@ -22,7 +22,9 @@ for(let z=0;z<34;z++){
   if(!ok)errs.push('zone '+z+': no world');else n++;
   if(OUT)await p.screenshot({path:OUT+'/z'+String(z).padStart(2,'0')+'.png'});
 }
-// every sheet tab renders
+// every sheet tab renders. Clear any dialog first: openSheet draws nothing behind one,
+// which reads as a broken tab.
+await sk(8);
 for(const t of ['char','items','skills','web','quests','story','codex','opts']){
   await p.evaluate(t=>__g.openSheet(t,{}),t);await p.waitForTimeout(220);
   const len=await p.evaluate(()=>document.getElementById('sheetIn').innerHTML.length);

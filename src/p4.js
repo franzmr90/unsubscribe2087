@@ -220,8 +220,43 @@ function hud(){objHud();if(P&&P.dg)setT('dgn',P.dg.n);
 /* ================= sheets ================= */
 let tab='items',sel=null,sheetCtx={},lastBox=null;
 const TABS={web:'Web',char:'Hero',items:'Items',skills:'Skills',quests:'Quests',story:'Story',codex:'Codex',opts:'Options',shop:'Trade',gamble:'Boxes',travel:'Travel',load:'Load',merc:'Hire',sats:'Sats',bounty:'Bounties',stash:'Lockbox',shift:'Shape shift'};
-const satPrice=o=>Math.ceil(o.price*(cause()?.75:1)*(repRank('btc')>=1?.9:1)*((G.lean||0)<-50?1.15:1));const spread=()=>repRank('btc')>=3?1:1.1;
-const satRate=()=>80*Math.pow(G.cpi,1.05);
+const satPrice=o=>Math.ceil(o.price*(cause()?.75:1)*(repRank('btc')>=1?.9:1)*((G.lean||0)<-50?1.15:1));
+const satRate=()=>mktMid();
+/* ================= the price chart =================
+   One series - the price - in the colour this game already uses for everything bitcoin,
+   with the fair value behind it as a recessive reference line. Both direct-labelled, so
+   identity is never colour alone. Two views, one axis each: in credits it only ever
+   climbs, which is the joke; in stims it tells you what a sat actually buys. */
+let mktView='cr',mktQty=10;
+const MKC={p:'#f7931a',v:'#6a6458',grid:'rgba(255,255,255,.07)',ink:'#948b7a'};
+function mktSeries(){const m=mktInit(),n=m.h.length;const out={p:[],v:[]};
+  for(let i=0;i<n;i++){const q=m.hq[i]||1;out.p.push(mktView==='st'?m.h[i]/q:m.h[i]);out.v.push(mktView==='st'?(m.hf[i]||m.h[i])/q:(m.hf[i]||m.h[i]))}
+  return out}
+const mktFmt=v=>mktView==='st'?v.toFixed(v<1?3:2)+' stims':fmt(v);
+function mktChart(){const s=mktSeries(),n=s.p.length;if(n<2)return '';
+  const W=320,H=112,L=4,R=46,T=11,B=15,iw=W-L-R,ih=H-T-B;
+  const lg=v=>Math.log(Math.max(1e-9,v));
+  let lo=Infinity,hi=-Infinity;for(const a of[s.p,s.v])for(const v of a){const t=lg(v);if(t<lo)lo=t;if(t>hi)hi=t}
+  const pad=(hi-lo)*.16||.05;lo-=pad;hi+=pad;
+  const X=i=>L+iw*(n<2?0:i/(n-1)),Y=v=>T+ih-ih*((lg(v)-lo)/((hi-lo)||1));
+  const path=a=>a.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ');
+  let g='';for(let k=0;k<=2;k++){const y=(T+ih*k/2).toFixed(1);g+=`<line x1="${L}" y1="${y}" x2="${L+iw}" y2="${y}" stroke="${MKC.grid}" stroke-width="1"/>`}
+  const last=s.p[n-1],lv=s.v[n-1];
+  let mi=0,ma=0;s.p.forEach((v,i)=>{if(v<s.p[mi])mi=i;if(v>s.p[ma])ma=i});
+  const far=i=>i>n*.14&&i<n-n*.14;
+  const mark=(i,above)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(s.p[i]).toFixed(1)}" r="2" fill="${MKC.p}" opacity=".55"/>`+
+    `<text x="${X(i).toFixed(1)}" y="${(Y(s.p[i])+(above?-5:9)).toFixed(1)}" fill="${MKC.ink}" font-size="8" font-family="Spectral,serif" text-anchor="middle">${mktFmt(s.p[i])}</text>`;
+  return `<div class="chartw"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="One satoshi, priced in ${mktView==='st'?'stims':'credits'}. Now ${mktFmt(last)}.">
+    ${g}
+    <path d="${path(s.p)} L ${X(n-1).toFixed(1)} ${(T+ih).toFixed(1)} L ${L} ${(T+ih).toFixed(1)} Z" fill="${MKC.p}" opacity=".07"/>
+    <path d="${path(s.v)}" fill="none" stroke="${MKC.v}" stroke-width="1" stroke-linejoin="round"/>
+    <path d="${path(s.p)}" fill="none" stroke="${MKC.p}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${far(ma)?mark(ma,1):''}${far(mi)&&mi!==ma?mark(mi,0):''}
+    <circle cx="${X(n-1).toFixed(1)}" cy="${Y(last).toFixed(1)}" r="3" fill="${MKC.p}" stroke="#120e17" stroke-width="2"/>
+    <text x="${(L+iw+5).toFixed(1)}" y="${(Y(last)+3).toFixed(1)}" fill="${MKC.p}" font-size="9" font-family="Cinzel,serif" font-weight="700">price</text>
+    <text x="${(L+iw+5).toFixed(1)}" y="${(Math.abs(Y(lv)-Y(last))<9?Y(last)+(lv<last?12:-6):Y(lv)+3).toFixed(1)}" fill="${MKC.v}" font-size="9" font-family="Cinzel,serif" font-weight="700">value</text>
+    <text x="${(L+iw).toFixed(1)}" y="${H-3}" fill="${MKC.ink}" font-size="8.5" font-family="Spectral,serif" text-anchor="end">ratio scale · the last few minutes</text>
+  </svg></div>`}
 const hireCost=()=>200*G.cpi*(1+G.lvl*.25),reviveCost=()=>cause()?0:80*G.cpi*(1+G.lvl*.25);
 function openSheet(t,c){if(mode!=='play'&&mode!=='title')return;sheetCtx=c||{};sheetCtx.from=mode;tab=t;sel=null;mode='sheet';$('sheet').hidden=false;$('sheet').scrollTop=0;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;drawSheet()}
 function closeSheet(){$('sheet').hidden=true;$('pop').hidden=true;if(sheetCtx.from==='title'){mode='title';return}mode='play';calc();setSkillButtons();save(true)}
@@ -369,13 +404,52 @@ function drawSheet(){
     if(G.merc&&!G.merc.dead){const m=G.merc,ab=(lv,a,b,cur)=>`<div class="row"><button class="${cur===a[1]?'big':'ghost'}" data-mab="${a[0]}" ${G.lvl<lv?'disabled':''}>${a[2]}</button><button class="${cur===b[1]?'big':'ghost'}" data-mab="${b[0]}" ${G.lvl<lv?'disabled':''}>${b[2]}</button></div>`;h+=`<h3>${esc(m.name)}’s training</h3><p style="font-size:13.5px">One choice at level 10 and one at level 25.</p>`+ab(10,['g','guard','Guard: +40% life'],['f','fury','Fury: +30% damage'],m.ab1)+ab(25,['m','medic','Medic: mends you when near'],['c','coll','Collector: +15% magic find, +25% credits'],m.ab2)}
     h+=`<div class="list">`;for(const k in MERCS){const m=MERCS[k],cur=G.merc&&G.merc.k===k&&!G.merc.dead;h+=`<button class="li${cur?' on':''}" data-hire="${k}" ${cur||G.credits<hireCost()?'disabled':''}><div><b>${m.n}${cur?' · with you now':''}</b><span>${m.d}</span></div><span class="pr">${cur?'':fmt(hireCost())}</span></button>`}
     h+=`</div><p>Hiring someone new sends your current companion home. Their gear passes to the new hire.</p>`}
-  if(tab==='sats'){h+=`<h2>Nonce’s cache</h2><p>“Credits rot. These do not.” Satoshis drop rarely from machines and lockboxes and never lose value. You hold <strong style="color:#f7931a">${G.sats} sats</strong>.</p><div class="list">`;
+  if(tab==='sats'){const m=mktInit(),se=mktSeries(),mid=mktMid(),bid=mktBid(),ask=mktAsk(),sp=mktSpread();
+    const first=se.p[0]||1,now=se.p[se.p.length-1]||1,ch=(now/first-1)*100,sq=stimPrice();
+    const own=Math.min(G.sats,m.cb.n),basisCr=m.cb.cr,basisSt=m.cb.st;
+    const valCr=own*bid,valSt=own*bid/sq,plCr=valCr-basisCr,plSt=valSt-basisSt;
+    const pc=(a,b)=>b>0?((a/b-1)*100):0;
+    h+=`<h2>Nonce’s cache</h2><p>“Credits rot. These do not. That is the whole of my business and I will not pretend it is clever.” You hold <strong style="color:#f7931a">${G.sats} sats</strong>.</p>`;
+    h+=`<div class="hero"><b style="color:#f7931a">${mktFmt(now)}</b><i class="${ch>=0?'up2':'dn2'}">${ch>=0?'\u25b2':'\u25bc'} ${Math.abs(ch).toFixed(ch<10?2:1)}%</i><span>one satoshi, ${mktView==='st'?'in stims · what it actually buys':'in credits · which only ever go one way'}</span></div>`;
+    h+=mktChart();
+    h+=`<div class="row" style="margin-top:6px"><button class="${mktView==='cr'?'big':'ghost'}" data-mkv="cr">In credits</button><button class="${mktView==='st'?'big':'ghost'}" data-mkv="st">In stims</button></div>`;
+    h+=`<p style="font-size:13px">${mktView==='st'?'The same chart, priced in stims instead of credits. This is the one that tells you whether you are actually better off. Nonce says people look at it once and then go back to the other one.':'The grey line is what a sat is worth: credits created without limit, divided among twenty-one million. The orange line is what it is <em>trading</em> at, which is the same thing plus everybody\u2019s opinion.'}</p>`;
+    if(m.news.length)h+=`<ul class="news">${m.news.map(x=>`<li><em style="color:${x.n>0?'#3fe06a':'var(--bad)'}">${x.n>0?'+':'\u2212'}</em>${esc(x.w)}</li>`).join('')}</ul>`;
+    h+=`<div class="tick"><div>Nonce buys at<b>${fmt(bid)}</b></div><div>Nonce sells at<b>${fmt(ask)}</b></div>
+      <div>His spread<b>${(sp*100).toFixed(2)}%</b></div><div>Depth<b>${Math.round(mktDepth())} sats</b></div>
+      <div>Your stack, if sold now<b>${fmt(G.sats*bid)}</b></div><div>Mood of the market<b>${m.sent>.15?'giddy':m.sent>.04?'warm':m.sent<-.15?'grim':m.sent<-.04?'cool':'flat'}</b></div>
+      <div>Against its value<b class="${m.r>=1?'up2':'dn2'}">${m.r>=1?'+':'\u2212'}${(Math.abs(m.r-1)*100).toFixed(1)}%</b></div><div>Volatility<b>${(mktVol()*1000).toFixed(1)} · ${mktVol()>.0033?'wild':mktVol()>.0022?'choppy':'settling'}</b></div></div>`;
+    if(m.cb.n>0)h+=`<div class="tick"><div>You paid, in credits<b>${fmt(basisCr)}</b></div><div>Worth now<b class="${plCr>=0?'up2':'dn2'}">${plCr>=0?'+':'\u2212'}${Math.abs(pc(valCr,basisCr)).toFixed(0)}%</b></div>
+      <div>You paid, in stims<b>${basisSt.toFixed(1)}</b></div><div>Worth now<b class="${plSt>=0?'up2':'dn2'}">${plSt>=0?'+':'\u2212'}${Math.abs(pc(valSt,basisSt)).toFixed(1)}%</b></div></div>
+      <p style="font-size:13px">Two ways of counting the same ${own} sats. One of them is a compliment the currency is paying itself.${G.sats>m.cb.n?' The other '+(G.sats-m.cb.n)+' you found, and those cost you nothing but the walk.':''}</p>`;
+    else h+=`<p style="font-size:13px">Every sat you hold was found, not bought, so there is nothing to compare it against yet. Buy one and Nonce will start keeping score two ways.</p>`;
+    h+=`<h3>Trade</h3><div class="row">${[1,10,50,200].map(n=>`<button class="${mktQty===n?'big':'ghost'}" data-mkq="${n}">${n}</button>`).join('')}</div>`;
+    {const n=Math.max(1,mktQty),qb=mktQuote(n,'buy'),qs=mktQuote(n,'sell');
+     h+=`<div class="qt"><div>Mid price<b>${fmt(qb.mid)}</b></div><div>His spread, half each way<b>±${(qb.sp*50).toFixed(2)}%</b></div>
+       <div>Your size against his depth<b>${qb.k<.02?'no bite':'costs you '+(qb.k*9).toFixed(1)+'%'}</b></div><div>Taker fee<b>${(MKT_TAKER*100).toFixed(1)}%</b></div>
+       <div class="tot">Buy ${n} sats<b>${fmt(qb.total)}</b></div><div class="tot">Sell ${n} sats<b>${fmt(qs.total)}</b></div></div>`;
+     h+=`<div class="row"><button class="big" data-mkt="b" ${G.credits<qb.total?'disabled':''}>Buy ${n}</button><button class="big" data-mkt="s" ${G.sats<n?'disabled':''}>Sell ${n}</button></div>
+       <div class="row"><button class="ghost" data-mkt="ball" ${G.credits<ask?'disabled':''}>Buy with everything</button><button class="ghost" data-mkt="sall" ${G.sats<1?'disabled':''}>Sell the lot</button></div>`;}
+    h+=`<p style="font-size:13px">Four things happen to every trade, and Nonce lists all four because he says the ones who hide them are the ones to worry about. He makes the spread for being willing to deal at all; the fee is for doing it <em>this second</em>; and a big order eats its way down his book, which is why selling the lot never gets you the number on the screen.</p>`;
+    h+=`<h3>Or name your own price</h3><div class="row"><button class="ghost" data-mko="b3">Bid 3% under</button><button class="ghost" data-mko="b7">Bid 7% under</button></div>
+      <div class="row"><button class="ghost" data-mko="s3">Ask 3% over</button><button class="ghost" data-mko="s7">Ask 7% over</button></div>
+      <p style="font-size:13px">A posted order waits. If the price comes to you it fills, you pay no fee, and Nonce pays you ${(MKT_MAKER*100).toFixed(1)}% for the trouble — because while it sat there you were the one willing to deal, which is his job. If the price never comes, it never fills. That is the trade: a better number, or a certain one.</p>`;
+    if(m.ord.length){h+=`<div class="list">${m.ord.map((o,i)=>`<button class="li on" data-mkx="${i}"><div><b>${o.s==='buy'?'Bid':'Ask'} ${o.n} sats at ${fmt(o.px)}</b><span>${o.s==='buy'?'Fills if one sat falls to that. '+fmt(o.esc)+' is held.':'Fills if one sat rises to that. '+o.esc+' sats are held.'} Tap to withdraw.</span></div></button>`).join('')}</div>`}
+    if(!m.pos&&G.sats>=10){const n=Math.max(10,Math.min(G.sats,mktQty)),lent=Math.floor(mktBid()*n*MKT_LTV),liq=lent/(n*MKT_LIQ);
+      h+=`<h3>Mr. Float will lend against them</h3>
+        <p style="font-size:13px">He gives you credits now and holds your sats as the promise. You keep the sats — unless the price falls far enough that they stop covering what you owe, and then he keeps them instead. That is the whole of a margin call and it is not personal.</p>
+        <div class="tick"><div>Pledge<b>${n} sats</b></div><div>He hands you<b>${fmt(lent)}</b></div>
+          <div>Against a stack worth<b>${fmt(mktBid()*n)}</b></div><div>He takes them below<b class="dn2">${fmt(liq)}</b></div></div>
+        <div class="row"><button class="big" data-mkb="1">Borrow ${fmt(lent)} against ${n} sats</button></div>
+        <p style="font-size:13px">Borrowing to buy more is how people turn a ${(100-MKT_LIQ*100).toFixed(0)}% fall into a total one. Nonce watches this part of the counter without saying anything.</p>`}
+    if(m.pos){const p0=m.pos,safe=(mktMid()/p0.liq-1)*100;
+      h+=`<h3>Mr. Float holds ${p0.n} of your sats</h3><div class="tick"><div>He lent you<b>${fmt(p0.lent)}</b></div><div>You owe him<b>${fmt(p0.lent*1.08)}</b></div>
+        <div>He keeps them below<b>${fmt(p0.liq)}</b></div><div>Room left<b class="${safe<12?'dn2':'up2'}">${safe.toFixed(0)}%</b></div></div>
+        <div class="row"><button class="big" data-mkr="1" ${G.credits<p0.lent*1.08?'disabled':''}>Repay and take them back</button></div>`}
+    h+=`<h3>Nonce’s goods</h3><div class="list">`;
     satShop.forEach((o,i)=>{h+=`<button class="li${sel&&sel.sat===i?' on':''}" data-sat="${i}"><div><b class="q${o.it.q}">${esc(o.it.name)}</b><span>${QN[o.it.q]} ${SNAME[o.it.slot]} · level ${o.it.il}</span></div><span class="pr" style="color:#f7931a">${satPrice(o)} sats</span></button>`});
     if(!satShop.length)h+=`<p>Sold out. Nonce restocks each time you return to town.</p>`;h+=`</div>`;
-    const r=satRate(),sp=stimPrice();h+=`<h3>Exchange</h3><p>Today one sat fetches <strong>${fmt(r)}</strong>. When you arrived it fetched ₡80. Nonce buys at that rate and sells ${spread()>1?'10% above it':'at the same rate, for a friend'}.</p>
-      <div class="row"><button class="ghost" data-sx="s1" ${G.sats<1?'disabled':''}>Sell 1 sat</button><button class="ghost" data-sx="s10" ${G.sats<10?'disabled':''}>Sell 10</button><button class="ghost" data-sx="sall" ${G.sats<1?'disabled':''}>Sell all</button></div>
-      <div class="row"><button class="ghost" data-sx="b1" ${G.credits<r*spread()?'disabled':''}>Buy 1 sat</button><button class="ghost" data-sx="b10" ${G.credits<r*10*spread()?'disabled':''}>Buy 10</button><button class="ghost" data-sx="ball" ${G.credits<r*spread()?'disabled':''}>Buy with all credits</button></div>
-      <div class="stats"><div>A stim, in credits<b>${fmt(sp)}</b></div><div>Same stim, at arrival<b>${fmt(25*(1+G.lvl*.2)*(G.disc?.85:1))}</b></div><div>A stim, in sats<b>${(sp/r).toFixed(2)}</b></div></div>
+    h+=`<div class="stats"><div>A stim, in credits<b>${fmt(sq)}</b></div><div>Same stim, at arrival<b>${fmt(25*(1+G.lvl*.2)*(G.disc?.85:1))}</b></div><div>A stim, in sats<b>${(sq/mid).toFixed(2)}</b></div></div>
       <p style="font-size:13.5px">The same stim costs more credits every minute and about the same number of sats. Nonce will not tell you what to make of that.</p>`;
     if(sel&&sel.sat!==undefined&&satShop[sel.sat]){const o=satShop[sel.sat];pop=itemCard(o.it,`<button class="big" data-satbuy="1" ${G.sats<satPrice(o)||G.bag.length>=24?'disabled':''}>Buy for ${satPrice(o)} sats</button>`)}}
   if(tab==='travel'){h+=`<h2>Transit Gate</h2>`;if(!gateAct||sheetCtx.gFresh){sheetCtx.gFresh=0;gateAct=actOf(W.zi)||1}const acts=[[1,'I',1],[2,'II',G.q.q5===3],[3,'III',G.q.q10===3],[4,'IV',G.q.q15===3],[5,'V',G.q.q20===3],[6,'More',1]];if(!acts[gateAct-1][2])gateAct=1;
@@ -448,7 +522,18 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web]'
   if(d.hire){const c=hireCost();if(G.credits<c){toast('Not enough credits');sfx('err')}else{G.credits-=c;const old=G.merc;G.merc={k:d.hire,name:pick(MNAMES),hp:0,dead:false,weapon:old?old.weapon:null,armor:old?old.armor:null,helm:old?old.helm||null:null};spawnMerc();sfx('quest');toast(G.merc.name+' the '+MERCS[d.hire].n+' joins you')}}
   if(d.revive){const c=reviveCost();if(G.credits<c){toast('Not enough credits');sfx('err')}else{G.credits-=c;G.merc.dead=false;G.merc.hp=0;spawnMerc();sfx('mend');toast(G.merc.name+' is back on their feet')}}
   if(d.sat!==undefined)sel={sat:+d.sat};
-  if(d.sx){const r=satRate(),k=d.sx;if(k[0]==='s'){const n=k==='s1'?1:k==='s10'?10:G.sats;addAdopt(-Math.min(3,n*.1),n>=10?'sats sold for credits':'');G.sats-=n;G.credits+=n*r;toast('Sold '+n+' sats for '+fmt(n*r))}else{const n=k==='b1'?1:k==='b10'?10:Math.floor(G.credits/(r*spread()));G.sats+=n;G.credits-=n*r*spread();addRep('btc',Math.ceil(n/5));toast('Bought '+n+' sats')}sfx('coin')}
+  if(d.mkv){mktView=d.mkv}
+  if(d.mkq){mktQty=+d.mkq}
+  if(d.mkt){const k=d.mkt;
+    if(k==='b'||k==='s'){const n=Math.max(1,mktQty),q=mktTrade(n,k==='b'?'buy':'sell');
+      if(q)toast(k==='b'?'Bought '+n+' sats for '+fmt(q.total):'Sold '+n+' sats for '+fmt(q.total));else{toast(k==='b'?'Not enough credits':'Not that many sats');sfx('err')}}
+    else if(k==='ball'){const n=Math.floor(G.credits/(mktAsk()*(1+MKT_TAKER)*1.08));if(n<1){toast('Not enough credits');sfx('err')}else{const q=mktTrade(n,'buy');if(q)toast('Bought '+n+' sats for '+fmt(q.total))}}
+    else if(k==='sall'){const n=G.sats;if(n<1){toast('No sats');sfx('err')}else{const q=mktTrade(n,'sell');if(q)toast('Sold '+n+' sats for '+fmt(q.total)+(q.k>.12?' — and the last of them for rather less than the first':''))}}}
+  if(d.mko){const n=Math.max(1,mktQty),off=+d.mko.slice(1)/100,buy=d.mko[0]==='b',px=mktMid()*(buy?1-off:1+off);
+    if(!mktPost(n,px,buy?'buy':'sell')){toast(buy?'Not enough credits to hold that bid':'Not that many sats to post');sfx('err')}}
+  if(d.mkx!==undefined)mktCancel(+d.mkx);
+  if(d.mkr)if(!mktRepay()){toast('Not enough credits to repay him');sfx('err')}
+  if(d.mkb){const n=Math.max(1,Math.min(G.sats,mktQty));if(!mktBorrow(n)){toast(G.mkt.pos?'He will only hold one position':'Not enough sats');sfx('err')}}
   if(d.satbuy){const o=satShop[sel.sat];if(o&&G.sats>=satPrice(o)&&G.bag.length<24){G.sats-=satPrice(o);addRep('btc',Math.ceil(o.price/4));addAdopt(1,'you paid in sats');G.bag.push(o.it);satShop.splice(sel.sat,1);sel=null;sfx('coin');toast('Paid in sats')}}
   if(d.node!==undefined)sel={sk:+d.node};
   if(d.learn!==undefined){const i=+d.learn;G.sp-=skCost(i);G.sk[i]++;if(G.sk[i]===10)toast(CLS[G.cls].sk[i].n+' is mastered: two extra ranks’ worth of power'+(CLS[G.cls].sk[i].a?' and 20% faster recovery':'')+'.');if(CLS[G.cls].sk[i].a&&!G.slots.includes(i)){const e=G.slots.indexOf(-1);if(e>=0)G.slots[e]=i}if(!CLS[G.cls].sk[i].a&&G.pas&&!G.pas.includes(i)&&G.pas.length<PCAP())G.pas.push(i);calc();sfx('learn')}
@@ -544,4 +629,4 @@ const hot=window.claude&&window.claude.hot;
 try{if(hot&&hot.snapshot)hot.snapshot(()=>G&&mode!=='title'?{save:JSON.stringify(saveObj())}:{})}catch(e){}
 if(hot&&hot.ready)hot.ready(start);else start((hot&&hot.data)||{});
 cloudInit();
-window.__g={scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS};
+window.__g={mktQuote,mktTrade,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS};

@@ -66,7 +66,7 @@ function powStart(o){if(W.pow)return;W.pow={o,t:60,w:1};sfx('shrine');toast('Pro
 function p7Enter(){legCheck();if(W.eased){W.eased=0;setTimeout(()=>toast(pick(DIFFDN)),1200)}W.pow=null;raidCheck();if(W.z.sim){SB={};calc()}else if(SB){SB=null;calc()}if(W.z.sub&&W.sub)SUBP=W.sub;ensurePow()}
 function simChoice(n){const all=[['+15% damage',{dmg:15}],['+12% life',{hpP:12}],['+8% attack speed',{aspd:8}],['+4% deadly strike',{crit:4}],['+2% life steal',{leech:2}],['+6% run speed',{mspd:6}],['+15 energy',{en:15}]].sort(()=>Math.random()-.5).slice(0,3);
   dlg('Wave '+(n-1)+' cleared','Take one. It lasts until you unplug.',all.map(c=>[c[0],()=>{for(const k in c[1])SB[k]=(SB[k]||0)+c[1][k];calc();heal(S.maxHp*.25);sfx('buff')}]))}
-function p7Tick(dt){uniTick(dt);if(OPT.autoStim&&G.hp>0&&G.hp<S.maxHp*.3&&G.stims>0){P.asT=(P.asT||0)-dt;if(P.asT<=0){P.asT=1.5;stim()}}upkeepTick(dt);shillTick(dt);storyTick(dt);
+function p7Tick(dt){mktTick(dt);mktLiqCheck();uniTick(dt);if(OPT.autoStim&&G.hp>0&&G.hp<S.maxHp*.3&&G.stims>0){P.asT=(P.asT||0)-dt;if(P.asT<=0){P.asT=1.5;stim()}}upkeepTick(dt);shillTick(dt);storyTick(dt);
   const g=P.dg=P.dg||{n:2,t:0};if(g.n<2){g.t+=dt;if(g.t>=3.5){g.n++;g.t=0}}
   if(P.e82>0)P.e82-=dt;
   if(P.fm&&P.fm.t>0)P.fm.t-=dt;
@@ -78,7 +78,7 @@ function p7Tick(dt){uniTick(dt);if(OPT.autoStim&&G.hp>0&&G.hp<S.maxHp*.3&&G.stim
   const pw=W.pow;if(pw){if(dist(P,pw.o)>9){W.pow=null;toast('You left the shrine. The work is lost.');sfx('err');return}pw.t-=dt;pw.w-=dt;
     if(pw.w<=0){pw.w=7;pw.n=(pw.n||0)+1;const k=wpick(W.z.mix),cnt=4+pw.n,pool=W.z.mix.filter(m=>m[0]!=='tick');for(let i=0;i<cnt;i++){const a=rnd(0,6.283),e=spawn(k,pw.o.x+Math.cos(a)*7.5,pw.o.y+Math.sin(a)*7.5);if(e)e.aggro=true}
       if(pw.n===4||pw.n===7){const a=rnd(0,6.283),c=spawn(wpick(pool),pw.o.x+Math.cos(a)*7.5,pw.o.y+Math.sin(a)*7.5,{champ:1});if(c){c.aggro=true;toast('A champion comes for the shrine.')}}}
-    if(pw.t<=0){W.pow=null;pw.o.used=1;const n=9+Math.floor(W.ml/3);for(let i=0;i<3;i++)addDrop({sat:Math.ceil(n/3)},pw.o.x,pw.o.y);sfx('quest');parts(pw.o.x,pw.o.y,30,['#f7931a','#fff'],3,1.6);addAdopt(1,'work was proven');campHit('ban');toast('Proof of work accepted. The block reward is on the ground: about '+n+' sats.')}}}
+    if(pw.t<=0){W.pow=null;pw.o.used=1;mktNews(.13,'work was proven in '+W.z.n);const n=9+Math.floor(W.ml/3);for(let i=0;i<3;i++)addDrop({sat:Math.ceil(n/3)},pw.o.x,pw.o.y);sfx('quest');parts(pw.o.x,pw.o.y,30,['#f7931a','#fff'],3,1.6);addAdopt(1,'work was proven');campHit('ban');toast('Proof of work accepted. The block reward is on the ground: about '+n+' sats.')}}}
 /* Mr. Float: now or later, and borrowing in a currency that melts */
 const loanAmt=()=>400*G.lvl*G.cpi,nowCost=()=>150*G.lvl*G.cpi*((G.lean||0)>50?1.2:1);
 function talkFloat(){const d=G.debt||0,real=d?Math.round(d/G.cpi/(G.debt0/G.debtCpi)*100):0;

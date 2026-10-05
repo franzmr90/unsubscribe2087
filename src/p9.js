@@ -2,8 +2,8 @@
 const CAMPS={smear:{n:'The Smear',d:'The feed says bitcoiners are hoarders and criminals. Answer it: give three townsfolk a bitcoiner answer without insulting them.',need:3,act:1},
  coin:{n:'UnityCoin',d:'Unity has launched its own coin and sent salesmen out with it. Liquidate two shitcoiners.',need:2,act:2},
  ban:{n:'The Ban',d:'Holding sats has been declared antisocial. Show the network cannot be switched off: complete a proof of work shrine.',need:1,act:3}};
-function campStart(k){if(G.camps[k])return;G.camps[k]=1;G.camp={k,c:0,t:45};sfx('roar');setTimeout(()=>dlg('Unity responds · '+CAMPS[k].n,CAMPS[k].d+' Until you do, adoption drains away.',[['Understood']]),1500)}
-function campHit(k,n){const c=G.camp;if(!c||c.k!==k)return;c.c+=n||1;if(c.c>=CAMPS[k].need){G.camp=null;G.camps[k]=2;sfx('quest');addAdopt(6,CAMPS[k].n+' has failed');toast('Unity’s campaign collapses.')}else toast(CAMPS[k].n+': '+c.c+'/'+CAMPS[k].need)}
+function campStart(k){if(G.camps[k])return;G.camps[k]=1;G.camp={k,c:0,t:45};sfx('roar');mktNews(-.22,'Unity opens “'+CAMPS[k].n+'”');setTimeout(()=>dlg('Unity responds · '+CAMPS[k].n,CAMPS[k].d+' Until you do, adoption drains away.',[['Understood']]),1500)}
+function campHit(k,n){const c=G.camp;if(!c||c.k!==k)return;c.c+=n||1;if(c.c>=CAMPS[k].need){G.camp=null;G.camps[k]=2;sfx('quest');mktNews(.2,'“'+CAMPS[k].n+'” collapses');addAdopt(6,CAMPS[k].n+' has failed');toast('Unity’s campaign collapses.')}else toast(CAMPS[k].n+': '+c.c+'/'+CAMPS[k].need)}
 function fateOf(){const a=G.adopt;return a>=60?'reserve':a>=25?'stale':'fail'}
 const fateWord=()=>({reserve:'Rising: on course to become the reserve',stale:'Contested: could go either way',fail:'Failing: one bad season from going dark'})[fateOf()];
 function storyTick(dt){const c=G.camp;if(c&&!W.z.town&&!W.z.sim){c.t-=dt;if(c.t<=0){c.t=45;if(G.adopt>5){addAdopt(-1,CAMPS[c.k].n);if(G.adopt<15){const ks=Object.keys(G.nodes);if(ks.length){delete G.nodes[pick(ks)];toast('A node has gone dark.')}}}}}
@@ -11,8 +11,8 @@ function storyTick(dt){const c=G.camp;if(c&&!W.z.town&&!W.z.sim){c.t-=dt;if(c.t<
   if(c&&c.k==='coin'&&shillT>40)shillT=40}
 /* people can be won or lost by how you talk to them */
 function sway(id,p,n){if(id==='res')return;const v=G.won[id]=(G.won[id]||0)+n,f=G.wonF=G.wonF||{};
-  if(v>=3&&f[id]!==1){f[id]=1;setTimeout(()=>{sfx('quest');addAdopt(3,p.n+' now saves in sats')},600)}
-  if(v<=-3&&f[id]!==-1){f[id]=-1;setTimeout(()=>addAdopt(-3,p.n+' has given up on it'),600)}}
+  if(v>=3&&f[id]!==1){f[id]=1;mktNews(.09,p.n+' is stacking');setTimeout(()=>{sfx('quest');addAdopt(3,p.n+' now saves in sats')},600)}
+  if(v<=-3&&f[id]!==-1){f[id]=-1;mktNews(-.09,p.n+' has given up on it');setTimeout(()=>addAdopt(-3,p.n+' has given up on it'),600)}}
 const STALE=[
  {art:'node',text:'Bitcoin does not win, and it does not die. A stubborn few keep their nodes humming in back rooms, and the Stipend goes on landing every minute, worth a little less each time.'},
  {art:'ticker',text:'It could still go either way. It is waiting, the way it always has, for enough people to decide that they would rather hold something that holds still.'}];
