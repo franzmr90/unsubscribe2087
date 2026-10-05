@@ -13,6 +13,10 @@
 const ws = require('./ws');
 
 const MAX_PARTY = 8;
+/* A hard ceiling, so a busy day degrades into a clear refusal rather than into a server
+   that gets slower and slower and then stops. See MULTIPLAYER.md on sharding into
+   separate games, which is what actually raises this number. */
+const MAX_PLAYERS = +(process.env.MAX_PLAYERS || 40);
 /* Diablo II's party experience multiplier, by number of members present. */
 const PARTY_BONUS = [1, 1, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3];
 const PVP_SCALE = 0.25;            /* players are much tougher to each other than monsters are */
@@ -44,7 +48,12 @@ function broadcast(t, d, filter) {
 function roster() {
   return [...live.values()].map(pub);
 }
-function pushRoster() { broadcast('roster', { players: roster() }); }
+let rosterT = null;
+function pushRoster() {
+  if (rosterT) return;
+  rosterT = setTimeout(() => { rosterT = null; broadcast('roster', { players: roster() }); }, 250);
+  if (rosterT.unref) rosterT.unref();
+}
 
 function partyOf(p) { return p.party ? parties.get(p.party) : null; }
 function membersOf(party) { return party ? [...party.members].map(u => live.get(u)).filter(Boolean) : []; }
@@ -89,8 +98,24 @@ function canFight(a, b) {
   return true;
 }
 
+const byZone = new Map();
+const zoneKey = p => p.zi + '/' + (p.inst || '');
+function zoneIndex(p, remove) {
+  const k = p.zoneKey;
+  if (k !== undefined) { const s = byZone.get(k); if (s) { s.delete(p); if (!s.size) byZone.delete(k); } }
+  if (remove) { p.zoneKey = undefined; return; }
+  const nk = zoneKey(p);
+  p.zoneKey = nk;
+  let s = byZone.get(nk);
+  if (!s) { s = new Set(); byZone.set(nk, s); }
+  s.add(p);
+}
 function zonePeers(p) {
-  return [...live.values()].filter(q => q.uid !== p.uid && q.zi === p.zi && q.inst === p.inst);
+  const s = byZone.get(zoneKey(p));
+  if (!s) return [];
+  const out = [];
+  for (const q of s) if (q !== p) out.push(q);
+  return out;
 }
 
 function pushZone(p) {
@@ -101,7 +126,7 @@ function pushZone(p) {
 const HANDLERS = {
   hello(p, m) {
     p.lvl = +m.lvl || 1; p.cls = String(m.cls || '').slice(0, 16);
-    p.zi = +m.zi || 0; p.hp = +m.hp || 0; p.hpm = +m.hpm || 1; p.act = +m.act || 1;
+    p.zi = +m.zi || 0; zoneIndex(p); p.hp = +m.hp || 0; p.hpm = +m.hpm || 1; p.act = +m.act || 1;
     pushRoster();
   },
 
@@ -112,6 +137,7 @@ const HANDLERS = {
     if (zi !== p.zi) {
       p.zi = zi;
       p.inst = m.inst || null;
+      zoneIndex(p);
       pushRoster();
       /* Entering a district makes you briefly unkillable, so a hostile cannot camp the
          doorway. Diablo II did the same thing with its five seconds. */
@@ -287,7 +313,13 @@ function attach(server, verify) {
       lvl: 1, cls: '', zi: 0, inst: null, x: 0, y: 0, dir: 0, hp: 1, hpm: 1, act: 1,
       party: null, hostile: new Set(), invites: new Map(), safeUntil: 0, joined: Date.now()
     };
+    if (live.size >= MAX_PLAYERS) {
+      conn.send({ t: 'full', max: MAX_PLAYERS, text: 'This world is full — ' + MAX_PLAYERS + ' people are already in it. Try again in a few minutes.' });
+      setTimeout(() => conn.close(), 250);
+      return;
+    }
     live.set(p.uid, p);
+    zoneIndex(p);
 
     send(p, 'you', { uid: p.uid, name: p.name, maxParty: MAX_PARTY, pvpScale: PVP_SCALE, simZone: SIM_ZONE });
     pushRoster();
@@ -302,6 +334,7 @@ function attach(server, verify) {
 
     conn.on('close', () => {
       leaveParty(p, true);
+      zoneIndex(p, true);
       live.delete(p.uid);
       /* Hostility is forgotten when you leave, which is also how Diablo II ended it. */
       for (const q of live.values()) q.hostile.delete(p.uid);
@@ -319,4 +352,4 @@ function attach(server, verify) {
   beat.unref();
 }
 
-module.exports = { attach, live, parties, MAX_PARTY, PARTY_BONUS, PVP_SCALE, SIM_ZONE, TOWNS, canFight, mutualHostile };
+module.exports = { attach, live, parties, MAX_PARTY, MAX_PLAYERS, PARTY_BONUS, PVP_SCALE, SIM_ZONE, TOWNS, canFight, mutualHostile };

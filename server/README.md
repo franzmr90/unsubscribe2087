@@ -49,6 +49,7 @@ All optional; all environment variables.
 | `PORT` | `8087` | |
 | `PUBLIC_ORIGIN` | `http://localhost:$PORT` | **Set this in production.** It builds the links in emails, and an `https://` value is what turns on `Secure` cookies. |
 | `DATA_DIR` | `server/data` | |
+| `MAX_PLAYERS` | `40` | The ceiling on people in the world at once. One over it is refused with a clear message instead of joining a server that quietly degrades. See `MULTIPLAYER.md`. |
 | `TRUST_PROXY` | off | `1` to read `X-Forwarded-For`. Only behind a proxy that sets it — otherwise clients forge their own rate-limit identity. |
 | `SMTP_HOST` `SMTP_PORT` `SMTP_USER` `SMTP_PASS` `SMTP_SECURE` | none | No host configured means mail is written to `data/outbox/` and logged instead, so recovery can still be walked through. `SMTP_SECURE=1` for implicit TLS on 465; otherwise STARTTLS. |
 | `MAIL_FROM` | `no-reply@localhost` | |
@@ -79,7 +80,10 @@ migration story, for a server whose whole population fits in a room.
 ## Tests
 
 ```sh
-node server/test/run.js
+node server/test/run.js        # accounts, saves, recovery  — no browser
+node server/test/capacity.js  # the player ceiling          — no browser
+node server/test/live.js      # parties and hostility       — two real browsers
+node server/test/bug.js       # the report button           — one browser
 ```
 
 39 checks over a throwaway data directory: registration and validation, the document store

@@ -191,3 +191,86 @@ the validator's lightness band. Both are choices, not oversights.
 dialog left over from the zone walk. `openSheet` draws nothing behind a dialog, so a tab
 would intermittently report zero characters and look broken. It now dismisses dialogs
 first.
+
+---
+
+## Phase 5 — the server, and playing together
+
+Two stages, both working. `server/README.md` covers accounts; `MULTIPLAYER.md` covers
+parties, hostility, the rig and the capacity question.
+
+### 5a — accounts (no dependencies at all)
+
+Node standard library only: no `package.json`, no install, no build step, no native
+modules. `node server/server.js` serves the current build and keeps the accounts.
+
+The part worth knowing: **the game was not modified for any of this.** It already saves to
+an account by asking the page for `window.claude.use('user')` and `('db')` and reading and
+writing documents. `server/public/cloud-shim.js` implements exactly that interface against
+this server and the server injects it ahead of the bundle — so one build runs as an
+Artifact, from a file, and here, finding whatever account system is present or none.
+
+scrypt passwords with their parameters stored beside each hash; opaque session cookies
+hashed at rest; CSRF on every write; single-use half-hour reset links, also hashed; a
+password change signing out every other device; identical answers for known and unknown
+accounts on both login and recovery, with a scrypt hash run on a miss so the timing matches
+too. Storage is JSON files written through a rename, so backup is `cp -r`.
+
+**39 offline tests.**
+
+### 5b — parties, hostility, the rig
+
+Diablo II's rules. A party is an invitation both sides agree to, up to eight; experience is
+split only among members in the district with the killer, weighted by level, with D2's own
+party bonus; quest progress is shared with whoever is standing there; hostility is declared,
+throws you out of the party, is announced, and does not come back; town is safe; a doorway
+buys five seconds of grace; damage between players lands at a quarter. The Simulator takes a
+party, for waves together or for duelling.
+
+Two ideas carried the implementation:
+
+- **A hostile player is an inert stand-in in `W.ents`.** It does not think, push or die
+  there. But because it is in `W.ents`, every skill, projectile and area effect already
+  written finds it, and there is no per-skill PvP code anywhere in the game. `dmgEnemy`
+  spots the stand-in and routes the damage to the server.
+- **The network clock is not the game loop.** `update()` stops while a dialog or a sheet is
+  open, and somebody reading their inventory has not left the district, is not invisible to
+  their party, and is not invulnerable. Position, stand-ins and incoming damage run on their
+  own 100ms interval.
+
+WebSockets are RFC 6455 in the standard library (`server/lib/ws.js`), so the server still
+has no dependencies. The client half (`src/p13.js`) is inert unless the account server is
+serving the page.
+
+**16 live tests across two real browsers, 5 capacity tests.** One found a genuine bug: the
+post-doorway invulnerability `P.inv` only ticks down inside `update()`, so a player sitting
+in a menu kept it forever — a clean exploit. The server's grace is the authority for a fight
+between players, so a hit it has allowed is no longer gated on the local i-frames too.
+
+### The bug report button
+
+In the heads-up display, and deliberately slow. Pressing it files nothing: it asks first,
+with the game's own four-second hold, and then a form that refuses to send until all three
+questions are answered — what you were doing, what happened, and what you expected instead.
+Reports land in `server/data/bugs/` carrying district, level, class, quest state and any
+errors the page recorded. With no server behind the page the report goes to the clipboard
+instead. **15 tests**, including that an empty and a half-filled report are both refused.
+
+### Not done, and why
+
+- **No sharding into separate games.** This is one world with a hard ceiling of 40, and the
+  ceiling refuses clearly rather than degrading. Diablo II's answer — many games of eight —
+  is what actually makes this safe to post publicly, and it is the next stage.
+- **Damage is not authoritative.** The server decides who may fight whom and scales the hit,
+  but each client simulates its own monsters and asserts its own hits. A modified client
+  could claim hits it did not land. Right trade for people who know each other; wrong trade
+  for a public ladder. Fixing it means the server running `update()`, which is a rewrite of
+  the game loop rather than a patch to it.
+- **Proximity voice chat is not built.** It is very doable — WebRTC peer to peer, with the
+  existing WebSocket as the signalling channel and the existing 100ms position beat driving
+  a Web Audio `PannerNode` — and it costs the server nothing because the audio never touches
+  it. The limits are that it needs HTTPS, that a full mesh caps out around six to eight
+  people in earshot, and that a minority behind strict NATs need a TURN relay that does cost
+  money.
+- **SMTP against a real relay is untested.** The protocol code is exercised only through the
+  outbox fallback; it has never spoken to an actual mail server.

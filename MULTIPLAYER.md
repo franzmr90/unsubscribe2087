@@ -87,10 +87,46 @@ arriving, seeing each other in a district, hostility reaching the other player, 
 throwing you out of the party, the stand-in appearing so skills can find it, town being
 safe, chat, and that you cannot re-party with somebody you declared against.
 
-**Two checks are currently failing**, both on the last hop of player-to-player damage: the
-hit is sent and the server accepts it, but the test does not observe the defender's health
-falling. Everything up to and including the stand-in being a valid target passes. This is
-the known open item; see `PROGRESS.md`.
+```sh
+node server/test/capacity.js # the ceiling, with no browser
+```
+
+Five more: joining up to the ceiling, the refusal one over it, that the refusal says what
+to do, that somebody leaving makes room again, and that a socket with no account never gets
+past the handshake.
+
+All sixteen live checks and all five capacity checks pass.
+
+One of them found a real bug worth naming: `P.inv`, the brief invulnerability after walking
+through a door, only ticks down inside `update()` — which stops while a dialog or a sheet is
+open. A player sitting in a menu kept it indefinitely. The server's five-second grace is the
+authority for a fight between players, so a hit it has already allowed is no longer gated on
+the local invulnerability as well.
+
+## How many people can play at once
+
+**One process, one world, no sharding.** `MAX_PLAYERS` (default 40) is a hard ceiling: one
+over it gets a clear "this world is full, try again in a few minutes" and keeps playing
+alone, rather than joining a server that quietly gets slower and then stops.
+
+Comfortable at 20–30. Fine at 50. At around 100 a single process starts working hard, and
+past 200 the event loop saturates. Two things dominate, and both are now mitigated rather
+than solved:
+
+- **Movement fan-out.** Every player sends a position ten times a second, and each one used
+  to be answered by scanning everybody online. There is now a per-district index, so the
+  cost is the number of people in *your* district, not on the server.
+- **The roster broadcast** sends the whole world to the whole world. It is now coalesced to
+  at most four a second instead of firing on every doorway.
+
+**The real fix is Diablo II's: separate games with a cap.** D2 held eight to a game and ran
+thousands of games per server. Sharding by game id bounds every cost above to the size of a
+game rather than the size of the server, which is what actually lets this be posted
+publicly. It is the next stage, and it is not built.
+
+Also note there is **no clustering**: presence is in memory and saves are files on disk, so
+running several copies behind a load balancer would give you several worlds that cannot see
+each other, fighting over the same directory. Run one.
 
 ## Reporting a problem
 

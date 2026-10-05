@@ -82,6 +82,10 @@ function mpRecv(m) {
     if (m.toUid === (MP.me && MP.me.uid)) MP.hostile[m.fromUid] = 1;
     mpSay(m.from + ' has declared hostility against ' + m.to + '.');
     sfx('err');
+  } else if (m.t === 'full') {
+    MP.note = m.text;
+    MP.retry = 99;                 /* a full world is not a dropped connection; do not hammer it */
+    dlg('The world is full', m.text + '\n\nYou can keep playing on your own — your character is saved either way — and the Party tab will say when there is room.', [['Carry on alone']]);
   } else if (m.t === 'sys') {
     mpSay(m.text);
   } else if (m.t === 'xp') {
@@ -256,6 +260,7 @@ function mpSimWave(w) { if (mpOn() && MP.party && W && W.zi === MP.simZone) mpSe
 
 /* ---------- the panel ---------- */
 function mpPanel() {
+  if (MP.note && !mpOn()) return '<p>' + esc(MP.note) + '</p><p>Your character is saved and nothing is lost by waiting. Reload to try again.</p>';
   if (!mpOn()) return '<p>Not connected to a game. Parties need the account server — on a single copy of the page there is nobody else to ask.</p>';
   const me = MP.me || {}, party = MP.party;
   let h = '';

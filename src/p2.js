@@ -418,7 +418,7 @@ function kill(e){
     setTimeout(()=>{if(rep){toast(ET[e.k].n+' falls again.');return}if(b3)playScene(ENDING3.concat(CLOCK3),()=>{mode='play';actDone(3)});else playScene(b2?ENDING2:endingSlides(),()=>{mode='play';actDone(b2?2:1)})},1400)}}
 function gainXp(v,fromParty){if(P.shr&&P.shr.k==='xp')v*=1.5;v*=(G.hc?1.25:1)*(SEA.k==='over'?1.2:1);if(!fromParty)mpShareXp(v);
   if(G.lvl>=lvlCap()){paraXp(v);return}G.xp+=v;while(G.xp>=xpNext(G.lvl)&&G.lvl<lvlCap()){G.xp-=xpNext(G.lvl);G.lvl++;G.sp++;G.ap+=5;calc();G.hp=S.maxHp;G.en=S.maxEn;sfx('level');toast('Level '+G.lvl+'. One skill point and five attribute points.');W.fx.push({k:'ring',x:P.x,y:P.y,r:2.8,t:0,life:.7,col:'#ffe36b'});parts(P.x,P.y,24,['#ffe36b','#fff'],2,1.6)}}
-function hurt(d,slow,src){if(P.inv>0||(mode!=='play'&&!(src&&src.pvp))||G.god)return;d*=partyD();
+function hurt(d,slow,src){const pv=src&&src.pvp;if((P.inv>0&&!pv)||(mode!=='play'&&!pv)||G.god)return;d*=partyD();
   if(S.dodge&&Math.random()*100<S.dodge){float(P.x,P.y,'Dodge','#9fe0d0',1);sfx('whiff');return}
   d=typedIn(d,src);d*=S.taken||1;d*=100/(100+S.armor*(P.mech>0?2:1)*(P.guard>0?1.6:1)*(P.shr&&P.shr.k==='guard'?2:1));
   if(S.enc){const a=Math.min(G.en,d*S.enc);G.en-=a;d-=a}
