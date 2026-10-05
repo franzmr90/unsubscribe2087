@@ -3,3 +3,6 @@ node_modules/
 .DS_Store
 
 server/data/
+
+# the drag-and-drop bundle is generated, not source
+web/

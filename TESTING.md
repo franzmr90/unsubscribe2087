@@ -1,6 +1,7 @@
 # Playtesting Unsubscribe 2087
 
-Three ways to run it, depending on what you want to test.
+Three ways to run it, depending on what you want to test. To put it in front of other
+people, see `HOSTING.md`.
 
 | | What you get | What you don't |
 |---|---|---|
