@@ -4,8 +4,15 @@ Working log for the story + production-quality pass described in `PLAN.md`.
 See `git log` for the authoritative order of changes.
 
 **Published.** The Artifact at <https://claude.ai/artifact/5i4v5MTCPoKQjHbi14NCxg> carries
-this work (version 56). `./build.sh` writes both dist files; republishing after further
+this work (version 59). `./build.sh` writes both dist files; republishing after further
 edits just means publishing `dist/unsubscribe.html` to that same URL again.
+
+**What the Artifact can and cannot show you.** Everything single-player: the story pass,
+the renderer work, the market at Nonce's counter, and the Report button (which, with no
+server behind it, puts the report on your clipboard instead of filing it). It cannot show
+the lobby, games, parties, hostility, chat or voice — those need the account server, and the
+build deliberately stays inert without it. To see them, run `node server/server.js` and open
+two browsers on it.
 
 ---
 
@@ -274,3 +281,34 @@ instead. **15 tests**, including that an empty and a half-filled report are both
   money.
 - **SMTP against a real relay is untested.** The protocol code is exercised only through the
   outbox fallback; it has never spoken to an actual mail server.
+
+### Games, a lobby, difficulty and voice (the last stage)
+
+- **A game holds eight**, Diablo II's number. Anyone opens one from the lobby with a name, a
+  difficulty and an optional password. Join, play, leave, land back in the lobby; the last
+  player out closes it.
+- **Difficulty** — Normal, Nightmare, Hell — is chosen at creation and fixed, and every
+  extra person in the game adds half again to monster health and to what monsters are worth.
+  Eight people face monsters 4.5× tougher than one does, and are paid for it. It multiplies
+  into `partyH()`/`partyD()`, the multipliers the game already had for companion pressure,
+  so no other combat maths changed.
+- **Text goes to the whole game**, one channel on purpose, from a bar that collapses to a
+  SAY button carrying a dot when something has been said.
+- **Voice is whoever can see you** — a WebRTC mesh where loudness follows whether you are on
+  their screen and the pan follows which side of it. Per-player muting silences their typing
+  too. The server carries only the handshake, so talking costs it nothing, and that is why
+  eight is the right number for a mesh. Needs https.
+- **Scoping to a game also answered the capacity question**: the roster is eight entries and
+  movement is indexed per district, so per-player cost no longer grows with how busy the
+  server is.
+
+Tests: **39** account, **26** lobby, **24** live across two real browsers, **15** report,
+**5** capacity, **34/34** zones, acts walk clean.
+
+### Still not done
+
+- **No load test.** Several hundred people across several dozen games is a reasonable
+  expectation, not a measured one.
+- **No TURN server**, so a minority behind strict NATs will not connect to some voice peers.
+- **SMTP against a real relay is untested** — only the outbox fallback is exercised.
+- **Damage is still not authoritative**, by choice. See `MULTIPLAYER.md`.
