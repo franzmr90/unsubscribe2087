@@ -49,7 +49,8 @@ All optional; all environment variables.
 | `PORT` | `8087` | |
 | `PUBLIC_ORIGIN` | `http://localhost:$PORT` | **Set this in production.** It builds the links in emails, and an `https://` value is what turns on `Secure` cookies. |
 | `DATA_DIR` | `server/data` | |
-| `MAX_PLAYERS` | `40` | The ceiling on people in the world at once. One over it is refused with a clear message instead of joining a server that quietly degrades. See `MULTIPLAYER.md`. |
+| `TLS_KEY` `TLS_CERT` | none | Paths to a certificate and key. Set both and the server speaks https instead — needed to test voice from another device on your network, since the microphone is refused on a plain-http address that is not `localhost`. See `TESTING.md`. |
+| `MAX_PLAYERS` | `400` | The ceiling on people on the server at once. One over it is refused with a clear message instead of joining a server that quietly degrades. See `MULTIPLAYER.md`. |
 | `TRUST_PROXY` | off | `1` to read `X-Forwarded-For`. Only behind a proxy that sets it — otherwise clients forge their own rate-limit identity. |
 | `SMTP_HOST` `SMTP_PORT` `SMTP_USER` `SMTP_PASS` `SMTP_SECURE` | none | No host configured means mail is written to `data/outbox/` and logged instead, so recovery can still be walked through. `SMTP_SECURE=1` for implicit TLS on 465; otherwise STARTTLS. |
 | `MAIL_FROM` | `no-reply@localhost` | |
@@ -94,7 +95,7 @@ deletion, static serving and rate limiting. No network, no SMTP, no browser.
 
 ## Deploying it
 
-Any host that runs Node and gives you a disk. Put it behind a TLS terminator, set
+See `TESTING.md` to play it locally first. Any host that runs Node and gives you a disk. Put it behind a TLS terminator, set
 `PUBLIC_ORIGIN` to the https URL, set `TRUST_PROXY=1`, point SMTP at a relay, and run it
 under something that restarts it. There is no clustering: it holds state in memory and
 writes files, so run **one** process.

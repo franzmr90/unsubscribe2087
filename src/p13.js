@@ -506,6 +506,8 @@ function bugState() {
       quests: G ? G.q : null, sats: G ? G.sats : null, credits: G ? Math.round(G.credits) : null,
       adopt: G ? G.adopt : null, cpi: G ? +G.cpi.toFixed(3) : null,
       party: MP.party ? MP.party.members.length : 0, online: mpOn(),
+      game: MP.game ? MP.game.name : null, diff: MP.game ? MP.game.diff : null,
+      players: MP.game ? MP.game.n : 1, scale: MP.scale || null, voice: MP.voice,
       screen: innerWidth + 'x' + innerHeight, time: G ? Math.round(G.time) : null
     };
   } catch (e) { return { broken: String(e && e.message) }; }

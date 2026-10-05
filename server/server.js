@@ -7,6 +7,7 @@
    Artifact host. The game's own source is not modified for any of this. */
 'use strict';
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
@@ -343,7 +344,21 @@ function serveStatic(req, res, url) {
   });
 }
 
-const server = http.createServer(async (req, res) => {
+/* Optional TLS, for testing from another device on your network.
+   http://localhost counts as a secure context, so voice works when both browsers are on
+   this machine — but http://192.168.x.x does not, and the microphone will be refused.
+   Point TLS_KEY and TLS_CERT at a self-signed pair and that goes away. See TESTING.md. */
+function tlsOpts() {
+  if (!process.env.TLS_KEY || !process.env.TLS_CERT) return null;
+  try {
+    return { key: fs.readFileSync(process.env.TLS_KEY), cert: fs.readFileSync(process.env.TLS_CERT) };
+  } catch (e) {
+    console.error('[tls] could not read the certificate: ' + e.message);
+    return null;
+  }
+}
+
+const handler = async (req, res) => {
   const url = new URL(req.url, 'http://x');
   const p = url.pathname;
   try {
@@ -363,7 +378,10 @@ const server = http.createServer(async (req, res) => {
     console.error('[err]', p, e.message);
     bad(res, 500, 'Something broke on the server.');
   }
-});
+};
+
+const TLS = tlsOpts();
+const server = TLS ? https.createServer(TLS, handler) : http.createServer(handler);
 
 /* The realtime side shares the http server and the same session cookie; a socket that
    cannot name an account is refused at the handshake rather than after it. */
@@ -372,6 +390,8 @@ live.attach(server, req => auth(req));
 if (require.main === module) {
   server.listen(PORT, () => {
     console.log('Unsubscribe 2087 server on ' + ORIGIN);
+    if (TLS) console.log('TLS on. A self-signed certificate warns once per device; accept it and voice will work.');
+    else if (!SECURE) console.log('No TLS: voice works on localhost, but not from another device over the network. See TESTING.md.');
     if (!mail.enabled()) console.log('No SMTP configured: mail goes to server/data/outbox and the console.');
   });
 }
