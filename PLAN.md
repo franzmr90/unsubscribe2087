@@ -114,3 +114,82 @@ Taken from `canon/notes/the-money-thread.md`, because they are the right rules:
 4. Cut the sentence after the point.
 5. The best line goes to the opposition, unrefuted.
 6. Keep faith with what is built. This is improvement, not rewrite.
+
+---
+
+# PHASE 4 — A market that teaches (added after the first pass shipped)
+
+**The ask:** a live Bitcoin price chart whose rate responds to inflation, adoption and
+sentiment from how you treat the townspeople; buy and sell sats with a small spread and a
+market-maker fee; teach how markets work, funny and factual; plus other small value adds
+to the economy and the story.
+
+## What is there now
+
+`satRate() = 80 · cpi^1.05`. One deterministic line. No chart, no volatility, no demand
+side, no sentiment, a flat 10% spread applied only on the buy, and no fees. Selling a
+thousand sats gets the same price as selling one, which is the single most misleading
+thing a game can teach about markets.
+
+## The model (`src/p8.js` — "money conversations" is exactly where this belongs)
+
+**Fair value** `80 · cpi^1.05 · (1 + adoption/50)`. Two forces, both already in the game:
+the numerator debases (credits), the denominator doesn't (21M). Adoption is demand.
+
+**Price** mean-reverts to `fair · (1 + sentiment·0.55)` on a ~42s clock, with a random
+walk on top. **Volatility falls as adoption rises** — a deeper market is a calmer one,
+which is true and is also a reward the player can feel.
+
+**Sentiment** is news. It decays toward whatever the town thinks of you (`G.lean`), and
+it jumps on things you do: lighting a node, proving work, winning somebody over,
+liquidating a shitcoiner, an executive falling (+); selling in size, buying a shitcoin,
+borrowing from Float, a Unity campaign opening (−). A short **news ticker** under the
+chart names the last few, so the player can see a price move and read why.
+
+**Depth, spread, slippage, fees** — the four things a market actually charges you:
+- **Spread.** Nonce quotes a bid and an ask around the mid. It is his pay for being
+  willing to trade when nobody else will. Tightens with your standing and with adoption.
+- **Taker fee** (0.4%) for taking his quote right now.
+- **Maker rebate** (+0.2%) for posting a price and waiting — you did his job for him.
+  Implemented as real **limit orders** with escrow, filled on the market tick. The
+  trade-off is certainty vs price, which is the actual lesson.
+- **Slippage.** Order size against book depth. Selling everything at once walks the book
+  down and you eat the difference. Nonce will tell you he warned you.
+
+**Cost basis in two currencies.** Track credits paid *and* the stims those credits would
+have bought. Then show both: up 4,000% in credits, up 11% in stims. That contrast is the
+best lesson available in this game and it is already the thesis of the book.
+
+## The chart (`src/p4.js`, inline SVG in the Sats sheet)
+
+Form: **emphasis** — one series (price, Bitcoin orange `#f7931a`, 2px) plus one recessive
+reference line (fair value, `#6a6458` hairline), both direct-labelled. Hairline solid
+grid, endpoint dot, selective min/max labels, no number on every point. A toggle between
+**in credits** (climbs forever; the joke) and **in stims** (purchasing power; the truth) —
+two views, one axis each, never a dual axis.
+
+Palette validated with the skill's checker against the game's `#17131c` surface: CVD ΔE
+22.9, normal ΔE 28.8, contrast passes. Two checks fail by design and are kept
+deliberately: the de-emphasis gray is *meant* to read gray, and `#f7931a` sits above the
+dark-mode categorical band but is the game's established entity colour for everything
+bitcoin — "colour follows the entity" outranks the band, and with one series there is no
+adjacent pair to confuse.
+
+## Other value adds
+
+- **Mr. Float lends against your sats.** Borrow credits at 50% loan-to-value; if the
+  price falls far enough he takes the collateral. Leverage, margin call and liquidation,
+  and it is the novel's argument about debt cancelling consequence — except here it
+  doesn't. He is delighted either way.
+- **The Golden Bull's death spikes sentiment**, and the Bull Run's "number go up" crowd
+  finally has a number to go up.
+- **Feats** for the market: buying below fair value, filling a limit order, holding
+  through a drawdown, and getting liquidated.
+- **Teaching copy** in Nonce's own voice, new memos, and a "How a market works" block in
+  the Story tab's money section — mechanism dramatised, never lectured, per the rules.
+
+## Rules carried over
+
+Same six from `canon/notes/the-money-thread.md`. Dramatise, never explain. Nobody
+delivers a seminar. The opposition keeps its unrefuted argument: Float is right that a
+market maker is doing you a service, and nobody in this town answers him.
