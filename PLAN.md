@@ -193,3 +193,68 @@ adjacent pair to confuse.
 Same six from `canon/notes/the-money-thread.md`. Dramatise, never explain. Nobody
 delivers a seminar. The opposition keeps its unrefuted argument: Float is right that a
 market maker is doing you a service, and nobody in this town answers him.
+
+---
+
+# PHASE 5 — Accounts, and a path to playing together
+
+**The ask:** a small backend in this repo so people can sign in with a username and
+password, back up by email, change and recover a password, and so a small group can play
+online together. Sketch the multiplayer path. **No Bitcoin integration** — the sats stay
+a game currency, nothing touches a real chain or a real wallet.
+
+## Why the game is already shaped for this
+
+`src/p2.js` already has a complete cloud-save layer (`cloudSave`, `cloudLoad`,
+`cloudInit`, `CL`, `CLD`) written against `window.claude.use('db')` and `use('user')`:
+one document per hero slot, one per visited district, one shared lockbox. It degrades to
+localStorage when that is absent. So the server does not need a new save format — it
+needs to **be** that interface. That is the whole trick, and it keeps the Artifact build
+working unchanged.
+
+## Stage 5a — the account server (build it)
+
+`server/` in this repo. Node, no build step, few dependencies.
+
+- **Store:** SQLite (`better-sqlite3`), one file, no migrations service.
+- **Passwords:** scrypt from node's own `crypto` (no native build), per-user salt,
+  timing-safe compare. Never logged, never returned.
+- **Sessions:** opaque random token, httpOnly cookie, rolling expiry, revocable.
+- **Email:** pluggable transport. SMTP via `nodemailer` when configured; a console
+  transport otherwise so the whole flow is testable with no provider. Used for: verify
+  address, password reset, and **save backup** (a save code mailed to you on request).
+- **Recovery:** single-use, time-limited, hashed-at-rest reset tokens.
+- **Save API:** `GET/PUT /api/save/:slot`, `GET/PUT /api/zone/:slot/:zone`,
+  `GET/PUT /api/lockbox` — shaped to match what `cloudSave`/`cloudLoad` already send.
+- **Rate limits** on login, reset and signup. CSRF on cookie-auth mutations.
+- **Tests** that run without a network or a mail server.
+
+Then a small shim in the game: when the page is served by this server (not the
+Artifact), `cloudInit` finds a `window.__sv` adapter with the same `doc().get/set`
+shape and uses it. One new file, no change to the save logic.
+
+## Stage 5b — playing together (sketch, then foundation)
+
+Realtime action sync for a Diablo-like is a big piece of work and most of it is not
+worth building for "a small few". The honest ladder, cheapest first:
+
+1. **Shared world state, not shared frames.** Presence (who is online), the town square
+   showing other players' heroes, a shared chat, and the lockbox already being
+   account-wide. No combat sync. Cheap, and it is most of what "playing together" feels
+   like in town.
+2. **Asynchronous co-op.** Bounties and quests that several accounts contribute to; the
+   adoption number and Unity's campaigns as a *shared world state* on the server, so a
+   small group pushes the same meter. This fits the game's existing design better than
+   anything else on this list and needs no realtime loop.
+3. **Party play in districts** — one host authoritative, WebSocket, 15–20 Hz state
+   snapshots of entities and players, client-side prediction for your own hero only.
+   This is the expensive one; it needs the game loop refactored so `update()` can run
+   headless and be fed inputs. Worth sketching, not worth building blind.
+
+Stage 5b builds (1) and the server side of (2), and documents (3) with the specific
+refactor it would need.
+
+## Not in scope, explicitly
+
+No Bitcoin integration of any kind: no wallet, no Lightning, no on-chain anything. The
+in-game satoshi stays a game token. Anything that would make it otherwise is out.
