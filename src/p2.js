@@ -372,8 +372,8 @@ function pdmg(m,e){
   if(G.cls==='scrapper'&&sl(8)){let c=0;for(const o of W.ents)if(dist(o,P)<4&&c<5)c++;d*=1+.04*sl(8)*c}
   if(P.shr&&P.shr.k==='might')d*=1.5;
   if(S.sp.exit&&e&&(e.champ||isBoss(e.k)))d*=1.5;
-  if(S.sp.deadline&&P.movedT>0)d*=1.25;if(sl(13))d*=1+.03*sl(13);if(P.fm&&P.fm.t>0)d*=P.fm.m;if(S.sp.hashrate)d*=1+.01*Math.min(40,P.streak);if(S.sp.quorum)d*=1+.05*Math.min(6,tanks().length+W.allies.filter(a=>a.k==='turret').length);
-  let c=Math.random()*100<S.crit;if(c)d*=S.critM;
+  if(S.sp.deadline&&P.movedT>0)d*=1.25;if(S.sp.tenmin&&e&&!e.hits)d*=1.6;if(sl(13))d*=1+.03*sl(13);if(P.fm&&P.fm.t>0)d*=P.fm.m;if(S.sp.hashrate)d*=1+.01*Math.min(40,P.streak);if(S.sp.quorum)d*=1+.05*Math.min(6,tanks().length+W.allies.filter(a=>a.k==='turret').length);
+  let c=P.e82>0||Math.random()*100<S.crit;if(c)d*=S.critM;
   if(S.sp.severance&&Math.random()<.15){d*=3;c=true}
   return[d,c]}
 function dmgEnemy(e,d,crit){if(e.hp<=0)return;e.hits=(e.hits||0)+1;d/=partyH();if(e.mark>0)d*=1.3;if(e.mods.shield)d*=.5;if(e.ward>0)d*=.6;e.hp-=d;e.flash=.12;wake(e);if(crit){sfx('crit');hitStop=.04}

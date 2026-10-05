@@ -4,7 +4,7 @@ const forkOf=i=>FORKS[(G.fork||{})[i]]||{};
 function forkAfter(i,L){const f=forkOf(i),k=(G.fork||{})[i];if(k==='siphon')heal(S.maxHp*.04);
   if(k==='burn'){W.pat=W.pat||[];W.pat.push({x:P.x,y:P.y,t:4,c:0})}
   if(k==='echo'&&Math.random()<.25)setTimeout(()=>{if(mode==='play'&&G.hp>0){float(P.x,P.y,'Echo','#59e0e6',1);SKF[G.cls][i](L,syn(i))}},350)}
-function dodge(){if(mode!=='play'||P.dash)return;const g=P.dg=P.dg||{n:2,t:0};if(g.n<1){sfx('err');return}g.n--;unstealth&&0;dash(12,.2,0);sfx('dash')}
+function dodge(){if(mode!=='play'||P.dash)return;const g=P.dg=P.dg||{n:2,t:0};if(g.n<1){sfx('err');return}g.n--;unstealth&&0;dash(12,.2,0);sfx('dash');if(S.sp.e82)P.e82=3}
 /* the ledger web */
 const WARMS=[['Might','dmg',3,10,'Leverage',{dmg:35,hpP:-12}],['Flesh','hp',12,40,'Cold Storage',{hpP:22,dmg:-12}],['Plate','armorP',6,20,'Air Gap',{armorP:50,mspd:-8}],['Nerve','crit',1,3,'Conviction',{crit:10,armorP:-25}],
  ['Current','en',6,20,'Lightning Channel',{cdr:.12,en:-20}],['Stride','mspd',1.5,4,'Velocity',{aspd:18,hpP:-10}],['Fortune','mf',4,14,'Stacker',{mf:40,dmg:-10}],['Thirst','regenH',.5,2,'Full Reserve',{leech:3,en:-15}]];
@@ -68,6 +68,7 @@ function simChoice(n){const all=[['+15% damage',{dmg:15}],['+12% life',{hpP:12}]
   dlg('Wave '+(n-1)+' cleared','Take one. It lasts until you unplug.',all.map(c=>[c[0],()=>{for(const k in c[1])SB[k]=(SB[k]||0)+c[1][k];calc();heal(S.maxHp*.25);sfx('buff')}]))}
 function p7Tick(dt){uniTick(dt);if(OPT.autoStim&&G.hp>0&&G.hp<S.maxHp*.3&&G.stims>0){P.asT=(P.asT||0)-dt;if(P.asT<=0){P.asT=1.5;stim()}}upkeepTick(dt);shillTick(dt);storyTick(dt);
   const g=P.dg=P.dg||{n:2,t:0};if(g.n<2){g.t+=dt;if(g.t>=3.5){g.n++;g.t=0}}
+  if(P.e82>0)P.e82-=dt;
   if(P.fm&&P.fm.t>0)P.fm.t-=dt;
   if(G.tpT>0){G.tpT-=dt;if(G.tpT<=0){calc();toast('The loan of strength runs out.')}}
   if(G.debt>0)G.debt*=Math.pow(loanRate(),dt);

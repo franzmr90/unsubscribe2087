@@ -129,6 +129,36 @@ const STORYDEX=[
   {k:'p9',n:'The Old Drive',w:()=>G.act5?1:0,d:'A node on a shelf in a garage under Stillwater that has run since before anyone alive was born, next to a coffee can and an alarm clock in a box. It has been watching for seventy-nine years. It has intervened exactly once, and you are standing in the result.',l:'Reach Act V.'}]}];
 function sdxUnseen(){if(typeof G==='undefined'||!G)return 0;const s=G.sdx||{};let n=0;for(const g of STORYDEX)for(const e of g.e){let ok=0;try{ok=e.w()}catch(_){}if(ok&&!s[e.k])n++}return n}
 function sdxSeen(){G.sdx=G.sdx||{};for(const g of STORYDEX)for(const e of g.e){let ok=0;try{ok=e.w()}catch(_){}if(ok)G.sdx[e.k]=1}}
+/* ================= what the last two acts leave you =================
+   Acts IV and V had no uniques at all: the highest in the game was item level 34,
+   and these districts run from 45 to 72. Every one of these carries a piece of the
+   story that the fight itself cannot stop to tell you. */
+UNI.push(
+ {id:'elevenpages',n:'The Eleven Pages',slot:'amulet',il:47,base:'Sigil Core',mods:{skills:[2,2],en:[45,65],regen:[3,4]},sp:null,
+  fl:'Review, or I Agree. She had been honest for once, and almost nobody chose Review.'},
+ {id:'outwhere',n:'Out Where',slot:'boots',il:50,base:'Mag Greaves',mods:{mspd:[22,25],hp:[80,115],armorP:[70,100]},sp:null,
+  fl:'He has not stood up since spring. Ask him to go out and he asks you, kindly: out where?'},
+ {id:'hours',n:'Nurse’s Hours',slot:'gloves',il:53,base:'Servo Fists',mods:{aspd:[22,30],regenH:[8,11],hp:[70,100]},sp:null,
+  fl:'Three years in a front room, and the only thing that ever noticed was a machine.'},
+ {id:'fourthousand',n:'Four Thousand Two Hundred and Eleven',slot:'helm',il:56,base:'Praetor Visor',mods:{mf:[55,75],armorP:[100,140],crit:[8,12]},sp:null,
+  fl:'A list of everyone it went badly for. She kept it, and showed nobody, until somebody asked.'},
+ {id:'e82',n:'Eighty-Two Minutes',slot:'ring',il:58,base:'Null Ring',mods:{crit:[12,16],dmg:[40,55],skills:[1,1]},
+  sp:'For 3 seconds after you dodge, every blow you land is a deadly strike',
+  fl:'The only gap in a perfect record of a man. She thought about it for twenty years.'},
+ {id:'kitchen',n:'The Kitchen Table',slot:'armor',il:57,base:'Seraph Plate',bossOnly:1,mods:{hp:[140,190],armorP:[120,170],skills:[1,1]},sp:null,
+  fl:'She had been waiting fifty-two years for the conversation, and she made coffee she could not drink.'},
+ {id:'tenmin',n:'Ten Minutes',slot:'weapon',il:62,base:'Void Razor',mods:{dmg:[90,130],aspd:[20,28],crit:[8,12]},
+  sp:'+60% damage to any machine you have not hit yet',
+  fl:'Every ten minutes, somewhere past the fence, a block is found. They have been trying to stop that for forty years.'},
+ {id:'notyourkeys',n:'Not Your Keys',slot:'belt',il:65,base:'Orbit Girdle',mods:{hp:[110,150],armorP:[90,130],r_x:[40,55]},sp:null,
+  fl:'Not your keys, not your coins. Not your visor, not your eyes.'},
+ {id:'uncertain',n:'Uncertain Knowledge',slot:'amulet',il:69,base:'Cloud Core',mods:{skills:[2,2],hp:[90,130],crit:[10,14]},sp:null,
+  fl:'How to reason when you do not know. It was kept back out of fear, which is also a way of not knowing.'},
+ {id:'twentyone',n:'Twenty-One Million',slot:'ring',il:70,base:'Halo Band',mods:{mf:[70,95],gold:[90,130],hp:[70,100]},sp:null,
+  fl:'Nobody can vote for twenty-two. Do you know how rare it is for a rule to mean it?'},
+ {id:'theroom',n:'The Room',slot:'weapon',il:72,base:'Titan Maul',bossOnly:1,mods:{dmg:[140,190],crit:[12,16],leech:[6,9]},sp:null,
+  fl:'For a century people said there was no room — nobody deciding, only everybody acting sensibly. There is a room. It is very plain.'});
+for(const u of UNI)UNIK[u.id]=u;
 function bkOf(k){return(G.bk||{})[k]||0}
 /* ---------- boss scripts ---------- */
 function ringShot(e,n,spd,col,m){const o=Math.random()*6.283;for(let i=0;i<n;i++){const a=o+i/n*6.283;W.projs.push({x:e.x,y:e.y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:2.4,foe:true,dmg:e.dmg*(m||.7),src:e,col})}}
@@ -215,8 +245,8 @@ const END_DOUBT=[
  {art:'title',title:'THE END',text:'Unsubscribe 2087'}];
 /* ---------- kills of the new bosses ---------- */
 function bossKill2(e){const k=e.k;G.bk=G.bk||{};const n=G.bk[k]=(G.bk[k]||0)+1;dropFrom(k,e.x,e.y,W.ml,2,n===1);addDrop({cr:(3+W.ml*2)*40*Math.pow(G.cpi,.9)},e.x,e.y);
-  if(k==='boss4'){G.q.q20=3;G.unlocked=Math.max(G.unlocked,28);if(n===1)addAdopt(5,'she stops choosing, and people look up')}
-  else{G.q.q25=3;if(n===1)addAdopt(5,'PROVIDENCE is quiet')}
+  if(k==='boss4'){G.q.q20=3;G.unlocked=Math.max(G.unlocked,28);if(n===1)addAdopt(5,'she stops choosing, and people look up');if(n===1||Math.random()<.3)addDrop({it:mkFixed(UNIK.kitchen,W.ml,4)},e.x,e.y)}
+  else{G.q.q25=3;if(n===1)addAdopt(5,'PROVIDENCE is quiet');if(n===1||Math.random()<.3)addDrop({it:mkFixed(UNIK.theroom,W.ml,4)},e.x,e.y)}
   G.maxTier=Math.max(G.maxTier,G.tier+1);save(true);P.inv=4;
   setTimeout(()=>{if(n>1){if(k==='boss5')fateScene(()=>{});else toast(ET[k].n+' stops again.');return}
     if(k==='boss4')playScene(ENDING4,()=>{mode='play';actDone(4)});else playScene(ENDING5,()=>{mode='play';finalChoice()})},1400)}

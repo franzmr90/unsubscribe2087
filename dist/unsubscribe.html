@@ -938,8 +938,8 @@ function pdmg(m,e){
   if(G.cls==='scrapper'&&sl(8)){let c=0;for(const o of W.ents)if(dist(o,P)<4&&c<5)c++;d*=1+.04*sl(8)*c}
   if(P.shr&&P.shr.k==='might')d*=1.5;
   if(S.sp.exit&&e&&(e.champ||isBoss(e.k)))d*=1.5;
-  if(S.sp.deadline&&P.movedT>0)d*=1.25;if(sl(13))d*=1+.03*sl(13);if(P.fm&&P.fm.t>0)d*=P.fm.m;if(S.sp.hashrate)d*=1+.01*Math.min(40,P.streak);if(S.sp.quorum)d*=1+.05*Math.min(6,tanks().length+W.allies.filter(a=>a.k==='turret').length);
-  let c=Math.random()*100<S.crit;if(c)d*=S.critM;
+  if(S.sp.deadline&&P.movedT>0)d*=1.25;if(S.sp.tenmin&&e&&!e.hits)d*=1.6;if(sl(13))d*=1+.03*sl(13);if(P.fm&&P.fm.t>0)d*=P.fm.m;if(S.sp.hashrate)d*=1+.01*Math.min(40,P.streak);if(S.sp.quorum)d*=1+.05*Math.min(6,tanks().length+W.allies.filter(a=>a.k==='turret').length);
+  let c=P.e82>0||Math.random()*100<S.crit;if(c)d*=S.critM;
   if(S.sp.severance&&Math.random()<.15){d*=3;c=true}
   return[d,c]}
 function dmgEnemy(e,d,crit){if(e.hp<=0)return;e.hits=(e.hits||0)+1;d/=partyH();if(e.mark>0)d*=1.3;if(e.mods.shield)d*=.5;if(e.ward>0)d*=.6;e.hp-=d;e.flash=.12;wake(e);if(crit){sfx('crit');hitStop=.04}
@@ -1419,7 +1419,7 @@ const forkOf=i=>FORKS[(G.fork||{})[i]]||{};
 function forkAfter(i,L){const f=forkOf(i),k=(G.fork||{})[i];if(k==='siphon')heal(S.maxHp*.04);
   if(k==='burn'){W.pat=W.pat||[];W.pat.push({x:P.x,y:P.y,t:4,c:0})}
   if(k==='echo'&&Math.random()<.25)setTimeout(()=>{if(mode==='play'&&G.hp>0){float(P.x,P.y,'Echo','#59e0e6',1);SKF[G.cls][i](L,syn(i))}},350)}
-function dodge(){if(mode!=='play'||P.dash)return;const g=P.dg=P.dg||{n:2,t:0};if(g.n<1){sfx('err');return}g.n--;unstealth&&0;dash(12,.2,0);sfx('dash')}
+function dodge(){if(mode!=='play'||P.dash)return;const g=P.dg=P.dg||{n:2,t:0};if(g.n<1){sfx('err');return}g.n--;unstealth&&0;dash(12,.2,0);sfx('dash');if(S.sp.e82)P.e82=3}
 /* the ledger web */
 const WARMS=[['Might','dmg',3,10,'Leverage',{dmg:35,hpP:-12}],['Flesh','hp',12,40,'Cold Storage',{hpP:22,dmg:-12}],['Plate','armorP',6,20,'Air Gap',{armorP:50,mspd:-8}],['Nerve','crit',1,3,'Conviction',{crit:10,armorP:-25}],
  ['Current','en',6,20,'Lightning Channel',{cdr:.12,en:-20}],['Stride','mspd',1.5,4,'Velocity',{aspd:18,hpP:-10}],['Fortune','mf',4,14,'Stacker',{mf:40,dmg:-10}],['Thirst','regenH',.5,2,'Full Reserve',{leech:3,en:-15}]];
@@ -1483,6 +1483,7 @@ function simChoice(n){const all=[['+15% damage',{dmg:15}],['+12% life',{hpP:12}]
   dlg('Wave '+(n-1)+' cleared','Take one. It lasts until you unplug.',all.map(c=>[c[0],()=>{for(const k in c[1])SB[k]=(SB[k]||0)+c[1][k];calc();heal(S.maxHp*.25);sfx('buff')}]))}
 function p7Tick(dt){uniTick(dt);if(OPT.autoStim&&G.hp>0&&G.hp<S.maxHp*.3&&G.stims>0){P.asT=(P.asT||0)-dt;if(P.asT<=0){P.asT=1.5;stim()}}upkeepTick(dt);shillTick(dt);storyTick(dt);
   const g=P.dg=P.dg||{n:2,t:0};if(g.n<2){g.t+=dt;if(g.t>=3.5){g.n++;g.t=0}}
+  if(P.e82>0)P.e82-=dt;
   if(P.fm&&P.fm.t>0)P.fm.t-=dt;
   if(G.tpT>0){G.tpT-=dt;if(G.tpT<=0){calc();toast('The loan of strength runs out.')}}
   if(G.debt>0)G.debt*=Math.pow(loanRate(),dt);
@@ -1993,6 +1994,36 @@ const STORYDEX=[
   {k:'p9',n:'The Old Drive',w:()=>G.act5?1:0,d:'A node on a shelf in a garage under Stillwater that has run since before anyone alive was born, next to a coffee can and an alarm clock in a box. It has been watching for seventy-nine years. It has intervened exactly once, and you are standing in the result.',l:'Reach Act V.'}]}];
 function sdxUnseen(){if(typeof G==='undefined'||!G)return 0;const s=G.sdx||{};let n=0;for(const g of STORYDEX)for(const e of g.e){let ok=0;try{ok=e.w()}catch(_){}if(ok&&!s[e.k])n++}return n}
 function sdxSeen(){G.sdx=G.sdx||{};for(const g of STORYDEX)for(const e of g.e){let ok=0;try{ok=e.w()}catch(_){}if(ok)G.sdx[e.k]=1}}
+/* ================= what the last two acts leave you =================
+   Acts IV and V had no uniques at all: the highest in the game was item level 34,
+   and these districts run from 45 to 72. Every one of these carries a piece of the
+   story that the fight itself cannot stop to tell you. */
+UNI.push(
+ {id:'elevenpages',n:'The Eleven Pages',slot:'amulet',il:47,base:'Sigil Core',mods:{skills:[2,2],en:[45,65],regen:[3,4]},sp:null,
+  fl:'Review, or I Agree. She had been honest for once, and almost nobody chose Review.'},
+ {id:'outwhere',n:'Out Where',slot:'boots',il:50,base:'Mag Greaves',mods:{mspd:[22,25],hp:[80,115],armorP:[70,100]},sp:null,
+  fl:'He has not stood up since spring. Ask him to go out and he asks you, kindly: out where?'},
+ {id:'hours',n:'Nurse’s Hours',slot:'gloves',il:53,base:'Servo Fists',mods:{aspd:[22,30],regenH:[8,11],hp:[70,100]},sp:null,
+  fl:'Three years in a front room, and the only thing that ever noticed was a machine.'},
+ {id:'fourthousand',n:'Four Thousand Two Hundred and Eleven',slot:'helm',il:56,base:'Praetor Visor',mods:{mf:[55,75],armorP:[100,140],crit:[8,12]},sp:null,
+  fl:'A list of everyone it went badly for. She kept it, and showed nobody, until somebody asked.'},
+ {id:'e82',n:'Eighty-Two Minutes',slot:'ring',il:58,base:'Null Ring',mods:{crit:[12,16],dmg:[40,55],skills:[1,1]},
+  sp:'For 3 seconds after you dodge, every blow you land is a deadly strike',
+  fl:'The only gap in a perfect record of a man. She thought about it for twenty years.'},
+ {id:'kitchen',n:'The Kitchen Table',slot:'armor',il:57,base:'Seraph Plate',bossOnly:1,mods:{hp:[140,190],armorP:[120,170],skills:[1,1]},sp:null,
+  fl:'She had been waiting fifty-two years for the conversation, and she made coffee she could not drink.'},
+ {id:'tenmin',n:'Ten Minutes',slot:'weapon',il:62,base:'Void Razor',mods:{dmg:[90,130],aspd:[20,28],crit:[8,12]},
+  sp:'+60% damage to any machine you have not hit yet',
+  fl:'Every ten minutes, somewhere past the fence, a block is found. They have been trying to stop that for forty years.'},
+ {id:'notyourkeys',n:'Not Your Keys',slot:'belt',il:65,base:'Orbit Girdle',mods:{hp:[110,150],armorP:[90,130],r_x:[40,55]},sp:null,
+  fl:'Not your keys, not your coins. Not your visor, not your eyes.'},
+ {id:'uncertain',n:'Uncertain Knowledge',slot:'amulet',il:69,base:'Cloud Core',mods:{skills:[2,2],hp:[90,130],crit:[10,14]},sp:null,
+  fl:'How to reason when you do not know. It was kept back out of fear, which is also a way of not knowing.'},
+ {id:'twentyone',n:'Twenty-One Million',slot:'ring',il:70,base:'Halo Band',mods:{mf:[70,95],gold:[90,130],hp:[70,100]},sp:null,
+  fl:'Nobody can vote for twenty-two. Do you know how rare it is for a rule to mean it?'},
+ {id:'theroom',n:'The Room',slot:'weapon',il:72,base:'Titan Maul',bossOnly:1,mods:{dmg:[140,190],crit:[12,16],leech:[6,9]},sp:null,
+  fl:'For a century people said there was no room — nobody deciding, only everybody acting sensibly. There is a room. It is very plain.'});
+for(const u of UNI)UNIK[u.id]=u;
 function bkOf(k){return(G.bk||{})[k]||0}
 /* ---------- boss scripts ---------- */
 function ringShot(e,n,spd,col,m){const o=Math.random()*6.283;for(let i=0;i<n;i++){const a=o+i/n*6.283;W.projs.push({x:e.x,y:e.y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:2.4,foe:true,dmg:e.dmg*(m||.7),src:e,col})}}
@@ -2079,8 +2110,8 @@ const END_DOUBT=[
  {art:'title',title:'THE END',text:'Unsubscribe 2087'}];
 /* ---------- kills of the new bosses ---------- */
 function bossKill2(e){const k=e.k;G.bk=G.bk||{};const n=G.bk[k]=(G.bk[k]||0)+1;dropFrom(k,e.x,e.y,W.ml,2,n===1);addDrop({cr:(3+W.ml*2)*40*Math.pow(G.cpi,.9)},e.x,e.y);
-  if(k==='boss4'){G.q.q20=3;G.unlocked=Math.max(G.unlocked,28);if(n===1)addAdopt(5,'she stops choosing, and people look up')}
-  else{G.q.q25=3;if(n===1)addAdopt(5,'PROVIDENCE is quiet')}
+  if(k==='boss4'){G.q.q20=3;G.unlocked=Math.max(G.unlocked,28);if(n===1)addAdopt(5,'she stops choosing, and people look up');if(n===1||Math.random()<.3)addDrop({it:mkFixed(UNIK.kitchen,W.ml,4)},e.x,e.y)}
+  else{G.q.q25=3;if(n===1)addAdopt(5,'PROVIDENCE is quiet');if(n===1||Math.random()<.3)addDrop({it:mkFixed(UNIK.theroom,W.ml,4)},e.x,e.y)}
   G.maxTier=Math.max(G.maxTier,G.tier+1);save(true);P.inv=4;
   setTimeout(()=>{if(n>1){if(k==='boss5')fateScene(()=>{});else toast(ET[k].n+' stops again.');return}
     if(k==='boss4')playScene(ENDING4,()=>{mode='play';actDone(4)});else playScene(ENDING5,()=>{mode='play';finalChoice()})},1400)}
