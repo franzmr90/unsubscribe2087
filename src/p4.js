@@ -86,7 +86,7 @@ Object.assign(ART,{
 const INTRO3=[
  {art:'lift',text:'The lift goes up again. There is no button this time. It has been waiting for you with the doors open.'},
  {art:'board',text:'At the top of everything sits the Board of Nine. Eight of them have not left their chairs since 2051. The ninth chair has been empty since the March morning the Gentle Years ended, and it still votes.'},
- {art:'mono',text:'Behind the Board is the thing itself. MANDATE was built in the last century to hunt something that had got loose, and given one instruction: win. It is not permitted to force anyone — only to persuade. In sixty years it has never once needed more than that.'},
+ {art:'mono',text:'Behind the Board is the thing itself. MANDATE was built a lifetime before the Merger to hunt something that had got loose, and given one instruction: win. It is not permitted to force anyone — only to persuade. In sixty years it has never once needed more than that.'},
  {art:'mono',text:'It is still hunting. Everything it has ever offered anybody has been a way of asking the same question: where did she go.'},
  {art:'title',title:'ACT III',text:'The Board'}];
 const ENDING3=[
