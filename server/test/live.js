@@ -42,6 +42,8 @@ async function until(page, fn, arg, ms) {
     }).then(r => r.json()), name);
     await p.goto(base + '/');                 /* reload so the shim picks up the session */
     await p.waitForTimeout(900);
+    await p.evaluate(() => __g.skipDisc());
+    await p.waitForTimeout(260);
     await p.click('[data-cls=scrapper]');
     await p.waitForTimeout(900);
     for (let i = 0; i < 14; i++) {

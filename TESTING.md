@@ -125,6 +125,7 @@ node server/test/games.js      # 26 — the lobby and the life of a game
 node server/test/live.js       # 24 — two real browsers: parties, hostility, damage
 node server/test/bug.js        # 15 — the report button
 node server/test/capacity.js   #  5 — the player ceiling
+node server/test/disclaimer.js # 11 — the card at the front
 ```
 
 All of them pass on the current build. The browser ones need Playwright with Chromium; the
@@ -134,6 +135,9 @@ rest need nothing at all.
 
 ## If something breaks while you are testing
 
+- **A script that drives the page cannot click anything.** The disclaimer card holds the
+  screen for about seven seconds. Anything automating the page calls `__g.skipDisc()` first;
+  all the tests and tools in this repo already do.
 - **The page is blank or the district does not draw.** Entering a district opens a dialog,
   and the game does not advance while one is up. Dismiss it and move before deciding
   anything is broken — this has fooled me more than once.

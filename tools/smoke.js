@@ -10,6 +10,7 @@ const errs=[];p.on('pageerror',e=>errs.push(e.message+' @ '+(e.stack||'').split(
 const root=path.join(__dirname,'..');
 await p.setContent('<!doctype html><html><head><meta charset=utf-8></head><body style="margin:0">'+fs.readFileSync(path.join(root,'dist/unsubscribe.html'),'utf8')+'</body></html>');
 await p.waitForTimeout(600);
+await p.evaluate(()=>__g.skipDisc());await p.waitForTimeout(260);
 await p.click('[data-cls=scrapper]');await p.waitForTimeout(800);
 const sk=async(n=14)=>{for(let i=0;i<n;i++){await p.evaluate(()=>{const s=document.getElementById('scene');if(s&&!s.hidden)document.getElementById('scSkip').click();const d=document.getElementById('dlg');if(d&&!d.hidden){const x=d.querySelector('#dBtns button:not([disabled])');x&&x.click()}});await p.waitForTimeout(130)}};
 await sk(12);

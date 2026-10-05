@@ -22,6 +22,8 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   await p.goto(base + '/');
   await p.waitForTimeout(800);
   await p.evaluate(() => { const a = document.getElementById('acc'); if (a) a.className = 'off'; });
+  await p.evaluate(() => __g.skipDisc());
+  await p.waitForTimeout(260);
   await p.click('[data-cls=scrapper]');
   await p.waitForTimeout(800);
   for (let i = 0; i < 14; i++) {

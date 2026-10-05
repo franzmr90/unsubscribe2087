@@ -6,7 +6,7 @@ const p=await b.newPage({viewport:{width:390,height:780}});const errs=[];p.on('p
 const S=process.argv[2]||require('path').join(require('os').tmpdir(),'smoke-acts');require('fs').mkdirSync(S,{recursive:true});
 const GAME=require('path').join(__dirname,'..','dist','unsubscribe.html');
 await p.setContent('<!doctype html><html><head><meta charset=utf-8></head><body style="margin:0">'+require('fs').readFileSync(GAME,'utf8')+'</body></html>');
-await p.waitForTimeout(700);await p.click('[data-cls=hacker]');await p.waitForTimeout(900);
+await p.waitForTimeout(700);await p.evaluate(()=>__g.skipDisc());await p.waitForTimeout(260);await p.click('[data-cls=hacker]');await p.waitForTimeout(900);
 const sk=async(n=14)=>{for(let i=0;i<n;i++){await p.evaluate(()=>{if(!document.getElementById('scene').hidden)document.getElementById('scSkip').click();const d=document.getElementById('dlg');if(!d.hidden){const x=d.querySelector('#dBtns button:not([disabled])');x&&x.click()}});await p.waitForTimeout(120)}};
 const st=()=>p.evaluate(()=>{const g=__g;return g.mode+' | zone '+(g.W?g.W.zi+' '+g.W.z.n:'-')+' | '+JSON.stringify(g.storyStep())});
 console.log('zones',await p.evaluate(()=>__g.ZONES.length+' '+__g.ZONES[21].n+' / '+__g.ZONES[27].n+' / '+__g.ZONES[33].n));

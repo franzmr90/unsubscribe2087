@@ -172,6 +172,15 @@ th{font:700 10px var(--display);letter-spacing:.06em;color:var(--dim);text-trans
 #chatbar button.pip::after{content:'';display:inline-block;width:5px;height:5px;border-radius:3px;background:#59e0e6;margin-left:5px;vertical-align:middle}
 #pmw{position:fixed;inset:0;z-index:7100;background:rgba(6,5,12,.93);display:flex;align-items:center;justify-content:center;padding:16px}
 #pmw[hidden]{display:none}
+#disc{position:fixed;inset:0;z-index:9500;background:#000;display:flex;align-items:center;justify-content:center;padding:26px;opacity:0;transition:opacity .5s ease}
+#disc[hidden]{display:none}
+#disc.in{opacity:1}
+#discIn{max-width:430px;text-align:center}
+#discIn p{font:700 12.5px/1.7 Cinzel,Georgia,serif;letter-spacing:.09em;text-transform:uppercase;color:#b4ab97;margin:0 0 16px;text-wrap:balance}
+#discIn p.pun{color:#c8a55a}
+#discIn p.warn{color:#b3261e;margin-bottom:22px}
+#discIn small{font:600 9.5px Cinzel,Georgia,serif;letter-spacing:.22em;text-transform:uppercase;color:#4b4557}
+@media (max-height:620px){#discIn p{font-size:11px;line-height:1.55;margin-bottom:11px}}
 #bugw{position:fixed;inset:0;z-index:7000;background:rgba(6,5,12,.93);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
 #bugw[hidden]{display:none}
 .bugp{width:100%;max-width:420px;background:linear-gradient(180deg,#171426,#0f0d18);border:1px solid #3a3350;border-radius:10px;padding:18px}
@@ -275,4 +284,11 @@ textarea{width:100%;height:70px;background:#050409;color:var(--ink);border:1px s
   <div id="scene" hidden><canvas id="sc"></canvas><div id="scBox"><div id="scTitle"></div><div id="scText"></div><div class="row"><button class="ghost" id="scSkip">Skip</button><button class="big" id="scNext">Next</button></div></div></div>
   <div id="death" hidden><div class="wrap"><div class="kicker">Notice of closure</div><h1>You have died</h1><p id="deathP"></p><div class="stats" id="deathS"></div><p style="font-size:14px;color:var(--dim)">The machines have not moved. A portal back to the district will wait in the square.</p><button class="big" id="bRise">Rise in Stillwater</button></div></div>
   <div id="dlg" hidden><div class="card"><h2 id="dT"></h2><p id="dP"></p><div id="dBtns"></div></div></div>
+  <div id="disc" hidden><div id="discIn">
+    <p>All persons, corporations and machines depicted here are fictional. Any resemblance to real ones &mdash; living, dead, or publicly traded &mdash; is coincidental.</p>
+    <p>Any resemblance to a certain isometric game about clicking on demons is admiration, not affiliation.</p>
+    <p class="pun">The economics are accurate.</p>
+    <p class="warn">If you do not agree with any of the above, please stop playing immediately.</p>
+    <small id="discSkip">Tap anywhere to continue</small>
+  </div></div>
 </div>
