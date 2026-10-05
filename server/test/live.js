@@ -59,9 +59,26 @@ async function until(page, fn, arg, ms) {
   const A = await player('Ines');
   const B = await player('Vale');
 
-  /* ---- presence ---- */
-  const connected = await until(A, () => __mp.on && __mp.roster.length >= 2 ? __mp.roster.length : 0);
+  /* ---- the lobby, then a game ---- */
+  const sawLobby = await until(A, () => __mp.on ? 1 : 0);
+  ok('connected and in the lobby', !!sawLobby);
+
+  await A.evaluate(() => __mp.send('game.create', { name: 'Test Game', diff: 'normal' }));
+  const made = await until(A, () => __mp.MP.game ? __mp.MP.game.id : null);
+  ok('a game can be made', !!made, String(made));
+
+  await B.evaluate(id => __mp.send('game.join', { id }), made);
+  const joined = await until(B, () => __mp.MP.game ? 1 : 0);
+  ok('and joined', !!joined);
+
+  /* ---- presence, inside that game ---- */
+  const connected = await until(A, () => __mp.roster.length >= 2 ? __mp.roster.length : 0);
   ok('both players appear in the roster', connected >= 2, 'roster=' + connected);
+
+  const scaled = await until(A, () => __mp.scale && __mp.scale.players === 2 ? __mp.scale.hp : 0);
+  ok('two players make monsters tougher', scaled === 1.5, 'hp x' + scaled);
+  const hpMul = await A.evaluate(() => __mp.mpHp());
+  ok('the scaling reaches the combat maths', hpMul === 1.5, 'mpHp=' + hpMul);
 
   const uidB = await B.evaluate(() => __mp.me && __mp.me.uid);
   const uidA = await A.evaluate(() => __mp.me && __mp.me.uid);
@@ -127,7 +144,7 @@ async function until(page, fn, arg, ms) {
   ok('nobody can be hit in town', townHp2 >= townHp, townHp + ' -> ' + townHp2);
 
   /* ---- chat ---- */
-  await B.evaluate(() => __mp.send('chat', { text: 'credits rot', scope: 'all' }));
+  await B.evaluate(() => __mp.send('chat', { text: 'credits rot' }));
   const heard = await until(A, () => __mp.MP.chat.some(c => c.text === 'credits rot') ? 1 : 0);
   ok('chat reaches the other player', !!heard);
 
@@ -136,6 +153,15 @@ async function until(page, fn, arg, ms) {
   await wait(500);
   const reinvited = await B.evaluate(() => !!__mp.MP.invite);
   ok('you cannot party with someone you declared against', !reinvited);
+
+  /* ---- leaving puts you back in the lobby ---- */
+  await B.evaluate(() => __mp.send('game.leave', {}));
+  const back = await until(B, () => !__mp.MP.game && __mp.MP.lobby ? 1 : 0);
+  ok('leaving a game lands you back in the lobby', !!back);
+  const gone = await until(A, () => __mp.roster.length === 1 ? 1 : 0);
+  ok('the game you left carries on without you', !!gone);
+  const solo = await A.evaluate(() => __mp.mpHp());
+  ok('and the difficulty drops back', solo === 1, 'mpHp=' + solo);
 
   ok('no page errors', errs.length === 0, errs.join(' | '));
 

@@ -11,11 +11,22 @@
 
 const MP = {
   on: false, conn: null, me: null, roster: [], party: null, invite: null,
-  others: [], hostile: {}, chat: [], sim: null, unread: 0, retry: 0, scope: 'all',
-  maxParty: 8, pvpScale: .25, simZone: 6, lastMove: 0, note: ''
+  others: [], hostile: {}, chat: [], sim: null, unread: 0, retry: 0, scope: 'game',
+  maxParty: 8, maxGame: 8, pvpScale: .25, simZone: 6, lastMove: 0, note: '',
+  game: null, lobby: [], diffs: null, scale: null, view: 'lobby',
+  mkName: '', mkDiff: 'normal', mkPass: '',
+  voice: false, muted: {}, speaking: {}, peers: {}, stream: null
 };
 
 const mpOn = () => MP.on && !!MP.conn && MP.conn.readyState === 1;
+const mpIn = () => mpOn() && !!MP.game;
+
+/* Monsters get tougher with the number of people in the game and with the difficulty it
+   was made on, the way Diablo II's did. These feed the multipliers the game already had
+   for its companion pressure, so nothing else in the combat maths had to change. */
+const mpHp = () => (mpIn() && MP.scale ? MP.scale.hp : 1);
+const mpDmg = () => (mpIn() && MP.scale ? MP.scale.dmg : 1);
+const mpXp = () => (mpIn() && MP.scale ? MP.scale.xp : 1);
 const mpHostileTo = uid => !!MP.hostile[uid];
 
 function mpSend(t, o) { if (mpOn()) try { MP.conn.send(JSON.stringify(Object.assign({ t }, o))); } catch (e) {} }
@@ -54,6 +65,7 @@ function mpSay(text) {
   MP.chat.push({ from: '', text, sys: 1, t: Date.now() });
   if (MP.chat.length > 120) MP.chat.shift();
   MP.unread++;
+  mpChatDraw();
   toast(text);
 }
 
@@ -64,6 +76,33 @@ function mpRecv(m) {
     mpHello();
   } else if (m.t === 'roster') {
     MP.roster = m.players || [];
+    if (m.game) MP.game = m.game;
+    if (m.scale) MP.scale = m.scale;
+    mpVoiceSync();
+    if (mode === 'sheet' && tab === 'party') drawSheet();
+  } else if (m.t === 'lobby') {
+    MP.lobby = m.games || []; MP.diffs = m.diffs || MP.diffs;
+    MP.maxGame = m.max || MP.maxGame;
+    if (mode === 'sheet' && tab === 'party') drawSheet();
+  } else if (m.t === 'game') {
+    MP.game = m.game; MP.scale = m.scale || null;
+    MP.view = m.game ? 'game' : 'lobby';
+    if (!m.game) {
+      MP.roster = []; MP.others = []; MP.party = null; MP.hostile = {}; MP.sim = null;
+      MP.speaking = {}; MP.chat = [];
+      mpVoiceStop();
+      if (W && W.ents) for (let i = W.ents.length - 1; i >= 0; i--) if (W.ents[i].mp) W.ents.splice(i, 1);
+      toast('You have left the game. Your character is saved.');
+    }
+    else toast('In "' + m.game.name + '" \u00b7 ' + m.game.diffName + ' \u00b7 ' + m.game.n + ' of ' + m.game.max);
+    if (mode === 'sheet' && tab === 'party') drawSheet();
+  } else if (m.t === 'joinfail') {
+    toast(m.reason); sfx('err');
+  } else if (m.t === 'rtc') {
+    mpRtc(m);
+  } else if (m.t === 'voice') {
+    MP.speaking[m.uid] = m.on;
+    if (mode === 'sheet' && tab === 'party') drawSheet();
   } else if (m.t === 'party') {
     MP.party = m.id ? m : null; MP.sim = m.sim || null; MP.invite = null;
   } else if (m.t === 'invited') {
@@ -74,10 +113,12 @@ function mpRecv(m) {
   } else if (m.t === 'zone') {
     mpZone(m);
   } else if (m.t === 'chat') {
+    if (MP.muted[m.uid]) return;        /* muting somebody mutes all of them, not just their voice */
     MP.chat.push({ from: m.from, uid: m.uid, text: m.text, scope: m.scope, t: Date.now() });
     if (MP.chat.length > 120) MP.chat.shift();
     MP.unread++;
-    if (mode !== 'sheet' || tab !== 'party') toast((m.scope === 'party' ? '[party] ' : '') + m.from + ': ' + m.text);
+    mpChatDraw();
+    if (mode === 'sheet' && tab === 'party') drawSheet();
   } else if (m.t === 'hostile') {
     if (m.toUid === (MP.me && MP.me.uid)) MP.hostile[m.fromUid] = 1;
     mpSay(m.from + ' has declared hostility against ' + m.to + '.');
@@ -163,8 +204,11 @@ function mpTick(dt) {
 /* Reporting where you are runs on its own clock, because update() stops while a dialog
    or a sheet is open and somebody reading their inventory has not left the district. */
 function mpBeat() {
+  mpChatShow();
+  if (chatFade > 0 && chatEl) { chatFade -= .1; if (chatFade <= 0 && document.activeElement !== chatIn) chatEl.classList.remove('live'); }
   if (!mpOn() || !G || !W || !P || mode === 'title') return;
   mpSyncEnts();
+  mpVoiceLevels();
   MP.lastMove = performance.now();
   mpSend('move', {
     x: +P.x.toFixed(2), y: +P.y.toFixed(2), zi: W.zi,
@@ -258,69 +302,113 @@ function mpSimMsg(m) {
 }
 function mpSimWave(w) { if (mpOn() && MP.party && W && W.zi === MP.simZone) mpSend('sim', { action: 'wave', wave: w }); }
 
-/* ---------- the panel ---------- */
+/* ---------- the panel: a lobby, then the game you are in ---------- */
 function mpPanel() {
   if (MP.note && !mpOn()) return '<p>' + esc(MP.note) + '</p><p>Your character is saved and nothing is lost by waiting. Reload to try again.</p>';
-  if (!mpOn()) return '<p>Not connected to a game. Parties need the account server — on a single copy of the page there is nobody else to ask.</p>';
-  const me = MP.me || {}, party = MP.party;
-  let h = '';
+  if (!mpOn()) return '<p>Not connected. Playing together needs the account server — on a single copy of the page there is nobody else to ask.</p>';
+  return MP.game ? mpGamePanel() : mpLobbyPanel();
+}
+
+function mpLobbyPanel() {
+  let h = '<h3>Open games</h3>';
+  h += '<p style="font-size:13px">A game holds ' + MP.maxGame + ' people and is its own world: its own districts, its own monsters, its own difficulty. Inside one you can form a party to share experience, or declare against each other and fight.</p>';
+  if (!MP.lobby.length) h += '<p>Nobody has a game open. Start one and others will see it here.</p>';
+  else {
+    h += '<div class="list">';
+    for (const g of MP.lobby) {
+      const full = g.n >= g.max;
+      h += '<button class="li' + (full ? '' : '') + '" ' + (full ? '' : 'data-mpj="' + g.id + '"') + (full ? ' disabled' : '') + '>' +
+        '<i style="background:' + (g.diff === 'hell' ? '#e2443c' : g.diff === 'nightmare' ? '#d98c3c' : '#7be495') + '"></i>' +
+        '<div><b>' + esc(g.name) + (g.locked ? ' \u00b7 locked' : '') + '</b>' +
+        '<span>' + esc(g.diffName) + ' \u00b7 ' + g.n + ' of ' + g.max + (full ? ' \u00b7 full' : '') + '</span></div>' +
+        '<span class="pr">' + (full ? '' : 'Join') + '</span></button>';
+    }
+    h += '</div>';
+  }
+
+  h += '<h3>Start one</h3>';
+  h += '<div class="row"><input id="mpName" maxlength="40" value="' + esc(MP.mkName) + '" placeholder="A name for your game" style="flex:1;background:#0a0912;border:1px solid #3a3350;color:#e8e2d4;border-radius:6px;padding:10px;font:15px Georgia,serif"></div>';
+  h += '<div class="row">';
+  for (const k of ['normal', 'nightmare', 'hell']) {
+    const d = MP.diffs && MP.diffs[k];
+    h += '<button class="ghost' + (MP.mkDiff === k ? ' on' : '') + '" data-mpd="' + k + '">' + (d ? esc(d.n) : k) + '</button>';
+  }
+  h += '</div>';
+  const d = MP.diffs && MP.diffs[MP.mkDiff];
+  if (d) h += '<p style="font-size:13px">' + (MP.mkDiff === 'normal'
+      ? 'Monsters as the game was written. Start here.'
+      : 'Monsters with ' + d.hp + '\u00d7 the health and ' + d.dmg + '\u00d7 the bite, worth ' + d.xp + '\u00d7 the experience.') +
+    ' Every extra person in the game adds half again to monster health and to what they are worth, so eight people face monsters four and a half times tougher than one person does \u2014 and are paid for it.</p>';
+  h += '<div class="row"><input id="mpPass" maxlength="40" placeholder="Password (optional)" style="flex:1;background:#0a0912;border:1px solid #3a3350;color:#e8e2d4;border-radius:6px;padding:10px;font:15px Georgia,serif"></div>';
+  h += '<div class="row"><button class="big" data-mpk="1">Make the game</button></div>';
+  return h;
+}
+
+function mpGamePanel() {
+  const me = MP.me || {}, g = MP.game, party = MP.party, sc = MP.scale || {};
+  let h = '<h3>' + esc(g.name) + '</h3>';
+  h += '<div class="tick"><div>Difficulty<b>' + esc(g.diffName) + '</b></div><div>In the game<b>' + g.n + ' of ' + g.max + '</b></div>' +
+    '<div>Monster health<b>' + (sc.hp || 1).toFixed(1) + '\u00d7</b></div><div>Experience<b>' + (sc.xp || 1).toFixed(1) + '\u00d7</b></div></div>';
+  h += '<div class="row"><button class="ghost" data-mpq="1">Leave the game</button>' +
+    '<button class="ghost' + (MP.voice ? ' on' : '') + '" data-mpv="1">' + (MP.voice ? 'Microphone on' : 'Turn on the microphone') + '</button></div>';
+  h += '<p style="font-size:13px">With a microphone open, you are heard by whoever can see you \u2014 anybody on their screen, in their district. Walk off the edge of it and they lose you. The sound goes straight between the two machines and never touches the server. Typing, on the other hand, reaches everybody in the game wherever they are.</p>';
 
   if (party) {
-    const lead = party.leader;
-    h += '<h3>Your party · ' + party.members.length + ' of ' + MP.maxParty + '</h3>';
-    h += '<p style="font-size:13px">Experience is split among the members in the district with you, weighted by level, and there is more of it the more of you there are: ' +
-      [1, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3][Math.min(7, party.members.length - 1)].toFixed(2).replace(/0$/, '') +
-      '× at this size. Somebody standing in town is not helping.</p>';
+    h += '<h3>Your party \u00b7 ' + party.members.length + ' of ' + MP.maxParty + '</h3>';
+    h += '<p style="font-size:13px">Experience is split among the members in the district with you, weighted by level: ' +
+      [1, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3][Math.min(7, party.members.length - 1)] + '\u00d7 at this size. Somebody standing in town is not helping.</p>';
     h += '<div class="list">';
     for (const m of party.members) {
       const you = m.uid === me.uid;
-      h += '<div class="li on"><i style="background:' + ((CLS[m.cls] || {}).col || '#888') + '"></i><div><b>' + esc(m.name) + (m.uid === lead ? ' · leader' : '') + (you ? ' · you' : '') + '</b>' +
-        '<span>Level ' + m.lvl + ' ' + ((CLS[m.cls] || {}).n || '') + ' · ' + mpWhere(m.zi) + '</span></div>' +
-        (you ? '' : '<button class="ghost sm" data-mph="' + m.uid + '">Hostile</button>') + '</div>';
+      h += '<div class="li on"><i style="background:' + ((CLS[m.cls] || {}).col || '#888') + '"></i><div><b>' + esc(m.name) +
+        (m.uid === party.leader ? ' \u00b7 leader' : '') + (you ? ' \u00b7 you' : '') + (MP.speaking[m.uid] ? ' \u00b7 mic' : '') + '</b>' +
+        '<span>Level ' + m.lvl + ' ' + ((CLS[m.cls] || {}).n || '') + ' \u00b7 ' + mpWhere(m.zi) + '</span></div></div>' +
+        (you ? '' : '<div class="row"><button class="ghost' + (MP.muted[m.uid] ? ' on' : '') + '" data-mpm="' + m.uid + '">' + (MP.muted[m.uid] ? 'Unmute' : 'Mute') + '</button>' +
+          '<button class="ghost" data-mph="' + m.uid + '">Hostile</button></div>');
     }
-    h += '</div>';
-    h += '<div class="row"><button class="ghost" data-mpl="1">Leave the party</button></div>';
+    h += '</div><div class="row"><button class="ghost" data-mpl="1">Leave the party</button></div>';
     if (party.leader === me.uid) {
-      h += '<h3>The rig</h3><p style="font-size:13px">The Simulator takes a party. Waves together, or a duel — the rig is the one place a fight between you costs nothing, because nothing in it is real.</p>' +
+      h += '<h3>The rig</h3><p style="font-size:13px">The Simulator takes a party. Waves together, or a duel \u2014 the rig is the one place a fight between you costs nothing, because nothing in it is real.</p>' +
         '<div class="row"><button class="ghost" data-mps="waves">Waves, together</button><button class="ghost" data-mps="duel">Duel in the rig</button></div>';
       if (MP.sim) h += '<div class="row"><button class="ghost" data-mps="close">Close the rig</button></div>';
     } else if (MP.sim) {
-      h += '<h3>The rig is open · ' + MP.sim.mode + '</h3><div class="row"><button class="ghost" data-mpg="1">Go to the rig</button></div>';
+      h += '<h3>The rig is open \u00b7 ' + esc(MP.sim.mode) + '</h3><div class="row"><button class="ghost" data-mpg="1">Go to the rig</button></div>';
     }
-  } else {
-    h += '<h3>You are alone</h3><p style="font-size:13px">Ask somebody below. A party shares experience by level among whoever is actually in the district, and shares quest progress with whoever is standing there when it happens.</p>';
   }
 
   const others = MP.roster.filter(r => r.uid !== me.uid);
-  h += '<h3>In the world · ' + (MP.roster.length) + '</h3>';
-  if (!others.length) h += '<p>Nobody else is on. The town is quieter than usual.</p>';
+  h += '<h3>In this game</h3>';
+  if (!others.length) h += '<p>Just you so far. The game stays open; others will see it in the lobby.</p>';
   else {
     h += '<div class="list">';
     for (const r of others) {
       const hos = mpHostileTo(r.uid) || (r.hostile || []).indexOf(me.uid) >= 0;
       const mate = mpInParty(r.uid);
-      h += '<div class="li"><i style="background:' + ((CLS[r.cls] || {}).col || '#888') + '"></i><div><b' + (hos ? ' style="color:#e2443c"' : '') + '>' + esc(r.name) + (hos ? ' · hostile' : mate ? ' · with you' : '') + '</b>' +
-        '<span>Level ' + r.lvl + ' ' + ((CLS[r.cls] || {}).n || '') + ' · ' + mpWhere(r.zi) + (r.party ? ' · in a party' : '') + '</span></div>' +
-        (mate || hos ? '' : '<button class="ghost sm" data-mpi="' + r.uid + '">Invite</button>') +
-        (hos ? '' : '<button class="ghost sm" data-mph="' + r.uid + '">Hostile</button>') + '</div>';
+      /* Name on its own line, actions under it: three buttons beside a name crushes the
+         name to one word a line on a phone. */
+      h += '<div class="li"><i style="background:' + ((CLS[r.cls] || {}).col || '#888') + '"></i>' +
+        '<div><b' + (hos ? ' style="color:#e2443c"' : '') + '>' + esc(r.name) + (hos ? ' \u00b7 hostile' : mate ? ' \u00b7 with you' : '') +
+        (MP.speaking[r.uid] ? ' \u00b7 mic' : '') + '</b>' +
+        '<span>Level ' + r.lvl + ' ' + ((CLS[r.cls] || {}).n || '') + ' \u00b7 ' + mpWhere(r.zi) + '</span></div></div>' +
+        '<div class="row">' +
+        '<button class="ghost' + (MP.muted[r.uid] ? ' on' : '') + '" data-mpm="' + r.uid + '">' + (MP.muted[r.uid] ? 'Unmute' : 'Mute') + '</button>' +
+        (mate || hos ? '' : '<button class="ghost" data-mpi="' + r.uid + '">Invite</button>') +
+        (hos ? '' : '<button class="ghost" data-mph="' + r.uid + '">Hostile</button>') + '</div>';
     }
     h += '</div>';
-    h += '<p style="font-size:13px">Declaring hostility takes them out of your party and lets the two of you fight anywhere that is not a town. It cannot be taken back while you are both here — which is the only thing that makes it mean anything.</p>';
+    h += '<p style="font-size:13px">Muting somebody silences their voice and their messages both. Declaring hostility takes them out of your party and lets the two of you fight anywhere that is not a town \u2014 and it cannot be taken back while you are both in this game, which is the only thing that makes it mean anything.</p>';
   }
 
-  h += '<h3>Say something</h3>';
-  h += '<div class="row"><button class="ghost' + (MP.scope === 'all' ? ' on' : '') + '" data-mpc="all">Everyone</button><button class="ghost' + (MP.scope === 'party' ? ' on' : '') + '" data-mpc="party">Party only</button></div>';
-  h += '<div class="row"><input id="mpIn" maxlength="400" placeholder="' + (MP.scope === 'party' ? 'to your party' : 'to everyone') + '" style="flex:1;background:#0a0912;border:1px solid #3a3350;color:#e8e2d4;border-radius:6px;padding:10px;font:15px Georgia,serif"><button class="ghost" data-mpt="1" style="flex:0 0 72px">Send</button></div>';
-  h += '<div class="list">';
-  for (const c of MP.chat.slice(-30).reverse()) {
+  h += '<h3>What has been said</h3><div class="list">';
+  for (const c of MP.chat.slice(-25).reverse()) {
     h += '<div class="li"><div>' + (c.sys ? '<span style="color:#9a93ad">' + esc(c.text) + '</span>'
-      : '<b>' + esc(c.from) + (c.scope === 'party' ? ' · party' : '') + '</b><span>' + esc(c.text) + '</span>') + '</div></div>';
+      : '<b>' + esc(c.from) + (c.scope === 'party' ? ' \u00b7 party' : '') + '</b><span>' + esc(c.text) + '</span>') + '</div></div>';
   }
-  h += '</div>';
+  h += '</div><p style="font-size:13px">The bar at the bottom of the screen is quicker than this tab.</p>';
   return h;
 }
 
-window.__mp={MP,send:mpSend,get on(){return mpOn()},get roster(){return MP.roster},get me(){return MP.me}};
+window.__mp={MP,send:mpSend,get on(){return mpOn()},get inGame(){return mpIn()},get roster(){return MP.roster},get me(){return MP.me},get scale(){return MP.scale},mpHp,mpXp,mpDmg,mute:mpMute};
 
 function mpWhere(zi) {
   if (zi === undefined || zi === null) return 'somewhere';
@@ -330,6 +418,27 @@ function mpWhere(zi) {
 }
 
 function mpClick(d) {
+  if (d.mpj) {
+    const g = MP.lobby.find(x => x.id === d.mpj);
+    if (g && g.locked) {
+      dlgPrompt('“' + g.name + '” is locked', 'It needs a password.', pw => mpSend('game.join', { id: d.mpj, pass: pw }));
+    } else mpSend('game.join', { id: d.mpj });
+    return true;
+  }
+  if (d.mpd) { MP.mkDiff = d.mpd; drawSheet(); return true; }
+  if (d.mpk) {
+    const n = document.getElementById('mpName'), pw = document.getElementById('mpPass');
+    MP.mkName = n ? n.value.trim() : '';
+    mpSend('game.create', { name: MP.mkName, diff: MP.mkDiff, pass: pw ? pw.value : '' });
+    return true;
+  }
+  if (d.mpq) {
+    dlg('Leave this game?', 'Your character and everything on it are saved. You lose the party, anybody you declared against stops being hostile, and the game carries on without you.',
+      [['Leave', () => { mpSend('game.leave', {}); drawSheet(); }], ['Stay']]);
+    return true;
+  }
+  if (d.mpv) { mpMicToggle(); setTimeout(drawSheet, 300); return true; }
+  if (d.mpm) { mpMute(d.mpm); drawSheet(); return true; }
   if (d.mpi) { mpSend('invite', { uid: d.mpi }); return true; }
   if (d.mph) {
     const r = MP.roster.find(x => x.uid === d.mph);
@@ -347,12 +456,22 @@ function mpClick(d) {
     return true;
   }
   if (d.mpg) { closeSheet(); enter(MP.simZone); return true; }
-  if (d.mpt) {
-    const i = document.getElementById('mpIn');
-    if (i && i.value.trim()) { mpSend('chat', { text: i.value.trim(), scope: MP.scope }); i.value = ''; }
-    return true;
-  }
   return false;
+}
+
+/* The game's own dialog takes buttons, not text, so a password needs its own small one. */
+function dlgPrompt(title, body, then) {
+  let box = document.getElementById('pmw');
+  if (!box) { box = document.createElement('div'); box.id = 'pmw'; document.body.appendChild(box); }
+  box.innerHTML = '<div class="bugp"><h2>' + esc(title) + '</h2><p>' + esc(body) + '</p>' +
+    '<input id="pmIn" type="password" autocomplete="off" style="width:100%;box-sizing:border-box;background:#0a0912;border:1px solid #3a3350;color:#e8e2d4;border-radius:6px;padding:11px;font:15px Georgia,serif">' +
+    '<div class="bugr"><button class="big" id="pmOk">Join</button><button class="ghost" id="pmNo">Cancel</button></div></div>';
+  box.hidden = false;
+  const done = v => { box.hidden = true; if (v !== null) then(v); };
+  document.getElementById('pmOk').onclick = () => done(document.getElementById('pmIn').value);
+  document.getElementById('pmNo').onclick = () => done(null);
+  document.getElementById('pmIn').onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') done(document.getElementById('pmIn').value); };
+  document.getElementById('pmIn').focus();
 }
 
 /* ================= reporting a problem =================
@@ -458,4 +577,258 @@ function bugSend() {
       setTimeout(() => { bugBox.hidden = true; }, 1800);
     }))
     .catch(offline);
+}
+
+/* ================= voice =================
+   A mesh: every pair of people in the game holds one connection and sends each other
+   audio directly. The server carries only the handshake, so talking costs it nothing —
+   and the mesh is why eight is the right number, since each person holds seven
+   connections and that is already the comfortable limit.
+
+   Loudness follows distance in the district, and the pan follows which side of you they
+   are on, so a voice fades as somebody walks away and arrives from the direction they
+   are standing in. Somebody in another district is heard faintly or not at all. */
+
+const RTC_CFG = { iceServers: [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] }] };
+const VOICE_EDGE = 90;    /* a soft band at the edge of the screen, so voices fade rather than pop */
+let AUDIOCTX = null;
+
+function mpAudioCtx() {
+  if (!AUDIOCTX) {
+    const C = window.AudioContext || window.webkitAudioContext;
+    if (!C) return null;
+    AUDIOCTX = new C();
+  }
+  if (AUDIOCTX.state === 'suspended') AUDIOCTX.resume().catch(() => {});
+  return AUDIOCTX;
+}
+
+async function mpVoiceStart() {
+  if (MP.voice) return true;
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    toast('This browser will not give the game a microphone.');
+    return false;
+  }
+  if (!window.isSecureContext) {
+    toast('Voice needs a secure connection. Open the game over https and try again.');
+    return false;
+  }
+  try {
+    MP.stream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false
+    });
+  } catch (e) {
+    toast(e && e.name === 'NotAllowedError' ? 'The microphone was refused. Nothing is being recorded.' : 'No microphone available.');
+    return false;
+  }
+  MP.voice = true;
+  mpAudioCtx();
+  mpSend('voice', { on: true });
+  /* Offer to everybody already here; whoever joins later offers to us. */
+  for (const r of MP.roster) if (r.uid !== (MP.me || {}).uid) mpPeer(r.uid, true);
+  toast('Microphone open. Others hear you when they are near you.');
+  return true;
+}
+
+function mpVoiceStop() {
+  MP.voice = false;
+  if (MP.stream) { for (const t of MP.stream.getTracks()) t.stop(); MP.stream = null; }
+  for (const uid in MP.peers) mpPeerDrop(uid, true);
+  mpSend('voice', { on: false });
+}
+
+/* Keep the mesh matching the roster: connect to anyone new, drop anyone gone. */
+function mpVoiceSync() {
+  if (!MP.voice) return;
+  const here = {};
+  for (const r of MP.roster) { here[r.uid] = 1; if (r.uid !== (MP.me || {}).uid && !MP.peers[r.uid]) mpPeer(r.uid, true); }
+  for (const uid in MP.peers) if (!here[uid]) mpPeerDrop(uid);
+}
+
+function mpPeer(uid, offer) {
+  let P0 = MP.peers[uid];
+  if (P0) return P0;
+  const pc = new RTCPeerConnection(RTC_CFG);
+  P0 = MP.peers[uid] = { pc, el: null, gain: null, pan: null, src: null };
+  if (MP.stream) for (const t of MP.stream.getTracks()) pc.addTrack(t, MP.stream);
+  pc.onicecandidate = e => { if (e.candidate) mpSend('rtc', { uid, kind: 'ice', data: e.candidate }); };
+  pc.ontrack = e => mpPeerAudio(uid, e.streams[0]);
+  pc.onconnectionstatechange = () => {
+    if (pc.connectionState === 'failed' || pc.connectionState === 'closed') mpPeerDrop(uid);
+  };
+  if (offer) {
+    /* Only one side offers, or the two offers collide. The lower id does it. */
+    if (String((MP.me || {}).uid) > String(uid)) return P0;
+    pc.createOffer().then(o => pc.setLocalDescription(o).then(() => mpSend('rtc', { uid, kind: 'offer', data: o })))
+      .catch(() => {});
+  }
+  return P0;
+}
+
+/* Each voice goes through a gain and a panner, which the position beat drives. */
+function mpPeerAudio(uid, stream) {
+  const P0 = MP.peers[uid];
+  if (!P0 || !stream) return;
+  const ctx = mpAudioCtx();
+  /* The element is needed even when routing through Web Audio: some browsers will not
+     start a remote stream that is not attached to one. It stays muted. */
+  const el = new Audio();
+  el.srcObject = stream; el.autoplay = true; el.muted = true;
+  el.play().catch(() => {});
+  P0.el = el;
+  if (!ctx) { el.muted = false; return; }
+  try {
+    P0.src = ctx.createMediaStreamSource(stream);
+    P0.gain = ctx.createGain();
+    P0.pan = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+    P0.gain.gain.value = 0;
+    P0.src.connect(P0.gain);
+    if (P0.pan) { P0.gain.connect(P0.pan); P0.pan.connect(ctx.destination); }
+    else P0.gain.connect(ctx.destination);
+  } catch (e) { el.muted = false; }
+}
+
+function mpPeerDrop(uid, quiet) {
+  const P0 = MP.peers[uid];
+  if (!P0) return;
+  try { P0.pc.close(); } catch (e) {}
+  if (P0.el) { try { P0.el.srcObject = null; } catch (e) {} }
+  delete MP.peers[uid];
+  if (!quiet) mpSend('rtc', { uid, kind: 'bye' });
+}
+
+function mpRtc(m) {
+  const uid = m.from;
+  if (m.kind === 'bye') return mpPeerDrop(uid, true);
+  if (!MP.voice) return;              /* nothing to say back without a microphone */
+  const P0 = mpPeer(uid, false), pc = P0.pc;
+  if (m.kind === 'offer') {
+    pc.setRemoteDescription(m.data)
+      .then(() => pc.createAnswer())
+      .then(a => pc.setLocalDescription(a).then(() => mpSend('rtc', { uid, kind: 'answer', data: a })))
+      .catch(() => {});
+  } else if (m.kind === 'answer') {
+    pc.setRemoteDescription(m.data).catch(() => {});
+  } else if (m.kind === 'ice') {
+    pc.addIceCandidate(m.data).catch(() => {});
+  }
+}
+
+/* Driven by the position beat, so it keeps working while a menu is open. */
+function mpVoiceLevels() {
+  if (!MP.voice || !P) return;
+  for (const uid in MP.peers) {
+    const P0 = MP.peers[uid];
+    if (!P0.gain) continue;
+    let v = 0, pan = 0;
+    if (!MP.muted[uid]) {
+      const o = MP.others.find(q => q.uid === uid);
+      /* You hear whoever you can see. Somebody off the edge of your screen, or in another
+         district entirely, is not there as far as your ears are concerned. */
+      if (o) {
+        const X = SX(o.x, o.y), Y = SY(o.x, o.y);
+        const ox = Math.max(0, Math.max(-X, X - VW)), oy = Math.max(0, Math.max(-Y, Y - VH));
+        const off = Math.hypot(ox, oy);
+        v = off <= 0 ? 1 : off >= VOICE_EDGE ? 0 : 1 - off / VOICE_EDGE;
+        pan = Math.max(-1, Math.min(1, (X - VW / 2) / (VW / 2)));
+      }
+    }
+    try {
+      P0.gain.gain.value = v * v;       /* squared, so it falls off the way loudness does */
+      if (P0.pan) P0.pan.pan.value = pan;
+    } catch (e) {}
+  }
+}
+
+function mpMute(uid) {
+  MP.muted[uid] = !MP.muted[uid];
+  const r = MP.roster.find(x => x.uid === uid);
+  toast((MP.muted[uid] ? 'Muted ' : 'Unmuted ') + ((r && r.name) || 'them') + '.');
+  mpVoiceLevels();
+}
+
+/* ================= the chat bar =================
+   On screen rather than buried in a tab, because a chat you have to open a menu to read
+   is a chat nobody uses. It is small, it fades when nothing is happening, and it goes
+   away entirely when you are not in a game. */
+
+let chatEl = null, chatIn = null, chatLog = null, chatFade = 0;
+
+function mpChatMount() {
+  if (chatEl) return;
+  chatEl = document.createElement('div');
+  chatEl.id = 'chatw';
+  /* Collapsed to two small buttons by default: a phone screen in a fight has no room for
+     a text field, and the log reads fine without one. */
+  chatEl.innerHTML =
+    '<div id="chatlog"></div>' +
+    '<div id="chatbar">' +
+      '<button id="chatSay" title="Say something">SAY</button>' +
+      '<input id="chatin" maxlength="400" placeholder="To everyone in the game" autocomplete="off">' +
+      '<button id="chatMic" title="Microphone">MIC</button>' +
+    '</div>';
+  document.body.appendChild(chatEl);
+  chatIn = document.getElementById('chatin');
+  chatLog = document.getElementById('chatlog');
+
+  chatIn.addEventListener('keydown', e => {
+    e.stopPropagation();                      /* the game reads keys; the chat box owns them while focused */
+    if (e.key === 'Enter') mpChatSend();
+    if (e.key === 'Escape') mpChatClose();
+  });
+  chatIn.addEventListener('focus', () => chatEl.classList.add('live'));
+  chatIn.addEventListener('blur', () => setTimeout(() => { if (!chatIn.value.trim()) mpChatClose(); }, 120));
+  document.getElementById('chatSay').onclick = mpChatOpen;
+  document.getElementById('chatMic').onclick = mpMicToggle;
+}
+
+function mpChatOpen() {
+  chatEl.classList.add('open', 'live');
+  MP.unread = 0;
+  const b = document.getElementById('chatSay');
+  if (b) b.classList.remove('pip');
+  chatIn.focus();
+}
+function mpChatClose() {
+  chatEl.classList.remove('open');
+  chatIn.value = '';
+  chatIn.blur();
+}
+
+function mpMicToggle() {
+  const b = document.getElementById('chatMic');
+  if (MP.voice) { mpVoiceStop(); if (b) b.className = ''; toast('Microphone closed.'); return; }
+  mpVoiceStart().then(okNow => { if (b) b.className = okNow ? 'on' : ''; });
+}
+
+function mpChatSend() {
+  const t = (chatIn.value || '').trim();
+  if (!t) { mpChatClose(); return; }
+  /* One scope, deliberately: everything typed reaches everybody in the game. Two
+     channels means half of what gets said goes to the wrong one. */
+  mpSend('chat', { text: t, scope: 'game' });
+  chatIn.value = '';
+}
+
+function mpChatDraw() {
+  if (!chatLog) return;
+  const recent = MP.chat.slice(-6);
+  chatLog.innerHTML = recent.map(c => c.sys
+    ? '<div class="cl sys">' + esc(c.text) + '</div>'
+    : '<div class="cl"><b>' + esc(c.from) + '</b> ' + esc(c.text) + '</div>'
+  ).join('');
+  chatFade = 9;
+  chatEl.classList.add('live');
+  const b = document.getElementById('chatSay');
+  if (b && !chatEl.classList.contains('open')) b.classList.add('pip');
+}
+
+/* The bar is only there when there is somebody to say it to. */
+function mpChatShow() {
+  if (!chatEl) mpChatMount();
+  /* Only while the world is on screen: a sheet, a dialog or a cinematic owns it instead. */
+  const want = mpIn() && (mode === 'play' || mode === 'dying');
+  if (!want && chatEl.classList.contains('open')) mpChatClose();
+  chatEl.hidden = !want;
+  if (!mpIn() && MP.voice) mpVoiceStop();
 }

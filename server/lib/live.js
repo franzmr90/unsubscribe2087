@@ -1,60 +1,156 @@
-/* Presence, parties, hostility and the Simulator, over one WebSocket per player.
+/* Games, parties, hostility and the rig, over one WebSocket per player.
 
-   The rules are Diablo II's, because they were right: a party is an invitation both sides
-   agree to, experience is shared by level among the members who are actually there,
-   hostility is declared rather than ambient, declaring it throws you out of the party, and
-   it cannot be taken back while the session lasts. Town is safe. The arena is not.
+   The shape is Diablo II's, including the bit people forget: a **game** is the shared
+   world, and it holds eight. A **party** is a smaller agreement inside that game about
+   sharing experience. You can be in a game with seven other people and in a party with
+   none of them. Monsters get tougher with the number of people in the game, not the party.
 
-   What the server is authoritative over: who exists, who is in which party, who is hostile
-   to whom, who is in which district, and the Simulator's wave number. What it is not
-   authoritative over: monsters and damage, which each client simulates for itself. That is
-   a real limitation and it is written down in MULTIPLAYER.md rather than hidden here. */
+   Scoping everything to a game of eight is also what makes the server safe to post
+   publicly: every cost below is bounded by the size of a game rather than by the number
+   of people on the server.
+
+   The rules: a party is an invitation both sides agree to; experience is shared by level
+   among the members who are actually in the district; hostility is declared rather than
+   ambient, it throws you out of the party, and it cannot be taken back while the game
+   lasts. Town is safe. The arena is not.
+
+   What the server is authoritative over: who exists, which game they are in, who is in
+   which party, who is hostile to whom, who is in which district, and the Simulator's wave
+   number. What it is not authoritative over: monsters and damage, which each client
+   simulates for itself. That is a real limitation and MULTIPLAYER.md says so plainly. */
 'use strict';
 const ws = require('./ws');
 
+const MAX_GAME = 8;                /* Diablo II's number, and the reason this scales */
 const MAX_PARTY = 8;
-/* A hard ceiling, so a busy day degrades into a clear refusal rather than into a server
-   that gets slower and slower and then stops. See MULTIPLAYER.md on sharding into
-   separate games, which is what actually raises this number. */
-const MAX_PLAYERS = +(process.env.MAX_PLAYERS || 40);
+const MAX_GAMES = +(process.env.MAX_GAMES || 200);
+const MAX_PLAYERS = +(process.env.MAX_PLAYERS || 400);
 /* Diablo II's party experience multiplier, by number of members present. */
 const PARTY_BONUS = [1, 1, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3];
-const PVP_SCALE = 0.25;            /* players are much tougher to each other than monsters are */
+const PVP_SCALE = 0.25;            /* players are much tougher to each other than monsters */
 const TOWNS = new Set([0, 17, 18, 21, 27]);
 const SIM_ZONE = 6;
+/* Three difficulties, chosen when the game is made and fixed for its life, the way
+   Diablo II's were. Harder monsters, and more experience for beating them. */
+const DIFFS = {
+  normal:    { n: 'Normal',    hp: 1,   dmg: 1,   xp: 1   },
+  nightmare: { n: 'Nightmare', hp: 2.5, dmg: 1.6, xp: 1.8 },
+  hell:      { n: 'Hell',      hp: 5,   dmg: 2.4, xp: 2.8 }
+};
 
 const live = new Map();            /* uid -> player */
-const parties = new Map();         /* party id -> {id, leader, members:Set, sim} */
-let partySeq = 1;
+const games = new Map();           /* game id -> game */
+const parties = new Map();         /* party id -> party */
+let partySeq = 1, gameSeq = 1;
 
 const nowSec = () => Math.floor(Date.now() / 1000);
-
-function pub(p) {
-  return {
-    uid: p.uid, name: p.name, lvl: p.lvl, cls: p.cls, zi: p.zi,
-    party: p.party || null, hp: p.hp, hpm: p.hpm,
-    hostile: [...p.hostile], sim: p.sim || null
-  };
-}
-function loc(p) { return { uid: p.uid, name: p.name, lvl: p.lvl, cls: p.cls, x: p.x, y: p.y, hp: p.hp, hpm: p.hpm, dir: p.dir, act: p.act }; }
+const clean = (s, n) => String(s === undefined || s === null ? '' : s).slice(0, n);
 
 function send(p, t, d) { if (p && p.conn) p.conn.send(Object.assign({ t }, d)); }
 function sys(p, text) { send(p, 'sys', { text }); }
 
-function broadcast(t, d, filter) {
-  for (const p of live.values()) if (!filter || filter(p)) send(p, t, d);
+/* ---------- games ---------- */
+function gameOf(p) { return p.game ? games.get(p.game) : null; }
+function gamePlayers(g) { return g ? [...g.players].map(u => live.get(u)).filter(Boolean) : []; }
+
+function gameInfo(g) {
+  return {
+    id: g.id, name: g.name, n: g.players.size, max: MAX_GAME, locked: !!g.pass,
+    host: g.host, created: g.created, diff: g.diff, diffName: DIFFS[g.diff].n
+  };
+}
+function lobby() {
+  return [...games.values()].filter(g => g.players.size > 0).map(gameInfo).sort((a, b) => b.created - a.created).slice(0, 60);
+}
+/* The lobby changes a lot and matters to everyone not yet in a game, so it is coalesced
+   rather than sent per event. */
+let lobbyT = null;
+function pushLobby() {
+  if (lobbyT) return;
+  lobbyT = setTimeout(() => {
+    lobbyT = null;
+    const list = lobby();
+    for (const p of live.values()) if (!p.game) send(p, 'lobby', { games: list, max: MAX_GAME, diffs: DIFFS });
+  }, 300);
+  if (lobbyT.unref) lobbyT.unref();
 }
 
-function roster() {
-  return [...live.values()].map(pub);
+function pub(p) {
+  return {
+    uid: p.uid, name: p.name, lvl: p.lvl, cls: p.cls, zi: p.zi,
+    party: p.party || null, hp: p.hp, hpm: p.hpm, hostile: [...p.hostile]
+  };
 }
-let rosterT = null;
-function pushRoster() {
-  if (rosterT) return;
-  rosterT = setTimeout(() => { rosterT = null; broadcast('roster', { players: roster() }); }, 250);
-  if (rosterT.unref) rosterT.unref();
+function loc(p) { return { uid: p.uid, name: p.name, lvl: p.lvl, cls: p.cls, x: p.x, y: p.y, hp: p.hp, hpm: p.hpm, dir: p.dir }; }
+
+function inGame(g, t, d) { for (const q of gamePlayers(g)) send(q, t, d); }
+
+/* The roster is the game, not the server: bounded at eight however busy the server is. */
+let rosterT = new Set();
+function pushRoster(g) {
+  if (!g || rosterT.has(g.id)) return;
+  rosterT.add(g.id);
+  const h = setTimeout(() => {
+    rosterT.delete(g.id);
+    if (!games.has(g.id)) return;
+    inGame(g, 'roster', { players: gamePlayers(g).map(pub), game: gameInfo(g), scale: gameScale(g) });
+  }, 200);
+  if (h.unref) h.unref();
 }
 
+/* Diablo II scaled a monster's health and its experience by the number of people in the
+   game — not the party. Eight players means a monster with 4.5× the health, and worth
+   4.5× the experience, so going in together is harder and pays more. */
+function gameScale(g) {
+  const n = g ? g.players.size : 1;
+  const d = DIFFS[(g && g.diff) || 'normal'];
+  return {
+    players: n, diff: (g && g.diff) || 'normal', diffName: d.n,
+    hp: d.hp * (1 + .5 * (n - 1)),
+    dmg: d.dmg,
+    xp: d.xp * (1 + .5 * (n - 1))
+  };
+}
+
+function joinGame(p, g) {
+  if (g.players.size >= MAX_GAME) return 'That game is full.';
+  if (p.game) leaveGame(p);
+  g.players.add(p.uid);
+  p.game = g.id;
+  zoneIndex(p);
+  send(p, 'game', { game: gameInfo(g), you: p.uid, scale: gameScale(g) });
+  for (const q of gamePlayers(g)) if (q !== p) sys(q, p.name + ' has entered the game.');
+  pushRoster(g);
+  pushLobby();
+  return null;
+}
+
+function leaveGame(p) {
+  const g = gameOf(p);
+  leaveParty(p, true);
+  zoneIndex(p, true);
+  p.game = null;
+  /* Hostility belongs to a game, exactly as it did in Diablo II: leave and it is over. */
+  p.hostile.clear();
+  p.invites.clear();
+  /* Straight back to the lobby, with the list already in hand rather than a blank panel
+     waiting on the next coalesced push. */
+  send(p, 'game', { game: null });
+  send(p, 'lobby', { games: lobby(), max: MAX_GAME, diffs: DIFFS });
+  if (!g) return;
+  g.players.delete(p.uid);
+  for (const q of gamePlayers(g)) { q.hostile.delete(p.uid); sys(q, p.name + ' has left the game.'); }
+  /* A game is its players. When the last one leaves — or logs off, which is the same
+     thing from here — it is over, and it stops being listed. */
+  if (g.players.size === 0) games.delete(g.id);
+  else {
+    if (g.host === p.uid) g.host = [...g.players][0];
+    pushRoster(g);
+  }
+  pushLobby();
+}
+
+/* ---------- parties, inside a game ---------- */
 function partyOf(p) { return p.party ? parties.get(p.party) : null; }
 function membersOf(party) { return party ? [...party.members].map(u => live.get(u)).filter(Boolean) : []; }
 
@@ -68,8 +164,6 @@ function pushParty(party) {
 function leaveParty(p, quiet) {
   const party = partyOf(p);
   p.party = null;
-  /* Tell the one who left, too: they are no longer on the party's distribution list, so
-     the broadcast below would never reach them. */
   send(p, 'party', { id: null, leader: null, sim: null, members: [] });
   if (!party) return;
   party.members.delete(p.uid);
@@ -81,33 +175,35 @@ function leaveParty(p, quiet) {
     for (const m of membersOf(party)) sys(m, (lead ? lead.name : 'Someone') + ' leads the party now.');
   }
   pushParty(party);
-  pushRoster();
+  pushRoster(gameOf(p));
 }
 
-/* Hostility is mutual once declared by either side: in Diablo II you do not get to be
-   hostile to somebody who cannot fight back. */
+/* ---------- hostility and fighting ---------- */
 function mutualHostile(a, b) { return !!(a && b && (a.hostile.has(b.uid) || b.hostile.has(a.uid))); }
 
 function canFight(a, b) {
   if (!a || !b || a.uid === b.uid) return false;
+  if (!a.game || a.game !== b.game) return false;
   if (a.zi !== b.zi) return false;
   if (!mutualHostile(a, b)) return false;
-  if (TOWNS.has(a.zi)) return false;            /* town is safe, always */
-  if (a.safeUntil && a.safeUntil > Date.now()) return false;
-  if (b.safeUntil && b.safeUntil > Date.now()) return false;
+  if (TOWNS.has(a.zi)) return false;                      /* town is safe, always */
+  if (a.safeUntil > Date.now() || b.safeUntil > Date.now()) return false;
   return true;
 }
 
+/* ---------- districts, indexed so the cost is the room and not the server ---------- */
 const byZone = new Map();
-const zoneKey = p => p.zi + '/' + (p.inst || '');
+const zoneKey = p => (p.game || '-') + '/' + p.zi + '/' + (p.inst || '');
 function zoneIndex(p, remove) {
-  const k = p.zoneKey;
-  if (k !== undefined) { const s = byZone.get(k); if (s) { s.delete(p); if (!s.size) byZone.delete(k); } }
-  if (remove) { p.zoneKey = undefined; return; }
-  const nk = zoneKey(p);
-  p.zoneKey = nk;
-  let s = byZone.get(nk);
-  if (!s) { s = new Set(); byZone.set(nk, s); }
+  if (p.zoneKey !== undefined) {
+    const s = byZone.get(p.zoneKey);
+    if (s) { s.delete(p); if (!s.size) byZone.delete(p.zoneKey); }
+  }
+  if (remove || !p.game) { p.zoneKey = undefined; return; }
+  const k = zoneKey(p);
+  p.zoneKey = k;
+  let s = byZone.get(k);
+  if (!s) { s = new Set(); byZone.set(k, s); }
   s.add(p);
 }
 function zonePeers(p) {
@@ -117,52 +213,75 @@ function zonePeers(p) {
   for (const q of s) if (q !== p) out.push(q);
   return out;
 }
-
-function pushZone(p) {
-  const peers = zonePeers(p);
-  send(p, 'zone', { zi: p.zi, players: peers.map(loc) });
-}
+function pushZone(p) { send(p, 'zone', { zi: p.zi, players: zonePeers(p).map(loc) }); }
 
 const HANDLERS = {
   hello(p, m) {
-    p.lvl = +m.lvl || 1; p.cls = String(m.cls || '').slice(0, 16);
-    p.zi = +m.zi || 0; zoneIndex(p); p.hp = +m.hp || 0; p.hpm = +m.hpm || 1; p.act = +m.act || 1;
-    pushRoster();
+    p.lvl = +m.lvl || 1; p.cls = clean(m.cls, 16);
+    p.zi = +m.zi || 0; p.hp = +m.hp || 0; p.hpm = +m.hpm || 1;
+    zoneIndex(p);
+    if (p.game) pushRoster(gameOf(p)); else pushLobby();
   },
 
+  /* ---- the lobby ---- */
+  'game.list'(p) { send(p, 'lobby', { games: lobby(), max: MAX_GAME, diffs: DIFFS }); },
+
+  'game.create'(p, m) {
+    if (games.size >= MAX_GAMES) return sys(p, 'The server is holding as many games as it can. Join one instead.');
+    if (!rate(p, 'mkgame', 5, 60000)) return sys(p, 'One game at a time.');
+    const name = clean(m.name, 40).trim() || (p.name + "'s game");
+    if ([...games.values()].some(g => g.name.toLowerCase() === name.toLowerCase() && g.players.size)) return sys(p, 'There is already a game by that name.');
+    const diff = DIFFS[clean(m.diff, 12)] ? clean(m.diff, 12) : 'normal';
+    const g = { id: 'g' + (gameSeq++), name, diff, host: p.uid, pass: clean(m.pass, 40), players: new Set(), created: Date.now() };
+    games.set(g.id, g);
+    const err = joinGame(p, g);
+    if (err) sys(p, err);
+  },
+
+  'game.join'(p, m) {
+    const g = games.get(clean(m.id, 20));
+    if (!g) return sys(p, 'That game is over.');
+    if (g.pass && g.pass !== clean(m.pass, 40)) return send(p, 'joinfail', { id: g.id, reason: 'That password is not right.' });
+    if (g.players.size >= MAX_GAME) return send(p, 'joinfail', { id: g.id, reason: 'That game is full — it holds ' + MAX_GAME + '.' });
+    const err = joinGame(p, g);
+    if (err) send(p, 'joinfail', { id: g.id, reason: err });
+  },
+
+  'game.leave'(p) { leaveGame(p); pushLobby(); },
+
+  /* ---- being somewhere ---- */
   move(p, m) {
     p.x = +m.x || 0; p.y = +m.y || 0; p.dir = +m.dir || 0;
     p.hp = +m.hp || 0; p.hpm = +m.hpm || 1;
-    const zi = +m.zi;
-    if (zi !== p.zi) {
-      p.zi = zi;
-      p.inst = m.inst || null;
+    if (!p.game) return;
+    const zi = +m.zi, inst = m.inst || null;
+    if (zi !== p.zi || inst !== p.inst) {
+      p.zi = zi; p.inst = inst;
       zoneIndex(p);
-      pushRoster();
-      /* Entering a district makes you briefly unkillable, so a hostile cannot camp the
-         doorway. Diablo II did the same thing with its five seconds. */
+      pushRoster(gameOf(p));
+      /* Walking in buys five seconds, so a hostile cannot camp the doorway. */
       p.safeUntil = Date.now() + 5000;
     }
     pushZone(p);
   },
 
   chat(p, m) {
-    const text = String(m.text || '').slice(0, 400).trim();
-    if (!text) return;
+    const text = clean(m.text, 400).trim();
+    if (!text || !p.game) return;
     if (!rate(p, 'chat', 12, 10000)) return sys(p, 'Slow down.');
-    const out = { from: p.name, uid: p.uid, text, scope: m.scope === 'party' ? 'party' : 'all' };
+    const out = { from: p.name, uid: p.uid, text, scope: m.scope === 'party' ? 'party' : 'game' };
     if (out.scope === 'party') {
       const party = partyOf(p);
       if (!party) return sys(p, 'You are not in a party.');
       for (const q of membersOf(party)) send(q, 'chat', out);
-    } else broadcast('chat', out);
+    } else inGame(gameOf(p), 'chat', out);
   },
 
   invite(p, m) {
     const q = live.get(m.uid);
-    if (!q) return sys(p, 'They are not here.');
+    if (!q || q.game !== p.game || !p.game) return sys(p, 'They are not in this game.');
     if (mutualHostile(p, q)) return sys(p, 'You have declared against each other. That does not come back.');
-    let party = partyOf(p);
+    const party = partyOf(p);
     if (party && party.leader !== p.uid) return sys(p, 'Only the leader invites.');
     if (party && party.members.size >= MAX_PARTY) return sys(p, 'A party holds eight.');
     if (q.party) return sys(p, q.name + ' is already in a party.');
@@ -172,9 +291,8 @@ const HANDLERS = {
   },
 
   accept(p, m) {
-    const q = live.get(m.uid);
-    const until = p.invites.get(m.uid);
-    if (!q || !until || until < Date.now()) return sys(p, 'That invitation has lapsed.');
+    const q = live.get(m.uid), until = p.invites.get(m.uid);
+    if (!q || !until || until < Date.now() || q.game !== p.game) return sys(p, 'That invitation has lapsed.');
     p.invites.delete(m.uid);
     if (mutualHostile(p, q)) return sys(p, 'Not after that.');
     if (p.party) leaveParty(p);
@@ -189,35 +307,31 @@ const HANDLERS = {
     p.party = party.id;
     for (const m2 of membersOf(party)) sys(m2, p.name + ' joined the party.');
     pushParty(party);
-    pushRoster();
+    pushRoster(gameOf(p));
   },
 
   decline(p, m) { p.invites.delete(m.uid); },
-
   leave(p) { leaveParty(p); },
 
-  /* Declared, not ambient; it throws you out of the party; and it does not come back. */
   hostile(p, m) {
     const q = live.get(m.uid);
-    if (!q) return;
+    if (!q || q.game !== p.game || !p.game) return;
     if (p.hostile.has(q.uid)) return sys(p, 'Already declared.');
     p.hostile.add(q.uid);
     const party = partyOf(p);
     if (party && party.members.has(q.uid)) leaveParty(p, true);
-    broadcast('hostile', { from: p.name, fromUid: p.uid, to: q.name, toUid: q.uid });
+    inGame(gameOf(p), 'hostile', { from: p.name, fromUid: p.uid, to: q.name, toUid: q.uid });
     sys(q, p.name + ' has declared hostility against you.');
-    sys(p, 'You have declared against ' + q.name + '. That stands until one of you leaves.');
-    pushRoster();
+    sys(p, 'You have declared against ' + q.name + '. That stands until one of you leaves the game.');
+    pushRoster(gameOf(p));
   },
 
-  /* Experience from a kill, shared the way Diablo II shared it: only among members in the
-     same district, weighted by level, with a bonus for the size of the party. */
   xp(p, m) {
     const amount = Math.max(0, Math.min(1e9, +m.amount || 0));
     if (!amount) return;
     const party = partyOf(p);
     if (!party) return;
-    const here = membersOf(party).filter(q => q.zi === p.zi && q.inst === p.inst);
+    const here = membersOf(party).filter(q => q.zi === p.zi && q.inst === p.inst && q.game === p.game);
     if (here.length < 2) return;
     const bonus = PARTY_BONUS[Math.min(here.length, 8)];
     const sum = here.reduce((a, q) => a + Math.max(1, q.lvl), 0);
@@ -228,47 +342,36 @@ const HANDLERS = {
     }
   },
 
-  /* Quest progress is shared with the party members who are present, as it was in D2. */
   quest(p, m) {
     const party = partyOf(p);
     if (!party) return;
-    const k = String(m.k || '').slice(0, 12), v = +m.v;
+    const k = clean(m.k, 12), v = +m.v;
     if (!/^q\d{1,2}$/.test(k) || !(v >= 0 && v <= 3)) return;
     for (const q of membersOf(party)) if (q.uid !== p.uid && q.zi === p.zi) send(q, 'quest', { k, v, from: p.name });
   },
 
-  /* The attacker's client says it landed a hit; the server decides whether the two are
-     allowed to fight at all, scales it, and tells the defender. */
   pvp(p, m) {
     const q = live.get(m.uid);
     if (!canFight(p, q)) return;
     const dmg = Math.max(0, Math.min(1e7, +m.dmg || 0)) * PVP_SCALE;
     if (!dmg) return;
-    send(q, 'pvp', { from: p.name, fromUid: p.uid, dmg: Math.round(dmg), kind: String(m.kind || '').slice(0, 12) });
+    send(q, 'pvp', { from: p.name, fromUid: p.uid, dmg: Math.round(dmg), kind: clean(m.kind, 12) });
   },
 
   /* Reported by the defender, so a win cannot simply be asserted by the winner. */
   died(p, m) {
     const killer = live.get(m.uid);
-    if (!killer) return;
+    if (!killer || killer.game !== p.game) return;
     const duel = p.zi === SIM_ZONE;
-    broadcast('kill', { killer: killer.name, dead: p.name, duel });
-    if (duel) { killer.duelW = (killer.duelW || 0) + 1; p.duelL = (p.duelL || 0) + 1; }
+    inGame(gameOf(p), 'kill', { killer: killer.name, dead: p.name, duel });
   },
 
-  /* The Simulator: the party's shared arena, for waves together or for duelling.
-     The leader opens it, the server holds the wave number and the seed so every client
-     generates the same waves, and everyone in it sees everyone else. */
   sim(p, m) {
     const party = partyOf(p);
     if (!party) return sys(p, 'The rig takes a party. You are alone.');
     if (m.action === 'open') {
       if (party.leader !== p.uid) return sys(p, 'The leader books the rig.');
-      party.sim = {
-        mode: m.mode === 'duel' ? 'duel' : 'waves',
-        seed: (Math.random() * 1e9) | 0,
-        wave: 0, at: nowSec()
-      };
+      party.sim = { mode: m.mode === 'duel' ? 'duel' : 'waves', seed: (Math.random() * 1e9) | 0, wave: 0, at: nowSec() };
       for (const q of membersOf(party)) {
         send(q, 'sim', { action: 'open', sim: party.sim, by: p.name });
         sys(q, party.sim.mode === 'duel'
@@ -279,7 +382,7 @@ const HANDLERS = {
     } else if (m.action === 'wave') {
       if (!party.sim) return;
       const w = +m.wave || 0;
-      if (w <= party.sim.wave) return;              /* the first client to clear it reports it */
+      if (w <= party.sim.wave) return;
       party.sim.wave = w;
       for (const q of membersOf(party)) send(q, 'sim', { action: 'wave', wave: w });
     } else if (m.action === 'close') {
@@ -288,6 +391,25 @@ const HANDLERS = {
       for (const q of membersOf(party)) send(q, 'sim', { action: 'close' });
       pushParty(party);
     }
+  },
+
+  /* ---- voice ----
+     The server only carries the handshake. Audio goes peer to peer and never touches it,
+     which is why voice costs the server nothing and why it is bounded by the mesh rather
+     than by bandwidth here. */
+  rtc(p, m) {
+    const q = live.get(m.uid);
+    if (!q || !p.game || q.game !== p.game) return;
+    if (!rate(p, 'rtc', 120, 10000)) return;
+    const kind = clean(m.kind, 10);
+    if (kind !== 'offer' && kind !== 'answer' && kind !== 'ice' && kind !== 'bye') return;
+    send(q, 'rtc', { kind, from: p.uid, name: p.name, data: m.data });
+  },
+
+  /* Who currently has a microphone open, so the roster can show it. */
+  voice(p, m) {
+    p.voice = !!m.on;
+    if (p.game) inGame(gameOf(p), 'voice', { uid: p.uid, on: p.voice });
   }
 };
 
@@ -303,46 +425,40 @@ function rate(p, key, max, win) {
 
 function attach(server, verify) {
   ws.attach(server, '/live', verify, (conn, ctx) => {
-    /* One session, one presence: a second connection replaces the first rather than
-       producing two of the same person in the roster. */
     const old = live.get(ctx.user.id);
-    if (old) { try { old.conn.close(); } catch (e) {} live.delete(old.uid); }
+    if (old) { try { old.conn.close(); } catch (e) {} leaveGame(old); live.delete(old.uid); }
 
-    const p = {
-      uid: ctx.user.id, name: ctx.user.name, conn,
-      lvl: 1, cls: '', zi: 0, inst: null, x: 0, y: 0, dir: 0, hp: 1, hpm: 1, act: 1,
-      party: null, hostile: new Set(), invites: new Map(), safeUntil: 0, joined: Date.now()
-    };
     if (live.size >= MAX_PLAYERS) {
-      conn.send({ t: 'full', max: MAX_PLAYERS, text: 'This world is full — ' + MAX_PLAYERS + ' people are already in it. Try again in a few minutes.' });
+      conn.send({ t: 'full', max: MAX_PLAYERS, text: 'The server is full — ' + MAX_PLAYERS + ' people are on it. Try again in a few minutes.' });
       setTimeout(() => conn.close(), 250);
       return;
     }
-    live.set(p.uid, p);
-    zoneIndex(p);
 
-    send(p, 'you', { uid: p.uid, name: p.name, maxParty: MAX_PARTY, pvpScale: PVP_SCALE, simZone: SIM_ZONE });
-    pushRoster();
+    const p = {
+      uid: ctx.user.id, name: ctx.user.name, conn,
+      lvl: 1, cls: '', zi: 0, inst: null, zoneKey: undefined, x: 0, y: 0, dir: 0, hp: 1, hpm: 1,
+      game: null, party: null, hostile: new Set(), invites: new Map(), safeUntil: 0, voice: false, joined: Date.now()
+    };
+    live.set(p.uid, p);
+
+    send(p, 'you', { uid: p.uid, name: p.name, maxParty: MAX_PARTY, maxGame: MAX_GAME, pvpScale: PVP_SCALE, simZone: SIM_ZONE });
+    send(p, 'lobby', { games: lobby(), max: MAX_GAME, diffs: DIFFS });
 
     conn.on('message', m => {
       if (!m || typeof m.t !== 'string') return;
       const fn = HANDLERS[m.t];
       if (!fn) return;
-      if (!rate(p, 'msg', 240, 10000)) return;
+      if (!rate(p, 'msg', 300, 10000)) return;
       try { fn(p, m); } catch (e) { console.error('[live]', m.t, e.message); }
     });
 
     conn.on('close', () => {
-      leaveParty(p, true);
-      zoneIndex(p, true);
+      leaveGame(p);
       live.delete(p.uid);
-      /* Hostility is forgotten when you leave, which is also how Diablo II ended it. */
-      for (const q of live.values()) q.hostile.delete(p.uid);
-      pushRoster();
+      pushLobby();
     });
   });
 
-  /* Drop connections that have stopped answering, so the roster does not fill with ghosts. */
   const beat = setInterval(() => {
     for (const p of live.values()) {
       if (!p.conn.alive) { p.conn.close(); continue; }
@@ -352,4 +468,7 @@ function attach(server, verify) {
   beat.unref();
 }
 
-module.exports = { attach, live, parties, MAX_PARTY, MAX_PLAYERS, PARTY_BONUS, PVP_SCALE, SIM_ZONE, TOWNS, canFight, mutualHostile };
+module.exports = {
+  attach, live, games, parties, MAX_PARTY, MAX_GAME, MAX_PLAYERS, MAX_GAMES,
+  PARTY_BONUS, PVP_SCALE, SIM_ZONE, TOWNS, canFight, mutualHostile, gameScale, DIFFS
+};
