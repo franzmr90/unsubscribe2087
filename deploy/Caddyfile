@@ -1,0 +1,24 @@
+# Caddy gets and renews the certificate on its own. Install to /etc/caddy/Caddyfile,
+# replace the domain, then: systemctl reload caddy
+#
+# The TLS is not optional decoration — Secure cookies need it, and the browser refuses
+# a microphone on a plain-http origin, so voice chat does not work without it.
+
+yourdomain.com {
+	encode zstd gzip
+
+	# Caddy v2 proxies WebSockets with no extra configuration, which is what /live needs.
+	reverse_proxy 127.0.0.1:8087
+
+	# The server sets its own cache headers on the game page; these cover the rest.
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy same-origin
+		-Server
+	}
+
+	log {
+		output file /var/log/caddy/unsubscribe2087.log
+		format console
+	}
+}

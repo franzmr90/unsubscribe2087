@@ -98,5 +98,6 @@ PUBLIC_ORIGIN=https://yourdomain TRUST_PROXY=1 DATA_DIR=/var/lib/unsubscribe \
 **Set `DATA_DIR` outside the checkout.** It defaults to `server/data`, which is fine
 locally and dangerous on a server: redeploy by re-cloning and you wipe every save.
 
-Not written yet: the systemd unit, the Caddyfile, a setup script and the backup cron. Ask
-and they are about an hour.
+**The deploy kit is written**: see `deploy/` — a one-shot `setup.sh`, a hardened systemd
+unit, a Caddyfile, an annotated env template and a nightly backup. `deploy/README.md` walks
+through it.
