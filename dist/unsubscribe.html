@@ -155,6 +155,18 @@ th{font:700 10px var(--display);letter-spacing:.06em;color:var(--dim);text-trans
 .memo b{font:700 13px var(--display);color:var(--gold);display:block;margin-bottom:3px}
 .memo.sdxnew{border-left-color:#59e0e6}.memo.sdxnew b{color:#59e0e6}
 .memo.sdxlock{opacity:.42}.memo.sdxlock b{color:var(--dim)}
+#bugw{position:fixed;inset:0;z-index:7000;background:rgba(6,5,12,.93);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+#bugw[hidden]{display:none}
+.bugp{width:100%;max-width:420px;background:linear-gradient(180deg,#171426,#0f0d18);border:1px solid #3a3350;border-radius:10px;padding:18px}
+.bugp h2{margin:0 0 6px;font-size:20px;color:#d9b45c}
+.bugp p{margin:0 0 12px;font-size:13px;color:#a9a2bd;line-height:1.5}
+.bugp label{display:block;font:600 11px Cinzel,serif;letter-spacing:1.1px;text-transform:uppercase;color:#8d86a3;margin:12px 0 5px}
+.bugp textarea{width:100%;box-sizing:border-box;background:#0a0912;border:1px solid #3a3350;color:#e8e2d4;border-radius:6px;padding:10px;font:14px Georgia,serif;resize:vertical}
+.bugp textarea:focus{outline:none;border-color:#d9b45c}
+.bugm{margin:12px 0 0;font-size:13px;color:#a9a2bd;line-height:1.5;white-space:pre-wrap}
+.bugm.err{color:#e2706a}.bugm.good{color:#86c48a}
+.bugs{font-size:11.5px;color:#7d7693;margin:12px 0 0}
+.bugr{display:flex;gap:8px;margin-top:14px}.bugr button{flex:1}
 .chartw{background:#120e17;border:1px solid var(--edge);padding:10px 10px 6px}
 .chartw svg{display:block;width:100%;height:auto}
 .hero{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
@@ -203,7 +215,7 @@ textarea{width:100%;height:70px;background:#050409;color:var(--ink);border:1px s
         <div id="zone"></div>
         <div id="xpw"><i id="xpb"></i></div>
         <div id="wal"><span id="cr"></span><small id="cpi"></small></div>
-        <div id="tbs"><button class="tb" id="bMap">Map</button><button class="tb" id="bRecall">Portal</button></div>
+        <div id="tbs"><button class="tb" id="bMap">Map</button><button class="tb" id="bRecall">Portal</button><button class="tb" id="bBug" title="Report a problem">Report</button></div>
       </div>
       <div class="orb en"><i id="enF"></i><span id="enT"></span></div>
     </div>
@@ -790,7 +802,7 @@ function newGame(cls){
 /* ================= save ================= */
 const b64=u=>{let s='';for(let i=0;i<u.length;i+=4096)s+=String.fromCharCode.apply(null,u.subarray(i,i+4096));return btoa(s)};
 const unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
-function encW(w){return{zi:w.zi,N:w.N,ml:w.ml,tier:w.tier,map:b64(w.map),wh:b64(w.wh),seen:b64(w.seen),leftT:w.leftT,sub:w.sub,suAt:w.suAt,ents:w.ents,objs:w.objs,drops:w.drops,decals:w.decals.slice(-40),portals:w.portals,goal:w.goal,start:w.start}}
+function encW(w){return{zi:w.zi,N:w.N,ml:w.ml,tier:w.tier,map:b64(w.map),wh:b64(w.wh),seen:b64(w.seen),leftT:w.leftT,sub:w.sub,suAt:w.suAt,ents:w.ents.filter(e=>!e.mp),objs:w.objs,drops:w.drops,decals:w.decals.slice(-40),portals:w.portals,goal:w.goal,start:w.start}}
 function decW(o){const w=Object.assign({},o);w.map=unb64(o.map);w.wh=unb64(o.wh);w.seen=unb64(o.seen);return w}
 function saveObj(){const zs={};for(const k in ZS)zs[k]=encW(ZS[k]);let cur=null;if(W&&!W.z.town&&!W.z.sim){zs[W.zi]=encW(W);cur={zi:W.zi,x:P.x,y:P.y}}return{G,zs,cur,opt:OPT,t:Date.now()}}
 function save(force){if(!G)return false;let ok=false;try{localStorage.setItem(skey(SLOT),JSON.stringify(saveObj()));localStorage.setItem(SAVEKEY+'_slot',SLOT);ok=true}catch(e){}
@@ -811,7 +823,7 @@ async function cloudLoad(d,sn){const o=JSON.parse(d.s);o.zs={};for(const k of d.
 function cloudNote(){const n=$('cloudNote');if(n)n.textContent=clState==='looking'?'Looking for your saved game…':CL?'Your progress is saved to your account as you play.':'Account saving is not available in this view. Progress is kept in this browser only.'}
 function loadStored(n){try{const s=localStorage.getItem(skey(n===undefined?SLOT:n));return s?JSON.parse(s):null}catch(e){return null}}
 function applySave(o){if(!o||!o.G||!CLS[o.G.cls])return false;G=o.G;G.sats=G.sats||0;G.merc=G.merc||null;G.sq=G.sq||{};G.stash=G.stash||[];while(G.sk.length<15)G.sk.push(0);if(G.q.q10===3&&G.unlocked<12)G.unlocked=12;for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;if(G.q.q5===3&&G.unlocked<7)G.unlocked=7;if(G.hp<=0){G.hp=9999;o.cur=null}ZS={};for(const k in (o.zs||{}))ZS[k]=decW(o.zs[k]);if(o.opt)OPT=Object.assign({},OPT_DEF,o.opt);G._cur=o.cur||null;return true}
-function startPlay(){ensureG();mode='play';$('title').hidden=true;$('hud').hidden=false;calc();setSkillButtons();
+function startPlay(){ensureG();mpConnect();mode='play';$('title').hidden=true;$('hud').hidden=false;calc();setSkillButtons();
   const c=G._cur;delete G._cur;
   if(c&&ZS[c.zi])enter(c.zi,{at:c});else if(G.pre===1){enter(PREZ);return}else enter(HT());
   if(!G.q.q1&&W.z.town&&G.seenIntro!==false){talkTo('gramps')}
@@ -922,7 +934,7 @@ function spawn(k,x,y,o){
   else if(ch){e.name=pick(CN1)+pick(CN2)+' '+pick(CN3);const ks=Object.keys(MODS).sort(()=>Math.random()-.5);e.mods[ks[0]]=1;if(G.tier>0||ml>=9)e.mods[ks[1]]=1}
   if(e.mods.fast)e.spd*=1.5;if(e.mods.strong)e.dmg*=1.6;
   p7Spawn(e);W.ents.push(e);if(isBoss(k))W.boss=e;return e}
-function enter(zi,o){
+function enter(zi,o){setTimeout(mpBeat,0);
   o=o||{};const carry=W&&W.allies?W.allies.filter(a=>a.per):[];if(W&&!W.z.town&&!W.z.sim){raidLeave();W.leftT=G.time;ZS[W.zi]=W;clDirty[W.zi]=1}
   const z=ZONES[zi];G.zone=zi;if(!z.sim)G.town=townOf(zi);let old=0;
   if(z.town)buildTown(zi);else if(z.sim)buildSim(o.wave||1,o.rush);else if(ZS[zi]&&ZS[zi].tier===G.tier&&!o.fresh){W=ZS[zi];old=1;ensureCage();initRuntime()}else genZone(zi);
@@ -963,7 +975,7 @@ function pdmg(m,e){
   let c=P.e82>0||Math.random()*100<S.crit;if(c)d*=S.critM;
   if(S.sp.severance&&Math.random()<.15){d*=3;c=true}
   return[d,c]}
-function dmgEnemy(e,d,crit){if(e.hp<=0)return;e.hits=(e.hits||0)+1;d/=partyH();if(e.mark>0)d*=1.3;if(e.mods.shield)d*=.5;if(e.ward>0)d*=.6;e.hp-=d;e.flash=.12;wake(e);if(crit){sfx('crit');hitStop=.04}
+function dmgEnemy(e,d,crit){if(e.hp<=0)return;if(e.mp){mpHurt(e,d,crit);return}e.hits=(e.hits||0)+1;d/=partyH();if(e.mark>0)d*=1.3;if(e.mods.shield)d*=.5;if(e.ward>0)d*=.6;e.hp-=d;e.flash=.12;wake(e);if(crit){sfx('crit');hitStop=.04}
   float(e.x,e.y,Math.round(d)+(crit?'!':''),crit?'#ffe36b':'#ffffff',0);parts(e.x,e.y,crit?5:2,['#ffd27a','#fff','#ff9a3c'],2.2);
   if(e.mods.arc&&e.arcCd<=0){e.arcCd=1.3;for(let i=0;i<6;i++){const a=i*1.047+e.ph;W.projs.push({x:e.x,y:e.y,vx:Math.cos(a)*5,vy:Math.sin(a)*5,life:1.3,foe:true,dmg:e.dmg*.5,col:'#59e0e6'})}}
   if(e.hp<=0)kill(e)}
@@ -975,6 +987,7 @@ function hit(e,m,nl){if(e.hp<=0)return;let[d,c]=pdmg(m,e);d=typed(e,d);sfx('hit'
   if(S.sp.intern&&!procLock&&Math.random()<.2){procLock=true;chain(e,3,.8);procLock=false}}
 function chain(from,n,m){const done=new Set();let f={x:from.x,y:from.y};for(let i=0;i<n;i++){let b=null,bd=i||from!==P?4.5:7;for(const e of W.ents)if(!done.has(e)){const d=dist(e,f);if(d<bd){bd=d;b=e}}if(!b)break;done.add(b);W.fx.push({k:'bolt',x:f.x,y:f.y,x2:b.x,y2:b.y,t:0,life:.2});f={x:b.x,y:b.y};hit(b,m)}return done.size}
 function kill(e){
+  if(e.mp)return;
   const i=W.ents.indexOf(e);if(i<0)return;W.ents.splice(i,1);G.kills++;sfx(e.champ||isBoss(e.k)?'bigkill':'kill');const t=ET[e.k];
   parts(e.x,e.y,isBoss(e.k)?40:e.champ?18:9,[t.pal[0],t.pal[1],'#2a2630','#ffb84a'],3.2);W.fx.push({k:'ring',x:e.x,y:e.y,r:.9*e.sz,t:0,life:.3,col:'#ffb238'});
   W.decals.push({x:e.x,y:e.y,r:e.r*1.6,a:rnd(0,3)});if(W.decals.length>70)W.decals.shift();if(OPT.shake)shake=Math.max(shake,e.champ?5:2);
@@ -1002,8 +1015,9 @@ function kill(e){
     save(true);P.inv=4;
     const rep=(b3?G.boss3Kills:b2?G.boss2Kills:G.bossKills)>1;
     setTimeout(()=>{if(rep){toast(ET[e.k].n+' falls again.');return}if(b3)playScene(ENDING3.concat(CLOCK3),()=>{mode='play';actDone(3)});else playScene(b2?ENDING2:endingSlides(),()=>{mode='play';actDone(b2?2:1)})},1400)}}
-function gainXp(v){if(P.shr&&P.shr.k==='xp')v*=1.5;v*=(G.hc?1.25:1)*(SEA.k==='over'?1.2:1);if(G.lvl>=lvlCap()){paraXp(v);return}G.xp+=v;while(G.xp>=xpNext(G.lvl)&&G.lvl<lvlCap()){G.xp-=xpNext(G.lvl);G.lvl++;G.sp++;G.ap+=5;calc();G.hp=S.maxHp;G.en=S.maxEn;sfx('level');toast('Level '+G.lvl+'. One skill point and five attribute points.');W.fx.push({k:'ring',x:P.x,y:P.y,r:2.8,t:0,life:.7,col:'#ffe36b'});parts(P.x,P.y,24,['#ffe36b','#fff'],2,1.6)}}
-function hurt(d,slow,src){if(P.inv>0||mode!=='play'||G.god)return;d*=partyD();
+function gainXp(v,fromParty){if(P.shr&&P.shr.k==='xp')v*=1.5;v*=(G.hc?1.25:1)*(SEA.k==='over'?1.2:1);if(!fromParty)mpShareXp(v);
+  if(G.lvl>=lvlCap()){paraXp(v);return}G.xp+=v;while(G.xp>=xpNext(G.lvl)&&G.lvl<lvlCap()){G.xp-=xpNext(G.lvl);G.lvl++;G.sp++;G.ap+=5;calc();G.hp=S.maxHp;G.en=S.maxEn;sfx('level');toast('Level '+G.lvl+'. One skill point and five attribute points.');W.fx.push({k:'ring',x:P.x,y:P.y,r:2.8,t:0,life:.7,col:'#ffe36b'});parts(P.x,P.y,24,['#ffe36b','#fff'],2,1.6)}}
+function hurt(d,slow,src){if(P.inv>0||(mode!=='play'&&!(src&&src.pvp))||G.god)return;d*=partyD();
   if(S.dodge&&Math.random()*100<S.dodge){float(P.x,P.y,'Dodge','#9fe0d0',1);sfx('whiff');return}
   d=typedIn(d,src);d*=S.taken||1;d*=100/(100+S.armor*(P.mech>0?2:1)*(P.guard>0?1.6:1)*(P.shr&&P.shr.k==='guard'?2:1));
   if(S.enc){const a=Math.min(G.en,d*S.enc);G.en-=a;d-=a}
@@ -1113,6 +1127,7 @@ function findAct(){for(const o of W.objs)if(o.k==='qobj'&&!o.used&&Math.hypot(o.
 
 /* ================= update ================= */
 function update(dt){
+  mpTick(dt);
   G.time+=dt;const gr=G.adopt>=100?1:Math.pow(SEA.k==='stim'?1.005:1.0025,dt*(1.45-G.adopt/100)*(G.fate==='fail'?1.4:1));G.cpi*=gr;if(S.sp.hedge)G.credits*=gr;G.ubiT=Math.max(0,G.ubiT-dt);G.chuteT=Math.max(0,G.chuteT-dt);
   const c=CLS[G.cls];
   for(const k of['atk','swing','flash','inv','slow','buff','haste','guard','warn','movedT','spin','stealth','ambT','mech','crunch','streakT','silence','oc'])P[k]=Math.max(0,P[k]-dt);
@@ -1136,6 +1151,7 @@ function update(dt){
   else if(atkHeld||keys.Space||keys.KeyJ||(OPT.auto&&P.atk<=0&&nearest(CLS[G.cls].melee?1.9:6)))attack();
   // enemies
   for(const e of W.ents.slice()){
+    if(e.mp){e.flash=Math.max(0,e.flash-dt);continue}
     e.flash=Math.max(0,e.flash-dt);e.ph+=dt;e.mark=Math.max(0,e.mark-dt);e.slow=Math.max(0,e.slow-dt);e.ward=Math.max(0,(e.ward||0)-dt);if(e.k==='aegis')for(const o of W.ents)if(o!==e&&o.k!=='aegis'&&dist(o,e)<4)o.ward=.4;e.arcCd=Math.max(0,e.arcCd-dt);
     if(e.stun>0){e.stun-=dt;continue}
     let T=P;for(const a of W.allies)if(a.k==='decoy'&&dist(a,e)<7)T=a;
@@ -1157,7 +1173,7 @@ function update(dt){
       if(d<=t.range+.8&&e.cd<=0){e.cd=t.atk*(e.mods.fast?.7:1);sfx('eshoot');W.projs.push({x:e.x,y:e.y,vx:dx/d*5.5,vy:dy/d*5.5,life:1.6,foe:true,dmg:e.dmg,slow:t.slow,drain:t.drain,sil:t.sil,src:e,col:t.sil?'#e6e2d6':t.drain?'#b48cff':t.slow?'#7be495':e.k==='aegis'?'#9fd0ff':'#ff5d9a'})}}
     else{if(d>t.range*.75+e.r)mv(e,dx/d*sp,dy/d*sp);if(d<=t.range+e.r&&e.cd<=0){e.cd=t.atk*(e.mods.fast?.7:1);e.wind=e.k==='mech'?.45:.3}}
   }
-  for(let i=0;i<W.ents.length;i++){const a=W.ents[i];if(!a.aggro||a.lunge)continue;for(let j=i+1;j<W.ents.length;j++){const b=W.ents[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy),m=a.r+b.r;if(d<m&&d>.001){const p=(m-d)/2;mv(a,-dx/d*p,-dy/d*p);mv(b,dx/d*p,dy/d*p)}}}
+  for(let i=0;i<W.ents.length;i++){const a=W.ents[i];if(a.mp||!a.aggro||a.lunge)continue;for(let j=i+1;j<W.ents.length;j++){const b=W.ents[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy),m=a.r+b.r;if(d<m&&d>.001){const p=(m-d)/2;mv(a,-dx/d*p,-dy/d*p);mv(b,dx/d*p,dy/d*p)}}}
   // allies
   for(const a of W.allies.slice()){DT=a.dt||null;a.life-=dt;if(a.cd!==undefined)a.cd-=dt;
     if(a.k==='turret'&&a.cd<=0){const t=nearest(6,a);if(t){a.cd=.45;sfx('zap');const d=dist(t,a)||1;shoot({x:(t.x-a.x)/d,y:(t.y-a.y)/d},a.m,0,{from:a,life:.6,col:'#59e0e6'})}}
@@ -2731,18 +2747,20 @@ function render(){
     if(f.k==='warn'){ctx.fillStyle='rgba(255,70,60,'+(.15+.3*u)+')';ctx.beginPath();ctx.ellipse(X,Y,f.r*45,f.r*22.5,0,0,6.283);ctx.fill();ctx.strokeStyle='#ff5d4d';ctx.lineWidth=2;ctx.stroke()}}
   for(const p of W.portals)if(vis(p))dl.push({d:p.x+p.y,k:4,x:p.x,y:p.y,arch:p.kind!=='home',col:p.kind==='next'?'#ff7a3c':p.kind==='home'?'#4a8cff':'#7be495'});
   if(z.town&&G.portal)dl.push({d:24,k:4,x:12.5,y:11.5,col:'#4a8cff'});
-  for(const e of W.ents)if(vis(e))dl.push({d:e.x+e.y,k:1,o:e});
+  for(const e of W.ents)if(!e.mp&&vis(e))dl.push({d:e.x+e.y,k:1,o:e});
   for(const n of W.npcs)dl.push({d:n.x+n.y,k:2,o:n});
   for(const o of W.objs)if(vis(o))dl.push({d:o.x+o.y,k:6,o});
   for(const a of W.allies)if(a.k!=='trops'&&a.k!=='storm'&&a.k!=='blast'&&a.k!=='raid')dl.push({d:a.x+a.y,k:5,o:a});
   if(W.merc&&W.merc.hp>0)dl.push({d:W.merc.x+W.merc.y,k:8,o:W.merc});if(W.tag&&W.tag.hp>0)dl.push({d:W.tag.x+W.tag.y,k:8.5,o:W.tag});if(W.esc)dl.push({d:W.esc.x+W.esc.y,k:9,o:W.esc});
   for(const d of W.drops)dl.push({d:d.x+d.y-.3,k:7,o:d});
+  for(const o of MP.others)dl.push({d:o.x+o.y,k:11,o});
   dl.push({d:pd,k:3});
   dl.sort((a,b)=>a.d-b.d);
   for(const q of dl){
     if(q.k===0){const tex=q.h===1?TX.low:TX.wall[q.h-2];if(q.near)ctx.globalAlpha=.32;ctx.drawImage(tex,q.X-33,q.Y-17-(tex.height-34));ctx.globalAlpha=1}
     else if(q.k===1){const e=q.o,X=SX(e.x,e.y),Y=SY(e.x,e.y);drawEnemy(e,X,Y);if(e.k==='bull'&&e.say&&e.aggro&&((tNow*.5+e.ph)%6)<2.2)bubble(X,Y-58,['Moo.','Number go up.','Up only.','This time is different.','Have fun staying poor.'][(e.ph*10|0)%5])}
     else if(q.k===2)drawNpc(q.o,SX(q.o.x,q.o.y),SY(q.o.x,q.o.y));
+    else if(q.k===11)mpDraw(q.o,SX(q.o.x,q.o.y),SY(q.o.x,q.o.y));
     else if(q.k===3){const X=SX(P.x,P.y),Y=SY(P.x,P.y);drawPlayer(X,Y);light(X,Y-20,z.town?400:310,null);light(X,Y-20,1150,null,TX.fill)}
     else if(q.k===8){const m=q.o,X=SX(m.x,m.y),Y=SY(m.x,m.y),t=MERCS[G.merc.k],fl=m.flash>0;ctx.strokeStyle='#7be495';ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(X,Y,14,7,0,0,6.283);ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4;
       if(G.merc.k==='hound'){shadow(X,Y,12);const y=Y-11,f=m.fx,lp=m.mov?Math.sin(m.ph*16)*3:0;ctx.fillStyle='#3a2e22';for(const[ox,ph]of[[-8,1],[-4,-1],[5,1],[9,-1]])ctx.fillRect(X+f*ox-1.5,y,3,11+ph*lp*.6);box(X-11,y-7,22,10,4,fl?'#fff':t.col);box(X+f*8-5,y-13,11,9,3,fl?'#fff':t.col);poly([X+f*8,y-13,X+f*5,y-19,X+f*11,y-14],t.col);ctx.fillStyle='#0b0912';ctx.fillRect(X+f*11-1,y-10,2,2)}
@@ -3036,7 +3054,7 @@ function hud(){objHud();if(P&&P.dg)setT('dgn',P.dg.n);
 
 /* ================= sheets ================= */
 let tab='items',sel=null,sheetCtx={},lastBox=null;
-const TABS={web:'Web',char:'Hero',items:'Items',skills:'Skills',quests:'Quests',story:'Story',codex:'Codex',opts:'Options',shop:'Trade',gamble:'Boxes',travel:'Travel',load:'Load',merc:'Hire',sats:'Sats',bounty:'Bounties',stash:'Lockbox',shift:'Shape shift'};
+const TABS={party:'Party',web:'Web',char:'Hero',items:'Items',skills:'Skills',quests:'Quests',story:'Story',codex:'Codex',opts:'Options',shop:'Trade',gamble:'Boxes',travel:'Travel',load:'Load',merc:'Hire',sats:'Sats',bounty:'Bounties',stash:'Lockbox',shift:'Shape shift'};
 const satPrice=o=>Math.ceil(o.price*(cause()?.75:1)*(repRank('btc')>=1?.9:1)*((G.lean||0)<-50?1.15:1));
 const satRate=()=>mktMid();
 /* ================= the price chart =================
@@ -3115,7 +3133,7 @@ function mercBest(){let n=0;const m=G.merc;for(const sl of MSL){let b=-1,bs=mSco
 const pkRow=()=>`<h3>Pick up on your own</h3><div class="row">${['Normal','Magic','Rare','Set','Unique'].map((n,q)=>`<button class="ghost q${q}" data-opt="pk${q}" style="padding:10px 2px;font-size:10px;${OPT['pk'+q]===false?'opacity:.35;text-decoration:line-through':''}">${n}</button>`).join('')}</div><button class="tog${OPT.pkBetter?' on':''}" data-opt="pkBetter"><span>Only pick up gear better than what I am wearing</span><i>${OPT.pkBetter?'ON':'OFF'}</i></button><p style="font-size:13px">Struck-out tiers are left on the ground. Unidentified gear cannot be judged, so it is still picked up. Stand on one and use the action button to take it anyway. A piece for an empty slot is always picked up.</p>`;
 const selling=()=>sheetCtx.only&&(sheetCtx.only.includes('shop')||sheetCtx.only.includes('gamble'))&&!sheetCtx.only.includes('sats');
 function drawSheet(){
-  const only=sheetCtx.only||['char','items','skills','web','quests','story','codex','opts'];let pop='';$('pop').hidden=true;
+  const only=sheetCtx.only||(mpOn()?['char','items','skills','web','party','quests','story','codex','opts']:['char','items','skills','web','quests','story','codex','opts']);let pop='';$('pop').hidden=true;
   let h=`<div class="shead">${only.map(t=>`<button class="tab${tab===t?' on':''}" data-tab="${t}">${TABS[t]}${t==='skills'&&G&&G.sp?' •':t==='char'&&G&&G.ap?' •':t==='story'&&sdxUnseen()?' •':''}</button>`).join('')}<button class="tab x" data-close="1">Close</button></div>`;
   if(tab==='load'){h+=`<h2>Load a save code</h2><p>Paste a code copied from the Options tab. This replaces the saved wanderer on this device.</p><textarea id="codeIn" placeholder="Paste here"></textarea><button class="big" data-loadcode="1">Load</button>`;$('sheetIn').innerHTML=h;return}
   calc();
@@ -3180,6 +3198,7 @@ function drawSheet(){
         else h+=`<div class="memo sdxlock"><b>${esc(e.n)}</b><p>Not yet.${e.l?' '+esc(e.l):''}</p></div>`}
       h+=`</div>`}
     sdxSeen()}
+  if(tab==='party')h+=mpPanel();
   if(tab==='codex'){const mf=Math.round(mfNow());
     h+=`<h2>Drop rates</h2><p>Every kill makes a number of rolls. Each roll lands on nothing, credits, an item or a stim. An item then tests for quality in order: unique, set, rare, magic. Odds below include your <strong>${mf}% magic find</strong>, which helps less and less on the rarer tiers.</p><div class="tw"><table><tr><th>Source</th><th>Rolls</th><th>None</th><th>₡</th><th>Item</th><th>Stim</th><th>Magic</th><th>Rare</th><th>Set</th><th>Unique</th></tr>`;
     for(const k in TC){const t=TC[k],sum=t.no+t.gold+t.item+t.stim,c=qChance(k,mf),p=v=>Math.round(v/sum*100)+'%',o=v=>v>=1?'always':'1 in '+Math.round(1/v);
@@ -3349,6 +3368,7 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web]'
   if(d.mko){const n=Math.max(1,mktQty),off=+d.mko.slice(1)/100,buy=d.mko[0]==='b',px=mktMid()*(buy?1-off:1+off);
     if(!mktPost(n,px,buy?'buy':'sell')){toast(buy?'Not enough credits to hold that bid':'Not that many sats to post');sfx('err')}}
   if(d.mkx!==undefined)mktCancel(+d.mkx);
+  if(mpClick(d))return;
   if(d.mkr)if(!mktRepay()){toast('Not enough credits to repay him');sfx('err')}
   if(d.mkb){const n=Math.max(1,Math.min(G.sats,mktQty));if(!mktBorrow(n)){toast(G.mkt.pos?'He will only hold one position':'Not enough sats');sfx('err')}}
   if(d.satbuy){const o=satShop[sel.sat];if(o&&G.sats>=satPrice(o)&&G.bag.length<24){G.sats-=satPrice(o);addRep('btc',Math.ceil(o.price/4));addAdopt(1,'you paid in sats');G.bag.push(o.it);satShop.splice(sel.sat,1);sel=null;sfx('coin');toast('Paid in sats')}}
@@ -3404,6 +3424,7 @@ $('bAct').addEventListener('click',()=>{if(mode==='play'&&actTarget){sfx('ui');a
 $('bSwap').addEventListener('click',()=>{if(!SWAP||mode!=='play')return;const i=G.bag.indexOf(SWAP.it);if(i>=0&&equipFromBag(i))toast('Equipped '+SWAP.it.name);SWAP=null});
 $('bMenu').addEventListener('click',()=>openSheet('items',{}));$('bChars').addEventListener('click',()=>{sfx('ui');openSheet('opts',{})});
 $('bMap').addEventListener('click',()=>{OPT.minimap=!OPT.minimap});
+$('bBug').addEventListener('click',bugAsk);
 $('bRecall').addEventListener('click',openPortal);
 addEventListener('keydown',e=>{if(e.target&&e.target.tagName==='TEXTAREA')return;keys[e.code]=true;if(mode==='play'){if(e.code==='Digit1')cast(0);if(e.code==='Digit2')cast(1);if(e.code==='Digit3')cast(2);if(e.code==='KeyQ')stim();if(e.code==='ShiftLeft')dodge();if(e.code==='KeyE'&&actTarget)actTarget.fn();if(e.code==='KeyT')openPortal();if(e.code==='Tab'){OPT.minimap=!OPT.minimap;e.preventDefault()}if(e.code==='KeyB'||e.code==='KeyI')openSheet('items',{});if(e.code==='Space')e.preventDefault()}
   else if(mode==='sheet'&&(e.code==='Escape'||e.code==='KeyB'))closeSheet()});
@@ -3457,5 +3478,461 @@ QRW.push(
  ['q22','marrow','“First seen, first served. It sounds like fairness. Most capture does.” You gain 1 skill point.',()=>G.sp++,'Marrow'],
  ['q23','null','“They did not take the coin. They took the paper that stood for the coin, out of relief, because paper is easier to hold. I have watched whole faiths go that way.” You gain 5 attribute points.',()=>G.ap+=5,'Sister Null'],
  ['q24','gramps','“Ninety-three pages. Uncertain knowledge and reasoning. Huh. All that power, and what she never had was the part where you say: I might be wrong. Keep it on you, kid. Something up there is going to ask to see it.” You gain 1 skill point, and you carry the seventh part.',()=>{G.sp++;G.module=1},'Gramps']);
+/* ================= parties, hostility, and the rig =================
+   Loaded last, so everything else is already in scope. Inert unless the page is being
+   served by the account server: on an Artifact or a file:// copy `mpOn()` is false and
+   every hook below returns immediately, which is why none of them are guarded at the
+   call sites.
+
+   The rules are Diablo II's. A party is an invitation both sides agree to. Experience is
+   split among the members who are actually in the district with you, weighted by level,
+   with a bonus for the size of the party. Hostility is declared rather than ambient, it
+   throws you out of the party, and it does not come back. Town is safe. */
+
+const MP = {
+  on: false, conn: null, me: null, roster: [], party: null, invite: null,
+  others: [], hostile: {}, chat: [], sim: null, unread: 0, retry: 0, scope: 'all',
+  maxParty: 8, pvpScale: .25, simZone: 6, lastMove: 0, note: ''
+};
+
+const mpOn = () => MP.on && !!MP.conn && MP.conn.readyState === 1;
+const mpHostileTo = uid => !!MP.hostile[uid];
+
+function mpSend(t, o) { if (mpOn()) try { MP.conn.send(JSON.stringify(Object.assign({ t }, o))); } catch (e) {} }
+
+function mpConnect() {
+  if (MP.conn || typeof WebSocket === 'undefined') return;
+  /* Only the account server serves this page with a shim; anywhere else there is nobody
+     to talk to and the game stays exactly as it was. */
+  if (!window.claude || !window.claude.use || !location.protocol.startsWith('http')) return;
+  let url;
+  try { url = (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/live'; }
+  catch (e) { return; }
+  let c;
+  try { c = new WebSocket(url); } catch (e) { return; }
+  MP.conn = c;
+  c.onopen = () => {
+    MP.on = true; MP.retry = 0;
+    mpHello();
+    if (!MP.beat) MP.beat = setInterval(mpBeat, 100);
+  };
+  c.onmessage = ev => { let m; try { m = JSON.parse(ev.data); } catch (e) { return; } mpRecv(m); };
+  c.onclose = () => {
+    MP.on = false; MP.conn = null; MP.others = []; MP.party = null;
+    /* Back off rather than hammering a server that is down or a session that expired. */
+    if (MP.retry < 6) setTimeout(mpConnect, 2000 * Math.pow(2, MP.retry++));
+  };
+  c.onerror = () => {};
+}
+
+function mpHello() {
+  if (!G) return;
+  mpSend('hello', { lvl: G.lvl, cls: G.cls, zi: W ? W.zi : 0, hp: G.hp, hpm: S.maxHp, act: actOf ? actOf(W ? W.zi : 0) : 1 });
+}
+
+function mpSay(text) {
+  MP.chat.push({ from: '', text, sys: 1, t: Date.now() });
+  if (MP.chat.length > 120) MP.chat.shift();
+  MP.unread++;
+  toast(text);
+}
+
+function mpRecv(m) {
+  if (m.t === 'you') {
+    MP.me = { uid: m.uid, name: m.name };
+    MP.maxParty = m.maxParty; MP.pvpScale = m.pvpScale; MP.simZone = m.simZone;
+    mpHello();
+  } else if (m.t === 'roster') {
+    MP.roster = m.players || [];
+  } else if (m.t === 'party') {
+    MP.party = m.id ? m : null; MP.sim = m.sim || null; MP.invite = null;
+  } else if (m.t === 'invited') {
+    MP.invite = m;
+    dlg(m.from + ' asks you to party', 'Level ' + m.lvl + ' ' + ((CLS[m.cls] || {}).n || 'stranger') +
+      '. Experience in a party is split among whoever is in the district with you, by level, and there is more of it the more of you there are.',
+      [['Join them', () => { mpSend('accept', { uid: m.uid }); MP.invite = null; }], ['Not now', () => { mpSend('decline', { uid: m.uid }); MP.invite = null; }]]);
+  } else if (m.t === 'zone') {
+    mpZone(m);
+  } else if (m.t === 'chat') {
+    MP.chat.push({ from: m.from, uid: m.uid, text: m.text, scope: m.scope, t: Date.now() });
+    if (MP.chat.length > 120) MP.chat.shift();
+    MP.unread++;
+    if (mode !== 'sheet' || tab !== 'party') toast((m.scope === 'party' ? '[party] ' : '') + m.from + ': ' + m.text);
+  } else if (m.t === 'hostile') {
+    if (m.toUid === (MP.me && MP.me.uid)) MP.hostile[m.fromUid] = 1;
+    mpSay(m.from + ' has declared hostility against ' + m.to + '.');
+    sfx('err');
+  } else if (m.t === 'sys') {
+    mpSay(m.text);
+  } else if (m.t === 'xp') {
+    /* A party member's kill, already weighted and bonused by the server. */
+    if (G && mode !== 'title') { gainXp(m.amount, 1); if (mode === 'play') float(P.x, P.y, '+' + m.amount + ' party', '#9fd0ff', 1); }
+  } else if (m.t === 'quest') {
+    if (G && G.q[m.k] !== undefined && G.q[m.k] < m.v) { G.q[m.k] = m.v; toast(m.from + ' finished ' + (QUESTS[m.k] ? QUESTS[m.k].n : m.k) + ' with you.'); }
+  } else if (m.t === 'pvp') {
+    mpTakeHit(m);
+  } else if (m.t === 'kill') {
+    mpSay(m.duel ? m.killer + ' took the duel against ' + m.dead + '.' : m.killer + ' has slain ' + m.dead + '.');
+  } else if (m.t === 'sim') {
+    mpSimMsg(m);
+  }
+}
+
+/* ---------- other players in your district ---------- */
+function mpZone(m) {
+  const seen = {};
+  for (const r of m.players) {
+    seen[r.uid] = 1;
+    let o = MP.others.find(q => q.uid === r.uid);
+    if (!o) { o = { uid: r.uid, x: r.x, y: r.y, px: r.x, py: r.y }; MP.others.push(o); }
+    /* Hold the previous position and interpolate toward the new one, so ten updates a
+       second do not look like ten updates a second. */
+    o.px = o.x; o.py = o.y; o.tx = r.x; o.ty = r.y; o.lerp = 0;
+    o.name = r.name; o.lvl = r.lvl; o.cls = r.cls; o.dir = r.dir; o.hp = r.hp; o.hpm = r.hpm;
+  }
+  for (let i = MP.others.length - 1; i >= 0; i--) if (!seen[MP.others[i].uid]) MP.others.splice(i, 1);
+}
+
+/* One inert stand-in per hostile in your district, kept in W.ents so that everything the
+   game already knows how to aim finds them. */
+function mpSyncEnts() {
+  if (!W || !W.ents) return;
+  const safe = W.z && W.z.town;   /* town is safe, so there is nothing to aim at in one */
+  for (let i = W.ents.length - 1; i >= 0; i--) {
+    const e = W.ents[i];
+    if (e.mp && !MP.others.some(o => o.uid === e.mp && mpHostileTo(o.uid))) W.ents.splice(i, 1);
+  }
+  for (const o of MP.others) {
+    if (safe || !mpHostileTo(o.uid)) continue;
+    let e = W.ents.find(q => q.mp === o.uid);
+    if (!e) {
+      e = { mp: o.uid, k: 'player', x: o.x, y: o.y, r: .55, sz: 1, hp: o.hp, max: o.hpm, flash: 0,
+        ph: 0, mark: 0, slow: 0, ward: 0, stun: 0, aggro: 0, mods: {}, dmg: 0, name: o.name, hits: 0 };
+      W.ents.push(e);
+    }
+    e.x = o.x; e.y = o.y; e.hp = o.hp; e.max = o.hpm;
+  }
+}
+
+function mpHurt(e, d, crit) {
+  const o = MP.others.find(q => q.uid === e.mp);
+  if (!o) return;
+  /* Shown locally straight away so the hit feels like a hit; the number that counts comes
+     back from the server, which is also the only thing that decides whether it counted. */
+  e.hp = Math.max(0, e.hp - d * MP.pvpScale);
+  float(e.x, e.y, Math.round(d * MP.pvpScale) + (crit ? '!' : ''), '#ffb4ae', 0);
+  parts(e.x, e.y, crit ? 5 : 2, ['#ffd27a', '#fff', '#ff9a3c'], 2.2);
+  mpSend('pvp', { uid: e.mp, dmg: d, kind: crit ? 'crit' : '' });
+}
+
+/* Smoothing runs at frame rate, from update(). */
+function mpTick(dt) {
+  if (!mpOn() || !G) return;
+  for (const o of MP.others) {
+    if (o.lerp === undefined) continue;
+    o.lerp = Math.min(1, o.lerp + dt * 9);
+    o.x = o.px + (o.tx - o.px) * o.lerp;
+    o.y = o.py + (o.ty - o.py) * o.lerp;
+  }
+}
+
+/* Reporting where you are runs on its own clock, because update() stops while a dialog
+   or a sheet is open and somebody reading their inventory has not left the district. */
+function mpBeat() {
+  if (!mpOn() || !G || !W || !P || mode === 'title') return;
+  mpSyncEnts();
+  MP.lastMove = performance.now();
+  mpSend('move', {
+    x: +P.x.toFixed(2), y: +P.y.toFixed(2), zi: W.zi,
+    dir: Math.atan2(P.dir.y, P.dir.x),
+    hp: Math.round(G.hp), hpm: Math.round(S.maxHp), inst: W.inst || null
+  });
+}
+
+/* Drawn simply and labelled clearly: in a fight you need to know at a glance who is a
+   friend, who has declared against you, and how close they are to going down. */
+function mpDraw(o, X, Y) {
+  const c = CLS[o.cls] || { col: '#9aa' }, hos = mpHostileTo(o.uid), mate = mpInParty(o.uid);
+  shadow(X, Y, 11);
+  ctx.strokeStyle = hos ? '#e2443c' : mate ? '#7be495' : '#6f6a86';
+  ctx.lineWidth = 1.6;
+  ctx.beginPath(); ctx.ellipse(X, Y, 14, 7, 0, 0, 6.283); ctx.stroke();
+  const f = Math.cos(o.dir || 0) >= 0 ? 1 : -1, y = Y - 34;
+  ctx.fillStyle = '#2a2436';
+  ctx.fillRect(X - 4, y + 20, 3.5, 13); ctx.fillRect(X + 1, y + 20, 3.5, 13);
+  box(X - 7, y + 7, 14, 15, 4, c.col);
+  box(X - 5.5, y - 5, 11, 11, 4, '#d9c3a6');
+  ctx.fillStyle = OL; ctx.fillRect(X - 3 + f * 1.5, y - 1, 1.6, 1.6); ctx.fillRect(X + 1 + f * 1.5, y - 1, 1.6, 1.6);
+  /* health, then the name, then the mark if they have declared */
+  const w = 30, hp = Math.max(0, Math.min(1, (o.hp || 0) / (o.hpm || 1)));
+  ctx.fillStyle = 'rgba(8,6,14,.75)'; ctx.fillRect(X - w / 2, y - 18, w, 4);
+  ctx.fillStyle = hos ? '#e2443c' : '#7be495'; ctx.fillRect(X - w / 2 + .5, y - 17.5, (w - 1) * hp, 3);
+  ctx.font = '600 10px Cinzel,serif'; ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(8,6,14,.8)';
+  const nm = (hos ? '⚔ ' : '') + o.name + ' · ' + o.lvl;
+  const tw = ctx.measureText(nm).width;
+  ctx.fillRect(X - tw / 2 - 3, y - 32, tw + 6, 12);
+  ctx.fillStyle = hos ? '#f0918b' : mate ? '#9fe0b4' : '#cfc8dd';
+  ctx.fillText(nm, X, y - 23);
+  ctx.textAlign = 'left';
+}
+
+const mpInParty = uid => !!(MP.party && MP.party.members && MP.party.members.some(m => m.uid === uid));
+
+/* ---------- experience and quests shared with the party ---------- */
+function mpShareXp(v) {
+  if (!mpOn() || !MP.party || !(v > 0)) return;
+  mpSend('xp', { amount: Math.round(v) });
+}
+function mpShareQuest(k, v) {
+  if (!mpOn() || !MP.party) return;
+  mpSend('quest', { k, v });
+}
+
+/* ---------- fighting each other ----------
+   Your client says it hit; the server decides whether the two of you are allowed to fight
+   and scales the damage; their client applies it. A friend could cheat this, and the only
+   honest answer is that this is a server for people who know each other. */
+function mpPvp(dmg, kind, x, y) {
+  if (!mpOn() || !(dmg > 0)) return false;
+  let best = null, bd = 1.3;
+  for (const o of MP.others) {
+    if (!mpHostileTo(o.uid)) continue;
+    const d = Math.hypot(o.x - x, o.y - y);
+    if (d < bd) { bd = d; best = o; }
+  }
+  if (!best) return false;
+  mpSend('pvp', { uid: best.uid, dmg, kind: kind || '' });
+  float(best.x, best.y, Math.round(dmg * MP.pvpScale), '#ffb4ae', 1);
+  return true;
+}
+
+function mpTakeHit(m) {
+  if (!G || mode === 'title') return;
+  if (mode === 'sheet') closeSheet();
+  const was = G.hp;
+  /* Through the game's own damage path, so armour and resistances apply to a person the
+     same way they apply to a machine, and death — including the rig's painless kind —
+     is the code that already exists rather than a second copy of it. */
+  hurt(m.dmg, 0, { name: m.from, pvp: 1 });
+  if (G.hp <= 0 && was > 0) mpSend('died', { uid: m.fromUid });
+}
+
+/* ---------- the rig ---------- */
+function mpSimMsg(m) {
+  if (m.action === 'open') {
+    MP.sim = m.sim;
+    dlg('The rig is booked', m.sim.mode === 'duel'
+      ? m.by + ' has set the Simulator to duelling. Inside, hostility is the point: nothing you lose in there is real, and nothing you win is either. Declare against each other first, or you will both swing at nothing.'
+      : m.by + ' has set the Simulator to waves, together. Everyone in the party fights the same wave, and the first to clear it moves everybody on.',
+      [['Go to the rig', () => { enter(MP.simZone); }], ['Later']]);
+  } else if (m.action === 'wave') {
+    if (W && W.zi === MP.simZone && W.sim) { W.sim.wave = Math.max(W.sim.wave || 0, m.wave); toast('Wave ' + m.wave + '.'); }
+  } else if (m.action === 'close') {
+    MP.sim = null;
+  }
+}
+function mpSimWave(w) { if (mpOn() && MP.party && W && W.zi === MP.simZone) mpSend('sim', { action: 'wave', wave: w }); }
+
+/* ---------- the panel ---------- */
+function mpPanel() {
+  if (!mpOn()) return '<p>Not connected to a game. Parties need the account server — on a single copy of the page there is nobody else to ask.</p>';
+  const me = MP.me || {}, party = MP.party;
+  let h = '';
+
+  if (party) {
+    const lead = party.leader;
+    h += '<h3>Your party · ' + party.members.length + ' of ' + MP.maxParty + '</h3>';
+    h += '<p style="font-size:13px">Experience is split among the members in the district with you, weighted by level, and there is more of it the more of you there are: ' +
+      [1, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3][Math.min(7, party.members.length - 1)].toFixed(2).replace(/0$/, '') +
+      '× at this size. Somebody standing in town is not helping.</p>';
+    h += '<div class="list">';
+    for (const m of party.members) {
+      const you = m.uid === me.uid;
+      h += '<div class="li on"><i style="background:' + ((CLS[m.cls] || {}).col || '#888') + '"></i><div><b>' + esc(m.name) + (m.uid === lead ? ' · leader' : '') + (you ? ' · you' : '') + '</b>' +
+        '<span>Level ' + m.lvl + ' ' + ((CLS[m.cls] || {}).n || '') + ' · ' + mpWhere(m.zi) + '</span></div>' +
+        (you ? '' : '<button class="ghost sm" data-mph="' + m.uid + '">Hostile</button>') + '</div>';
+    }
+    h += '</div>';
+    h += '<div class="row"><button class="ghost" data-mpl="1">Leave the party</button></div>';
+    if (party.leader === me.uid) {
+      h += '<h3>The rig</h3><p style="font-size:13px">The Simulator takes a party. Waves together, or a duel — the rig is the one place a fight between you costs nothing, because nothing in it is real.</p>' +
+        '<div class="row"><button class="ghost" data-mps="waves">Waves, together</button><button class="ghost" data-mps="duel">Duel in the rig</button></div>';
+      if (MP.sim) h += '<div class="row"><button class="ghost" data-mps="close">Close the rig</button></div>';
+    } else if (MP.sim) {
+      h += '<h3>The rig is open · ' + MP.sim.mode + '</h3><div class="row"><button class="ghost" data-mpg="1">Go to the rig</button></div>';
+    }
+  } else {
+    h += '<h3>You are alone</h3><p style="font-size:13px">Ask somebody below. A party shares experience by level among whoever is actually in the district, and shares quest progress with whoever is standing there when it happens.</p>';
+  }
+
+  const others = MP.roster.filter(r => r.uid !== me.uid);
+  h += '<h3>In the world · ' + (MP.roster.length) + '</h3>';
+  if (!others.length) h += '<p>Nobody else is on. The town is quieter than usual.</p>';
+  else {
+    h += '<div class="list">';
+    for (const r of others) {
+      const hos = mpHostileTo(r.uid) || (r.hostile || []).indexOf(me.uid) >= 0;
+      const mate = mpInParty(r.uid);
+      h += '<div class="li"><i style="background:' + ((CLS[r.cls] || {}).col || '#888') + '"></i><div><b' + (hos ? ' style="color:#e2443c"' : '') + '>' + esc(r.name) + (hos ? ' · hostile' : mate ? ' · with you' : '') + '</b>' +
+        '<span>Level ' + r.lvl + ' ' + ((CLS[r.cls] || {}).n || '') + ' · ' + mpWhere(r.zi) + (r.party ? ' · in a party' : '') + '</span></div>' +
+        (mate || hos ? '' : '<button class="ghost sm" data-mpi="' + r.uid + '">Invite</button>') +
+        (hos ? '' : '<button class="ghost sm" data-mph="' + r.uid + '">Hostile</button>') + '</div>';
+    }
+    h += '</div>';
+    h += '<p style="font-size:13px">Declaring hostility takes them out of your party and lets the two of you fight anywhere that is not a town. It cannot be taken back while you are both here — which is the only thing that makes it mean anything.</p>';
+  }
+
+  h += '<h3>Say something</h3>';
+  h += '<div class="row"><button class="ghost' + (MP.scope === 'all' ? ' on' : '') + '" data-mpc="all">Everyone</button><button class="ghost' + (MP.scope === 'party' ? ' on' : '') + '" data-mpc="party">Party only</button></div>';
+  h += '<div class="row"><input id="mpIn" maxlength="400" placeholder="' + (MP.scope === 'party' ? 'to your party' : 'to everyone') + '" style="flex:1;background:#0a0912;border:1px solid #3a3350;color:#e8e2d4;border-radius:6px;padding:10px;font:15px Georgia,serif"><button class="ghost" data-mpt="1" style="flex:0 0 72px">Send</button></div>';
+  h += '<div class="list">';
+  for (const c of MP.chat.slice(-30).reverse()) {
+    h += '<div class="li"><div>' + (c.sys ? '<span style="color:#9a93ad">' + esc(c.text) + '</span>'
+      : '<b>' + esc(c.from) + (c.scope === 'party' ? ' · party' : '') + '</b><span>' + esc(c.text) + '</span>') + '</div></div>';
+  }
+  h += '</div>';
+  return h;
+}
+
+window.__mp={MP,send:mpSend,get on(){return mpOn()},get roster(){return MP.roster},get me(){return MP.me}};
+
+function mpWhere(zi) {
+  if (zi === undefined || zi === null) return 'somewhere';
+  if (zi === MP.simZone) return 'the rig';
+  const z = ZONES[zi];
+  return z ? z.n : 'district ' + zi;
+}
+
+function mpClick(d) {
+  if (d.mpi) { mpSend('invite', { uid: d.mpi }); return true; }
+  if (d.mph) {
+    const r = MP.roster.find(x => x.uid === d.mph);
+    dlg('Declare against ' + ((r && r.name) || 'them') + '?',
+      'They leave your party, the two of you can fight anywhere outside a town, and it does not come back while you are both in this world. Damage between players lands at ' +
+      Math.round(MP.pvpScale * 100) + '% — people are much harder to put down than machines.',
+      [['Declare', () => { MP.hostile[d.mph] = 1; mpSend('hostile', { uid: d.mph }); drawSheet(); }], ['Leave it']]);
+    return true;
+  }
+  if (d.mpl) { mpSend('leave', {}); return true; }
+  if (d.mpc) { MP.scope = d.mpc; drawSheet(); return true; }
+  if (d.mps) {
+    if (d.mps === 'close') mpSend('sim', { action: 'close' });
+    else mpSend('sim', { action: 'open', mode: d.mps });
+    return true;
+  }
+  if (d.mpg) { closeSheet(); enter(MP.simZone); return true; }
+  if (d.mpt) {
+    const i = document.getElementById('mpIn');
+    if (i && i.value.trim()) { mpSend('chat', { text: i.value.trim(), scope: MP.scope }); i.value = ''; }
+    return true;
+  }
+  return false;
+}
+
+/* ================= reporting a problem =================
+   The report button is deliberately slow. Pressing it does not file anything: it opens an
+   ask, with the game's own hold on the buttons, and then a form that will not send until
+   all three questions are answered. A report that says "it broke" costs more time than it
+   saves, so the form will not let you file one. */
+
+const BUGERR = [];
+if (typeof window !== 'undefined') {
+  window.addEventListener('error', e => {
+    BUGERR.push((e.message || 'error') + ' @ ' + (e.filename || '') + ':' + (e.lineno || 0));
+    if (BUGERR.length > 20) BUGERR.shift();
+  });
+  window.addEventListener('unhandledrejection', e => {
+    BUGERR.push('unhandled: ' + ((e.reason && e.reason.message) || e.reason || '?'));
+    if (BUGERR.length > 20) BUGERR.shift();
+  });
+}
+
+/* Everything the game knew at the moment, so a report does not depend on remembering. */
+function bugState() {
+  try {
+    return {
+      build: (document.title || '') + '',
+      zone: W ? W.zi : null,
+      zoneName: W && ZONES[W.zi] ? ZONES[W.zi].n : null,
+      mode, lvl: G ? G.lvl : null, cls: G ? G.cls : null,
+      hp: G ? Math.round(G.hp) : null, maxHp: S ? Math.round(S.maxHp) : null,
+      act: G && actOf && W ? actOf(W.zi) : null,
+      quests: G ? G.q : null, sats: G ? G.sats : null, credits: G ? Math.round(G.credits) : null,
+      adopt: G ? G.adopt : null, cpi: G ? +G.cpi.toFixed(3) : null,
+      party: MP.party ? MP.party.members.length : 0, online: mpOn(),
+      screen: innerWidth + 'x' + innerHeight, time: G ? Math.round(G.time) : null
+    };
+  } catch (e) { return { broken: String(e && e.message) }; }
+}
+
+function bugAsk() {
+  dlg('Before you file this',
+    'Reports go to a person, not a queue, and every one of them gets read. So please only file one if something actually went wrong — a crash, something that did not happen when it should have, a number that was plainly incorrect, text that made no sense.\n\n' +
+    'Not for things you would simply prefer were different; there is no way to tell those two apart from the other end.\n\n' +
+    'You will be asked three questions, and all three need an answer: what you were doing, what happened, and what you expected instead. The third one is the useful one.',
+    [['Something went wrong', bugForm], ['Never mind']], 4);
+}
+
+let bugBox = null;
+function bugForm() {
+  if (!bugBox) {
+    bugBox = document.createElement('div');
+    bugBox.id = 'bugw';
+    document.body.appendChild(bugBox);
+  }
+  const st = bugState();
+  bugBox.innerHTML =
+    '<div class="bugp"><h2>What happened?</h2>' +
+    '<p>Plain words are fine. The more precisely you can say what you expected, the faster it gets fixed.</p>' +
+    '<label>What were you doing?</label><textarea id="bg1" rows="2" placeholder="Fighting the thing in the Vaults, about to pick up a drop…"></textarea>' +
+    '<label>What happened?</label><textarea id="bg2" rows="3" placeholder="The screen went black and the buttons stopped working."></textarea>' +
+    '<label>What should have happened instead?</label><textarea id="bg3" rows="2" placeholder="It should have dropped the item and carried on."></textarea>' +
+    '<div class="bugm" id="bgm"></div>' +
+    '<p class="bugs">Sent with this: ' + esc('district ' + (st.zone === null ? '?' : st.zone) + (st.zoneName ? ' (' + st.zoneName + ')' : '') + ', level ' + st.lvl + ' ' + ((CLS[st.cls] || {}).n || '?') + ', ' + BUGERR.length + ' recorded error' + (BUGERR.length === 1 ? '' : 's')) + '. No email address, nothing you typed anywhere else.</p>' +
+    '<div class="bugr"><button class="big" id="bgSend">Send the report</button><button class="ghost" id="bgNo">Cancel</button></div></div>';
+  bugBox.hidden = false;
+  document.getElementById('bgNo').onclick = () => { bugBox.hidden = true; };
+  document.getElementById('bgSend').onclick = bugSend;
+}
+
+function bugSend() {
+  const v = id => (document.getElementById(id).value || '').trim();
+  const doing = v('bg1'), happened = v('bg2'), expected = v('bg3');
+  const m = document.getElementById('bgm');
+  if (doing.length < 5 || happened.length < 10 || expected.length < 5) {
+    m.className = 'bugm err';
+    m.textContent = 'All three, please — and the second one in a full sentence. A report without them cannot be acted on, which is worse than no report at all.';
+    return;
+  }
+  const body = { doing, happened, expected, where: location.href.split('?')[0], state: bugState(), errors: BUGERR.slice() };
+  m.className = 'bugm'; m.textContent = 'Sending…';
+  const btn = document.getElementById('bgSend');
+  btn.disabled = true;
+
+  const offline = () => {
+    /* No server to take it: hand the report back as text, so it can still be sent on. */
+    m.className = 'bugm';
+    const txt = 'Unsubscribe 2087 bug report\n\nDoing: ' + doing + '\nHappened: ' + happened + '\nExpected: ' + expected +
+      '\n\nState: ' + JSON.stringify(body.state) + '\nErrors: ' + BUGERR.join(' | ');
+    try {
+      navigator.clipboard.writeText(txt);
+      m.textContent = 'This copy of the game has nowhere to send it, so the whole report is on your clipboard instead. Paste it wherever you got the game.';
+    } catch (e) {
+      m.textContent = 'This copy has nowhere to send it. Here it is to copy by hand:\n\n' + txt;
+    }
+    btn.disabled = false;
+  };
+
+  if (!location.protocol.startsWith('http')) return offline();
+  fetch('/api/bug', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify(body) })
+    .then(r => r.json().then(j => {
+      if (!r.ok) throw new Error(j.error || ('server said ' + r.status));
+      m.className = 'bugm good';
+      m.textContent = 'Filed. Thank you — that is genuinely useful.';
+      setTimeout(() => { bugBox.hidden = true; }, 1800);
+    }))
+    .catch(offline);
+}
 })();
 </script>

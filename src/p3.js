@@ -483,18 +483,20 @@ function render(){
     if(f.k==='warn'){ctx.fillStyle='rgba(255,70,60,'+(.15+.3*u)+')';ctx.beginPath();ctx.ellipse(X,Y,f.r*45,f.r*22.5,0,0,6.283);ctx.fill();ctx.strokeStyle='#ff5d4d';ctx.lineWidth=2;ctx.stroke()}}
   for(const p of W.portals)if(vis(p))dl.push({d:p.x+p.y,k:4,x:p.x,y:p.y,arch:p.kind!=='home',col:p.kind==='next'?'#ff7a3c':p.kind==='home'?'#4a8cff':'#7be495'});
   if(z.town&&G.portal)dl.push({d:24,k:4,x:12.5,y:11.5,col:'#4a8cff'});
-  for(const e of W.ents)if(vis(e))dl.push({d:e.x+e.y,k:1,o:e});
+  for(const e of W.ents)if(!e.mp&&vis(e))dl.push({d:e.x+e.y,k:1,o:e});
   for(const n of W.npcs)dl.push({d:n.x+n.y,k:2,o:n});
   for(const o of W.objs)if(vis(o))dl.push({d:o.x+o.y,k:6,o});
   for(const a of W.allies)if(a.k!=='trops'&&a.k!=='storm'&&a.k!=='blast'&&a.k!=='raid')dl.push({d:a.x+a.y,k:5,o:a});
   if(W.merc&&W.merc.hp>0)dl.push({d:W.merc.x+W.merc.y,k:8,o:W.merc});if(W.tag&&W.tag.hp>0)dl.push({d:W.tag.x+W.tag.y,k:8.5,o:W.tag});if(W.esc)dl.push({d:W.esc.x+W.esc.y,k:9,o:W.esc});
   for(const d of W.drops)dl.push({d:d.x+d.y-.3,k:7,o:d});
+  for(const o of MP.others)dl.push({d:o.x+o.y,k:11,o});
   dl.push({d:pd,k:3});
   dl.sort((a,b)=>a.d-b.d);
   for(const q of dl){
     if(q.k===0){const tex=q.h===1?TX.low:TX.wall[q.h-2];if(q.near)ctx.globalAlpha=.32;ctx.drawImage(tex,q.X-33,q.Y-17-(tex.height-34));ctx.globalAlpha=1}
     else if(q.k===1){const e=q.o,X=SX(e.x,e.y),Y=SY(e.x,e.y);drawEnemy(e,X,Y);if(e.k==='bull'&&e.say&&e.aggro&&((tNow*.5+e.ph)%6)<2.2)bubble(X,Y-58,['Moo.','Number go up.','Up only.','This time is different.','Have fun staying poor.'][(e.ph*10|0)%5])}
     else if(q.k===2)drawNpc(q.o,SX(q.o.x,q.o.y),SY(q.o.x,q.o.y));
+    else if(q.k===11)mpDraw(q.o,SX(q.o.x,q.o.y),SY(q.o.x,q.o.y));
     else if(q.k===3){const X=SX(P.x,P.y),Y=SY(P.x,P.y);drawPlayer(X,Y);light(X,Y-20,z.town?400:310,null);light(X,Y-20,1150,null,TX.fill)}
     else if(q.k===8){const m=q.o,X=SX(m.x,m.y),Y=SY(m.x,m.y),t=MERCS[G.merc.k],fl=m.flash>0;ctx.strokeStyle='#7be495';ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(X,Y,14,7,0,0,6.283);ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4;
       if(G.merc.k==='hound'){shadow(X,Y,12);const y=Y-11,f=m.fx,lp=m.mov?Math.sin(m.ph*16)*3:0;ctx.fillStyle='#3a2e22';for(const[ox,ph]of[[-8,1],[-4,-1],[5,1],[9,-1]])ctx.fillRect(X+f*ox-1.5,y,3,11+ph*lp*.6);box(X-11,y-7,22,10,4,fl?'#fff':t.col);box(X+f*8-5,y-13,11,9,3,fl?'#fff':t.col);poly([X+f*8,y-13,X+f*5,y-19,X+f*11,y-14],t.col);ctx.fillStyle='#0b0912';ctx.fillRect(X+f*11-1,y-10,2,2)}

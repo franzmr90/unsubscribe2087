@@ -203,7 +203,7 @@ function newGame(cls){
 /* ================= save ================= */
 const b64=u=>{let s='';for(let i=0;i<u.length;i+=4096)s+=String.fromCharCode.apply(null,u.subarray(i,i+4096));return btoa(s)};
 const unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
-function encW(w){return{zi:w.zi,N:w.N,ml:w.ml,tier:w.tier,map:b64(w.map),wh:b64(w.wh),seen:b64(w.seen),leftT:w.leftT,sub:w.sub,suAt:w.suAt,ents:w.ents,objs:w.objs,drops:w.drops,decals:w.decals.slice(-40),portals:w.portals,goal:w.goal,start:w.start}}
+function encW(w){return{zi:w.zi,N:w.N,ml:w.ml,tier:w.tier,map:b64(w.map),wh:b64(w.wh),seen:b64(w.seen),leftT:w.leftT,sub:w.sub,suAt:w.suAt,ents:w.ents.filter(e=>!e.mp),objs:w.objs,drops:w.drops,decals:w.decals.slice(-40),portals:w.portals,goal:w.goal,start:w.start}}
 function decW(o){const w=Object.assign({},o);w.map=unb64(o.map);w.wh=unb64(o.wh);w.seen=unb64(o.seen);return w}
 function saveObj(){const zs={};for(const k in ZS)zs[k]=encW(ZS[k]);let cur=null;if(W&&!W.z.town&&!W.z.sim){zs[W.zi]=encW(W);cur={zi:W.zi,x:P.x,y:P.y}}return{G,zs,cur,opt:OPT,t:Date.now()}}
 function save(force){if(!G)return false;let ok=false;try{localStorage.setItem(skey(SLOT),JSON.stringify(saveObj()));localStorage.setItem(SAVEKEY+'_slot',SLOT);ok=true}catch(e){}
@@ -224,7 +224,7 @@ async function cloudLoad(d,sn){const o=JSON.parse(d.s);o.zs={};for(const k of d.
 function cloudNote(){const n=$('cloudNote');if(n)n.textContent=clState==='looking'?'Looking for your saved game…':CL?'Your progress is saved to your account as you play.':'Account saving is not available in this view. Progress is kept in this browser only.'}
 function loadStored(n){try{const s=localStorage.getItem(skey(n===undefined?SLOT:n));return s?JSON.parse(s):null}catch(e){return null}}
 function applySave(o){if(!o||!o.G||!CLS[o.G.cls])return false;G=o.G;G.sats=G.sats||0;G.merc=G.merc||null;G.sq=G.sq||{};G.stash=G.stash||[];while(G.sk.length<15)G.sk.push(0);if(G.q.q10===3&&G.unlocked<12)G.unlocked=12;for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;if(G.q.q5===3&&G.unlocked<7)G.unlocked=7;if(G.hp<=0){G.hp=9999;o.cur=null}ZS={};for(const k in (o.zs||{}))ZS[k]=decW(o.zs[k]);if(o.opt)OPT=Object.assign({},OPT_DEF,o.opt);G._cur=o.cur||null;return true}
-function startPlay(){ensureG();mode='play';$('title').hidden=true;$('hud').hidden=false;calc();setSkillButtons();
+function startPlay(){ensureG();mpConnect();mode='play';$('title').hidden=true;$('hud').hidden=false;calc();setSkillButtons();
   const c=G._cur;delete G._cur;
   if(c&&ZS[c.zi])enter(c.zi,{at:c});else if(G.pre===1){enter(PREZ);return}else enter(HT());
   if(!G.q.q1&&W.z.town&&G.seenIntro!==false){talkTo('gramps')}
@@ -335,7 +335,7 @@ function spawn(k,x,y,o){
   else if(ch){e.name=pick(CN1)+pick(CN2)+' '+pick(CN3);const ks=Object.keys(MODS).sort(()=>Math.random()-.5);e.mods[ks[0]]=1;if(G.tier>0||ml>=9)e.mods[ks[1]]=1}
   if(e.mods.fast)e.spd*=1.5;if(e.mods.strong)e.dmg*=1.6;
   p7Spawn(e);W.ents.push(e);if(isBoss(k))W.boss=e;return e}
-function enter(zi,o){
+function enter(zi,o){setTimeout(mpBeat,0);
   o=o||{};const carry=W&&W.allies?W.allies.filter(a=>a.per):[];if(W&&!W.z.town&&!W.z.sim){raidLeave();W.leftT=G.time;ZS[W.zi]=W;clDirty[W.zi]=1}
   const z=ZONES[zi];G.zone=zi;if(!z.sim)G.town=townOf(zi);let old=0;
   if(z.town)buildTown(zi);else if(z.sim)buildSim(o.wave||1,o.rush);else if(ZS[zi]&&ZS[zi].tier===G.tier&&!o.fresh){W=ZS[zi];old=1;ensureCage();initRuntime()}else genZone(zi);
@@ -376,7 +376,7 @@ function pdmg(m,e){
   let c=P.e82>0||Math.random()*100<S.crit;if(c)d*=S.critM;
   if(S.sp.severance&&Math.random()<.15){d*=3;c=true}
   return[d,c]}
-function dmgEnemy(e,d,crit){if(e.hp<=0)return;e.hits=(e.hits||0)+1;d/=partyH();if(e.mark>0)d*=1.3;if(e.mods.shield)d*=.5;if(e.ward>0)d*=.6;e.hp-=d;e.flash=.12;wake(e);if(crit){sfx('crit');hitStop=.04}
+function dmgEnemy(e,d,crit){if(e.hp<=0)return;if(e.mp){mpHurt(e,d,crit);return}e.hits=(e.hits||0)+1;d/=partyH();if(e.mark>0)d*=1.3;if(e.mods.shield)d*=.5;if(e.ward>0)d*=.6;e.hp-=d;e.flash=.12;wake(e);if(crit){sfx('crit');hitStop=.04}
   float(e.x,e.y,Math.round(d)+(crit?'!':''),crit?'#ffe36b':'#ffffff',0);parts(e.x,e.y,crit?5:2,['#ffd27a','#fff','#ff9a3c'],2.2);
   if(e.mods.arc&&e.arcCd<=0){e.arcCd=1.3;for(let i=0;i<6;i++){const a=i*1.047+e.ph;W.projs.push({x:e.x,y:e.y,vx:Math.cos(a)*5,vy:Math.sin(a)*5,life:1.3,foe:true,dmg:e.dmg*.5,col:'#59e0e6'})}}
   if(e.hp<=0)kill(e)}
@@ -388,6 +388,7 @@ function hit(e,m,nl){if(e.hp<=0)return;let[d,c]=pdmg(m,e);d=typed(e,d);sfx('hit'
   if(S.sp.intern&&!procLock&&Math.random()<.2){procLock=true;chain(e,3,.8);procLock=false}}
 function chain(from,n,m){const done=new Set();let f={x:from.x,y:from.y};for(let i=0;i<n;i++){let b=null,bd=i||from!==P?4.5:7;for(const e of W.ents)if(!done.has(e)){const d=dist(e,f);if(d<bd){bd=d;b=e}}if(!b)break;done.add(b);W.fx.push({k:'bolt',x:f.x,y:f.y,x2:b.x,y2:b.y,t:0,life:.2});f={x:b.x,y:b.y};hit(b,m)}return done.size}
 function kill(e){
+  if(e.mp)return;
   const i=W.ents.indexOf(e);if(i<0)return;W.ents.splice(i,1);G.kills++;sfx(e.champ||isBoss(e.k)?'bigkill':'kill');const t=ET[e.k];
   parts(e.x,e.y,isBoss(e.k)?40:e.champ?18:9,[t.pal[0],t.pal[1],'#2a2630','#ffb84a'],3.2);W.fx.push({k:'ring',x:e.x,y:e.y,r:.9*e.sz,t:0,life:.3,col:'#ffb238'});
   W.decals.push({x:e.x,y:e.y,r:e.r*1.6,a:rnd(0,3)});if(W.decals.length>70)W.decals.shift();if(OPT.shake)shake=Math.max(shake,e.champ?5:2);
@@ -415,8 +416,9 @@ function kill(e){
     save(true);P.inv=4;
     const rep=(b3?G.boss3Kills:b2?G.boss2Kills:G.bossKills)>1;
     setTimeout(()=>{if(rep){toast(ET[e.k].n+' falls again.');return}if(b3)playScene(ENDING3.concat(CLOCK3),()=>{mode='play';actDone(3)});else playScene(b2?ENDING2:endingSlides(),()=>{mode='play';actDone(b2?2:1)})},1400)}}
-function gainXp(v){if(P.shr&&P.shr.k==='xp')v*=1.5;v*=(G.hc?1.25:1)*(SEA.k==='over'?1.2:1);if(G.lvl>=lvlCap()){paraXp(v);return}G.xp+=v;while(G.xp>=xpNext(G.lvl)&&G.lvl<lvlCap()){G.xp-=xpNext(G.lvl);G.lvl++;G.sp++;G.ap+=5;calc();G.hp=S.maxHp;G.en=S.maxEn;sfx('level');toast('Level '+G.lvl+'. One skill point and five attribute points.');W.fx.push({k:'ring',x:P.x,y:P.y,r:2.8,t:0,life:.7,col:'#ffe36b'});parts(P.x,P.y,24,['#ffe36b','#fff'],2,1.6)}}
-function hurt(d,slow,src){if(P.inv>0||mode!=='play'||G.god)return;d*=partyD();
+function gainXp(v,fromParty){if(P.shr&&P.shr.k==='xp')v*=1.5;v*=(G.hc?1.25:1)*(SEA.k==='over'?1.2:1);if(!fromParty)mpShareXp(v);
+  if(G.lvl>=lvlCap()){paraXp(v);return}G.xp+=v;while(G.xp>=xpNext(G.lvl)&&G.lvl<lvlCap()){G.xp-=xpNext(G.lvl);G.lvl++;G.sp++;G.ap+=5;calc();G.hp=S.maxHp;G.en=S.maxEn;sfx('level');toast('Level '+G.lvl+'. One skill point and five attribute points.');W.fx.push({k:'ring',x:P.x,y:P.y,r:2.8,t:0,life:.7,col:'#ffe36b'});parts(P.x,P.y,24,['#ffe36b','#fff'],2,1.6)}}
+function hurt(d,slow,src){if(P.inv>0||(mode!=='play'&&!(src&&src.pvp))||G.god)return;d*=partyD();
   if(S.dodge&&Math.random()*100<S.dodge){float(P.x,P.y,'Dodge','#9fe0d0',1);sfx('whiff');return}
   d=typedIn(d,src);d*=S.taken||1;d*=100/(100+S.armor*(P.mech>0?2:1)*(P.guard>0?1.6:1)*(P.shr&&P.shr.k==='guard'?2:1));
   if(S.enc){const a=Math.min(G.en,d*S.enc);G.en-=a;d-=a}
@@ -526,6 +528,7 @@ function findAct(){for(const o of W.objs)if(o.k==='qobj'&&!o.used&&Math.hypot(o.
 
 /* ================= update ================= */
 function update(dt){
+  mpTick(dt);
   G.time+=dt;const gr=G.adopt>=100?1:Math.pow(SEA.k==='stim'?1.005:1.0025,dt*(1.45-G.adopt/100)*(G.fate==='fail'?1.4:1));G.cpi*=gr;if(S.sp.hedge)G.credits*=gr;G.ubiT=Math.max(0,G.ubiT-dt);G.chuteT=Math.max(0,G.chuteT-dt);
   const c=CLS[G.cls];
   for(const k of['atk','swing','flash','inv','slow','buff','haste','guard','warn','movedT','spin','stealth','ambT','mech','crunch','streakT','silence','oc'])P[k]=Math.max(0,P[k]-dt);
@@ -549,6 +552,7 @@ function update(dt){
   else if(atkHeld||keys.Space||keys.KeyJ||(OPT.auto&&P.atk<=0&&nearest(CLS[G.cls].melee?1.9:6)))attack();
   // enemies
   for(const e of W.ents.slice()){
+    if(e.mp){e.flash=Math.max(0,e.flash-dt);continue}
     e.flash=Math.max(0,e.flash-dt);e.ph+=dt;e.mark=Math.max(0,e.mark-dt);e.slow=Math.max(0,e.slow-dt);e.ward=Math.max(0,(e.ward||0)-dt);if(e.k==='aegis')for(const o of W.ents)if(o!==e&&o.k!=='aegis'&&dist(o,e)<4)o.ward=.4;e.arcCd=Math.max(0,e.arcCd-dt);
     if(e.stun>0){e.stun-=dt;continue}
     let T=P;for(const a of W.allies)if(a.k==='decoy'&&dist(a,e)<7)T=a;
@@ -570,7 +574,7 @@ function update(dt){
       if(d<=t.range+.8&&e.cd<=0){e.cd=t.atk*(e.mods.fast?.7:1);sfx('eshoot');W.projs.push({x:e.x,y:e.y,vx:dx/d*5.5,vy:dy/d*5.5,life:1.6,foe:true,dmg:e.dmg,slow:t.slow,drain:t.drain,sil:t.sil,src:e,col:t.sil?'#e6e2d6':t.drain?'#b48cff':t.slow?'#7be495':e.k==='aegis'?'#9fd0ff':'#ff5d9a'})}}
     else{if(d>t.range*.75+e.r)mv(e,dx/d*sp,dy/d*sp);if(d<=t.range+e.r&&e.cd<=0){e.cd=t.atk*(e.mods.fast?.7:1);e.wind=e.k==='mech'?.45:.3}}
   }
-  for(let i=0;i<W.ents.length;i++){const a=W.ents[i];if(!a.aggro||a.lunge)continue;for(let j=i+1;j<W.ents.length;j++){const b=W.ents[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy),m=a.r+b.r;if(d<m&&d>.001){const p=(m-d)/2;mv(a,-dx/d*p,-dy/d*p);mv(b,dx/d*p,dy/d*p)}}}
+  for(let i=0;i<W.ents.length;i++){const a=W.ents[i];if(a.mp||!a.aggro||a.lunge)continue;for(let j=i+1;j<W.ents.length;j++){const b=W.ents[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy),m=a.r+b.r;if(d<m&&d>.001){const p=(m-d)/2;mv(a,-dx/d*p,-dy/d*p);mv(b,dx/d*p,dy/d*p)}}}
   // allies
   for(const a of W.allies.slice()){DT=a.dt||null;a.life-=dt;if(a.cd!==undefined)a.cd-=dt;
     if(a.k==='turret'&&a.cd<=0){const t=nearest(6,a);if(t){a.cd=.45;sfx('zap');const d=dist(t,a)||1;shoot({x:(t.x-a.x)/d,y:(t.y-a.y)/d},a.m,0,{from:a,life:.6,col:'#59e0e6'})}}

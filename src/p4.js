@@ -219,7 +219,7 @@ function hud(){objHud();if(P&&P.dg)setT('dgn',P.dg.n);
 
 /* ================= sheets ================= */
 let tab='items',sel=null,sheetCtx={},lastBox=null;
-const TABS={web:'Web',char:'Hero',items:'Items',skills:'Skills',quests:'Quests',story:'Story',codex:'Codex',opts:'Options',shop:'Trade',gamble:'Boxes',travel:'Travel',load:'Load',merc:'Hire',sats:'Sats',bounty:'Bounties',stash:'Lockbox',shift:'Shape shift'};
+const TABS={party:'Party',web:'Web',char:'Hero',items:'Items',skills:'Skills',quests:'Quests',story:'Story',codex:'Codex',opts:'Options',shop:'Trade',gamble:'Boxes',travel:'Travel',load:'Load',merc:'Hire',sats:'Sats',bounty:'Bounties',stash:'Lockbox',shift:'Shape shift'};
 const satPrice=o=>Math.ceil(o.price*(cause()?.75:1)*(repRank('btc')>=1?.9:1)*((G.lean||0)<-50?1.15:1));
 const satRate=()=>mktMid();
 /* ================= the price chart =================
@@ -298,7 +298,7 @@ function mercBest(){let n=0;const m=G.merc;for(const sl of MSL){let b=-1,bs=mSco
 const pkRow=()=>`<h3>Pick up on your own</h3><div class="row">${['Normal','Magic','Rare','Set','Unique'].map((n,q)=>`<button class="ghost q${q}" data-opt="pk${q}" style="padding:10px 2px;font-size:10px;${OPT['pk'+q]===false?'opacity:.35;text-decoration:line-through':''}">${n}</button>`).join('')}</div><button class="tog${OPT.pkBetter?' on':''}" data-opt="pkBetter"><span>Only pick up gear better than what I am wearing</span><i>${OPT.pkBetter?'ON':'OFF'}</i></button><p style="font-size:13px">Struck-out tiers are left on the ground. Unidentified gear cannot be judged, so it is still picked up. Stand on one and use the action button to take it anyway. A piece for an empty slot is always picked up.</p>`;
 const selling=()=>sheetCtx.only&&(sheetCtx.only.includes('shop')||sheetCtx.only.includes('gamble'))&&!sheetCtx.only.includes('sats');
 function drawSheet(){
-  const only=sheetCtx.only||['char','items','skills','web','quests','story','codex','opts'];let pop='';$('pop').hidden=true;
+  const only=sheetCtx.only||(mpOn()?['char','items','skills','web','party','quests','story','codex','opts']:['char','items','skills','web','quests','story','codex','opts']);let pop='';$('pop').hidden=true;
   let h=`<div class="shead">${only.map(t=>`<button class="tab${tab===t?' on':''}" data-tab="${t}">${TABS[t]}${t==='skills'&&G&&G.sp?' •':t==='char'&&G&&G.ap?' •':t==='story'&&sdxUnseen()?' •':''}</button>`).join('')}<button class="tab x" data-close="1">Close</button></div>`;
   if(tab==='load'){h+=`<h2>Load a save code</h2><p>Paste a code copied from the Options tab. This replaces the saved wanderer on this device.</p><textarea id="codeIn" placeholder="Paste here"></textarea><button class="big" data-loadcode="1">Load</button>`;$('sheetIn').innerHTML=h;return}
   calc();
@@ -363,6 +363,7 @@ function drawSheet(){
         else h+=`<div class="memo sdxlock"><b>${esc(e.n)}</b><p>Not yet.${e.l?' '+esc(e.l):''}</p></div>`}
       h+=`</div>`}
     sdxSeen()}
+  if(tab==='party')h+=mpPanel();
   if(tab==='codex'){const mf=Math.round(mfNow());
     h+=`<h2>Drop rates</h2><p>Every kill makes a number of rolls. Each roll lands on nothing, credits, an item or a stim. An item then tests for quality in order: unique, set, rare, magic. Odds below include your <strong>${mf}% magic find</strong>, which helps less and less on the rarer tiers.</p><div class="tw"><table><tr><th>Source</th><th>Rolls</th><th>None</th><th>₡</th><th>Item</th><th>Stim</th><th>Magic</th><th>Rare</th><th>Set</th><th>Unique</th></tr>`;
     for(const k in TC){const t=TC[k],sum=t.no+t.gold+t.item+t.stim,c=qChance(k,mf),p=v=>Math.round(v/sum*100)+'%',o=v=>v>=1?'always':'1 in '+Math.round(1/v);
@@ -532,6 +533,7 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web]'
   if(d.mko){const n=Math.max(1,mktQty),off=+d.mko.slice(1)/100,buy=d.mko[0]==='b',px=mktMid()*(buy?1-off:1+off);
     if(!mktPost(n,px,buy?'buy':'sell')){toast(buy?'Not enough credits to hold that bid':'Not that many sats to post');sfx('err')}}
   if(d.mkx!==undefined)mktCancel(+d.mkx);
+  if(mpClick(d))return;
   if(d.mkr)if(!mktRepay()){toast('Not enough credits to repay him');sfx('err')}
   if(d.mkb){const n=Math.max(1,Math.min(G.sats,mktQty));if(!mktBorrow(n)){toast(G.mkt.pos?'He will only hold one position':'Not enough sats');sfx('err')}}
   if(d.satbuy){const o=satShop[sel.sat];if(o&&G.sats>=satPrice(o)&&G.bag.length<24){G.sats-=satPrice(o);addRep('btc',Math.ceil(o.price/4));addAdopt(1,'you paid in sats');G.bag.push(o.it);satShop.splice(sel.sat,1);sel=null;sfx('coin');toast('Paid in sats')}}
@@ -587,6 +589,7 @@ $('bAct').addEventListener('click',()=>{if(mode==='play'&&actTarget){sfx('ui');a
 $('bSwap').addEventListener('click',()=>{if(!SWAP||mode!=='play')return;const i=G.bag.indexOf(SWAP.it);if(i>=0&&equipFromBag(i))toast('Equipped '+SWAP.it.name);SWAP=null});
 $('bMenu').addEventListener('click',()=>openSheet('items',{}));$('bChars').addEventListener('click',()=>{sfx('ui');openSheet('opts',{})});
 $('bMap').addEventListener('click',()=>{OPT.minimap=!OPT.minimap});
+$('bBug').addEventListener('click',bugAsk);
 $('bRecall').addEventListener('click',openPortal);
 addEventListener('keydown',e=>{if(e.target&&e.target.tagName==='TEXTAREA')return;keys[e.code]=true;if(mode==='play'){if(e.code==='Digit1')cast(0);if(e.code==='Digit2')cast(1);if(e.code==='Digit3')cast(2);if(e.code==='KeyQ')stim();if(e.code==='ShiftLeft')dodge();if(e.code==='KeyE'&&actTarget)actTarget.fn();if(e.code==='KeyT')openPortal();if(e.code==='Tab'){OPT.minimap=!OPT.minimap;e.preventDefault()}if(e.code==='KeyB'||e.code==='KeyI')openSheet('items',{});if(e.code==='Space')e.preventDefault()}
   else if(mode==='sheet'&&(e.code==='Escape'||e.code==='KeyB'))closeSheet()});

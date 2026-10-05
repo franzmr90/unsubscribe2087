@@ -13,6 +13,8 @@ const crypto = require('crypto');
 const A = require('./lib/auth');
 const { docs } = require('./lib/store');
 const mail = require('./lib/mail');
+const live = require('./lib/live');
+const bugs = require('./lib/bugs');
 
 const PORT = +(process.env.PORT || 8087);
 const ROOT = path.join(__dirname, '..');
@@ -302,6 +304,20 @@ route('POST', '/api/doc/del', async (req, res) => {
   ok(res);
 });
 
+/* Bug reports. Open to anyone who can load the page, because the person who most needs
+   to report a broken thing is often the person it broke before they could sign in. */
+route('POST', '/api/bug', async (req, res) => {
+  if (!A.rateLimit('bug:' + ipOf(req), 10, 3600e3)) return bad(res, 429, 'That is a lot of reports in one hour. Take a breath.');
+  const b = await readBody(req);
+  if (!b || String(b.happened || '').trim().length < 10) return bad(res, 400, 'Tell us what happened first.');
+  const ctx = auth(req);
+  const rec = bugs.file(Object.assign({}, b, {
+    from: ctx ? ctx.user.name : (b.from || ''),
+    agent: req.headers['user-agent'] || ''
+  }));
+  ok(res, { id: rec.id });
+});
+
 /* ---------- serving the game ---------- */
 const TYPES = { '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.html': 'text/html; charset=utf-8', '.json': 'application/json; charset=utf-8', '.ico': 'image/x-icon' };
 
@@ -349,6 +365,10 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
+/* The realtime side shares the http server and the same session cookie; a socket that
+   cannot name an account is refused at the handshake rather than after it. */
+live.attach(server, req => auth(req));
+
 if (require.main === module) {
   server.listen(PORT, () => {
     console.log('Unsubscribe 2087 server on ' + ORIGIN);
@@ -356,4 +376,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { server, gamePage };
+module.exports = { server, gamePage, live };
