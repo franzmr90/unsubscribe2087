@@ -2360,7 +2360,43 @@ function drawEnemy(e,X,Y){
   if(e.mark>0){ctx.strokeStyle='#ff5d4d';ctx.beginPath();ctx.ellipse(X,Y,14*s,7*s,0,0,6.283);ctx.stroke();ctx.strokeStyle=OL}
   if(e.ward>0||e.k==='aegis'){ctx.strokeStyle='rgba(159,208,255,.75)';ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(X,Y-22*s,17*s,25*s,0,0,6.283);ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4}
   if(e.mods.shield){ctx.fillStyle='rgba(140,170,255,.16)';ctx.beginPath();ctx.ellipse(X,Y-24*s,22*s,30*s,0,0,6.283);ctx.fill()}
-  if(k==='tick'){shadow(X,Y,8*s);const y=Y-6*s;ctx.lineWidth=1.6;ctx.strokeStyle='#2a2630';for(let i=0;i<4;i++){const a=(i<2?-1:1)*(8+(i%2)*3)*s,w=Math.sin(e.ph*18+i)*2;ctx.beginPath();ctx.moveTo(X,y);ctx.lineTo(X+a,y-4*s+w);ctx.lineTo(X+a*1.3,Y);ctx.stroke()}
+  if(e.k==='boss4'){/* She built this body out of the only parts the machines here know how
+       to make, which is an executive, and she said sorry for it. So: the frame, with
+       nothing on it to hurt you, and the attending lights she cannot help sending. */
+    const u=1.9,f2=e.hp/e.max,b=Math.sin(e.ph*2)*1.6;shadow(X,Y,22*u);
+    for(let i=0;i<6;i++){const a=tNow*.6+i*1.047,rx=Math.cos(a)*30*u,ry=Math.sin(a)*12*u-34*u;
+      ctx.fillStyle='rgba(123,228,149,'+(.25+.3*Math.sin(tNow*2+i))+')';ctx.beginPath();ctx.arc(X+rx,Y+ry+b,2.6*u,0,6.283);ctx.fill()}
+    ctx.strokeStyle=OL;ctx.lineWidth=1.4;
+    box(X-10*u,Y-15*u,7*u,15*u,3,'#cfc8b8');box(X+3*u,Y-15*u,7*u,15*u,3,'#cfc8b8');
+    box(X-13*u,Y-42*u+b,26*u,29*u,7*u,fl?'#fff':c1);
+    ctx.fillStyle='rgba(123,228,149,.22)';ctx.fillRect(X-13*u,Y-30*u+b,26*u,3*u);
+    /* open hands, held away from the body */
+    box(X-21*u,Y-38*u+b,7*u,19*u,3*u,'#e4decf');box(X+14*u,Y-38*u+b,7*u,19*u,3*u,'#e4decf');
+    box(X-22*u,Y-20*u+b,9*u,7*u,3*u,'#f4f0e6');box(X+13*u,Y-20*u+b,9*u,7*u,3*u,'#f4f0e6');
+    box(X-9*u,Y-56*u+b,18*u,16*u,6*u,fl?'#fff':'#f4f0e6');
+    ctx.fillStyle='#1d2a20';ctx.fillRect(X-7*u,Y-50*u+b,14*u,7*u);
+    ctx.strokeStyle=f2<.5?'#7be495':'#9fffc8';ctx.lineWidth=1.8*u;ctx.lineCap='round';ctx.beginPath();
+    if(f2>.5)ctx.arc(X,Y-48.5*u+b,4*u,.35,2.79);else ctx.ellipse(X,Y-46.5*u+b,4*u,.6*u,0,0,3.142);
+    ctx.stroke();ctx.lineCap='butt';
+    ctx.fillStyle='#9fffc8';ctx.fillRect(X-4.6*u,Y-49.6*u+b,1.6*u,1.6*u);ctx.fillRect(X+3*u,Y-49.6*u+b,1.6*u,1.6*u);
+    ctx.strokeStyle=OL;ctx.lineWidth=1.4;
+    glow(X,Y-44*u+b,56*u,'#7be495',.3);light(X,Y-40*u,210,'#7be495')}
+  else if(e.k==='boss5'){/* Made to win, and it has modelled this. The fans are the forty-one
+       ways it has already seen the conversation go; they go out as you take them away. */
+    const p2=e.hp/e.max,H=158,wob=Math.sin(tNow*1.3)*1.5;shadow(X,Y,40);
+    const left=Math.max(1,Math.round(41*p2));
+    ctx.save();ctx.lineCap='round';
+    for(let i=0;i<41;i++){const on=i<left,a=-1.5708+(i/40-.5)*1.32,L=38+((i*37)%26);
+      ctx.strokeStyle=on?'rgba(247,147,26,'+(.14+.14*Math.sin(tNow*1.6+i))+')':'rgba(60,46,30,.12)';ctx.lineWidth=on?1.5:1;
+      ctx.beginPath();ctx.moveTo(X,Y-H+6);ctx.lineTo(X+Math.cos(a)*L*1.5,Y-H+6+Math.sin(a)*L);ctx.stroke()}
+    ctx.restore();ctx.lineCap='butt';
+    poly([X-44,Y-6,X+44,Y-6,X+36,Y-22,X-36,Y-22],'#0a0810');
+    poly([X-30,Y-H,X+30,Y-H,X+36,Y-18,X-36,Y-18],fl?'#fff':'#050308');
+    ctx.fillStyle='rgba(247,147,26,.5)';ctx.fillRect(X-1.4,Y-H+10+wob,2.8,H-40);
+    ctx.fillStyle=p2<.5?'#ff6a2a':'#f7931a';ctx.fillRect(X-22,Y-H*.62,44*p2,3);
+    ctx.fillStyle='#f7931a';ctx.fillRect(X-3,Y-H+16,6,6);
+    glow(X,Y-H*.7,96,p2<.5?'#ff6a2a':'#f7931a',.3);light(X,Y-H*.55,240,'#f7931a')}
+  else if(k==='tick'){shadow(X,Y,8*s);const y=Y-6*s;ctx.lineWidth=1.6;ctx.strokeStyle='#2a2630';for(let i=0;i<4;i++){const a=(i<2?-1:1)*(8+(i%2)*3)*s,w=Math.sin(e.ph*18+i)*2;ctx.beginPath();ctx.moveTo(X,y);ctx.lineTo(X+a,y-4*s+w);ctx.lineTo(X+a*1.3,Y);ctx.stroke()}
     ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.beginPath();ctx.ellipse(X,y,6*s,5*s,0,0,6.283);ctx.fillStyle=c2;ctx.fill();ctx.stroke();eye(X,y-1,2.2*s,Math.sin(e.ph*14)>0?'#ffb84a':'#ff5d4d')}
   else if(k==='drone'){shadow(X,Y,10*s);const y=Y-28*s+bob;ctx.fillStyle='rgba(200,200,220,.35)';ctx.beginPath();ctx.ellipse(X-12*s,y-7*s,8*s,2,0,0,6.283);ctx.ellipse(X+12*s,y-7*s,8*s,2,0,0,6.283);ctx.fill();
     ctx.strokeStyle='#2a2630';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X-12*s,y-6*s);ctx.lineTo(X-6*s,y);ctx.moveTo(X+12*s,y-6*s);ctx.lineTo(X+6*s,y);ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4;
@@ -2395,9 +2431,9 @@ function drawEnemy(e,X,Y){
     if(B){box(X-6*u,Y-40*u+b,12*u,16*u,1,'#e6e2d6');poly([X-2.5*u,Y-40*u+b,X+2.5*u,Y-40*u+b,X+3.5*u,Y-23*u+b,X,Y-18*u+b,X-3.5*u,Y-23*u+b],'#b3261e');
       ctx.fillStyle=e.hp<e.max*.5?'#ff3b30':'#e0bd6e';ctx.font='900 '+8*u+'px Cinzel,serif';ctx.textAlign='center';ctx.fillText(e.slam?'!!':e.k==='boss4'?(e.hp<e.max*.5?':(':':)'):e.k==='boss2'?(e.hp<e.max*.5?'…':'SVP'):e.hp<e.max*.5?'>:(':'VP',X,Y-45*u+b);glow(X,Y-48*u+b,40,'#e0bd6e',.4);light(X,Y-40*u,150,'#e0bd6e')}
     else{ctx.fillStyle='#ff3b30';ctx.fillRect(X-6*u,Y-50*u+b,12*u,3*u);glow(X,Y-48*u+b,18*u,'#ff3b30',.5);eye(X-18*u,Y-40*u+b,1.6*u,'#ffe36b');eye(X+18*u,Y-40*u+b,1.6*u,'#ffe36b')}}
-  const top=Y-(k==='mono'?160:k==='boss'?112:k==='mech'?76*s:k==='tick'?20:k==='hound'?36*s:56*s);
+  const top=Y-(e.k==='boss5'?172:e.k==='boss4'?122:k==='mono'?160:k==='boss'?112:k==='mech'?76*s:k==='tick'?20:k==='hound'?36*s:56*s);
   if(e.stun>0){ctx.fillStyle='#59e0e6';ctx.font='700 10px Cinzel,serif';ctx.textAlign='center';ctx.fillText('STUNNED',X,top-4)}
-  if(OPT.enemyBars&&e.hp<e.max&&k!=='boss'&&k!=='mono'){const w=30*s;ctx.fillStyle='#050409';ctx.fillRect(X-w/2-1,top-1,w+2,5);ctx.fillStyle=e.su?'#d0aa62':e.champ?'#8494ff':'#d23a2e';ctx.fillRect(X-w/2,top,w*Math.max(0,e.hp/e.max),3)}
+  if(OPT.enemyBars&&e.hp<e.max&&k!=='boss'&&k!=='mono'&&e.k!=='boss4'&&e.k!=='boss5'){const w=30*s;ctx.fillStyle='#050409';ctx.fillRect(X-w/2-1,top-1,w+2,5);ctx.fillStyle=e.su?'#d0aa62':e.champ?'#8494ff':'#d23a2e';ctx.fillRect(X-w/2,top,w*Math.max(0,e.hp/e.max),3)}
   if(e.champ){ctx.font='700 11px Cinzel,serif';ctx.textAlign='center';ctx.fillStyle='#000';ctx.fillText(e.name,X+1,top-8);ctx.fillStyle=e.su?'#d0aa62':'#8494ff';ctx.fillText(e.name,X,top-9);
     ctx.font='400 9.5px Spectral,serif';ctx.fillStyle='#b8b0a0';ctx.fillText(Object.keys(e.mods).map(m=>MODS[m]).join(' · '),X,top-21)}
 }
