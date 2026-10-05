@@ -312,3 +312,36 @@ Tests: **39** account, **26** lobby, **24** live across two real browsers, **15*
 - **No TURN server**, so a minority behind strict NATs will not connect to some voice peers.
 - **SMTP against a real relay is untested** — only the outbox fallback is exercised.
 - **Damage is still not authoritative**, by choice. See `MULTIPLAYER.md`.
+
+### The Maximalist — a sixth wanderer, unlocked by finishing the story
+
+Shaped as Diablo II's Paladin, because that is what a maximalist is: **auras**, a zealot's
+flurry, and one conviction applied to everything.
+
+- **Three auras**, which is the whole identity. One on at a time, no duration, on until you
+  swap or switch it off. **Toxic Maximalism** (Fanaticism — you and anyone beside you swing
+  faster and harder), **Conviction** (everything standing in it takes more damage from every
+  source, its resistances having stopped applying), and **Proof of Work** (Holy Fire — a
+  constant pulse, because entropy runs one way).
+- **Tick Tock Next Block** is Zeal: nine quick swings and a tenth that is a block.
+  **Have Fun Staying Poor** is Smite — close range, cannot miss, stuns.
+  **Orange Pill** is Charge. **Blessed Hashrate** is Blessed Hammer and does exactly what
+  Blessed Hammer does, which is win.
+- **Sound damage.** A sixth type that nothing resists, is immune to, or shields against —
+  `typed()` settles it and returns before the resistance table is consulted, so one can
+  never be added by accident later, and `dmgEnemy` skips shields and wards for it.
+- Doctrines: Toxic Maximalism, Running My Own Node, Thinkboi.
+
+The unlock is on the **account**, not the character, so deleting the wanderer who earned him
+does not take him away. 22 tests in `server/test/maxi.js`.
+
+Three real bugs came out of building him, all found by looking rather than assuming:
+
+- `maxiOn` was a `const` arrow in p12 while the title screen called it at load from p4.
+  Function declarations hoist across the bundle's single scope; a const sits in its dead
+  zone and throws. The whole game failed to boot.
+- The class list was built at load, but `ACC` is read from storage inside `start()`
+  afterwards — so an earned unlock never appeared. It is now a function called again
+  whenever the account store arrives, from storage and from the server.
+- `DOCS` is keyed by class, and without an entry `docOf()` returns undefined and every
+  build summary throws.

@@ -56,7 +56,7 @@ const ACH=[['first','First Blood','Destroy a machine',()=>G.kills>=1],['k100','S
  ['liq','Margin Call','Get liquidated by Mr. Float',()=>(G.st.liq||0)>0],
  ['res','Reserve','Make bitcoin the world’s reserve currency',()=>G.adopt>=100],['sold','Everyone Has a Price','Accept MANDATE’s offer',()=>G.st.sold>0]];
 let achT=3;
-function achTick(dt){achT-=dt;if(achT>0)return;achT=2;for(const a of ACH)if(!G.ach[a[0]]&&a[3]()){G.ach[a[0]]=1;G.sats+=1;sfx('quest');toast('Feat: '+a[1]+' · +1 sat');return}}
+function achTick(dt){achT-=dt;if(achT>0)return;achT=2;maxiCheck();for(const a of ACH)if(!G.ach[a[0]]&&a[3]()){G.ach[a[0]]=1;G.sats+=1;sfx('quest');toast('Feat: '+a[1]+' · +1 sat');return}}
 
 /* ================= boss rush ================= */
 function rushList(){const l=[];for(const zi of[1,2,3,4,7,8,9,10,12,13,14,15,22,23,24,25,28,29,30,31])if(G.unlocked>zi||G.q[ZONES[zi].su.q]>=2)l.push({k:ZONES[zi].su.k,n:ZONES[zi].su.n,mods:ZONES[zi].su.mods});

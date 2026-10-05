@@ -26,10 +26,10 @@ function upkeepTick(dt){G.chT=(G.chT===undefined?60:G.chT)-dt;if(G.chT>0)return;
   if(G.credits>=c){G.credits-=c;G.charmOff=0;if(was){calc();toast('Subscriptions renewed.')}}else{G.charmOff=1;if(!was){calc();toast('You cannot cover your subscriptions. They lapse until you can.')}}}
 const ACCT='unsub2087acct';
 function acctGet(){try{return JSON.parse(localStorage.getItem(ACCT)||'{}')}catch(e){return{}}}
-let ACC={stash:[],cr:0,sats:0,para:0,t:0};const accNorm=a=>Object.assign({stash:[],cr:0,sats:0,para:0,t:0},a||{});
+let ACC={stash:[],cr:0,sats:0,para:0,maxi:0,t:0};const accNorm=a=>Object.assign({stash:[],cr:0,sats:0,para:0,maxi:0,t:0},a||{});
 function accLoad(){ACC=accNorm(acctGet())}
 function accSave(){ACC.t=Date.now();try{localStorage.setItem(ACCT,JSON.stringify(ACC))}catch(e){}if(CL)try{CL.doc('acct').set({s:JSON.stringify(ACC),t:ACC.t}).catch(()=>{})}catch(e){}}
-async function accCloud(){try{const d=await CL.doc('acct').get();if(d.exists){const c=d.data();if(c.t>(ACC.t||0)){ACC=accNorm(JSON.parse(c.s));try{localStorage.setItem(ACCT,JSON.stringify(ACC))}catch(e){}}}}catch(e){}}
+async function accCloud(){try{const d=await CL.doc('acct').get();if(d.exists){const c=d.data();if(c.t>(ACC.t||0)){ACC=accNorm(JSON.parse(c.s));if(typeof drawCls==='function')drawCls();try{localStorage.setItem(ACCT,JSON.stringify(ACC))}catch(e){}}}}catch(e){}}
 function accMigrate(){if(G.stash&&G.stash.length){let n=0;while(G.stash.length&&ACC.stash.length<36){ACC.stash.push(G.stash.shift());n++}if(n)accSave()}}
 function acctPara(){if((G.para||0)>(ACC.para||0)){ACC.para=G.para;accSave()}else if(G.act3&&(ACC.para||0)>(G.para||0))G.para=ACC.para}
 function rerollMod(it){const own=it.aff.map((a,i)=>i).filter(i=>!it.aff[i].w&&AFK[it.aff[i].k]&&AFK[it.aff[i].k].tiers);if(!own.length)return null;const i=pick(own),old=it.aff[i],pool=AFX.filter(a=>a.tiers&&(!a.sl||a.sl.includes(it.slot))&&!it.aff.some(x=>x.k===a.k));
@@ -55,6 +55,9 @@ const DIFFDN=['Difficulty adjustment: −20%. Some hashrate left the network. Tw
 const DIFFSET=['Manual retarget. The real thing makes you wait 2,016 blocks.','Difficulty set by hand. Somewhere, a node disapproves.','Retargeted. No consensus was required.'];
 /* ================= character building: doctrines, mastery, breadth, and a web where arms oppose ================= */
 const DOCS={
+ maxi:[['toxic','Toxic Maximalism','No quarter, no nuance, no second best. It works far more often than it should.',{dmg:35,crit:8,taken:25}],
+  ['node','Running My Own Node','You verified it yourself, so you are slower and you are right.',{hpP:20,armorP:30,aspd:-12}],
+  ['thinkboi','Thinkboi','Long threads, longer podcasts, and a surprising amount of energy for it.',{en:45,cdr:.18,dmg:-12}]],
  scrapper:[['picket','Picket Line','Hold the line and let them break on it.',{armorP:40,hpP:10,mspd:-10}],['wildcat','Wildcat','Hit first and hit hardest. Nobody is covering you.',{dmg:30,aspd:10,taken:20}],['mutual','Mutual Aid','Every blow you land keeps you standing.',{leech:3,regenH:4,dmg:-12}]],
  hacker:[['rootkit','Root Kit','All power to the payload.',{dmg:35,hpP:-20}],['firewall','Firewall','Deep buffers, slow hands.',{hpP:15,en:40,dmg:-12}],['throttle','Throttle','Cast early, cast often, never quite hard enough.',{cdr:.2,regen:3,crit:-5}]],
  courier:[['express','Express','Faster than anything that could hurt you. Usually.',{mspd:12,aspd:15,hpP:-15}],['insured','Insured','Padded, strapped down, late.',{hpP:20,armorP:25,aspd:-10}],['cod','Cash on Delivery','You are here for the tips.',{mf:40,gold:60,dmg:-15}]],
@@ -72,20 +75,24 @@ function extra2(s,add){let hp=0;const d=docOf();if(d)for(const k in d[3]){if(k==
   for(let r=0;r<5;r++)if(rowDone(r))for(const k in ROWB[r][2])add(k,ROWB[r][2][k])}
 /* ================= damage types: what a thing is made of decides what breaks it ================= */
 const DTY={impact:{n:'Impact',c:'#e6e2d6',d:'Blunt force. Nothing shrugs it off entirely.'},surge:{n:'Surge',c:'#59e0e6',d:'Overvoltage. Briefly locks up what it hits.'},rust:{n:'Rust',c:'#c9803a',d:'Corrosion. Keeps eating for three seconds after the hit.'},heat:{n:'Heat',c:'#ff7a3c',d:'Thermal. A quarter of it splashes onto anything close by.'},noise:{n:'Noise',c:'#d98cff',d:'Jamming. Slows whatever is listening.'}};
+DTY.sound={n:'Sound',c:'#f7931a',d:'Sound money. Nothing resists it, nothing is immune to it, and no shield stops it. That is the entire point.'};
 const DTK=Object.keys(DTY);
-const SKT={scrapper:{1:'rust',5:'noise',7:'heat'},hacker:{0:'surge',1:'surge',3:'noise',4:'surge',6:'rust',7:'noise'},courier:{3:'heat',4:'rust',7:'noise'},anon:{0:'heat',3:'heat',5:'noise',6:'heat',8:'noise'},founder:{1:'noise',3:'surge',8:'heat'}};
+const SKT={maxi:{0:'sound',1:'sound',3:'sound',4:'sound',5:'sound',6:'sound',7:'sound'},scrapper:{1:'rust',5:'noise',7:'heat'},hacker:{0:'surge',1:'surge',3:'noise',4:'surge',6:'rust',7:'noise'},courier:{3:'heat',4:'rust',7:'noise'},anon:{0:'heat',3:'heat',5:'noise',6:'heat',8:'noise'},founder:{1:'noise',3:'surge',8:'heat'}};
 const skType=(cls,i)=>(SKT[cls]||{})[i]||'impact';
-const baseType=()=>(G.eq.weapon&&G.eq.weapon.dt)||(G.cls==='hacker'?'surge':'impact');
+const baseType=()=>G.cls==='maxi'?'sound':(G.eq.weapon&&G.eq.weapon.dt)||(G.cls==='hacker'?'surge':'impact');
 const RES={tick:{surge:1.5},drone:{surge:1.5,noise:.5},bot:{impact:.75,rust:1.5},hound:{noise:1.5,rust:.5},ad:{noise:0,impact:1.5},hr:{noise:.5,heat:1.5},mech:{impact:.5,rust:1.5,surge:1.25},seer:{surge:.5,impact:1.5},aegis:{surge:0,heat:1.5},lancer:{noise:1.5,heat:.5},splitter:{heat:1.5,impact:.5},
  director:{noise:.5,rust:1.5},proxy:{rust:.5,surge:1.5},censor:{noise:0,heat:1.5},shill:{noise:1.5},boss:{noise:.5,rust:1.5,heat:1.25},boss2:{noise:0,surge:1.5,impact:.75},boss3:{surge:.5,noise:.5,impact:1.5,heat:1.25}};
 const resTxt=k=>{const r=RES[k]||{},w=[],s=[],im=[];for(const t in r){(r[t]===0?im:r[t]>1?w:s).push(DTY[t].n)}return (w.length?'Weak to '+w.join(', '):'')+(s.length?(w.length?' · ':'')+'Resists '+s.join(', '):'')+(im.length?(w.length||s.length?' · ':'')+'Immune to '+im.join(', '):'')};const dealTxt=k=>DTY[ETY[k]||'impact'].n;;
 let DT=null;
 /* returns the damage after type bonuses, weakness and resistance; applies the type's side effect */
-function typed(e,d){const ty=DT||(P.fm&&P.fm.t>0&&P.fm.dt)||baseType(),m=((RES[e.k]||{})[ty]),mul=m===undefined?1:m;d*=(1+(S['t_'+ty]||0)/100)*mul;
+function typed(e,d){const ty=DT||(P.fm&&P.fm.t>0&&P.fm.dt)||baseType();
+  if(ty==='sound'){/* no table, no multiplier, no argument */
+    e.snd=1;e.lt=ty;return d*(1+(S.t_sound||0)/100)}
+  const m=((RES[e.k]||{})[ty]),mul=m===undefined?1:m;d*=(1+(S['t_'+ty]||0)/100)*mul;
   if(mul!==1&&!(e.ft>0)){e.ft=1.2;float(e.x,e.y-.4,mul===0?'Immune':mul>1?'Weak!':'Resists',mul>1?'#7be495':'#9a94a8',0)}
   if(mul>0){if(ty==='surge')e.stun=Math.max(e.stun,.15);else if(ty==='noise')e.slow=Math.max(e.slow,1.5);else if(ty==='rust')e.rust={dps:d*.2/3,t:3,c:0};else if(ty==='heat'){const sp=d*.25;for(const o of W.ents)if(o!==e&&o.hp>0&&Math.hypot(o.x-e.x,o.y-e.y)<1.4+o.r)o.hp=Math.max(1,o.hp-sp*(((RES[o.k]||{}).heat)===undefined?1:RES[o.k].heat)),o.flash=.08}}
   if(mul>1&&S.sp.pkey)d*=1.35;e.lt=ty;return d}
-function typeTick(dt){for(const e of W.ents.slice()){if(e.ft>0)e.ft-=dt;const r=e.rust;if(r){r.t-=dt;r.c-=dt;if(r.c<=0){r.c=.5;dmgEnemy(e,r.dps*.5,false);e.hits=Math.max(0,(e.hits||1)-1);if(Math.random()<.5)W.parts.push({x:e.x,y:e.y,z:16,vx:rnd(-.5,.5),vy:rnd(-.5,.5),vz:30,t:0,life:.5,col:'#c9803a',s:3})}if(r.t<=0)e.rust=null}}}
+function typeTick(dt){for(const e of W.ents.slice()){if(e.ft>0)e.ft-=dt;if(e.noheal>0)e.noheal-=dt;const r=e.rust;if(r){r.t-=dt;r.c-=dt;if(r.c<=0){r.c=.5;dmgEnemy(e,r.dps*.5,false);e.hits=Math.max(0,(e.hits||1)-1);if(Math.random()<.5)W.parts.push({x:e.x,y:e.y,z:16,vx:rnd(-.5,.5),vy:rnd(-.5,.5),vz:30,t:0,life:.5,col:'#c9803a',s:3})}if(r.t<=0)e.rust=null}}}
 /* what the machines hit you with, and how you stand up to it */
 const ETY={tick:'heat',ad:'noise',hr:'noise',seer:'noise',censor:'noise',shill:'noise',aegis:'surge',lancer:'surge',proxy:'surge',splitter:'rust',boss2:'noise',boss3:'surge'};
 const foeType=src=>!src?'impact':src.dty||(src.mods&&src.mods.arc?'surge':src.mods&&src.mods.boom?'heat':ETY[src.k]||'impact');
@@ -145,6 +152,8 @@ function bullKill(e){if(e.k!=='bull'||!W.z.secret)return;if(Math.random()<.22)ad
   if(e.su){G.st.bullKing=(G.st.bullKing||0)+1;mktNews(.3,'the Golden Bull is down');for(let i=0;i<6;i++)addDrop({sat:ri(6,12)},e.x,e.y);addDrop({it:makeItem(W.ml+2,4)},e.x,e.y);W.portals.push({x:e.x,y:e.y,kind:'home'});sfx('quest');setTimeout(()=>dlg('The Golden Bull is down','The field goes quiet. Somewhere a chart stops going up, just for a moment. The Office of Price Stability will deny that any of this happened, and for once you are inclined to let them.',[['Moo']]),900)}}
 /* ================= builds: when the rig rolls for you, it offers plans that hang together ================= */
 const BUILDS={
+ maxi:[
+  {k:'orange',n:'Orange Pilled',p:'Pills, four words, and a megabyte in the doorway. Everything you do is Sound damage and nothing in this world resists it.',doc:'toxic',at:[45,20,25,10],pr:[[0,10],[6,9],[4,6],[1,6],[2,6],[8,5],[5,4],[3,3],[7,3]],sl:[0,6,4],pa:[2,8,4,3],web:[0,1],fk:['over','burst','mark','echo']}],
  scrapper:[
   {k:'crew',n:'Wrecking Crew',p:'Wade into the middle and hit everything at once. Each machine near you makes you hit harder.',doc:'wildcat',at:[50,15,35,0],pr:[[0,10],[3,10],[8,6],[7,8],[6,5],[13,5],[9,3]],sl:[0,3,7],pa:[8,13,9,2],web:[0,1],fk:['over','burst','stun','echo']},
   {k:'wall',n:'Immovable Object',p:'Armor, life and a horn that stuns the room. You win by still being there.',doc:'picket',at:[20,25,55,0],pr:[[2,10],[5,8],[0,6],[3,6],[10,5],[14,5],[6,4]],sl:[0,3,5],pa:[2,10,14,12],web:[1,2],fk:['ward','siphon','stun','lean']},
