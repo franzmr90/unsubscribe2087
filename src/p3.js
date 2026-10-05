@@ -10,21 +10,21 @@ const AMBC={town:'#0b0a1e',moor:'#070e12',mall:'#180a18',farm:'#04121c',trib:'#1
  sofa:'#160808',reactor:'#061018',list:'#0c0c12',kitchen:'#141004',garage:'#140c02',chain:'#180c01',
  mempool:'#060a16',vault:'#0c0c12',blocks:'#140c02',room:'#000000',cage:'#04121a',wait:'#160604',mezz:'#120e22'};
 const WX={
- town:{k:'mote',n:30,sp:.020},        moor:{k:'rain',n:84,sp:1.05,w:.20,c:'#8fa8b8'},
- mall:{k:'mote',n:34,sp:.022},        farm:{k:'data',n:56,sp:.62},
+ town:{k:'mote',n:30,sp:.020},        moor:{k:'rain',n:60,sp:1.05,w:.20,c:'#8fa8b8'},
+ mall:{k:'mote',n:34,sp:.022},        farm:{k:'data',n:42,sp:.62},
  trib:{k:'dust',n:40,sp:.010},        hq:{k:'mote',n:26,sp:.014},
  shaft:{k:'ember',n:46,sp:.046},      garden:{k:'spore',n:38,sp:.020},
  lake:{k:'leaf',n:22,sp:-.030},       walk:{k:'mote',n:20,sp:.012},
  vest:{k:'dust',n:34,sp:.009},        minutes:{k:'leaf',n:20,sp:-.024,c:'#e8e0c8'},
- chairs:{k:'ember',n:28,sp:.030},     rack:{k:'data',n:66,sp:.80},
+ chairs:{k:'ember',n:28,sp:.030},     rack:{k:'data',n:44,sp:.80},
  still:{k:'mote',n:22,sp:.007},       landing:{k:'mote',n:22,sp:.012},
  cutler:{k:'mote',n:26,sp:.014},      mile:{k:'mote',n:30,sp:.016},
  sofa:{k:'dust',n:34,sp:.010},        reactor:{k:'data',n:42,sp:.46},
  list:{k:'leaf',n:22,sp:-.020,c:'#ffffff'}, kitchen:{k:'mote',n:20,sp:.012},
- garage:{k:'dust',n:28,sp:.009},      chain:{k:'data',n:62,sp:.88},
+ garage:{k:'dust',n:28,sp:.009},      chain:{k:'data',n:42,sp:.88},
  mempool:{k:'drift',n:34,sp:.030},    vault:{k:'leaf',n:22,sp:-.022,c:'#f0ead8'},
  blocks:{k:'ember',n:32,sp:.030},     room:{k:'dust',n:16,sp:.005},
- cage:{k:'data',n:48,sp:.66},         wait:{k:'dust',n:28,sp:.010},
+ cage:{k:'data',n:36,sp:.66},         wait:{k:'dust',n:28,sp:.010},
  mezz:{k:'mote',n:24,sp:.012}};
 const hex2rgb=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
 const STY={
@@ -190,11 +190,16 @@ function resize(){const r=cv.getBoundingClientRect();CW=r.width;CH=r.height;DPR=
 addEventListener('resize',resize);
 const SX=(x,y)=>(x-y)*32-cx+VW/2, SY=(x,y)=>(x+y)*16-cy+VH*.44;
 const OL='#0b0912';
-function shadow(X,Y,r){ctx.fillStyle='rgba(0,0,0,.42)';ctx.beginPath();ctx.ellipse(X,Y,r,r*.5,0,0,6.283);ctx.fill()}
+function shadow(X,Y,r){ctx.fillStyle='rgba(0,0,0,.26)';ctx.beginPath();ctx.ellipse(X,Y,r*1.18,r*.6,0,0,6.283);ctx.fill();
+  ctx.fillStyle='rgba(0,0,0,.44)';ctx.beginPath();ctx.ellipse(X,Y,r*.72,r*.36,0,0,6.283);ctx.fill()}
 function box(x,y,w,h,r,col){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=col;ctx.fill();ctx.stroke()}
 function poly(pts,col){ctx.beginPath();ctx.moveTo(pts[0],pts[1]);for(let i=2;i<pts.length;i+=2)ctx.lineTo(pts[i],pts[i+1]);ctx.closePath();ctx.fillStyle=col;ctx.fill();ctx.stroke()}
 function glow(X,Y,r,col,a){const g=ctx.createRadialGradient(X,Y,0,X,Y,r);g.addColorStop(0,col);g.addColorStop(1,'rgba(0,0,0,0)');ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a;ctx.fillStyle=g;ctx.fillRect(X-r,Y-r,r*2,r*2);ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over'}
 function light(X,Y,r,col,s){LIGHTS.push({X,Y,r,col,s:s===undefined?1:s})}
+function rim(X,Y,s,b,a){const c=(TX.s&&TX.s.glow)||'#ffcf7a';ctx.save();ctx.strokeStyle=c;ctx.globalAlpha=a===undefined?.38:a;ctx.lineCap='round';
+  ctx.lineWidth=1.7*s;ctx.beginPath();ctx.arc(X,Y-37*s+b,6.5*s,3.46,5.05);ctx.stroke();
+  ctx.lineWidth=1.5*s;ctx.beginPath();ctx.moveTo(X-7.4*s,Y-30.4*s+b);ctx.lineTo(X+7.4*s,Y-30.4*s+b);ctx.stroke();
+  ctx.restore();ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.lineCap='butt'}
 function human(X,Y,o){
   const s=o.s||1,f=o.f||1,sw=o.mov?Math.sin(o.ph):0,b=o.mov?Math.abs(Math.cos(o.ph))*1.6:Math.sin(tNow*2+(o.ph||0))*.5;
   shadow(X,Y,12*s);ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.lineJoin='round';
@@ -203,6 +208,7 @@ function human(X,Y,o){
   box(X-8*s,Y-31*s+b,16*s,20*s,4*s,o.c);
   ctx.fillStyle='rgba(0,0,0,.2)';ctx.fillRect(X+(f>0?-7:2)*s,Y-29*s+b,5*s,16*s);
   ctx.beginPath();ctx.arc(X,Y-37*s+b,6.5*s,0,6.283);ctx.fillStyle=o.skin||'#d9b08c';ctx.fill();ctx.stroke();
+  if(!o.norim)rim(X,Y,s,b);
   return b}
 function drawPlayer(X,Y){
   const c=CLS[G.cls],dx=(P.dir.x-P.dir.y),dy=(P.dir.x+P.dir.y)*.5,l=Math.hypot(dx,dy)||1;let ux=dx/l,uy=dy/l;const f=ux>=0?1:-1;
@@ -288,6 +294,10 @@ function drawEnemy(e,X,Y){
     box(X-23*u,Y-43*u+b,10*u,13*u,3,c2);box(X+13*u,Y-43*u+b,10*u,13*u,3,c2);
     box(X-22*u,Y-30*u+b,7*u,16*u+(e.wind>0||e.slam?-6:0),2,'#3a3848');box(X+15*u,Y-30*u+b,7*u,16*u,2,'#3a3848');
     box(X-9*u,Y-55*u+b,18*u,15*u,3,B?'#0b0912':'#3d4257');
+    {const c=(TX.s&&TX.s.glow)||'#ffcf7a';ctx.save();ctx.strokeStyle=c;ctx.globalAlpha=.34;ctx.lineCap='round';ctx.lineWidth=1.9*u;
+     ctx.beginPath();ctx.moveTo(X-8.6*u,Y-55*u+b);ctx.lineTo(X+8.6*u,Y-55*u+b);ctx.stroke();
+     ctx.beginPath();ctx.moveTo(X-22.6*u,Y-42.4*u+b);ctx.lineTo(X-13.4*u,Y-42.4*u+b);ctx.moveTo(X+13.4*u,Y-42.4*u+b);ctx.lineTo(X+22.6*u,Y-42.4*u+b);ctx.stroke();
+     ctx.restore();ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.lineCap='butt'}
     if(B){box(X-6*u,Y-40*u+b,12*u,16*u,1,'#e6e2d6');poly([X-2.5*u,Y-40*u+b,X+2.5*u,Y-40*u+b,X+3.5*u,Y-23*u+b,X,Y-18*u+b,X-3.5*u,Y-23*u+b],'#b3261e');
       ctx.fillStyle=e.hp<e.max*.5?'#ff3b30':'#e0bd6e';ctx.font='900 '+8*u+'px Cinzel,serif';ctx.textAlign='center';ctx.fillText(e.slam?'!!':e.k==='boss4'?(e.hp<e.max*.5?':(':':)'):e.k==='boss2'?(e.hp<e.max*.5?'…':'SVP'):e.hp<e.max*.5?'>:(':'VP',X,Y-45*u+b);glow(X,Y-48*u+b,40,'#e0bd6e',.4);light(X,Y-40*u,150,'#e0bd6e')}
     else{ctx.fillStyle='#ff3b30';ctx.fillRect(X-6*u,Y-50*u+b,12*u,3*u);glow(X,Y-48*u+b,18*u,'#ff3b30',.5);eye(X-18*u,Y-40*u+b,1.6*u,'#ffe36b');eye(X+18*u,Y-40*u+b,1.6*u,'#ffe36b')}}
@@ -372,13 +382,53 @@ function drawObj(o,X,Y){
 /* ================= frame ================= */
 /* what lies beyond the edge of a district: weather for the Cloud, a red hum for the Board, a far city for the ground */
 const BGK={chain:4,mempool:4,blocks:4,room:4,reactor:2,shaft:2,garden:2,lake:2,walk:2,mezz:2,landing:2,vest:3,minutes:3,chairs:3,rack:3,wait:3,still:4};
+/* Full-screen gradients are the expensive part of a backdrop and they never change
+   until the style or the viewport does, so bake them once and blit. */
+let BGC=null,BGK2='';
+function bgBase(k){const key=k+'|'+Math.round(VW)+'x'+Math.round(VH);if(BGK2===key)return BGC;BGK2=key;
+  const c=mk(Math.max(1,Math.round(VW)),Math.max(1,Math.round(VH))),g=c.getContext('2d'),w=c.width,h=c.height,G2=(a,b2,st)=>{const q=g.createLinearGradient(0,0,0,h);for(const[o,col]of st)q.addColorStop(o,col);return q};
+  if(k===2){g.fillStyle=G2(0,0,[[0,'#140f2c'],[.45,'#2a2250'],[1,'#4a4070']]);g.fillRect(0,0,w,h)}
+  else if(k===3){const q=g.createRadialGradient(w/2,h/2,40,w/2,h/2,h*.8);q.addColorStop(0,'#200c11');q.addColorStop(1,'#050308');g.fillStyle=q;g.fillRect(0,0,w,h)}
+  else if(k===4){g.fillStyle=G2(0,0,[[0,'#03050b'],[.7,'#05070f'],[1,'#080a14']]);g.fillRect(0,0,w,h);
+    const q=g.createRadialGradient(w/2,h*.72,10,w/2,h*.72,h*.6);q.addColorStop(0,'rgba(247,147,26,.10)');q.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=q;g.fillRect(0,h*.2,w,h*.8)}
+  else{g.fillStyle=G2(0,0,[[0,'#09070f'],[.55,'#120d1c'],[1,'#1a1326']]);g.fillRect(0,0,w,h);
+    const q=g.createLinearGradient(0,h*.3,0,h*.62);q.addColorStop(0,'rgba(0,0,0,0)');q.addColorStop(1,'rgba(150,90,60,.14)');g.fillStyle=q;g.fillRect(0,h*.3,w,h*.34)}
+  return BGC=c}
+/* Three bands at three parallax rates: a sky, a far skyline, a near one. The near band
+   slides about four times as fast as the far, which is the whole trick. */
+function skyline(seed,yb,h0,h1,rate,col,px,lit,t){
+  const W0=VW+140;let x=-((px*rate)%92+92)%92-40;
+  for(let i=0;x<W0;i++){const q=hsh(i+seed),bw=22+q*42,bh=h0+hsh(i*3+seed)*(h1-h0);
+    ctx.fillStyle=col;ctx.fillRect(x,yb-bh,bw,bh+VH);
+    if(lit)for(let k=0;k<5;k++)if(hsh(i*7+k+seed)>.62){ctx.fillStyle=Math.sin(t*.7+i*2.3+k)>-.55?lit:'rgba(0,0,0,0)';ctx.fillRect(x+4+hsh(i+k+seed)*(bw-10),yb-bh+9+k*13,2.5,4)}
+    x+=bw+4}}
 function backdrop(){const k=BGK[W.z.style]||1,px=(P.x-P.y)*3,py=(P.x+P.y)*1.5,t=tNow;
-  if(k===2){const g=ctx.createLinearGradient(0,0,0,VH);g.addColorStop(0,'#1c1836');g.addColorStop(1,'#3a3460');ctx.fillStyle=g;ctx.fillRect(0,0,VW,VH);ctx.fillStyle='rgba(220,215,255,.10)';for(let i=0;i<9;i++){const x=((i*173+t*(6+i%3*3)-px)%(VW+300)+VW+300)%(VW+300)-150,y=((i*97-py)%(VH+120)+VH+120)%(VH+120)-60,w=90+i%4*40;ctx.beginPath();ctx.ellipse(x,y,w,w*.28,0,0,6.283);ctx.ellipse(x+w*.5,y+8,w*.6,w*.2,0,0,6.283);ctx.fill()}}
-  else if(k===3){const g=ctx.createRadialGradient(VW/2,VH/2,40,VW/2,VH/2,VH*.8);g.addColorStop(0,'#1c0a0e');g.addColorStop(1,'#050308');ctx.fillStyle=g;ctx.fillRect(0,0,VW,VH);ctx.fillStyle='rgba(194,45,53,.07)';for(let i=0;i<14;i++){const x=((i*71-px*.6)%VW+VW)%VW;ctx.fillRect(x,0,2,VH);ctx.fillRect(x-1,((t*40+i*90)%VH),4,26)}}
-  else if(k===4){ctx.fillStyle='#04060d';ctx.fillRect(0,0,VW,VH);for(let i=0;i<60;i++){const x=((i*89-px*.3)%VW+VW)%VW,y=((i*53-py*.3)%VH+VH)%VH;ctx.fillStyle='rgba(190,215,255,'+(.15+.25*Math.abs(Math.sin(t*.8+i)))+')';ctx.fillRect(x,y,1.5,1.5)}}
-  else{const g=ctx.createLinearGradient(0,0,0,VH);g.addColorStop(0,'#0a0812');g.addColorStop(1,'#140f1c');ctx.fillStyle=g;ctx.fillRect(0,0,VW,VH);ctx.fillStyle='rgba(120,100,160,.07)';for(let i=0;i<16;i++){const x=((i*61-px*.5)%(VW+80)+VW+80)%(VW+80)-40,h=40+((i*37)%90),y=VH*.5+((i%3)*VH*.16)-py*.2%40;ctx.fillRect(x,y-h,22+i%3*10,h+VH)}}}
+  ctx.drawImage(bgBase(k),0,0,VW,VH);
+  if(k===2){/* above the weather: the Cloud */
+    skyline(11,VH*.62,30,90,.35,'rgba(30,24,56,.75)',px,'rgba(255,231,176,.5)',t);
+    ctx.fillStyle='rgba(220,215,255,.10)';
+    for(let i=0;i<9;i++){const x=((i*173+t*(6+i%3*3)-px)%(VW+300)+VW+300)%(VW+300)-150,y=((i*97-py)%(VH+120)+VH+120)%(VH+120)-60,w=90+i%4*40;
+      ctx.beginPath();ctx.ellipse(x,y,w,w*.28,0,0,6.283);ctx.ellipse(x+w*.5,y+8,w*.6,w*.2,0,0,6.283);ctx.fill()}
+    skyline(27,VH*.82,22,54,1.5,'rgba(14,10,30,.9)',px,null,t)}
+  else if(k===3){/* the Board: a red hum and something very large behind it */
+    skyline(5,VH*.58,60,160,.3,'rgba(12,4,8,.85)',px,'rgba(194,45,53,.45)',t);
+    ctx.fillStyle='rgba(194,45,53,.07)';
+    for(let i=0;i<14;i++){const x=((i*71-px*.6)%VW+VW)%VW;ctx.fillRect(x,0,2,VH);ctx.fillRect(x-1,((t*40+i*90)%VH),4,26)}
+    skyline(19,VH*.86,18,48,1.4,'rgba(4,2,5,.95)',px,null,t)}
+  else if(k===4){/* inside the chain, and the Room: no city, only arithmetic */
+    for(let i=0;i<60;i++){const x=((i*89-px*.3)%VW+VW)%VW,y=((i*53-py*.3)%VH+VH)%VH;ctx.fillStyle='rgba(190,215,255,'+(.15+.25*Math.abs(Math.sin(t*.8+i)))+')';ctx.fillRect(x,y,1.5,1.5)}
+    ctx.fillStyle='rgba(247,147,26,.16)';
+    for(let i=0;i<9;i++){const y=((i*131+t*7-py*1.1)%(VH+120)+VH+120)%(VH+120)-60,x=((i*197-px*1.1)%(VW+160)+VW+160)%(VW+160)-80;ctx.fillRect(x,y,14,1.5);ctx.fillRect(x+20,y,6,1.5)}}
+  else{/* the ground: a dead city going back a long way */
+    skyline(3,VH*.60,46,150,.26,'rgba(16,12,26,.85)',px,'rgba(255,207,122,.42)',t);
+    skyline(41,VH*.74,30,86,.7,'rgba(10,7,18,.92)',px,'rgba(255,170,90,.28)',t);
+    skyline(67,VH*.88,16,44,1.6,'rgba(5,3,10,.96)',px,null,t)}}
+let VGC=null,VGK='';
+function vigCanvas(){const key=Math.round(VW)+'x'+Math.round(VH);if(VGK===key)return VGC;VGK=key;
+  const c=mk(Math.max(1,Math.round(VW)),Math.max(1,Math.round(VH))),g=c.getContext('2d'),w=c.width,h=c.height;
+  const q=g.createRadialGradient(w/2,h/2,Math.min(w,h)*.58,w/2,h/2,Math.max(w,h)*.82);q.addColorStop(0,'rgba(0,0,0,0)');q.addColorStop(1,'rgba(3,2,8,.34)');g.fillStyle=q;g.fillRect(0,0,w,h);return VGC=c}
 function render(){
-  ctx.setTransform(DPR*ZM,0,0,DPR*ZM,0,0);ctx.fillStyle='#050409';ctx.fillRect(0,0,VW,VH);if(W&&P)backdrop();
+  ctx.setTransform(DPR*ZM,0,0,DPR*ZM,0,0);if(W&&P)backdrop();else{ctx.fillStyle='#050409';ctx.fillRect(0,0,VW,VH)}
   if(!W||!P)return;LIGHTS=[];
   cx=(P.x-P.y)*32+(shake?rnd(-shake,shake):0);cy=(P.x+P.y)*16+(shake?rnd(-shake,shake):0);
   const z=W.z,N=W.N,R=Math.ceil(VW/128+VH/64)+3,pd=P.x+P.y;
@@ -456,12 +506,12 @@ function render(){
   /* source-atop tints what is left of the veil without touching its alpha, so a lamp
      warms the shadow around its pool instead of just cutting a grey hole in it */
   lg.globalCompositeOperation='source-atop';
-  for(const L of LIGHTS){if(!L.col)continue;const r=L.r*.85*k,g=lg.createRadialGradient(L.X*k,L.Y*k,0,L.X*k,L.Y*k,r);g.addColorStop(0,L.col);g.addColorStop(1,'rgba(0,0,0,0)');lg.globalAlpha=.55;lg.fillStyle=g;lg.fillRect(L.X*k-r,L.Y*k-r,r*2,r*2)}
+  for(const L of LIGHTS){if(!L.col||L.r<90)continue;const r=L.r*.85*k,g=lg.createRadialGradient(L.X*k,L.Y*k,0,L.X*k,L.Y*k,r);g.addColorStop(0,L.col);g.addColorStop(1,'rgba(0,0,0,0)');lg.globalAlpha=.55;lg.fillStyle=g;lg.fillRect(L.X*k-r,L.Y*k-r,r*2,r*2)}
   lg.globalAlpha=1;lg.globalCompositeOperation='source-over';
   ctx.imageSmoothingEnabled=true;ctx.drawImage(LC,0,0,VW,VH);
   weather();
   // labels and floating text above the darkness
-  {const vg=ctx.createRadialGradient(VW/2,VH/2,Math.min(VW,VH)*.58,VW/2,VH/2,Math.max(VW,VH)*.82);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(3,2,8,.34)');ctx.fillStyle=vg;ctx.fillRect(0,0,VW,VH)}
+  ctx.drawImage(vigCanvas(),0,0,VW,VH);
   if(OPT.labels)for(const d of W.drops)if(d.it&&d.t>.3){const X=SX(d.x,d.y),Y=SY(d.x,d.y);label(X,Y-20,d.it.id?d.it.name:d.it.base,QCOL[d.it.q],'700 10px Cinzel,serif')}
   ctx.font='900 14px Cinzel,serif';ctx.textAlign='center';
   for(const t of W.texts){ctx.globalAlpha=1-t.t/.9;const X=SX(t.x,t.y),Y=SY(t.x,t.y)-50-t.t*36;ctx.fillStyle='#000';ctx.fillText(t.txt,X+1,Y+1);ctx.fillStyle=t.col;ctx.fillText(t.txt,X,Y)}
