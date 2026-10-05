@@ -199,3 +199,19 @@ happened, and what you expected instead. Reports land in `server/data/bugs/` as 
 file each, carrying the district, level, class, quest state and any errors the page
 recorded. Served from somewhere with no server behind it, the report goes to the clipboard
 instead so it can still be passed on.
+
+## On the Artifact, and from a file
+
+The same build runs in three places and finds whatever is there:
+
+| | Accounts | Games, chat, voice | Report button |
+|---|---|---|---|
+| **The account server** | yes | yes | files to the server |
+| **A claude.ai Artifact** | the host's own account store | **none** | to the clipboard |
+| **A file on disk** | `localStorage` only | none | to the clipboard |
+
+The multiplayer half is gated on `window.__u2087server`, a marker only this server's shim
+sets. Testing for `window.claude` would not do — the Artifact host provides one of those
+too, and the game would sit there trying to open a socket to a host that has never heard of
+it. With the marker absent there is no Party tab, no chat bar, no socket attempt and no
+difficulty scaling, and the game is exactly what it was before any of this existed.

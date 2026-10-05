@@ -10,6 +10,10 @@
   'use strict';
   var me = null, csrf = '', booted = false;
 
+  /* The game looks for this before it tries to open a socket. Only this server serves the
+     page with this file in it, so only here is there anybody to talk to. */
+  window.__u2087server = true;
+
   function api(path, body, method) {
     var opt = { method: method || 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin' };
     if (csrf) opt.headers['X-CSRF'] = csrf;

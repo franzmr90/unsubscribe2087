@@ -3531,9 +3531,10 @@ function mpSend(t, o) { if (mpOn()) try { MP.conn.send(JSON.stringify(Object.ass
 
 function mpConnect() {
   if (MP.conn || typeof WebSocket === 'undefined') return;
-  /* Only the account server serves this page with a shim; anywhere else there is nobody
-     to talk to and the game stays exactly as it was. */
-  if (!window.claude || !window.claude.use || !location.protocol.startsWith('http')) return;
+  /* Only the account server serves this page, and it says so by setting this marker.
+     Testing for window.claude would not do: the Artifact host provides one too, and the
+     game would sit there trying to open a socket to a host that has never heard of it. */
+  if (!window.__u2087server || !location.protocol.startsWith('http')) return;
   let url;
   try { url = (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/live'; }
   catch (e) { return; }
