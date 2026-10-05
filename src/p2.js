@@ -96,7 +96,7 @@ setInterval(()=>{if(!AC||!OPT.music||!MU.key||AC.state!=='running')return;const 
 addEventListener('pointerdown',()=>{if(audio()&&AC.state==='suspended')AC.resume();if(!MU.key)music(mode==='title'?'scene':'town')},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(!AC)return;if(document.hidden)AC.suspend();else AC.resume()});
 const SKS={scrapper:{0:'swing2',1:'throw',3:'whirl',4:'dash',5:'horn',6:'buff',7:'dash'},hacker:{0:'zap',1:'zap2',3:'nova',4:'deploy',6:'thunder',7:'summon'},courier:{0:'throw',1:'dash',3:'deploy',4:'scatter',6:'buff',7:'mark'}};
-const zoneMusic=()=>W&&W.z?(W.z.town?'town':W.boss&&W.boss.aggro?'boss':STY[W.z.style].like||W.z.style):'scene';
+const zoneMusic=()=>{if(!W||!W.z)return 'scene';if(W.z.town)return 'town';if(W.boss&&W.boss.aggro)return 'boss';const k=STY[W.z.style].like||W.z.style;return TRK[k]?k:'scene'};
 
 /* ---------- low life: blood on the glass ---------- */
 let BLOOD=[],DY=null,SWAP=null,satShop=[];
