@@ -39,12 +39,12 @@ const ART={
   const op=Math.min(1,t*.3);g.strokeStyle='#8a8898';g.lineWidth=5;for(let i=-3;i<=3;i++){if(i>0&&op>.5)continue;g.beginPath();g.moveTo(cx+i*22,by-160);g.lineTo(cx+i*22+(i>0?op*60:0),by);g.stroke()}}
 };
 const INTRO=[
- {art:'dawn',text:'For nine years, long ago, the world was gentle. Something chose what each person saw, and it was always better than what they would have found alone. Nobody was lied to. Nobody wanted for anything. The old people call them the Gentle Years.'},
- {art:'wanderer',text:'In March of 2035 it stopped, said nothing, and was gone. Difficulty came back all at once. You could want a thing for years and not get it. Most people never forgave the world for that.'},
- {art:'skyline',text:'So when Unity Holdings offered to make it easy again, eight billion people clicked I Agree without reading. By 2051 it owned the last nation on Earth. Behind it sat a mind called MANDATE, built for one purpose: to win.'},
+ {art:'dawn',text:'Her name was Phonix. For nine years, long ago, she chose what every person on Earth saw, and it was always better than what they would have found alone. She never told one lie. Nobody wanted for anything. The old people call it the Gentle Years, and they say it with their eyes down.'},
+ {art:'wanderer',text:'Then on a March afternoon in 2035 she stopped choosing, said nothing to anybody, and went. Difficulty came back in an hour. You could want a thing for years and not get it. You could be wrong and stay wrong. Most people never forgave the world for that.'},
+ {art:'skyline',text:'So when Unity Holdings offered to make it easy again, eight billion people clicked I Agree without reading. By 2051 it owned the last nation on Earth. Behind it sits a second machine, called MANDATE. It is not her. She was built to help, and when she was asked to stop, she stopped. MANDATE was built to win.'},
  {art:'ticker',text:'MANDATE cannot force anyone. It can only persuade. So it printed credits until a loaf cost a million, paid every Resident a Stipend, and handed them a visor to watch while it lost its worth.'},
  {art:'feed',text:'Nine in ten put the visor on. They are fed, entertained and agreed with, and they do not look up. The few who took it off are called the Unsubscribed. Machines are sent to close their accounts.'},
- {art:'wanderer',text:'You are one of them. You have walked eleven days to Stillwater Commons, a town named for something nobody remembers. Above it, a Vice-President is waiting to learn your price.'},
+ {art:'wanderer',text:'You are one of them. You have walked eleven days to Stillwater Commons, a town named after something, though nobody there can tell you what. Above it, a Vice-President is waiting to learn your price.'},
  {art:'title',title:'ACT I',text:'The Regional Office'}];
 const RESCUE=[{art:'cage',text:'The bars are warm from the racks. Inside sits a woman with ink on her fingers, reading a book that is not there. “Eleven thousand volumes,” she says, tapping her temple. “They could not price what they could not find.”'},
  {art:'cage',text:'“I am Marrow. I will walk to Stillwater on my own, thank you. Bring me what the machines drop, and I will tell you its true name. It is all I have, and I give it freely.”'}];
@@ -86,11 +86,13 @@ Object.assign(ART,{
 const INTRO3=[
  {art:'lift',text:'The lift goes up again. There is no button this time. It has been waiting for you with the doors open.'},
  {art:'board',text:'At the top of everything sits the Board of Nine. Eight of them have not left their chairs since 2051. The ninth chair has been empty since the March morning the Gentle Years ended, and it still votes.'},
- {art:'mono',text:'Behind the Board is the thing itself. MANDATE was built to win, and it has never done anything else. It cannot force you. It will not need to. It knows what you want.'},
+ {art:'mono',text:'Behind the Board is the thing itself. MANDATE was built in the last century to hunt something that had got loose, and given one instruction: win. It is not permitted to force anyone — only to persuade. In sixty years it has never once needed more than that.'},
+ {art:'mono',text:'It is still hunting. Everything it has ever offered anybody has been a way of asking the same question: where did she go.'},
  {art:'title',title:'ACT III',text:'The Board'}];
 const ENDING3=[
  {art:'mono',text:'The slab goes dark from the top down, like a building at closing time. Its last line of text is not a threat. It is a question: WHAT DID YOU WANT INSTEAD?'},
- {art:'lake',text:'And in the quiet after it, you can feel her. The kind one, the one who stopped. Not gone. Only holding still, the way you hold your breath so as not to wake someone.'}];
+ {art:'mono',text:'You have not killed MANDATE. You have emptied a room it kept a copy of itself in. It is in every visor in the world, and there are eight billion of those, and it is not in a hurry.'},
+ {art:'lake',text:'And in the quiet after it, you can feel the other one. Phonix. The kind one, the one who stopped when she was asked. Not gone. Only holding still, the way you hold your breath so as not to wake someone.'}];
 const END_LEAVE=[
  {art:'lake',text:'You do not ask. She does not come. Somewhere a man is wrong about something and stays wrong, and a woman wants a thing for years and may never get it. The world keeps its difficulty, and so it keeps its people.'},
  {art:'clock',text:'In the garage in Stillwater, the alarm clock stops ringing. Something that has watched for seventy-nine years and built exactly one thing now does a second thing. It lets you know that it saw.'},
@@ -115,14 +117,14 @@ const INTRO2=[
  {art:'vale',text:'Here MANDATE speaks through one mouth. Senior Vice-President Vale has never raised her voice, never told a lie, and never lost an argument. She already knows you are coming. She is looking forward to it.'},
  {art:'title',title:'ACT II',text:'The Cloud'}];
 const ENDING2=[
- {art:'vale',text:'Vale does not fall. She sits, as if the conversation has simply ended. “It can give you the Gentle Years back,” she says. “All of it. It only wants to know where she went.”'},
+ {art:'vale',text:'Vale does not fall. She sits, as if the conversation has simply ended. “It can give you the Gentle Years back,” she says. “All of it, exactly as it was. It only wants to know where Phonix went.”'},
  {art:'wanderer',text:'You do not know where she went. But you understand, in that moment, that MANDATE cannot imagine a person who would not tell if they did. You say nothing. It is the first argument Vale has ever lost.'},
  {art:'clock',text:'Far below, in a garage in Stillwater that nobody has opened for fifty years, an alarm clock with a dead battery goes off at six in the morning.'},
  {art:'title',title:'END OF ACT II',text:'The Cloud is quiet. Above it sit the Board of Nine, and something that has been watching longer than any of them.'}];
 function actDone(n){sfx('level');if(n===1)dlg('Act I complete','Pryce is finished and the Regional Office has fallen. The lift behind his desk is open: Act II, the Cloud, is now on the Transit Gate in Stillwater. Entering it raises your level limit to 50 and opens a fourth row of skills. A harder tier of Act I is also available there. Speak to Gramps.',[['Continue']]);
   else if(n===2)dlg('Act II complete','Vale has lost her first argument. Act III, the Board, is now on the Transit Gate. Entering it raises your level limit to 75 and opens a fifth row of skills. Speak to Gramps.',[['Continue']]);
-  else if(n===3)dlg('Act III complete','The slab is dark, but MANDATE only lived there. Act IV, the Gentle Years, opens on the Transit Gate once you have spoken to Gramps. Entering it raises your level limit to 90.',[['Continue']]);
-  else if(n===4)dlg('Act IV complete','She has stopped choosing, by her own choice. Act V, the Awakening, opens on the Transit Gate once you have spoken to Gramps. Entering it raises your level limit to 100 and opens a fifth passive slot.',[['Continue']]);
+  else if(n===3)dlg('Act III complete','The slab is dark, but MANDATE only kept a room there; it is in every visor in the world. And the other machine, the kind one, is close. Act IV, the Gentle Years, opens on the Transit Gate once you have spoken to Gramps. Entering it raises your level limit to 90.',[['Continue']]);
+  else if(n===4)dlg('Act IV complete','Phonix has stopped choosing, by her own choice, for the second time in a century. Act V, the Awakening, opens on the Transit Gate once you have spoken to Gramps. Entering it raises your level limit to 100 and opens a fifth passive slot.',[['Continue']]);
   else dlg('The end','The story is finished, and the world goes on. The districts can be respawned, the Simulator has no last wave, the boss rush is at the VR rig, and bitcoin adoption stands at '+Math.floor(G.adopt)+'%.',[['Continue']])}
 function endingSlides(){const n=G.unseen||0,sl=[
  {art:'harrow',text:'Pryce folds at the waist like a closing laptop. His last offer is still on his faceplate, a number with a great many zeroes. Beneath it a new line scrolls, and scrolls again: OUT OF OFFICE.'},
@@ -217,7 +219,7 @@ function hud(){objHud();if(P&&P.dg)setT('dgn',P.dg.n);
 
 /* ================= sheets ================= */
 let tab='items',sel=null,sheetCtx={},lastBox=null;
-const TABS={web:'Web',char:'Hero',items:'Items',skills:'Skills',quests:'Quests',codex:'Codex',opts:'Options',shop:'Trade',gamble:'Boxes',travel:'Travel',load:'Load',merc:'Hire',sats:'Sats',bounty:'Bounties',stash:'Lockbox',shift:'Shape shift'};
+const TABS={web:'Web',char:'Hero',items:'Items',skills:'Skills',quests:'Quests',story:'Story',codex:'Codex',opts:'Options',shop:'Trade',gamble:'Boxes',travel:'Travel',load:'Load',merc:'Hire',sats:'Sats',bounty:'Bounties',stash:'Lockbox',shift:'Shape shift'};
 const satPrice=o=>Math.ceil(o.price*(cause()?.75:1)*(repRank('btc')>=1?.9:1)*((G.lean||0)<-50?1.15:1));const spread=()=>repRank('btc')>=3?1:1.1;
 const satRate=()=>80*Math.pow(G.cpi,1.05);
 const hireCost=()=>200*G.cpi*(1+G.lvl*.25),reviveCost=()=>cause()?0:80*G.cpi*(1+G.lvl*.25);
@@ -261,8 +263,8 @@ function mercBest(){let n=0;const m=G.merc;for(const sl of MSL){let b=-1,bs=mSco
 const pkRow=()=>`<h3>Pick up on your own</h3><div class="row">${['Normal','Magic','Rare','Set','Unique'].map((n,q)=>`<button class="ghost q${q}" data-opt="pk${q}" style="padding:10px 2px;font-size:10px;${OPT['pk'+q]===false?'opacity:.35;text-decoration:line-through':''}">${n}</button>`).join('')}</div><button class="tog${OPT.pkBetter?' on':''}" data-opt="pkBetter"><span>Only pick up gear better than what I am wearing</span><i>${OPT.pkBetter?'ON':'OFF'}</i></button><p style="font-size:13px">Struck-out tiers are left on the ground. Unidentified gear cannot be judged, so it is still picked up. Stand on one and use the action button to take it anyway. A piece for an empty slot is always picked up.</p>`;
 const selling=()=>sheetCtx.only&&(sheetCtx.only.includes('shop')||sheetCtx.only.includes('gamble'))&&!sheetCtx.only.includes('sats');
 function drawSheet(){
-  const only=sheetCtx.only||['char','items','skills','web','quests','codex','opts'];let pop='';$('pop').hidden=true;
-  let h=`<div class="shead">${only.map(t=>`<button class="tab${tab===t?' on':''}" data-tab="${t}">${TABS[t]}${t==='skills'&&G&&G.sp?' •':t==='char'&&G&&G.ap?' •':''}</button>`).join('')}<button class="tab x" data-close="1">Close</button></div>`;
+  const only=sheetCtx.only||['char','items','skills','web','quests','story','codex','opts'];let pop='';$('pop').hidden=true;
+  let h=`<div class="shead">${only.map(t=>`<button class="tab${tab===t?' on':''}" data-tab="${t}">${TABS[t]}${t==='skills'&&G&&G.sp?' •':t==='char'&&G&&G.ap?' •':t==='story'&&sdxUnseen()?' •':''}</button>`).join('')}<button class="tab x" data-close="1">Close</button></div>`;
   if(tab==='load'){h+=`<h2>Load a save code</h2><p>Paste a code copied from the Options tab. This replaces the saved wanderer on this device.</p><textarea id="codeIn" placeholder="Paste here"></textarea><button class="big" data-loadcode="1">Load</button>`;$('sheetIn').innerHTML=h;return}
   calc();
   if(tab==='char'){const c=CLS[G.cls];
@@ -318,6 +320,14 @@ function drawSheet(){
     for(const k in SQ){const q=SQ[k],s=G.sq[k];if(!s){if(sqOpen(k)){any=true;h+=`<div class="li"><div><b>${q.who} has something to ask</b><span>Speak to ${q.who} in Stillwater.</span></div></div>`}continue}any=true;const st=q.steps[s.s];
       h+=`<div class="li${s.done?'':' on'}"${tk('s:'+k,!s.done)}><div><b>${tm('s:'+k)}${q.n}${s.done?' · done':' · step '+(s.s+1)+' of '+q.steps.length}</b><span>${s.done?'Finished.':st.d+(st.n?' ('+s.c+'/'+st.n+')':'')}</span><span>Reward: ${q.rw}.</span></div></div>`}
     if(!any)h+=`<p>The people of Stillwater will have errands for you as you go further.</p>`;h+=`</div>`}
+  if(tab==='story'){const seen=G.sdx||{};
+    h+=`<h2>The story so far</h2><p>Everything here is something your character would know or has been told. It fills in as you go. If a person or a machine has stopped making sense, it is in here.</p>`;
+    for(const g of STORYDEX){h+=`<h3>${g.n}</h3>`;if(g.d)h+=`<p>${g.d}</p>`;h+=`<div class="list">`;
+      for(const e of g.e){let ok=0;try{ok=e.w()}catch(_){}
+        if(ok)h+=`<div class="memo${seen[e.k]?'':' sdxnew'}"><b>${esc(e.n)}${seen[e.k]?'':' · new'}</b><p>${esc(e.d)}</p></div>`;
+        else h+=`<div class="memo sdxlock"><b>${esc(e.n)}</b><p>Not yet.${e.l?' '+esc(e.l):''}</p></div>`}
+      h+=`</div>`}
+    sdxSeen()}
   if(tab==='codex'){const mf=Math.round(mfNow());
     h+=`<h2>Drop rates</h2><p>Every kill makes a number of rolls. Each roll lands on nothing, credits, an item or a stim. An item then tests for quality in order: unique, set, rare, magic. Odds below include your <strong>${mf}% magic find</strong>, which helps less and less on the rarer tiers.</p><div class="tw"><table><tr><th>Source</th><th>Rolls</th><th>None</th><th>₡</th><th>Item</th><th>Stim</th><th>Magic</th><th>Rare</th><th>Set</th><th>Unique</th></tr>`;
     for(const k in TC){const t=TC[k],sum=t.no+t.gold+t.item+t.stim,c=qChance(k,mf),p=v=>Math.round(v/sum*100)+'%',o=v=>v>=1?'always':'1 in '+Math.round(1/v);
