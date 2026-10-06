@@ -30,6 +30,11 @@ The three bots that spawn beside him are unchanged. So is the quest: he falls, t
 
 ## How it was checked
 
-Focused encounter, not a full Act I replay. Level-9 Scrapper, weapon 16–28 with +12% damage, armor 22 and +40 life, helm 8, the build above, dynamic difficulty on, god mode off. The probe enters the Fields fresh, stands the fight on Defrag and the pack next to him, and drives `update` at 60fps.
+Focused encounter, not a full Act I replay. Level-9 Scrapper, weapon 16–28 with +12% damage, armor 22 and +40 life, helm 8, the build above, dynamic difficulty on, god mode off. Sheet was 471 life, 83 energy, 45 armor. The probe enters the Fields fresh, keeps Defrag and the three bots beside him, and drives `update` at 60fps with keyboard-equivalent movement.
 
-Numbers from that check are in the pull request.
+He spawned at **2868 life and 108.7 damage**, typed Impact, windup observed at 0.72s. The first slam was radius 1.4, 1.55s, 0.8× his damage.
+
+- **Spacing and Hurl.** He died in 50s. One death, at 21s, to an Impact swing, with about 1590 life left on him. No second death. Adaptive easing never fired. 57 Hurls, 11 dodges, 3 stims. The pack’s own experience pushed the hero to 11 by the kill; damage did not change with that, only life and energy.
+- **Standing in him.** Attack held, stims under 42% life, no steps. Four deaths in 22s (Impact, Surge, Impact, Impact). After two eases he was still on 1818 of 1836. Trading blows does not win.
+
+Marla, checked on a fresh Galleria enter, is still `fast` + `arc` with no forced damage type. `node tools/smoke.js`: 34/34 zones, no errors.
