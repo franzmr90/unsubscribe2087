@@ -3,11 +3,13 @@ const CAMPS={smear:{n:'The Smear',d:'The feed says bitcoiners are hoarders and c
  coin:{n:'UnityCoin',d:'Unity has launched its own coin and sent salesmen out with it. Liquidate two shitcoiners.',need:2,act:2},
  ban:{n:'The Ban',d:'Holding sats has been declared antisocial. Show the network cannot be switched off: complete a proof of work shrine.',need:1,act:3}};
 function campStart(k){if(G.camps[k])return;G.camps[k]=1;G.camp={k,c:0,t:45};sfx('roar');mktNews(-.22,'Unity opens “'+CAMPS[k].n+'”');setTimeout(()=>dlg('Unity responds · '+CAMPS[k].n,CAMPS[k].d+' Until you do, adoption drains away.',[['Understood']]),1500)}
+function smearOpen(){return (G.q.q2||0)===3&&!G.camps.smear&&!G.camp}
+function smearAsk(){return dlg('Nonce','“The feed is calling bitcoiners hoarders and criminals. That is Unity, not this town. Three people will listen if you answer them like a bitcoiner and do not insult them. You do not have to. If you take it up, Unity pushes back, and adoption drains until the story breaks.”',[['I will answer it',()=>campStart('smear')],['Not now']])}
 function campHit(k,n){const c=G.camp;if(!c||c.k!==k)return;c.c+=n||1;if(c.c>=CAMPS[k].need){G.camp=null;G.camps[k]=2;sfx('quest');mktNews(.2,'“'+CAMPS[k].n+'” collapses');addAdopt(6,CAMPS[k].n+' has failed');toast('Unity’s campaign collapses.')}else toast(CAMPS[k].n+': '+c.c+'/'+CAMPS[k].need)}
 function fateOf(){const a=G.adopt;return a>=60?'reserve':a>=25?'stale':'fail'}
 const fateWord=()=>({reserve:'Rising: on course to become the reserve',stale:'Contested: could go either way',fail:'Failing: one bad season from going dark'})[fateOf()];
 function storyTick(dt){const c=G.camp;if(c&&!W.z.town&&!W.z.sim){c.t-=dt;if(c.t<=0){c.t=45;if(G.adopt>5){addAdopt(-1,CAMPS[c.k].n);if(G.adopt<15){const ks=Object.keys(G.nodes);if(ks.length){delete G.nodes[pick(ks)];toast('A node has gone dark.')}}}}}
-  if(!G.camp){if(G.q.q2===3&&!G.camps.smear)campStart('smear');else if(G.act2&&G.camps.smear===2&&!G.camps.coin)campStart('coin');else if(G.act3&&G.camps.coin===2&&!G.camps.ban)campStart('ban')}
+  if(!G.camp){if(G.act2&&G.camps.smear===2&&!G.camps.coin)campStart('coin');else if(G.act3&&G.camps.coin===2&&!G.camps.ban)campStart('ban')}
   if(c&&c.k==='coin'&&shillT>40)shillT=40}
 /* people can be won or lost by how you talk to them */
 function sway(id,p,n){if(id==='res')return;const v=G.won[id]=(G.won[id]||0)+n,f=G.wonF=G.wonF||{};
