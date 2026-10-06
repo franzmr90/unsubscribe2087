@@ -49,10 +49,11 @@ button:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
 #pad{position:absolute;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:214px;height:200px;pointer-events:none}
 #pad button{position:absolute;pointer-events:auto;border-radius:50%;border:2px solid var(--edge);background:radial-gradient(circle at 35% 28%,#3a3044,#120e17 70%);font:700 9.5px var(--display);letter-spacing:.03em;line-height:1.1;overflow:hidden;color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.6)}
 #bAtk{right:0;bottom:0;width:92px;height:92px;border-color:var(--gold)!important;color:var(--gold)!important;font-size:13px!important}
-.sk{width:62px;height:62px}
+.sk{width:62px;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}
 .sk[data-i="0"]{right:102px;bottom:0}.sk[data-i="1"]{right:90px;bottom:72px}.sk[data-i="2"]{right:18px;bottom:104px}
 .sk em{position:absolute;inset:0;background:rgba(5,4,9,.82);transform-origin:bottom;transform:scaleY(0);pointer-events:none}
-.sk b{position:relative;display:block;padding:0 5px;font-weight:700}
+.sk canvas.gl{width:24px;height:24px;flex:none;pointer-events:none}
+.sk b{position:relative;display:block;padding:0 3px;font-weight:700;font-size:8px;line-height:1.05;white-space:pre-line;z-index:1}
 .sk.off{opacity:.3}.sk.low{border-color:var(--mana)!important;color:#7f9be0!important}
 #bDodge{right:166px;bottom:70px;width:46px;height:46px;border-color:var(--volt)!important;color:var(--volt)!important;font-size:8px!important}
 #bPot{right:154px;bottom:140px;width:52px;height:52px;border-color:var(--blood)!important;color:#ff8d82!important}
@@ -137,6 +138,7 @@ p strong{color:var(--ink);font-weight:600}
 .li.on{border-color:var(--gold)}
 .tree{display:grid;grid-template-columns:repeat(3,1fr);gap:22px 10px}
 .node{position:relative;background:radial-gradient(circle at 50% 30%,#2e2637,#100c15);border:2px solid var(--edge);padding:10px 4px 8px;text-align:center;min-width:0}
+.node canvas.gl{display:block;margin:0 auto 3px;width:24px;height:24px;pointer-events:none}
 .node b{font:700 11.5px var(--display);display:block;line-height:1.15;color:var(--ink)}
 .node u{display:block;text-decoration:none;font:600 12px var(--body);color:var(--dim);margin-top:3px}
 .node.has{border-color:var(--gold)}.node.has u{color:var(--q2)}
@@ -1298,7 +1300,7 @@ Object.assign(SKF,{
 });
 function cast(slot){const i=G.slots[slot];if(mode!=='play'||i<0||i===undefined)return;if(P.castWait>0){toast('Still casting');sfx('err');return}const s=CLS[G.cls].sk[i],L=sl(i);if(!L||!s.a||P.cd[i]>0||P.dash)return;if(P.silence>0){toast('Silenced');sfx('err');return}
   const fk=forkOf(i);let cost=s.cost*(S.sp.hoodie?.75:1)*(fk.cost||1);if(P.freeThrow&&G.cls==='courier'&&(i===0||i===6||i===9||i===12)){cost=0;P.freeThrow=0}if(G.en<cost){toast('Not enough energy');sfx('err');return}
-  const t=nearest(6.5);if(t)face(t);G.en-=cost;P.cd[i]=s.cd*(1-Math.min(.6,S.cdr))*(fk.cd||1)*(G.sk[i]>=10?.8:1);W.fx.push({k:'ring',x:P.x,y:P.y,r:.9,t:0,life:.18,col:CLS[G.cls].col});if(!(G.cls==='anon'&&i===3&&P.stealth>0&&sl(11)&&!boonOn(11)))unstealth();sfx(SKS[G.cls][i]||'cast');P.fm={m:fk.dm||1,t:(G.fork||{})[i]==='refund'?2:1.2,k:(G.fork||{})[i],dt:skType(G.cls,i)};forkCast((G.fork||{})[i]);const na=W.allies.length;SKF[G.cls][i](L,syn(i));for(let k=na;k<W.allies.length;k++)if(!W.allies[k].holdDt)W.allies[k].dt=skType(G.cls,i);for(const a of W.allies)if(a.per&&!a.dt)a.dt=skType(G.cls,i);forkAfter(i,L)}
+  const t=nearest(6.5);if(t)face(t);G.en-=cost;P.cd[i]=s.cd*(1-Math.min(.6,S.cdr))*(fk.cd||1)*(G.sk[i]>=10?.8:1);skvPlay(G.cls,i,P.x,P.y,P.dir);if(!(G.cls==='anon'&&i===3&&P.stealth>0&&sl(11)&&!boonOn(11)))unstealth();sfx(SKS[G.cls][i]||'cast');P.fm={m:fk.dm||1,t:(G.fork||{})[i]==='refund'?2:1.2,k:(G.fork||{})[i],dt:skType(G.cls,i)};forkCast((G.fork||{})[i]);const na=W.allies.length;SKF[G.cls][i](L,syn(i));for(let k=na;k<W.allies.length;k++)if(!W.allies[k].holdDt)W.allies[k].dt=skType(G.cls,i);for(const a of W.allies)if(a.per&&!a.dt)a.dt=skType(G.cls,i);forkAfter(i,L)}
 function stim(){if(mode!=='play')return;if(W.sub&&W.sub.mods.includes('dry')){toast('Stims do not work in these proceedings');sfx('err');return}if(G.stims<1){toast('No stims. Brenda sells them.');return}if(G.hp>=S.maxHp&&!(S.sp.repair&&G.en<S.maxEn))return;G.stims--;heal(S.maxHp*.45);if(S.sp.repair)G.en=S.maxEn;sfx('stim');float(P.x,P.y,'+stim','#7be495');parts(P.x,P.y,10,['#7be495','#fff'],1.5,1.5)}
 
 /* ================= interaction ================= */
@@ -2040,6 +2042,33 @@ DTY.sound={n:'Sound',c:'#f7931a',d:'Sound money. Nothing resists it, nothing is 
 const DTK=Object.keys(DTY);
 const SKT={maxi:{0:'sound',1:'sound',3:'sound',4:'sound',5:'sound',6:'sound',7:'sound',9:'sound',11:'sound'},scrapper:{1:'rust',5:'noise',7:'heat',12:'noise'},hacker:{0:'surge',1:'surge',3:'noise',4:'surge',6:'rust',7:'noise',9:'heat',10:'noise'},courier:{3:'heat',4:'rust',7:'noise'},anon:{0:'heat',3:'heat',5:'noise',6:'heat',8:'noise'},founder:{1:'noise',3:'surge',8:'heat'}};
 const skType=(cls,i)=>cls==='hacker'&&i===14?(G.schema||'surge'):((SKT[cls]||{})[i]||'impact');
+/* One shape per skill. Color comes from the damage type, then the class.
+   Passives are glyphs only: a mark that stays up is a later pass. */
+const SKV_LIFE={arc:.22,bolt:.28,trail:.32,beam:.34,strike:.28,ring:.42,patch:.62,orbit:.55,mark:.8};
+const SKV={scrapper:{
+  0:{k:'arc',w:1.5},
+  1:{k:'bolt',r:4,at:'foe'},
+  2:{k:'patch',r:1.4},
+  3:{k:'orbit'},
+  4:{k:'trail',r:3.2},
+  5:{k:'ring',r:2.2},
+  6:{k:'patch',r:1.2},
+  7:{k:'strike'},
+  8:{k:'mark'},
+  9:{k:'patch',r:2.4},
+  10:{k:'mark'},
+  11:{k:'patch',r:1.6},
+  12:{k:'ring',r:3.4},
+  13:{k:'arc',w:2.3},
+  14:{k:'beam'}
+}};
+function skvOf(cls,i){const row=(SKV[cls]||{})[i];if(!row)return null;const sk=CLS[cls]&&CLS[cls].sk[i];let col=row.col;
+  if(!col&&sk&&sk.a){const ty=skType(cls,i);if(DTY[ty])col=DTY[ty].c}if(!col)col=(CLS[cls]&&CLS[cls].col)||'#e6e2d6';
+  return {k:row.k,col:col,r:row.r||1.2,w:row.w||1,n:row.n||3,life:row.life||SKV_LIFE[row.k]||.4,at:row.at||'',tel:row.tel?1:0}}
+function skvPlay(cls,i,x,y,dir){const v=skvOf(cls,i);if(!v||!W||!W.fx)return;const dx=(dir&&dir.x)||1,dy=(dir&&dir.y)||0;
+  let px=x,py=y,x2=x+dx*(v.r||3),y2=y+dy*(v.r||3);
+  if(v.at==='foe'){const t=nearest(8);if(t){x2=t.x;y2=t.y;if(v.k==='mark'||v.k==='patch'||v.k==='ring'||v.k==='strike'){px=t.x;py=t.y}}}
+  W.fx.push({k:v.k,x:px,y:py,x2:x2,y2:y2,dx:dx,dy:dy,r:v.r,w:v.w,n:v.n,col:v.col,t:0,life:v.life,tel:v.tel})}
 const baseType=()=>G.cls==='maxi'?'sound':(G.eq.weapon&&G.eq.weapon.dt)||(G.cls==='hacker'?'surge':'impact');
 const RES={tick:{surge:1.5},drone:{surge:1.5,noise:.5},bot:{impact:.75,rust:1.5},hound:{noise:1.5,rust:.5},ad:{noise:0,impact:1.5},hr:{noise:.5,heat:1.5},mech:{impact:.5,rust:1.5,surge:1.25},seer:{surge:.5,impact:1.5},aegis:{surge:0,heat:1.5},lancer:{noise:1.5,heat:.5},splitter:{heat:1.5,impact:.5},
  director:{noise:.5,rust:1.5},proxy:{rust:.5,surge:1.5},censor:{noise:0,heat:1.5},shill:{noise:1.5},boss:{noise:.5,rust:1.5,heat:1.25},boss2:{noise:0,surge:1.5,impact:.75},boss3:{surge:.5,noise:.5,impact:1.5,heat:1.25}};
@@ -2207,7 +2236,7 @@ function updTag(dt){const m=W.tag,t=G.tag;if(!m||!t||m.hp<=0)return;const c=CLS[
   if(dist(m,P)>13){m.x=P.x;m.y=P.y}else if(d>want){const sp=4.8*(m.haste>0?1.5:1)*dt;m.dir={x:(g.x-m.x)/d,y:(g.y-m.y)/d};if(!mv(m,m.dir.x*sp,m.dir.y*sp)&&dist(m,P)>5){m.x=P.x;m.y=P.y}m.moving=true;m.walkPh+=dt*11}
   if(m.volley){const v=m.volley;v.t-=dt;v.cd-=dt;if(v.cd<=0&&tg){v.cd=.12;tagDo(()=>{face(tg);shoot(P.dir,v.m,0)})}if(v.t<=0)m.volley=null}
   if(tg){m.dir={x:(tg.x-m.x)/d,y:(tg.y-m.y)/d};
-    for(let j=0;j<t.sk.length;j++){m.sc[j]-=dt;if(m.sc[j]>0||d>7)continue;const[i,rk]=t.sk[j],s=c.sk[i],f=SKF[t.cls]&&SKF[t.cls][i];if(!f)continue;m.sc[j]=Math.max(4,(s.cd||5)*1.4)+j;m.say=s.n;m.sayT=1.4;m.swing=.18;sfx((SKS[t.cls]||{})[i]||'zap');tagDo(()=>f(rk,R));return}
+    for(let j=0;j<t.sk.length;j++){m.sc[j]-=dt;if(m.sc[j]>0||d>7)continue;const[i,rk]=t.sk[j],s=c.sk[i],f=SKF[t.cls]&&SKF[t.cls][i];if(!f)continue;m.sc[j]=Math.max(4,(s.cd||5)*1.4)+j;m.say=s.n;m.sayT=1.4;m.swing=.18;sfx((SKS[t.cls]||{})[i]||'zap');tagDo(()=>{skvPlay(t.cls,i,P.x,P.y,m.dir);f(rk,R)});return}
     if(d<=rng+tg.r+.3&&m.atk<=0){m.atk=c.ivl*1.15;m.swing=.18;tagDo(()=>{if(c.melee){sfx('swing');W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:1});for(const e of W.ents.slice()){const dd=dist(e,P);if(dd<1.75+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(dd||1)>.15)hit(e,c.mult*R)}}else{sfx(t.cls==='hacker'?'zap':'throw');shoot(P.dir,c.mult*R,0)}})}}
   else m.hp=Math.min(m.max,m.hp+m.max*.04*dt);t.hp=m.hp}
 function tagProxy(){const t=G.tag,g=Object.create(G);g.cls=t.cls;g.eq=t.eq||{};g.hp=W.tag.hp/W.tag.max*S.maxHp;return g}
@@ -2689,6 +2718,20 @@ function light(X,Y,r,col,s,own){own=own||0;if(OPT.fx==='thin'&&own<2)return;LIGH
     if(i<0)for(let j=0;j<LIGHTS.length;j++)if(LIGHTS[j].own<2){i=j;break}
     if(i<0)break;LIGHTS.splice(i,1)}}
 function fxShow(f){if(!f)return false;if(f.k==='mark')return true;if(OPT.fx==='thin'&&f.remote)return false;return true}
+/* The skill button and the world share one vocabulary. sz is the box. */
+function glyph(g,cls,i,sz){const v=skvOf(cls,i);if(!v)return;const s=sz||24,col=v.col,k=v.k;
+  g.save();g.clearRect(0,0,s,s);g.strokeStyle=col;g.fillStyle=col;g.lineCap='round';g.lineJoin='round';
+  g.lineWidth=Math.max(1.25,s/14)*Math.min(2.2,v.w||1);const cx=s/2,cy=s/2;
+  if(k==='arc'){g.beginPath();g.arc(cx,cy+s*.12,s*.28*Math.min(1.35,v.w||1),Math.PI*1.15,Math.PI*1.85);g.stroke()}
+  else if(k==='bolt'){g.beginPath();g.moveTo(s*.16,s*.72);g.lineTo(s*.36,s*.4);g.lineTo(s*.5,s*.58);g.lineTo(s*.84,s*.2);g.stroke()}
+  else if(k==='ring'){g.beginPath();g.arc(cx,cy,Math.min(s*.4,s*(.12+(v.r||1.2)*.06)),0,6.283);g.stroke()}
+  else if(k==='strike'){g.beginPath();g.moveTo(cx,s*.08);g.lineTo(cx-s*.14,s*.42);g.lineTo(cx+s*.1,s*.5);g.lineTo(cx,s*.92);g.stroke()}
+  else if(k==='beam'){g.fillRect(cx-s*.07,s*.1,s*.14,s*.8)}
+  else if(k==='patch'){const rx=Math.min(s*.4,s*(.14+(v.r||1.2)*.07));g.beginPath();g.ellipse(cx,cy,rx,rx*.58,0,0,6.283);g.stroke()}
+  else if(k==='trail'){for(let n=0;n<4;n++)g.fillRect(s*.1+n*s*.2,cy-s*.045,s*.12,s*.09)}
+  else if(k==='mark'){g.save();g.translate(cx,cy);g.rotate(.785);g.fillRect(-s*.13,-s*.13,s*.26,s*.26);g.restore()}
+  else if(k==='orbit'){const n=v.n||3;for(let j=0;j<n;j++){const a=j*6.283/n-1.2;g.fillRect(cx+Math.cos(a)*s*.28-s*.07,cy+Math.sin(a)*s*.28-s*.07,s*.14,s*.14)}}
+  g.restore()}
 function rim(X,Y,s,b,a){const c=(TX.s&&TX.s.glow)||'#ffcf7a';ctx.save();ctx.strokeStyle=c;ctx.globalAlpha=a===undefined?.38:a;ctx.lineCap='round';
   ctx.lineWidth=1.7*s;ctx.beginPath();ctx.arc(X,Y-37*s+b,6.5*s,3.46,5.05);ctx.stroke();
   ctx.lineWidth=1.5*s;ctx.beginPath();ctx.moveTo(X-7.4*s,Y-30.4*s+b);ctx.lineTo(X+7.4*s,Y-30.4*s+b);ctx.stroke();
@@ -3276,7 +3319,10 @@ function talkTo0(id){if(W.z.pre)return preTalk(id);if(id==='float')return talkFl
 
 /* ================= HUD ================= */
 const sbtn=[...document.querySelectorAll('.sk')].sort((a,b)=>a.dataset.i-b.dataset.i);
-function setSkillButtons(){sbtn.forEach((b,i)=>{const k=G.slots[i];b.querySelector('b').textContent=k>=0?CLS[G.cls].sk[k].ab:''})}
+function setSkillButtons(){sbtn.forEach((b,i)=>{const k=G.slots[i];b.querySelector('b').textContent=k>=0?CLS[G.cls].sk[k].ab:'';
+  let c=b.querySelector('canvas.gl');if(!c){c=document.createElement('canvas');c.className='gl';c.width=24;c.height=24;b.insertBefore(c,b.querySelector('b'))}
+  const g=c.getContext('2d');g.clearRect(0,0,24,24);if(k>=0)glyph(g,G.cls,k,24)})}
+function paintGlyphs(root){if(!root||!root.querySelectorAll)return;root.querySelectorAll('canvas[data-gl]').forEach(function(c){const sz=+c.width||24;glyph(c.getContext('2d'),c.dataset.cls||G.cls,+c.dataset.gl,sz)})}
 let hudC={};
 function setT(id,v){if(hudC[id]!==v){hudC[id]=v;$(id).textContent=v}}
 function hud(){objHud();if(P&&P.dg)setT('dgn',P.dg.n);
@@ -3406,11 +3452,11 @@ function drawSheet(){
     h+=`<p style="font-size:13.5px">White is normal, <span class="q1">blue is magic</span>, <span class="q2">yellow is rare</span>, <span class="q3">green is a set piece</span>, <span class="q4">gold is unique</span>. Red items are unidentified.</p>`}
   if(tab==='skills'){const c=CLS[G.cls];h+=`<h2>${c.n} skills</h2><p>${G.sp} point${G.sp===1?'':'s'} to spend. Rows open at levels 1, 4 and 9, and each skill needs the one above it. The fourth row opens at level 26 in Act II, the fifth at level 51 in Act III.</p><p><strong>Passives active: ${G.pas.length} of ${PCAP()}.</strong> Only the passives you switch on do anything, so choose. A third slot opens in Act II and a fourth in Act III. Swap them freely in town.</p>`;h+=`<h3>Doctrine${G.doc?'':' · choose one'}</h3><div class="list">${DOCS[G.cls].map(d=>`<button class="li${G.doc===d[0]?' on':''}" data-doc="${d[0]}"><div><b>${G.doc===d[0]?'◆ ':''}${d[1]}</b><span>${d[2]}</span><span>${docTxt(d[3])}</span></div></button>`).join('')}</div><p style="font-size:13px">One doctrine at a time. The first is free; changing costs 3 sats, in town.</p><h3>Breadth</h3><p style="font-size:13px">Learn all three skills in a row for its bonus: ${ROWB.map((r,k)=>`<span style="color:${rowDone(k)?'var(--gold)':'var(--dim)'}">${rowDone(k)?'✓ ':''}${r[0]} ${r[1]}</span>`).join(' · ')}. <strong>Depth costs more:</strong> ranks 6 to 10 take two points each, and rank 10 masters a skill (★): two extra ranks of power, and 20% faster recovery on active skills.</p><div class="tree">`;
     c.sk.forEach((s,i)=>{const row=Math.floor(i/3),L=G.sk[i],lock=G.lvl<ROWREQ[row]||(row>0&&!G.sk[i-3])||(row===3&&!G.act2)||(row===4&&!G.act3),slot=G.slots.indexOf(i);
-      h+=`<button class="node${L?' has':''}${lock?' lock':''}${s.a?'':' pas'}${sel&&sel.sk===i?' sel':''}${slot>=0?' slot':''}" data-node="${i}" data-slot="${slot+1}"><b>${L>=10?'★ ':''}${!s.a&&G.pas.includes(i)?'◆ ':''}${s.n}</b><u>${L}${S.skills&&L?'+'+S.skills:''} / 10${!s.a&&L&&!G.pas.includes(i)?' · off':''}</u></button>`});
+      h+=`<button class="node${L?' has':''}${lock?' lock':''}${s.a?'':' pas'}${sel&&sel.sk===i?' sel':''}${slot>=0?' slot':''}" data-node="${i}" data-slot="${slot+1}"><canvas class="gl" width="24" height="24" data-gl="${i}"></canvas><b>${L>=10?'★ ':''}${!s.a&&G.pas.includes(i)?'◆ ':''}${s.n}</b><u>${L}${S.skills&&L?'+'+S.skills:''} / 10${!s.a&&L&&!G.pas.includes(i)?' · off':''}</u></button>`});
     h+=`</div>`;
     const h0=h.length;
     if(sel&&sel.sk!==undefined){const i=sel.sk,s=c.sk[i],row=Math.floor(i/3),L=G.sk[i],eff=L?L+(S.skills||0):0,can=G.sp>=skCost(i)&&L<10&&G.lvl>=ROWREQ[row]&&(row===0||G.sk[i-3]>0)&&(row<3||G.act2)&&(row<4||G.act3);
-      h+=`<div class="card" style="text-align:left"><div class="nm q4">${s.n}</div><div class="ln" style="color:${s.a?DTY[skType(G.cls,i)].c:'var(--dim)'}">${s.a?DTY[skType(G.cls,i)].n+' damage':''}</div><div class="ln off">${s.a?'Active · '+s.cost+' energy · '+s.cd+'s recovery':'Passive'}${row?' · needs level '+ROWREQ[row]+' and '+c.sk[i-3].n:''}</div>`;
+      h+=`<div class="card" style="text-align:left"><canvas class="gl" width="40" height="40" data-gl="${i}"></canvas><div class="nm q4">${s.n}</div><div class="ln" style="color:${s.a?DTY[skType(G.cls,i)].c:'var(--dim)'}">${s.a?DTY[skType(G.cls,i)].n+' damage':''}</div><div class="ln off">${s.a?'Active · '+s.cost+' energy · '+s.cd+'s recovery':'Passive'}${row?' · needs level '+ROWREQ[row]+' and '+c.sk[i-3].n:''}</div>`;
       if(L)h+=`<div class="ln">Now: ${s.d(eff)}</div>`;if(L<10)h+=`<div class="ln mod">Next point: ${s.d((eff||0)+1)}</div>`;
       if(row&&s.a)h+=`<div class="ln off">${c.sk[i-3].n} adds +6% per point to this skill (now +${G.sk[i-3]*6}%).</div>`;
       h+=`<div class="row" style="margin-top:6px"><button class="big" data-learn="${i}" ${can?'':'disabled'}>${L>=10?'Mastered':skCost(i)>1?'Spend 2 points':'Spend a point'}</button></div>`;
@@ -3541,7 +3587,7 @@ function drawSheet(){
     if(G.q.q5===3&&gateAct===4){const mx=G.subMax||1;h+=`<h3>Subpoenas</h3><p style="font-size:13.5px">A sealed district with two or three rules of its own, at your level and above. Break The Respondent to open the next level. 3 sats to serve.</p>`;for(let l=Math.max(1,mx-2);l<=mx;l++)h+=`<button class="li" data-sub="${l}" ${G.sats<3?'disabled':''}><div><b>Subpoena · Level ${l}</b><span>Machines +${15*l}% life, +${10*l}% damage. Pays ${5+3*l} sats and ${3*l} parts.</span></div></button>`}
     h+=`</div>`;if(gateAct===4)h+=`<button class="ghost" data-dev="reset">Respawn all machines</button>`;
     if(G.maxTier>0&&gateAct===4)h+=`<h3>Tier</h3><div class="row"><button class="ghost" data-tier="-1" ${G.tier<=0?'disabled':''}>Easier</button><button class="ghost" disabled>Tier ${G.tier}</button><button class="ghost" data-tier="1" ${G.tier>=G.maxTier?'disabled':''}>Harder</button></div><p>Each tier adds 12 machine levels and raises item levels to match. Changing tier respawns every district.</p>`}
-  $('sheetIn').innerHTML=h;{const wb=$('webBox');if(wb){wb.scrollLeft=webSc[0];wb.scrollTop=webSc[1];wb.onscroll=()=>{webSc=[wb.scrollLeft,wb.scrollTop]}}}if(pop){$('popIn').innerHTML=pop;$('pop').hidden=false;$('pop').scrollTop=0}}
+  $('sheetIn').innerHTML=h;paintGlyphs($('sheetIn'));{const wb=$('webBox');if(wb){wb.scrollLeft=webSc[0];wb.scrollTop=webSc[1];wb.onscroll=()=>{webSc=[wb.scrollLeft,wb.scrollTop]}}}if(pop){$('popIn').innerHTML=pop;paintGlyphs($('popIn'));$('pop').hidden=false;$('pop').scrollTop=0}}
 let sellArm=false;
 const satsOk=()=>G.adopt>=60||(G.wonF&&G.wonF.brenda===1)||shopVia,satCost=it=>Math.max(1,Math.ceil(buyPrice(it)/satRate()));let shopVia=0;const buyPrice=it=>it.val*2.5*G.cpi*(shopVia?.7:1)*(G.disc?.85:1)*(repRank('norm')>=3?.8:repRank('norm')>=1?.9:1);
 const boxPrice=()=>(8+G.lvl*5)*9*G.cpi;
@@ -3725,7 +3771,7 @@ function showDisc(){const d=$('disc');if(!d)return;
   addEventListener('pointerdown',go,true);addEventListener('keydown',go,true)}
 showDisc();
 cloudInit();
-window.__g={skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,fxShow,get LIGHTS(){return LIGHTS}};
+window.__g={skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph};
 /* late additions that need the dialogue tables */
 QRW.push(
  ['q16','gramps','“So that is what yes looks like. Everybody glad and nobody home. I clicked a thing like that once, when I was young. I do not remember the nine years after it. I am told I enjoyed them.” You gain 1 skill point.',()=>G.sp++,'Gramps'],

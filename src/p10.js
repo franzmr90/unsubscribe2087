@@ -79,6 +79,33 @@ DTY.sound={n:'Sound',c:'#f7931a',d:'Sound money. Nothing resists it, nothing is 
 const DTK=Object.keys(DTY);
 const SKT={maxi:{0:'sound',1:'sound',3:'sound',4:'sound',5:'sound',6:'sound',7:'sound',9:'sound',11:'sound'},scrapper:{1:'rust',5:'noise',7:'heat',12:'noise'},hacker:{0:'surge',1:'surge',3:'noise',4:'surge',6:'rust',7:'noise',9:'heat',10:'noise'},courier:{3:'heat',4:'rust',7:'noise'},anon:{0:'heat',3:'heat',5:'noise',6:'heat',8:'noise'},founder:{1:'noise',3:'surge',8:'heat'}};
 const skType=(cls,i)=>cls==='hacker'&&i===14?(G.schema||'surge'):((SKT[cls]||{})[i]||'impact');
+/* One shape per skill. Color comes from the damage type, then the class.
+   Passives are glyphs only: a mark that stays up is a later pass. */
+const SKV_LIFE={arc:.22,bolt:.28,trail:.32,beam:.34,strike:.28,ring:.42,patch:.62,orbit:.55,mark:.8};
+const SKV={scrapper:{
+  0:{k:'arc',w:1.5},
+  1:{k:'bolt',r:4,at:'foe'},
+  2:{k:'patch',r:1.4},
+  3:{k:'orbit'},
+  4:{k:'trail',r:3.2},
+  5:{k:'ring',r:2.2},
+  6:{k:'patch',r:1.2},
+  7:{k:'strike'},
+  8:{k:'mark'},
+  9:{k:'patch',r:2.4},
+  10:{k:'mark'},
+  11:{k:'patch',r:1.6},
+  12:{k:'ring',r:3.4},
+  13:{k:'arc',w:2.3},
+  14:{k:'beam'}
+}};
+function skvOf(cls,i){const row=(SKV[cls]||{})[i];if(!row)return null;const sk=CLS[cls]&&CLS[cls].sk[i];let col=row.col;
+  if(!col&&sk&&sk.a){const ty=skType(cls,i);if(DTY[ty])col=DTY[ty].c}if(!col)col=(CLS[cls]&&CLS[cls].col)||'#e6e2d6';
+  return {k:row.k,col:col,r:row.r||1.2,w:row.w||1,n:row.n||3,life:row.life||SKV_LIFE[row.k]||.4,at:row.at||'',tel:row.tel?1:0}}
+function skvPlay(cls,i,x,y,dir){const v=skvOf(cls,i);if(!v||!W||!W.fx)return;const dx=(dir&&dir.x)||1,dy=(dir&&dir.y)||0;
+  let px=x,py=y,x2=x+dx*(v.r||3),y2=y+dy*(v.r||3);
+  if(v.at==='foe'){const t=nearest(8);if(t){x2=t.x;y2=t.y;if(v.k==='mark'||v.k==='patch'||v.k==='ring'||v.k==='strike'){px=t.x;py=t.y}}}
+  W.fx.push({k:v.k,x:px,y:py,x2:x2,y2:y2,dx:dx,dy:dy,r:v.r,w:v.w,n:v.n,col:v.col,t:0,life:v.life,tel:v.tel})}
 const baseType=()=>G.cls==='maxi'?'sound':(G.eq.weapon&&G.eq.weapon.dt)||(G.cls==='hacker'?'surge':'impact');
 const RES={tick:{surge:1.5},drone:{surge:1.5,noise:.5},bot:{impact:.75,rust:1.5},hound:{noise:1.5,rust:.5},ad:{noise:0,impact:1.5},hr:{noise:.5,heat:1.5},mech:{impact:.5,rust:1.5,surge:1.25},seer:{surge:.5,impact:1.5},aegis:{surge:0,heat:1.5},lancer:{noise:1.5,heat:.5},splitter:{heat:1.5,impact:.5},
  director:{noise:.5,rust:1.5},proxy:{rust:.5,surge:1.5},censor:{noise:0,heat:1.5},shill:{noise:1.5},boss:{noise:.5,rust:1.5,heat:1.25},boss2:{noise:0,surge:1.5,impact:.75},boss3:{surge:.5,noise:.5,impact:1.5,heat:1.25}};
@@ -246,7 +273,7 @@ function updTag(dt){const m=W.tag,t=G.tag;if(!m||!t||m.hp<=0)return;const c=CLS[
   if(dist(m,P)>13){m.x=P.x;m.y=P.y}else if(d>want){const sp=4.8*(m.haste>0?1.5:1)*dt;m.dir={x:(g.x-m.x)/d,y:(g.y-m.y)/d};if(!mv(m,m.dir.x*sp,m.dir.y*sp)&&dist(m,P)>5){m.x=P.x;m.y=P.y}m.moving=true;m.walkPh+=dt*11}
   if(m.volley){const v=m.volley;v.t-=dt;v.cd-=dt;if(v.cd<=0&&tg){v.cd=.12;tagDo(()=>{face(tg);shoot(P.dir,v.m,0)})}if(v.t<=0)m.volley=null}
   if(tg){m.dir={x:(tg.x-m.x)/d,y:(tg.y-m.y)/d};
-    for(let j=0;j<t.sk.length;j++){m.sc[j]-=dt;if(m.sc[j]>0||d>7)continue;const[i,rk]=t.sk[j],s=c.sk[i],f=SKF[t.cls]&&SKF[t.cls][i];if(!f)continue;m.sc[j]=Math.max(4,(s.cd||5)*1.4)+j;m.say=s.n;m.sayT=1.4;m.swing=.18;sfx((SKS[t.cls]||{})[i]||'zap');tagDo(()=>f(rk,R));return}
+    for(let j=0;j<t.sk.length;j++){m.sc[j]-=dt;if(m.sc[j]>0||d>7)continue;const[i,rk]=t.sk[j],s=c.sk[i],f=SKF[t.cls]&&SKF[t.cls][i];if(!f)continue;m.sc[j]=Math.max(4,(s.cd||5)*1.4)+j;m.say=s.n;m.sayT=1.4;m.swing=.18;sfx((SKS[t.cls]||{})[i]||'zap');tagDo(()=>{skvPlay(t.cls,i,P.x,P.y,m.dir);f(rk,R)});return}
     if(d<=rng+tg.r+.3&&m.atk<=0){m.atk=c.ivl*1.15;m.swing=.18;tagDo(()=>{if(c.melee){sfx('swing');W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:1});for(const e of W.ents.slice()){const dd=dist(e,P);if(dd<1.75+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(dd||1)>.15)hit(e,c.mult*R)}}else{sfx(t.cls==='hacker'?'zap':'throw');shoot(P.dir,c.mult*R,0)}})}}
   else m.hp=Math.min(m.max,m.hp+m.max*.04*dt);t.hp=m.hp}
 function tagProxy(){const t=G.tag,g=Object.create(G);g.cls=t.cls;g.eq=t.eq||{};g.hp=W.tag.hp/W.tag.max*S.maxHp;return g}

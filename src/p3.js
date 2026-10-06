@@ -200,6 +200,20 @@ function light(X,Y,r,col,s,own){own=own||0;if(OPT.fx==='thin'&&own<2)return;LIGH
     if(i<0)for(let j=0;j<LIGHTS.length;j++)if(LIGHTS[j].own<2){i=j;break}
     if(i<0)break;LIGHTS.splice(i,1)}}
 function fxShow(f){if(!f)return false;if(f.k==='mark')return true;if(OPT.fx==='thin'&&f.remote)return false;return true}
+/* The skill button and the world share one vocabulary. sz is the box. */
+function glyph(g,cls,i,sz){const v=skvOf(cls,i);if(!v)return;const s=sz||24,col=v.col,k=v.k;
+  g.save();g.clearRect(0,0,s,s);g.strokeStyle=col;g.fillStyle=col;g.lineCap='round';g.lineJoin='round';
+  g.lineWidth=Math.max(1.25,s/14)*Math.min(2.2,v.w||1);const cx=s/2,cy=s/2;
+  if(k==='arc'){g.beginPath();g.arc(cx,cy+s*.12,s*.28*Math.min(1.35,v.w||1),Math.PI*1.15,Math.PI*1.85);g.stroke()}
+  else if(k==='bolt'){g.beginPath();g.moveTo(s*.16,s*.72);g.lineTo(s*.36,s*.4);g.lineTo(s*.5,s*.58);g.lineTo(s*.84,s*.2);g.stroke()}
+  else if(k==='ring'){g.beginPath();g.arc(cx,cy,Math.min(s*.4,s*(.12+(v.r||1.2)*.06)),0,6.283);g.stroke()}
+  else if(k==='strike'){g.beginPath();g.moveTo(cx,s*.08);g.lineTo(cx-s*.14,s*.42);g.lineTo(cx+s*.1,s*.5);g.lineTo(cx,s*.92);g.stroke()}
+  else if(k==='beam'){g.fillRect(cx-s*.07,s*.1,s*.14,s*.8)}
+  else if(k==='patch'){const rx=Math.min(s*.4,s*(.14+(v.r||1.2)*.07));g.beginPath();g.ellipse(cx,cy,rx,rx*.58,0,0,6.283);g.stroke()}
+  else if(k==='trail'){for(let n=0;n<4;n++)g.fillRect(s*.1+n*s*.2,cy-s*.045,s*.12,s*.09)}
+  else if(k==='mark'){g.save();g.translate(cx,cy);g.rotate(.785);g.fillRect(-s*.13,-s*.13,s*.26,s*.26);g.restore()}
+  else if(k==='orbit'){const n=v.n||3;for(let j=0;j<n;j++){const a=j*6.283/n-1.2;g.fillRect(cx+Math.cos(a)*s*.28-s*.07,cy+Math.sin(a)*s*.28-s*.07,s*.14,s*.14)}}
+  g.restore()}
 function rim(X,Y,s,b,a){const c=(TX.s&&TX.s.glow)||'#ffcf7a';ctx.save();ctx.strokeStyle=c;ctx.globalAlpha=a===undefined?.38:a;ctx.lineCap='round';
   ctx.lineWidth=1.7*s;ctx.beginPath();ctx.arc(X,Y-37*s+b,6.5*s,3.46,5.05);ctx.stroke();
   ctx.lineWidth=1.5*s;ctx.beginPath();ctx.moveTo(X-7.4*s,Y-30.4*s+b);ctx.lineTo(X+7.4*s,Y-30.4*s+b);ctx.stroke();
