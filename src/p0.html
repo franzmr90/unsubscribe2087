@@ -49,10 +49,11 @@ button:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
 #pad{position:absolute;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:214px;height:200px;pointer-events:none}
 #pad button{position:absolute;pointer-events:auto;border-radius:50%;border:2px solid var(--edge);background:radial-gradient(circle at 35% 28%,#3a3044,#120e17 70%);font:700 9.5px var(--display);letter-spacing:.03em;line-height:1.1;overflow:hidden;color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.6)}
 #bAtk{right:0;bottom:0;width:92px;height:92px;border-color:var(--gold)!important;color:var(--gold)!important;font-size:13px!important}
-.sk{width:62px;height:62px}
+.sk{width:62px;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}
 .sk[data-i="0"]{right:102px;bottom:0}.sk[data-i="1"]{right:90px;bottom:72px}.sk[data-i="2"]{right:18px;bottom:104px}
 .sk em{position:absolute;inset:0;background:rgba(5,4,9,.82);transform-origin:bottom;transform:scaleY(0);pointer-events:none}
-.sk b{position:relative;display:block;padding:0 5px;font-weight:700}
+.sk canvas.gl{width:24px;height:24px;flex:none;pointer-events:none}
+.sk b{position:relative;display:block;padding:0 3px;font-weight:700;font-size:8px;line-height:1.05;white-space:pre-line;z-index:1}
 .sk.off{opacity:.3}.sk.low{border-color:var(--mana)!important;color:#7f9be0!important}
 #bDodge{right:166px;bottom:70px;width:46px;height:46px;border-color:var(--volt)!important;color:var(--volt)!important;font-size:8px!important}
 #bPot{right:154px;bottom:140px;width:52px;height:52px;border-color:var(--blood)!important;color:#ff8d82!important}
@@ -137,6 +138,7 @@ p strong{color:var(--ink);font-weight:600}
 .li.on{border-color:var(--gold)}
 .tree{display:grid;grid-template-columns:repeat(3,1fr);gap:22px 10px}
 .node{position:relative;background:radial-gradient(circle at 50% 30%,#2e2637,#100c15);border:2px solid var(--edge);padding:10px 4px 8px;text-align:center;min-width:0}
+.node canvas.gl{display:block;margin:0 auto 3px;width:24px;height:24px;pointer-events:none}
 .node b{font:700 11.5px var(--display);display:block;line-height:1.15;color:var(--ink)}
 .node u{display:block;text-decoration:none;font:600 12px var(--body);color:var(--dim);margin-top:3px}
 .node.has{border-color:var(--gold)}.node.has u{color:var(--q2)}
