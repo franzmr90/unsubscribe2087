@@ -41,27 +41,88 @@ function maxiSet(i, L) {
   W.fx.push({ k: 'ring', x: P.x, y: P.y, r: 3.2, t: 0, life: .45, col: '#f7931a' });
 }
 
+/* One aura per Maximalist. A second Maximalist's different aura is a second holder.
+   Allies are a list: you, when the aura is someone else's, the hireling, and the
+   tag-along. Party members apply it on their own client from the au field.
+   Foes are monsters plus hostile stand-ins. A party member is never in that loop. */
+function auraSpecs() {
+  const list = [];
+  if (G.cls === 'maxi' && P.aura) {
+    const a = P.aura, L = a.L || sl(a.i) || 1;
+    list.push({ x: P.x, y: P.y, i: a.i, L: L, self: 1, party: 1, hostile: 0, src: a });
+  }
+  if (typeof MP !== 'undefined' && MP.others) {
+    for (const o of MP.others) {
+      if (!o || !(o.au === 3 || o.au === 4 || o.au === 7)) continue;
+      const party = typeof mpInParty === 'function' && mpInParty(o.uid);
+      const hostile = typeof mpHostileTo === 'function' && mpHostileTo(o.uid);
+      if (!party && !hostile) continue;
+      list.push({ x: o.x, y: o.y, i: o.au, L: o.aL || 1, self: 0, party: party && !hostile ? 1 : 0, hostile: hostile ? 1 : 0, src: o });
+    }
+  }
+  return list;
+}
+function inAura(body, h) {
+  if (!body || (body.hp !== undefined && !(body.hp > 0))) return false;
+  return dist(body, h) < auraVisR(h.i, h.L);
+}
+function nearbyAllies(h) {
+  const out = [];
+  if (!h || h.hostile || !(h.self || h.party)) return out;
+  if (!h.self && inAura(P, h)) out.push(P);
+  if (inAura(W && W.merc, h)) out.push(W.merc);
+  if (inAura(W && W.tag, h)) out.push(W.tag);
+  return out;
+}
+function auraFoes(h) {
+  const out = [];
+  if (!h || !W || !W.ents) return out;
+  const r = auraVisR(h.i, h.L);
+  for (const e of W.ents) {
+    if (!e || !(e.hp > 0)) continue;
+    if (dist(e, h) >= r + (e.r || 0)) continue;
+    if (e.mp) {
+      if (typeof mpInParty === 'function' && mpInParty(e.mp)) continue;
+      if (!(typeof mpHostileTo === 'function' && mpHostileTo(e.mp))) continue;
+    }
+    out.push(e);
+  }
+  return out;
+}
+/* Toxic Maximalism's attack-speed line is the one already printed on the skill:
+   15+3*L percent. The owner's own swing is unchanged. Bodies standing in someone
+   else's copy of it, and the hireling in yours, use that percent. */
+function toxicSwing(body) {
+  const L = body && body.toxL;
+  if (!(L > 0)) return 1;
+  return 1 + (15 + 3 * L) / 100;
+}
 function maxiAura(dt) {
-  if (!G || G.cls !== 'maxi' || !P.aura || mode !== 'play') return;
-  const a = P.aura, L = a.L || sl(a.i) || 1;
-  a.t -= dt;
-
-  if (a.i === 3) {
-    /* Toxic Maximalism: you and anybody beside you swing faster. The damage half is in pdmg. */
-    P.haste = Math.max(P.haste, .3);
-    if (W.merc) W.merc.haste = .3;
-  } else if (a.i === 4) {
-    /* Marked to Market: inside it, nothing's resistances apply. `mark` is the game's own
-       take-more-damage flag, so this reuses the machinery the rest of the game uses. */
-    const r = 3.5 + .15 * L;
-    for (const e of W.ents) if (!e.mp && dist(e, P) < r + e.r) e.mark = Math.max(e.mark, .4);
-  } else if (a.i === 7) {
-    /* Proof of Work: the heat of the work, constantly, to everything close enough. */
-    if (a.t <= 0) {
-      a.t = .5;
-      const r = 3.2 + .1 * L, m = (.3 + .07 * L) * syn(7);
-      for (const e of W.ents.slice()) if (!e.mp && dist(e, P) < r + e.r) hit(e, m, true);
-      W.fx.push({ k: 'ring', x: P.x, y: P.y, r, t: 0, life: .25, col: '#f7931a' });
+  if (!G || !P) return;
+  dt = dt || 0;
+  P.toxL = 0; P.mkAura = 0;
+  if (W && W.merc) W.merc.toxL = 0;
+  if (W && W.tag) W.tag.toxL = 0;
+  if (mode !== 'play' || !W) return;
+  if (G.cls === 'maxi' && P.aura) P.aura.t -= dt;
+  for (const h of auraSpecs()) {
+    if (h.i === 3 && !h.hostile) {
+      if (h.self) P.haste = Math.max(P.haste, .3);
+      for (const a of nearbyAllies(h)) {
+        if (a === P) { P.haste = Math.max(P.haste, .3); P.toxL = Math.max(P.toxL, h.L); }
+        else { a.haste = Math.max(a.haste || 0, .3); a.toxL = Math.max(a.toxL || 0, h.L); }
+      }
+    } else if (h.i === 4) {
+      for (const e of auraFoes(h)) e.mark = Math.max(e.mark || 0, .4);
+      if (h.hostile && inAura(P, h)) P.mkAura = .4;
+    } else if (h.i === 7) {
+      let ready = false;
+      if (h.self) { if (P.aura.t <= 0) { P.aura.t = .5; ready = true; } }
+      else { h.src.powT = (h.src.powT || 0) - dt; if (h.src.powT <= 0) { h.src.powT = .5; ready = true; } }
+      if (!ready) continue;
+      const m = (.3 + .07 * h.L) * (h.self ? syn(7) : 1);
+      for (const e of auraFoes(h)) hit(e, m, true);
+      if (h.self) W.fx.push({ k: 'ring', x: P.x, y: P.y, r: auraVisR(7, h.L), t: 0, life: .25, col: '#f7931a' });
     }
   }
 }
