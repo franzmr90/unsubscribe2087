@@ -83,7 +83,7 @@ function p7Tick(dt){mktTick(dt);mktLiqCheck();uniTick(dt);if(OPT.autoStim&&G.hp>
   if(G.tpT>0){G.tpT-=dt;if(G.tpT<=0){calc();toast('The loan of strength runs out.')}}
   if(G.debt>0)G.debt*=Math.pow(loanRate(),dt);
   if(W.pat)for(const p of W.pat.slice()){p.t-=dt;p.c-=dt;if(p.c<=0){p.c=.5;W.fx.push({k:'ring',x:p.x,y:p.y,r:2,t:0,life:.45,col:'#ff7a3c'});for(const e of W.ents.slice())if(Math.hypot(e.x-p.x,e.y-p.y)<2+e.r)hit(e,.3,true)}if(p.t<=0)W.pat.splice(W.pat.indexOf(p),1)}
-  if(!W.z.town)for(const e of W.ents)if((e.champ||e.su)&&e.aggro&&e.stun<=0&&!isBoss(e.k)){e.slam=(e.slam===undefined?rnd(3,6):e.slam)-dt;if(e.slam<=0&&dist(e,P)<7){e.slam=e.su?4.5:6.5;const low=e.champ&&!e.su&&!G.act2;W.fx.push({k:'warn',x:P.x,y:P.y,r:low?1.15:1.9,t:0,life:low?1.6:1,boom:e.dmg*(low?.7:1.6)})}}
+  if(!W.z.town)for(const e of W.ents)if((e.champ||e.su)&&e.aggro&&e.stun<=0&&!isBoss(e.k)){e.slam=(e.slam===undefined?rnd(3,6):e.slam)-dt;if(e.slam<=0&&dist(e,P)<7){e.slam=e.su?4.5:6.5;const low=e.champ&&!e.su&&!G.act2,soft=defragAct1(e);W.fx.push({k:'warn',x:P.x,y:P.y,r:soft?1.4:(low?1.15:1.9),t:0,life:soft?1.55:(low?1.6:1),boom:e.dmg*(soft?.8:(low?.7:1.6))})}}
   const m=W.merc;if(m&&m.hp>0&&G.merc.ab2==='medic'&&dist(m,P)<6&&G.hp<S.maxHp)heal(S.maxHp*.02*dt);
   const pw=W.pow;if(pw){if(dist(P,pw.o)>9){W.pow=null;toast('You left the shrine. The work is lost.');sfx('err');return}pw.t-=dt;pw.w-=dt;
     if(pw.w<=0){pw.w=7;pw.n=(pw.n||0)+1;const k=wpick(W.z.mix),cnt=4+pw.n,pool=W.z.mix.filter(m=>m[0]!=='tick');for(let i=0;i<cnt;i++){const a=rnd(0,6.283),e=spawn(k,pw.o.x+Math.cos(a)*7.5,pw.o.y+Math.sin(a)*7.5);if(e)e.aggro=true}
