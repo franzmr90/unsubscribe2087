@@ -54,7 +54,7 @@ const report=await p.evaluate(()=>{
     MP.others.length=0;MP.party=null;MP.hostile={};
     P.aura=null;P.toxL=0;P.mkAura=0;P.haste=0;P.atk=0;P.dash=null;P.mech=0;P.buff=0;
   };
-  const mob=(x,y)=>{const e=__g.spawn('tick',x,y);e.hp=e.max=800;e.aggro=0;e.mark=0;return e};
+  const mob=(x,y)=>{const e={k:'tick',x:x,y:y,r:.35,hp:800,max:800,dmg:4,spd:1,mark:0,aggro:false,mods:{},flash:0,stun:0,slow:0,ward:0,name:'Tick',hits:0};W.ents.push(e);return e};
   G.cls='maxi';__g.calc();
   G.sk[3]=1;G.sk[4]=0;G.sk[7]=1;G.pas=[10];G.sk[10]=1;__g.calc();
   wipe();
