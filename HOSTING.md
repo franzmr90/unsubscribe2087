@@ -41,25 +41,22 @@ a minute, and can claim it to a free account afterwards to keep it and rename it
 Cloudflare Pages, Surge and S3 all take the same folder. Any of them is fine; the file is
 static and has no server side.
 
-To update it, re-run the script and drop it again. If that gets tedious, the Netlify CLI
-(`netlify deploy --prod --dir web`) does it in one command.
+To update it, re-run the script and drop it again — **onto the existing site, not a new
+one**, or every player's saved character is stranded on the old URL.
+
+**Better: stop doing this by hand.** `.github/workflows/deploy.yml` builds and deploys on
+every push once two Netlify secrets are set. See `DEPLOYING-THE-GAME.md`.
 
 **What people get:** the whole single-player game, saving progress in their own browser.
 **What they do not get:** anything multiplayer. The build deliberately switches all of that
 off when there is no account server behind it, so there are no broken buttons — the Party
 tab and chat bar simply are not there.
 
-### If you would rather it auto-deploy from the repo
+### Auto-deploying from the repo
 
-Two options, neither of which exposes `canon/`:
-
-- **A separate public repository** holding only the built file, pushed to by a workflow
-  here. `.github/workflows/pages.yml` already builds and validates the artifact; it would
-  need its final step changed to push to that repo instead. Free.
-- **GitHub Pro**, about $4 a month. Pages on a private repository publishes only what the
-  workflow uploads, so the repository stays private and the manuscript stays unpublished.
-  `pages.yml` then works as written, after enabling **Settings → Pages → Source → GitHub
-  Actions**.
+Done: `.github/workflows/deploy.yml` builds from `src/` and deploys to Netlify on every
+push, production from `main` and a draft preview from anywhere else. It needs two Netlify
+secrets and nothing else, and nothing is made public — see `DEPLOYING-THE-GAME.md`.
 
 ---
 

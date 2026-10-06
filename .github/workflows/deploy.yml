@@ -1,0 +1,63 @@
+# Builds the game and deploys it to Netlify on every push.
+#
+# It builds from src/ rather than shipping the committed dist/, so a stale build can never
+# go out, and it refuses to deploy output that is truncated or malformed.
+#
+# main, or run by hand  -> production, the real URL
+# any other branch      -> a draft deploy with its own preview URL, production untouched
+#
+# One-time setup, in the repository's Settings -> Secrets and variables -> Actions:
+#   NETLIFY_AUTH_TOKEN   Netlify -> User settings -> Applications -> Personal access tokens
+#   NETLIFY_SITE_ID      Netlify -> your site -> Site configuration -> Site ID
+name: Deploy
+
+on:
+  push:
+    paths: ['src/**', 'build.sh', 'tools/web-bundle.sh', '.github/workflows/deploy.yml']
+  workflow_dispatch:
+
+# Never two deploys at once; a newer push supersedes one still queued.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: ./tools/web-bundle.sh
+
+      - name: Check it is a real page
+        # A truncated build would deploy perfectly happily. Look before shipping.
+        run: |
+          f=web/index.html
+          test -s "$f" || { echo "::error::$f is missing or empty"; exit 1; }
+          bytes=$(wc -c < "$f")
+          echo "built $bytes bytes"
+          test "$bytes" -gt 400000 || { echo "::error::only $bytes bytes — the build looks truncated"; exit 1; }
+          grep -q '<canvas id="cv">' "$f" || { echo "::error::no game canvas in the output"; exit 1; }
+          grep -q '</html>'          "$f" || { echo "::error::the file does not end properly"; exit 1; }
+          # The manuscript lives in canon/ and must never reach a public host.
+          grep -q 'Project Phonix'   "$f" && { echo "::error::the build contains manuscript text"; exit 1; }
+          echo "checks passed"
+
+      - name: Deploy
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: |
+          if [ -z "$NETLIFY_AUTH_TOKEN" ] || [ -z "$NETLIFY_SITE_ID" ]; then
+            echo "::error::NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID are not set — see the comment at the top of this file"
+            exit 1
+          fi
+          if [ "${{ github.ref }}" = "refs/heads/main" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            npx -y netlify-cli@17 deploy --prod --dir web \
+              --message "${{ github.sha }} — ${{ github.event.head_commit.message || 'manual' }}"
+          else
+            echo "Not main: deploying as a draft, production is untouched."
+            npx -y netlify-cli@17 deploy --dir web \
+              --message "preview ${{ github.ref_name }} ${{ github.sha }}"
+          fi
