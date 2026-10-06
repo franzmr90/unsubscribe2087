@@ -77,7 +77,7 @@ function extra2(s,add){let hp=0;const d=docOf();if(d)for(const k in d[3]){if(k==
 const DTY={impact:{n:'Impact',c:'#e6e2d6',d:'Blunt force. Nothing shrugs it off entirely.'},surge:{n:'Surge',c:'#59e0e6',d:'Overvoltage. Briefly locks up what it hits.'},rust:{n:'Rust',c:'#c9803a',d:'Corrosion. Keeps eating for three seconds after the hit.'},heat:{n:'Heat',c:'#ff7a3c',d:'Thermal. A quarter of it splashes onto anything close by.'},noise:{n:'Noise',c:'#d98cff',d:'Jamming. Slows whatever is listening.'}};
 DTY.sound={n:'Sound',c:'#f7931a',d:'Sound money. Nothing resists it, nothing is immune to it, and no shield stops it. That is the entire point.'};
 const DTK=Object.keys(DTY);
-const SKT={maxi:{0:'sound',1:'sound',3:'sound',4:'sound',5:'sound',6:'sound',7:'sound'},scrapper:{1:'rust',5:'noise',7:'heat',12:'noise'},hacker:{0:'surge',1:'surge',3:'noise',4:'surge',6:'rust',7:'noise',9:'heat',10:'noise'},courier:{3:'heat',4:'rust',7:'noise'},anon:{0:'heat',3:'heat',5:'noise',6:'heat',8:'noise'},founder:{1:'noise',3:'surge',8:'heat'}};
+const SKT={maxi:{0:'sound',1:'sound',3:'sound',4:'sound',5:'sound',6:'sound',7:'sound',9:'sound',11:'sound'},scrapper:{1:'rust',5:'noise',7:'heat',12:'noise'},hacker:{0:'surge',1:'surge',3:'noise',4:'surge',6:'rust',7:'noise',9:'heat',10:'noise'},courier:{3:'heat',4:'rust',7:'noise'},anon:{0:'heat',3:'heat',5:'noise',6:'heat',8:'noise'},founder:{1:'noise',3:'surge',8:'heat'}};
 const skType=(cls,i)=>cls==='hacker'&&i===14?(G.schema||'surge'):((SKT[cls]||{})[i]||'impact');
 const baseType=()=>G.cls==='maxi'?'sound':(G.eq.weapon&&G.eq.weapon.dt)||(G.cls==='hacker'?'surge':'impact');
 const RES={tick:{surge:1.5},drone:{surge:1.5,noise:.5},bot:{impact:.75,rust:1.5},hound:{noise:1.5,rust:.5},ad:{noise:0,impact:1.5},hr:{noise:.5,heat:1.5},mech:{impact:.5,rust:1.5,surge:1.25},seer:{surge:.5,impact:1.5},aegis:{surge:0,heat:1.5},lancer:{noise:1.5,heat:.5},splitter:{heat:1.5,impact:.5},
@@ -85,7 +85,8 @@ const RES={tick:{surge:1.5},drone:{surge:1.5,noise:.5},bot:{impact:.75,rust:1.5}
 const resTxt=k=>{const r=RES[k]||{},w=[],s=[],im=[];for(const t in r){(r[t]===0?im:r[t]>1?w:s).push(DTY[t].n)}return (w.length?'Weak to '+w.join(', '):'')+(s.length?(w.length?' · ':'')+'Resists '+s.join(', '):'')+(im.length?(w.length||s.length?' · ':'')+'Immune to '+im.join(', '):'')};const dealTxt=k=>DTY[ETY[k]||'impact'].n;;
 let DT=null;
 /* returns the damage after type bonuses, weakness and resistance; applies the type's side effect */
-function typed(e,d){const ty=DT||(P.fm&&P.fm.t>0&&P.fm.dt)||baseType();
+function typed(e,d){let ty=DT||(P.fm&&P.fm.t>0&&P.fm.dt)||baseType();
+  if(G.cls==='maxi'&&sl(12)&&ty!=='sound'){d*=.55+.03*sl(12);ty='sound'}
   if(ty==='sound'){/* no table, no multiplier, no argument */
     e.snd=1;e.lt=ty;return d*(1+(S.t_sound||0)/100)}
   let m=((RES[e.k]||{})[ty]);if(P.k9===ty){P.k9=null;if(m!==0&&m<1)m=1}const mul=m===undefined?1:m;d*=(1+(S['t_'+ty]||0)/100)*mul;
@@ -153,7 +154,7 @@ function bullKill(e){if(e.k!=='bull'||!W.z.secret)return;if(Math.random()<.22)ad
 /* ================= builds: when the rig rolls for you, it offers plans that hang together ================= */
 const BUILDS={
  maxi:[
-  {k:'orange',n:'Orange Pilled',p:'Pills, four words, and a megabyte in the doorway. Everything you do is Sound damage and nothing in this world resists it.',doc:'toxic',at:[45,20,25,10],pr:[[0,10],[6,9],[4,6],[1,6],[2,6],[8,5],[5,4],[3,3],[7,3]],sl:[0,6,4],pa:[2,8,4,3],web:[0,1],fk:['over','burst','mark','echo']}],
+  {k:'orange',n:'Orange Pilled',p:'Pills, four words, and a megabyte in the doorway. Marked to Market stays on, Cite Your Sources reads it, and Priced in Sound turns the rest into it.',doc:'toxic',at:[45,20,25,10],pr:[[0,10],[6,8],[4,6],[11,6],[12,5],[9,4],[1,5],[2,5],[8,4],[10,3],[7,3],[13,1]],sl:[0,11,4],pa:[2,8,12,10],web:[0,1],fk:['over','burst','mark','echo']}],
  scrapper:[
   {k:'crew',n:'Wrecking Crew',p:'Wade into the middle and hit everything at once. Two-handed swings, and each machine near you makes you hit harder.',doc:'wildcat',at:[50,15,35,0],pr:[[0,10],[3,10],[8,6],[7,6],[6,4],[13,6],[11,4],[10,3],[2,4]],sl:[0,3,13],pa:[8,11,10,2],web:[0,1],fk:['over','burst','stun','echo']},
   {k:'wall',n:'Immovable Object',p:'Armor, life, and a horn that stuns the room. You win by still being there.',doc:'picket',at:[20,25,55,0],pr:[[2,10],[5,8],[0,6],[3,4],[11,6],[14,5],[10,4],[6,4]],sl:[0,5,14],pa:[2,11,10,8],web:[1,2],fk:['ward','siphon','stun','lean']},

@@ -1,6 +1,6 @@
 /* The Maximalist. `node server/test/maxi.js`
    What matters: he is not on offer until the story is finished, his damage type cannot be
-   resisted by anything, and all nine skills actually fire. */
+   resisted by anything, and every active actually fires. */
 'use strict';
 const fs = require('fs'), path = require('path');
 const { chromium } = require('playwright');
@@ -37,11 +37,11 @@ const clear = async p => { for (let i = 0; i < 14; i++) { await p.evaluate(() =>
       names: c.sk.map(s => s.n), actives: c.sk.filter(s => s.a).length, auras: c.sk.filter(s => s.aura).length };
   });
   ok('he has the same fifteen-skill tree as everyone else', def.skills === 15, String(def.skills));
-  ok('seven of them are active', def.actives === 7, String(def.actives));
+  ok('ten of them are active', def.actives === 10, String(def.actives));
   ok('three of those are auras', def.auras === 3, String(def.auras));
   ok('he is marked as locked', def.locked === 'story');
-  ok('the Act II and Act III boons were named for him',
-    def.names.includes('Nonce Found') && def.names.includes('Cold Storage'), def.names.slice(9).join(','));
+  ok('rows 4 and 5 are his own skills',
+    def.names.includes('The Halving') && def.names.includes('Not Your Keys') && !def.names.includes('Nonce Found'), def.names.slice(9).join(','));
 
   /* ---- Sound: no table, no multiplier, no argument ---- */
   const sound = await p.evaluate(() => {
@@ -88,7 +88,7 @@ const clear = async p => { for (let i = 0; i < 14; i++) { await p.evaluate(() =>
   const fired = await p.evaluate(() => {
     const g = __g, res = {};
     g.G.sk = g.G.sk.map(() => 5);              /* every skill at rank five */
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < 15; i++) {
       const s = g.CLS.maxi.sk[i];
       if (!s.a) { res[i] = 'passive'; continue; }
       try { const f = g.SKF.maxi[i]; if (!f) { res[i] = 'MISSING'; continue; }
@@ -97,7 +97,7 @@ const clear = async p => { for (let i = 0; i < 14; i++) { await p.evaluate(() =>
     return res;
   });
   const bad = Object.entries(fired).filter(([k, v]) => v !== 'ok' && v !== 'passive');
-  ok('all seven actives fire without throwing', bad.length === 0, JSON.stringify(fired));
+  ok('every active fires without throwing', bad.length === 0, JSON.stringify(fired));
 
   /* ---- the damage actually lands, and a shielded enemy gets no benefit ---- */
   const dmg = await p.evaluate(() => {
@@ -118,7 +118,7 @@ const clear = async p => { for (let i = 0; i < 14; i++) { await p.evaluate(() =>
     g.SKF.maxi[4](5, 1);  out.swapped = g.P.aura && g.P.aura.i;
     out.onlyOne = typeof g.P.aura.i === 'number';
     out.shown = g.maxiBuff();
-    /* Conviction should mark whatever is standing in it */
+    /* Marked to Market should mark whatever is standing in it */
     const e = g.W.ents.find(x => x.hp > 0 && !x.mp);
     if (e) { e.x = g.P.x + 1; e.y = g.P.y; e.mark = 0; for (let i = 0; i < 4; i++) g.maxiAura(1 / 60); out.marked = e.mark > 0; }
     g.SKF.maxi[4](5, 1);  out.off = g.P.aura === null;   /* casting the same one turns it off */
@@ -126,8 +126,8 @@ const clear = async p => { for (let i = 0; i < 14; i++) { await p.evaluate(() =>
   });
   ok('an aura turns on', aura.first === 3, JSON.stringify(aura));
   ok('casting another swaps it rather than stacking', aura.swapped === 4 && aura.onlyOne);
-  ok('the one that is on is named in the display', /Conviction/.test(aura.shown || ''), aura.shown);
-  ok('Conviction marks what stands in it', aura.marked === true);
+  ok('the one that is on is named in the display', /Marked to Market/.test(aura.shown || ''), aura.shown);
+  ok('Marked to Market marks what stands in it', aura.marked === true);
   ok('casting the same aura turns it off', aura.off === true);
 
   ok('no page errors', errs.length === 0, errs.slice(0, 2).join(' | '));

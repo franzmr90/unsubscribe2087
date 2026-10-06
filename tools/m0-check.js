@@ -4,6 +4,7 @@
    node tools/m0-check.js courier
    node tools/m0-check.js anon
    node tools/m0-check.js founder
+   node tools/m0-check.js maxi
    Loads dist/unsubscribe.html the same way smoke does. Calls __g.skipDisc() before driving. */
 const {chromium}=require('playwright');
 const fs=require('fs');
@@ -26,11 +27,12 @@ async function clearUI(p){
 }
 
 (async()=>{
-if(cls!=='scrapper'&&cls!=='hacker'&&cls!=='courier'&&cls!=='anon'&&cls!=='founder'){console.error('no milestone 0 checks for '+cls+' yet');process.exit(1)}
+if(cls!=='scrapper'&&cls!=='hacker'&&cls!=='courier'&&cls!=='anon'&&cls!=='founder'&&cls!=='maxi'){console.error('no milestone 0 checks for '+cls+' yet');process.exit(1)}
 if(cls==='hacker'){await runHacker();return}
 if(cls==='courier'){await runCourier();return}
 if(cls==='anon'){await runAnon();return}
 if(cls==='founder'){await runFounder();return}
+if(cls==='maxi'){await runMaxi();return}
 const b=await chromium.launch();
 const p=await b.newPage({viewport:{width:390,height:800}});
 const errs=[];p.on('pageerror',e=>errs.push(e.message));
@@ -46,7 +48,7 @@ const tree=await p.evaluate(()=>{
   if(s.length!==15)fail.push('scrapper length '+s.length);
   if(s.some(x=>x.boon))fail.push('scrapper still has a boon field');
   if(s.filter(x=>x.a).length<4)fail.push('scrapper rows 4-5 should be mostly actives');
-  if(!c[9]||c[9].boon!=='strike'||!c[14]||c[14].boon!=='guardian')fail.push('maxi should still be on the boon loop');
+  if(!c[9]||c[9].n!=='The Halving'||c[9].boon||c.some(x=>x.boon))fail.push('maxi is still on the boon loop');
   try{s.forEach(sk=>sk.d(3))}catch(e){fail.push('tooltip threw '+e.message)}
   return fail});
 if(tree.length){console.error(tree.join('\n'));await b.close();process.exit(1)}
@@ -190,10 +192,7 @@ const refund=await p.evaluate(()=>{
   const sp=G.sp,sk=G.sk.join();
   __g.applySave({G:JSON.parse(JSON.stringify(G))});
   if(__g.G.sp!==sp||__g.G.sk.join()!==sk)fail.push('refunded twice');
-  const cu=base('maxi');cu.sk=[1,0,0,0,0,0,0,0,0,4,2,2,2,2,2];
-  __g.applySave({G:JSON.parse(JSON.stringify(cu))});
-  if(__g.G.sk[9]!==4)fail.push('maxi boon points were taken');
-  if(__g.G.boonRefund&&__g.G.boonRefund.maxi)fail.push('maxi was marked refunded');
+  if(Object.values(__g.CLS).some(cl=>cl.sk.some(s=>s.boon)))fail.push('a class is still on the boon loop');
   return fail});
 if(refund.length){console.error('REFUND\n'+refund.join('\n'));errs.push(...refund)}
 
@@ -221,7 +220,7 @@ const tree=await p.evaluate(()=>{
   if(s.some(x=>x.boon))fail.push('hacker still has a boon field');
   const row=s.slice(9);
   if(row.filter(x=>x.a).length!==4||row.filter(x=>!x.a).length!==2)fail.push('rows 4-5 should be four actives and two passives');
-  if(!c[9]||c[9].boon!=='strike'||!c[14]||c[14].boon!=='guardian')fail.push('maxi should still be on the boon loop');
+  if(!c[9]||c[9].n!=='The Halving'||c[9].boon||c.some(x=>x.boon))fail.push('maxi is still on the boon loop');
   try{s.forEach(sk=>sk.d(3))}catch(e){fail.push('tooltip threw '+e.message)}
   return fail});
 if(tree.length){console.error(tree.join('\n'));await b.close();process.exit(1)}
@@ -412,10 +411,7 @@ const refund=await p.evaluate(()=>{
   const sp=G.sp,sk=G.sk.join();
   __g.applySave({G:JSON.parse(JSON.stringify(G))});
   if(__g.G.sp!==sp||__g.G.sk.join()!==sk)fail.push('refunded twice');
-  const cu=base('maxi');cu.sk=[1,0,0,0,0,0,0,0,0,4,2,2,2,2,2];
-  __g.applySave({G:JSON.parse(JSON.stringify(cu))});
-  if(__g.G.sk[9]!==4)fail.push('maxi boon points were taken');
-  if(__g.G.boonRefund&&__g.G.boonRefund.maxi)fail.push('maxi was marked refunded');
+  if(Object.values(__g.CLS).some(cl=>cl.sk.some(s=>s.boon)))fail.push('a class is still on the boon loop');
   return fail});
 if(refund.length){console.error('REFUND\n'+refund.join('\n'));errs.push(...refund)}
 
@@ -443,7 +439,7 @@ const tree=await p.evaluate(()=>{
   if(s.some(x=>x.boon))fail.push('courier still has a boon field');
   const row=s.slice(9);
   if(row.filter(x=>x.a).length!==4||row.filter(x=>!x.a).length!==2)fail.push('rows 4-5 should be four actives and two passives');
-  if(!c[9]||c[9].boon!=='strike')fail.push('maxi should still be on the boon loop');
+  if(!c[9]||c[9].n!=='The Halving'||c[9].boon||c.some(x=>x.boon))fail.push('maxi is still on the boon loop');
   try{s.forEach(sk=>sk.d(3))}catch(e){fail.push('tooltip threw '+e.message)}
   return fail});
 if(tree.length){console.error(tree.join('\n'));await b.close();process.exit(1)}
@@ -597,10 +593,7 @@ const refund=await p.evaluate(()=>{
   const sp=G.sp,sk=G.sk.join();
   __g.applySave({G:JSON.parse(JSON.stringify(G))});
   if(__g.G.sp!==sp||__g.G.sk.join()!==sk)fail.push('refunded twice');
-  const cu=base('maxi');cu.sk=[1,0,0,0,0,0,0,0,0,4,2,2,2,2,2];
-  __g.applySave({G:JSON.parse(JSON.stringify(cu))});
-  if(__g.G.sk[9]!==4)fail.push('maxi boon points were taken');
-  if(__g.G.boonRefund&&__g.G.boonRefund.maxi)fail.push('maxi was marked refunded');
+  if(Object.values(__g.CLS).some(cl=>cl.sk.some(s=>s.boon)))fail.push('a class is still on the boon loop');
   return fail});
 if(refund.length){console.error('REFUND\n'+refund.join('\n'));errs.push(...refund)}
 const failedC=errs.length;
@@ -627,7 +620,7 @@ const tree=await p.evaluate(()=>{
   if(s.some(x=>x.boon))fail.push('anon still has a boon field');
   const row=s.slice(9);
   if(row.filter(x=>x.a).length!==4||row.filter(x=>!x.a).length!==2)fail.push('rows 4-5 should be four actives and two passives');
-  if(!c[9]||c[9].boon!=='strike'||!c[14]||c[14].boon!=='guardian')fail.push('maxi should still be on the boon loop');
+  if(!c[9]||c[9].n!=='The Halving'||c[9].boon||c.some(x=>x.boon))fail.push('maxi is still on the boon loop');
   try{s.forEach(sk=>sk.d(3))}catch(e){fail.push('tooltip threw '+e.message)}
   return fail});
 if(tree.length){console.error(tree.join('\n'));await b.close();process.exit(1)}
@@ -805,10 +798,7 @@ const refund=await p.evaluate(()=>{
   const sp=G.sp,sk=G.sk.join();
   __g.applySave({G:JSON.parse(JSON.stringify(G))});
   if(__g.G.sp!==sp||__g.G.sk.join()!==sk)fail.push('refunded twice');
-  const cu=base('maxi');cu.sk=[1,0,0,0,0,0,0,0,0,4,2,2,2,2,2];
-  __g.applySave({G:JSON.parse(JSON.stringify(cu))});
-  if(__g.G.sk[9]!==4)fail.push('maxi boon points were taken');
-  if(__g.G.boonRefund&&__g.G.boonRefund.maxi)fail.push('maxi was marked refunded');
+  if(Object.values(__g.CLS).some(cl=>cl.sk.some(s=>s.boon)))fail.push('a class is still on the boon loop');
   return fail});
 if(refund.length){console.error('REFUND\n'+refund.join('\n'));errs.push(...refund)}
 const failedA=errs.length;
@@ -835,7 +825,7 @@ const tree=await p.evaluate(()=>{
   if(s.some(x=>x.boon))fail.push('founder still has a boon field');
   const row=s.slice(9);
   if(row.filter(x=>x.a).length!==4||row.filter(x=>!x.a).length!==2)fail.push('rows 4-5 should be four actives and two passives');
-  if(!c[9]||c[9].boon!=='strike'||!c[14]||c[14].boon!=='guardian')fail.push('maxi should still be on the boon loop');
+  if(!c[9]||c[9].n!=='The Halving'||c[9].boon||c.some(x=>x.boon))fail.push('maxi is still on the boon loop');
   const debt=s[13].d(1);
   if(!debt.includes('cuts the damage')||!debt.includes('raises theirs')||!debt.includes('playing this class wrong'))fail.push('org debt tooltip: '+debt);
   try{s.forEach(sk=>sk.d(3))}catch(e){fail.push('tooltip threw '+e.message)}
@@ -1018,10 +1008,7 @@ const refund=await p.evaluate(()=>{
   const sp=G.sp,sk=G.sk.join();
   __g.applySave({G:JSON.parse(JSON.stringify(G))});
   if(__g.G.sp!==sp||__g.G.sk.join()!==sk)fail.push('refunded twice');
-  const cu=base('maxi');cu.sk=[1,0,0,0,0,0,0,0,0,4,2,2,2,2,2];
-  __g.applySave({G:JSON.parse(JSON.stringify(cu))});
-  if(__g.G.sk[9]!==4)fail.push('maxi boon points were taken');
-  if(__g.G.boonRefund&&__g.G.boonRefund.maxi)fail.push('maxi was marked refunded');
+  if(Object.values(__g.CLS).some(cl=>cl.sk.some(s=>s.boon)))fail.push('a class is still on the boon loop');
   return fail});
 if(refund.length){console.error('REFUND\n'+refund.join('\n'));errs.push(...refund)}
 const failedF=errs.length;
@@ -1029,4 +1016,216 @@ console.log(failedF?'ERRORS:\n'+errs.slice(0,40).join('\n'):'founder milestone 0
 await b.close();
 if(errs.length>failedF)console.error('pageerror during close:\n'+errs.slice(failedF).join('\n'));
 process.exit(failedF?1:0);
+}
+
+async function runMaxi(){
+const b=await chromium.launch();
+const p=await b.newPage({viewport:{width:390,height:800}});
+const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.setContent('<!doctype html><html><head><meta charset=utf-8></head><body style="margin:0">'+fs.readFileSync(path.join(root,'dist/unsubscribe.html'),'utf8')+'</body></html>');
+await p.waitForTimeout(400);
+await p.evaluate(()=>__g.skipDisc());
+await p.waitForTimeout(200);
+const tree=await p.evaluate(()=>{
+  const s=__g.CLS.maxi.sk,fail=[];
+  const names=s.map(x=>x.n);
+  for(const n of ['The Halving','Running a Node','Cite Your Sources','Priced in Sound','The Dip','Not Your Keys'])if(!names.includes(n))fail.push('missing '+n);
+  for(const n of ['Nonce Found','Dollar Cost Average','Toxicity','Cope','Stay Humble','Cold Storage','Conviction'])if(names.includes(n))fail.push('old name still on the skill list: '+n);
+  if(s.length!==15)fail.push('maxi length '+s.length);
+  if(s.some(x=>x.boon))fail.push('maxi still has a boon field');
+  if(s[4].n!=='Marked to Market')fail.push('skill 4 is '+s[4].n);
+  const row=s.slice(9);
+  if(row.filter(x=>x.a).length!==3||row.filter(x=>!x.a).length!==3)fail.push('rows 4-5 should be three actives and three passives');
+  if(Object.values(__g.CLS).some(cl=>cl.sk.some(x=>x.boon)))fail.push('a class is still on the boon loop');
+  if(!__g.CLS.maxi.tag.includes('A paladin, essentially.'))fail.push('the class line was rewritten');
+  const halving=s[9].d(1),node=s[10].d(1),priced=s[12].d(1),keys=s[14].d(1);
+  if(!halving.includes('35%'))fail.push('halving tooltip: '+halving);
+  if(!node.includes('half')||!node.includes('aura off'))fail.push('node tooltip: '+node);
+  if(!priced.includes('not Sound')||!priced.includes('58%'))fail.push('priced tooltip: '+priced);
+  if(!keys.includes('hireling')||!keys.includes('once a minute')||!keys.includes('Alone'))fail.push('keys tooltip: '+keys);
+  if(document.querySelector('[data-cls=maxi]'))fail.push('maxi button shows before the story unlocks');
+  __g.ACC.maxi=1;__g.drawCls();
+  if(!document.querySelector('[data-cls=maxi]'))fail.push('maxi button missing after unlock');
+  try{s.forEach(sk=>sk.d(3))}catch(e){fail.push('tooltip threw '+e.message)}
+  return fail});
+if(tree.length){console.error(tree.join('\n'));await b.close();process.exit(1)}
+await p.click('[data-cls=maxi]');
+await p.waitForTimeout(300);
+await p.evaluate(()=>{const G=__g.G;G.pre=2});
+await clearUI(p);
+const play=await p.evaluate(()=>{
+  const G=__g.G,fail=[];
+  G.lvl=60;G.act2=true;G.act3=true;G.sats=40;G.sp=40;G.god=false;
+  for(let i=1;i<=25;i++)G.q['q'+i]=3;
+  G.in1=1;__g.calc();G.hp=__g.S.maxHp;G.en=__g.S.maxEn;
+  if(__g.mode!=='play')fail.push('not in play after intro, mode '+__g.mode);
+  if(!G.boonRefund||!G.boonRefund.maxi)fail.push('a new maximalist should carry the refund flag');
+  if((__g.G.sp||0)<40)fail.push('new game refund touched the point pool');
+  return fail});
+if(play.length){console.error(play.join('\n'));await b.close();process.exit(1)}
+await p.evaluate(()=>__g.enter(1));
+await clearUI(p);
+const combat=await p.evaluate(()=>{
+  const fail=[],G=__g.G;let P=__g.P,W=__g.W;
+  __g.ACC.maxi=1;__g.setMode('play');
+  const check=(n,ok,extra)=>{if(!ok)fail.push(n+(extra!==undefined?': '+extra:''))};
+  function park(){
+    const N=W.N;
+    for(const rad of [5,4,3,2]){
+      for(let y=rad+1;y<N-rad-1;y++)for(let x=rad+1;x<N-rad-1;x++){
+        let ok=true;
+        for(let dy=-rad;dy<=rad&&ok;dy++)for(let dx=-rad;dx<=rad;dx++)if(W.map[(y+dy)*N+(x+dx)]!==1)ok=false;
+        if(ok){P.x=x+.5;P.y=y+.5;P.dir={x:1,y:0};return true}}
+    }
+    return false}
+  function arm(i){G.sk[i]=Math.max(1,G.sk[i]||0);G.slots[0]=i;P.cd[i]=0;P.dash=null;P.silence=0;P.castWait=0;P.fm=null;__g.setMode('play');if(!__g.CLS.maxi.sk[i].a&&!G.pas.includes(i))G.pas.push(i);__g.calc();__g.S.dmin=__g.S.dmax=100;__g.S.shock=0;__g.S.crit=0;__g.S.dmg=0;G.en=__g.S.maxEn;G.hp=__g.S.maxHp;P.inv=0;__g.S.dodge=0}
+  function bot(x,y){const t=__g.spawn('bot',x,y,{});if(t){t.stun=30;t.hp=t.max=8000;t.aggro=false}return t}
+  function flat(){__g.S.dmin=__g.S.dmax=100;__g.S.shock=0;__g.S.crit=0;__g.S.dmg=0;P.fm=null;P.allySwing=0;__g.setDT(null)}
+  check('open floor',park());
+  W.ents.length=0;W.projs.length=0;W.fx.length=0;W.allies.length=0;P.aura=null;P.cite=null;P.dip=0;
+  G.sk=[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0];G.pas=[];G.slots=[9,-1,-1];__g.calc();
+  const e=__g.spawn('bot',P.x+3,P.y,{});
+  check('spawn for bolt',!!e);
+  if(e){e.stun=100;e.aggro=false;const hp=e.hp;
+    for(let i=0;i<240;i++)__g.update(1/60);
+    check('old bolt did not fire',e.hp===hp&&!W.fx.some(f=>f.k==='bolt'),'hp '+e.hp+'/'+hp);
+    W.ents.length=0}
+  /* The Halving cuts current life and stops at 35% of maximum. */
+  park();W.ents.length=0;W.fx.length=0;arm(9);
+  const full=bot(P.x+1.2,P.y);full.hp=full.max=1000;
+  const clamp=bot(P.x+1.6,P.y);clamp.max=1000;clamp.hp=360;
+  const under=bot(P.x+2,P.y);under.max=1000;under.hp=200;
+  __g.cast(0);
+  check('halving cuts a full machine',full.hp<1000&&full.hp>350,'hp '+full.hp);
+  check('halving will not go under the floor',Math.abs(clamp.hp-350)<0.01,'hp '+clamp.hp);
+  check('a machine already under the floor is left alone',under.hp===200,'hp '+under.hp);
+  check('the cut is sound',full.lt==='sound'&&full.snd===1);
+  W.ents.length=0;const low=bot(P.x+1.2,P.y);low.max=1000;low.hp=200;arm(9);__g.cast(0);
+  check('halving with nothing above the floor says so',document.getElementById('log').textContent.includes('Nothing above the floor'));
+  check('that machine stayed where it was',low.hp===200);
+  /* Cite Your Sources refuses without an aura, and the aura changes the volley. */
+  W.ents.length=0;W.projs.length=0;P.aura=null;P.cite=null;arm(11);__g.cast(0);
+  check('cite with no aura says so',document.getElementById('log').textContent.includes('No aura is on'));
+  check('cite with no aura does not start a volley',!P.cite);
+  P.aura={i:3,L:1,t:5};arm(11);__g.cast(0);
+  check('toxic maximalism makes the volley fast and light',P.cite&&P.cite.n===6&&Math.abs(P.cite.gap-.14)<.001&&P.cite.m<0.5,'cite '+JSON.stringify(P.cite));
+  P.aura={i:4,L:1,t:5};arm(11);__g.cast(0);
+  check('marked to market makes the volley slow and heavy',P.cite&&P.cite.n===3&&Math.abs(P.cite.gap-.55)<.001&&P.cite.m>0.9,'cite '+JSON.stringify(P.cite));
+  P.aura={i:7,L:1,t:5};arm(11);__g.cast(0);
+  check('proof of work makes the volley tick',P.cite&&P.cite.n===6&&Math.abs(P.cite.gap-.5)<.001&&P.cite.m<0.4,'cite '+JSON.stringify(P.cite));
+  W.projs.length=0;const mark=bot(P.x+2,P.y);mark.hp=mark.max=5000;
+  __g.update(1/60);
+  check('the volley is sound',W.projs.some(q=>q.dt==='sound'),JSON.stringify(W.projs.map(q=>q.dt)));
+  /* Running a Node: nothing with the aura off, half for you, full for the workforce. */
+  W.ents.length=0;P.aura=null;P.cite=null;P.fm=null;G.pas=[10];G.sk[10]=1;__g.calc();flat();
+  const off=bot(P.x+.8,P.y);off.hp=off.max=100000;__g.hit(off,1,true);const dOff=100000-off.hp;
+  P.aura={i:4,L:1,t:5};flat();
+  const self=bot(P.x+1.2,P.y);self.hp=self.max=100000;__g.hit(self,1,true);const dSelf=100000-self.hp;
+  flat();P.allySwing=1;P.aura={i:4,L:1,t:5};
+  const ally=bot(P.x+1.6,P.y);ally.hp=ally.max=100000;__g.hit(ally,1,true);const dAlly=100000-ally.hp;P.allySwing=0;
+  check('running a node does nothing with the aura off',dOff>0);
+  check('you get half the node bonus',Math.abs(dSelf/dOff-1.04)<0.02,'off '+dOff+' self '+dSelf);
+  check('an ally swing gets the whole node bonus',Math.abs(dAlly/dOff-1.08)<0.02,'off '+dOff+' ally '+dAlly);
+  /* Priced in Sound turns a rust swing into Sound, and keeps less of it. */
+  W.ents.length=0;P.aura=null;G.pas=[];G.sk[12]=1;__g.calc();flat();__g.setDT('rust');
+  const rust=bot(P.x+.8,P.y);rust.hp=rust.max=100000;__g.hit(rust,1,true);const dRust=100000-rust.hp;
+  flat();__g.setDT(null);
+  const sound=bot(P.x+1.2,P.y);sound.hp=sound.max=100000;__g.hit(sound,1,true);const dSound=100000-sound.hp;
+  G.pas=[12];flat();__g.setDT('rust');
+  const conv=bot(P.x+1.6,P.y);conv.hp=conv.max=100000;__g.hit(conv,1,true);const dConv=100000-conv.hp;
+  flat();G.pas=[12];__g.setDT('sound');
+  const native=bot(P.x+2,P.y);native.hp=native.max=100000;__g.hit(native,1,true);const dNative=100000-native.hp;
+  __g.setDT(null);
+  check('an unpriced rust hit stays rust',rust.lt==='rust');
+  check('priced rust becomes sound',conv.lt==='sound');
+  check('priced rust is worse than the rust hit',dConv>0&&dConv<dRust*0.7,'rust '+dRust+' priced '+dConv);
+  check('native sound is not penalized',Math.abs(dNative-dSound)<dSound*0.05,'sound '+dSound+' native '+dNative);
+  /* The Dip ignores the next hit, and only the next hit. */
+  W.ents.length=0;P.dip=0;arm(13);__g.cast(0);
+  check('the dip is armed',P.dip===1);
+  const hp0=G.hp;__g.S.dodge=0;P.inv=0;__g.setMode('play');
+  __g.hurt(40,false,null);
+  check('the dip ignores the hit',G.hp===hp0&&!P.dip,'hp '+G.hp+' dip '+P.dip);
+  __g.hurt(40,false,null);
+  check('the hit after the dip lands',G.hp<hp0,'hp '+G.hp+' from '+hp0);
+  W.merc=null;W.tag=null;G.keyT=0;P.dip=0;G.pas=G.pas.filter(i=>i!==14);G.hp=10;__g.setMode('play');P.inv=0;__g.S.dodge=0;
+  __g.hurt(500,false,null);
+  check('a killing blow with the dip unset still kills',__g.mode==='dying'&&!P.dip,'mode '+__g.mode+' dip '+P.dip);
+  __g.setMode('play');G.hp=__g.S.maxHp;
+  /* Not Your Keys spends a hireling, once, and does nothing if you are alone. */
+  G.pas=[14];G.sk[14]=1;G.keyT=0;P.dip=0;__g.calc();
+  G.merc={name:'Kestrel',k:'scout',hp:40,dead:false};
+  W.merc={hp:40,max:40,x:P.x,y:P.y,r:.3};
+  G.hp=20;P.inv=0;__g.S.dodge=0;__g.setMode('play');
+  __g.hurt(500,false,null);
+  check('not your keys keeps you up',__g.mode==='play'&&G.hp>0,'mode '+__g.mode+' hp '+G.hp);
+  check('the hireling took the hit',W.merc.hp<=0&&G.merc.dead,'merc '+W.merc.hp+' dead '+G.merc.dead);
+  check('the save is on a timer',G.keyT>50,'keyT '+G.keyT);
+  G.hp=20;P.inv=0;__g.setMode('play');
+  __g.hurt(500,false,null);
+  check('a second killing blow inside the minute lands',__g.mode==='dying','mode '+__g.mode);
+  __g.setMode('play');G.hp=20;G.keyT=0;W.merc=null;W.tag=null;P.inv=0;P.dip=0;__g.S.dodge=0;
+  __g.hurt(500,false,null);
+  check('alone, not your keys does nothing',__g.mode==='dying','mode '+__g.mode);
+  return fail});
+if(combat.length){console.error('COMBAT\n'+combat.join('\n'));errs.push(...combat)}
+await clearUI(p);
+const sheets=await p.evaluate(()=>{
+  const fail=[];
+  __g.setMode('play');__g.G.hp=__g.S.maxHp;
+  __g.openSheet('skills');
+  const html=document.getElementById('sheetIn').innerHTML;
+  for(const n of ['The Halving','Running a Node','Cite Your Sources','Priced in Sound','The Dip','Not Your Keys','Toxic Maximalism','Marked to Market'])if(!html.includes(n))fail.push('skills sheet missing '+n);
+  for(const n of ['Conviction','Nonce Found','Dollar Cost Average','Toxicity','Cope','Stay Humble','Cold Storage'])if(html.includes(n))fail.push('skills sheet still shows '+n);
+  __g.closeSheet();
+  __g.openSheet('shift');
+  document.querySelector('[data-shiftp=maxi]').click();
+  const pop=document.getElementById('pop').innerHTML;
+  for(const n of ['Orange Pilled','Cite Your Sources','Marked to Market','Priced in Sound','Toxic Maximalism'])if(!pop.includes(n))fail.push('builds missing '+n);
+  if(pop.includes('Nonce Found')||pop.includes('Cold Storage')||pop.includes('Conviction'))fail.push('builds still name an old skill');
+  __g.closeSheet();
+  return fail});
+if(sheets.length){console.error('SHEETS\n'+sheets.join('\n'));errs.push(...sheets)}
+async function shift(arg){
+  await p.evaluate(a=>__g.shapeShift(a[0],a[1]),arg);
+  await clearUI(p);
+}
+await p.evaluate(()=>{__g.G.sats=40;__g.G.lvl=60;__g.G.act2=true;__g.G.act3=true;__g.setMode('play');__g.G.hp=__g.S.maxHp});
+await shift(['scrapper',0]);
+await shift(['maxi','orange']);
+const built=await p.evaluate(()=>{
+  const G=__g.G,fail=[];
+  if(G.cls!=='maxi')fail.push('class '+G.cls);
+  if(!G.pas.includes(12)||!G.pas.includes(10))fail.push('orange passives '+(G.pas||[]).join(','));
+  if(!G.slots.includes(11)&&!G.slots.includes(4))fail.push('orange buttons '+G.slots.join(','));
+  return fail});
+if(built.length){console.error('BUILD\n'+built.join('\n'));errs.push(...built)}
+await shift(['scrapper',0]);
+const back=await p.evaluate(()=>__g.G.cls);
+if(back!=='scrapper'){console.error('did not shift back, cls '+back);errs.push('shift back')}
+const refund=await p.evaluate(()=>{
+  const fail=[],eq={weapon:null,helm:null,armor:null,gloves:null,boots:null,belt:null,ring:null,amulet:null};
+  const base=cls=>({v:2,cls,lvl:40,xp:0,sp:4,ap:0,at:{mgt:0,ref:0,vit:0,bnd:0},hp:80,en:20,credits:10,cpi:1,stims:1,bag:[],eq,unlocked:20,q:{},sats:0,slots:[9,12,0],pas:[10,11]});
+  const raw=base('maxi');raw.sk=[1,2,0,0,0,0,0,0,3,2,3,4,1,5,6];
+  const low=raw.sk.slice(0,9).join();
+  __g.applySave({G:JSON.parse(JSON.stringify(raw))});
+  const G=__g.G;
+  if(G.sp!==4+21)fail.push('refunded sp '+G.sp);
+  if(G.sk.slice(9).some(n=>n!==0))fail.push('indices 9-14 not cleared '+G.sk.slice(9).join(','));
+  if(G.sk.slice(0,9).join()!==low)fail.push('rows 1-3 changed');
+  if(!G.boonRefund||G.boonRefund.maxi!==1)fail.push('flag '+JSON.stringify(G.boonRefund));
+  if(G.slots[0]!==-1||G.slots[1]!==-1||G.slots[2]!==0)fail.push('slots '+G.slots.join(','));
+  if((G.pas||[]).some(i=>i>=9))fail.push('pas '+G.pas);
+  if(!document.getElementById('log').textContent.includes('The old boons were withdrawn and the points returned.'))fail.push('no refund toast');
+  const sp=G.sp,sk=G.sk.join();
+  __g.applySave({G:JSON.parse(JSON.stringify(G))});
+  if(__g.G.sp!==sp||__g.G.sk.join()!==sk)fail.push('refunded twice');
+  if(Object.values(__g.CLS).some(cl=>cl.sk.some(s=>s.boon)))fail.push('a class is still on the boon loop');
+  return fail});
+if(refund.length){console.error('REFUND\n'+refund.join('\n'));errs.push(...refund)}
+const failedM=errs.length;
+console.log(failedM?'ERRORS:\n'+errs.slice(0,40).join('\n'):'maxi milestone 0 checks passed');
+await b.close();
+if(errs.length>failedM)console.error('pageerror during close:\n'+errs.slice(failedM).join('\n'));
+process.exit(failedM?1:0);
 }
