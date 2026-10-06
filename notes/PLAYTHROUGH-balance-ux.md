@@ -1,3 +1,5 @@
+Replay after UX #13, Act I balance #14, and Smear opt-in #15: [notes/PLAYTHROUGH-act1-replay.md](PLAYTHROUGH-act1-replay.md).
+
 # Playthrough notes: balance and UX
 
 Phone-viewport play of the story tip after C2 (`7c901fb`). One fresh Scrapper. No balance or UX changes were made. Acts II–V were not reached. A second class was not spot-checked.
