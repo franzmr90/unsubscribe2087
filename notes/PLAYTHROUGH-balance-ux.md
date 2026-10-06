@@ -22,7 +22,13 @@ Not in the UX PR: the Balance list below (Fields door, early weapon drops, explo
 - [x] **HOA-9 and Marla were not retuned.** Mods stay strong+shield and fast+arc.
 - [x] **Act I death fee no longer eats the hire.** Was 15% of credits, uncapped, every death. Now, until Act II: the first 10 deaths take 5% capped at 15 credits; later Act I deaths take 8% capped at 8% of Kestrel’s hire price. Act II and a cold wallet are unchanged (15%, or zero).
 
-Left untouched: the Smear / adoption drain on Brenda’s turn-in, Acts II–V, C3/C4 copy, Homesteader/Witness, party and multiplayer, and the UX list above.
+Left untouched in the balance PR: the Smear / adoption drain on Brenda’s turn-in, Acts II–V, C3/C4 copy, Homesteader/Witness, party and multiplayer, and the UX list above. The Smear item shipped in the content follow-up.
+
+## Shipped in this PR (content)
+
+- [x] **Brenda’s turn-in does not start The Smear.** The rare ring and the 15% discount still happen, and the next main quest is still the Humming Fields. The Smear is an optional errand: after Marla is turned in, Nonce offers it, and only “I will answer it” starts the campaign and the adoption drain. “Not now” leaves both off, and the offer stays.
+
+Left untouched: Act I balance, the UX list, Acts II–V campaign tuning, C3/C4 copy, Homesteader/Witness, party and multiplayer. UnityCoin and The Ban still begin on their own once their earlier step is done.
 
 Screenshots cited below are attached on the pull request.
 
@@ -113,7 +119,7 @@ Auditor Prime as a finished fight, the Glass Cathedral, Pryce and the MANDATE of
 
 ### Content
 
-1. **Do not start the Smear, or the adoption drain, on the Brenda turn-in.** The main-quest reward immediately opened a side errand and said adoption drains until it is done. Why: a player following the arrow inherits a penalty they did not opt into. Effort: small.
+1. **Do not start the Smear, or the adoption drain, on the Brenda turn-in.** Shipped. The ring and the Fields quest stay on the main path. The Smear is Nonce’s optional errand; the drain starts only after it is accepted.
 2. **The prequel can stay.** It is short, safe, and it points. No content hole there.
 
 ## 4. Non-issues
