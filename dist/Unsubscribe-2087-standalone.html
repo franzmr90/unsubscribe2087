@@ -2062,10 +2062,26 @@ const SKV={scrapper:{
   12:{k:'ring',r:3.4},
   13:{k:'arc',w:2.3},
   14:{k:'beam'}
+},hacker:{
+  0:{k:'bolt',r:5,n:3},
+  1:{k:'beam'},
+  2:{k:'patch',r:1.5},
+  3:{k:'ring',r:2.4},
+  4:{k:'orbit'},
+  5:{k:'mark'},
+  6:{k:'strike'},
+  7:{k:'bolt',r:4,at:'foe'},
+  8:{k:'mark'},
+  9:{k:'patch',r:2.6},
+  10:{k:'patch',r:1.7},
+  11:{k:'mark'},
+  12:{k:'trail',r:3},
+  13:{k:'patch',r:1.1},
+  14:{k:'bolt',r:6,at:'foe',n:1}
 }};
 function skvOf(cls,i){const row=(SKV[cls]||{})[i];if(!row)return null;const sk=CLS[cls]&&CLS[cls].sk[i];let col=row.col;
   if(!col&&sk&&sk.a){const ty=skType(cls,i);if(DTY[ty])col=DTY[ty].c}if(!col)col=(CLS[cls]&&CLS[cls].col)||'#e6e2d6';
-  return {k:row.k,col:col,r:row.r||1.2,w:row.w||1,n:row.n||3,life:row.life||SKV_LIFE[row.k]||.4,at:row.at||'',tel:row.tel?1:0}}
+  return {k:row.k,col:col,r:row.r||1.2,w:row.w||1,n:row.n||(row.k==='orbit'?3:1),life:row.life||SKV_LIFE[row.k]||.4,at:row.at||'',tel:row.tel?1:0}}
 function skvPlay(cls,i,x,y,dir){const v=skvOf(cls,i);if(!v||!W||!W.fx)return;const dx=(dir&&dir.x)||1,dy=(dir&&dir.y)||0;
   let px=x,py=y,x2=x+dx*(v.r||3),y2=y+dy*(v.r||3);
   if(v.at==='foe'){const t=nearest(8);if(t){x2=t.x;y2=t.y;if(v.k==='mark'||v.k==='patch'||v.k==='ring'||v.k==='strike'){px=t.x;py=t.y}}}
@@ -2724,7 +2740,7 @@ function glyph(g,cls,i,sz){const v=skvOf(cls,i);if(!v)return;const s=sz||24,col=
   g.save();g.clearRect(0,0,s,s);g.strokeStyle=col;g.fillStyle=col;g.lineCap='round';g.lineJoin='round';
   g.lineWidth=Math.max(1.25,s/14)*Math.min(2.2,v.w||1);const cx=s/2,cy=s/2;
   if(k==='arc'){g.beginPath();g.arc(cx,cy+s*.12,s*.28*Math.min(1.35,v.w||1),Math.PI*1.15,Math.PI*1.85);g.stroke()}
-  else if(k==='bolt'){g.beginPath();g.moveTo(s*.16,s*.72);g.lineTo(s*.36,s*.4);g.lineTo(s*.5,s*.58);g.lineTo(s*.84,s*.2);g.stroke()}
+  else if(k==='bolt'){const hops=v.n||1;g.beginPath();g.moveTo(s*.14,s*.8);for(let h=1;h<=hops;h++){const t=h/(hops+1);g.lineTo(s*(.16+t*.66),s*(.78-t*.5)+(h%2?s*.1:-s*.06))}g.lineTo(s*.86,s*.16);g.stroke()}
   else if(k==='ring'){g.beginPath();g.arc(cx,cy,Math.min(s*.4,s*(.12+(v.r||1.2)*.06)),0,6.283);g.stroke()}
   else if(k==='strike'){g.beginPath();g.moveTo(cx,s*.08);g.lineTo(cx-s*.14,s*.42);g.lineTo(cx+s*.1,s*.5);g.lineTo(cx,s*.92);g.stroke()}
   else if(k==='beam'){g.fillRect(cx-s*.07,s*.1,s*.14,s*.8)}

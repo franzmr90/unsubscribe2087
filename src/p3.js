@@ -205,7 +205,7 @@ function glyph(g,cls,i,sz){const v=skvOf(cls,i);if(!v)return;const s=sz||24,col=
   g.save();g.clearRect(0,0,s,s);g.strokeStyle=col;g.fillStyle=col;g.lineCap='round';g.lineJoin='round';
   g.lineWidth=Math.max(1.25,s/14)*Math.min(2.2,v.w||1);const cx=s/2,cy=s/2;
   if(k==='arc'){g.beginPath();g.arc(cx,cy+s*.12,s*.28*Math.min(1.35,v.w||1),Math.PI*1.15,Math.PI*1.85);g.stroke()}
-  else if(k==='bolt'){g.beginPath();g.moveTo(s*.16,s*.72);g.lineTo(s*.36,s*.4);g.lineTo(s*.5,s*.58);g.lineTo(s*.84,s*.2);g.stroke()}
+  else if(k==='bolt'){const hops=v.n||1;g.beginPath();g.moveTo(s*.14,s*.8);for(let h=1;h<=hops;h++){const t=h/(hops+1);g.lineTo(s*(.16+t*.66),s*(.78-t*.5)+(h%2?s*.1:-s*.06))}g.lineTo(s*.86,s*.16);g.stroke()}
   else if(k==='ring'){g.beginPath();g.arc(cx,cy,Math.min(s*.4,s*(.12+(v.r||1.2)*.06)),0,6.283);g.stroke()}
   else if(k==='strike'){g.beginPath();g.moveTo(cx,s*.08);g.lineTo(cx-s*.14,s*.42);g.lineTo(cx+s*.1,s*.5);g.lineTo(cx,s*.92);g.stroke()}
   else if(k==='beam'){g.fillRect(cx-s*.07,s*.1,s*.14,s*.8)}

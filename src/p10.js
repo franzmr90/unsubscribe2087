@@ -98,10 +98,26 @@ const SKV={scrapper:{
   12:{k:'ring',r:3.4},
   13:{k:'arc',w:2.3},
   14:{k:'beam'}
+},hacker:{
+  0:{k:'bolt',r:5,n:3},
+  1:{k:'beam'},
+  2:{k:'patch',r:1.5},
+  3:{k:'ring',r:2.4},
+  4:{k:'orbit'},
+  5:{k:'mark'},
+  6:{k:'strike'},
+  7:{k:'bolt',r:4,at:'foe'},
+  8:{k:'mark'},
+  9:{k:'patch',r:2.6},
+  10:{k:'patch',r:1.7},
+  11:{k:'mark'},
+  12:{k:'trail',r:3},
+  13:{k:'patch',r:1.1},
+  14:{k:'bolt',r:6,at:'foe',n:1}
 }};
 function skvOf(cls,i){const row=(SKV[cls]||{})[i];if(!row)return null;const sk=CLS[cls]&&CLS[cls].sk[i];let col=row.col;
   if(!col&&sk&&sk.a){const ty=skType(cls,i);if(DTY[ty])col=DTY[ty].c}if(!col)col=(CLS[cls]&&CLS[cls].col)||'#e6e2d6';
-  return {k:row.k,col:col,r:row.r||1.2,w:row.w||1,n:row.n||3,life:row.life||SKV_LIFE[row.k]||.4,at:row.at||'',tel:row.tel?1:0}}
+  return {k:row.k,col:col,r:row.r||1.2,w:row.w||1,n:row.n||(row.k==='orbit'?3:1),life:row.life||SKV_LIFE[row.k]||.4,at:row.at||'',tel:row.tel?1:0}}
 function skvPlay(cls,i,x,y,dir){const v=skvOf(cls,i);if(!v||!W||!W.fx)return;const dx=(dir&&dir.x)||1,dy=(dir&&dir.y)||0;
   let px=x,py=y,x2=x+dx*(v.r||3),y2=y+dy*(v.r||3);
   if(v.at==='foe'){const t=nearest(8);if(t){x2=t.x;y2=t.y;if(v.k==='mark'||v.k==='patch'||v.k==='ring'||v.k==='strike'){px=t.x;py=t.y}}}
