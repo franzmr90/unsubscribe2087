@@ -77,8 +77,8 @@ function extra2(s,add){let hp=0;const d=docOf();if(d)for(const k in d[3]){if(k==
 const DTY={impact:{n:'Impact',c:'#e6e2d6',d:'Blunt force. Nothing shrugs it off entirely.'},surge:{n:'Surge',c:'#59e0e6',d:'Overvoltage. Briefly locks up what it hits.'},rust:{n:'Rust',c:'#c9803a',d:'Corrosion. Keeps eating for three seconds after the hit.'},heat:{n:'Heat',c:'#ff7a3c',d:'Thermal. A quarter of it splashes onto anything close by.'},noise:{n:'Noise',c:'#d98cff',d:'Jamming. Slows whatever is listening.'}};
 DTY.sound={n:'Sound',c:'#f7931a',d:'Sound money. Nothing resists it, nothing is immune to it, and no shield stops it. That is the entire point.'};
 const DTK=Object.keys(DTY);
-const SKT={maxi:{0:'sound',1:'sound',3:'sound',4:'sound',5:'sound',6:'sound',7:'sound'},scrapper:{1:'rust',5:'noise',7:'heat',12:'noise'},hacker:{0:'surge',1:'surge',3:'noise',4:'surge',6:'rust',7:'noise'},courier:{3:'heat',4:'rust',7:'noise'},anon:{0:'heat',3:'heat',5:'noise',6:'heat',8:'noise'},founder:{1:'noise',3:'surge',8:'heat'}};
-const skType=(cls,i)=>(SKT[cls]||{})[i]||'impact';
+const SKT={maxi:{0:'sound',1:'sound',3:'sound',4:'sound',5:'sound',6:'sound',7:'sound'},scrapper:{1:'rust',5:'noise',7:'heat',12:'noise'},hacker:{0:'surge',1:'surge',3:'noise',4:'surge',6:'rust',7:'noise',9:'heat',10:'noise'},courier:{3:'heat',4:'rust',7:'noise'},anon:{0:'heat',3:'heat',5:'noise',6:'heat',8:'noise'},founder:{1:'noise',3:'surge',8:'heat'}};
+const skType=(cls,i)=>cls==='hacker'&&i===14?(G.schema||'surge'):((SKT[cls]||{})[i]||'impact');
 const baseType=()=>G.cls==='maxi'?'sound':(G.eq.weapon&&G.eq.weapon.dt)||(G.cls==='hacker'?'surge':'impact');
 const RES={tick:{surge:1.5},drone:{surge:1.5,noise:.5},bot:{impact:.75,rust:1.5},hound:{noise:1.5,rust:.5},ad:{noise:0,impact:1.5},hr:{noise:.5,heat:1.5},mech:{impact:.5,rust:1.5,surge:1.25},seer:{surge:.5,impact:1.5},aegis:{surge:0,heat:1.5},lancer:{noise:1.5,heat:.5},splitter:{heat:1.5,impact:.5},
  director:{noise:.5,rust:1.5},proxy:{rust:.5,surge:1.5},censor:{noise:0,heat:1.5},shill:{noise:1.5},boss:{noise:.5,rust:1.5,heat:1.25},boss2:{noise:0,surge:1.5,impact:.75},boss3:{surge:.5,noise:.5,impact:1.5,heat:1.25}};
@@ -88,7 +88,7 @@ let DT=null;
 function typed(e,d){const ty=DT||(P.fm&&P.fm.t>0&&P.fm.dt)||baseType();
   if(ty==='sound'){/* no table, no multiplier, no argument */
     e.snd=1;e.lt=ty;return d*(1+(S.t_sound||0)/100)}
-  const m=((RES[e.k]||{})[ty]),mul=m===undefined?1:m;d*=(1+(S['t_'+ty]||0)/100)*mul;
+  let m=((RES[e.k]||{})[ty]);if(P.k9===ty){P.k9=null;if(m!==0&&m<1)m=1}const mul=m===undefined?1:m;d*=(1+(S['t_'+ty]||0)/100)*mul;
   if(mul!==1&&!(e.ft>0)){e.ft=1.2;float(e.x,e.y-.4,mul===0?'Immune':mul>1?'Weak!':'Resists',mul>1?'#7be495':'#9a94a8',0)}
   if(mul>0){if(ty==='surge')e.stun=Math.max(e.stun,.15);else if(ty==='noise')e.slow=Math.max(e.slow,1.5);else if(ty==='rust')e.rust={dps:d*.2/3,t:3,c:0};else if(ty==='heat'){const sp=d*.25;for(const o of W.ents)if(o!==e&&o.hp>0&&Math.hypot(o.x-e.x,o.y-e.y)<1.4+o.r)o.hp=Math.max(1,o.hp-sp*(((RES[o.k]||{}).heat)===undefined?1:RES[o.k].heat)),o.flash=.08}}
   if(mul>1&&S.sp.pkey)d*=1.35;e.lt=ty;return d}
@@ -159,9 +159,9 @@ const BUILDS={
   {k:'wall',n:'Immovable Object',p:'Armor, life, and a horn that stuns the room. You win by still being there.',doc:'picket',at:[20,25,55,0],pr:[[2,10],[5,8],[0,6],[3,4],[11,6],[14,5],[10,4],[6,4]],sl:[0,5,14],pa:[2,11,10,8],web:[1,2],fk:['ward','siphon','stun','lean']},
   {k:'thrower',n:'Scrap Thrower',p:'Stay at arm’s length. Rusty scrap through the whole line, seniority on the weapon in your hands, then a rush to finish.',doc:'mutual',at:[45,10,30,15],pr:[[1,10],[4,8],[7,6],[0,3],[12,5],[10,5],[9,3],[2,4],[8,3]],sl:[1,4,12],pa:[10,2,8],web:[0,5],fk:['mark','echo','over','lean']}],
  hacker:[
-  {k:'chain',n:'Chain Reaction',p:'Prime with Spark Lance, then Arc Chain through the pack. Deadly strikes do the rest.',doc:'rootkit',at:[50,0,20,30],pr:[[0,10],[1,6],[2,1],[5,5],[8,8],[3,4],[13,5],[6,4]],sl:[0,1,3],pa:[8,5,13,2],web:[0,3],fk:['over','echo','mark','refund']},
-  {k:'admin',n:'Sysadmin',p:'Let the machines do it: a Watchdog, a Botnet and a storm overhead while you keep your distance.',doc:'firewall',at:[20,0,35,45],pr:[[4,10],[7,10],[1,1],[0,1],[3,1],[6,8],[5,6],[2,6],[9,4]],sl:[4,7,6],pa:[5,2,9,14],web:[4,1],fk:['lean','echo','refund','surge']},
-  {k:'rod',n:'Control Rod',p:'Null Nova on a short fuse. Nothing near you gets to act, and Brownout slows what is left.',doc:'throttle',at:[30,0,30,40],pr:[[3,10],[0,6],[5,8],[2,5],[6,6],[11,5],[14,4]],sl:[3,0,6],pa:[5,11,2,14],web:[4,7],fk:['stun','lean','chill','burst']}],
+  {k:'chain',n:'Chain Reaction',p:'Prime with Spark Lance, then Arc Chain through the pack. Deadly strikes do the rest. Schema is Surge, so the chain and the barrier agree.',schema:'surge',doc:'rootkit',at:[50,0,20,30],pr:[[0,10],[1,6],[2,1],[5,5],[8,8],[3,4],[11,5],[13,4],[10,3],[6,3]],sl:[0,1,3],pa:[8,5,11,13],web:[0,3],fk:['over','echo','mark','refund']},
+  {k:'admin',n:'Sysadmin',p:'Let the machines do it: a Watchdog, a Botnet and a storm overhead while you keep your distance.',schema:'surge',doc:'firewall',at:[20,0,35,45],pr:[[4,10],[7,10],[6,8],[5,6],[2,4],[11,5],[13,4],[1,1],[0,1]],sl:[4,7,6],pa:[5,2,11,13],web:[4,1],fk:['lean','echo','refund','surge']},
+  {k:'rod',n:'Control Rod',p:'Null Nova on a short fuse. A Packet Storm arrives where you marked it and slows what is left. Step Back is how you leave.',schema:'noise',doc:'throttle',at:[30,0,30,40],pr:[[3,10],[0,6],[5,8],[2,4],[10,6],[9,4],[12,5],[11,5]],sl:[3,10,12],pa:[5,11,2],web:[4,7],fk:['stun','lean','chill','burst']}],
  courier:[
   {k:'rush',n:'Rush Hour',p:'A wall of blades. Scatter Shot up close, Rush Order at range, and every throw can pierce.',doc:'express',at:[50,30,20,0],pr:[[0,10],[3,1],[6,10],[2,3],[5,1],[8,8],[13,5],[1,4]],sl:[0,6,1],pa:[8,2,13,9],web:[0,5],fk:['over','echo','mark','surge']},
   {k:'pirate',n:'Porch Pirate',p:'Never fight fair. Lure them onto a Tack Strip, mark the big one, and watch.',doc:'insured',at:[30,20,40,10],pr:[[3,10],[4,10],[1,4],[7,6],[2,6],[10,4],[14,4]],sl:[3,4,7],pa:[2,10,14,12],web:[1,3],fk:['burn','chill','mark','lean']},
@@ -185,6 +185,7 @@ function buildApply(cls,key,sp,ap){const B=BUILDS[cls].find(b=>b.k===key),sk=CLS
   const act=B.sl.filter(i=>G.sk[i]&&sk[i].a);for(let i=0;i<15&&act.length<3;i++)if(G.sk[i]&&sk[i].a&&!act.includes(i))act.push(i);G.slots=[0,1,2].map(i=>act[i]===undefined?-1:act[i]);
   G.pas=B.pa.filter(i=>G.sk[i]&&!sk[i].a).slice(0,PCAP());G.doc=B.doc;G.fork={};for(const i of act)if(G.sk[i]>=3){const set=forkSet(cls,i),f=B.fk.find(k=>set.includes(k));G.fork[i]=f||set[0]}
   if(!Object.keys(G.web||{}).length){G.web={};let pts=G.lvl-1+(G.para||0);const[a,b]=B.web;for(let r=1;r<=10&&pts>0;r++){G.web[a+'_'+r]=1;pts--;if(r<=7&&pts>0){G.web[b+'_'+r]=1;pts--}}B._web=1}else B._web=0;
+  if(B.schema)G.schema=B.schema;
   return{sp,ap,B}}
 function buildSummary(cls,B){const sk=CLS[cls].sk;return 'Build: '+B.n+'. Buttons: '+G.slots.filter(i=>i>=0).map(i=>sk[i].n+' '+G.sk[i]).join(', ')+'. Passives on: '+(G.pas.map(i=>sk[i].n).join(', ')||'none yet')+'. Doctrine: '+docOf()[1]+'.'+(B._web?' Your web was laid out along '+WARMS[B.web[0]][0]+' and '+WARMS[B.web[1]][0]+'.':' Your web was left as you had it.')+(G.sp?' '+G.sp+' skill points are left over for you.':'')}
 /* ================= entrances: act bosses get a scene, named lieutenants get a letterbox ================= */

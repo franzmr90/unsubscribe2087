@@ -41,7 +41,13 @@ const CLS={
    {n:'Overclock',ab:'',a:0,d:L=>`Passive. +${L} energy per second and ${3*L}% faster skill recovery.`},
    {n:'Black Storm',ab:'BLACK\nSTORM',a:1,cost:30,cd:12,d:L=>`Call a storm for 4s. Each strike deals ${pct(.7+.12*L)}.`},
    {n:'Botnet',ab:'BOTNET',a:1,cost:30,cd:20,d:L=>`Hijack three drones for ${15+L}s. Each bite deals ${pct(.4+.07*L)}.`},
-   {n:'Zero Day',ab:'',a:0,d:L=>`Passive. +${3*L}% deadly strike chance, and deadly strikes deal ${pct(2+.1*L)}.`}]},
+   {n:'Zero Day',ab:'',a:0,d:L=>`Passive. +${3*L}% deadly strike chance, and deadly strikes deal ${pct(2+.1*L)}.`},
+   {n:'Ground Fault',ab:'GROUND\nFAULT',a:1,cost:14,cd:6,d:L=>`A line of heat on the floor for ${(3.2+.15*L).toFixed(1)}s, ${pct(.4+.06*L)} every half second. Casting it locks your hands for a moment.`},
+   {n:'Packet Storm',ab:'PACKET\nSTORM',a:1,cost:16,cd:8,d:L=>`Mark a spot. A noise storm arrives there after a short delay and strikes for ${pct(.5+.08*L)}. Walking away does not move it.`},
+   {n:'Schema',ab:'',a:0,d:L=>`Passive. You work in one element${G&&G.schema?': '+DTY[G.schema].n:''}. Damage of that type gains +${8*L}%. The other two do not. Sister Null can make you choose again. Dying cannot.`},
+   {n:'Step Back',ab:'STEP\nBACK',a:1,cost:8,cd:4,d:L=>`About four paces back along your facing. Not across the district.`},
+   {n:'Patched',ab:'',a:0,d:L=>`Passive. ${Math.round((10+2*L))}% of the Surge damage you deal becomes a barrier, up to ${Math.round(20+2*L)}% of your life. Nothing, if your Schema is Heat or Noise.`},
+   {n:'Kill Dash Nine',ab:'KILL -9',a:1,cost:26,cd:16,d:L=>`One machine, for ${pct(2.8+.4*L)} of your Schema element. It ignores that element's resistance, once. A resistance of zero is still a wall. Casting it locks your hands.`}]},
  courier:{n:'Runner',tag:'A courier who stopped delivering and kept running. Fast feet, faster hands.',hp:100,hpL:14,melee:false,mult:.82,ivl:.4,spd:4.8,col:'#3fbf8f',
   sk:[
    {n:'Scatter Shot',ab:'SCATTER',a:1,cost:9,cd:1.2,d:L=>`Throw a fan of ${3+Math.floor(L/2)} blades for ${pct(.9+.1*L)} each. Anything within arm’s reach is also cut for ${pct(.5+.06*L)}: closer is deadlier, and riskier.`},
@@ -93,11 +99,11 @@ Object.assign(CLS,{
 });
 /* a fourth row opens with Act II: three passive boons per class, the same three mechanics under different names */
 const BOON={strike:L=>`Passive. Every ${Math.max(1.2,3-.15*L).toFixed(1)}s a bolt strikes the nearest machine for ${pct(1.2+.25*L)}.`,mend:L=>`Passive. Every 5s you recover ${(1.5+.5*L).toFixed(1)}% of your life and ${L} energy.`,aura:L=>`Passive. An aura around you slows machines and deals ${pct(.12+.03*L)} twice a second.`};
-const BN={hacker:['Daemon','Self-Repair','Brownout'],courier:['Ricochet','Runner’s High','Slipstream'],anon:['Unseen Blade','Clean Slate','Dread'],founder:['Performance Review','Stock Buyback','Reality Distortion'],maxi:['Nonce Found','Dollar Cost Average','Toxicity']};
+const BN={courier:['Ricochet','Runner’s High','Slipstream'],anon:['Unseen Blade','Clean Slate','Dread'],founder:['Performance Review','Stock Buyback','Reality Distortion'],maxi:['Nonce Found','Dollar Cost Average','Toxicity']};
 for(const k in CLS)if(CLS[k].sk.length<15)['strike','mend','aura'].forEach((b,i)=>CLS[k].sk.push({n:BN[k][i],ab:'',a:0,boon:b,d:BOON[b]}));
 /* a fifth row opens with Act III */
 Object.assign(BOON,{nova:L=>`Passive. When you are hit, 20% chance to release a shockwave for ${pct(1.5+.25*L)}.`,mastery:L=>`Passive. +${3*L}% to all damage and +${2*L}% life.`,guardian:L=>`Passive. A killing blow leaves you at 30% life instead, once every ${Math.max(20,60-3*L)} seconds.`});
-const BN3={hacker:['Feedback Loop','Root Access','Failsafe'],courier:['Backdraft','Seasoned','Narrow Escape'],anon:['Counterclaim','Tradecraft','Dead Drop'],founder:['Golden Share','Vested','Poison Pill'],maxi:['Cope','Stay Humble','Cold Storage']};
+const BN3={courier:['Backdraft','Seasoned','Narrow Escape'],anon:['Counterclaim','Tradecraft','Dead Drop'],founder:['Golden Share','Vested','Poison Pill'],maxi:['Cope','Stay Humble','Cold Storage']};
 for(const k in CLS)if(CLS[k].sk.length<15)['nova','mastery','guardian'].forEach((b,i)=>CLS[k].sk.push({n:BN3[k][i],ab:'',a:0,boon:b,d:BOON[b]}));
 const MERCS={guard:{n:'Bodyguard',d:'A reprogrammed Enforcer. Machines attack it before you.',hpM:1.8,dM:1,ivl:1,range:1.3,spd:4.6,taunt:1,col:'#7d8ba3'},
  sys:{n:'Sysadmin',d:'Shoots from range, patches your wounds every few seconds and tops up your energy.',hpM:1,dM:.6,ivl:1.2,range:5.5,spd:4.4,col:'#59c0a0'},
