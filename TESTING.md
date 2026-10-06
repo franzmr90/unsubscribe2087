@@ -137,8 +137,9 @@ node server/test/disclaimer.js # the card at the front
 Chromium. Set `PW_CHROMIUM` only if you want a different binary. Nothing in `tools/`
 hard-codes a machine path.
 
-A push runs the build and the smoke test in GitHub Actions (`.github/workflows/smoke.yml`).
-The balance report is not part of that run: it is a measurement, and it takes longer.
+A push runs the build, the smoke test and `test:saves` in GitHub Actions
+(`.github/workflows/smoke.yml`). The balance report is not part of that run: it is a
+measurement, and it takes longer.
 
 ---
 
