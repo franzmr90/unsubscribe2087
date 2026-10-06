@@ -783,7 +783,9 @@ function mkFixed(u,il,q,set){il=Math.max(il,u.il);let b=null,tr=0;BASE[u.slot].f
   for(const k in u.mods){const m=u.mods[k];let v=ri(m[0],m[1]);if(['dmg','hp','shock','thorns','armor','en','armorP'].includes(k))v=Math.round(v*sc);it.aff.push({k,v})}
   if(u.sp){it.sp=u.id;it.spT=u.sp}if(set)it.set=set;
   it.val=(8+il*5)*(q===4?8:6);it.req=Math.max(1,Math.floor(u.il*.75));return it}
-function makeItem(il,q,slot){
+const ITEM_HOOKS=[];
+function makeItem(il,q,slot){let it=makeItemCore(il,q,slot);for(const h of ITEM_HOOKS)it=h(it,il,q,slot);return it}
+function makeItemCore(il,q,slot){
   il=Math.max(1,Math.round(il));
   if(q===4){const c=UNI.filter(u=>u.il<=il+2&&!u.bossOnly&&(!slot||u.slot===slot));if(c.length)return mkFixed(pick(c),il,4);q=2}
   if(q===3){const c=SETS.striker.items.filter(u=>!slot||u.slot===slot);if(c.length)return mkFixed(pick(c),il,3,'striker');q=2}
@@ -1935,7 +1937,7 @@ function typedIn(d,src){const ty=foeType(src),r=resOf(ty);d*=1-r/100;P.lastTy=ty
 function typeInTick(dt){const r=P.rustD;if(r){r.t-=dt;if(G.hp>1)G.hp=Math.max(1,G.hp-r.dps*dt);if(r.t<=0)P.rustD=null}}
 
 function fixTypes(it){if(it&&it.aff)for(const a of it.aff)if(a.k==='t_x'||a.k==='r_x'){let k;do{k=a.k[0]+'_'+pick(DTK)}while(it.aff.some(x=>x.k===k));a.k=k}return it}
-{const mk0=makeItem;makeItem=function(il,q,slot){return fixTypes(mk0(il,q,slot))}}
+ITEM_HOOKS.push(function(it){return fixTypes(it)});
 
 function freshState(){osWin=[];shillT=70;SB=null;SUBP=null;EV=null;gateAct=0;dlgQ.length=0;toastQ.length=0;objC='';DT=null}
 /* ================= class weapons: five families, each made for one kind of wanderer ================= */
@@ -1947,7 +1949,7 @@ const FAM={sign:{cls:'scrapper',n:'Sign',bases:['Road Sign','Girder','Wrecking B
 function famify(it){const mine=Object.keys(FAM).find(k=>FAM[k].cls===G.cls),k=Math.random()<.5&&mine?mine:pick(Object.keys(FAM)),F=FAM[k],nb=F.bases[tierOf(it.il)];
   if(it.name&&it.base&&it.name.includes(it.base))it.name=it.name.replace(it.base,nb);else if(it.q===0)it.name=nb;it.base=nb;it.fam=k;it.dmin=Math.max(1,Math.round(it.dmin*F.dm));it.dmax=Math.max(it.dmin+1,Math.round(it.dmax*F.dm));it.spd=(it.spd||0)+F.sp;return it}
 function famBonus(s){const w=G.eq.weapon;if(!w||!w.fam)return;const F=FAM[w.fam];if(F.cls!==G.cls)return;s.skills+=1;for(const k in F.st)s[k]=(s[k]||0)+F.st[k]}
-{const mk1=makeItem;makeItem=function(il,q,slot){const it=mk1(il,q,slot);if(it.slot==='weapon'&&it.q<4&&il>2&&G&&Math.random()<.4)famify(it);return it}}
+ITEM_HOOKS.push(function(it,il){if(it.slot==='weapon'&&it.q<4&&il>2&&G&&Math.random()<.4)famify(it);return it});
 /* ================= class uniques: items that only wake up in the right hands ================= */
 UNI.push(
  {id:'unioncard',cls:'scrapper',n:'Union Card',slot:'amulet',il:8,base:'Dog Tag',mods:{hp:[30,50],dmg:[15,25]},grant:[8,3],sp:'Scrapper only. Grants Solidarity at rank 3 without using a passive slot',fl:'Laminated. Dues paid through 2051.'},
