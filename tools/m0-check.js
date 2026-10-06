@@ -904,8 +904,8 @@ const combat=await p.evaluate(()=>{
   check('a curse stops leech',killer.hp===100,'hp '+killer.hp);
   /* Non-Compete: it can only come for you, and the workforce will not hit it. */
   W.ents.length=0;W.allies.length=0;park();
-  W.allies.push({k:'minion',kind:'intern',per:1,hp:80,max:80,taunt:1,x:P.x,y:P.y+2,r:.4});
-  const bound=bot(P.x,P.y+1.2);bound.aggro=true;bound.stun=0;bound.hp=bound.max=5000;
+  W.allies.push({k:'minion',kind:'intern',per:1,hp:80,max:80,taunt:1,x:P.x,y:P.y+4,r:.4});
+  const bound=bot(P.x,P.y+3);bound.aggro=true;bound.stun=0;bound.hp=bound.max=5000;
   arm(10);__g.cast(0);
   check('non-compete binds',bound.nc>4,bound.nc);
   const y0=bound.y;P.stealth=4;
