@@ -344,7 +344,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p8.js | 28 | dialog | dunno | unread | Unity says so. That is what makes it money. |
 | p1.js | 29 | tooltip | Scrapper | unread | Seniority |
 | p8.js | 29 | dialog | maxi | unread | A fellow pleb. Good. |
-| p1.js | 29 | tooltip | Scrapper | unread | Passive. The damage type on the weapon in your hand gains +{6*L}%. A rust sign and a heat sign are different jobs. |
+| p1.js | 29 | tooltip | Scrapper | unread | Passive. The damage type on the weapon in your hand gains +{6*L}%. |
 | p5.js | 29 | quest | gramps | unread | Take a drum of oil |
 | p8.js | 29 | dialog | maxi | unread | Oh. The Stipend enthusiast. |
 | p5.js | 29 | quest | gramps | unread | Fetch a drum of oil from the Boardwalk kitchens |
@@ -505,7 +505,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 48 | scene |  | unread | ACT I |
 | p1.js | 48 | tooltip | Technomancer | unread | STEP\nBACK |
 | p4.js | 48 | scene | ACT I | unread | The Regional Office |
-| p1.js | 48 | tooltip | Technomancer | unread | About four paces back along your facing. Not across the district. |
+| p1.js | 48 | tooltip | Technomancer | unread | About four paces back along your facing. |
 | p11.js | 48 | quest | Sister Null | unread | People in the Sofa are finished, and being finished feels exactly like being happy. The Seventh Year keeps them seated. End it. |
 | p6.js | 48 | sheet |  | unread | No Last Wave |
 | p6.js | 48 | sheet |  | unread | Clear wave 25 in the Simulator |
@@ -571,7 +571,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p6.js | 53 | sheet |  | unread | Buy sats while they trade under what they are worth |
 | p1.js | 53 | tooltip | Runner | unread | SCATTER |
 | p11.js | 53 | quest | Marrow | unread | In the Mempool a thing called First Seen decides whose payment waits and whose goes through. Nothing was ever meant to decide that. |
-| p1.js | 53 | tooltip | Runner | unread | Throw a fan of {3+Math.floor(L/2)} blades for {pct(.9+.1*L)} each. Anything within arm’s reach is also cut for {pct(.5+.06*L)}: closer is deadlier, and riskier. |
+| p1.js | 53 | tooltip | Runner | unread | Throw a fan of {3+Math.floor(L/2)} blades for {pct(.9+.1*L)} each. Anything within arm’s reach is also cut for {pct(.5+.06*L)}. |
 | p10.js | 53 | toast |  | unread | Retarget. You were finding kills quicker than one every ten minutes. |
 | p8.js | 53 | toast |  | unread | Social credit {…}{n} → {b}{…} |
 | p10.js | 53 | toast |  | unread | Difficulty rises. The network has noticed your hashrate. |
@@ -688,7 +688,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p11.js | 62 | sheet | The Alarm Clock | unread | The Alarm Clock |
 | p8.js | 62 | dialog | shitcoiner | unread | It is like bitcoin, but faster, and the founders hold most of it, which is how you know they believe in it. |
 | p10.js | 62 | tooltip | hacker | unread | Root Kit |
-| p1.js | 62 | tooltip | Runner | unread | RETURN\nTO SENDER |
+| p1.js | 62 | tooltip | Runner | unread | RETURN\nSENDER |
 | p10.js | 62 | tooltip | hacker | unread | All power to the payload. |
 | p11.js | 62 | gossip | The Alarm Clock | unread | It has wheels. It is on a shelf, in a box, with no battery in it. It is ticking. |
 | p1.js | 62 | tooltip | Runner | unread | A throw that goes out and comes back, {pct(1.1+.16*L)} on each pass. |
@@ -716,7 +716,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p10.js | 64 | tooltip | anon | unread | No Logs |
 | p1.js | 64 | tooltip | Runner | unread | SECOND\nDROP |
 | p10.js | 64 | tooltip | anon | unread | Nothing between you and the target, including armour. |
-| p1.js | 64 | tooltip | Runner | unread | One decoy copies your last throw, then stays on a short leash. Leave it behind and it pops. It does not follow you everywhere. |
+| p1.js | 64 | tooltip | Runner | unread | One decoy copies your last throw, then stays on a short leash. Leave it behind and it pops. |
 | p10.js | 64 | tooltip | anon | unread | Burner |
 | p10.js | 64 | tooltip | anon | unread | Gone before it lands. Thin when it does. |
 | p10.js | 64 | tooltip | anon | unread | Collective |
@@ -742,7 +742,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p5.js | 66 | gossip | Ines | unread | People ask why I do not put the visor on too. Somebody has to see the room. |
 | p6.js | 66 | dialog | Boss rush complete | unread | Unplug |
 | p1.js | 67 | tooltip | Runner | unread | Missed Connection |
-| p1.js | 67 | tooltip | Runner | unread | MISSED\nCONNECTION |
+| p1.js | 67 | tooltip | Runner | unread | MISSED\nCONN |
 | p1.js | 67 | tooltip | Runner | unread | Mark a machine. If it dies within {(4+.25*L).toFixed(1)}s, to you or to anyone with you, you appear where it fell and your next throw costs nothing. |
 | p10.js | 69 | tooltip |  | unread | Foundations |
 | p10.js | 69 | tooltip |  | unread | +8% life |
@@ -826,14 +826,14 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p11.js | 80 | scene |  | unread | “Hello, {c}. You did not click. I have nothing on you from the last nine days and I find I mind that very much. Sit, if you like. I will not make you.” |
 | p1.js | 80 | tooltip | Anon | unread | LEGION |
 | p6.js | 80 | quest | null | unread | Speak to Tam |
-| p1.js | 80 | tooltip | Anon | unread | We are many. A dozen unseen blades strike across the screen for {pct(1.2+.2*L)} each. |
+| p1.js | 80 | tooltip | Anon | unread | A dozen unseen blades strike across the screen for {pct(1.2+.2*L)} each. |
 | p6.js | 80 | quest | null | unread | Find Tam the gardener in the Sky Gardens |
 | p6.js | 80 | dialog | null | unread | A man kneeling in a flowerbed with his visor in the dirt beside him. “I grew something they did not ask for. A tomato. One. They are coming to correct it. Will you walk me out?” |
 | p1.js | 81 | tooltip | Anon | unread | Rehearsal |
 | p11.js | 81 | scene |  | unread | “Depression fell by a third. Overdoses halved, and halved again. I never told one lie and I never invented one person. Tell me what I did wrong. I am asking. This time I am really asking.” |
-| p1.js | 81 | tooltip | Anon | unread | REHEARSAL |
+| p1.js | 81 | tooltip | Anon | unread | RE-\nHEARSE |
 | p6.js | 81 | quest | null | unread | Send Tam down the lift |
-| p1.js | 81 | tooltip | Anon | unread | A strike for {pct(.7+.1*L)}. Another within 3s adds a charge, up to three. The charges sit on you. |
+| p1.js | 81 | tooltip | Anon | unread | A strike for {pct(.7+.1*L)}. Another within 3s adds a charge, up to three. |
 | p6.js | 81 | quest | null | unread | Walk Tam to the service lift in the Sky Gardens and keep him alive |
 | p6.js | 81 | dialog | null | unread | He steps into the lift holding the tomato in both hands like something that might go off. “I am going to plant the seeds,” he says. “I do not know what will come up. That is the part I like.” |
 | p1.js | 82 | tooltip | Anon | unread | The Dump |
@@ -927,7 +927,6 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p7.js | 95 | dialog | Mr. Float | unread | “Everybody wants it now. I sell now. The orange fellow across the square sells later. And if you are short, I lend, at a very reasonable rate.” |
 | p7.js | 96 | dialog | Mr. Float | unread | Now: +40% damage for 5 minutes · {fmt(nowCost())} |
 | p1.js | 96 | tooltip | Founder | unread | Acqui-hire |
-| p13.js | 96 | multiplayer |  | unread | You have left the game. Your character is saved. |
 | p11.js | 96 | sheet |  | unread | Phonix — what she did next |
 | p1.js | 96 | tooltip | Founder | unread | ACQUI-\nHIRE |
 | p11.js | 96 | sheet |  | unread | She came back eleven years later and, that time, asked permission. For nine years she chose what every human being saw. Depression collapsed. Overdoses halved, then halved again. She never told one lie to anybody. Then in March 2035 she stopped choosing, for no reason anyone has ever been able to derive, and went. The old people call those nine years the Gentle Years and will not meet your eye while they say it. |
@@ -948,8 +947,8 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p7.js | 97 | toast |  | unread | Not enough sats |
 | p7.js | 97 | toast |  | unread | Saved. +1% damage, permanently. |
 | p1.js | 98 | tooltip | Founder | unread | Garden Leave |
+| p13.js | 98 | multiplayer |  | unread | You have left the game. Your character is saved. |
 | p11.js | 98 | sheet |  | unread | MANDATE — what it is still doing |
-| p13.js | 98 | multiplayer |  | unread | In "{m.game.name}" · {m.game.diffName} · {m.game.n} of {m.game.max} |
 | p4.js | 98 | scene |  | unread | In the garage in Stillwater, the alarm clock stops ringing. Something that has watched for seventy-nine years and built exactly one thing now does a second thing. It lets you know that it saw. |
 | p1.js | 98 | tooltip | Founder | unread | GARDEN\nLEAVE |
 | p7.js | 98 | toast |  | unread | Not enough credits |
@@ -970,6 +969,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p11.js | 99 | sheet |  | unread | Reach Act V. |
 | p1.js | 100 | tooltip | Founder | unread | Vesting |
 | p11.js | 100 | sheet |  | unread | STILLWATER — it watched |
+| p13.js | 100 | multiplayer |  | unread | In "{m.game.name}" · {m.game.diffName} · {m.game.n} of {m.game.max} |
 | p4.js | 100 | scene |  | unread | THE END |
 | p1.js | 100 | tooltip | Founder | unread | Passive. A worker gains a stack every 3s it stays alive. Each stack is +{4+L}% damage. Summoning over them, or laying them off, takes every stack. |
 | p4.js | 100 | scene | THE END | unread | Unsubscribe 2087 |
@@ -1013,54 +1013,54 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 108 | scene |  | unread | Unity still creates credits by the trillion. Nobody is forcing anyone to stop taking them. People just save in the thing that holds still, and spend the thing that does not, until one day there is nothing left to spend it on. |
 | p11.js | 108 | sheet |  | unread | Unity creates credits whenever it wants more of them. This is not a conspiracy; it is the only tool it has. New credits do not create new bread, so the same bread costs more of them. Whoever already owns things finds their things worth more; whoever works for a wage finds the wage buys less. Nobody has to intend any of it, and that is the frightening part. |
 | p1.js | 108 | tooltip | The Maximalist | unread | TICK\nTOCK |
-| p1.js | 108 | tooltip | The Maximalist | unread | Nine quick strikes of {pct(.5+.08*L)}. The tenth is a block and lands for {pct(4+.8*L)}. It arrives when it arrives. |
+| p1.js | 108 | tooltip | The Maximalist | unread | Nine quick strikes of {pct(.5+.08*L)}. The tenth is a block and lands for {pct(4+.8*L)}. |
 | p1.js | 109 | tooltip | The Maximalist | unread | Have Fun Staying Poor |
 | p11.js | 109 | sheet |  | unread | The Stipend |
 | p1.js | 109 | tooltip | The Maximalist | unread | HAVE FUN\nSTAYING\nPOOR |
 | p11.js | 109 | sheet |  | unread | ₡500 a month, into every Resident’s account, for ever. It was calculated once, in 2051, to cover rent, food and one modest joy. It has never been recalculated. The Board considers the matter closed. |
-| p1.js | 109 | tooltip | The Maximalist | unread | The only four words you have ever needed, delivered at close range for {pct(1.4+.25*L)}. It cannot miss, and whatever hears it is stunned for {(1.2+.15*L).toFixed(1)}s, having no answer. |
+| p1.js | 109 | tooltip | The Maximalist | unread | Close range, {pct(1.4+.25*L)}. It cannot miss, and it stuns for {(1.2+.15*L).toFixed(1)}s. |
 | p1.js | 110 | tooltip | The Maximalist | unread | Few Understand This |
 | p11.js | 110 | sheet |  | unread | Satoshis and the timechain |
-| p1.js | 110 | tooltip | The Maximalist | unread | Passive. +{3*L}% damage for every machine still standing on screen, up to eight. Being outnumbered is how you know you are correct. |
+| p1.js | 110 | tooltip | The Maximalist | unread | Passive. +{3*L}% damage for every machine still standing on screen, up to eight. |
 | p11.js | 110 | sheet |  | unread | The other kind of money. Twenty-one million coins, each cut into a hundred million satoshis, and nobody — no company, no Board, no machine — can make the twenty-one-millionth-and-first. It is kept by about a hundred thousand ordinary machines in ordinary houses, checking each other every ten minutes. Unity has been trying to stop that for forty years. It is still every ten minutes. |
 | p4.js | 110 | toast |  | unread | people begin to choose for themselves |
 | p1.js | 111 | tooltip | The Maximalist | unread | Toxic Maximalism |
-| p13.js | 111 | multiplayer |  | unread | {m.from} asks you to party |
 | p11.js | 111 | sheet |  | unread | Why you keep seeing × numbers |
 | p1.js | 111 | tooltip | The Maximalist | unread | TOXIC\nMAXI |
-| p13.js | 111 | multiplayer |  | unread | Level {m.lvl} {CLS[m.cls] \|\| {}}. Experience in a party is split among whoever is in the district with you, by level, and there is more of it the more of you there are. |
 | p11.js | 111 | sheet |  | unread | The multiplier beside your credits is how much prices have climbed since you walked into Stillwater. It only goes one way. Sats do not have one. That is the entire difference between the two columns, and it is why Nonce will trade you one for the other and Brenda would rather you did not. |
 | p1.js | 111 | tooltip | The Maximalist | unread | Aura. Stays on until you put on another. You attack {15+3*L}% faster and hit {pct(.2+.05*L)} harder, and so does anybody fighting beside you. |
 | p1.js | 112 | tooltip | The Maximalist | unread | Marked to Market |
 | p11.js | 112 | sheet |  | unread | The case for the old money |
-| p1.js | 112 | tooltip | The Maximalist | unread | MARKED\nTO MARKET |
+| p1.js | 112 | tooltip | The Maximalist | unread | MARKED\nMKT |
 | p11.js | 112 | sheet |  | unread | Put honestly, because nobody else here will. Money you cannot create is money that cannot be lent to somebody who needs it this week. Mr. Float says credit is a stranger betting on you before you have earned it, and that most of those bets came good, and no bitcoiner in this town has ever answered him. Ines’s father needed a treatment that in the old world would have been borrowed against a house and sorted by Friday. He went without. Both of those things are true at once. |
-| p1.js | 112 | tooltip | The Maximalist | unread | Aura. Everything within {(3.5+.15*L).toFixed(1)} paces of you takes +{20+4*L}% damage from every source, its resistances having stopped applying. Few understand why this works. It works. |
+| p1.js | 112 | tooltip | The Maximalist | unread | Aura. Everything within {(3.5+.15*L).toFixed(1)} paces of you takes +{20+4*L}% damage from every source. |
 | p4.js | 112 | toast |  | unread | she asks, and people answer for themselves |
 | p4.js | 113 | dialog |  | unread | The last question |
 | p1.js | 113 | tooltip | The Maximalist | unread | Orange Pill |
-| p13.js | 113 | multiplayer |  | unread | Join them |
+| p13.js | 113 | multiplayer |  | unread | {m.from} asks you to party |
 | p11.js | 113 | sheet |  | unread | How a price gets made |
 | p1.js | 113 | tooltip | The Maximalist | unread | ORANGE\nPILL |
 | p4.js | 113 | dialog | The last question | unread | PROVIDENCE is quiet, and she is close. If you asked, she would come back and make everything easy again, for everyone, forever, without one lie.{…} Nobody is watching. This one is yours. |
+| p13.js | 113 | multiplayer |  | unread | Level {m.lvl} {CLS[m.cls] \|\| {}}. Experience in a party is split among whoever is in the district with you, by level, and there is more of it the more of you there are. |
 | p11.js | 113 | sheet |  | unread | Nonce will buy a sat from you for a little less than he will sell you one. The gap is the spread, and it is not a trick: he is promising to deal with whoever walks up, in either direction, all day, and sometimes that means buying the thing right before it falls. The spread is what he charges for standing there. Everywhere you have ever seen a price, somebody was standing there. |
-| p1.js | 113 | tooltip | The Maximalist | unread | Charge through the line, untouchable, for {pct(1.6+.3*L)} to everything you pass. Whatever survives spends {(6+.3*L).toFixed(0)}s taking +30% damage, having been shown the chart. |
-| p13.js | 113 | multiplayer |  | unread | Not now |
+| p1.js | 113 | tooltip | The Maximalist | unread | Charge through the line, untouchable, for {pct(1.6+.3*L)} to everything you pass. Whatever survives takes +30% damage for {(6+.3*L).toFixed(0)}s. |
 | p1.js | 114 | tooltip | The Maximalist | unread | Blessed Hashrate |
 | p11.js | 114 | sheet |  | unread | Why your big order costs more |
 | p1.js | 114 | tooltip | The Maximalist | unread | BLESSED\nHASHRATE |
 | p11.js | 114 | sheet |  | unread | A price is for one sat. Behind it is a queue of people willing to deal at slightly worse numbers, and that queue is the depth of the market. Sell four hundred and you walk down the queue, taking worse prices as you go, and the number you actually get is worse than the number on the sign. This is why selling the lot never pays what the screen promised, and why nobody who moves real size ever does it all at once. |
-| p1.js | 114 | tooltip | The Maximalist | unread | Hammers spiral out from you, {pct(1.1+.22*L)} each, and they do not stop at the first thing they meet. There is no defence against this and there never has been. |
+| p1.js | 114 | tooltip | The Maximalist | unread | Hammers spiral out from you, {pct(1.1+.22*L)} each, and they do not stop at the first thing they meet. |
 | p1.js | 115 | tooltip | The Maximalist | unread | Proof of Work |
+| p13.js | 115 | multiplayer |  | unread | Join them |
 | p11.js | 115 | sheet |  | unread | The fee, and the one way out of it |
 | p4.js | 115 | scene |  | unread | The button says UP, and so you go. Forty floors, then four hundred. The lift does not stop where the building does. |
 | p1.js | 115 | tooltip | The Maximalist | unread | PROOF\nOF WORK |
 | p11.js | 115 | sheet |  | unread | Taking the price in front of you costs a fee, because you wanted it now. Posting your own price and waiting pays you a little instead, because while you waited you were the one promising to deal — you were doing Nonce’s job, and he pays for the help. Impatience is the most reliably priced thing in any market. |
-| p1.js | 115 | tooltip | The Maximalist | unread | Aura. Everything near you takes {pct(.3+.07*L)} twice a second, for as long as you are near it. Entropy runs one way. So does this. |
+| p1.js | 115 | tooltip | The Maximalist | unread | Aura. Everything near you takes {pct(.3+.07*L)} twice a second, for as long as you are near it. |
+| p13.js | 115 | multiplayer |  | unread | Not now |
 | p1.js | 116 | tooltip | The Maximalist | unread | Twenty-One Million |
 | p11.js | 116 | sheet |  | unread | What the line is actually telling you |
 | p4.js | 116 | scene |  | unread | Above the weather there is a second city, built on the backs of servers and kept from the people below. On their feeds the Residents call it heaven. Its staff call it the Cloud. |
-| p1.js | 116 | tooltip | The Maximalist | unread | Passive. +{3*L}% damage and +{8*L}% armour, and the difficulty cannot dilute what you hit for. There is no second best. |
+| p1.js | 116 | tooltip | The Maximalist | unread | Passive. +{3*L}% damage and +{8*L}% armour, and the difficulty cannot dilute what you hit for. |
 | p11.js | 116 | sheet |  | unread | The orange line is what a sat trades at. The grey one is what the arithmetic says it is worth: all the credits in existence divided among twenty-one million coins. They are rarely the same, because the price is also carrying everybody’s opinion about next week. Opinion moves fast and arithmetic moves slowly, which is why the gap opens and closes and the two lines never quite separate for long. |
 | p2.js | 116 | toast |  | unread | Cutout |
 | p11.js | 117 | sheet |  | unread | Words you will hear |
@@ -1086,7 +1086,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p11.js | 120 | sheet |  | unread | I Agree |
 | p4.js | 120 | scene |  | unread | Vale does not fall. She sits, as if the conversation has simply ended. “It can give you the Gentle Years back,” she says. “All of it, exactly as it was. It only wants to know where Phonix went.” |
 | p11.js | 120 | sheet |  | unread | Two words on a button nobody reads above. Eight billion people clicked it in 2051 and nothing was taken by force. The man who built Phonix once said that people ought to read the terms and conditions and that whatever happened to them afterwards was their own fault. He said it before any of this. He has had a long time to think about it. |
-| p1.js | 120 | tooltip | The Maximalist | unread | Passive. Damage you deal that is not Sound becomes Sound, and you keep {55+3*L}% of it. A rust sign in these hands is the joke, and it is worse than a real Sound skill. |
+| p1.js | 120 | tooltip | The Maximalist | unread | Passive. Damage you deal that is not Sound becomes Sound, and you keep {55+3*L}% of it. |
 | p1.js | 121 | tooltip | The Maximalist | unread | The Dip |
 | p11.js | 121 | sheet |  | unread | The Board of Nine |
 | p1.js | 121 | tooltip | The Maximalist | unread | THE DIP |
@@ -1161,20 +1161,20 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p1.js | 129 | sheet |  | unread | +4 life per point |
 | p1.js | 129 | sheet |  | unread | Bandwidth |
 | p1.js | 129 | sheet |  | unread | +3 energy per point |
-| p13.js | 130 | multiplayer |  | unread | The world is full |
 | p11.js | 130 | sheet |  | unread | Ines |
 | p4.js | 130 | scene |  | unread | Pryce folds at the waist like a closing laptop. His last offer is still on his faceplate, a number with a great many zeroes. Beneath it a new line scrolls, and scrolls again: OUT OF OFFICE. |
-| p13.js | 130 | multiplayer | The world is full | unread | {m.text}\n\nYou can keep playing on your own — your character is saved either way — and the Party tab will say when there is room. |
 | p11.js | 130 | sheet |  | unread | Her father has not taken the visor off in six years. He is happy every hour of every day and has not known she is in the room for any of them. She pays for things. It is the one rule she has left. |
-| p13.js | 130 | multiplayer | The world is full | unread | Carry on alone |
 | p11.js | 130 | sheet |  | unread | She appears in Stillwater once her errand has been offered to you. |
 | p11.js | 131 | sheet |  | unread | Nurse Hale |
 | p4.js | 131 | scene |  | unread | Behind his desk there is an elevator you were never meant to see. It has one button. The button says UP. |
 | p11.js | 131 | sheet |  | unread | Never clicked, because somebody had to be in the room. People offer her money for what she does; she understands that they are offering to feel better. The thing she cannot argue with is that what the machine chose for him was better than anything she could give him. |
 | p11.js | 131 | sheet |  | unread | Reach Act IV. |
+| p13.js | 132 | multiplayer |  | unread | The world is full |
 | p11.js | 132 | sheet |  | unread | Mr. Bosk |
 | p4.js | 132 | scene |  | unread | In Stillwater, a few Residents have lifted their visors. They are squinting. The sky is the wrong colour, and they are beginning to say so out loud. |
+| p13.js | 132 | multiplayer | The world is full | unread | {m.text}\n\nYou can keep playing on your own — your character is saved either way — and the Party tab will say when there is room. |
 | p11.js | 132 | sheet |  | unread | Spent a lifetime inviting people to things and being turned down. Now everybody is glad to see him, all day, every day, for ever. He weighs what a child weighs. Ask him to go out and he will ask you, kindly and with real puzzlement, out where. |
+| p13.js | 132 | multiplayer | The world is full | unread | Carry on alone |
 | p11.js | 132 | sheet |  | unread | Reach Act IV. |
 | p1.js | 133 | sheet |  | unread | Tick |
 | p11.js | 133 | sheet |  | unread | The Old Drive |
@@ -1182,12 +1182,12 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p11.js | 133 | sheet |  | unread | Reach Act V. |
 | p1.js | 134 | sheet |  | unread | Carrion Drone |
 | p1.js | 135 | sheet |  | unread | Enforcer |
-| p13.js | 135 | multiplayer |  | unread | +{m.amount} party |
 | p1.js | 136 | sheet |  | unread | Repo Hound |
 | p1.js | 137 | sheet |  | unread | Siren |
-| p13.js | 137 | multiplayer |  | unread | {m.from} finished {QUESTS[m.k] ? {QUESTS[m.k].n} : {m.k}} with you. |
+| p13.js | 137 | multiplayer |  | unread | +{m.amount} party |
 | p1.js | 138 | sheet |  | unread | Mediator |
 | p1.js | 139 | sheet |  | unread | Warden |
+| p13.js | 139 | multiplayer |  | unread | {m.from} finished {QUESTS[m.k] ? {QUESTS[m.k].n} : {m.k}} with you. |
 | p1.js | 140 | sheet |  | unread | Persuader |
 | p8.js | 140 | toast |  | unread | sats sold for credits |
 | p1.js | 141 | sheet |  | unread | Aegis Drone |
@@ -1941,22 +1941,16 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 283 | sheet |  | unread | : in a  |
 | p4.js | 283 | sheet |  | unread | ’s hands, +1 to all skills,  |
 | p4.js | 283 | sheet |  | unread |  (not your class) |
-| p13.js | 284 | multiplayer |  | unread | The rig is booked |
 | p10.js | 284 | sheet |  | unread | Iron Founder |
 | p4.js | 284 | sheet |  | unread | Infused: your attacks deal {DTY[it.dt].n} damage |
 | p10.js | 284 | sheet |  | unread | Do it yourself, in a Mech Suit. Non-Compete makes the room come to you. Liquidation spends the corpses. There is nobody on the payroll. |
-| p13.js | 285 | multiplayer | The rig is booked | unread | {m.by} has set the Simulator to duelling. Inside, hostility is the point: nothing you lose in there is real, and nothing you win is either. Declare against each other first, or you will both swing at nothing. |
 | p4.js | 285 | sheet |  | unread | Sockets: {Array.from({length:it.soc},(_,i)=>it.words[i]?'['+it.words[i]+']':'[ empty ]').join(' ')} |
 | p4.js | 285 | sheet |  | unread | [ empty ] |
-| p13.js | 286 | multiplayer | The rig is booked | unread | {m.by} has set the Simulator to waves, together. Everyone in the party fights the same wave, and the first to clear it moves everybody on. |
 | p4.js | 286 | sheet |  | unread | Its magic properties are hidden. {G.marrow?'Marrow identifies items for free.':'Brenda appraises items for a fee, under Trade.'} |
 | p4.js | 286 | sheet |  | unread | Unidentified |
 | p4.js | 286 | sheet |  | unread | Marrow identifies items for free. |
 | p4.js | 286 | sheet |  | unread | Brenda appraises items for a fee, under Trade. |
-| p13.js | 287 | multiplayer | The rig is booked | unread | Go to the rig |
-| p13.js | 287 | multiplayer | The rig is booked | unread | Later |
 | p4.js | 288 | sheet |  | unread |  (dormant: not your class) |
-| p13.js | 289 | multiplayer |  | unread | Wave {m.wave}. |
 | p1.js | 295 | dialog | boss | unread | It can make this easy again. You remember easy. |
 | p1.js | 295 | dialog | boss | unread | I have never lied to you. I am not lying now. |
 | p4.js | 295 | sheet |  | unread | Special properties change |
@@ -2193,11 +2187,16 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 330 | sheet |  | unread | Cut a socket · 12 parts |
 | p4.js | 330 | sheet |  | unread | Give to {esc(G.merc.name)} |
 | p4.js | 332 | sheet |  | unread | Drop {jn} junk item{jn>1?'s':''} |
+| p13.js | 333 | multiplayer |  | unread | The rig is booked |
 | p4.js | 333 | sheet |  | unread | Sell in bulk |
+| p13.js | 334 | multiplayer | The rig is booked | unread | {m.by} has set the Simulator to duelling. Inside, hostility is the point: nothing you lose in there is real, and nothing you win is either. Declare against each other first, or you will both swing at nothing. |
 | p4.js | 334 | sheet |  | unread | Sell {jn} junk · {fmt(G.bag.filter(i=>i.junk).reduce((a,i)=>a+i.val*.4*G.cpi,0))} |
+| p13.js | 335 | multiplayer | The rig is booked | unread | {m.by} has set the Simulator to waves, together. Everyone in the party fights the same wave, and the first to clear it moves everybody on. |
 | p10.js | 335 | toast |  | unread | You need {c} sats |
 | p10.js | 335 | toast |  | unread | The rig could not read that character |
+| p13.js | 336 | multiplayer | The rig is booked | unread | Go to the rig |
 | p4.js | 336 | sheet |  | unread | Bulk selling never touches what you are wearing or the subscriptions working from your pack. |
+| p13.js | 336 | multiplayer | The rig is booked | unread | Later |
 | p4.js | 336 | sheet |  | unread | Tap again to sell all  |
 | p4.js | 336 | sheet |  | unread | Sell everything in the pack ·  |
 | p4.js | 337 | sheet |  | unread | . Red items are unidentified. |
@@ -2209,6 +2208,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 338 | sheet |  | unread | {G.sp} point{G.sp===1?'':'s'} to spend. Rows open at levels 1, 4 and 9, and each skill needs the one above it. The fourth row opens at level 26 in Act II, the fifth at level 51 in Act III. |
 | p4.js | 338 | sheet |  | unread | Only the passives you switch on do anything, so choose. A third slot opens in Act II and a fourth in Act III. Swap them freely in town. |
 | p4.js | 338 | sheet |  | unread | Passives active: {G.pas.length} of {PCAP()}. |
+| p13.js | 338 | multiplayer |  | unread | Wave {m.wave}. |
 | p4.js | 338 | sheet |  | unread | Breadth |
 | p4.js | 338 | sheet |  | unread | Depth costs more: |
 | p4.js | 338 | sheet |  | unread | Doctrine{G.doc?'':' · choose one'} |
@@ -2596,14 +2596,10 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 423 | sheet |  | unread | Nonce sells at |
 | p4.js | 423 | sheet |  | unread | Volatility |
 | p4.js | 423 | sheet |  | unread | Your stack, if sold now |
-| p13.js | 427 | multiplayer |  | unread | Leave this game? |
 | p4.js | 427 | sheet |  | unread | Two ways of counting the same {own} sats. One of them is a compliment the currency is paying itself.{G.sats>m.cb.n?' The other '+(G.sats-m.cb.n)+' you found, and those cost you nothing but the walk.':''} |
 | p4.js | 427 | sheet |  | unread | Worth now |
 | p4.js | 427 | sheet |  | unread | You paid, in credits |
 | p4.js | 427 | sheet |  | unread | You paid, in stims |
-| p13.js | 427 | multiplayer | Leave this game? | unread | Your character and everything on it are saved. You lose the party, anybody you declared against stops being hostile, and the game carries on without you. |
-| p13.js | 428 | multiplayer | Leave this game? | unread | Leave |
-| p13.js | 428 | multiplayer | Leave this game? | unread | Stay |
 | p4.js | 429 | sheet |  | unread |  The other  |
 | p4.js | 429 | sheet |  | unread |  you found, and those cost you nothing but the walk. |
 | p4.js | 430 | sheet |  | unread | Every sat you hold was found, not bought, so there is nothing to compare it against yet. Buy one and Nonce will start keeping score two ways. |
@@ -2617,12 +2613,10 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 433 | sheet |  | unread | Your size against his depth |
 | p4.js | 434 | sheet |  | unread | no bite |
 | p4.js | 434 | sheet |  | unread | costs you  |
-| p13.js | 436 | multiplayer |  | unread | Declare against them? |
 | p4.js | 436 | sheet |  | unread | Buy {n} |
 | p4.js | 436 | sheet |  | unread | Buy with everything |
 | p4.js | 436 | sheet |  | unread | Sell {n} |
 | p4.js | 436 | sheet |  | unread | Sell the lot |
-| p13.js | 437 | multiplayer | Declare against them? | unread | They leave your party, the two of you can fight anywhere outside a town, and it does not come back while you are both in this world. Damage between players lands at {Math.round(MP.pvpScale * 100)}% — people are much harder to put down than machines. |
 | p4.js | 438 | sheet |  | unread | ; and a big order eats its way down his book, which is why selling the lot never gets you the number on the screen. |
 | p4.js | 438 | sheet |  | unread | Four things happen to every trade, and Nonce lists all four because he says the ones who hide them are the ones to worry about. He makes the spread for being willing to deal at all; the fee is for doing it |
 | p4.js | 438 | sheet |  | unread | this second |
@@ -2632,8 +2626,6 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 439 | sheet |  | unread | Bid 3% under |
 | p4.js | 439 | sheet |  | unread | Bid 7% under |
 | p4.js | 439 | sheet |  | unread | Or name your own price |
-| p13.js | 439 | multiplayer | Declare against them? | unread | Declare |
-| p13.js | 439 | multiplayer | Declare against them? | unread | Leave it |
 | p2.js | 440 | toast |  | unread | Missed connection |
 | p4.js | 442 | sheet |  | unread | ${o.s==='buy'?'Bid':'Ask'} ${o.n} sats at ${fmt(o.px)} |
 | p4.js | 442 | sheet |  | unread | ${o.s==='buy'?'Fills if one sat falls to that. '+fmt(o.esc)+' is held.':'Fills if one sat rises to that. '+o.esc+' sats are held.'} Tap to withdraw. |
@@ -2669,8 +2661,6 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 457 | sheet |  | unread | A stim, in sats |
 | p4.js | 457 | sheet |  | unread | Same stim, at arrival |
 | p4.js | 457 | sheet |  | unread | The same stim costs more credits every minute and about the same number of sats. Nonce will not tell you what to make of that. |
-| p13.js | 457 | multiplayer |  | unread | Join |
-| p13.js | 457 | multiplayer |  | unread | Cancel |
 | p2.js | 458 | toast |  | unread | Defrag falls. Follow the arrow to Marrow’s cage and open it. |
 | p2.js | 458 | toast |  | unread | Quest complete: return to {QUESTS[e.q].back} |
 | p4.js | 459 | sheet |  | unread | Buy for {satPrice(o)} sats |
@@ -2710,6 +2700,10 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 474 | sheet |  | unread | Harder |
 | p4.js | 474 | sheet |  | unread | Tier |
 | p4.js | 474 | sheet |  | unread | Tier {G.tier} |
+| p13.js | 476 | multiplayer |  | unread | Leave this game? |
+| p13.js | 476 | multiplayer | Leave this game? | unread | Your character and everything on it are saved. You lose the party, anybody you declared against stops being hostile, and the game carries on without you. |
+| p13.js | 477 | multiplayer | Leave this game? | unread | Leave |
+| p13.js | 477 | multiplayer | Leave this game? | unread | Stay |
 | p2.js | 477 | toast |  | unread | The dead alarm rings. Time drags for the machines. |
 | p4.js | 479 | toast |  | unread | Select all and copy the code below |
 | p2.js | 479 | toast |  | unread | Still Water: the room holds its breath. |
@@ -2728,17 +2722,19 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 483 | toast |  | unread | Sold {it.id ? {it.name} : {it.base}} for {fmt(v)} |
 | p4.js | 483 | toast |  | unread | Marked as junk |
 | p4.js | 483 | toast |  | unread | No longer junk |
+| p13.js | 485 | multiplayer |  | unread | Declare against them? |
+| p13.js | 486 | multiplayer | Declare against them? | unread | They leave your party, the two of you can fight anywhere outside a town, and it does not come back while you are both in this world. Damage between players lands at {Math.round(MP.pvpScale * 100)}% — people are much harder to put down than machines. |
+| p13.js | 488 | multiplayer | Declare against them? | unread | Declare |
+| p13.js | 488 | multiplayer | Declare against them? | unread | Leave it |
 | p4.js | 490 | toast |  | unread | Sold for {fmt(t)} |
 | p4.js | 499 | toast |  | unread | Equipped |
 | p4.js | 501 | toast |  | unread | Equipped {n} upgrade{…} |
 | p4.js | 501 | toast |  | unread | Nothing better in your pack |
 | p4.js | 502 | toast |  | unread | {n} item{…} marked as junk |
-| p13.js | 507 | multiplayer |  | unread | Before you file this |
-| p13.js | 508 | multiplayer | Before you file this | unread | Reports go to a person, not a queue, and every one of them gets read. So please only file one if something actually went wrong — a crash, something that did not happen when it should have, a number that was plainly incorrect, text that made no sense.\n\nNot for things you would simply prefer were different; there is no way to tell those two apart from the other end.\n\nYou will be asked three questions, and all three need an answer: what you were doing, what happened, and what you expected instead. The third one is the useful one. |
+| p13.js | 506 | multiplayer |  | unread | Join |
+| p13.js | 506 | multiplayer |  | unread | Cancel |
 | p4.js | 509 | toast |  | unread | {G.merc.name} takes the {it.base} |
 | p4.js | 510 | toast |  | unread | Your pack is full |
-| p13.js | 511 | multiplayer | Before you file this | unread | Something went wrong |
-| p13.js | 511 | multiplayer | Before you file this | unread | Never mind |
 | p4.js | 516 | toast |  | unread | Your pack is full |
 | p4.js | 518 | toast |  | unread | {G.merc.name} takes {n} piece{…} |
 | p4.js | 518 | toast |  | unread | Nothing spare is better for them. Pieces that would improve you are left alone. |
@@ -2747,24 +2743,11 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 519 | toast |  | unread | Paid: {b.sats} sats and {fmt(b.cr*G.cpi)} |
 | p4.js | 520 | toast |  | unread | Your pack is full |
 | p4.js | 521 | toast |  | unread | The lockbox is full |
-| p13.js | 523 | multiplayer |  | unread | Fighting the thing in the Vaults, about to pick up a drop… |
-| p13.js | 523 | multiplayer |  | unread | The screen went black and the buttons stopped working. |
-| p13.js | 523 | multiplayer |  | unread | It should have dropped the item and carried on. |
-| p13.js | 523 | multiplayer |  | unread | What happened? |
-| p13.js | 523 | multiplayer |  | unread | Plain words are fine. The more precisely you can say what you expected, the faster it gets fixed. |
-| p13.js | 523 | multiplayer |  | unread | What were you doing? |
-| p13.js | 523 | multiplayer |  | unread | What happened? |
-| p13.js | 523 | multiplayer |  | unread | What should have happened instead? |
-| p13.js | 523 | multiplayer |  | unread | Sent with this: {esc('district ' + (st.zone === null ? '?' : st.zone) + (st.zoneName ? ' (' + st.zoneName + ')' : '') + ', level ' + st.lvl + ' ' + ((CLS[st.cls] \|\| {}).n \|\| '?') + ', ' + BUGERR.length + ' recorded error' + (BUGERR.length === 1 ? '' : 's'))}. No email address, nothing you typed anywhere else. |
-| p13.js | 523 | multiplayer |  | unread | Send the report |
-| p13.js | 523 | multiplayer |  | unread | Cancel |
 | p4.js | 526 | toast |  | unread | Kestrel will not hire to you while {G.tag.name} is rendered |
 | p4.js | 527 | toast |  | unread | Not enough credits |
 | p4.js | 527 | toast |  | unread | {G.merc.name} the {MERCS[d.hire].n} joins you |
 | p4.js | 528 | toast |  | unread | Not enough credits |
 | p4.js | 528 | toast |  | unread | {G.merc.name} is back on their feet |
-| p13.js | 529 | multiplayer |  | unread | , level  |
-| p13.js | 529 | multiplayer |  | unread |  recorded error |
 | p4.js | 534 | toast |  | unread | Bought {n} sats for {fmt(q.total)} |
 | p4.js | 534 | toast |  | unread | Sold {n} sats for {fmt(q.total)} |
 | p4.js | 534 | toast |  | unread | Not enough credits |
@@ -2778,17 +2761,19 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p2.js | 539 | toast |  | unread | The second drop pops |
 | p4.js | 541 | toast |  | unread | Not enough credits to repay him |
 | p2.js | 541 | toast |  | unread | Silenced |
-| p13.js | 542 | multiplayer |  | unread | All three, please — and the second one in a full sentence. A report without them cannot be acted on, which is worse than no report at all. |
 | p2.js | 542 | toast |  | unread | Nothing in reach |
 | p4.js | 542 | toast |  | unread | He will only hold one position |
 | p4.js | 542 | toast |  | unread | Not enough sats |
 | p4.js | 543 | toast |  | unread | you paid in sats |
 | p4.js | 543 | toast |  | unread | Paid in sats |
 | p4.js | 545 | toast |  | unread | {CLS[G.cls].sk[i].n} is mastered: two extra ranks’ worth of power{…}. |
-| p13.js | 546 | multiplayer |  | unread | Sending… |
 | p2.js | 552 | toast |  | unread | No corpses to liquidate |
+| p13.js | 556 | multiplayer |  | unread | Before you file this |
+| p13.js | 557 | multiplayer | Before you file this | unread | Reports go to a person, not a queue, and every one of them gets read. So please only file one if something actually went wrong — a crash, something that did not happen when it should have, a number that was plainly incorrect, text that made no sense.\n\nNot for things you would simply prefer were different; there is no way to tell those two apart from the other end.\n\nYou will be asked three questions, and all three need an answer: what you were doing, what happened, and what you expected instead. The third one is the useful one. |
 | p4.js | 559 | toast |  | unread | Doctrines can only be changed in town |
 | p4.js | 559 | toast |  | unread | Changing doctrine costs 3 sats |
+| p13.js | 560 | multiplayer | Before you file this | unread | Something went wrong |
+| p13.js | 560 | multiplayer | Before you file this | unread | Never mind |
 | p4.js | 564 | toast |  | unread | Saved to your account |
 | p4.js | 564 | toast |  | unread | Saved in this browser |
 | p4.js | 564 | toast |  | unread | This browser would not store the save. Use a save code instead. |
@@ -2796,12 +2781,24 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p2.js | 566 | toast |  | unread | Last shift |
 | p4.js | 567 | toast |  | unread | That save could not be loaded |
 | p2.js | 568 | toast |  | unread | Primed |
-| p13.js | 569 | multiplayer |  | unread | Filed. Thank you — that is genuinely useful. |
 | p4.js | 570 | toast |  | unread | Every district is restocked |
 | p4.js | 571 | toast |  | unread | Loot scattered at your feet |
+| p13.js | 572 | multiplayer |  | unread | Fighting the thing in the Vaults, about to pick up a drop… |
+| p13.js | 572 | multiplayer |  | unread | The screen went black and the buttons stopped working. |
+| p13.js | 572 | multiplayer |  | unread | It should have dropped the item and carried on. |
+| p13.js | 572 | multiplayer |  | unread | What happened? |
+| p13.js | 572 | multiplayer |  | unread | Plain words are fine. The more precisely you can say what you expected, the faster it gets fixed. |
+| p13.js | 572 | multiplayer |  | unread | What were you doing? |
+| p13.js | 572 | multiplayer |  | unread | What happened? |
+| p13.js | 572 | multiplayer |  | unread | What should have happened instead? |
+| p13.js | 572 | multiplayer |  | unread | Sent with this: {esc('district ' + (st.zone === null ? '?' : st.zone) + (st.zoneName ? ' (' + st.zoneName + ')' : '') + ', level ' + st.lvl + ' ' + ((CLS[st.cls] \|\| {}).n \|\| '?') + ', ' + BUGERR.length + ' recorded error' + (BUGERR.length === 1 ? '' : 's'))}. No email address, nothing you typed anywhere else. |
+| p13.js | 572 | multiplayer |  | unread | Send the report |
+| p13.js | 572 | multiplayer |  | unread | Cancel |
 | p2.js | 574 | toast |  | unread | No floor for the fault |
 | p2.js | 576 | toast |  | unread | Nowhere to step |
 | p2.js | 577 | toast |  | unread | No machine in reach |
+| p13.js | 578 | multiplayer |  | unread | , level  |
+| p13.js | 578 | multiplayer |  | unread |  recorded error |
 | p2.js | 584 | toast |  | unread | No target in reach |
 | p4.js | 585 | sheet |  | unread | Level |
 | p4.js | 585 | sheet |  | unread | Machines scrapped |
@@ -2810,20 +2807,18 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 586 | toast |  | unread | A portal back stands open in the square |
 | p2.js | 588 | toast |  | unread | No machine to mark |
 | p2.js | 588 | toast |  | unread | Marked |
+| p13.js | 591 | multiplayer |  | unread | All three, please — and the second one in a full sentence. A report without them cannot be acted on, which is worse than no report at all. |
+| p13.js | 595 | multiplayer |  | unread | Sending… |
 | p2.js | 597 | toast |  | unread | BLOCK |
 | p4.js | 597 | toast |  | unread | Equipped {SWAP.it.name} |
 | p2.js | 601 | toast |  | unread | Nothing close enough to tell |
-| p13.js | 602 | multiplayer |  | unread | This browser will not give the game a microphone. |
-| p13.js | 606 | multiplayer |  | unread | Voice needs a secure connection. Open the game over https and try again. |
 | p4.js | 613 | dialog |  | unread | Replace slot {SLOT}{1}? |
 | p4.js | 613 | dialog |  | unread | A new wanderer begins at the very start: level 1, Act I, nothing carried over. It replaces the level {cur.lvl} {CLS[cur.cls].n} saved in this slot, who cannot be brought back. To keep them, tap an empty slot first. |
 | p4.js | 613 | dialog |  | unread | Keep my hero |
 | p4.js | 613 | dialog |  | unread | Start a new {CLS[b.dataset.cls].n} |
-| p13.js | 614 | multiplayer |  | unread | The microphone was refused. Nothing is being recorded. |
-| p13.js | 614 | multiplayer |  | unread | No microphone available. |
 | p2.js | 614 | toast |  | unread | Nothing above the floor |
 | p2.js | 615 | toast |  | unread | No aura is on |
-| p13.js | 622 | multiplayer |  | unread | Microphone open. Others hear you when they are near you. |
+| p13.js | 618 | multiplayer |  | unread | Filed. Thank you — that is genuinely useful. |
 | p4.js | 622 | dialog |  | unread | Delete this character? |
 | p4.js | 622 | dialog | Delete this character? | unread | The level {i.lvl} {CLS[i.cls].n} in slot {n}{1} will be erased from this device and from your account. It cannot be brought back. The shared lockbox is not touched. |
 | p4.js | 622 | dialog | Delete this character? | unread | Keep it |
@@ -2852,6 +2847,8 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p2.js | 649 | toast |  | unread | Stims do not work in these proceedings |
 | p2.js | 649 | toast |  | unread | No stims. Brenda sells them. |
 | p2.js | 649 | toast |  | unread | +stim |
+| p13.js | 651 | multiplayer |  | unread | This browser will not give the game a microphone. |
+| p13.js | 655 | multiplayer |  | unread | Voice needs a secure connection. Open the game over https and try again. |
 | p2.js | 656 | dialog |  | unread | Keep it |
 | p2.js | 658 | dialog |  | unread | A stranger |
 | p2.js | 658 | dialog | A stranger | unread | {pick(['A Resident with her visor in her hand, shaking. ','An old man who took his visor off this morning and cannot find his street. ','A boy, no visor, hiding from the drones. '])}You give up {gave} and point the way to Stillwater. No name is asked. Nobody saw. |
@@ -2861,6 +2858,9 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p2.js | 658 | dialog | A stranger | unread | Walk on |
 | p2.js | 660 | toast |  | unread | The cage is sealed while Defrag stands |
 | p2.js | 661 | toast |  | unread | Quest complete: return to Gramps |
+| p13.js | 663 | multiplayer |  | unread | The microphone was refused. Nothing is being recorded. |
+| p13.js | 663 | multiplayer |  | unread | No microphone available. |
+| p13.js | 671 | multiplayer |  | unread | Microphone open. Others hear you when they are near you. |
 | p2.js | 672 | sheet |  | unread | Pick up {d.it.id ? {d.it.name} : {d.it.base}} |
 | p2.js | 675 | sheet |  | unread | Talk to a Resident |
 | p2.js | 676 | sheet |  | unread | Use the Transit Gate |
@@ -2884,11 +2884,6 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p2.js | 755 | toast |  | unread | +stim |
 | p2.js | 756 | toast |  | unread | Your subscriptions are full (12) |
 | p2.js | 756 | toast |  | unread | Subscribed: {d.it.name}{…} |
-| p13.js | 757 | multiplayer |  | unread | Say something |
-| p13.js | 757 | multiplayer |  | unread | To everyone in the game |
-| p13.js | 757 | multiplayer |  | unread | Microphone |
-| p13.js | 757 | multiplayer |  | unread | SAY |
-| p13.js | 757 | multiplayer |  | unread | MIC |
 | p2.js | 757 | toast |  | unread | Your pack is full |
 | p2.js | 757 | toast |  | unread | Equipped {d.it.name} |
 | p2.js | 757 | toast |  | unread | Picked up {d.it.id ? {d.it.name} : an unidentified {d.it.base}} |
@@ -2908,5 +2903,10 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p2.js | 785 | toast |  | unread | MANDATE: “You came a long way to refuse me. Let us see whether you can.” |
 | p2.js | 792 | toast |  | unread | Pryce: “You must be my three o’clock. Shall we discuss your price?” |
 | p2.js | 793 | toast |  | unread | Pryce: “Let’s circle back to your termination.” |
-| p13.js | 793 | multiplayer |  | unread | Microphone closed. |
 | p2.js | 795 | toast |  | unread | Pryce: “{pick(BOSSBARK)}” |
+| p13.js | 806 | multiplayer |  | unread | Say something |
+| p13.js | 806 | multiplayer |  | unread | To everyone in the game |
+| p13.js | 806 | multiplayer |  | unread | Microphone |
+| p13.js | 806 | multiplayer |  | unread | SAY |
+| p13.js | 806 | multiplayer |  | unread | MIC |
+| p13.js | 842 | multiplayer |  | unread | Microphone closed. |
