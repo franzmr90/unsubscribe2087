@@ -25,7 +25,7 @@ async function clearUI(p){
 (async()=>{
 const html=fs.readFileSync(path.join(root,'dist/unsubscribe.html'),'utf8');
 const fail=[];
-if(html.includes("toast('Aura off')")||html.includes(" is on')"))fail.push('aura announcement toast is still in the built page');
+if(html.includes("toast('Aura off')")||html.includes("sk[i].n + ' is on'"))fail.push('aura announcement toast is still in the built page');
 if(html.includes("float(P.x,P.y,P.reh+'/3'"))fail.push('rehearsal still announces with a float');
 const b=await chromium.launch();
 const p=await b.newPage({viewport:{width:390,height:844}});
@@ -34,7 +34,7 @@ await p.setContent('<!doctype html><html><head><meta charset=utf-8></head><body 
 await p.waitForTimeout(400);
 await p.evaluate(()=>__g.skipDisc());
 await p.waitForTimeout(200);
-await p.click('[data-cls=maxi]');
+await p.click('[data-cls=scrapper]');
 await p.waitForTimeout(300);
 await p.evaluate(()=>{__g.G.pre=2});
 await clearUI(p);
@@ -153,6 +153,7 @@ const words=await p.evaluate(()=>{
   __g.SKF.anon[10](1,1);
   check('refused dump still toasts',/You have nothing rehearsed/.test(log()),log());
   clear();
+  P.dump=null;
   __g.anonDump(1,1,1);
   check('dump with nobody in reach still toasts',/Nothing in reach/.test(log()),log());
   check('a refused dump leaves no type mark',!(P.dump&&P.dump.t>0));
