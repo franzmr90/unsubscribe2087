@@ -65,14 +65,15 @@ function shillTick(dt){if(W.z.town||W.z.sim||W.z.sub)return;const s=W.ents.find(
   if(!s){if((W.boss&&W.boss.aggro)||W.hold||W.pow||EV)return;shillT-=dt;if(shillT<=0){shillT=rnd(110,190);const p=freeSpotNear(8),e=spawn('shill',p.x,p.y,{champ:1});if(e){e.coin=pick(COINS);e.name='Shill for '+e.coin;e.pitch=1;e.pt=18;e.mods={fast:1};sfx('talk');toast('Someone is jogging toward you, waving a pamphlet.')}}return}
   if(s.aggro){s.pitch=0;return}
   const d=dist(s,P);s.pt-=dt;if(d>1.8)mv(s,(P.x-s.x)/d*2.8*dt,(P.y-s.y)/d*2.8*dt);s.ph+=dt;
-  if(d<=2.2&&s.pitch===1){s.pitch=2;shillTalk(s)}else if(s.pt<=0)shillTurn(s,'“Fine. Ignore me. You will regret this when it moons!”')}
+  if(d<=2.2&&s.pitch===1){s.pitch=2;shillTalk(s)}else if(s.pt<=0)shillLeave(s,'He gives up and jogs off, still waving the pamphlet.')}
+function shillLeave(s,line){if(!s||s.left)return;s.left=1;s.pitch=0;s.aggro=false;const i=W.ents.indexOf(s);if(i>=0)W.ents.splice(i,1);toast(line)}
 function shillTurn(s,line){s.pitch=0;s.aggro=true;sfx('growl');toast(line);for(let i=0;i<2;i++){const m=spawn('bot',s.x+rnd(-1.2,1.2),s.y+rnd(-1.2,1.2),{minion:1});if(m){m.name='Bagholder';m.aggro=true}}}
 function shillTalk(s){const c=s.coin,price=Math.min(10,G.sats);
   dlg(s.name,'“Friend! Have you heard about '+c+'? '+pick(SHILLQ)+' Ten sats gets you ten thousand '+c+'. What do you say?”',[
-   ['“No. There is bitcoin, and there is everything else.”',()=>{G.lean=clamp((G.lean||0)+6,-100,100);if(G.rep)addRep('btc',1);shillTurn(s,'“Maxi! Dinosaur! Get him!”')}],
-   ['Trade '+price+' sats for 10,000 '+c,()=>{if(price<1){shillTurn(s,'“No sats? Then what use are you?”');return}G.sats-=price;addAdopt(-3,'sats sold for '+c);G.bagsHeld=(G.bagsHeld||0)+1;G.lean=clamp((G.lean||0)-15,-100,100);repAdj('btc',-3);W.ents.splice(W.ents.indexOf(s),1);sfx('coin');toast('You hold 10,000 '+c+'. He is already gone.');
+   ['“No. There is bitcoin, and there is everything else.”',()=>{G.lean=clamp((G.lean||0)+6,-100,100);if(G.rep)addRep('btc',1);shillLeave(s,'“Maxi! Dinosaur!” He jogs off to find an easier mark.')}],
+   ['Trade '+price+' sats for 10,000 '+c,()=>{if(price<1){shillLeave(s,'“No sats? Then I am wasting the pitch.” He leaves.');return}G.sats-=price;addAdopt(-3,'sats sold for '+c);G.bagsHeld=(G.bagsHeld||0)+1;G.lean=clamp((G.lean||0)-15,-100,100);repAdj('btc',-3);W.ents.splice(W.ents.indexOf(s),1);sfx('coin');toast('You hold 10,000 '+c+'. He is already gone.');
      setTimeout(()=>{if(G)dlg(c,'The '+c+' chart goes straight down and then stops being a chart. The website is gone. Your ten thousand '+c+' are worth nothing, and the '+price+' sats you paid are in somebody else’s wallet. Nonce will hear about this.',[['Lesson learned']])},25000)}],
-   ['“What does it actually do?”',()=>dlg(s.name,'“Do? It goes up. That is what it does. Community. Utility. Ecosystem.” He is sweating.',[['“No.”',()=>shillTurn(s,'“You just hate innovation!”')],['Walk away',()=>shillTurn(s,'“Do not walk away from generational wealth!”')]])]],3)}
+   ['“What does it actually do?”',()=>dlg(s.name,'“Do? It goes up. That is what it does. Community. Utility. Ecosystem.” He is sweating.',[['“No.”',()=>shillLeave(s,'“You just hate innovation.” He leaves anyway.')],['Walk away',()=>shillLeave(s,'He lets you walk. The pamphlet stays in his hand.')]])]],3)}
 function shillDie(e){campHit('coin');const coins=ri(6,14),n=ri(4,9)+Math.floor(W.ml/8);G.sats+=n;G.st.shills=(G.st.shills||0)+1;sfx('quest');float(e.x,e.y,'+'+n+' sats','#f7931a');addRep('btc',2);
   toast('Portfolio liquidated: '+coins+' coins nobody wanted, consolidated into '+n+' sats and withdrawn to your wallet.')}
 

@@ -364,7 +364,7 @@ function nearest(range,from){let b=null,bd=range;from=from||P;for(const e of W.e
 function face(t){const d=dist(t,P)||1;P.dir={x:(t.x-P.x)/d,y:(t.y-P.y)/d}}
 function float(x,y,txt,col,kind){if(kind===0&&!OPT.dmgOut)return;if(kind===1&&!OPT.dmgIn)return;W.texts.push({x:x+rnd(-.2,.2),y,txt,col,t:0})}
 let lastToast='',lastToastT=0;
-const toastQ=[];function toast(s){if(TAGQ)return;if(mode==='scene'){if(toastQ.length<3&&!toastQ.includes(s))toastQ.push(s);return}if(s===lastToast&&tNow-lastToastT<1.5)return;lastToast=s;lastToastT=tNow;const d=document.createElement('div');d.textContent=s;const l=$('log');l.appendChild(d);while(l.children.length>3)l.firstChild.remove();setTimeout(()=>d.remove(),3800)}
+const toastQ=[];function toast(s){if(TAGQ)return;if(mode==='scene'){if(toastQ.length<3&&!toastQ.includes(s))toastQ.push(s);return}const l=$('log');for(const c of l.children)if(c.textContent===s)return;if(s===lastToast&&tNow-lastToastT<1.5)return;lastToast=s;lastToastT=tNow;const d=document.createElement('div');d.textContent=s;l.appendChild(d);while(l.children.length>2)l.firstChild.remove();setTimeout(()=>d.remove(),2800)}
 function heal(v){G.hp=Math.min(S.maxHp,G.hp+v);if(P)P.band=Math.max(P.band,Math.ceil(G.hp/S.maxHp*10))}
 /* One budget for Full and Normal: 48 shapes, 80 particles. Rings go first.
    A warn, and a patch you can still walk out of, stay. Thin adds nothing

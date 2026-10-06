@@ -2,6 +2,17 @@
 
 Phone-viewport play of the story tip after C2 (`7c901fb`). One fresh Scrapper. No balance or UX changes were made. Acts II–V were not reached. A second class was not spot-checked.
 
+## Shipped in this PR
+
+- [x] **Menu is one phone frame.** Items, Skills, Hero, Options, and Quests sit in the frame with the tab bar underneath the content, so the pack and the skill names are not covered. Story and Codex still scroll, inside that frame and above the tabs.
+- [x] **Toasts are a short corner stack.** Two lines at most, off the objective. A line that is already on screen is not stacked again.
+- [x] **Equip offer is a corner chip** above the right-hand buttons, not a banner across the fight.
+- [x] **Story cards grow to the paragraph.** Next stays shut until the line has finished typing.
+- [x] **Equip best shows damage and armor** before the swap. Confirm is a second tap.
+- [x] **A shitcoiner can be declined.** Refusing, walking away, ignoring him, or having no sats sends him off. No champion, no Bagholders.
+
+Not in this PR: the Balance list below (Fields door, early weapon drops, explosions, shill scaling, death fee versus hire price) and the Smear-on-turn-in note.
+
 Screenshots cited below are attached on the pull request.
 
 ## 1. Session summary
