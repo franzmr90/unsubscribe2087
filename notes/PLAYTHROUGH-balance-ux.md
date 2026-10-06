@@ -11,7 +11,18 @@ Phone-viewport play of the story tip after C2 (`7c901fb`). One fresh Scrapper. N
 - [x] **Equip best shows damage and armor** before the swap. Confirm is a second tap.
 - [x] **A shitcoiner can be declined.** Refusing, walking away, ignoring him, or having no sats sends him off. No champion, no Bagholders.
 
-Not in this PR: the Balance list below (Fields door, early weapon drops, explosions, shill scaling, death fee versus hire price) and the Smear-on-turn-in note.
+Not in the UX PR: the Balance list below (Fields door, early weapon drops, explosions, shill scaling, death fee versus hire price) and the Smear-on-turn-in note. Balance shipped in the follow-up.
+
+## Shipped in this PR (balance)
+
+- [x] **Act I doors are smaller.** The first combat room of the Moors and the Galleria is 3–4 normal machines, no champion. The Fields door is two non-tick normals at 70% damage. Tribunal’s door is two normals that are not wardens, at 55% damage. No champion and no volatile in either entrance. Later rooms and the lieutenants are unchanged.
+- [x] **The Parcel Moors grants a weapon.** An identified magic weapon (item level 4, at least 9–16) is on the ground in the entrance, before the first pack and before the Galleria.
+- [x] **A low-level shitcoiner is not a champion pack.** Below level 8 he is a normal shill, not fast, and a fight adds no Bagholders. Below level 6 most spawn attempts are skipped. Peaceful decline is unchanged.
+- [x] **Act I explosions telegraph longer and hit softer.** Volatile death: radius 2.2 → 1.35, tell 0.7s → 1.35s, damage ×1.5 → ×0.85, while Act II is still closed. Champion slams in that span: radius 1.9 → 1.15, tell 1.0s → 1.6s, damage ×1.6 → ×0.7. Lieutenant slams are unchanged.
+- [x] **HOA-9 and Marla were not retuned.** Mods stay strong+shield and fast+arc.
+- [x] **Act I death fee no longer eats the hire.** Was 15% of credits, uncapped, every death. Now, until Act II: the first 10 deaths take 5% capped at 15 credits; later Act I deaths take 8% capped at 8% of Kestrel’s hire price. Act II and a cold wallet are unchanged (15%, or zero).
+
+Left untouched: the Smear / adoption drain on Brenda’s turn-in, Acts II–V, C3/C4 copy, Homesteader/Witness, party and multiplayer, and the UX list above.
 
 Screenshots cited below are attached on the pull request.
 

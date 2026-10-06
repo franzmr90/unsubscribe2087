@@ -62,12 +62,14 @@ const COINS=['RugPull Inu','SafeMoonwalk','UnityCoin','Stablish','ElonDogeMars',
 const SHILLQ=["It is like bitcoin, but faster, and the founders hold most of it, which is how you know they believe in it.","Bitcoin is old tech. This one has a roadmap. And a mascot.","You are still early. I only need ten sats and you will thank me by Thursday.","It is decentralised. There are three of us and we all agree.","The supply is unlimited, so there is plenty for everyone."];
 let shillT=70;
 function shillTick(dt){if(W.z.town||W.z.sim||W.z.sub)return;const s=W.ents.find(e=>e.pitch);
-  if(!s){if((W.boss&&W.boss.aggro)||W.hold||W.pow||EV)return;shillT-=dt;if(shillT<=0){shillT=rnd(110,190);const p=freeSpotNear(8),e=spawn('shill',p.x,p.y,{champ:1});if(e){e.coin=pick(COINS);e.name='Shill for '+e.coin;e.pitch=1;e.pt=18;e.mods={fast:1};sfx('talk');toast('Someone is jogging toward you, waving a pamphlet.')}}return}
+  if(!s){if((W.boss&&W.boss.aggro)||W.hold||W.pow||EV)return;shillT-=dt;if(shillT<=0){if(shillRare()){shillT=rnd(40,80);return}shillT=rnd(110,190);const tough=shillTough(),p=freeSpotNear(8),e=spawn('shill',p.x,p.y,tough?{champ:1}:{});if(e){e.coin=pick(COINS);e.name='Shill for '+e.coin;e.pitch=1;e.pt=18;e.mods=tough?{fast:1}:{};sfx('talk');toast('Someone is jogging toward you, waving a pamphlet.')}}return}
   if(s.aggro){s.pitch=0;return}
   const d=dist(s,P);s.pt-=dt;if(d>1.8)mv(s,(P.x-s.x)/d*2.8*dt,(P.y-s.y)/d*2.8*dt);s.ph+=dt;
   if(d<=2.2&&s.pitch===1){s.pitch=2;shillTalk(s)}else if(s.pt<=0)shillLeave(s,'He gives up and jogs off, still waving the pamphlet.')}
 function shillLeave(s,line){if(!s||s.left)return;s.left=1;s.pitch=0;s.aggro=false;const i=W.ents.indexOf(s);if(i>=0)W.ents.splice(i,1);toast(line)}
-function shillTurn(s,line){s.pitch=0;s.aggro=true;sfx('growl');toast(line);for(let i=0;i<2;i++){const m=spawn('bot',s.x+rnd(-1.2,1.2),s.y+rnd(-1.2,1.2),{minion:1});if(m){m.name='Bagholder';m.aggro=true}}}
+function shillTough(){return (G.lvl||1)>=8}
+function shillRare(){return (G.lvl||1)<6&&Math.random()<.65}
+function shillTurn(s,line){s.pitch=0;s.aggro=true;sfx('growl');toast(line);const n=shillTough()?2:0;for(let i=0;i<n;i++){const m=spawn('bot',s.x+rnd(-1.2,1.2),s.y+rnd(-1.2,1.2),{minion:1});if(m){m.name='Bagholder';m.aggro=true}}}
 function shillTalk(s){const c=s.coin,price=Math.min(10,G.sats);
   dlg(s.name,'“Friend! Have you heard about '+c+'? '+pick(SHILLQ)+' Ten sats gets you ten thousand '+c+'. What do you say?”',[
    ['“No. There is bitcoin, and there is everything else.”',()=>{G.lean=clamp((G.lean||0)+6,-100,100);if(G.rep)addRep('btc',1);shillLeave(s,'“Maxi! Dinosaur!” He jogs off to find an easier mark.')}],
