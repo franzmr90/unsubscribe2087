@@ -81,7 +81,19 @@ function pub(p) {
     party: p.party || null, hp: p.hp, hpm: p.hpm, hostile: [...p.hostile]
   };
 }
-function loc(p) { return { uid: p.uid, name: p.name, lvl: p.lvl, cls: p.cls, x: p.x, y: p.y, hp: p.hp, hpm: p.hpm, dir: p.dir }; }
+function skillIx(v) {
+  if (typeof v !== 'number' || !Number.isFinite(v)) return null;
+  const n = v | 0;
+  if (n !== v || n < 0 || n > 14) return null;
+  return n;
+}
+function auraIx(v) { return v === 3 || v === 4 || v === 7 ? v : null; }
+function loc(p) {
+  return {
+    uid: p.uid, name: p.name, lvl: p.lvl, cls: p.cls, x: p.x, y: p.y, hp: p.hp, hpm: p.hpm, dir: p.dir,
+    sk: p.sk == null ? null : p.sk, au: p.au == null ? null : p.au, sw: p.sw ? 1 : 0
+  };
+}
 
 function inGame(g, t, d) { for (const q of gamePlayers(g)) send(q, t, d); }
 
@@ -214,6 +226,9 @@ function zonePeers(p) {
   return out;
 }
 function pushZone(p) { send(p, 'zone', { zi: p.zi, players: zonePeers(p).map(loc) }); }
+/* A cast is one beat long. Push it to the district instead of waiting for their next
+   heartbeat, or the other client can sample the beat after it has already been cleared. */
+function pushPeers(p) { for (const q of zonePeers(p)) pushZone(q); }
 
 const HANDLERS = {
   hello(p, m) {
@@ -250,9 +265,15 @@ const HANDLERS = {
   'game.leave'(p) { leaveGame(p); pushLobby(); },
 
   /* ---- being somewhere ---- */
+  /* sk, au and sw are stored and forwarded like dir. They are not simulated, and they
+     are not a hit. A missing field leaves the stored value alone. */
   move(p, m) {
     p.x = +m.x || 0; p.y = +m.y || 0; p.dir = +m.dir || 0;
     p.hp = +m.hp || 0; p.hpm = +m.hpm || 1;
+    const cosmetic = ('sk' in m) || ('au' in m) || ('sw' in m);
+    if ('sk' in m) p.sk = m.sk === null ? null : skillIx(m.sk);
+    if ('au' in m) p.au = auraIx(m.au);
+    if ('sw' in m) p.sw = m.sw === 1 ? 1 : 0;
     if (!p.game) return;
     const zi = +m.zi, inst = m.inst || null;
     if (zi !== p.zi || inst !== p.inst) {
@@ -263,6 +284,7 @@ const HANDLERS = {
       p.safeUntil = Date.now() + 5000;
     }
     pushZone(p);
+    if (cosmetic) pushPeers(p);
   },
 
   chat(p, m) {
@@ -437,6 +459,7 @@ function attach(server, verify) {
     const p = {
       uid: ctx.user.id, name: ctx.user.name, conn,
       lvl: 1, cls: '', zi: 0, inst: null, zoneKey: undefined, x: 0, y: 0, dir: 0, hp: 1, hpm: 1,
+      sk: null, au: null, sw: 0,
       game: null, party: null, hostile: new Set(), invites: new Map(), safeUntil: 0, voice: false, joined: Date.now()
     };
     live.set(p.uid, p);
