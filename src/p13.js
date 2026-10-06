@@ -145,16 +145,64 @@ function mpRecv(m) {
 }
 
 /* ---------- other players in your district ---------- */
+/* sk and sw are events. au is the aura that is on. A quiet beat omits whichever has
+   not changed, and the next quiet beat clears sk and sw so the same skill can be seen
+   again. The server keeps the last value and does not treat any of this as a hit. */
+let mpSk = null, mpSkNew = 0, mpSkClear = 0, mpSw = 0, mpSwClear = 0;
+const mpSent = { sk: null, au: null, sw: 0 };
+function mpNoteCast(i) { const n = i | 0; if (n >= 0 && n <= 14) { mpSk = n; mpSkNew = 1; } }
+function mpNoteSwing() { mpSw = 1; }
+function mpMovePkt() {
+  if (!P || !W || !G) return null;
+  const pkt = {
+    x: +P.x.toFixed(2), y: +P.y.toFixed(2), zi: W.zi,
+    dir: Math.atan2(P.dir.y, P.dir.x),
+    hp: Math.round(G.hp), hpm: Math.round(S.maxHp), inst: W.inst || null
+  };
+  const au = (P.aura && (P.aura.i === 3 || P.aura.i === 4 || P.aura.i === 7)) ? P.aura.i : null;
+  if (au !== mpSent.au) { pkt.au = au; mpSent.au = au; }
+  /* A repeat of the same index has to go out as empty first, or the other client
+     cannot tell it from the cast it already drew. */
+  if (mpSkClear && !mpSkNew) { pkt.sk = null; mpSent.sk = null; mpSkClear = 0; }
+  else if (mpSkNew && mpSent.sk !== null && mpSent.sk === mpSk) { pkt.sk = null; mpSent.sk = null; }
+  else if (mpSkNew) { pkt.sk = mpSk; mpSent.sk = mpSk; mpSkNew = 0; mpSkClear = 1; mpSk = null; }
+  if (mpSwClear && !mpSw) { pkt.sw = 0; mpSent.sw = 0; mpSwClear = 0; }
+  else if (mpSw && mpSent.sw === 1) { pkt.sw = 0; mpSent.sw = 0; }
+  else if (mpSw) { pkt.sw = 1; mpSent.sw = 1; mpSw = 0; mpSwClear = 1; }
+  return pkt;
+}
+function mpRemoteCast(o) {
+  if (!o || o.sk == null || !o.cls || !W || !W.fx) return;
+  const v = skvOf(o.cls, o.sk);
+  if (!v || OPT.fx === 'thin') return;
+  MP.lastCast = { k: v.k, col: v.col, n: ((MP.lastCast && MP.lastCast.n) || 0) + 1 };
+  const d = o.dir || 0;
+  skvPlay(o.cls, o.sk, o.x, o.y, { x: Math.cos(d), y: Math.sin(d) }, 1);
+}
+function mpRemoteSwing(o) {
+  if (!o || !W || !W.fx || OPT.fx === 'thin') return;
+  const d = o.dir || 0, col = (CLS[o.cls] && CLS[o.cls].col) || '#e6e2d6';
+  W.fx.push({ k: 'arc', x: o.x, y: o.y, dx: Math.cos(d), dy: Math.sin(d), t: 0, life: .18, w: 1, col: col, remote: 1 });
+}
 function mpZone(m) {
   const seen = {};
-  for (const r of m.players) {
+  for (const r of m.players || []) {
     seen[r.uid] = 1;
     let o = MP.others.find(q => q.uid === r.uid);
     if (!o) { o = { uid: r.uid, x: r.x, y: r.y, px: r.x, py: r.y }; MP.others.push(o); }
+    const first = !o.wired, prevSk = o.sk, prevSw = o.sw ? 1 : 0;
     /* Hold the previous position and interpolate toward the new one, so ten updates a
        second do not look like ten updates a second. */
     o.px = o.x; o.py = o.y; o.tx = r.x; o.ty = r.y; o.lerp = 0;
     o.name = r.name; o.lvl = r.lvl; o.cls = r.cls; o.dir = r.dir; o.hp = r.hp; o.hpm = r.hpm;
+    if ('sk' in r) o.sk = (typeof r.sk === 'number' && r.sk >= 0 && r.sk <= 14 && (r.sk | 0) === r.sk) ? r.sk : null;
+    if ('au' in r) o.au = (r.au === 3 || r.au === 4 || r.au === 7) ? r.au : null;
+    if ('sw' in r) o.sw = r.sw === 1 ? 1 : 0;
+    o.wired = 1;
+    if (!first) {
+      if (o.sk != null && o.sk !== prevSk) mpRemoteCast(o);
+      if (o.sw === 1 && prevSw !== 1) mpRemoteSwing(o);
+    }
   }
   for (let i = MP.others.length - 1; i >= 0; i--) if (!seen[MP.others[i].uid]) MP.others.splice(i, 1);
 }
@@ -211,11 +259,7 @@ function mpBeat() {
   mpSyncEnts();
   mpVoiceLevels();
   MP.lastMove = performance.now();
-  mpSend('move', {
-    x: +P.x.toFixed(2), y: +P.y.toFixed(2), zi: W.zi,
-    dir: Math.atan2(P.dir.y, P.dir.x),
-    hp: Math.round(G.hp), hpm: Math.round(S.maxHp), inst: W.inst || null
-  });
+  mpSend('move', mpMovePkt());
 }
 
 /* Drawn simply and labelled clearly: in a fight you need to know at a glance who is a

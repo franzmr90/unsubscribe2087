@@ -114,6 +114,17 @@ async function until(page, fn, arg, ms) {
   const sees = await until(A, () => __mp.MP.others.length);
   ok('party members are visible in the district', sees >= 1, 'others=' + sees);
 
+  /* A cast is a picture on the other client. It is not a hit. */
+  const want = await B.evaluate(() => __g.skvOf('scrapper', 0));
+  await A.evaluate(() => {
+    const G = __g.G, P = __g.P;
+    G.sk[0] = 1; G.slots[0] = 0; G.en = 99999;
+    P.cd[0] = 0; P.castWait = 0; P.silence = 0; P.dash = null;
+    __g.cast(0);
+  });
+  const far = await until(B, () => __mp.MP.lastCast && __mp.MP.lastCast.n ? __mp.MP.lastCast : null);
+  ok('the other client plays one cast', !!far && far.n === 1 && far.k === want.k && far.col === want.col, JSON.stringify(far));
+
   /* ---- hostility ---- */
   await A.evaluate(u => { __mp.MP.hostile[u] = 1; __mp.send('hostile', { uid: u }); }, uidB);
   const bKnows = await until(B, u => __mp.MP.hostile[u] ? 1 : 0, uidA);
