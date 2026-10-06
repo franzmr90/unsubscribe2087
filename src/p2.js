@@ -140,6 +140,10 @@ function mkFixed(u,il,q,set){il=Math.max(il,u.il);let b=null,tr=0;BASE[u.slot].f
   it.val=(8+il*5)*(q===4?8:6);it.req=Math.max(1,Math.floor(u.il*.75));return it}
 const ITEM_HOOKS=[];
 function makeItem(il,q,slot){let it=makeItemCore(il,q,slot);for(const h of ITEM_HOOKS)it=h(it,il,q,slot);return it}
+function moorsBlade(){
+  let it=null;
+  for(let i=0;i<12;i++){it=makeItem(4,1,'weapon');if(it.dmin>=9&&it.dmax>=16)return it}
+  it.dmin=Math.max(it.dmin,10);it.dmax=Math.max(it.dmax,18);return it}
 function makeItemCore(il,q,slot){
   il=Math.max(1,Math.round(il));
   if(q===4){const c=UNI.filter(u=>u.il<=il+2&&!u.bossOnly&&(!slot||u.slot===slot));if(c.length)return mkFixed(pick(c),il,4);q=2}
@@ -196,7 +200,7 @@ function calc(){
   S=s;G.hp=Math.min(G.hp,S.maxHp);G.en=Math.min(G.en,S.maxEn);G.stims=Math.min(G.stims,S.cap)}
 function newGame(cls){
   G={v:2,cls,lvl:1,xp:0,sp:0,ap:0,sk:[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],slots:[0,-1,-1],at:{mgt:0,ref:0,vit:0,bnd:0},hp:9999,en:9999,credits:120,cpi:1,stims:3,bag:[],
-    eq:{weapon:null,helm:null,armor:null,gloves:null,boots:null,belt:null,ring:null,amulet:null},unlocked:1,tier:0,maxTier:0,kills:0,ubiT:0,time:0,zone:0,
+    eq:{weapon:null,helm:null,armor:null,gloves:null,boots:null,belt:null,ring:null,amulet:null},unlocked:1,tier:0,maxTier:0,kills:0,deaths:0,ubiT:0,time:0,zone:0,
     sats:0,merc:null,sq:{},stash:[],q:{q1:0,q2:0,q3:0,q4:0,q5:0,q6:0,q7:0,q8:0,q9:0,q10:0},memos:[],marrow:false,disc:false,portal:null,chuteT:0,bossKills:0,seenIntro:false,god:false};
   G.eq.weapon=makeItem(1,0,'weapon');ZS={};freshState();calc();G.hp=S.maxHp;G.en=S.maxEn;
   G.pre=1;playScene(PRE_INTRO,()=>startPlay())}
@@ -290,6 +294,12 @@ const lvlCap=()=>G.act5?100:G.act4?90:G.act3?75:G.act2?50:25;
 /* machines scale to the hero: level follows yours, and 60% of any strength beyond what the level expects is matched */
 function zoneLevel(z){const b=z.lvl+G.tier*12;return OPT.dyn?Math.max(b,G.lvl):b}
 function dynFor(ml){if(!OPT.dyn)return{hp:1,dmg:1};const p=pscore(S),f=r=>clamp(r<1?1:1+(r-1)*.8,1,12);return{hp:f(p.dps*2.4/(30*(1+.42*(ml-1)))),dmg:f(p.ehp/16/(7*(1+.22*(ml-1))))}}
+function fillRoom(r,z,zi,i){
+  if(i===1&&zi>=1&&zi<=4){const pool=z.mix.filter(m=>m[0]!=='tick'),hot=zi>=3,n=hot?2:ri(3,4);
+    for(let k=0;k<n;k++){const e=spawn(wpick(pool),r.x+rnd(-r.w+1,r.w-1)+.5,r.y+rnd(-r.h+1,r.h-1)+.5);if(e&&hot)e.dmg*=.7}
+    return}
+  const cnt=ri(6,9);for(let k=0;k<cnt;k++){const t=wpick(z.mix),m=t==='tick'?2:1;for(let j=0;j<m;j++)spawn(t,r.x+rnd(-r.w+1,r.w-1)+.5,r.y+rnd(-r.h+1,r.h-1)+.5)}
+  if(Math.random()<.5){const pool=z.mix.filter(m=>m[0]!=='tick');const t=wpick(pool);const e=spawn(t,r.x+.5,r.y+.5,{champ:1});if(e)for(let k=0;k<2;k++)spawn(t,e.x+rnd(-1.5,1.5),e.y+rnd(-1.5,1.5))}}
 function genZone(zi){
   const z=ZONES[zi],N=72;W=blankW(zi,N);W.ml=zoneLevel(z);W.dyn=dynFor(W.ml);const map=W.map;
   const carve=(x0,y0,x1,y1)=>{for(let y=Math.max(1,y0);y<=Math.min(N-2,y1);y++)for(let x=Math.max(1,x0);x<=Math.min(N-2,x1);x++)map[y*N+x]=1};
@@ -311,16 +321,15 @@ function genZone(zi){
   for(let i=0;i<n;i++){const r=rooms[i];
     put(r,'lamp');if(Math.random()<.6)put(r,'lamp');
     for(let k=ri(1,3);k--;)put(r,'prop',{v:ri(0,2)});
-    if(i===0)continue;
+    if(i===0){if(zi===1)addDrop({it:moorsBlade()},r.x+2.2,r.y+.5);continue}
     for(let k=ri(1,3);k--;)put(r,'crate');
     if(Math.random()<.22)put(r,'shrine',{sk:pick(Object.keys(SHR))});
     if(Math.random()<.18)put(r,'chest');
     if(i===strayRoom)W.objs.push({k:'stray',x:r.x+rnd(-1.5,1.5)+.5,y:r.y+rnd(-1.5,1.5)+.5});
     memoRooms.forEach((mr,j)=>{if(mr===i&&left[j]!==undefined)W.objs.push({k:'memo',x:r.x+rnd(-1,1)+.5,y:r.y+rnd(-1,1)+.5,id:left[j]})});
     if(i===n-1&&z.boss){spawn(z.bossK||'boss',L.x+.5,L.y+.5);for(let k=0;k<4;k++)spawn(z.guard||'mech',r.x+rnd(-6,6),r.y+rnd(-6,6));continue}
-    const cnt=ri(6,9);for(let k=0;k<cnt;k++){const t=wpick(z.mix),m=t==='tick'?2:1;for(let j=0;j<m;j++)spawn(t,r.x+rnd(-r.w+1,r.w-1)+.5,r.y+rnd(-r.h+1,r.h-1)+.5)}
+    fillRoom(r,z,zi,i);
     if(i===gobRoom)spawn('gob',r.x+.5,r.y-1.5);
-    if(Math.random()<.5){const pool=z.mix.filter(m=>m[0]!=='tick');const t=wpick(pool);const e=spawn(t,r.x+.5,r.y+.5,{champ:1});if(e)for(let k=0;k<2;k++)spawn(t,e.x+rnd(-1.5,1.5),e.y+rnd(-1.5,1.5))}
     if(z.su&&i===n-2){const e=spawn(z.su.k,r.x+.5,r.y+.5,{su:z.su});for(let k=0;k<3;k++)spawn(z.su.k==='mech'?'bot':z.su.k,r.x+rnd(-2,2),r.y+rnd(-2,2));
       W.suAt={x:r.x,y:r.y}}
   }
@@ -432,6 +441,7 @@ function hit(e,m,nl){if(e.hp<=0)return;let[d,c]=pdmg(m,e);d=typed(e,d);if(G.cls=
   dmgEnemy(e,d,c);forkHit(e);
   if(S.sp.intern&&!procLock&&Math.random()<.2){procLock=true;chain(e,3,.8);procLock=false}}
 function chain(from,n,m){const done=new Set();let f={x:from.x,y:from.y};for(let i=0;i<n;i++){let b=null,bd=i||from!==P?4.5:7;for(const e of W.ents)if(!done.has(e)){const d=dist(e,f);if(d<bd){bd=d;b=e}}if(!b)break;done.add(b);W.fx.push({k:'bolt',x:f.x,y:f.y,x2:b.x,y2:b.y,t:0,life:.2});f={x:b.x,y:b.y};hit(b,m)}return done.size}
+function boomFx(e){const low=!G.act2;return {k:'warn',x:e.x,y:e.y,r:low?1.35:2.2,t:0,life:low?1.35:.7,boom:e.dmg*(low?.85:1.5)}}
 function kill(e){
   if(e.mp)return;
   if(G.cls==='founder'&&!e.minion){P.corpses=P.corpses||[];P.corpses.push({x:e.x,y:e.y,t:6});if(P.corpses.length>16)P.corpses.shift()}
@@ -453,7 +463,7 @@ function kill(e){
   G.st.streak=Math.max(G.st.streak,P.streak);if(e.k==='gob')G.st.gobs++;
   if(e.k==='splitter'&&!e.minion)for(let i=0;i<2;i++){const c=spawn('tick',e.x+rnd(-.5,.5),e.y+rnd(-.5,.5),{minion:1});if(c)c.aggro=true}
   if(S.sp.vigil)heal(S.maxHp*.03);
-  if(e.mods.boom)W.fx.push({k:'warn',x:e.x,y:e.y,r:2.2,t:0,life:.7,boom:e.dmg*1.5});
+  if(e.mods.boom)W.fx.push(boomFx(e));
   if(S.sp.whistle){W.fx.push({k:'ring',x:e.x,y:e.y,r:2.2,t:0,life:.3,col:'#ff5d4d'});for(const o of W.ents.slice())if(dist(o,e)<2.2)dmgEnemy(o,e.max*.3,false)}
   if(e.q&&G.q[e.q]<2){if(e.q==='q3'){sfx('quest');toast('Defrag falls. Follow the arrow to Marrow’s cage and open it.')}else{G.q[e.q]=2;mpShareQuest(e.q,2);sfx('quest');toast('Quest complete: return to '+QUESTS[e.q].back)}}
   if(boss&&W.z.sim){W.boss=null;$('boss').hidden=true;music(zoneMusic());for(const o of W.ents.slice())if(o.minion)W.ents.splice(W.ents.indexOf(o),1)}
@@ -468,6 +478,7 @@ function kill(e){
     setTimeout(()=>{if(rep){toast(ET[e.k].n+' falls again.');return}if(b3)playScene(ENDING3.concat(CLOCK3),()=>{mode='play';actDone(3)});else playScene(b2?ENDING2:endingSlides(),()=>{mode='play';actDone(b2?2:1)})},1400)}}
 function gainXp(v,fromParty){if(P.shr&&P.shr.k==='xp')v*=1.5;v*=(G.hc?1.25:1)*(SEA.k==='over'?1.2:1);if(!fromParty)mpShareXp(v);
   if(G.lvl>=lvlCap()){paraXp(v);return}G.xp+=v;while(G.xp>=xpNext(G.lvl)&&G.lvl<lvlCap()){G.xp-=xpNext(G.lvl);G.lvl++;G.sp++;G.ap+=5;calc();G.hp=S.maxHp;G.en=S.maxEn;sfx('level');toast('Level '+G.lvl+'. One skill point and five attribute points.');W.fx.push({k:'ring',x:P.x,y:P.y,r:2.8,t:0,life:.7,col:'#ffe36b'});parts(P.x,P.y,24,['#ffe36b','#fff'],2,1.6)}}
+function deathFee(){if(S.sp&&S.sp.coldwallet)return 0;if(G.act2)return G.credits*.15;const early=(G.deaths||0)<10,rate=early?.05:.08,cap=early?15:hireCost()*.08;return Math.min(G.credits*rate,cap)}
 function hurt(d,slow,src){const pv=src&&src.pvp;if((P.inv>0&&!pv)||(mode!=='play'&&!pv)||G.god)return;if(P.dip){P.dip=0;float(P.x,P.y,'The dip','#f7931a',1);sfx('whiff');return}d*=partyD();if(P.mkAura>0&&!pv)d*=1.3;
   if(S.dodge&&Math.random()*100<S.dodge){float(P.x,P.y,'Dodge','#9fe0d0',1);sfx('whiff');return}
   if(P.route>0&&G.cls==='courier'&&sl(10)&&!boonOn(10)&&Math.random()*100<6+2*sl(10)){float(P.x,P.y,'Route','#3fbf8f',1);sfx('whiff');return}
@@ -480,7 +491,7 @@ function hurt(d,slow,src){const pv=src&&src.pvp;if((P.inv>0&&!pv)||(mode!=='play
   if(G.hp<=0&&G.cls==='maxi'&&sl(14)&&!(G.keyT>0)){const sac=(W.merc&&W.merc.hp>0)?W.merc:(W.tag&&W.tag.hp>0)?W.tag:null;if(sac){G.keyT=60;G.hp+=d;hurtAlly(sac,1e9);float(P.x,P.y,'Not your keys','#f7931a',1);toast('Not your keys.');return}}
   if(G.hp<=0){if(S.sp.parachute&&G.chuteT<=0){G.chuteT=120;G.hp=S.maxHp*.5;P.inv=1.5;toast('The Golden Parachute opens.');return}
     if(W.z.sim){const n=W.sim.wave;if(W.sim.rush){G.hp=1;P.inv=9;sfx('death');dlg('Boss rush ended','You fell to number '+(W.sim.i+1)+' of '+W.sim.list.length+'. Nothing in here was real, so nothing was lost.',[['Unplug',()=>{G.hp=S.maxHp;enter(HT())}]]);return}G.simBest=Math.max(G.simBest||0,n-1);G.hp=1;P.inv=9;sfx('death');dlg('Simulation ended','You fell on wave '+n+'. Waves cleared: '+(n-1)+'. Your best: '+G.simBest+'. Nothing in here was real, so nothing was lost.',[['Unplug',()=>{G.hp=S.maxHp;enter(HT())}]]);return}
-    adaptDeath();G.hp=0;const fee=S.sp.coldwallet?0:G.credits*.15;G.credits-=fee;mode='dying';DY={t:0,fee,by:src&&src.name?src.name:'the machines',zi:W.zi,st:W.start,shown:0};sfx('death');music(null);parts(P.x,P.y,30,['#b3261e','#7a0f0c','#e2473a'],3,1.4);bloodSplat(14);shake=10;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;return}
+    adaptDeath();G.hp=0;const fee=deathFee();G.credits-=fee;G.deaths=(G.deaths||0)+1;mode='dying';DY={t:0,fee,by:src&&src.name?src.name:'the machines',zi:W.zi,st:W.start,shown:0};sfx('death');music(null);parts(P.x,P.y,30,['#b3261e','#7a0f0c','#e2473a'],3,1.4);bloodSplat(14);shake=10;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;return}
   const band=Math.ceil(G.hp/S.maxHp*10);if(band<P.band&&band<=4){bloodSplat((5-band)*3)}P.band=band}
 function attack(){
   if(P.atk>0||P.dash)return;const c=CLS[G.cls];unstealth();
