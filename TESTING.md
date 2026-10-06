@@ -119,18 +119,26 @@ your clipboard instead and you can paste it wherever.
 ## Running the automated tests
 
 ```sh
-node tools/smoke.js            # boots, walks all 34 districts, renders every tab
-node tools/smoke-acts.js       # walks the prequel and Acts IV–V, including the ending
-node server/test/run.js        # 39 — accounts, saves, recovery, CSRF, rate limits
-node server/test/games.js      # 26 — the lobby and the life of a game
-node server/test/live.js       # 24 — two real browsers: parties, hostility, damage
-node server/test/bug.js        # 15 — the report button
-node server/test/capacity.js   #  5 — the player ceiling
-node server/test/disclaimer.js # 11 — the card at the front
+npm install                    # once: Playwright. Chromium comes with it.
+npm run build                  # ./build.sh
+npm run smoke                  # boots, walks all 34 districts, renders every tab
+npm run smoke:acts             # walks the prequel and Acts IV–V, including the ending
+npm run test:saves             # cloud saves, the shared lockbox, slot switching, companions
+npm run balance                # measures Acts III–V. Prints a report. Changes no numbers.
+node server/test/run.js        # accounts, saves, recovery, CSRF, rate limits
+node server/test/games.js      # the lobby and the life of a game
+node server/test/live.js       # two real browsers: parties, hostility, damage
+node server/test/bug.js        # the report button
+node server/test/capacity.js   # the player ceiling
+node server/test/disclaimer.js # the card at the front
 ```
 
-All of them pass on the current build. The browser ones need Playwright with Chromium; the
-rest need nothing at all.
+`npm run smoke` is `node tools/smoke.js`. The browser tools ask Playwright for its own
+Chromium. Set `PW_CHROMIUM` only if you want a different binary. Nothing in `tools/`
+hard-codes a machine path.
+
+A push runs the build and the smoke test in GitHub Actions (`.github/workflows/smoke.yml`).
+The balance report is not part of that run: it is a measurement, and it takes longer.
 
 ---
 
