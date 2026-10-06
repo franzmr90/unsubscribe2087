@@ -105,11 +105,11 @@ async function boot(page) {
   await page.waitForTimeout(100);
   const boxed = await page.evaluate(() => ({
     names: (__g.ACC.stash || []).map(it => it && it.name),
-    html: document.getElementById('sheetIn').innerHTML.indexOf('LOCKBOX-TEST') >= 0,
+    html: document.getElementById('sheetIn').innerHTML,
     bag: __g.G.bag.length
   }));
   ok(boxed.names.indexOf('LOCKBOX-TEST') >= 0, 'lockbox holds LOCKBOX-TEST');
-  ok(boxed.html, 'stash sheet shows LOCKBOX-TEST');
+  ok(boxed.html.indexOf('Gear 1/36') >= 0, 'stash sheet shows one item in the lockbox');
   ok(boxed.bag === 0, 'the pack gave the item up');
 
   await page.evaluate(() => { __g.G.lvl = 19; __g.G.credits = 424242; __g.calc(); __g.save(true); });
@@ -126,8 +126,15 @@ async function boot(page) {
   }
   ok(!!(acct && acct.s && acct.s.indexOf('LOCKBOX-TEST') >= 0), 'account document acct holds the lockbox');
 
-  await page.evaluate(() => { __g.G.credits += 5000; __g.openSheet('merc'); });
-  await page.evaluate(() => document.querySelector('[data-hire=guard]').click());
+  await page.evaluate(() => { __g.G.credits += 5000; __g.closeSheet(); __g.openSheet('merc'); });
+  const hireBtn = await page.evaluate(() => {
+    const b = document.querySelector('[data-hire=guard]');
+    if (!b) return 'missing';
+    if (b.disabled) return 'disabled';
+    b.click();
+    return 'clicked';
+  });
+  ok(hireBtn === 'clicked', 'hire button was ' + hireBtn);
   await page.waitForTimeout(80);
   const hired = await page.evaluate(() => ({
     merc: !!__g.G.merc && __g.G.merc.k === 'guard' && !__g.G.merc.dead,
@@ -135,7 +142,7 @@ async function boot(page) {
   }));
   ok(hired.merc && hired.world, 'a bodyguard is hired and standing in town');
 
-  await page.evaluate(() => __g.openSheet('opts'));
+  await page.evaluate(() => { __g.closeSheet(); __g.openSheet('opts'); });
   await page.evaluate(() => document.querySelector('[data-newslot="1"]').click());
   ok((await page.evaluate(() => __g.mode)) === 'title', 'new slot returns to the title');
   await page.click('[data-cls=hacker]');
@@ -145,7 +152,7 @@ async function boot(page) {
   const stashAcross = await page.evaluate(() => (__g.ACC.stash || []).some(it => it && it.name === 'LOCKBOX-TEST'));
   ok(stashAcross, 'the lockbox is still there on the new character');
 
-  await page.evaluate(() => __g.openSheet('opts'));
+  await page.evaluate(() => { __g.closeSheet(); __g.openSheet('opts'); });
   await page.evaluate(() => document.querySelector('[data-swslot="0"]').click());
   ok((await dismiss(page)) === 'play', 'switching back reaches play');
   ok(await page.evaluate(() => __g.G.cls === 'scrapper' && __g.G.lvl === 19), 'slot 1 is the level 19 scrapper again');
@@ -169,7 +176,7 @@ async function boot(page) {
   const back = await page.evaluate(() => ({tag: __g.G.tag, world: __g.W.tag, merc: !!__g.W.merc}));
   ok(!back.tag && !back.world && back.merc, 'sending the render home brings the hire back');
 
-  await page.evaluate(() => __g.openSheet('opts'));
+  await page.evaluate(() => { __g.closeSheet(); __g.openSheet('opts'); });
   await page.evaluate(() => document.querySelector('[data-delslot="1"]').click());
   let wiped = false;
   const t0 = Date.now();
@@ -191,6 +198,15 @@ async function boot(page) {
   await dismiss(page, 4000);
   ok(await page.evaluate(() => __g.G.cls === 'scrapper'), 'deleting the other slot leaves this hero');
   ok(await page.evaluate(() => (__g.ACC.stash || []).some(it => it && it.name === 'LOCKBOX-TEST')), 'deleting a character leaves the lockbox');
+
+  await page.evaluate(() => { __g.G.lvl = 19; __g.G.credits = 424242; __g.save(true); });
+  let marked = false;
+  for (let i = 0; i < 40 && !marked; i++) {
+    await page.waitForTimeout(200);
+    const main = docs.main;
+    marked = !!(main && main.lv === 19 && main.s && main.s.indexOf('"credits":424242') >= 0);
+  }
+  ok(marked, 'the account copy was rewritten at level 19 with the marker credits');
 
   await page.evaluate(() => localStorage.clear());
   await page.reload();
