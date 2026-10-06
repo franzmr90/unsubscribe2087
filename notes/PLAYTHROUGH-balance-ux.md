@@ -15,7 +15,7 @@ Not in the UX PR: the Balance list below (Fields door, early weapon drops, explo
 
 ## Shipped in this PR (balance)
 
-- [x] **Act I doors are smaller.** The first combat room of the Moors and the Galleria is 3–4 normal machines, no champion. The Fields and Tribunal doors are two non-tick normals at 70% damage, no champion and no volatile. Later rooms and the lieutenants are unchanged.
+- [x] **Act I doors are smaller.** The first combat room of the Moors and the Galleria is 3–4 normal machines, no champion. The Fields door is two non-tick normals at 70% damage. Tribunal’s door is two normals that are not wardens, at 55% damage. No champion and no volatile in either entrance. Later rooms and the lieutenants are unchanged.
 - [x] **The Parcel Moors grants a weapon.** An identified magic weapon (item level 4, at least 9–16) is on the ground in the entrance, before the first pack and before the Galleria.
 - [x] **A low-level shitcoiner is not a champion pack.** Below level 8 he is a normal shill, not fast, and a fight adds no Bagholders. Below level 6 most spawn attempts are skipped. Peaceful decline is unchanged.
 - [x] **Act I explosions telegraph longer and hit softer.** Volatile death: radius 2.2 → 1.35, tell 0.7s → 1.35s, damage ×1.5 → ×0.85, while Act II is still closed. Champion slams in that span: radius 1.9 → 1.15, tell 1.0s → 1.6s, damage ×1.6 → ×0.7. Lieutenant slams are unchanged.

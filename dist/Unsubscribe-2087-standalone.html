@@ -1005,8 +1005,8 @@ const lvlCap=()=>G.act5?100:G.act4?90:G.act3?75:G.act2?50:25;
 function zoneLevel(z){const b=z.lvl+G.tier*12;return OPT.dyn?Math.max(b,G.lvl):b}
 function dynFor(ml){if(!OPT.dyn)return{hp:1,dmg:1};const p=pscore(S),f=r=>clamp(r<1?1:1+(r-1)*.8,1,12);return{hp:f(p.dps*2.4/(30*(1+.42*(ml-1)))),dmg:f(p.ehp/16/(7*(1+.22*(ml-1))))}}
 function fillRoom(r,z,zi,i){
-  if(i===1&&zi>=1&&zi<=4){const pool=z.mix.filter(m=>m[0]!=='tick'),hot=zi>=3,n=hot?2:ri(3,4);
-    for(let k=0;k<n;k++){const e=spawn(wpick(pool),r.x+rnd(-r.w+1,r.w-1)+.5,r.y+rnd(-r.h+1,r.h-1)+.5);if(e&&hot)e.dmg*=.7}
+  if(i===1&&zi>=1&&zi<=4){const hot=zi>=3,pool=z.mix.filter(m=>m[0]!=='tick'&&!(zi===4&&m[0]==='mech')),n=hot?2:ri(3,4),mul=zi===4?.55:.7;
+    for(let k=0;k<n;k++){const e=spawn(wpick(pool),r.x+rnd(-r.w+1,r.w-1)+.5,r.y+rnd(-r.h+1,r.h-1)+.5);if(e){e.gate=1;if(hot)e.dmg*=mul}}
     return}
   const cnt=ri(6,9);for(let k=0;k<cnt;k++){const t=wpick(z.mix),m=t==='tick'?2:1;for(let j=0;j<m;j++)spawn(t,r.x+rnd(-r.w+1,r.w-1)+.5,r.y+rnd(-r.h+1,r.h-1)+.5)}
   if(Math.random()<.5){const pool=z.mix.filter(m=>m[0]!=='tick');const t=wpick(pool);const e=spawn(t,r.x+.5,r.y+.5,{champ:1});if(e)for(let k=0;k<2;k++)spawn(t,e.x+rnd(-1.5,1.5),e.y+rnd(-1.5,1.5))}}
