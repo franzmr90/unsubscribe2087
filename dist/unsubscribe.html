@@ -2125,6 +2125,22 @@ const SKV={scrapper:{
   12:{k:'beam'},
   13:{k:'patch',r:1.5},
   14:{k:'patch',r:2.3}
+},maxi:{
+  0:{k:'arc',w:1},
+  1:{k:'bolt',r:2.2,at:'foe',n:1},
+  2:{k:'mark'},
+  3:{k:'patch',r:2.2},
+  4:{k:'patch',r:3.6},
+  5:{k:'trail',r:3.4},
+  6:{k:'orbit',n:3},
+  7:{k:'patch',r:1.5},
+  8:{k:'mark'},
+  9:{k:'ring',r:4.2},
+  10:{k:'mark'},
+  11:{k:'bolt',r:5,n:3},
+  12:{k:'mark'},
+  13:{k:'ring',r:.9},
+  14:{k:'mark'}
 }};
 function skvOf(cls,i){const row=(SKV[cls]||{})[i];if(!row)return null;const sk=CLS[cls]&&CLS[cls].sk[i];let col=row.col;
   if(!col&&sk&&sk.a){const ty=skType(cls,i);if(DTY[ty])col=DTY[ty].c}if(!col)col=(CLS[cls]&&CLS[cls].col)||'#e6e2d6';
