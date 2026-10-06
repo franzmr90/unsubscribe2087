@@ -32,7 +32,7 @@ function maxiCheck() {
 function maxiOn() { return !!(typeof ACC !== 'undefined' && ACC && ACC.maxi); }
 
 /* ================= auras =================
-   A paladin's aura is not a buff you re-cast; it is the one you have chosen, and it is on.
+   An aura is not a buff you re-cast. It is the one you have chosen, and it is on.
    Casting an aura skill swaps which one, costs nothing, and lasts until you swap again. */
 function maxiSet(i, L) {
   if (P.aura && P.aura.i === i) { P.aura = null; toast('Aura off'); sfx('ui'); return; }
@@ -48,16 +48,16 @@ function maxiAura(dt) {
   a.t -= dt;
 
   if (a.i === 3) {
-    /* Fanaticism: you and anybody beside you swing faster. The damage half is in pdmg. */
+    /* Toxic Maximalism: you and anybody beside you swing faster. The damage half is in pdmg. */
     P.haste = Math.max(P.haste, .3);
     if (W.merc) W.merc.haste = .3;
   } else if (a.i === 4) {
-    /* Conviction: inside it, nothing's resistances apply. `mark` is the game's own
+    /* Marked to Market: inside it, nothing's resistances apply. `mark` is the game's own
        take-more-damage flag, so this reuses the machinery the rest of the game uses. */
     const r = 3.5 + .15 * L;
     for (const e of W.ents) if (!e.mp && dist(e, P) < r + e.r) e.mark = Math.max(e.mark, .4);
   } else if (a.i === 7) {
-    /* Holy Fire: the heat of the work, constantly, to everything close enough. */
+    /* Proof of Work: the heat of the work, constantly, to everything close enough. */
     if (a.t <= 0) {
       a.t = .5;
       const r = 3.2 + .1 * L, m = (.3 + .07 * L) * syn(7);

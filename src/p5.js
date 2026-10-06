@@ -73,7 +73,7 @@ function bounties(){G.bounties=G.bounties||[];while(G.bounties.length<3+(repRank
 const SHIFT_COST=5;
 function shapeShift(cls,roll){if(G.sats<SHIFT_COST){toast('You need '+SHIFT_COST+' sats');sfx('err');return}G.sats-=SHIFT_COST;G.st.shifts++;
   let sp=G.sp+G.sk.reduce((a,b)=>a+b,0),ap=G.ap+G.at.mgt+G.at.ref+G.at.vit+G.at.bnd;
-  G.cls=cls;delete G.pas;delete G.doc;G.fork={};G.sk=G.sk.map(()=>0);G.at={mgt:0,ref:0,vit:0,bnd:0};let BR=null;
+  G.cls=cls;delete G.schema;delete G.pas;delete G.doc;G.fork={};G.sk=G.sk.map(()=>0);boonRefund();G.at={mgt:0,ref:0,vit:0,bnd:0};let BR=null;
   if(typeof roll==='string'){const r=buildApply(cls,roll,sp,ap);sp=r.sp;ap=r.ap;BR=r.B;roll=0}else{G.sk[0]=1;sp--;G.slots=[0,-1,-1]}
   if(roll){let g=2000;while(sp>0&&g--){const i=ri(0,14),row=Math.floor(i/3);if(G.sk[i]>=10||G.lvl<ROWREQ[row]||(row>0&&!G.sk[i-3])||(row===3&&!G.act2)||(row===4&&!G.act3))continue;G.sk[i]++;sp--}
     while(ap>0){const k=Math.random()<.45?(CLS[cls].melee?'vit':'mgt'):pick(['mgt','ref','vit','bnd']),n=Math.min(ap,ri(1,5));G.at[k]+=n;ap-=n}
