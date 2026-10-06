@@ -1,0 +1,15 @@
+{
+  "name": "unsubscribe-2087",
+  "private": true,
+  "description": "Unsubscribe 2087 — build and browser tests. The game itself is the files in src/.",
+  "scripts": {
+    "build": "./build.sh",
+    "smoke": "node tools/smoke.js",
+    "smoke:acts": "node tools/smoke-acts.js",
+    "balance": "node tools/balance.js",
+    "test:saves": "node tools/save-paths.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.55.0"
+  }
+}

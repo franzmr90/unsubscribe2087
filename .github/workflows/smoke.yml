@@ -1,0 +1,33 @@
+# Builds the game from src/ and boots it. This does not deploy.
+# The deploy workflow is separate and only runs when the site files change.
+name: Smoke
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        run: npm run build
+
+      - name: Boot and walk every district
+        run: npm run smoke
+
+      - name: Cloud saves, lockbox, character slots, companions
+        run: npm run test:saves
