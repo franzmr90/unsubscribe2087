@@ -13,6 +13,7 @@ function webNode(id){if(id==='c')return{id,n:'The Genesis Node',m:{},a:-1,r:0};c
   if(r===10)return{id,a,r,n:A[4],m:A[5],key:1};if(r===5)return{id,a,r,n:'Greater '+A[0],m:{[A[1]]:A[3]},big:1};return{id,a,r,n:A[0],m:{[A[1]]:A[2]}}}
 function webAdj(id){if(id==='c')return WARMS.map((x,a)=>a+'_1');const[a,r]=id.split('_').map(Number),o=[r===1?'c':a+'_'+(r-1)];if(r<10)o.push(a+'_'+(r+1));if(r%3===0){o.push((a+1)%8+'_'+r,(a+7)%8+'_'+r)}return o}
 const webPts=()=>G.lvl-1+(G.para||0)-Object.keys(G.web||{}).length;
+function webNext(a){for(let r=1;r<=10;r++)if(!G.web[a+'_'+r])return a+'_'+r;return null}
 const webCan=id=>!G.web[id]&&webPts()>0&&webAdj(id).some(n=>n==='c'||G.web[n]);
 const modTxt=m=>Object.keys(m).map(k=>{const v=k==='cdr'?Math.round(m[k]*100):m[k];return (v>0?'+':'')+(WEBT[k]||AFK[k].t.replace(/^\+/,'')).replace('{v}',v)}).join(', ');
 let webSc=[270,230],SB=null,SUBP=null;
@@ -22,6 +23,15 @@ function webSvg(){const C=430,R=40,pos=id=>{if(id==='c')return[C,C];const[a,r]=i
     for(const o of webAdj(id))if(o<id||o==='c'){const q=pos(o),both=on&&(o==='c'||G.web[o]);ln+=`<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${both?'#e0bd6e':'#3a3250'}" stroke-width="${both?3:1.5}"/>`}
     nd+=`<circle data-web="${id}" cx="${p[0]}" cy="${p[1]}" r="${n.key?16:n.big?13:id==='c'?14:10}" fill="${on?'#e0bd6e':can?'#2a2440':'#14111c'}" stroke="${sel&&sel.web===id?'#fff':n.key?'#f7931a':can?'#59e0e6':'#4a4266'}" stroke-width="${sel&&sel.web===id?3:can||n.key?2:1}"/>`}
   for(let a=0;a<8;a++){const an=a*Math.PI/4-Math.PI/2;nd+=`<text x="${C+Math.cos(an)*11.2*R}" y="${C+Math.sin(an)*11.2*R+4}" fill="#a39c86" font-size="12" font-family="Cinzel,serif" text-anchor="middle">${WARMS[a][0]}</text>`}
+  if(webPts()>0)for(let a=0;a<8;a++){
+    if(!G.web[a+'_1']||!webNext(a))continue;
+    const p=pos(a+'_1'),an=a*Math.PI/4-Math.PI/2,px=Math.cos(an+Math.PI/2),py=Math.sin(an+Math.PI/2);
+    const x=p[0]+px*17,y=p[1]+py*17;
+    /* the visible badge is small; the circle under it is a thumb-sized target */
+    nd+=`<g data-webadd="${a}" style="cursor:pointer">
+      <circle cx="${x}" cy="${y}" r="17" fill="transparent"/>
+      <circle cx="${x}" cy="${y}" r="9" fill="#10313a" stroke="#59e0e6" stroke-width="2"/>
+      <text x="${x}" y="${y+4.5}" fill="#59e0e6" font-size="14" font-weight="700" font-family="Cinzel,serif" text-anchor="middle" style="pointer-events:none">+</text></g>`}
   return `<div id="webBox" style="overflow:auto;height:56vh;border:1px solid var(--edge);background:#07060b;touch-action:pan-x pan-y"><svg width="860" height="860" style="display:block">${ln}${nd}</svg></div>`}
 /* charms: small bonuses that work from the pack, so pack space is their price */
 ICON.charm='M12 3a6 6 0 016 6c0 4-6 12-6 12S6 13 6 9a6 6 0 016-6zm0 3.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z';

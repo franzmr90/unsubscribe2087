@@ -1545,6 +1545,7 @@ function webNode(id){if(id==='c')return{id,n:'The Genesis Node',m:{},a:-1,r:0};c
   if(r===10)return{id,a,r,n:A[4],m:A[5],key:1};if(r===5)return{id,a,r,n:'Greater '+A[0],m:{[A[1]]:A[3]},big:1};return{id,a,r,n:A[0],m:{[A[1]]:A[2]}}}
 function webAdj(id){if(id==='c')return WARMS.map((x,a)=>a+'_1');const[a,r]=id.split('_').map(Number),o=[r===1?'c':a+'_'+(r-1)];if(r<10)o.push(a+'_'+(r+1));if(r%3===0){o.push((a+1)%8+'_'+r,(a+7)%8+'_'+r)}return o}
 const webPts=()=>G.lvl-1+(G.para||0)-Object.keys(G.web||{}).length;
+function webNext(a){for(let r=1;r<=10;r++)if(!G.web[a+'_'+r])return a+'_'+r;return null}
 const webCan=id=>!G.web[id]&&webPts()>0&&webAdj(id).some(n=>n==='c'||G.web[n]);
 const modTxt=m=>Object.keys(m).map(k=>{const v=k==='cdr'?Math.round(m[k]*100):m[k];return (v>0?'+':'')+(WEBT[k]||AFK[k].t.replace(/^\+/,'')).replace('{v}',v)}).join(', ');
 let webSc=[270,230],SB=null,SUBP=null;
@@ -1554,6 +1555,15 @@ function webSvg(){const C=430,R=40,pos=id=>{if(id==='c')return[C,C];const[a,r]=i
     for(const o of webAdj(id))if(o<id||o==='c'){const q=pos(o),both=on&&(o==='c'||G.web[o]);ln+=`<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${both?'#e0bd6e':'#3a3250'}" stroke-width="${both?3:1.5}"/>`}
     nd+=`<circle data-web="${id}" cx="${p[0]}" cy="${p[1]}" r="${n.key?16:n.big?13:id==='c'?14:10}" fill="${on?'#e0bd6e':can?'#2a2440':'#14111c'}" stroke="${sel&&sel.web===id?'#fff':n.key?'#f7931a':can?'#59e0e6':'#4a4266'}" stroke-width="${sel&&sel.web===id?3:can||n.key?2:1}"/>`}
   for(let a=0;a<8;a++){const an=a*Math.PI/4-Math.PI/2;nd+=`<text x="${C+Math.cos(an)*11.2*R}" y="${C+Math.sin(an)*11.2*R+4}" fill="#a39c86" font-size="12" font-family="Cinzel,serif" text-anchor="middle">${WARMS[a][0]}</text>`}
+  if(webPts()>0)for(let a=0;a<8;a++){
+    if(!G.web[a+'_1']||!webNext(a))continue;
+    const p=pos(a+'_1'),an=a*Math.PI/4-Math.PI/2,px=Math.cos(an+Math.PI/2),py=Math.sin(an+Math.PI/2);
+    const x=p[0]+px*17,y=p[1]+py*17;
+    /* the visible badge is small; the circle under it is a thumb-sized target */
+    nd+=`<g data-webadd="${a}" style="cursor:pointer">
+      <circle cx="${x}" cy="${y}" r="17" fill="transparent"/>
+      <circle cx="${x}" cy="${y}" r="9" fill="#10313a" stroke="#59e0e6" stroke-width="2"/>
+      <text x="${x}" y="${y+4.5}" fill="#59e0e6" font-size="14" font-weight="700" font-family="Cinzel,serif" text-anchor="middle" style="pointer-events:none">+</text></g>`}
   return `<div id="webBox" style="overflow:auto;height:56vh;border:1px solid var(--edge);background:#07060b;touch-action:pan-x pan-y"><svg width="860" height="860" style="display:block">${ln}${nd}</svg></div>`}
 /* charms: small bonuses that work from the pack, so pack space is their price */
 ICON.charm='M12 3a6 6 0 016 6c0 4-6 12-6 12S6 13 6 9a6 6 0 016-6zm0 3.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z';
@@ -3265,7 +3275,7 @@ function drawSheet(){
       if(s.a&&L){const cur=(G.fork||{})[i];h+=`<div class="ln off" style="margin-top:6px">Fork${L<3?' · opens at 3 points':': one at a time, free to change in town'}</div>`;if(L>=3)h+=`<div class="list">${forkSet(G.cls,i).map(k=>`<button class="li${cur===k?' on':''}" data-fork="${k}" ${W.z.town?'':'disabled'}><div><b>${cur===k?'◆ ':''}${FORKS[k].n} ${s.n}</b><span>${FORKS[k].d}</span></div></button>`).join('')}</div>`}
       if(s.a&&L)h+=`<div class="row">${[0,1,2].map(k=>`<button class="ghost" data-assign="${k}">Button ${k+1}${G.slots[k]===i?' ✓':''}</button>`).join('')}</div>`;
       h+=`<div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`;pop=h.slice(h0);h=h.slice(0,h0)}h+=`<p>Tap a skill to read it. Blue names are passive; ◆ marks the ones switched on. A numbered badge shows which button a skill is on.</p>`}
-  if(tab==='web'){G.web=G.web||{};const n=sel&&sel.web?webNode(sel.web):null;h+=`<h2>The ledger web</h2><p><strong>${webPts()} point${webPts()===1?'':'s'}</strong> to place. One point per level and per Tenure. Start at the centre and work outward along connected nodes; the arms join at rings 3, 6 and 9. The orange node at the end of each arm is a keystone: a large gain with a real cost. <strong>Arms across from each other oppose:</strong> of each facing pair (Might and Current, Flesh and Stride, Plate and Fortune, Nerve and Thirst), the arm with fewer points pays out half.</p>`+webSvg();
+  if(tab==='web'){G.web=G.web||{};const n=sel&&sel.web?webNode(sel.web):null;h+=`<h2>The ledger web</h2><p><strong>${webPts()} point${webPts()===1?'':'s'}</strong> to place. One point per level and per Tenure. Start at the centre and work outward along connected nodes; the arms join at rings 3, 6 and 9. Once an arm is started, a <b style="color:#59e0e6">+</b> appears beside its first node — tap that to put the next point straight onto the end of that arm without hunting for it. The orange node at the end of each arm is a keystone: a large gain with a real cost. <strong>Arms across from each other oppose:</strong> of each facing pair (Might and Current, Flesh and Stride, Plate and Fortune, Nerve and Thirst), the arm with fewer points pays out half.</p>`+webSvg();
     h+=n?`<div class="card" style="text-align:left"><div class="nm q${n.key?4:n.big?3:2}">${n.n}</div><div class="ln mod">${n.id==='c'?'Where every path starts.':modTxt(n.m)}</div>${n.a>=0&&!n.key&&webWeak(n.a)?`<div class="ln red">Halved: ${WARMS[(n.a+4)%8][0]}, across the web, has more of your points.</div>`:''}<div class="row"><button class="big" data-weball="1" ${n.id!=='c'&&webCan(n.id)?'':'disabled'}>${G.web[n.id]||n.id==='c'?'Placed':webCan(n.id)?'Place a point':'Not connected yet'}</button></div></div>`:`<p>Drag to move around the web. Tap a node to read it.</p>`;
     h+=`<button class="ghost" data-webreset="1" ${G.sats<5||!Object.keys(G.web).length?'disabled':''}>Take every point back · 5 sats</button>`}
   if(tab==='quests'){h+=`<h2>Quests</h2><p>Five acts: the Regional Office, the Cloud, the Board, the Gentle Years and the Awakening. The first three are MANDATE's. The last two are hers, and then the thing that was hunting them both. The Story tab keeps who is who.</p><div class="list">`;
@@ -3401,7 +3411,7 @@ function longPress(i){const it=G.bag[i];if(!it)return;lpFired=true;clearTimeout(
 $('sheetIn').addEventListener('pointerdown',e=>{const c=e.target.closest('[data-bag]');lpFired=false;clearTimeout(lpT);if(!c||c.disabled)return;const i=+c.dataset.bag;lpXY=[e.clientX,e.clientY];lpT=setTimeout(()=>longPress(i),480)});
 $('sheetIn').addEventListener('pointermove',e=>{if(lpXY&&Math.hypot(e.clientX-lpXY[0],e.clientY-lpXY[1])>10)clearTimeout(lpT)});
 for(const n of['pointerup','pointercancel','pointerleave'])$('sheetIn').addEventListener(n,()=>clearTimeout(lpT));
-const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web]');if(!b||b.disabled)return;const d=b.dataset;sfx('ui');
+const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],[data-webadd]');if(!b||b.disabled)return;const d=b.dataset;sfx('ui');
   if(d.popx)sel=null;
   if(d.sellq!==undefined){const q=+d.sellq;if(q<0&&!sellArm){sellArm=true;drawSheet();return}let t=0;G.bag=G.bag.filter(i=>{if(q===9?i.junk:!i.charm&&(q<0||i.q===q)){t+=i.val*.4*G.cpi;return false}return true});G.credits+=t;sel=null;sfx('coin');toast('Sold for '+fmt(t))}
   sellArm=false;
@@ -3463,6 +3473,9 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web]'
   if(d.pas!==undefined){const i=+d.pas,k=G.pas.indexOf(i);if(k>=0)G.pas.splice(k,1);else if(G.pas.length<PCAP())G.pas.push(i);calc();G.hp=Math.min(G.hp,S.maxHp)}
   if(d.fork){G.fork=G.fork||{};const i=sel.sk;if(G.fork[i]===d.fork)delete G.fork[i];else G.fork[i]=d.fork}
   if(d.web){sel={web:d.web}}
+  /* the + over an arm's first node: spend straight away on the far end of that arm */
+  if(d.webadd!==undefined){const nx=webNext(+d.webadd);
+    if(nx&&webPts()>0){G.web[nx]=1;sel={web:nx};calc();sfx('learn')}}
   if(d.weball){G.web[sel.web]=1;calc();sfx('learn')}
   if(d.webreset){if(G.sats>=5){G.sats-=5;G.web={};sel=null;calc();sfx('ui')}}
   if(d.sub){closeSheet();subStart(+d.sub);return}
@@ -3568,7 +3581,7 @@ function showDisc(){const d=$('disc');if(!d)return;
   addEventListener('pointerdown',go,true);addEventListener('keydown',go,true)}
 showDisc();
 cloudInit();
-window.__g={skipDisc,maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS};
+window.__g={skipDisc,maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS};
 /* late additions that need the dialogue tables */
 QRW.push(
  ['q16','gramps','“So that is what yes looks like. Everybody glad and nobody home. I clicked a thing like that once, when I was young. I do not remember the nine years after it. I am told I enjoyed them.” You gain 1 skill point.',()=>G.sp++,'Gramps'],
