@@ -116,7 +116,11 @@ async function until(page, fn, arg, ms) {
 
   /* A cast is a picture on the other client. It is not a hit. */
   const want = await B.evaluate(() => __g.skvOf('scrapper', 0));
+  await A.evaluate(() => __mp.send('hello', { lvl: __g.G.lvl, cls: __g.G.cls, zi: __g.W.zi, hp: __g.G.hp, hpm: __g.S.maxHp }));
+  await wait(250);
   await A.evaluate(() => {
+    /* A district dialog can be sitting open. A cast only leaves the hand in play. */
+    __g.setMode('play');
     const G = __g.G, P = __g.P;
     G.sk[0] = 1; G.slots[0] = 0; G.en = 99999;
     P.cd[0] = 0; P.castWait = 0; P.silence = 0; P.dash = null;

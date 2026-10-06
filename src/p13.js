@@ -57,8 +57,10 @@ function mpConnect() {
   c.onerror = () => {};
 }
 
+let mpAnnounced = '';
 function mpHello() {
   if (!G) return;
+  mpAnnounced = G.cls || '';
   mpSend('hello', { lvl: G.lvl, cls: G.cls, zi: W ? W.zi : 0, hp: G.hp, hpm: S.maxHp, act: actOf ? actOf(W ? W.zi : 0) : 1 });
 }
 
@@ -258,6 +260,9 @@ function mpBeat() {
   if (!mpOn() || !G || !W || !P || mode === 'title') return;
   mpSyncEnts();
   mpVoiceLevels();
+  /* The socket opens on the title, before a class exists. Say the class once it does,
+     so the other client knows which shapes to draw. */
+  if ((G.cls || '') !== mpAnnounced) mpHello();
   MP.lastMove = performance.now();
   mpSend('move', mpMovePkt());
 }

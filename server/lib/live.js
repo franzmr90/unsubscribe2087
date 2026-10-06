@@ -226,6 +226,9 @@ function zonePeers(p) {
   return out;
 }
 function pushZone(p) { send(p, 'zone', { zi: p.zi, players: zonePeers(p).map(loc) }); }
+/* A cast is one beat long. Push it to the district instead of waiting for their next
+   heartbeat, or the other client can sample the beat after it has already been cleared. */
+function pushPeers(p) { for (const q of zonePeers(p)) pushZone(q); }
 
 const HANDLERS = {
   hello(p, m) {
@@ -267,6 +270,7 @@ const HANDLERS = {
   move(p, m) {
     p.x = +m.x || 0; p.y = +m.y || 0; p.dir = +m.dir || 0;
     p.hp = +m.hp || 0; p.hpm = +m.hpm || 1;
+    const cosmetic = ('sk' in m) || ('au' in m) || ('sw' in m);
     if ('sk' in m) p.sk = m.sk === null ? null : skillIx(m.sk);
     if ('au' in m) p.au = auraIx(m.au);
     if ('sw' in m) p.sw = m.sw === 1 ? 1 : 0;
@@ -280,6 +284,7 @@ const HANDLERS = {
       p.safeUntil = Date.now() + 5000;
     }
     pushZone(p);
+    if (cosmetic) pushPeers(p);
   },
 
   chat(p, m) {
