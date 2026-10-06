@@ -191,9 +191,11 @@ const refund=await p.evaluate(()=>{
   return fail});
 if(refund.length){console.error('REFUND\n'+refund.join('\n'));errs.push(...refund)}
 
-console.log(errs.length?'ERRORS:\n'+errs.slice(0,20).join('\n'):'scrapper milestone 0 checks passed');
+const failed=errs.length;
+console.log(failed?'ERRORS:\n'+errs.slice(0,20).join('\n'):'scrapper milestone 0 checks passed');
 await b.close();
-process.exit(errs.length?1:0);
+if(errs.length>failed)console.error('pageerror during close:\n'+errs.slice(failed).join('\n'));
+process.exit(failed?1:0);
 })().catch(e=>{console.error(e);process.exit(1)});
 
 async function runHacker(){
@@ -411,7 +413,9 @@ const refund=await p.evaluate(()=>{
   return fail});
 if(refund.length){console.error('REFUND\n'+refund.join('\n'));errs.push(...refund)}
 
-console.log(errs.length?'ERRORS:\n'+errs.slice(0,30).join('\n'):'hacker milestone 0 checks passed');
+const failed=errs.length;
+console.log(failed?'ERRORS:\n'+errs.slice(0,30).join('\n'):'hacker milestone 0 checks passed');
 await b.close();
-process.exit(errs.length?1:0);
+if(errs.length>failed)console.error('pageerror during close:\n'+errs.slice(failed).join('\n'));
+process.exit(failed?1:0);
 }
