@@ -14,6 +14,10 @@ const TRASH = [12, 13, 14, 15, 22, 23, 24, 25, 28, 29, 30, 31];
 const BOSSES = [16, 26, 32];
 const RUNS = [{cls: 'scrapper', build: 'crew', zones: TRASH.concat(BOSSES)}];
 RUNS.push({cls: 'hacker', build: 'chain', zones: BOSSES.slice()});
+if (process.env.BAL_ONLY) {
+  RUNS.length = 0;
+  RUNS.push({cls: process.env.BAL_CLS || 'scrapper', build: process.env.BAL_BUILD || 'crew', zones: process.env.BAL_ONLY.split(',').map(Number)});
+}
 
 function launchOpts() {
   return process.env.PW_CHROMIUM ? {executablePath: process.env.PW_CHROMIUM} : {};
@@ -124,25 +128,56 @@ async function fight(page, boss) {
     last = await page.evaluate(() => {
       const g = __g;
       const clear = () => { for (const c of ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'Space']) g.keys[c] = false; };
+      const foes = () => g.W.ents.filter(e => e.hp > 0 && !e.mp);
+      /* Next floor tile toward the nearest machine. A straight line walks into walls. */
+      const stepToward = (tx, ty) => {
+        const N = g.W.N, map = g.W.map, sx = g.P.x | 0, sy = g.P.y | 0;
+        const floor = (x, y) => x > 0 && y > 0 && x < N - 1 && y < N - 1 && map[y * N + x] === 1;
+        if (sx === (tx | 0) && sy === (ty | 0)) return {x: tx, y: ty};
+        const prev = new Int32Array(N * N);
+        prev.fill(-2);
+        const q = [sx, sy];
+        prev[sy * N + sx] = -1;
+        for (let qi = 0; qi < q.length; qi += 2) {
+          const x = q[qi], y = q[qi + 1];
+          if (Math.abs(x - (tx | 0)) <= 1 && Math.abs(y - (ty | 0)) <= 1) {
+            const startKey = sy * N + sx;
+            let cur = y * N + x;
+            while (prev[cur] !== startKey && prev[cur] !== -1) cur = prev[cur];
+            return {x: (cur % N) + .5, y: ((cur / N) | 0) + .5};
+          }
+          for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+            const nx = x + dx, ny = y + dy, k = ny * N + nx;
+            if (prev[k] !== -2 || !floor(nx, ny)) continue;
+            prev[k] = y * N + x;
+            q.push(nx, ny);
+          }
+        }
+        return null;
+      };
       const steer = () => {
         clear();
         if (g.mode !== 'play' || !g.W || !g.P) return;
         let best = null, bd = 1e9;
-        for (const e of g.W.ents) {
-          if (!(e.hp > 0) || e.mp) continue;
+        for (const e of foes()) {
           const d = Math.hypot(e.x - g.P.x, e.y - g.P.y);
           if (d < bd) { bd = d; best = e; }
         }
         const melee = g.CLS[g.G.cls].melee;
-        if (best && bd > (melee ? 1.6 : 4.2)) {
-          const dx = best.x - g.P.x, dy = best.y - g.P.y;
-          const sx = dx - dy, sy = dx + dy;
-          if (sx > .3) g.keys.KeyD = true;
-          if (sx < -.3) g.keys.KeyA = true;
-          if (sy > .3) g.keys.KeyS = true;
-          if (sy < -.3) g.keys.KeyW = true;
+        const want = melee ? 1.45 : 4;
+        if (best) g.P.dir = {x: (best.x - g.P.x) / (bd || 1), y: (best.y - g.P.y) / (bd || 1)};
+        if (best && bd > want) {
+          const step = stepToward(best.x, best.y) || best;
+          const dx = step.x - g.P.x, dy = step.y - g.P.y, d = Math.hypot(dx, dy) || 1;
+          const sp = Math.min(d, g.CLS[g.G.cls].spd / 30);
+          const nx = g.P.x + dx / d * sp, ny = g.P.y + dy / d * sp;
+          const N = g.W.N, map = g.W.map;
+          const floor = (x, y) => { const ix = x | 0, iy = y | 0; return ix > 0 && iy > 0 && ix < N - 1 && iy < N - 1 && map[iy * N + ix] === 1; };
+          if (floor(nx, g.P.y)) g.P.x = nx;
+          if (floor(g.P.x, ny)) g.P.y = ny;
+          g.P.moving = true;
         }
-        if (best) g.keys.Space = true;
+        if (best && bd < (melee ? 2.4 : 6.5)) g.keys.Space = true;
         if (g.G.hp < g.S.maxHp * 0.45 && g.G.stims > 0) {
           const before = g.G.stims;
           g.stim();
@@ -235,7 +270,7 @@ function row(zname, cls, build, r) {
     '',
     'One sample. The bot rolled one set of rare items per district and fought once. Nothing in `src/` was changed.',
     '',
-    'Protocol: level matched to the district, identified rare weapon, armor, helm, gloves, boots and belt, no uniques, no hire. Scrapper on the Wrecking Crew build for every district below. Technomancer on Chain Reaction for the three bosses only. Adaptive difficulty left on (the default). The bot stims below 45% life and casts the first skill button when it is ready. Dialog buttons are polled until they enable. Scenes are skipped. Boss and lieutenant title cards are ended through the test hook. Sim time is `G.time`. A fight stops when the district is empty, the hero dies, the hero has not moved and has not had a kill for 8 sim seconds, or the cap is hit (40 sim seconds in a district, 75 on a boss, 90 seconds of wall clock).',
+    'Protocol: level matched to the district, identified rare weapon, armor, helm, gloves, boots and belt, no uniques, no hire. Scrapper on the Wrecking Crew build for every district below. Technomancer on Chain Reaction for the three bosses only. Adaptive difficulty left on (the default). The bot steps along open floor tiles toward the nearest machine, holds attack in range, stims below 45% life, and casts the first skill button when it is ready. Dialog buttons are polled until they enable. Scenes are skipped. Boss and lieutenant title cards are ended through the test hook. Sim time is `G.time`. A fight stops when the district is empty, the hero dies, the hero has not moved and has not had a kill for 8 sim seconds, or the cap is hit (40 sim seconds in a district, 75 on a boss, 90 seconds of wall clock). Stuck with life still high means the bot lost the path, not that the district killed it.',
     '',
     '| District | Build | Result | Sim s | Life left | Stims | Enemies left/at start | Boss life |',
     '|---|---|---|---:|---:|---:|---:|---:|',
