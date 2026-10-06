@@ -104,11 +104,11 @@ function unstealth(){if(P.stealth>0){P.ambM=2.5+.3*sl(4);P.ambT=.15;P.stealth=0;
 /* ---------- mercenaries and anything else the machines may attack instead of you ---------- */
 function mercStats(){const m=G.merc,t=MERCS[m.k],l=G.lvl,w=m.weapon?(m.weapon.dmin+m.weapon.dmax)/2*.5:0,arm=(m.armor?m.armor.arm:0)+(m.helm?m.helm.arm||0:0);return{max:Math.round(((60+22*l)*t.hpM+arm*3)*(m.ab1==='guard'?1.4:1)),dmg:((4+2.2*l)*t.dM+w)*(m.ab1==='fury'?1.3:1),red:100/(100+arm*2+l*2)}}
 function spawnMerc(){W.merc=null;spawnTag();if(G.tag||!G.merc||G.merc.dead)return;const s=mercStats();if(W.z.town)G.merc.hp=s.max;W.merc={x:P.x+.8,y:P.y+.6,r:.28,hp:Math.min(G.merc.hp||s.max,s.max),max:s.max,cd:0,hc:3,ph:0,flash:0,taunt:MERCS[G.merc.k].taunt||0,armM:s.red,fx:1,swing:0}}
-function updMerc(dt){const m=W.merc;if(!m||m.hp<=0)return;const t=MERCS[G.merc.k],s=mercStats();m.max=s.max;m.armM=s.red;m.cd-=dt;m.ph+=dt;m.flash=Math.max(0,m.flash-dt);m.swing=Math.max(0,m.swing-dt);
+function updMerc(dt){const m=W.merc;if(!m||m.hp<=0)return;const t=MERCS[G.merc.k],s=mercStats();m.max=s.max;m.armM=s.red;m.cd-=dt;m.ph+=dt;m.flash=Math.max(0,m.flash-dt);m.swing=Math.max(0,m.swing-dt);m.haste=Math.max(0,(m.haste||0)-dt);
   let tg=null,bd=7.5;for(const e of W.ents){if(!e.aggro)continue;const d=dist(e,P);if(d<bd){bd=d;tg=e}}
   const g=tg||P,d=dist(g,m)||1,want=tg?t.range*.85:1.8;m.mov=false;
   if(dist(m,P)>13){m.x=P.x;m.y=P.y}else if(d>want){const sp=t.spd*dt;if(!mv(m,(g.x-m.x)/d*sp,(g.y-m.y)/d*sp)&&dist(m,P)>5){m.x=P.x;m.y=P.y}m.mov=true;m.fx=(g.x-m.x)-(g.y-m.y)>0?1:-1}
-  if(tg&&d<=t.range+tg.r&&m.cd<=0){m.cd=t.ivl;m.swing=.15;if(t.range>2){W.projs.push({x:m.x,y:m.y,vx:(tg.x-m.x)/d*12,vy:(tg.y-m.y)/d*12,life:.7,raw:s.dmg*nodeMul(false),done:[],pierce:0,col:t.col,kind:'merc'});sfx('throw')}else{dmgEnemy(tg,s.dmg*nodeMul(false),false);sfx('hit')}}
+  if(tg&&d<=t.range+tg.r&&m.cd<=0){m.cd=t.ivl/toxicSwing(m);m.swing=.15;if(t.range>2){W.projs.push({x:m.x,y:m.y,vx:(tg.x-m.x)/d*12,vy:(tg.y-m.y)/d*12,life:.7,raw:s.dmg*nodeMul(false),done:[],pierce:0,col:t.col,kind:'merc'});sfx('throw')}else{dmgEnemy(tg,s.dmg*nodeMul(false),false);sfx('hit')}}
   if(G.merc.k==='sys'){m.hc-=dt;if(m.hc<=0){m.hc=4;if(G.hp<S.maxHp*.9){heal(S.maxHp*.07);G.en=Math.min(S.maxEn,G.en+6);W.fx.push({k:'bolt',x:m.x,y:m.y,x2:P.x,y2:P.y,t:0,life:.4,col:'#7be495'});sfx('mend')}}}
   if(!tg)m.hp=Math.min(m.max,m.hp+m.max*.04*dt);G.merc.hp=m.hp}
 function tanks(){const c=[];if(W.merc&&W.merc.hp>0)c.push(W.merc);if(W.tag&&W.tag.hp>0)c.push(W.tag);if(W.esc)c.push(W.esc);for(const a of W.allies)if(a.hp>0)c.push(a);return c}
@@ -413,7 +413,7 @@ function pdmg(m,e){
   /* Twenty-One Million: a supply the difficulty cannot dilute. */
   if(G.cls==='maxi'&&sl(8)){d*=1+.03*sl(8);d*=Math.pow(partyH(),Math.min(1,.12*sl(8)))}
   /* Toxic Maximalism, the aura, while it is the one that is on. */
-  if(P.aura&&P.aura.i===3)d*=1+.2+.05*P.aura.L
+  {let tox=(P.aura&&P.aura.i===3)?P.aura.L:0;if(P.toxL>tox)tox=P.toxL;if(tox)d*=1+.2+.05*tox}
   if(P.shr&&P.shr.k==='might')d*=1.5;
   if(S.sp.exit&&e&&(e.champ||isBoss(e.k)))d*=1.5;
   if(S.sp.deadline&&P.movedT>0)d*=1.25;if(S.sp.tenmin&&e&&!e.hits)d*=1.6;if(G.cls==='founder'&&sl(13)&&!boonOn(13))d*=orgMul(!!P.allySwing);if(G.cls==='maxi'&&sl(10)&&P.aura)d*=nodeMul(!P.allySwing);if(P.fm&&P.fm.t>0)d*=P.fm.m;if(S.sp.hashrate)d*=1+.01*Math.min(40,P.streak);if(S.sp.quorum)d*=1+.05*Math.min(6,tanks().length+W.allies.filter(a=>a.k==='turret').length);
@@ -468,7 +468,7 @@ function kill(e){
     setTimeout(()=>{if(rep){toast(ET[e.k].n+' falls again.');return}if(b3)playScene(ENDING3.concat(CLOCK3),()=>{mode='play';actDone(3)});else playScene(b2?ENDING2:endingSlides(),()=>{mode='play';actDone(b2?2:1)})},1400)}}
 function gainXp(v,fromParty){if(P.shr&&P.shr.k==='xp')v*=1.5;v*=(G.hc?1.25:1)*(SEA.k==='over'?1.2:1);if(!fromParty)mpShareXp(v);
   if(G.lvl>=lvlCap()){paraXp(v);return}G.xp+=v;while(G.xp>=xpNext(G.lvl)&&G.lvl<lvlCap()){G.xp-=xpNext(G.lvl);G.lvl++;G.sp++;G.ap+=5;calc();G.hp=S.maxHp;G.en=S.maxEn;sfx('level');toast('Level '+G.lvl+'. One skill point and five attribute points.');W.fx.push({k:'ring',x:P.x,y:P.y,r:2.8,t:0,life:.7,col:'#ffe36b'});parts(P.x,P.y,24,['#ffe36b','#fff'],2,1.6)}}
-function hurt(d,slow,src){const pv=src&&src.pvp;if((P.inv>0&&!pv)||(mode!=='play'&&!pv)||G.god)return;if(P.dip){P.dip=0;float(P.x,P.y,'The dip','#f7931a',1);sfx('whiff');return}d*=partyD();
+function hurt(d,slow,src){const pv=src&&src.pvp;if((P.inv>0&&!pv)||(mode!=='play'&&!pv)||G.god)return;if(P.dip){P.dip=0;float(P.x,P.y,'The dip','#f7931a',1);sfx('whiff');return}d*=partyD();if(P.mkAura>0&&!pv)d*=1.3;
   if(S.dodge&&Math.random()*100<S.dodge){float(P.x,P.y,'Dodge','#9fe0d0',1);sfx('whiff');return}
   if(P.route>0&&G.cls==='courier'&&sl(10)&&!boonOn(10)&&Math.random()*100<6+2*sl(10)){float(P.x,P.y,'Route','#3fbf8f',1);sfx('whiff');return}
   d=typedIn(d,src);d*=S.taken||1;d*=100/(100+(S.armor+(G.cls==='scrapper'&&sl(11)&&!boonOn(11)?Math.floor(Math.min(6,P.lineT||0))*4*sl(11):0))*(P.mech>0?2:1)*(P.guard>0?1.6:1)*(P.shr&&P.shr.k==='guard'?2:1));
@@ -486,9 +486,9 @@ function attack(){
   if(P.atk>0||P.dash)return;const c=CLS[G.cls];unstealth();
   if(P.mech>0){P.atk=.7;P.swing=.18;const t=nearest(2.6);if(t)face(t);burst(P.x+P.dir.x,P.y+P.dir.y,2,1.6+.25*sl(5),0,'#e0bd6e');return}
   const two=c.melee&&P.two&&P.two.n>0;
-  P.atk=two?c.ivl*1.75:c.ivl/(1+(S.aspd+(P.buff>0?40:0))/100);P.swing=.18;sfx(c.melee?'swing':G.cls==='hacker'?'zap':'throw');
+  P.atk=(two?c.ivl*1.75:c.ivl/(1+(S.aspd+(P.buff>0?40:0))/100))/toxicSwing(P);P.swing=.18;sfx(c.melee?'swing':G.cls==='hacker'?'zap':'throw');
   const t=nearest(two?3.1:(c.melee?2.4:6.5));if(t)face(t);
-  if(c.melee){const reach=two?2.45:1.75,arc=two?-.35:.15;W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:two?2.1:1});
+  if(c.melee){mpNoteSwing();const reach=two?2.45:1.75,arc=two?-.35:.15;W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:two?2.1:1});
     const dump1=G.cls==='anon'&&P.reh>0&&sl(10)&&!boonOn(10);if(dump1){P.reh--;if(P.reh<=0){P.reh=0;P.rehT=0}DT='rust';dumpSpent('rust')}
     P.swinging=1;for(const e of W.ents.slice()){const d=dist(e,P);if(d<reach+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(d||1)>arc)hit(e,c.mult)}if(dump1)DT=null;P.swinging=0;
     if(two){P.two.n--;if(P.two.n<=0)P.two=null}smash(two?2.3:1.7)}
@@ -645,7 +645,7 @@ Object.assign(SKF,{
 });
 function cast(slot){const i=G.slots[slot];if(mode!=='play'||i<0||i===undefined)return;if(P.castWait>0){toast('Still casting');sfx('err');return}const s=CLS[G.cls].sk[i],L=sl(i);if(!L||!s.a||P.cd[i]>0||P.dash)return;if(P.silence>0){toast('Silenced');sfx('err');return}
   const fk=forkOf(i);let cost=s.cost*(S.sp.hoodie?.75:1)*(fk.cost||1);if(P.freeThrow&&G.cls==='courier'&&(i===0||i===6||i===9||i===12)){cost=0;P.freeThrow=0}if(G.en<cost){toast('Not enough energy');sfx('err');return}
-  const t=nearest(6.5);if(t)face(t);G.en-=cost;P.cd[i]=s.cd*(1-Math.min(.6,S.cdr))*(fk.cd||1)*(G.sk[i]>=10?.8:1);skvPlay(G.cls,i,P.x,P.y,P.dir);if(!(G.cls==='anon'&&i===3&&P.stealth>0&&sl(11)&&!boonOn(11)))unstealth();sfx(SKS[G.cls][i]||'cast');P.fm={m:fk.dm||1,t:(G.fork||{})[i]==='refund'?2:1.2,k:(G.fork||{})[i],dt:skType(G.cls,i)};forkCast((G.fork||{})[i]);const na=W.allies.length;SKF[G.cls][i](L,syn(i));for(let k=na;k<W.allies.length;k++)if(!W.allies[k].holdDt)W.allies[k].dt=skType(G.cls,i);for(const a of W.allies)if(a.per&&!a.dt)a.dt=skType(G.cls,i);forkAfter(i,L)}
+  const t=nearest(6.5);if(t)face(t);G.en-=cost;P.cd[i]=s.cd*(1-Math.min(.6,S.cdr))*(fk.cd||1)*(G.sk[i]>=10?.8:1);skvPlay(G.cls,i,P.x,P.y,P.dir);mpNoteCast(i);if(!(G.cls==='anon'&&i===3&&P.stealth>0&&sl(11)&&!boonOn(11)))unstealth();sfx(SKS[G.cls][i]||'cast');P.fm={m:fk.dm||1,t:(G.fork||{})[i]==='refund'?2:1.2,k:(G.fork||{})[i],dt:skType(G.cls,i)};forkCast((G.fork||{})[i]);const na=W.allies.length;SKF[G.cls][i](L,syn(i));for(let k=na;k<W.allies.length;k++)if(!W.allies[k].holdDt)W.allies[k].dt=skType(G.cls,i);for(const a of W.allies)if(a.per&&!a.dt)a.dt=skType(G.cls,i);forkAfter(i,L)}
 function stim(){if(mode!=='play')return;if(W.sub&&W.sub.mods.includes('dry')){toast('Stims do not work in these proceedings');sfx('err');return}if(G.stims<1){toast('No stims. Brenda sells them.');return}if(G.hp>=S.maxHp&&!(S.sp.repair&&G.en<S.maxEn))return;G.stims--;heal(S.maxHp*.45);if(S.sp.repair)G.en=S.maxEn;sfx('stim');float(P.x,P.y,'+stim','#7be495');parts(P.x,P.y,10,['#7be495','#fff'],1.5,1.5)}
 
 /* ================= interaction ================= */

@@ -780,11 +780,11 @@ function unstealth(){if(P.stealth>0){P.ambM=2.5+.3*sl(4);P.ambT=.15;P.stealth=0;
 /* ---------- mercenaries and anything else the machines may attack instead of you ---------- */
 function mercStats(){const m=G.merc,t=MERCS[m.k],l=G.lvl,w=m.weapon?(m.weapon.dmin+m.weapon.dmax)/2*.5:0,arm=(m.armor?m.armor.arm:0)+(m.helm?m.helm.arm||0:0);return{max:Math.round(((60+22*l)*t.hpM+arm*3)*(m.ab1==='guard'?1.4:1)),dmg:((4+2.2*l)*t.dM+w)*(m.ab1==='fury'?1.3:1),red:100/(100+arm*2+l*2)}}
 function spawnMerc(){W.merc=null;spawnTag();if(G.tag||!G.merc||G.merc.dead)return;const s=mercStats();if(W.z.town)G.merc.hp=s.max;W.merc={x:P.x+.8,y:P.y+.6,r:.28,hp:Math.min(G.merc.hp||s.max,s.max),max:s.max,cd:0,hc:3,ph:0,flash:0,taunt:MERCS[G.merc.k].taunt||0,armM:s.red,fx:1,swing:0}}
-function updMerc(dt){const m=W.merc;if(!m||m.hp<=0)return;const t=MERCS[G.merc.k],s=mercStats();m.max=s.max;m.armM=s.red;m.cd-=dt;m.ph+=dt;m.flash=Math.max(0,m.flash-dt);m.swing=Math.max(0,m.swing-dt);
+function updMerc(dt){const m=W.merc;if(!m||m.hp<=0)return;const t=MERCS[G.merc.k],s=mercStats();m.max=s.max;m.armM=s.red;m.cd-=dt;m.ph+=dt;m.flash=Math.max(0,m.flash-dt);m.swing=Math.max(0,m.swing-dt);m.haste=Math.max(0,(m.haste||0)-dt);
   let tg=null,bd=7.5;for(const e of W.ents){if(!e.aggro)continue;const d=dist(e,P);if(d<bd){bd=d;tg=e}}
   const g=tg||P,d=dist(g,m)||1,want=tg?t.range*.85:1.8;m.mov=false;
   if(dist(m,P)>13){m.x=P.x;m.y=P.y}else if(d>want){const sp=t.spd*dt;if(!mv(m,(g.x-m.x)/d*sp,(g.y-m.y)/d*sp)&&dist(m,P)>5){m.x=P.x;m.y=P.y}m.mov=true;m.fx=(g.x-m.x)-(g.y-m.y)>0?1:-1}
-  if(tg&&d<=t.range+tg.r&&m.cd<=0){m.cd=t.ivl;m.swing=.15;if(t.range>2){W.projs.push({x:m.x,y:m.y,vx:(tg.x-m.x)/d*12,vy:(tg.y-m.y)/d*12,life:.7,raw:s.dmg*nodeMul(false),done:[],pierce:0,col:t.col,kind:'merc'});sfx('throw')}else{dmgEnemy(tg,s.dmg*nodeMul(false),false);sfx('hit')}}
+  if(tg&&d<=t.range+tg.r&&m.cd<=0){m.cd=t.ivl/toxicSwing(m);m.swing=.15;if(t.range>2){W.projs.push({x:m.x,y:m.y,vx:(tg.x-m.x)/d*12,vy:(tg.y-m.y)/d*12,life:.7,raw:s.dmg*nodeMul(false),done:[],pierce:0,col:t.col,kind:'merc'});sfx('throw')}else{dmgEnemy(tg,s.dmg*nodeMul(false),false);sfx('hit')}}
   if(G.merc.k==='sys'){m.hc-=dt;if(m.hc<=0){m.hc=4;if(G.hp<S.maxHp*.9){heal(S.maxHp*.07);G.en=Math.min(S.maxEn,G.en+6);W.fx.push({k:'bolt',x:m.x,y:m.y,x2:P.x,y2:P.y,t:0,life:.4,col:'#7be495'});sfx('mend')}}}
   if(!tg)m.hp=Math.min(m.max,m.hp+m.max*.04*dt);G.merc.hp=m.hp}
 function tanks(){const c=[];if(W.merc&&W.merc.hp>0)c.push(W.merc);if(W.tag&&W.tag.hp>0)c.push(W.tag);if(W.esc)c.push(W.esc);for(const a of W.allies)if(a.hp>0)c.push(a);return c}
@@ -1089,7 +1089,7 @@ function pdmg(m,e){
   /* Twenty-One Million: a supply the difficulty cannot dilute. */
   if(G.cls==='maxi'&&sl(8)){d*=1+.03*sl(8);d*=Math.pow(partyH(),Math.min(1,.12*sl(8)))}
   /* Toxic Maximalism, the aura, while it is the one that is on. */
-  if(P.aura&&P.aura.i===3)d*=1+.2+.05*P.aura.L
+  {let tox=(P.aura&&P.aura.i===3)?P.aura.L:0;if(P.toxL>tox)tox=P.toxL;if(tox)d*=1+.2+.05*tox}
   if(P.shr&&P.shr.k==='might')d*=1.5;
   if(S.sp.exit&&e&&(e.champ||isBoss(e.k)))d*=1.5;
   if(S.sp.deadline&&P.movedT>0)d*=1.25;if(S.sp.tenmin&&e&&!e.hits)d*=1.6;if(G.cls==='founder'&&sl(13)&&!boonOn(13))d*=orgMul(!!P.allySwing);if(G.cls==='maxi'&&sl(10)&&P.aura)d*=nodeMul(!P.allySwing);if(P.fm&&P.fm.t>0)d*=P.fm.m;if(S.sp.hashrate)d*=1+.01*Math.min(40,P.streak);if(S.sp.quorum)d*=1+.05*Math.min(6,tanks().length+W.allies.filter(a=>a.k==='turret').length);
@@ -1144,7 +1144,7 @@ function kill(e){
     setTimeout(()=>{if(rep){toast(ET[e.k].n+' falls again.');return}if(b3)playScene(ENDING3.concat(CLOCK3),()=>{mode='play';actDone(3)});else playScene(b2?ENDING2:endingSlides(),()=>{mode='play';actDone(b2?2:1)})},1400)}}
 function gainXp(v,fromParty){if(P.shr&&P.shr.k==='xp')v*=1.5;v*=(G.hc?1.25:1)*(SEA.k==='over'?1.2:1);if(!fromParty)mpShareXp(v);
   if(G.lvl>=lvlCap()){paraXp(v);return}G.xp+=v;while(G.xp>=xpNext(G.lvl)&&G.lvl<lvlCap()){G.xp-=xpNext(G.lvl);G.lvl++;G.sp++;G.ap+=5;calc();G.hp=S.maxHp;G.en=S.maxEn;sfx('level');toast('Level '+G.lvl+'. One skill point and five attribute points.');W.fx.push({k:'ring',x:P.x,y:P.y,r:2.8,t:0,life:.7,col:'#ffe36b'});parts(P.x,P.y,24,['#ffe36b','#fff'],2,1.6)}}
-function hurt(d,slow,src){const pv=src&&src.pvp;if((P.inv>0&&!pv)||(mode!=='play'&&!pv)||G.god)return;if(P.dip){P.dip=0;float(P.x,P.y,'The dip','#f7931a',1);sfx('whiff');return}d*=partyD();
+function hurt(d,slow,src){const pv=src&&src.pvp;if((P.inv>0&&!pv)||(mode!=='play'&&!pv)||G.god)return;if(P.dip){P.dip=0;float(P.x,P.y,'The dip','#f7931a',1);sfx('whiff');return}d*=partyD();if(P.mkAura>0&&!pv)d*=1.3;
   if(S.dodge&&Math.random()*100<S.dodge){float(P.x,P.y,'Dodge','#9fe0d0',1);sfx('whiff');return}
   if(P.route>0&&G.cls==='courier'&&sl(10)&&!boonOn(10)&&Math.random()*100<6+2*sl(10)){float(P.x,P.y,'Route','#3fbf8f',1);sfx('whiff');return}
   d=typedIn(d,src);d*=S.taken||1;d*=100/(100+(S.armor+(G.cls==='scrapper'&&sl(11)&&!boonOn(11)?Math.floor(Math.min(6,P.lineT||0))*4*sl(11):0))*(P.mech>0?2:1)*(P.guard>0?1.6:1)*(P.shr&&P.shr.k==='guard'?2:1));
@@ -1162,9 +1162,9 @@ function attack(){
   if(P.atk>0||P.dash)return;const c=CLS[G.cls];unstealth();
   if(P.mech>0){P.atk=.7;P.swing=.18;const t=nearest(2.6);if(t)face(t);burst(P.x+P.dir.x,P.y+P.dir.y,2,1.6+.25*sl(5),0,'#e0bd6e');return}
   const two=c.melee&&P.two&&P.two.n>0;
-  P.atk=two?c.ivl*1.75:c.ivl/(1+(S.aspd+(P.buff>0?40:0))/100);P.swing=.18;sfx(c.melee?'swing':G.cls==='hacker'?'zap':'throw');
+  P.atk=(two?c.ivl*1.75:c.ivl/(1+(S.aspd+(P.buff>0?40:0))/100))/toxicSwing(P);P.swing=.18;sfx(c.melee?'swing':G.cls==='hacker'?'zap':'throw');
   const t=nearest(two?3.1:(c.melee?2.4:6.5));if(t)face(t);
-  if(c.melee){const reach=two?2.45:1.75,arc=two?-.35:.15;W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:two?2.1:1});
+  if(c.melee){mpNoteSwing();const reach=two?2.45:1.75,arc=two?-.35:.15;W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:two?2.1:1});
     const dump1=G.cls==='anon'&&P.reh>0&&sl(10)&&!boonOn(10);if(dump1){P.reh--;if(P.reh<=0){P.reh=0;P.rehT=0}DT='rust';dumpSpent('rust')}
     P.swinging=1;for(const e of W.ents.slice()){const d=dist(e,P);if(d<reach+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(d||1)>arc)hit(e,c.mult)}if(dump1)DT=null;P.swinging=0;
     if(two){P.two.n--;if(P.two.n<=0)P.two=null}smash(two?2.3:1.7)}
@@ -1321,7 +1321,7 @@ Object.assign(SKF,{
 });
 function cast(slot){const i=G.slots[slot];if(mode!=='play'||i<0||i===undefined)return;if(P.castWait>0){toast('Still casting');sfx('err');return}const s=CLS[G.cls].sk[i],L=sl(i);if(!L||!s.a||P.cd[i]>0||P.dash)return;if(P.silence>0){toast('Silenced');sfx('err');return}
   const fk=forkOf(i);let cost=s.cost*(S.sp.hoodie?.75:1)*(fk.cost||1);if(P.freeThrow&&G.cls==='courier'&&(i===0||i===6||i===9||i===12)){cost=0;P.freeThrow=0}if(G.en<cost){toast('Not enough energy');sfx('err');return}
-  const t=nearest(6.5);if(t)face(t);G.en-=cost;P.cd[i]=s.cd*(1-Math.min(.6,S.cdr))*(fk.cd||1)*(G.sk[i]>=10?.8:1);skvPlay(G.cls,i,P.x,P.y,P.dir);if(!(G.cls==='anon'&&i===3&&P.stealth>0&&sl(11)&&!boonOn(11)))unstealth();sfx(SKS[G.cls][i]||'cast');P.fm={m:fk.dm||1,t:(G.fork||{})[i]==='refund'?2:1.2,k:(G.fork||{})[i],dt:skType(G.cls,i)};forkCast((G.fork||{})[i]);const na=W.allies.length;SKF[G.cls][i](L,syn(i));for(let k=na;k<W.allies.length;k++)if(!W.allies[k].holdDt)W.allies[k].dt=skType(G.cls,i);for(const a of W.allies)if(a.per&&!a.dt)a.dt=skType(G.cls,i);forkAfter(i,L)}
+  const t=nearest(6.5);if(t)face(t);G.en-=cost;P.cd[i]=s.cd*(1-Math.min(.6,S.cdr))*(fk.cd||1)*(G.sk[i]>=10?.8:1);skvPlay(G.cls,i,P.x,P.y,P.dir);mpNoteCast(i);if(!(G.cls==='anon'&&i===3&&P.stealth>0&&sl(11)&&!boonOn(11)))unstealth();sfx(SKS[G.cls][i]||'cast');P.fm={m:fk.dm||1,t:(G.fork||{})[i]==='refund'?2:1.2,k:(G.fork||{})[i],dt:skType(G.cls,i)};forkCast((G.fork||{})[i]);const na=W.allies.length;SKF[G.cls][i](L,syn(i));for(let k=na;k<W.allies.length;k++)if(!W.allies[k].holdDt)W.allies[k].dt=skType(G.cls,i);for(const a of W.allies)if(a.per&&!a.dt)a.dt=skType(G.cls,i);forkAfter(i,L)}
 function stim(){if(mode!=='play')return;if(W.sub&&W.sub.mods.includes('dry')){toast('Stims do not work in these proceedings');sfx('err');return}if(G.stims<1){toast('No stims. Brenda sells them.');return}if(G.hp>=S.maxHp&&!(S.sp.repair&&G.en<S.maxEn))return;G.stims--;heal(S.maxHp*.45);if(S.sp.repair)G.en=S.maxEn;sfx('stim');float(P.x,P.y,'+stim','#7be495');parts(P.x,P.y,10,['#7be495','#fff'],1.5,1.5)}
 
 /* ================= interaction ================= */
@@ -2167,10 +2167,10 @@ const SKV={scrapper:{
 function skvOf(cls,i){const row=(SKV[cls]||{})[i];if(!row)return null;const sk=CLS[cls]&&CLS[cls].sk[i];let col=row.col;
   if(!col&&sk&&sk.a){const ty=skType(cls,i);if(DTY[ty])col=DTY[ty].c}if(!col)col=(CLS[cls]&&CLS[cls].col)||'#e6e2d6';
   return {k:row.k,col:col,r:row.r||1.2,w:row.w||1,n:row.n||(row.k==='orbit'?3:1),life:row.life||SKV_LIFE[row.k]||.4,at:row.at||'',tel:row.tel?1:0}}
-function skvPlay(cls,i,x,y,dir){const v=skvOf(cls,i);if(!v||!W||!W.fx)return;const dx=(dir&&dir.x)||1,dy=(dir&&dir.y)||0;
+function skvPlay(cls,i,x,y,dir,remote){const v=skvOf(cls,i);if(!v||!W||!W.fx)return;const dx=(dir&&dir.x)||1,dy=(dir&&dir.y)||0;
   let px=x,py=y,x2=x+dx*(v.r||3),y2=y+dy*(v.r||3);
-  if(v.at==='foe'){const t=nearest(8);if(t){x2=t.x;y2=t.y;if(v.k==='mark'||v.k==='patch'||v.k==='ring'||v.k==='strike'){px=t.x;py=t.y}}}
-  W.fx.push({k:v.k,x:px,y:py,x2:x2,y2:y2,dx:dx,dy:dy,r:v.r,w:v.w,n:v.n,col:v.col,t:0,life:v.life,tel:v.tel})}
+  if(v.at==='foe'&&!remote){const t=nearest(8);if(t){x2=t.x;y2=t.y;if(v.k==='mark'||v.k==='patch'||v.k==='ring'||v.k==='strike'){px=t.x;py=t.y}}}
+  W.fx.push({k:v.k,x:px,y:py,x2:x2,y2:y2,dx:dx,dy:dy,r:v.r,w:v.w,n:v.n,col:v.col,t:0,life:v.life,tel:v.tel,remote:remote?1:0})}
 const baseType=()=>G.cls==='maxi'?'sound':(G.eq.weapon&&G.eq.weapon.dt)||(G.cls==='hacker'?'surge':'impact');
 const RES={tick:{surge:1.5},drone:{surge:1.5,noise:.5},bot:{impact:.75,rust:1.5},hound:{noise:1.5,rust:.5},ad:{noise:0,impact:1.5},hr:{noise:.5,heat:1.5},mech:{impact:.5,rust:1.5,surge:1.25},seer:{surge:.5,impact:1.5},aegis:{surge:0,heat:1.5},lancer:{noise:1.5,heat:.5},splitter:{heat:1.5,impact:.5},
  director:{noise:.5,rust:1.5},proxy:{rust:.5,surge:1.5},censor:{noise:0,heat:1.5},shill:{noise:1.5},boss:{noise:.5,rust:1.5,heat:1.25},boss2:{noise:0,surge:1.5,impact:.75},boss3:{surge:.5,noise:.5,impact:1.5,heat:1.25}};
@@ -2339,7 +2339,7 @@ function updTag(dt){const m=W.tag,t=G.tag;if(!m||!t||m.hp<=0)return;const c=CLS[
   if(m.volley){const v=m.volley;v.t-=dt;v.cd-=dt;if(v.cd<=0&&tg){v.cd=.12;tagDo(()=>{face(tg);shoot(P.dir,v.m,0)})}if(v.t<=0)m.volley=null}
   if(tg){m.dir={x:(tg.x-m.x)/d,y:(tg.y-m.y)/d};
     for(let j=0;j<t.sk.length;j++){m.sc[j]-=dt;if(m.sc[j]>0||d>7)continue;const[i,rk]=t.sk[j],s=c.sk[i],f=SKF[t.cls]&&SKF[t.cls][i];if(!f)continue;m.sc[j]=Math.max(4,(s.cd||5)*1.4)+j;m.say=s.n;m.sayT=1.4;m.swing=.18;sfx((SKS[t.cls]||{})[i]||'zap');tagDo(()=>{skvPlay(t.cls,i,P.x,P.y,m.dir);f(rk,R)});return}
-    if(d<=rng+tg.r+.3&&m.atk<=0){m.atk=c.ivl*1.15;m.swing=.18;tagDo(()=>{if(c.melee){sfx('swing');W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:1});for(const e of W.ents.slice()){const dd=dist(e,P);if(dd<1.75+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(dd||1)>.15)hit(e,c.mult*R)}}else{sfx(t.cls==='hacker'?'zap':'throw');shoot(P.dir,c.mult*R,0)}})}}
+    if(d<=rng+tg.r+.3&&m.atk<=0){m.atk=c.ivl*1.15/toxicSwing(m);m.swing=.18;tagDo(()=>{if(c.melee){sfx('swing');W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:1});for(const e of W.ents.slice()){const dd=dist(e,P);if(dd<1.75+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(dd||1)>.15)hit(e,c.mult*R)}}else{sfx(t.cls==='hacker'?'zap':'throw');shoot(P.dir,c.mult*R,0)}})}}
   else m.hp=Math.min(m.max,m.hp+m.max*.04*dt);t.hp=m.hp}
 function tagProxy(){const t=G.tag,g=Object.create(G);g.cls=t.cls;g.eq=t.eq||{};g.hp=W.tag.hp/W.tag.max*S.maxHp;return g}
 function tagMenu(){const b=[];if(G.tag)b.push(['Send '+G.tag.name+' back',()=>tagDismiss()]);for(let n=0;n<NSLOT;n++){const og=tagG(n);if(og&&CLS[og.cls]&&!(G.tag&&G.tag.slot===n))b.push(['Render level '+og.lvl+' '+CLS[og.cls].n+' · '+tagCost(og.lvl)+' sats',()=>tagRender(n)])}
@@ -3874,7 +3874,7 @@ function showDisc(){const d=$('disc');if(!d)return;
   addEventListener('pointerdown',go,true);addEventListener('keydown',go,true)}
 showDisc();
 cloudInit();
-window.__g={skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP}};
+window.__g={skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul};
 /* late additions that need the dialogue tables */
 QRW.push(
  ['q16','gramps','“So that is what yes looks like. Everybody glad and nobody home. I clicked a thing like that once, when I was young. I do not remember the nine years after it. I am told I enjoyed them.” You gain 1 skill point.',()=>G.sp++,'Gramps'],
@@ -3918,27 +3918,88 @@ function maxiSet(i, L) {
   W.fx.push({ k: 'ring', x: P.x, y: P.y, r: 3.2, t: 0, life: .45, col: '#f7931a' });
 }
 
+/* One aura per Maximalist. A second Maximalist's different aura is a second holder.
+   Allies are a list: you, when the aura is someone else's, the hireling, and the
+   tag-along. Party members apply it on their own client from the au field.
+   Foes are monsters plus hostile stand-ins. A party member is never in that loop. */
+function auraSpecs() {
+  const list = [];
+  if (G.cls === 'maxi' && P.aura) {
+    const a = P.aura, L = a.L || sl(a.i) || 1;
+    list.push({ x: P.x, y: P.y, i: a.i, L: L, self: 1, party: 1, hostile: 0, src: a });
+  }
+  if (typeof MP !== 'undefined' && MP.others) {
+    for (const o of MP.others) {
+      if (!o || !(o.au === 3 || o.au === 4 || o.au === 7)) continue;
+      const party = typeof mpInParty === 'function' && mpInParty(o.uid);
+      const hostile = typeof mpHostileTo === 'function' && mpHostileTo(o.uid);
+      if (!party && !hostile) continue;
+      list.push({ x: o.x, y: o.y, i: o.au, L: o.aL || 1, self: 0, party: party && !hostile ? 1 : 0, hostile: hostile ? 1 : 0, src: o });
+    }
+  }
+  return list;
+}
+function inAura(body, h) {
+  if (!body || (body.hp !== undefined && !(body.hp > 0))) return false;
+  return dist(body, h) < auraVisR(h.i, h.L);
+}
+function nearbyAllies(h) {
+  const out = [];
+  if (!h || h.hostile || !(h.self || h.party)) return out;
+  if (!h.self && inAura(P, h)) out.push(P);
+  if (inAura(W && W.merc, h)) out.push(W.merc);
+  if (inAura(W && W.tag, h)) out.push(W.tag);
+  return out;
+}
+function auraFoes(h) {
+  const out = [];
+  if (!h || !W || !W.ents) return out;
+  const r = auraVisR(h.i, h.L);
+  for (const e of W.ents) {
+    if (!e || !(e.hp > 0)) continue;
+    if (dist(e, h) >= r + (e.r || 0)) continue;
+    if (e.mp) {
+      if (typeof mpInParty === 'function' && mpInParty(e.mp)) continue;
+      if (!(typeof mpHostileTo === 'function' && mpHostileTo(e.mp))) continue;
+    }
+    out.push(e);
+  }
+  return out;
+}
+/* Toxic Maximalism's attack-speed line is the one already printed on the skill:
+   15+3*L percent. The owner's own swing is unchanged. Bodies standing in someone
+   else's copy of it, and the hireling in yours, use that percent. */
+function toxicSwing(body) {
+  const L = body && body.toxL;
+  if (!(L > 0)) return 1;
+  return 1 + (15 + 3 * L) / 100;
+}
 function maxiAura(dt) {
-  if (!G || G.cls !== 'maxi' || !P.aura || mode !== 'play') return;
-  const a = P.aura, L = a.L || sl(a.i) || 1;
-  a.t -= dt;
-
-  if (a.i === 3) {
-    /* Toxic Maximalism: you and anybody beside you swing faster. The damage half is in pdmg. */
-    P.haste = Math.max(P.haste, .3);
-    if (W.merc) W.merc.haste = .3;
-  } else if (a.i === 4) {
-    /* Marked to Market: inside it, nothing's resistances apply. `mark` is the game's own
-       take-more-damage flag, so this reuses the machinery the rest of the game uses. */
-    const r = 3.5 + .15 * L;
-    for (const e of W.ents) if (!e.mp && dist(e, P) < r + e.r) e.mark = Math.max(e.mark, .4);
-  } else if (a.i === 7) {
-    /* Proof of Work: the heat of the work, constantly, to everything close enough. */
-    if (a.t <= 0) {
-      a.t = .5;
-      const r = 3.2 + .1 * L, m = (.3 + .07 * L) * syn(7);
-      for (const e of W.ents.slice()) if (!e.mp && dist(e, P) < r + e.r) hit(e, m, true);
-      W.fx.push({ k: 'ring', x: P.x, y: P.y, r, t: 0, life: .25, col: '#f7931a' });
+  if (!G || !P) return;
+  dt = dt || 0;
+  P.toxL = 0; P.mkAura = 0;
+  if (W && W.merc) W.merc.toxL = 0;
+  if (W && W.tag) W.tag.toxL = 0;
+  if (mode !== 'play' || !W) return;
+  if (G.cls === 'maxi' && P.aura) P.aura.t -= dt;
+  for (const h of auraSpecs()) {
+    if (h.i === 3 && !h.hostile) {
+      if (h.self) P.haste = Math.max(P.haste, .3);
+      for (const a of nearbyAllies(h)) {
+        if (a === P) { P.haste = Math.max(P.haste, .3); P.toxL = Math.max(P.toxL, h.L); }
+        else { a.haste = Math.max(a.haste || 0, .3); a.toxL = Math.max(a.toxL || 0, h.L); }
+      }
+    } else if (h.i === 4) {
+      for (const e of auraFoes(h)) e.mark = Math.max(e.mark || 0, .4);
+      if (h.hostile && inAura(P, h)) P.mkAura = .4;
+    } else if (h.i === 7) {
+      let ready = false;
+      if (h.self) { if (P.aura.t <= 0) { P.aura.t = .5; ready = true; } }
+      else { h.src.powT = (h.src.powT || 0) - dt; if (h.src.powT <= 0) { h.src.powT = .5; ready = true; } }
+      if (!ready) continue;
+      const m = (.3 + .07 * h.L) * (h.self ? syn(7) : 1);
+      for (const e of auraFoes(h)) hit(e, m, true);
+      if (h.self) W.fx.push({ k: 'ring', x: P.x, y: P.y, r: auraVisR(7, h.L), t: 0, life: .25, col: '#f7931a' });
     }
   }
 }
@@ -4007,8 +4068,10 @@ function mpConnect() {
   c.onerror = () => {};
 }
 
+let mpAnnounced = '';
 function mpHello() {
   if (!G) return;
+  mpAnnounced = G.cls || '';
   mpSend('hello', { lvl: G.lvl, cls: G.cls, zi: W ? W.zi : 0, hp: G.hp, hpm: S.maxHp, act: actOf ? actOf(W ? W.zi : 0) : 1 });
 }
 
@@ -4095,16 +4158,64 @@ function mpRecv(m) {
 }
 
 /* ---------- other players in your district ---------- */
+/* sk and sw are events. au is the aura that is on. A quiet beat omits whichever has
+   not changed, and the next quiet beat clears sk and sw so the same skill can be seen
+   again. The server keeps the last value and does not treat any of this as a hit. */
+let mpSk = null, mpSkNew = 0, mpSkClear = 0, mpSw = 0, mpSwClear = 0;
+const mpSent = { sk: null, au: null, sw: 0 };
+function mpNoteCast(i) { const n = i | 0; if (n >= 0 && n <= 14) { mpSk = n; mpSkNew = 1; } }
+function mpNoteSwing() { mpSw = 1; }
+function mpMovePkt() {
+  if (!P || !W || !G) return null;
+  const pkt = {
+    x: +P.x.toFixed(2), y: +P.y.toFixed(2), zi: W.zi,
+    dir: Math.atan2(P.dir.y, P.dir.x),
+    hp: Math.round(G.hp), hpm: Math.round(S.maxHp), inst: W.inst || null
+  };
+  const au = (P.aura && (P.aura.i === 3 || P.aura.i === 4 || P.aura.i === 7)) ? P.aura.i : null;
+  if (au !== mpSent.au) { pkt.au = au; mpSent.au = au; }
+  /* A repeat of the same index has to go out as empty first, or the other client
+     cannot tell it from the cast it already drew. */
+  if (mpSkClear && !mpSkNew) { pkt.sk = null; mpSent.sk = null; mpSkClear = 0; }
+  else if (mpSkNew && mpSent.sk !== null && mpSent.sk === mpSk) { pkt.sk = null; mpSent.sk = null; }
+  else if (mpSkNew) { pkt.sk = mpSk; mpSent.sk = mpSk; mpSkNew = 0; mpSkClear = 1; mpSk = null; }
+  if (mpSwClear && !mpSw) { pkt.sw = 0; mpSent.sw = 0; mpSwClear = 0; }
+  else if (mpSw && mpSent.sw === 1) { pkt.sw = 0; mpSent.sw = 0; }
+  else if (mpSw) { pkt.sw = 1; mpSent.sw = 1; mpSw = 0; mpSwClear = 1; }
+  return pkt;
+}
+function mpRemoteCast(o) {
+  if (!o || o.sk == null || !o.cls || !W || !W.fx) return;
+  const v = skvOf(o.cls, o.sk);
+  if (!v || OPT.fx === 'thin') return;
+  MP.lastCast = { k: v.k, col: v.col, n: ((MP.lastCast && MP.lastCast.n) || 0) + 1 };
+  const d = o.dir || 0;
+  skvPlay(o.cls, o.sk, o.x, o.y, { x: Math.cos(d), y: Math.sin(d) }, 1);
+}
+function mpRemoteSwing(o) {
+  if (!o || !W || !W.fx || OPT.fx === 'thin') return;
+  const d = o.dir || 0, col = (CLS[o.cls] && CLS[o.cls].col) || '#e6e2d6';
+  W.fx.push({ k: 'arc', x: o.x, y: o.y, dx: Math.cos(d), dy: Math.sin(d), t: 0, life: .18, w: 1, col: col, remote: 1 });
+}
 function mpZone(m) {
   const seen = {};
-  for (const r of m.players) {
+  for (const r of m.players || []) {
     seen[r.uid] = 1;
     let o = MP.others.find(q => q.uid === r.uid);
     if (!o) { o = { uid: r.uid, x: r.x, y: r.y, px: r.x, py: r.y }; MP.others.push(o); }
+    const first = !o.wired, prevSk = o.sk, prevSw = o.sw ? 1 : 0;
     /* Hold the previous position and interpolate toward the new one, so ten updates a
        second do not look like ten updates a second. */
     o.px = o.x; o.py = o.y; o.tx = r.x; o.ty = r.y; o.lerp = 0;
     o.name = r.name; o.lvl = r.lvl; o.cls = r.cls; o.dir = r.dir; o.hp = r.hp; o.hpm = r.hpm;
+    if ('sk' in r) o.sk = (typeof r.sk === 'number' && r.sk >= 0 && r.sk <= 14 && (r.sk | 0) === r.sk) ? r.sk : null;
+    if ('au' in r) o.au = (r.au === 3 || r.au === 4 || r.au === 7) ? r.au : null;
+    if ('sw' in r) o.sw = r.sw === 1 ? 1 : 0;
+    o.wired = 1;
+    if (!first) {
+      if (o.sk != null && o.sk !== prevSk) mpRemoteCast(o);
+      if (o.sw === 1 && prevSw !== 1) mpRemoteSwing(o);
+    }
   }
   for (let i = MP.others.length - 1; i >= 0; i--) if (!seen[MP.others[i].uid]) MP.others.splice(i, 1);
 }
@@ -4160,12 +4271,11 @@ function mpBeat() {
   if (!mpOn() || !G || !W || !P || mode === 'title') return;
   mpSyncEnts();
   mpVoiceLevels();
+  /* The socket opens on the title, before a class exists. Say the class once it does,
+     so the other client knows which shapes to draw. */
+  if ((G.cls || '') !== mpAnnounced) mpHello();
   MP.lastMove = performance.now();
-  mpSend('move', {
-    x: +P.x.toFixed(2), y: +P.y.toFixed(2), zi: W.zi,
-    dir: Math.atan2(P.dir.y, P.dir.x),
-    hp: Math.round(G.hp), hpm: Math.round(S.maxHp), inst: W.inst || null
-  });
+  mpSend('move', mpMovePkt());
 }
 
 /* Drawn simply and labelled clearly: in a fight you need to know at a glance who is a
