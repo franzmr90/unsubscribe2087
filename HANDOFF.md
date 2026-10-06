@@ -46,7 +46,9 @@ The per-class checklist is at the bottom of the plan. Read it before adding a cl
 
 **The next plan is written:** `notes/PLAN-skill-vfx-and-copy.md`.
 
-It does not draw a skill and it does not rewrite a line. It says how unique skill graphics fit the canvas the game already has, how combat stays readable on a phone and in a party of eight, and how to audit the copy without sanding off the voice. Read it before touching `src/p3.js` or a dialog.
+It says how unique skill graphics fit the canvas the game already has, how combat stays readable on a phone and in a party of eight, and how to audit the copy without sanding off the voice. Read it before retargeting a skill or rewriting a dialog.
+
+**V1 of that plan has landed on this branch.** The purple circle that painted whenever skill 11 was learned is gone. Shapes, particles, and lights are capped (48, 80, and 16). Options has an Effects control — Full, Normal, Thin — defaulting to Normal. Thin keeps your own telegraphs and marks, and skips particles, extra lights, and other players' casts. Four foundation shapes (patch, trail, mark, orbit) can be drawn and are not wired to any skill yet. V2, per-class shapes and button glyphs, has not started. Copy rewrites have not started. `node tools/v1-check.js` is the budget check.
 
 ## What the research changes
 

@@ -238,7 +238,7 @@ const free=(x,y,r)=>walk(x-r,y-r)&&walk(x+r,y-r)&&walk(x-r,y+r)&&walk(x+r,y+r);
 function mv(e,dx,dy){let m=false;if(free(e.x+dx,e.y,e.r)){e.x+=dx;m=true}if(free(e.x,e.y+dy,e.r)){e.y+=dy;m=true}return m}
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 function blankW(zi,N){return{zi,z:ZONES[zi],N,ml:0,tier:G.tier,map:new Uint8Array(N*N),wh:new Uint8Array(N*N),seen:new Uint8Array(N*N),ents:[],objs:[],drops:[],decals:[],portals:[],goal:null,start:null,npcs:[]}}
-function initRuntime(){W.z=ZONES[W.zi];W.allies=[];W.projs=[];W.fx=[];W.texts=[];W.parts=[];W.npcs=W.npcs||[];W.boss=W.ents.find(e=>isBoss(e.k))||null;
+function initRuntime(){W.z=ZONES[W.zi];W.allies=[];W.projs=[];W.fx=[];W.texts=[];W.parts=[];W.npcs=W.npcs||[];W.boss=W.ents.find(e=>isBoss(e.k))||null;fxBind();
   W.mm=document.createElement('canvas');W.mm.width=W.mm.height=W.N;const g=W.mm.getContext('2d');W.mmg=g;
   for(let y=0;y<W.N;y++)for(let x=0;x<W.N;x++)if(W.seen[y*W.N+x])mmDot(x,y);
   buildTextures(W.z.style)}
@@ -366,7 +366,23 @@ function float(x,y,txt,col,kind){if(kind===0&&!OPT.dmgOut)return;if(kind===1&&!O
 let lastToast='',lastToastT=0;
 const toastQ=[];function toast(s){if(TAGQ)return;if(mode==='scene'){if(toastQ.length<3&&!toastQ.includes(s))toastQ.push(s);return}if(s===lastToast&&tNow-lastToastT<1.5)return;lastToast=s;lastToastT=tNow;const d=document.createElement('div');d.textContent=s;const l=$('log');l.appendChild(d);while(l.children.length>3)l.firstChild.remove();setTimeout(()=>d.remove(),3800)}
 function heal(v){G.hp=Math.min(S.maxHp,G.hp+v);if(P)P.band=Math.max(P.band,Math.ceil(G.hp/S.maxHp*10))}
-function parts(x,y,n,cols,sp,up){for(let i=0;i<n;i++){const a=rnd(0,6.283),v=rnd(.3,1)*sp;W.parts.push({x,y,z:rnd(8,26),vx:Math.cos(a)*v,vy:Math.sin(a)*v,vz:rnd(40,120)*(up||1),t:0,life:rnd(.4,.9),col:pick(cols),s:rnd(2,4.5)})}}
+/* One budget for Full and Normal: 48 shapes, 80 particles. Rings go first.
+   A warn, and a patch you can still walk out of, stay. Thin adds nothing
+   to the particle list. Other players' casts are skipped at draw time. */
+function fxProtected(f){return !!f&&(f.k==='warn'||(f.k==='patch'&&f.tel))}
+function fxTrim(){if(!W||!W.fx||!W.parts)return;
+  while(W.fx.length>48){let i=-1;for(let j=0;j<W.fx.length;j++)if(W.fx[j].k==='ring'){i=j;break}
+    if(i<0)for(let j=0;j<W.fx.length;j++)if(!fxProtected(W.fx[j])){i=j;break}
+    if(i<0)break;W.fx.splice(i,1)}
+  while(W.parts.length>80)W.parts.shift()}
+function fxBind(){if(!W||!W.fx||!W.parts||W.fx._cap)return;
+  const fp=W.fx.push.bind(W.fx);W.fx.push=function(){const n=fp.apply(W.fx,arguments);fxTrim();return n};W.fx._cap=1;
+  const pp=W.parts.push.bind(W.parts);W.parts.push=function(){if(OPT.fx==='thin')return W.parts.length;const n=pp.apply(W.parts,arguments);fxTrim();return n};W.parts._cap=1}
+function fxPatch(x,y,r,col,life,tel){if(!W)return;W.fx.push({k:'patch',x,y,r:r||1.4,col:col||'#ff7a3c',t:0,life:life||.8,tel:tel?1:0})}
+function fxTrail(x,y,x2,y2,col,life){if(!W)return;W.fx.push({k:'trail',x,y,x2,y2,col:col||'#f7931a',t:0,life:life||.4})}
+function fxMark(x,y,col,n,life){if(!W)return;W.fx.push({k:'mark',x,y,col:col||'#ffe36b',n:n||0,t:0,life:life||1.4})}
+function fxOrbit(x,y,col,life){if(!W)return;W.fx.push({k:'orbit',x,y,col:col||'#59e0e6',n:3,t:0,life:life||.7})}
+function parts(x,y,n,cols,sp,up){if(OPT.fx==='thin')return;for(let i=0;i<n;i++){const a=rnd(0,6.283),v=rnd(.3,1)*sp;W.parts.push({x,y,z:rnd(8,26),vx:Math.cos(a)*v,vy:Math.sin(a)*v,vz:rnd(40,120)*(up||1),t:0,life:rnd(.4,.9),col:pick(cols),s:rnd(2,4.5)})}}
 function pdmg(m,e){
   let d=rnd(S.dmin,S.dmax)*(1+S.dmg/100)*m+S.shock*rnd(.8,1.2)*Math.max(.5,m);
   if(P.ambT>0)d*=P.ambM;
