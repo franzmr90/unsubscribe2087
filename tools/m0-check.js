@@ -1,6 +1,7 @@
 /* Milestone 0 checks, one class at a time.
    node tools/m0-check.js scrapper
    node tools/m0-check.js hacker
+   node tools/m0-check.js courier
    Loads dist/unsubscribe.html the same way smoke does. Calls __g.skipDisc() before driving. */
 const {chromium}=require('playwright');
 const fs=require('fs');
@@ -23,8 +24,9 @@ async function clearUI(p){
 }
 
 (async()=>{
-if(cls!=='scrapper'&&cls!=='hacker'){console.error('no milestone 0 checks for '+cls+' yet');process.exit(1)}
+if(cls!=='scrapper'&&cls!=='hacker'&&cls!=='courier'){console.error('no milestone 0 checks for '+cls+' yet');process.exit(1)}
 if(cls==='hacker'){await runHacker();return}
+if(cls==='courier'){await runCourier();return}
 const b=await chromium.launch();
 const p=await b.newPage({viewport:{width:390,height:800}});
 const errs=[];p.on('pageerror',e=>errs.push(e.message));
@@ -33,14 +35,14 @@ await p.waitForTimeout(400);
 await p.evaluate(()=>__g.skipDisc());
 await p.waitForTimeout(200);
 const tree=await p.evaluate(()=>{
-  const s=__g.CLS.scrapper.sk,c=__g.CLS.courier.sk,fail=[];
+  const s=__g.CLS.scrapper.sk,c=__g.CLS.anon.sk,fail=[];
   const names=s.map(x=>x.n);
   for(const n of ['Lunch Pail','Seniority','Hold the Line','Call the Strike','Two-Handed','Last Shift'])if(!names.includes(n))fail.push('missing '+n);
   for(const n of ['Sparks Fly','Second Wind','Intimidation','Backpay','Veteran','Last Stand'])if(names.includes(n))fail.push('boon name still on scrapper: '+n);
   if(s.length!==15)fail.push('scrapper length '+s.length);
   if(s.some(x=>x.boon))fail.push('scrapper still has a boon field');
   if(s.filter(x=>x.a).length<4)fail.push('scrapper rows 4-5 should be mostly actives');
-  if(!c[9]||c[9].boon!=='strike'||!c[14]||c[14].boon!=='guardian')fail.push('courier should still be on the boon loop');
+  if(!c[9]||c[9].boon!=='strike'||!c[14]||c[14].boon!=='guardian')fail.push('anon should still be on the boon loop');
   try{s.forEach(sk=>sk.d(3))}catch(e){fail.push('tooltip threw '+e.message)}
   return fail});
 if(tree.length){console.error(tree.join('\n'));await b.close();process.exit(1)}
@@ -184,10 +186,10 @@ const refund=await p.evaluate(()=>{
   const sp=G.sp,sk=G.sk.join();
   __g.applySave({G:JSON.parse(JSON.stringify(G))});
   if(__g.G.sp!==sp||__g.G.sk.join()!==sk)fail.push('refunded twice');
-  const cu=base('courier');cu.sk=[1,0,0,0,0,0,0,0,0,4,2,2,2,2,2];
+  const cu=base('anon');cu.sk=[1,0,0,0,0,0,0,0,0,4,2,2,2,2,2];
   __g.applySave({G:JSON.parse(JSON.stringify(cu))});
-  if(__g.G.sk[9]!==4)fail.push('courier boon points were taken');
-  if(__g.G.boonRefund&&__g.G.boonRefund.courier)fail.push('courier was marked refunded');
+  if(__g.G.sk[9]!==4)fail.push('anon boon points were taken');
+  if(__g.G.boonRefund&&__g.G.boonRefund.anon)fail.push('anon was marked refunded');
   return fail});
 if(refund.length){console.error('REFUND\n'+refund.join('\n'));errs.push(...refund)}
 
@@ -207,7 +209,7 @@ await p.waitForTimeout(400);
 await p.evaluate(()=>__g.skipDisc());
 await p.waitForTimeout(200);
 const tree=await p.evaluate(()=>{
-  const s=__g.CLS.hacker.sk,c=__g.CLS.courier.sk,fail=[];
+  const s=__g.CLS.hacker.sk,c=__g.CLS.anon.sk,fail=[];
   const names=s.map(x=>x.n);
   for(const n of ['Ground Fault','Packet Storm','Schema','Step Back','Patched','Kill Dash Nine'])if(!names.includes(n))fail.push('missing '+n);
   for(const n of ['Daemon','Self-Repair','Brownout','Feedback Loop','Root Access','Failsafe'])if(names.includes(n))fail.push('boon name still on hacker: '+n);
@@ -215,7 +217,7 @@ const tree=await p.evaluate(()=>{
   if(s.some(x=>x.boon))fail.push('hacker still has a boon field');
   const row=s.slice(9);
   if(row.filter(x=>x.a).length!==4||row.filter(x=>!x.a).length!==2)fail.push('rows 4-5 should be four actives and two passives');
-  if(!c[9]||c[9].boon!=='strike'||!c[14]||c[14].boon!=='guardian')fail.push('courier should still be on the boon loop');
+  if(!c[9]||c[9].boon!=='strike'||!c[14]||c[14].boon!=='guardian')fail.push('anon should still be on the boon loop');
   try{s.forEach(sk=>sk.d(3))}catch(e){fail.push('tooltip threw '+e.message)}
   return fail});
 if(tree.length){console.error(tree.join('\n'));await b.close();process.exit(1)}
@@ -406,10 +408,10 @@ const refund=await p.evaluate(()=>{
   const sp=G.sp,sk=G.sk.join();
   __g.applySave({G:JSON.parse(JSON.stringify(G))});
   if(__g.G.sp!==sp||__g.G.sk.join()!==sk)fail.push('refunded twice');
-  const cu=base('courier');cu.sk=[1,0,0,0,0,0,0,0,0,4,2,2,2,2,2];
+  const cu=base('anon');cu.sk=[1,0,0,0,0,0,0,0,0,4,2,2,2,2,2];
   __g.applySave({G:JSON.parse(JSON.stringify(cu))});
-  if(__g.G.sk[9]!==4)fail.push('courier boon points were taken');
-  if(__g.G.boonRefund&&__g.G.boonRefund.courier)fail.push('courier was marked refunded');
+  if(__g.G.sk[9]!==4)fail.push('anon boon points were taken');
+  if(__g.G.boonRefund&&__g.G.boonRefund.anon)fail.push('anon was marked refunded');
   return fail});
 if(refund.length){console.error('REFUND\n'+refund.join('\n'));errs.push(...refund)}
 
@@ -418,4 +420,188 @@ console.log(failed?'ERRORS:\n'+errs.slice(0,30).join('\n'):'hacker milestone 0 c
 await b.close();
 if(errs.length>failed)console.error('pageerror during close:\n'+errs.slice(failed).join('\n'));
 process.exit(failed?1:0);
+}
+
+async function runCourier(){
+const b=await chromium.launch();
+const p=await b.newPage({viewport:{width:390,height:800}});
+const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.setContent('<!doctype html><html><head><meta charset=utf-8></head><body style="margin:0">'+fs.readFileSync(path.join(root,'dist/unsubscribe.html'),'utf8')+'</body></html>');
+await p.waitForTimeout(400);
+await p.evaluate(()=>__g.skipDisc());
+await p.waitForTimeout(200);
+const tree=await p.evaluate(()=>{
+  const s=__g.CLS.courier.sk,c=__g.CLS.anon.sk,fail=[];
+  const names=s.map(x=>x.n);
+  for(const n of ['Return to Sender','Route Knowledge','Second Drop','Manifest','Hazard Pay','Missed Connection'])if(!names.includes(n))fail.push('missing '+n);
+  for(const n of ['Ricochet','Runner’s High','Slipstream','Backdraft','Seasoned','Narrow Escape'])if(names.includes(n))fail.push('boon name still on courier: '+n);
+  if(s.length!==15)fail.push('courier length '+s.length);
+  if(s.some(x=>x.boon))fail.push('courier still has a boon field');
+  const row=s.slice(9);
+  if(row.filter(x=>x.a).length!==4||row.filter(x=>!x.a).length!==2)fail.push('rows 4-5 should be four actives and two passives');
+  if(!c[9]||c[9].boon!=='strike')fail.push('anon should still be on the boon loop');
+  try{s.forEach(sk=>sk.d(3))}catch(e){fail.push('tooltip threw '+e.message)}
+  return fail});
+if(tree.length){console.error(tree.join('\n'));await b.close();process.exit(1)}
+await p.click('[data-cls=courier]');
+await p.waitForTimeout(300);
+await p.evaluate(()=>{const G=__g.G;G.pre=2});
+await clearUI(p);
+const play=await p.evaluate(()=>{
+  const G=__g.G,fail=[];
+  G.lvl=60;G.act2=true;G.act3=true;G.sats=40;G.sp=40;G.god=false;
+  for(let i=1;i<=25;i++)G.q['q'+i]=3;
+  G.in1=1;__g.calc();G.hp=__g.S.maxHp;G.en=__g.S.maxEn;
+  if(__g.mode!=='play')fail.push('not in play after intro, mode '+__g.mode);
+  if(!G.boonRefund||!G.boonRefund.courier)fail.push('a new runner should carry the refund flag');
+  if((__g.G.sp||0)<40)fail.push('new game refund touched the point pool');
+  return fail});
+if(play.length){console.error(play.join('\n'));await b.close();process.exit(1)}
+await p.evaluate(()=>__g.enter(1));
+await clearUI(p);
+const combat=await p.evaluate(()=>{
+  const fail=[],G=__g.G,P=__g.P,W=__g.W;
+  __g.ACC.maxi=1;__g.setMode('play');
+  const check=(n,ok,extra)=>{if(!ok)fail.push(n+(extra!==undefined?': '+extra:''))};
+  function park(){
+    const N=W.N;
+    for(const rad of [5,4,3,2]){
+      for(let y=rad+1;y<N-rad-1;y++)for(let x=rad+1;x<N-rad-1;x++){
+        let ok=true;
+        for(let dy=-rad;dy<=rad&&ok;dy++)for(let dx=-rad;dx<=rad;dx++)if(W.map[(y+dy)*N+(x+dx)]!==1)ok=false;
+        if(ok){P.x=x+.5;P.y=y+.5;P.dir={x:1,y:0};return true}}
+    }
+    return false}
+  check('open floor',park());
+  W.ents.length=0;W.projs.length=0;W.fx.length=0;W.allies.length=0;
+  G.sk=[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0];G.pas=[];G.slots=[9,-1,-1];__g.calc();
+  const e=__g.spawn('bot',P.x+3,P.y,{});
+  check('spawn for bolt',!!e);
+  if(e){e.stun=100;e.aggro=false;const hp=e.hp;
+    for(let i=0;i<240;i++)__g.update(1/60);
+    check('old bolt did not fire',e.hp===hp&&!W.fx.some(f=>f.k==='bolt'),'hp '+e.hp+'/'+hp);
+    check('index 9 did not throw by itself',W.projs.length===0);
+    W.ents.length=0}
+  function arm(i){G.sk[i]=Math.max(1,G.sk[i]||0);G.slots[0]=i;P.cd[i]=0;P.dash=null;P.silence=0;P.castWait=0;__g.setMode('play');if(!__g.CLS.courier.sk[i].a&&!G.pas.includes(i))G.pas.push(i);__g.calc();G.en=__g.S.maxEn}
+  W.projs.length=0;W.ents.length=0;P.dir={x:1,y:0};park();arm(9);__g.cast(0);
+  const sent=W.projs.find(pr=>pr.ret);
+  check('return to sender is a throw that comes back',!!sent);
+  if(sent){let back=false;for(let i=0;i<50&&!back;i++){__g.update(1/60);if(W.projs.some(pr=>pr.ret&&pr.returning))back=true}
+    check('return to sender turns around',back)}
+  /* Route Knowledge: a dash starts it. Standing still does not. */
+  P.route=0;G.sk[10]=1;if(!G.pas.includes(10))G.pas.push(10);__g.calc();
+  for(let i=0;i<20;i++)__g.update(1/60);
+  check('standing still does not teach the route',!(P.route>0),P.route);
+  W.ents.length=0;arm(1);__g.cast(0);
+  check('fleet step is a dash',!!P.dash);
+  for(let i=0;i<30;i++)__g.update(1/60);
+  check('a dash leaves route knowledge up',P.route>1,'route '+P.route);
+  /* Second Drop copies the last throw, then pops if you leave. */
+  W.allies.length=0;W.projs.length=0;P.lastThrow=null;arm(11);__g.cast(0);
+  check('second drop refuses with nothing thrown',!W.allies.some(a=>a.k==='drop'));
+  W.ents.length=0;P.dir={x:1,y:0};P.atk=0;__g.attack();
+  check('a throw is remembered',!!P.lastThrow);
+  arm(11);__g.cast(0);
+  const drop=W.allies.find(a=>a.k==='drop');
+  check('second drop exists',!!drop);
+  if(drop){const n=W.projs.length;check('second drop copied a throw',n>0,n);
+    P.x=drop.x+8;for(let i=0;i<8;i++)__g.update(1/60);
+    check('second drop pops when you leave',!W.allies.some(a=>a.k==='drop'&&a.life>0))}
+  /* Manifest splits after the first machine. */
+  W.projs.length=0;W.ents.length=0;park();P.dir={x:1,y:0};
+  const pack=__g.spawn('bot',P.x+.8,P.y,{});
+  if(pack){pack.stun=30;pack.hp=pack.max=5000;arm(12);__g.cast(0);
+    check('manifest is one throw',W.projs.some(pr=>pr.split));
+    let split=false;for(let i=0;i<20&&!split;i++){__g.update(1/60);if(W.projs.length>=3)split=true}
+    check('manifest splits into two more',split,'projs '+W.projs.length);
+    W.ents.length=0}
+  /* Hazard Pay: a throw kill pays. A death that was not a throw does not. */
+  G.sk[13]=1;if(!G.pas.includes(13))G.pas.push(13);__g.calc();G.credits=100;
+  const plain=__g.spawn('bot',P.x+1,P.y,{});
+  if(plain){plain.hp=0;P.fromThrow=0;__g.kill(plain);
+    check('a dash-style kill does not pay',G.credits===100,'credits '+G.credits)}
+  const paid=__g.spawn('bot',P.x+1,P.y,{});
+  if(paid){paid.hp=0;P.fromThrow=1;__g.kill(paid);P.fromThrow=0;
+    check('a throw kill pays',G.credits>100,'credits '+G.credits)}
+  /* Missed Connection: the mark blinks you there and the next throw is free. */
+  W.ents.length=0;park();const home=P.x;P.freeThrow=0;
+  const marked=__g.spawn('bot',P.x+3,P.y,{});
+  if(marked){marked.stun=30;arm(14);__g.cast(0);
+    check('missed connection marks',marked.mc>3,marked.mc);
+    marked.hp=0;__g.kill(marked);
+    check('missed connection blinks to the fall',Math.abs(P.x-(home+3))<1.2,'x '+P.x+' home '+home);
+    check('the next throw is owed',P.freeThrow===1);
+    arm(0);const en=G.en;__g.cast(0);
+    check('the owed throw costs nothing',G.en===en&&!P.freeThrow,'en '+en+' -> '+G.en);
+    P.cd[0]=0;const en2=G.en;__g.cast(0);
+    check('the throw after that costs energy',G.en<en2,'en '+en2+' -> '+G.en)}
+  W.ents.length=0;park();const stay=P.x;P.freeThrow=0;
+  const unmarked=__g.spawn('bot',P.x+3,P.y,{});
+  if(unmarked){unmarked.hp=0;unmarked.mc=0;__g.kill(unmarked);
+    check('an unmarked death does not blink',P.x===stay&&!P.freeThrow,'x '+P.x)}
+  return fail});
+if(combat.length){console.error('COMBAT\n'+combat.join('\n'));errs.push(...combat)}
+await clearUI(p);
+const sheets=await p.evaluate(()=>{
+  const fail=[];
+  __g.setMode('play');Ghp();
+  function Ghp(){__g.G.hp=__g.S.maxHp}
+  __g.openSheet('skills');
+  const html=document.getElementById('sheetIn').innerHTML;
+  for(const n of ['Return to Sender','Route Knowledge','Second Drop','Manifest','Hazard Pay','Missed Connection','Express','Insured','Cash on Delivery'])if(!html.includes(n))fail.push('skills sheet missing '+n);
+  for(const n of ['Ricochet','Seasoned','Narrow Escape'])if(html.includes(n))fail.push('skills sheet still shows '+n);
+  __g.closeSheet();
+  __g.openSheet('shift');
+  document.querySelector('[data-shiftp=courier]').click();
+  const pop=document.getElementById('pop').innerHTML;
+  for(const n of ['Rush Hour','Porch Pirate','Tip Jar','Return to Sender','Missed Connection','Hazard Pay'])if(!pop.includes(n))fail.push('builds missing '+n);
+  if(pop.includes('Ricochet'))fail.push('builds still say Ricochet');
+  __g.closeSheet();
+  return fail});
+if(sheets.length){console.error('SHEETS\n'+sheets.join('\n'));errs.push(...sheets)}
+async function shift(arg){
+  await p.evaluate(a=>__g.shapeShift(a[0],a[1]),arg);
+  await clearUI(p);
+}
+await p.evaluate(()=>{__g.G.sats=40;__g.G.lvl=60;__g.G.act2=true;__g.G.act3=true;__g.setMode('play')});
+await shift(['scrapper',0]);
+await shift(['courier','tips']);
+const built=await p.evaluate(()=>{
+  const G=__g.G,fail=[];
+  if(G.cls!=='courier')fail.push('class '+G.cls);
+  if(!G.pas.includes(13))fail.push('tips passives '+G.pas.join(','));
+  if(!G.slots.includes(9))fail.push('tips buttons '+G.slots.join(','));
+  return fail});
+if(built.length){console.error('BUILD\n'+built.join('\n'));errs.push(...built)}
+await shift(['scrapper',0]);
+const back=await p.evaluate(()=>__g.G.cls);
+if(back!=='scrapper'){console.error('did not shift back, cls '+back);errs.push('shift back')}
+const refund=await p.evaluate(()=>{
+  const fail=[],eq={weapon:null,helm:null,armor:null,gloves:null,boots:null,belt:null,ring:null,amulet:null};
+  const base=cls=>({v:2,cls,lvl:40,xp:0,sp:4,ap:0,at:{mgt:0,ref:0,vit:0,bnd:0},hp:80,en:20,credits:10,cpi:1,stims:1,bag:[],eq,unlocked:20,q:{},sats:0,slots:[9,12,0],pas:[10,11]});
+  const raw=base('courier');raw.sk=[1,2,0,0,0,0,0,0,3,2,3,4,1,5,6];
+  const low=raw.sk.slice(0,9).join();
+  __g.applySave({G:JSON.parse(JSON.stringify(raw))});
+  const G=__g.G;
+  if(G.sp!==4+21)fail.push('refunded sp '+G.sp);
+  if(G.sk.slice(9).some(n=>n!==0))fail.push('indices 9-14 not cleared '+G.sk.slice(9).join(','));
+  if(G.sk.slice(0,9).join()!==low)fail.push('rows 1-3 changed');
+  if(!G.boonRefund||G.boonRefund.courier!==1)fail.push('flag '+JSON.stringify(G.boonRefund));
+  if(G.slots[0]!==-1||G.slots[1]!==-1||G.slots[2]!==0)fail.push('slots '+G.slots.join(','));
+  if((G.pas||[]).some(i=>i>=9))fail.push('pas '+G.pas);
+  if(!document.getElementById('log').textContent.includes('The old boons were withdrawn and the points returned.'))fail.push('no refund toast');
+  const sp=G.sp,sk=G.sk.join();
+  __g.applySave({G:JSON.parse(JSON.stringify(G))});
+  if(__g.G.sp!==sp||__g.G.sk.join()!==sk)fail.push('refunded twice');
+  const cu=base('anon');cu.sk=[1,0,0,0,0,0,0,0,0,4,2,2,2,2,2];
+  __g.applySave({G:JSON.parse(JSON.stringify(cu))});
+  if(__g.G.sk[9]!==4)fail.push('anon boon points were taken');
+  if(__g.G.boonRefund&&__g.G.boonRefund.anon)fail.push('anon was marked refunded');
+  return fail});
+if(refund.length){console.error('REFUND\n'+refund.join('\n'));errs.push(...refund)}
+const failedC=errs.length;
+console.log(failedC?'ERRORS:\n'+errs.slice(0,30).join('\n'):'courier milestone 0 checks passed');
+await b.close();
+if(errs.length>failedC)console.error('pageerror during close:\n'+errs.slice(failedC).join('\n'));
+process.exit(failedC?1:0);
 }

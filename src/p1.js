@@ -58,7 +58,13 @@ const CLS={
    {n:'Scavenger',ab:'',a:0,d:L=>`Passive. +${10*L}% credits and +${5*L}% magic find.`},
    {n:'Rush Order',ab:'RUSH\nORDER',a:1,cost:22,cd:8,d:L=>`A 1.5s stream of blades at the nearest enemy, ${pct(.5+.07*L)} each.`},
    {n:'Signed For',ab:'SIGNED\nFOR',a:1,cost:16,cd:6,d:L=>`Strike the nearest enemy for ${pct(3+.5*L)}. It takes +30% damage for 8s.`},
-   {n:'Deadeye',ab:'',a:0,d:L=>`Passive. ${8*L}% chance for throws to pierce and +${2*L}% deadly strike.`}]}
+   {n:'Deadeye',ab:'',a:0,d:L=>`Passive. ${8*L}% chance for throws to pierce and +${2*L}% deadly strike.`},
+   {n:'Return to Sender',ab:'RETURN\nTO SENDER',a:1,cost:12,cd:5,d:L=>`A throw that goes out and comes back, ${pct(1.1+.16*L)} on each pass.`},
+   {n:'Route Knowledge',ab:'',a:0,d:L=>`Passive. After a dash, you avoid ${6+2*L}% more hits for ${(2+.2*L).toFixed(1)}s. Standing still does nothing.`},
+   {n:'Second Drop',ab:'SECOND\nDROP',a:1,cost:16,cd:10,d:L=>`One decoy copies your last throw, then stays on a short leash. Leave it behind and it pops. It does not follow you everywhere.`},
+   {n:'Manifest',ab:'MANIFEST',a:1,cost:14,cd:6,d:L=>`A piercing throw for ${pct(1+.14*L)} that splits into two after the first machine it hits.`},
+   {n:'Hazard Pay',ab:'',a:0,d:L=>`Passive. A throw that kills pays ${3+L} extra credits and finds gear as if you had +${6*L}% magic find. A dash does not pay.`},
+   {n:'Missed Connection',ab:'MISSED\nCONNECTION',a:1,cost:18,cd:12,d:L=>`Mark a machine. If it dies within ${(4+.25*L).toFixed(1)}s, to you or to anyone with you, you appear where it fell and your next throw costs nothing.`}]}
 };
 Object.assign(CLS,{
  anon:{n:'Anon',tag:'No name, no face, no account. Traps, vanishing acts and a knife from behind.',hp:95,hpL:13,melee:true,mult:1,ivl:.42,spd:4.7,col:'#3f3f4c',
@@ -99,11 +105,11 @@ Object.assign(CLS,{
 });
 /* a fourth row opens with Act II: three passive boons per class, the same three mechanics under different names */
 const BOON={strike:L=>`Passive. Every ${Math.max(1.2,3-.15*L).toFixed(1)}s a bolt strikes the nearest machine for ${pct(1.2+.25*L)}.`,mend:L=>`Passive. Every 5s you recover ${(1.5+.5*L).toFixed(1)}% of your life and ${L} energy.`,aura:L=>`Passive. An aura around you slows machines and deals ${pct(.12+.03*L)} twice a second.`};
-const BN={courier:['Ricochet','Runner’s High','Slipstream'],anon:['Unseen Blade','Clean Slate','Dread'],founder:['Performance Review','Stock Buyback','Reality Distortion'],maxi:['Nonce Found','Dollar Cost Average','Toxicity']};
+const BN={anon:['Unseen Blade','Clean Slate','Dread'],founder:['Performance Review','Stock Buyback','Reality Distortion'],maxi:['Nonce Found','Dollar Cost Average','Toxicity']};
 for(const k in CLS)if(CLS[k].sk.length<15)['strike','mend','aura'].forEach((b,i)=>CLS[k].sk.push({n:BN[k][i],ab:'',a:0,boon:b,d:BOON[b]}));
 /* a fifth row opens with Act III */
 Object.assign(BOON,{nova:L=>`Passive. When you are hit, 20% chance to release a shockwave for ${pct(1.5+.25*L)}.`,mastery:L=>`Passive. +${3*L}% to all damage and +${2*L}% life.`,guardian:L=>`Passive. A killing blow leaves you at 30% life instead, once every ${Math.max(20,60-3*L)} seconds.`});
-const BN3={courier:['Backdraft','Seasoned','Narrow Escape'],anon:['Counterclaim','Tradecraft','Dead Drop'],founder:['Golden Share','Vested','Poison Pill'],maxi:['Cope','Stay Humble','Cold Storage']};
+const BN3={anon:['Counterclaim','Tradecraft','Dead Drop'],founder:['Golden Share','Vested','Poison Pill'],maxi:['Cope','Stay Humble','Cold Storage']};
 for(const k in CLS)if(CLS[k].sk.length<15)['nova','mastery','guardian'].forEach((b,i)=>CLS[k].sk.push({n:BN3[k][i],ab:'',a:0,boon:b,d:BOON[b]}));
 const MERCS={guard:{n:'Bodyguard',d:'A reprogrammed Enforcer. Machines attack it before you.',hpM:1.8,dM:1,ivl:1,range:1.3,spd:4.6,taunt:1,col:'#7d8ba3'},
  sys:{n:'Sysadmin',d:'Shoots from range, patches your wounds every few seconds and tops up your energy.',hpM:1,dM:.6,ivl:1.2,range:5.5,spd:4.4,col:'#59c0a0'},
