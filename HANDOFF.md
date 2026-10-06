@@ -31,7 +31,16 @@ friend messaging and party dynamics worked.
 - `notes/codebase-inventory.md` — this project's systems, read from source rather than
   from documentation.
 
-**What remains: write the plan.** That was the next step and it has not been started.
+**The plan is written:** `notes/PLAN-eight-classes.md`.
+
+It is a design document. It does not add a class, replace the skill rows, or build
+the friends list. The order it argues for is: make rows 4 and 5 real, one class at
+a time (milestone 0); then the Homesteader, the Druid analogue (milestone 1); then
+the Witness, a class with no Diablo II counterpart (milestone 2); then a social
+store that is not the document store (milestone 3), the friends list (4), whispers
+and offline mail (5); and last, the party-experience and hostility changes (6),
+because those change numbers. Each milestone names the test that says it worked.
+The per-class checklist is at the bottom of the plan. Read it before adding a class.
 
 ## What the research changes
 
