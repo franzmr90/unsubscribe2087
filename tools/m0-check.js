@@ -2,6 +2,7 @@
    node tools/m0-check.js scrapper
    node tools/m0-check.js hacker
    node tools/m0-check.js courier
+   node tools/m0-check.js anon
    Loads dist/unsubscribe.html the same way smoke does. Calls __g.skipDisc() before driving. */
 const {chromium}=require('playwright');
 const fs=require('fs');
@@ -24,9 +25,10 @@ async function clearUI(p){
 }
 
 (async()=>{
-if(cls!=='scrapper'&&cls!=='hacker'&&cls!=='courier'){console.error('no milestone 0 checks for '+cls+' yet');process.exit(1)}
+if(cls!=='scrapper'&&cls!=='hacker'&&cls!=='courier'&&cls!=='anon'){console.error('no milestone 0 checks for '+cls+' yet');process.exit(1)}
 if(cls==='hacker'){await runHacker();return}
 if(cls==='courier'){await runCourier();return}
+if(cls==='anon'){await runAnon();return}
 const b=await chromium.launch();
 const p=await b.newPage({viewport:{width:390,height:800}});
 const errs=[];p.on('pageerror',e=>errs.push(e.message));
@@ -35,14 +37,14 @@ await p.waitForTimeout(400);
 await p.evaluate(()=>__g.skipDisc());
 await p.waitForTimeout(200);
 const tree=await p.evaluate(()=>{
-  const s=__g.CLS.scrapper.sk,c=__g.CLS.anon.sk,fail=[];
+  const s=__g.CLS.scrapper.sk,c=__g.CLS.founder.sk,fail=[];
   const names=s.map(x=>x.n);
   for(const n of ['Lunch Pail','Seniority','Hold the Line','Call the Strike','Two-Handed','Last Shift'])if(!names.includes(n))fail.push('missing '+n);
   for(const n of ['Sparks Fly','Second Wind','Intimidation','Backpay','Veteran','Last Stand'])if(names.includes(n))fail.push('boon name still on scrapper: '+n);
   if(s.length!==15)fail.push('scrapper length '+s.length);
   if(s.some(x=>x.boon))fail.push('scrapper still has a boon field');
   if(s.filter(x=>x.a).length<4)fail.push('scrapper rows 4-5 should be mostly actives');
-  if(!c[9]||c[9].boon!=='strike'||!c[14]||c[14].boon!=='guardian')fail.push('anon should still be on the boon loop');
+  if(!c[9]||c[9].boon!=='strike'||!c[14]||c[14].boon!=='guardian')fail.push('founder should still be on the boon loop');
   try{s.forEach(sk=>sk.d(3))}catch(e){fail.push('tooltip threw '+e.message)}
   return fail});
 if(tree.length){console.error(tree.join('\n'));await b.close();process.exit(1)}
@@ -186,10 +188,10 @@ const refund=await p.evaluate(()=>{
   const sp=G.sp,sk=G.sk.join();
   __g.applySave({G:JSON.parse(JSON.stringify(G))});
   if(__g.G.sp!==sp||__g.G.sk.join()!==sk)fail.push('refunded twice');
-  const cu=base('anon');cu.sk=[1,0,0,0,0,0,0,0,0,4,2,2,2,2,2];
+  const cu=base('founder');cu.sk=[1,0,0,0,0,0,0,0,0,4,2,2,2,2,2];
   __g.applySave({G:JSON.parse(JSON.stringify(cu))});
-  if(__g.G.sk[9]!==4)fail.push('anon boon points were taken');
-  if(__g.G.boonRefund&&__g.G.boonRefund.anon)fail.push('anon was marked refunded');
+  if(__g.G.sk[9]!==4)fail.push('founder boon points were taken');
+  if(__g.G.boonRefund&&__g.G.boonRefund.founder)fail.push('founder was marked refunded');
   return fail});
 if(refund.length){console.error('REFUND\n'+refund.join('\n'));errs.push(...refund)}
 
@@ -209,7 +211,7 @@ await p.waitForTimeout(400);
 await p.evaluate(()=>__g.skipDisc());
 await p.waitForTimeout(200);
 const tree=await p.evaluate(()=>{
-  const s=__g.CLS.hacker.sk,c=__g.CLS.anon.sk,fail=[];
+  const s=__g.CLS.hacker.sk,c=__g.CLS.founder.sk,fail=[];
   const names=s.map(x=>x.n);
   for(const n of ['Ground Fault','Packet Storm','Schema','Step Back','Patched','Kill Dash Nine'])if(!names.includes(n))fail.push('missing '+n);
   for(const n of ['Daemon','Self-Repair','Brownout','Feedback Loop','Root Access','Failsafe'])if(names.includes(n))fail.push('boon name still on hacker: '+n);
@@ -217,7 +219,7 @@ const tree=await p.evaluate(()=>{
   if(s.some(x=>x.boon))fail.push('hacker still has a boon field');
   const row=s.slice(9);
   if(row.filter(x=>x.a).length!==4||row.filter(x=>!x.a).length!==2)fail.push('rows 4-5 should be four actives and two passives');
-  if(!c[9]||c[9].boon!=='strike'||!c[14]||c[14].boon!=='guardian')fail.push('anon should still be on the boon loop');
+  if(!c[9]||c[9].boon!=='strike'||!c[14]||c[14].boon!=='guardian')fail.push('founder should still be on the boon loop');
   try{s.forEach(sk=>sk.d(3))}catch(e){fail.push('tooltip threw '+e.message)}
   return fail});
 if(tree.length){console.error(tree.join('\n'));await b.close();process.exit(1)}
@@ -408,10 +410,10 @@ const refund=await p.evaluate(()=>{
   const sp=G.sp,sk=G.sk.join();
   __g.applySave({G:JSON.parse(JSON.stringify(G))});
   if(__g.G.sp!==sp||__g.G.sk.join()!==sk)fail.push('refunded twice');
-  const cu=base('anon');cu.sk=[1,0,0,0,0,0,0,0,0,4,2,2,2,2,2];
+  const cu=base('founder');cu.sk=[1,0,0,0,0,0,0,0,0,4,2,2,2,2,2];
   __g.applySave({G:JSON.parse(JSON.stringify(cu))});
-  if(__g.G.sk[9]!==4)fail.push('anon boon points were taken');
-  if(__g.G.boonRefund&&__g.G.boonRefund.anon)fail.push('anon was marked refunded');
+  if(__g.G.sk[9]!==4)fail.push('founder boon points were taken');
+  if(__g.G.boonRefund&&__g.G.boonRefund.founder)fail.push('founder was marked refunded');
   return fail});
 if(refund.length){console.error('REFUND\n'+refund.join('\n'));errs.push(...refund)}
 
@@ -431,7 +433,7 @@ await p.waitForTimeout(400);
 await p.evaluate(()=>__g.skipDisc());
 await p.waitForTimeout(200);
 const tree=await p.evaluate(()=>{
-  const s=__g.CLS.courier.sk,c=__g.CLS.anon.sk,fail=[];
+  const s=__g.CLS.courier.sk,c=__g.CLS.founder.sk,fail=[];
   const names=s.map(x=>x.n);
   for(const n of ['Return to Sender','Route Knowledge','Second Drop','Manifest','Hazard Pay','Missed Connection'])if(!names.includes(n))fail.push('missing '+n);
   for(const n of ['Ricochet','Runner’s High','Slipstream','Backdraft','Seasoned','Narrow Escape'])if(names.includes(n))fail.push('boon name still on courier: '+n);
@@ -439,7 +441,7 @@ const tree=await p.evaluate(()=>{
   if(s.some(x=>x.boon))fail.push('courier still has a boon field');
   const row=s.slice(9);
   if(row.filter(x=>x.a).length!==4||row.filter(x=>!x.a).length!==2)fail.push('rows 4-5 should be four actives and two passives');
-  if(!c[9]||c[9].boon!=='strike')fail.push('anon should still be on the boon loop');
+  if(!c[9]||c[9].boon!=='strike')fail.push('founder should still be on the boon loop');
   try{s.forEach(sk=>sk.d(3))}catch(e){fail.push('tooltip threw '+e.message)}
   return fail});
 if(tree.length){console.error(tree.join('\n'));await b.close();process.exit(1)}
@@ -593,10 +595,10 @@ const refund=await p.evaluate(()=>{
   const sp=G.sp,sk=G.sk.join();
   __g.applySave({G:JSON.parse(JSON.stringify(G))});
   if(__g.G.sp!==sp||__g.G.sk.join()!==sk)fail.push('refunded twice');
-  const cu=base('anon');cu.sk=[1,0,0,0,0,0,0,0,0,4,2,2,2,2,2];
+  const cu=base('founder');cu.sk=[1,0,0,0,0,0,0,0,0,4,2,2,2,2,2];
   __g.applySave({G:JSON.parse(JSON.stringify(cu))});
-  if(__g.G.sk[9]!==4)fail.push('anon boon points were taken');
-  if(__g.G.boonRefund&&__g.G.boonRefund.anon)fail.push('anon was marked refunded');
+  if(__g.G.sk[9]!==4)fail.push('founder boon points were taken');
+  if(__g.G.boonRefund&&__g.G.boonRefund.founder)fail.push('founder was marked refunded');
   return fail});
 if(refund.length){console.error('REFUND\n'+refund.join('\n'));errs.push(...refund)}
 const failedC=errs.length;
@@ -604,4 +606,212 @@ console.log(failedC?'ERRORS:\n'+errs.slice(0,30).join('\n'):'courier milestone 0
 await b.close();
 if(errs.length>failedC)console.error('pageerror during close:\n'+errs.slice(failedC).join('\n'));
 process.exit(failedC?1:0);
+}
+
+async function runAnon(){
+const b=await chromium.launch();
+const p=await b.newPage({viewport:{width:390,height:800}});
+const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.setContent('<!doctype html><html><head><meta charset=utf-8></head><body style="margin:0">'+fs.readFileSync(path.join(root,'dist/unsubscribe.html'),'utf8')+'</body></html>');
+await p.waitForTimeout(400);
+await p.evaluate(()=>__g.skipDisc());
+await p.waitForTimeout(200);
+const tree=await p.evaluate(()=>{
+  const s=__g.CLS.anon.sk,c=__g.CLS.founder.sk,fail=[];
+  const names=s.map(x=>x.n);
+  for(const n of ['Rehearsal','The Dump','No Attribution','Dead Drop','Cutout','We Were Never Here'])if(!names.includes(n))fail.push('missing '+n);
+  for(const n of ['Unseen Blade','Clean Slate','Dread','Counterclaim','Tradecraft'])if(names.includes(n))fail.push('boon name still on anon: '+n);
+  if(s.length!==15)fail.push('anon length '+s.length);
+  if(s.some(x=>x.boon))fail.push('anon still has a boon field');
+  const row=s.slice(9);
+  if(row.filter(x=>x.a).length!==4||row.filter(x=>!x.a).length!==2)fail.push('rows 4-5 should be four actives and two passives');
+  if(!c[9]||c[9].boon!=='strike'||!c[14]||c[14].boon!=='guardian')fail.push('founder should still be on the boon loop');
+  try{s.forEach(sk=>sk.d(3))}catch(e){fail.push('tooltip threw '+e.message)}
+  return fail});
+if(tree.length){console.error(tree.join('\n'));await b.close();process.exit(1)}
+await p.click('[data-cls=anon]');
+await p.waitForTimeout(300);
+await p.evaluate(()=>{const G=__g.G;G.pre=2});
+await clearUI(p);
+const play=await p.evaluate(()=>{
+  const G=__g.G,fail=[];
+  G.lvl=60;G.act2=true;G.act3=true;G.sats=40;G.sp=40;G.god=false;
+  for(let i=1;i<=25;i++)G.q['q'+i]=3;
+  G.in1=1;__g.calc();G.hp=__g.S.maxHp;G.en=__g.S.maxEn;
+  if(__g.mode!=='play')fail.push('not in play after intro, mode '+__g.mode);
+  if(!G.boonRefund||!G.boonRefund.anon)fail.push('a new anon should carry the refund flag');
+  if((__g.G.sp||0)<40)fail.push('new game refund touched the point pool');
+  return fail});
+if(play.length){console.error(play.join('\n'));await b.close();process.exit(1)}
+await p.evaluate(()=>__g.enter(1));
+await clearUI(p);
+const combat=await p.evaluate(()=>{
+  const fail=[],G=__g.G;let P=__g.P,W=__g.W;
+  __g.ACC.maxi=1;__g.setMode('play');
+  const check=(n,ok,extra)=>{if(!ok)fail.push(n+(extra!==undefined?': '+extra:''))};
+  function park(){
+    const N=W.N;
+    for(const rad of [5,4,3,2]){
+      for(let y=rad+1;y<N-rad-1;y++)for(let x=rad+1;x<N-rad-1;x++){
+        let ok=true;
+        for(let dy=-rad;dy<=rad&&ok;dy++)for(let dx=-rad;dx<=rad;dx++)if(W.map[(y+dy)*N+(x+dx)]!==1)ok=false;
+        if(ok){P.x=x+.5;P.y=y+.5;P.dir={x:1,y:0};return true}}
+    }
+    return false}
+  check('open floor',park());
+  W.ents.length=0;W.projs.length=0;W.fx.length=0;W.allies.length=0;
+  G.sk=[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0];G.pas=[];G.slots=[9,-1,-1];__g.calc();
+  const e=__g.spawn('bot',P.x+3,P.y,{});
+  check('spawn for bolt',!!e);
+  if(e){e.stun=100;e.aggro=false;const hp=e.hp;
+    for(let i=0;i<240;i++)__g.update(1/60);
+    check('old bolt did not fire',e.hp===hp&&!W.fx.some(f=>f.k==='bolt'),'hp '+e.hp+'/'+hp);
+    check('rehearsal did not bank a charge on its own',!(P.reh>0),P.reh);
+    W.ents.length=0}
+  function arm(i){G.sk[i]=Math.max(1,G.sk[i]||0);G.slots[0]=i;P.cd[i]=0;P.dash=null;P.silence=0;P.castWait=0;__g.setMode('play');if(!__g.CLS.anon.sk[i].a&&!G.pas.includes(i))G.pas.push(i);__g.calc();__g.S.dmin=__g.S.dmax=80;__g.S.shock=0;__g.S.crit=0;G.en=__g.S.maxEn;G.hp=__g.S.maxHp}
+  function bot(dx){const t=__g.spawn('bot',P.x+(dx||1.1),P.y,{});if(t){t.stun=30;t.hp=t.max=8000;t.aggro=false}return t}
+  /* Rehearsal banks charges on you. The window adds; it does not spend them. */
+  park();P.dir={x:1,y:0};P.reh=0;P.rehT=0;W.ents.length=0;const rh=bot(1.1);arm(9);
+  __g.cast(0);check('first rehearsal is one charge',P.reh===1,P.reh);
+  if(rh)check('rehearsal strikes',rh.hp<8000,'hp '+rh.hp);
+  P.cd[9]=0;__g.cast(0);check('a second rehearsal within the window adds',P.reh===2,P.reh);
+  P.cd[9]=0;__g.cast(0);check('charges cap at three',P.reh===3);
+  P.cd[9]=0;__g.cast(0);check('a fourth rehearsal stays at three',P.reh===3);
+  for(let i=0;i<200;i++)__g.update(1/60);
+  check('banked charges survive the window',P.reh===3&&!(P.rehT>0),'reh '+P.reh+' t '+P.rehT);
+  P.cd[9]=0;arm(9);__g.cast(0);check('a rehearsal after the window starts again',P.reh===1,P.reh);
+  /* The Dump spends every charge. None means nothing. */
+  W.ents.length=0;park();P.reh=0;P.rehT=0;arm(10);const bare=bot(1.1);const hp0=bare&&bare.hp;__g.cast(0);
+  check('the dump with nothing rehearsed does nothing',P.reh===0&&bare&&bare.hp===hp0&&!(bare.quiet>0)&&!bare.rust);
+  check('the dump says so',document.getElementById('log').textContent.includes('You have nothing rehearsed'));
+  W.ents.length=0;park();P.reh=1;P.rehT=2;arm(10);const bled=bot(1.1);__g.cast(0);
+  check('one charge is a rust bleed',!!(bled&&bled.rust),'lt '+(bled&&bled.lt));
+  check('one charge spends the bank',P.reh===0);
+  W.ents.length=0;park();P.reh=2;P.rehT=2;arm(10);const gag=bot(1.1);__g.cast(0);
+  check('two charges silence',gag&&gag.quiet>1,'quiet '+(gag&&gag.quiet));
+  W.ents.length=0;park();P.reh=3;P.rehT=2;arm(10);const cut=bot(2);const hp3=cut&&cut.hp;__g.cast(0);
+  check('three charges is a screen of blades',cut&&cut.hp<hp3,'hp '+((cut&&cut.hp))+'/'+hp3);
+  check('the screen spends the bank',P.reh===0);
+  /* A plain attack spends one charge and bleeds. */
+  W.ents.length=0;park();P.dir={x:1,y:0};P.atk=0;P.reh=2;P.rehT=2;G.sk[10]=1;__g.calc();__g.S.dmin=__g.S.dmax=80;__g.S.shock=0;__g.S.crit=0;
+  const swung=bot(.7);__g.attack();
+  check('a plain attack spends one charge',P.reh===1,'reh '+P.reh);
+  check('a plain attack bleeds',!!(swung&&swung.rust));
+  /* Charges do not survive a zone change. */
+  P.reh=3;P.rehT=2;G.in2=1;__g.enter(2);
+  check('a zone change drops the charges',!(__g.P.reh>0),__g.P.reh);
+  __g.setMode('play');G.in1=1;__g.enter(1);P=__g.P;W=__g.W;
+  /* No Attribution: a hidden mine does not break Incognito, and it arms faster. */
+  park();W.allies.length=0;W.ents.length=0;G.sk[11]=1;if(!G.pas.includes(11))G.pas.push(11);P.stealth=4;arm(3);__g.cast(0);
+  const hid=W.allies.find(a=>a.k==='mine');
+  check('a hidden mine stays hidden',P.stealth>3,'stealth '+P.stealth);
+  check('a hidden mine arms faster',hid&&hid.arm<0.4,'arm '+(hid&&hid.arm));
+  W.allies.length=0;P.stealth=0;arm(3);__g.cast(0);
+  const seen=W.allies.find(a=>a.k==='mine');
+  check('a seen mine arms slowly',seen&&seen.arm>0.5,'arm '+(seen&&seen.arm));
+  check('laying a mine while visible stays visible',!(P.stealth>0));
+  /* Dead Drop: one mark, then you appear there. */
+  W.allies.length=0;park();const home=P.x;arm(12);__g.cast(0);
+  const mark=W.allies.find(a=>a.k==='ddrop'&&a.life>0);
+  check('dead drop places one mark',!!mark);
+  if(mark){P.x=home+2;P.cd[12]=0;arm(12);__g.cast(0);
+    check('dead drop appears at the mark',Math.abs(P.x-home)<0.2,'x '+P.x+' mark '+home);
+    check('the mark is spent',!W.allies.some(a=>a.k==='ddrop'&&a.life>0))}
+  /* Cutout ignores the first killing blow on a sockpuppet, and the first step on a mine. Not on you. */
+  W.allies.length=0;park();G.sk[13]=1;if(!G.pas.includes(13))G.pas.push(13);__g.calc();
+  const doll={k:'minion',kind:'clone',hp:30,max:30,x:P.x,y:P.y,r:.3};
+  W.allies.push(doll);__g.hurtAlly(doll,100);
+  check('cutout ignores the first hit on a sockpuppet',doll.hp===30&&doll.cut===1,'hp '+doll.hp);
+  __g.hurtAlly(doll,100);
+  check('the second hit destroys the sockpuppet',!W.allies.includes(doll));
+  W.allies.length=0;W.ents.length=0;const mine={k:'mine',x:P.x,y:P.y,life:12,arm:0,m:1,r:2.4};
+  W.allies.push(mine);const step=bot(.4);const stepHp=step&&step.hp;
+  __g.update(1/60);
+  check('cutout ignores the first step on a mine',mine.cut===1&&mine.life>0);
+  check('the first step does not burst',step&&step.hp===stepHp);
+  __g.update(1/60);
+  check('the next step detonates the mine',!W.allies.includes(mine));
+  const before=G.hp;P.inv=0;__g.S.dodge=0;__g.hurt(40,false,null);
+  check('cutout does not apply to you',G.hp<before,'hp '+G.hp+'/'+before);
+  G.hp=__g.S.maxHp;__g.setMode('play');
+  /* We Were Never Here: nothing to disown does nothing. A mine goes off as silence. */
+  W.allies.length=0;W.ents.length=0;park();P.stealth=0;arm(14);__g.cast(0);
+  check('nothing to disown stays visible',!(P.stealth>0));
+  check('nothing to disown says so',document.getElementById('log').textContent.includes('You have nothing to disown'));
+  const quietMine={k:'mine',x:P.x+1.2,y:P.y,life:12,arm:9,m:50,r:2.4};
+  W.allies.push(quietMine);const near=bot(1.2);if(near){near.stun=30;near.hp=near.max=8000}
+  const qhp=near&&near.hp;P.cd[14]=0;arm(14);__g.cast(0);
+  check('we were never here drops you into incognito',P.stealth>2,'stealth '+P.stealth);
+  check('the mine is hushed',quietMine.hush===1&&quietMine.life<=0);
+  __g.update(1/60);
+  check('a hushed mine does not burst',near&&near.hp===qhp,'hp '+(near&&near.hp)+'/'+qhp);
+  check('the mine silences what is near',near&&near.quiet>1,'quiet '+(near&&near.quiet));
+  check('the mine is gone',!W.allies.some(a=>a.k==='mine'));
+  if(near){near.quiet=3;near.aggro=true;near.stun=0;near.cd=0;near.wind=0;P.stealth=0;
+    for(let i=0;i<30;i++)__g.update(1/60);
+    check('a silenced machine does not swing',!(near.wind>0)&&!W.projs.some(pr=>pr.foe))}
+  return fail});
+if(combat.length){console.error('COMBAT\n'+combat.join('\n'));errs.push(...combat)}
+await clearUI(p);
+const sheets=await p.evaluate(()=>{
+  const fail=[];
+  __g.setMode('play');__g.G.hp=__g.S.maxHp;
+  __g.openSheet('skills');
+  const html=document.getElementById('sheetIn').innerHTML;
+  for(const n of ['Rehearsal','The Dump','No Attribution','Dead Drop','Cutout','We Were Never Here','No Logs','Burner','Collective'])if(!html.includes(n))fail.push('skills sheet missing '+n);
+  for(const n of ['Unseen Blade','Clean Slate','Dread','Counterclaim','Tradecraft'])if(html.includes(n))fail.push('skills sheet still shows '+n);
+  __g.closeSheet();
+  __g.openSheet('shift');
+  document.querySelector('[data-shiftp=anon]').click();
+  const pop=document.getElementById('pop').innerHTML;
+  for(const n of ['Demolition','Ghost','We Are Legion','Rehearsal','The Dump','We Were Never Here'])if(!pop.includes(n))fail.push('builds missing '+n);
+  if(pop.includes('Unseen Blade')||pop.includes('Clean Slate')||pop.includes('Tradecraft'))fail.push('builds still name a boon');
+  __g.closeSheet();
+  return fail});
+if(sheets.length){console.error('SHEETS\n'+sheets.join('\n'));errs.push(...sheets)}
+async function shift(arg){
+  await p.evaluate(a=>__g.shapeShift(a[0],a[1]),arg);
+  await clearUI(p);
+}
+await p.evaluate(()=>{__g.G.sats=40;__g.G.lvl=60;__g.G.act2=true;__g.G.act3=true;__g.setMode('play')});
+await shift(['scrapper',0]);
+await shift(['anon','ghost']);
+const built=await p.evaluate(()=>{
+  const G=__g.G,fail=[];
+  if(G.cls!=='anon')fail.push('class '+G.cls);
+  if(!G.pas.includes(11)||!G.pas.includes(13))fail.push('ghost passives '+G.pas.join(','));
+  if(!G.slots.includes(9))fail.push('ghost buttons '+G.slots.join(','));
+  return fail});
+if(built.length){console.error('BUILD\n'+built.join('\n'));errs.push(...built)}
+await shift(['scrapper',0]);
+const back=await p.evaluate(()=>__g.G.cls);
+if(back!=='scrapper'){console.error('did not shift back, cls '+back);errs.push('shift back')}
+const refund=await p.evaluate(()=>{
+  const fail=[],eq={weapon:null,helm:null,armor:null,gloves:null,boots:null,belt:null,ring:null,amulet:null};
+  const base=cls=>({v:2,cls,lvl:40,xp:0,sp:4,ap:0,at:{mgt:0,ref:0,vit:0,bnd:0},hp:80,en:20,credits:10,cpi:1,stims:1,bag:[],eq,unlocked:20,q:{},sats:0,slots:[9,12,0],pas:[10,11]});
+  const raw=base('anon');raw.sk=[1,2,0,0,0,0,0,0,3,2,3,4,1,5,6];
+  const low=raw.sk.slice(0,9).join();
+  __g.applySave({G:JSON.parse(JSON.stringify(raw))});
+  const G=__g.G;
+  if(G.sp!==4+21)fail.push('refunded sp '+G.sp);
+  if(G.sk.slice(9).some(n=>n!==0))fail.push('indices 9-14 not cleared '+G.sk.slice(9).join(','));
+  if(G.sk.slice(0,9).join()!==low)fail.push('rows 1-3 changed');
+  if(!G.boonRefund||G.boonRefund.anon!==1)fail.push('flag '+JSON.stringify(G.boonRefund));
+  if(G.slots[0]!==-1||G.slots[1]!==-1||G.slots[2]!==0)fail.push('slots '+G.slots.join(','));
+  if((G.pas||[]).some(i=>i>=9))fail.push('pas '+G.pas);
+  if(!document.getElementById('log').textContent.includes('The old boons were withdrawn and the points returned.'))fail.push('no refund toast');
+  const sp=G.sp,sk=G.sk.join();
+  __g.applySave({G:JSON.parse(JSON.stringify(G))});
+  if(__g.G.sp!==sp||__g.G.sk.join()!==sk)fail.push('refunded twice');
+  const cu=base('founder');cu.sk=[1,0,0,0,0,0,0,0,0,4,2,2,2,2,2];
+  __g.applySave({G:JSON.parse(JSON.stringify(cu))});
+  if(__g.G.sk[9]!==4)fail.push('founder boon points were taken');
+  if(__g.G.boonRefund&&__g.G.boonRefund.founder)fail.push('founder was marked refunded');
+  return fail});
+if(refund.length){console.error('REFUND\n'+refund.join('\n'));errs.push(...refund)}
+const failedA=errs.length;
+console.log(failedA?'ERRORS:\n'+errs.slice(0,40).join('\n'):'anon milestone 0 checks passed');
+await b.close();
+if(errs.length>failedA)console.error('pageerror during close:\n'+errs.slice(failedA).join('\n'));
+process.exit(failedA?1:0);
 }

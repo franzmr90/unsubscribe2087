@@ -77,7 +77,13 @@ Object.assign(CLS,{
    {n:'Dox',ab:'DOX',a:1,cost:12,cd:6,d:L=>`Expose a machine and everything near it: +30% damage taken for ${8+L}s, and ${pct(1+.2*L)} now.`},
    {n:'Zip Bomb',ab:'ZIP\nBOMB',a:1,cost:22,cd:8,d:L=>`One blast of ${pct(1.4+.2*L)} that unpacks into five more of ${pct(1.2+.2*L)}.`},
    {n:'Sockpuppet',ab:'SOCK-\nPUPPET',a:1,cost:24,cd:18,d:L=>`${L>=5?'Two copies':'A copy'} of you fight${L>=5?'':'s'} for ${10+L}s, dealing ${pct(.5+.08*L)} and drawing fire.`},
-   {n:'Legion',ab:'LEGION',a:1,cost:35,cd:20,d:L=>`We are many. A dozen unseen blades strike across the screen for ${pct(1.2+.2*L)} each.`}]},
+   {n:'Legion',ab:'LEGION',a:1,cost:35,cd:20,d:L=>`We are many. A dozen unseen blades strike across the screen for ${pct(1.2+.2*L)} each.`},
+   {n:'Rehearsal',ab:'REHEARSAL',a:1,cost:10,cd:1.4,d:L=>`A strike for ${pct(.7+.1*L)}. Another within 3s adds a charge, up to three. The charges sit on you.`},
+   {n:'The Dump',ab:'THE\nDUMP',a:1,cost:8,cd:4,d:L=>`Spend every charge. One is a rust bleed. Two is a silence. Three is a screen of blades for ${pct(.9+.12*L)}. A plain attack spends one charge and bleeds. Charges do not survive a zone change.`},
+   {n:'No Attribution',ab:'',a:0,d:L=>`Passive. While Incognito is up, laying a mine does not break it, and the mine arms faster. Nothing, while you can be seen.`},
+   {n:'Dead Drop',ab:'DEAD\nDROP',a:1,cost:12,cd:3,d:L=>`Place a mark. Activate again to appear there. One mark. It does not explode.`},
+   {n:'Cutout',ab:'',a:0,d:L=>`Passive. The first hit that would destroy a mine or a sockpuppet is ignored. It does not apply to you.`},
+   {n:'We Were Never Here',ab:'NEVER\nHERE',a:1,cost:20,cd:16,d:L=>`Every mine and sockpuppet goes off as a silence, and you drop into Incognito. If you have none, nothing happens.`}]},
  founder:{n:'Founder',tag:'He left the Board with a grudge and a headcount. Summons a workforce and lets it do the dying.',hp:90,hpL:12,melee:false,mult:.7,ivl:.6,spd:4,col:'#26262e',
   sk:[
    {n:'Interns',ab:'INTERN',a:1,cost:8,cd:.5,d:L=>`Summon an intern that fights for ${pct(.35+.05*L)}. You keep up to ${Math.min(7,2+Math.floor(L/2))}. They follow you everywhere.`},
@@ -105,11 +111,11 @@ Object.assign(CLS,{
 });
 /* a fourth row opens with Act II: three passive boons per class, the same three mechanics under different names */
 const BOON={strike:L=>`Passive. Every ${Math.max(1.2,3-.15*L).toFixed(1)}s a bolt strikes the nearest machine for ${pct(1.2+.25*L)}.`,mend:L=>`Passive. Every 5s you recover ${(1.5+.5*L).toFixed(1)}% of your life and ${L} energy.`,aura:L=>`Passive. An aura around you slows machines and deals ${pct(.12+.03*L)} twice a second.`};
-const BN={anon:['Unseen Blade','Clean Slate','Dread'],founder:['Performance Review','Stock Buyback','Reality Distortion'],maxi:['Nonce Found','Dollar Cost Average','Toxicity']};
+const BN={founder:['Performance Review','Stock Buyback','Reality Distortion'],maxi:['Nonce Found','Dollar Cost Average','Toxicity']};
 for(const k in CLS)if(CLS[k].sk.length<15)['strike','mend','aura'].forEach((b,i)=>CLS[k].sk.push({n:BN[k][i],ab:'',a:0,boon:b,d:BOON[b]}));
 /* a fifth row opens with Act III */
 Object.assign(BOON,{nova:L=>`Passive. When you are hit, 20% chance to release a shockwave for ${pct(1.5+.25*L)}.`,mastery:L=>`Passive. +${3*L}% to all damage and +${2*L}% life.`,guardian:L=>`Passive. A killing blow leaves you at 30% life instead, once every ${Math.max(20,60-3*L)} seconds.`});
-const BN3={anon:['Counterclaim','Tradecraft','Dead Drop'],founder:['Golden Share','Vested','Poison Pill'],maxi:['Cope','Stay Humble','Cold Storage']};
+const BN3={founder:['Golden Share','Vested','Poison Pill'],maxi:['Cope','Stay Humble','Cold Storage']};
 for(const k in CLS)if(CLS[k].sk.length<15)['nova','mastery','guardian'].forEach((b,i)=>CLS[k].sk.push({n:BN3[k][i],ab:'',a:0,boon:b,d:BOON[b]}));
 const MERCS={guard:{n:'Bodyguard',d:'A reprogrammed Enforcer. Machines attack it before you.',hpM:1.8,dM:1,ivl:1,range:1.3,spd:4.6,taunt:1,col:'#7d8ba3'},
  sys:{n:'Sysadmin',d:'Shoots from range, patches your wounds every few seconds and tops up your energy.',hpM:1,dM:.6,ivl:1.2,range:5.5,spd:4.4,col:'#59c0a0'},
