@@ -42,6 +42,12 @@ and offline mail (5); and last, the party-experience and hostility changes (6),
 because those change numbers. Each milestone names the test that says it worked.
 The per-class checklist is at the bottom of the plan. Read it before adding a class.
 
+**Milestone 0 of that plan has landed on this branch.** Each of the six classes has its own row 4 and row 5. The section below that still describes those rows as shared boons is the tree from before that work. Do not put the boons back.
+
+**The next plan is written:** `notes/PLAN-skill-vfx-and-copy.md`.
+
+It does not draw a skill and it does not rewrite a line. It says how unique skill graphics fit the canvas the game already has, how combat stays readable on a phone and in a party of eight, and how to audit the copy without sanding off the voice. Read it before touching `src/p3.js` or a dialog.
+
 ## What the research changes
 
 Read both reports, but these are the findings that should drive the plan:
@@ -72,10 +78,14 @@ Read both reports, but these are the findings that should drive the plan:
 
 ## The biggest obstacle, named plainly
 
-**Only 9 of the 15 skills per class are real.** Rows 4 and 5 are not authored: they are six
+This was true when the eight-class plan was written. **On this branch it is done.** Rows 4
+and 5 are authored skills, and `BOON`, `BN`, and `BN3` are gone. What follows is the old
+description, kept so the plan's reasoning still reads.
+
+**Only 9 of the 15 skills per class were real.** Rows 4 and 5 were not authored: they were six
 generic mechanics (`strike`, `mend`, `aura`, `nova`, `mastery`, `guardian`) pushed in a loop
-at `src/p1.js:90` and `:94`, given per-class *names only* via `BN` and `BN3`. Thirty-six
-names, six behaviours. D2 hand-designed every tier. Closing that gap is worth more than any
+at `src/p1.js`, given per-class *names only* via `BN` and `BN3`. Thirty-six
+names, six behaviours. D2 hand-designed every tier. Closing that gap was worth more than any
 new class.
 
 ## Other things the plan must account for
