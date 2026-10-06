@@ -50,7 +50,9 @@ It says how unique skill graphics fit the canvas the game already has, how comba
 
 **V1 of that plan has landed.** The purple circle that painted whenever skill 11 was learned is gone. Shapes, particles, and lights are capped (48, 80, and 16). Options has an Effects control — Full, Normal, Thin — defaulting to Normal. Thin keeps your own telegraphs and marks, and skips particles, extra lights, and other players' casts. `node tools/v1-check.js` is the budget check.
 
-**V2 has landed on this branch.** Each of the six classes has a shape record for every skill. A cast plays that shape instead of the old class-colored ring. The same glyph is drawn on the skill button and in the tree, colored by damage type. Passives are glyphs only. Charges, auras that stay up, The Dip, and vesting stacks are still unread on the body: that is V3. Nothing was added to the move packet. Copy rewrites have not started. `node tools/v2-check.js` casts every active and checks the shape.
+**V2 has landed on this branch.** Each of the six classes has a shape record for every skill. A cast plays that shape instead of the old class-colored ring. The same glyph is drawn on the skill button and in the tree, colored by damage type. Passives are glyphs only. Lasting states were left for V3. Nothing was added to the move packet. Copy rewrites have not started. `node tools/v2-check.js` casts every active and checks the shape.
+
+**V3 has landed on this branch.** While a state is on, it keeps a mark or a patch: the three auras, Rehearsal charges, The Dip while it is armed, Vesting stacks, Non-Compete, Garden Leave on the cursed machine, and the charge type The Dump just spent. A party member or the hireling inside your aura wears the same patch. That is a picture only. The aura's numbers are unchanged, and nothing was added to the move packet. Turning one of these on no longer toasts; a refused cast still does. `node tools/v3-check.js` sets the states and checks the marks. V4 (skill id and aura on the wire) has not started.
 
 ## What the research changes
 

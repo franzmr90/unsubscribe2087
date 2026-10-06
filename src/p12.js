@@ -35,9 +35,8 @@ function maxiOn() { return !!(typeof ACC !== 'undefined' && ACC && ACC.maxi); }
    An aura is not a buff you re-cast. It is the one you have chosen, and it is on.
    Casting an aura skill swaps which one, costs nothing, and lasts until you swap again. */
 function maxiSet(i, L) {
-  if (P.aura && P.aura.i === i) { P.aura = null; toast('Aura off'); sfx('ui'); return; }
+  if (P.aura && P.aura.i === i) { P.aura = null; sfx('ui'); return; }
   P.aura = { i, L, t: 0 };
-  toast(CLS.maxi.sk[i].n + ' is on');
   sfx('buff');
   W.fx.push({ k: 'ring', x: P.x, y: P.y, r: 3.2, t: 0, life: .45, col: '#f7931a' });
 }
