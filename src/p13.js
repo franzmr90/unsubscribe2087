@@ -261,20 +261,10 @@ function mpShareQuest(k, v) {
 /* ---------- fighting each other ----------
    Your client says it hit; the server decides whether the two of you are allowed to fight
    and scales the damage; their client applies it. A friend could cheat this, and the only
-   honest answer is that this is a server for people who know each other. */
-function mpPvp(dmg, kind, x, y) {
-  if (!mpOn() || !(dmg > 0)) return false;
-  let best = null, bd = 1.3;
-  for (const o of MP.others) {
-    if (!mpHostileTo(o.uid)) continue;
-    const d = Math.hypot(o.x - x, o.y - y);
-    if (d < bd) { bd = d; best = o; }
-  }
-  if (!best) return false;
-  mpSend('pvp', { uid: best.uid, dmg, kind: kind || '' });
-  float(best.x, best.y, Math.round(dmg * MP.pvpScale), '#ffb4ae', 1);
-  return true;
-}
+   honest answer is that this is a server for people who know each other.
+
+   The hit itself is routed from dmgEnemy: a hostile stands in W.ents as a stand-in, so
+   every skill in the game finds them, and mpHurt sends it on. */
 
 function mpTakeHit(m) {
   if (!G || mode === 'title') return;

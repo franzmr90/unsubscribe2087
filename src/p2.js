@@ -272,7 +272,7 @@ function buildSim(wave,rush){W=blankW(6,30);const N=30;for(let y=4;y<=25;y++)for
   classifyWalls();W.seen.fill(1);initRuntime();W.start={x:15,y:15};W.portals.push({x:6.5,y:7.5,kind:'home'});W.sim=rush?{rush:1,i:-1,t:2,list:rushList(),wave:0}:{wave:wave-1,t:3};W.ml=G.lvl;W.dyn=dynFor(W.ml)}
 function simTick(dt){const s=W.sim;if(s.rush)return rushTick(dt);if(W.ents.length)return;s.t-=dt;if(s.t>0)return;
   if(s.wave>=1&&!s.paid){G.simBest=Math.max(G.simBest||0,s.wave)}
-  s.wave++;s.t=4;const n=s.wave;if(n>1)simChoice(n);W.ml=Math.max(1,G.lvl-1+Math.floor(n/2));W.dyn=dynFor(W.ml);
+  s.wave++;s.t=4;const n=s.wave;mpSimWave(n);if(n>1)simChoice(n);W.ml=Math.max(1,G.lvl-1+Math.floor(n/2));W.dyn=dynFor(W.ml);
   const pool=['drone','tick'];if(n>=2)pool.push('bot');if(n>=3)pool.push('hound');if(n>=4)pool.push('ad');if(n>=5)pool.push('hr');if(n>=6)pool.push('mech');if(G.act2){if(n>=3)pool.push('lancer','splitter');if(n>=5)pool.push('seer','aegis')}
   const at=()=>{const a=rnd(0,6.283),r=rnd(7,9.5);return[clamp(15+Math.cos(a)*r,5,24.5),clamp(15+Math.sin(a)*r,5,24.5)]};
   const add=(k,o)=>{const[x,y]=at(),e=spawn(k,x,y,o);if(e)e.aggro=true;return e};
@@ -412,7 +412,7 @@ function kill(e){
   if(S.sp.vigil)heal(S.maxHp*.03);
   if(e.mods.boom)W.fx.push({k:'warn',x:e.x,y:e.y,r:2.2,t:0,life:.7,boom:e.dmg*1.5});
   if(S.sp.whistle){W.fx.push({k:'ring',x:e.x,y:e.y,r:2.2,t:0,life:.3,col:'#ff5d4d'});for(const o of W.ents.slice())if(dist(o,e)<2.2)dmgEnemy(o,e.max*.3,false)}
-  if(e.q&&G.q[e.q]<2){if(e.q==='q3'){sfx('quest');toast('Defrag falls. Follow the arrow to Marrow’s cage and open it.')}else{G.q[e.q]=2;sfx('quest');toast('Quest complete: return to '+QUESTS[e.q].back)}}
+  if(e.q&&G.q[e.q]<2){if(e.q==='q3'){sfx('quest');toast('Defrag falls. Follow the arrow to Marrow’s cage and open it.')}else{G.q[e.q]=2;mpShareQuest(e.q,2);sfx('quest');toast('Quest complete: return to '+QUESTS[e.q].back)}}
   if(boss&&W.z.sim){W.boss=null;$('boss').hidden=true;music(zoneMusic());for(const o of W.ents.slice())if(o.minion)W.ents.splice(W.ents.indexOf(o),1)}
   else if(boss){W.boss=null;music(zoneMusic());sfx('quest');$('boss').hidden=true;W.portals.push({x:e.x,y:e.y,kind:'home'});W.goal={x:e.x,y:e.y};if(OPT.shake)shake=12;const b3=e.k==='boss3';
     for(const o of W.ents.slice())if(o.minion)kill(o);W.projs=W.projs.filter(p=>!p.foe);if(e.k==='gap'||e.k==='boss4'||e.k==='boss5'){bossKill2(e);return}
