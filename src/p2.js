@@ -138,7 +138,9 @@ function mkFixed(u,il,q,set){il=Math.max(il,u.il);let b=null,tr=0;BASE[u.slot].f
   for(const k in u.mods){const m=u.mods[k];let v=ri(m[0],m[1]);if(['dmg','hp','shock','thorns','armor','en','armorP'].includes(k))v=Math.round(v*sc);it.aff.push({k,v})}
   if(u.sp){it.sp=u.id;it.spT=u.sp}if(set)it.set=set;
   it.val=(8+il*5)*(q===4?8:6);it.req=Math.max(1,Math.floor(u.il*.75));return it}
-function makeItem(il,q,slot){
+const ITEM_HOOKS=[];
+function makeItem(il,q,slot){let it=makeItemCore(il,q,slot);for(const h of ITEM_HOOKS)it=h(it,il,q,slot);return it}
+function makeItemCore(il,q,slot){
   il=Math.max(1,Math.round(il));
   if(q===4){const c=UNI.filter(u=>u.il<=il+2&&!u.bossOnly&&(!slot||u.slot===slot));if(c.length)return mkFixed(pick(c),il,4);q=2}
   if(q===3){const c=SETS.striker.items.filter(u=>!slot||u.slot===slot);if(c.length)return mkFixed(pick(c),il,3,'striker');q=2}
