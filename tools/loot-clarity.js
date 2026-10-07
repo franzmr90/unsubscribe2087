@@ -26,7 +26,8 @@ await p.evaluate(()=>{const d=document.getElementById('dlg');if(d&&!d.hidden){co
 const filters=await p.evaluate(()=>{
   const g=__g,P=g.P;
   const wear=g.makeItem(2,0,'weapon');wear.id=true;wear.req=1;g.G.eq.weapon=wear;
-  const drop=(it,opt)=>{Object.assign(g.OPT,opt);g.W.drops=[{it,x:P.x,y:P.y,t:1}];const before=g.G.bag.length+g.G.charms.length;g.update(0.05);const left=g.W.drops.some(d=>d.it===it);return {left,took:g.G.bag.length+g.G.charms.length-before}});
+  const held=()=>g.G.bag.length+(g.G.charms||[]).length;
+  const drop=(it,opt)=>{Object.assign(g.OPT,opt);g.W.drops=[{it,x:P.x,y:P.y,t:1}];const before=held();g.update(0.05);const left=g.W.drops.some(d=>d.it===it);return {left,took:held()-before}};
   const rare=g.makeItem(6,2,'weapon');
   const struck=drop(rare,{pk2:false,pkBetter:false});
   const judged=drop(g.makeItem(6,2,'weapon'),{pk2:true,pkBetter:true});
