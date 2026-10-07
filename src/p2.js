@@ -213,7 +213,7 @@ function newGame(cls){
     eq:{weapon:null,helm:null,armor:null,gloves:null,boots:null,belt:null,ring:null,amulet:null},unlocked:1,tier:0,maxTier:0,kills:0,deaths:0,ubiT:0,time:0,zone:0,
     sats:0,merc:null,sq:{},stash:[],q:{q1:0,q2:0,q3:0,q4:0,q5:0,q6:0,q7:0,q8:0,q9:0,q10:0},memos:[],marrow:false,disc:false,portal:null,chuteT:0,bossKills:0,seenIntro:false,god:false};
   G.eq.weapon=makeItem(1,0,'weapon');ZS={};freshState();calc();G.hp=S.maxHp;G.en=S.maxEn;
-  G.pre=1;playScene(PRE_INTRO,()=>startPlay())}
+  G.walkNew=1;G.pre=1;playScene(PRE_INTRO,()=>startPlay())}
 
 /* ================= save ================= */
 const b64=u=>{let s='';for(let i=0;i<u.length;i+=4096)s+=String.fromCharCode.apply(null,u.subarray(i,i+4096));return btoa(s)};
@@ -374,7 +374,7 @@ function enter(zi,o){setTimeout(mpBeat,0);
   else if(act===2&&!G.act2){G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO2,()=>{mode='play';dlg('Act II · The Cloud','Level limit 50, and a fourth skill row opens. The fourth row is yours. Vale does not get a vote on it.',[['Begin']])}),50)}
   else if(!z.town&&!G['in'+zi]&&z.intro){G['in'+zi]=1;dlg(z.n,z.intro,[['Go on']])}
   else toast(z.town?z.n:'Entering '+z.n);
-  seenT=0;music(zoneMusic());save(true)}
+  if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}seenT=0;music(zoneMusic());save(true)}
 function openPortal(){if(mode!=='play'||W.z.town)return;if(W.z.sim){sfx('portal');enter(HT());return}if(nearest(4)){toast('Machines are too close to open a portal');return}
   G.portal={zi:W.zi,x:P.x,y:P.y};sfx('portal');enter(HT());toast('A portal back stands open in the square')}
 function resetZones(){ZS={};G.portal=null}
