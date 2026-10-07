@@ -762,11 +762,11 @@ Object.assign(SKF,{
   14:(L,m)=>founderLiq(L,m)},
  homesteader:{
   0:(L,m)=>{if(hsHands())return;hsPlacePlot(P.x+P.dir.x*1.2,P.y+P.dir.y*1.2,{life:HS.plotLife,r:HS.plotR,m:(.22+.04*L)*m})},
-  1:()=>{if(hsForm()==='hull'){toast('The hull does not become a hound');return}hsDropPlots();hsSetForm('hound',null);parts(P.x,P.y,10,['#6a8f62','#3d5438'],2,1.2)},
+  1:()=>{if(hsForm()==='hound'){hsShed();return}if(hsForm()==='hull'){toast('The hull does not become a hound');return}hsDropPlots();hsSetForm('hound',null);parts(P.x,P.y,10,['#6a8f62','#3d5438'],2,1.2)},
   2:(L,m)=>{if(hsHands())return;hsSumFlock({kind:'stray',m:(.32+.05*L)*m,ivl:.65,rng:1.15,bite:6+L,dt:'rust'},Math.min(HS.strayCap,2+Math.floor(L/3)))},
   3:(L)=>{if(hsHands())return;const cs=(P.corpses||[]).filter(c=>c.t>0&&Math.hypot(c.x-P.x,c.y-P.y)<3);if(!cs.length){toast('Nothing here to compost');return}
     let b=cs[0],bd=99;for(const c of cs){const d=Math.hypot(c.x-P.x,c.y-P.y);if(d<bd){bd=d;b=c}}b.t=0;P.corpses=P.corpses.filter(c=>c.t>0);P.compost=1.35+.05*L;toast('The next plot takes the body')},
-  4:()=>{hsDropPlots();hsSetForm('hull',null);parts(P.x,P.y,12,['#4e6a48','#2a2418'],2,1.3)},
+  4:()=>{if(hsForm()==='hull'){hsShed();return}hsDropPlots();hsSetForm('hull',null);parts(P.x,P.y,12,['#4e6a48','#2a2418'],2,1.3)},
   5:(L,m)=>{if(hsHands())return;hsSumFlock({kind:'bull',m:(.9+.12*L)*m,ivl:.9,rng:1.35,bite:10+2*L,r:.46,spd:3.4,dt:'heat'},1)},
   6:()=>{if(hsHands())return;const mul=P.compost||1;P.compost=0;const life=hsDur(HS.hedgeLife)*(mul>1?mul:1);const dx=P.dir.x,dy=P.dir.y,len=Math.hypot(dx,dy)||1,ux=dx/len,uy=dy/len,px=-uy,py=ux;
     for(let i=-2;i<=2;i++)W.allies.push({k:'hedge',plot:1,x:P.x+ux*1.2+px*i*.72,y:P.y+uy*1.2+py*i*.72,life,r:.42})},
@@ -791,7 +791,7 @@ Object.assign(SKF,{
   10:()=>{if(recGet()<witNeed(10)){witBlank();return}const cands=[];if(W.merc&&W.merc.hp>0)cands.push(W.merc);if(W.tag&&W.tag.hp>0&&!(P&&P.tag))cands.push(W.tag);for(const a of W.allies)if(witLends(a))cands.push(a);let who=null,bd=12;for(const a of cands){const d=dist(a,P);if(d<bd){bd=d;who=a}}if(!who){toast('Nobody to attribute');return}if(!witPay(witNeed(10))){witBlank();return}who.soundSwing=1;float(who.x,who.y,'Unnamed','#f7931a',0)},
   12:(L)=>{if(recGet()<1){witBlank();return}const ons=W.ents.filter(e=>e.hp>0&&!e.mp&&witSeen(e)&&(e.tes||0)>0);if(!ons.length){toast('Nothing on the page');return}recSet(0);for(const e of ons){witImpact(e,(e.watch||0)*(1.6+.25*L)*(1+(G.lvl||1)*.01));e.tes=0;e.watch=0;e.acc=0}}}
 });
-function cast(slot){const i=G.slots[slot];if(mode!=='play'||i<0||i===undefined)return;const s=CLS[G.cls].sk[i],L=sl(i);const leaving=G.cls==='homesteader'&&i===7&&!!hsWearing();if(!leaving&&P.castWait>0){toast('Still casting');sfx('err');return}if(!L||!s.a||(!leaving&&(P.cd[i]>0||P.dash)))return;if(!leaving&&P.silence>0){toast('Silenced');sfx('err');return}
+function cast(slot){const i=G.slots[slot];if(mode!=='play'||i<0||i===undefined)return;const s=CLS[G.cls].sk[i],L=sl(i);const worn=G.cls==='homesteader'?hsWearing():null;const leaving=!!worn&&(i===7||(i===1&&worn==='hound')||(i===4&&worn==='hull'));if(!leaving&&P.castWait>0){toast('Still casting');sfx('err');return}if(!L||!s.a||(!leaving&&(P.cd[i]>0||P.dash)))return;if(!leaving&&P.silence>0){toast('Silenced');sfx('err');return}
   if(G.cls==='homesteader'&&!leaving){const why=hsBlocked(i);if(why){toast(why);sfx('err');return}}
   if(G.cls==='witness'){const why=witBlock(i);if(why){toast(why);if(why==='The page is blank')float(P.x,P.y,'the page is blank','#e6dcc8',0);sfx('err');return}}
   const fk=forkOf(i);let cost=s.cost*(S.sp.hoodie?.75:1)*(fk.cost||1);if(P.freeThrow&&G.cls==='courier'&&(i===0||i===6||i===9||i===12)){cost=0;P.freeThrow=0}if(G.en<cost){if(leaving)cost=0;else{toast('Not enough energy');sfx('err');return}}

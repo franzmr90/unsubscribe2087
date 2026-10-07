@@ -104,10 +104,10 @@ Object.assign(CLS,{
  homesteader:{n:'Homesteader',tag:'Lives on the verge the Office says does not exist. Tends a plot, wears a dead machine, or keeps a flock that does not love them.',hp:110,hpL:15,melee:false,mult:1,ivl:.55,spd:4.3,col:'#6a8f62',
   sk:[
    {n:'Cold Frame',ab:'COLD\nFRAME',a:1,cost:12,cd:6,d:L=>`A rust patch 2.2 paces across for 6 seconds. It slows, and deals ${pct(.22+.04*L)} every half second. It ends if you enter a chassis.`},
-   {n:'Wear the Hound',ab:'HOUND',a:1,cost:8,cd:1,d:()=>`Become the hound: faster, melee, less armour. Plot and flock skills grey out. A ranged weapon keeps its damage and loses its reach. Shed to leave.`},
+   {n:'Wear the Hound',ab:'HOUND',a:1,cost:8,cd:1,d:()=>`Become the hound: faster, melee, less armour. Plot and flock skills grey out. A ranged weapon keeps its damage and loses its reach. Click Hound again to step out, or Shed. Your hands are busy for 0.7s either way.`},
    {n:'Strays',ab:'STRAYS',a:1,cost:10,cd:1,d:L=>`A feral drone, up to ${Math.min(4,2+Math.floor(L/3))}, biting for ${pct(.32+.05*L)}. Past 4.5 paces they stop obeying and will hit you if you are closest.`},
    {n:'Compost',ab:'COMPOST',a:1,cost:8,cd:2,d:L=>`A corpse within 3 paces sinks. Your next plot skill deals ${Math.round((1.35+.05*L)*100)}% damage. With no body, nothing happens.`},
-   {n:'Wear the Hull',ab:'HULL',a:1,cost:12,cd:1,d:()=>`Climb into the hull: slower, more armour, no dash. Hound skills grey out. The same reach collapse. Drops the hound if you were wearing it.`},
+   {n:'Wear the Hull',ab:'HULL',a:1,cost:12,cd:1,d:()=>`Climb into the hull: slower, more armour, no dash. Hound skills grey out. The same reach collapse. Drops the hound if you were wearing it. Click Hull again to step out, or Shed.`},
    {n:'The Bull',ab:'BULL',a:1,cost:18,cd:8,d:L=>`One bull. It chooses its own target and hits for ${pct(.9+.12*L)}. You cannot ride it.`},
    {n:'Hedgerow',ab:'HEDGE',a:1,cost:14,cd:8,d:()=>`A line that blocks movement for 4 seconds. Machines and you.`},
    {n:'Shed',ab:'SHED',a:1,cost:4,cd:1.2,d:()=>`Leave the form. Your hands are busy for 0.7s. Plot and flock work again.`},
