@@ -107,7 +107,8 @@ function spawnMerc(){W.merc=null;spawnTag();if(G.tag||!G.merc||G.merc.dead)retur
 function updMerc(dt){const m=W.merc;if(!m||m.hp<=0)return;const t=MERCS[G.merc.k],s=mercStats();m.max=s.max;m.armM=s.red;m.cd-=dt;m.ph+=dt;m.flash=Math.max(0,m.flash-dt);m.swing=Math.max(0,m.swing-dt);m.haste=Math.max(0,(m.haste||0)-dt);
   let tg=null,bd=7.5;for(const e of W.ents){if(!e.aggro)continue;const d=dist(e,P);if(d<bd){bd=d;tg=e}}
   const g=tg||P,d=dist(g,m)||1,want=tg?t.range*.85:1.8;m.mov=false;
-  if(dist(m,P)>13){m.x=P.x;m.y=P.y}else if(d>want){const sp=t.spd*dt;if(!mv(m,(g.x-m.x)/d*sp,(g.y-m.y)/d*sp)&&dist(m,P)>5){m.x=P.x;m.y=P.y}m.mov=true;m.fx=(g.x-m.x)-(g.y-m.y)>0?1:-1}
+  /* Catch up at 8 tiles. The old 13-tile recall stays only while a swing is already in range. */
+  if(dist(m,P)>(tg&&d<=t.range+tg.r?13:8)){m.x=P.x;m.y=P.y}else if(d>want){const sp=t.spd*dt;if(!mv(m,(g.x-m.x)/d*sp,(g.y-m.y)/d*sp)&&dist(m,P)>5){m.x=P.x;m.y=P.y}m.mov=true;m.fx=(g.x-m.x)-(g.y-m.y)>0?1:-1}
   if(tg&&d<=t.range+tg.r&&m.cd<=0){m.cd=t.ivl/toxicSwing(m);m.swing=.15;const md=s.dmg*nodeMul(false),snd=m.soundSwing;if(snd||t.range<=2){witMercHit(m,tg,md);sfx(snd?'swing':'hit')}else{W.projs.push({x:m.x,y:m.y,vx:(tg.x-m.x)/d*12,vy:(tg.y-m.y)/d*12,life:.7,raw:md,done:[],pierce:0,col:t.col,kind:'merc',party:1});sfx('throw')}}
   if(G.merc.k==='sys'){m.hc-=dt;if(m.hc<=0){m.hc=4;if(G.hp<S.maxHp*.9){heal(S.maxHp*.07);G.en=Math.min(S.maxEn,G.en+6);W.fx.push({k:'bolt',x:m.x,y:m.y,x2:P.x,y2:P.y,t:0,life:.4,col:'#7be495'});sfx('mend')}}}
   if(!tg)m.hp=Math.min(m.max,m.hp+m.max*.04*dt);G.merc.hp=m.hp}

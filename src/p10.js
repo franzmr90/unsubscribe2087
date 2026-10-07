@@ -401,7 +401,8 @@ function updTag(dt){const m=W.tag,t=G.tag;if(!m||!t||m.hp<=0)return;const c=CLS[
   const R=clamp(t.dmg/base,.15,6)*(m.buff>0||m.crunch>0?1.4:1)*(m.mech>0?1.5:1);
   let tg=null,bd=8;for(const e of W.ents){if(!e.aggro)continue;const d=dist(e,P);if(d<bd){bd=d;tg=e}}
   const g=tg||P,d=dist(g,m)||1,want=tg?rng*.85:1.9;m.moving=false;
-  if(dist(m,P)>13){m.x=P.x;m.y=P.y}else if(d>want){const sp=4.8*(m.form==='hound'?1.28:m.form?.72:1)*(m.haste>0?1.5:1)*dt;m.dir={x:(g.x-m.x)/d,y:(g.y-m.y)/d};if(!mv(m,m.dir.x*sp,m.dir.y*sp)&&dist(m,P)>5){m.x=P.x;m.y=P.y}m.moving=true;m.walkPh+=dt*11}
+  /* Catch up at 8 tiles, unless this swing is already in range. */
+  if(dist(m,P)>(tg&&d<=rng+tg.r?13:8)){m.x=P.x;m.y=P.y}else if(d>want){const sp=4.8*(m.form==='hound'?1.28:m.form?.72:1)*(m.haste>0?1.5:1)*dt;m.dir={x:(g.x-m.x)/d,y:(g.y-m.y)/d};if(!mv(m,m.dir.x*sp,m.dir.y*sp)&&dist(m,P)>5){m.x=P.x;m.y=P.y}m.moving=true;m.walkPh+=dt*11}
   if(m.volley){const v=m.volley;v.t-=dt;v.cd-=dt;if(v.cd<=0&&tg){v.cd=.12;tagDo(()=>{face(tg);shoot(P.dir,v.m,0)})}if(v.t<=0)m.volley=null}
   if(tg){m.dir={x:(tg.x-m.x)/d,y:(tg.y-m.y)/d};
     for(let j=0;j<t.sk.length;j++){m.sc[j]-=dt;if(m.sc[j]>0||d>7)continue;const[i,rk]=t.sk[j],s=c.sk[i],f=SKF[t.cls]&&SKF[t.cls][i];if(!f)continue;m.sc[j]=Math.max(4,(s.cd||5)*1.4)+j;m.say=s.n;m.sayT=1.4;m.swing=.18;sfx((SKS[t.cls]||{})[i]||'zap');tagDo(()=>{skvPlay(t.cls,i,P.x,P.y,m.dir);f(rk,R)});return}
