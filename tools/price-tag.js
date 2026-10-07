@@ -36,7 +36,7 @@ await p.evaluate(()=>{__g.G.pre=2;__g.G.walkNew=0;__g.OPT.noWalk=1});
 await clearUI(p);
 await p.evaluate(()=>__g.enter(0));
 await clearUI(p);
-await p.evaluate(()=>{__g.setMode('play');__g.G.cpi=1.073;__g.G.lvl=1;__g.G.disc=null;__g.G.stims=0;__g.G.credits=32});
+await p.evaluate(()=>{__g.setMode('play');__g.G.cpi=1.073;__g.G.adopt=100;__g.G.lvl=1;__g.G.disc=null;__g.G.stims=0;__g.G.credits=32});
 await p.evaluate(()=>__g.openSheet('shop',{only:['items','shop']}));
 const stim=await p.evaluate(()=>{
   const btn=document.querySelector('[data-buy="stim"]');
@@ -59,7 +59,7 @@ await p.click('[data-buy="id"]');
 const idPay=await p.evaluate(()=>({credits:__g.G.credits,named:__g.G.bag[0]&&__g.G.bag[0].id}));
 check('appraisal takes 42 and names the piece', idPay.credits===0&&idPay.named, JSON.stringify(idPay));
 
-await p.evaluate(()=>{__g.closeSheet();__g.setMode('play');__g.G.credits=125;__g.G.bag=[];__g.openSheet('gamble',{only:['items','gamble']})});
+await p.evaluate(()=>{__g.closeSheet();__g.setMode('play');__g.G.cpi=1.073;__g.G.adopt=100;__g.G.lvl=1;__g.G.credits=125;__g.G.bag=[];__g.openSheet('gamble',{only:['items','gamble']})});
 const box=await p.evaluate(()=>{
   const line=[...document.querySelectorAll('#sheet p')].map(n=>n.textContent).find(t=>/Each box costs/.test(t))||'';
   const btn=document.querySelector('[data-box]');
@@ -70,7 +70,7 @@ await p.click('[data-box]');
 const boxPay=await p.evaluate(()=>({credits:__g.G.credits,bag:__g.G.bag.length}));
 check('the box takes 125', boxPay.credits===0&&boxPay.bag===1, JSON.stringify(boxPay));
 
-await p.evaluate(()=>{__g.closeSheet();__g.setMode('play');__g.G.credits=268;__g.G.merc=null;__g.openSheet('merc',{only:['merc']})});
+await p.evaluate(()=>{__g.closeSheet();__g.setMode('play');__g.G.cpi=1.073;__g.G.adopt=100;__g.G.lvl=1;__g.G.credits=268;__g.G.merc=null;__g.openSheet('merc',{only:['merc']})});
 const hire=await p.evaluate(()=>{
   const btn=document.querySelector('[data-hire]');
   return {text:btn?btn.textContent:'',off:btn?btn.disabled:true};
@@ -80,7 +80,7 @@ await p.click('[data-hire]');
 const hirePay=await p.evaluate(()=>({credits:__g.G.credits,merc:!!__g.G.merc}));
 check('the hire takes 268', hirePay.credits===0&&hirePay.merc, JSON.stringify(hirePay));
 
-await p.evaluate(()=>{__g.closeSheet();__g.setMode('play');__g.G.credits=160;__g.G.lean=0;__g.talkFloat()});
+await p.evaluate(()=>{__g.closeSheet();__g.setMode('play');__g.G.cpi=1.073;__g.G.adopt=100;__g.G.lvl=1;__g.G.credits=160;__g.G.lean=0;__g.talkFloat()});
 const now=await p.evaluate(()=>{
   const btn=[...document.querySelectorAll('#dBtns button')].find(b=>/Now:/.test(b.textContent));
   return {text:btn?btn.textContent:'',off:btn?btn.disabled:true};
@@ -92,7 +92,7 @@ const nowPay=await p.evaluate(()=>__g.G.credits);
 check('strength on credit takes 160', nowPay===0, String(nowPay));
 
 await clearUI(p);
-await p.evaluate(()=>{__g.setMode('play');__g.G.credits=160;__g.talkTo('null')});
+await p.evaluate(()=>{__g.setMode('play');__g.G.cpi=1.073;__g.G.adopt=100;__g.G.lvl=1;__g.G.credits=160;__g.talkTo('null')});
 const sister=await p.evaluate(()=>{
   const btn=[...document.querySelectorAll('#dBtns button')].find(b=>/Unlearn/.test(b.textContent));
   return {text:btn?btn.textContent:'',off:btn?btn.disabled:true};
