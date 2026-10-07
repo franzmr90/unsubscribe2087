@@ -3920,11 +3920,11 @@ function drawSheet(){
     const it=sel&&(sel.ch!==undefined?G.charms[sel.ch]:sel.m?G.merc&&G.merc[sel.m]:sel.eq?G.eq[sel.eq]:G.bag[sel.bag]);
     if(it&&sel.sock){const own=WK.filter(w=>G.words[w]);pop=`<div class="card"><div class="nm" style="color:#f7931a">Socket a word</div><div class="ln off">${esc(it.name)} · ${it.soc-it.words.length} empty. A word cannot be removed once set. Phrases need the right words in the right order: see the Codex.</div><div class="list">${own.length?own.map(w=>`<button class="li" data-word="${w}"><div><b>${w} ×${G.words[w]}</b><span>${AFK[WORDS[w][0]].t.replace('{v}',WORDS[w][1])}</span></div></button>`).join(''):'<div class="ln off">You hold no words. They turn up on torn notes dropped by machines.</div>'}</div><div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`}
     else 
-    if(it){let b='';if(sel.ch!==undefined){b=`<button class="big" data-chdo="tog" ${!it.on&&chOn()>=6?'disabled':''}>${it.on?'Pause it':chOn()>=6?'Six already running':'Run it'}</button>`+(selling()?`<button class="ghost" data-chdo="sell">Sell ${fmt(it.val*.4*G.cpi)}</button>`:`<button class="ghost" data-chdo="drop">Drop</button>`)+`<button class="ghost" data-chdo="scrap">Scrap · 2 parts</button>`}else if(sel.m){b=`<button class="big" data-mtake="${sel.m}">Take it back</button>`}else if(sel.eq){b=`<button class="ghost" data-do="unequip">Take off</button>`;if(it.soc&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`}else{b=`<button class="big" data-do="equip" ${it.id&&G.lvl>=it.req?'':'disabled'}>Equip</button>`;b+=selling()?`<button class="ghost" data-do="sell">Sell ${fmt(it.val*.4*G.cpi)}</button>`:`<button class="ghost" data-do="drop">Drop</button>`;b+=`<button class="ghost" data-do="junk">${it.junk?'Not junk':'Junk'}</button>`;if(it.soc&&it.id&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`;if(it.id&&!it.charm){b+=`<button class="ghost" data-do="scrap">Scrap · ${[1,2,4,8,15][it.q]||1} parts</button>`;if(it.aff.length)b+=`<button class="ghost" data-do="reroll" ${(G.parts||0)<rerollCost(it)?'disabled':''}>Reroll a modifier · ${rerollCost(it)} parts</button>`;if(canSoc(it))b+=`<button class="ghost" data-do="addsoc" ${(G.parts||0)<12?'disabled':''}>Cut a socket · 12 parts</button>`}if(G.merc&&!G.merc.dead&&it.id&&MSL.includes(it.slot))b+=`<button class="ghost" data-do="mgive">Give to ${esc(G.merc.name)}</button>`}pop=itemCard(it,b,!!sel.eq,!!sel.m||sel.ch!==undefined)}
+    if(it){let b='';if(sel.ch!==undefined){b=`<button class="big" data-chdo="tog" ${!it.on&&chOn()>=6?'disabled':''}>${it.on?'Pause it':chOn()>=6?'Six already running':'Run it'}</button>`+(selling()?`<button class="ghost" data-chdo="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-chdo="drop">Drop</button>`)+`<button class="ghost" data-chdo="scrap">Scrap · 2 parts</button>`}else if(sel.m){b=`<button class="big" data-mtake="${sel.m}">Take it back</button>`}else if(sel.eq){b=`<button class="ghost" data-do="unequip">Take off</button>`;if(it.soc&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`}else{b=`<button class="big" data-do="equip" ${it.id&&G.lvl>=it.req?'':'disabled'}>Equip</button>`;b+=selling()?`<button class="ghost" data-do="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-do="drop">Drop</button>`;b+=`<button class="ghost" data-do="junk">${it.junk?'Not junk':'Junk'}</button>`;if(it.soc&&it.id&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`;if(it.id&&!it.charm){b+=`<button class="ghost" data-do="scrap">Scrap · ${[1,2,4,8,15][it.q]||1} parts</button>`;if(it.aff.length)b+=`<button class="ghost" data-do="reroll" ${(G.parts||0)<rerollCost(it)?'disabled':''}>Reroll a modifier · ${rerollCost(it)} parts</button>`;if(canSoc(it))b+=`<button class="ghost" data-do="addsoc" ${(G.parts||0)<12?'disabled':''}>Cut a socket · 12 parts</button>`}if(G.merc&&!G.merc.dead&&it.id&&MSL.includes(it.slot))b+=`<button class="ghost" data-do="mgive">Give to ${esc(G.merc.name)}</button>`}pop=itemCard(it,b,!!sel.eq,!!sel.m||sel.ch!==undefined)}
     const jn=G.bag.filter(i=>i.junk).length;
     if(!selling()&&jn)h+=`<button class="ghost" data-dropjunk="1">Drop ${jn} junk item${jn>1?'s':''}</button>`;
-    if(selling()&&G.bag.length){const sum=q=>G.bag.filter(i=>!i.charm&&(q<0||i.q===q)).reduce((a,i)=>a+i.val*.4*G.cpi,0),cnt=q=>G.bag.filter(i=>!i.charm&&i.q===q).length;h+=`<h3>Sell in bulk</h3>`;
-      if(jn)h+=`<button class="big" data-sellq="9">Sell ${jn} junk · ${fmt(G.bag.filter(i=>i.junk).reduce((a,i)=>a+i.val*.4*G.cpi,0))}</button>`;h+=`<div class="row">`;
+    if(selling()&&G.bag.length){const sum=q=>G.bag.filter(i=>!i.charm&&(q<0||i.q===q)).reduce((a,i)=>a+sellValue(i),0),cnt=q=>G.bag.filter(i=>!i.charm&&i.q===q).length;h+=`<h3>Sell in bulk</h3>`;
+      if(jn)h+=`<button class="big" data-sellq="9">Sell ${jn} junk · ${fmt(G.bag.filter(i=>i.junk).reduce((a,i)=>a+sellValue(i),0))}</button>`;h+=`<div class="row">`;
       ['Normal','Magic','Rare','Set','Unique'].forEach((n,q)=>{if(cnt(q))h+=`<button class="ghost q${q}" data-sellq="${q}">${cnt(q)} ${n}<br>${fmt(sum(q))}</button>`});
       h+=`</div><button class="ghost" data-sellq="-1">${sellArm?'Tap again to sell all '+G.bag.filter(i=>!i.charm).length+' items':'Sell everything in the pack · '+fmt(sum(-1))}</button><p style="font-size:13px">Bulk selling never touches what you are wearing or the subscriptions working from your pack.</p>`}
     h+=`<p class="hint" style="font-size:13.5px">White is normal, <span class="q1">blue is magic</span>, <span class="q2">yellow is rare</span>, <span class="q3">green is a set piece</span>, <span class="q4">gold is unique</span>. Red items are unidentified.</p>`}
@@ -4073,25 +4073,27 @@ function drawSheet(){
 let sellArm=false;
 const satsOk=()=>G.adopt>=60||(G.wonF&&G.wonF.brenda===1)||shopVia,satCost=it=>Math.max(1,Math.ceil(buyPrice(it)/satRate()));let shopVia=0;const buyPrice=it=>it.val*2.5*G.cpi*(shopVia?.7:1)*(G.disc?.85:1)*(repRank('norm')>=3?.8:repRank('norm')>=1?.9:1);
 const boxPrice=()=>(8+G.lvl*5)*9*G.cpi;
+/* The sell line prints whole credits, so the purse gains the floor of two fifths. */
+function sellValue(it){return Math.floor((it.val||0)*.4*G.cpi)}
 function copyText(s,ta){const fb=()=>{ta.hidden=false;ta.value=s;ta.focus();ta.select();toast('Select all and copy the code below')};try{navigator.clipboard.writeText(s).then(()=>toast('Save code copied'),fb)}catch(e){fb()}}
 function loadCode(s){try{const o=JSON.parse(decodeURIComponent(escape(atob(s.trim()))));if(!applySave(o))throw 0;$('sheet').hidden=true;startPlay();save();toast('Save loaded');return true}catch(e){toast('That code could not be read');return false}}
 let tapT=null,tapI=-1,lpT=null,lpFired=false,lpXY=null;
 function longPress(i){const it=G.bag[i];if(!it)return;lpFired=true;clearTimeout(tapT);tapT=null;try{navigator.vibrate&&navigator.vibrate(25)}catch(e){}
-  if(selling()){const v=it.val*.4*G.cpi;G.credits+=v;G.bag.splice(i,1);sfx('coin');toast('Sold '+(it.id?it.name:it.base)+' for '+fmt(v))}else{it.junk=!it.junk;sfx('ui');toast(it.junk?'Marked as junk':'No longer junk')}
+  if(selling()){const v=sellValue(it);G.credits+=v;G.bag.splice(i,1);sfx('coin');toast('Sold '+(it.id?it.name:it.base)+' for '+fmt(v))}else{it.junk=!it.junk;sfx('ui');toast(it.junk?'Marked as junk':'No longer junk')}
   sel=null;drawSheet()}
 $('sheetIn').addEventListener('pointerdown',e=>{const c=e.target.closest('[data-bag]');lpFired=false;clearTimeout(lpT);if(!c||c.disabled)return;const i=+c.dataset.bag;lpXY=[e.clientX,e.clientY];lpT=setTimeout(()=>longPress(i),480)});
 $('sheetIn').addEventListener('pointermove',e=>{if(lpXY&&Math.hypot(e.clientX-lpXY[0],e.clientY-lpXY[1])>10)clearTimeout(lpT)});
 for(const n of['pointerup','pointercancel','pointerleave'])$('sheetIn').addEventListener(n,()=>clearTimeout(lpT));
 const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],[data-webadd]');if(!b||b.disabled)return;const d=b.dataset;sfx('ui');
   if(d.popx)sel=null;
-  if(d.sellq!==undefined){const q=+d.sellq;if(q<0&&!sellArm){sellArm=true;drawSheet();return}let t=0;G.bag=G.bag.filter(i=>{if(q===9?i.junk:!i.charm&&(q<0||i.q===q)){t+=i.val*.4*G.cpi;return false}return true});G.credits+=t;sel=null;sfx('coin');toast('Sold for '+fmt(t))}
+  if(d.sellq!==undefined){const q=+d.sellq;if(q<0&&!sellArm){sellArm=true;drawSheet();return}let t=0;G.bag=G.bag.filter(i=>{if(q===9?i.junk:!i.charm&&(q<0||i.q===q)){t+=sellValue(i);return false}return true});G.credits+=t;sel=null;sfx('coin');toast('Sold for '+fmt(t))}
   sellArm=false;
   if(d.close)return closeSheet();
   if(d.loadcode){const v=$('codeIn').value;if(!loadCode(v)){const p=document.createElement('p');p.className='red';p.textContent='That code could not be read. Check that all of it was pasted.';$('sheetIn').appendChild(p)}return}
   if(d.tab){tab=d.tab;sel=null}
   if(d.eq)sel={eq:d.eq};
   if(d.ch!==undefined)sel={ch:+d.ch};
-  if(d.chdo){const i=sel.ch,it=G.charms[i];if(d.chdo==='tog'){it.on=!it.on;sfx('equip')}else{G.charms.splice(i,1);sel=null;if(d.chdo==='sell'){G.credits+=it.val*.4*G.cpi;sfx('coin')}else if(d.chdo==='scrap'){G.parts=(G.parts||0)+2;sfx('equip')}else W.drops.push({x:P.x+1.1,y:P.y+1.1,it,t:1})}calc()}
+  if(d.chdo){const i=sel.ch,it=G.charms[i];if(d.chdo==='tog'){it.on=!it.on;sfx('equip')}else{G.charms.splice(i,1);sel=null;if(d.chdo==='sell'){G.credits+=sellValue(it);sfx('coin')}else if(d.chdo==='scrap'){G.parts=(G.parts||0)+2;sfx('equip')}else W.drops.push({x:P.x+1.1,y:P.y+1.1,it,t:1})}calc()}
   if(d.bag!==undefined){const i=+d.bag;if(lpFired){lpFired=false;return}
     if(tapT&&tapI===i){clearTimeout(tapT);tapT=null;if(equipFromBag(i))toast('Equipped');sel=null}
     else{clearTimeout(tapT);tapI=i;tapT=setTimeout(()=>{tapT=null;sel={bag:i};drawSheet()},260);return}}
@@ -4105,7 +4107,7 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
     if(d.do==='sock'){sel.sock=true;drawSheet();return}
     if(d.do==='mgive'){const old=G.merc[it.slot];G.merc[it.slot]=it;it.junk=false;G.bag.splice(sel.bag,1);if(old)G.bag.push(old);sel=null;sfx('equip');toast(G.merc.name+' takes the '+it.base)}
     if(d.do==='unequip'){if(G.bag.length>=24)toast('Your pack is full');else{G.bag.push(it);G.eq[sel.eq]=null;sel=null;sfx('equip')}}
-    if(d.do==='sell'){G.credits+=it.val*.4*G.cpi;G.bag.splice(sel.bag,1);sel=null;sfx('coin')}
+    if(d.do==='sell'){G.credits+=sellValue(it);G.bag.splice(sel.bag,1);sel=null;sfx('coin')}
     if(d.do==='drop'){G.bag.splice(sel.bag,1);W.drops.push({x:P.x+1.1,y:P.y+1.1,it,t:1});sel=null}
     calc()}
   if(d.word){const it=sel.eq?G.eq[sel.eq]:G.bag[sel.bag];socketWord(it,d.word);sel.sock=it.words.length<it.soc&&!it.pw}
