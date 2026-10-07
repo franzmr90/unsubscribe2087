@@ -28,6 +28,9 @@ button:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
 .orb.en i{background:linear-gradient(#5aa0ff,#16347f)}
 .orb::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 34% 28%,rgba(255,255,255,.38),transparent 34%),radial-gradient(circle at 50% 50%,transparent 55%,rgba(0,0,0,.55))}
 .orb span{position:absolute;inset:0;display:grid;place-items:center;font:700 12px var(--display);color:#fff;text-shadow:0 1px 2px #000,0 0 4px #000;z-index:1}
+#enCol{display:flex;flex-direction:column;align-items:center;gap:3px;flex:none}
+#rec{width:62px;height:10px;border-radius:2px;background:#1a1814;border:1px solid #3a3428;overflow:hidden}
+#rec i{display:block;height:100%;width:0;background:#e6dcc8}
 #mid{flex:1;min-width:0;text-align:center;padding-top:2px}
 #zone{font:700 12px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--gold);text-shadow:0 1px 3px #000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #xpw{height:5px;background:#050409;border:1px solid var(--edge);margin:4px 0}
@@ -279,7 +282,7 @@ textarea{width:100%;height:70px;background:#050409;color:var(--ink);border:1px s
         <div id="wal"><span id="cr"></span><small id="cpi"></small></div>
         <div id="tbs"><button class="tb" id="bMap">Map</button><button class="tb" id="bRecall">Portal</button><button class="tb" id="bBug" title="Report a problem">Report</button></div>
       </div>
-      <div class="orb en"><i id="enF"></i><span id="enT"></span></div>
+      <div id="enCol"><div class="orb en"><i id="enF"></i><span id="enT"></span></div><div id="rec" hidden><i id="recF"></i></div></div>
     </div>
     <div id="boss" hidden><span id="bossn"></span><div class="bar"><i id="bossb"></i></div></div>
     <div id="buffs"></div>
@@ -450,6 +453,23 @@ Object.assign(CLS,{
    {n:'Salt the Earth',ab:'SALT',a:1,cost:18,cd:12,d:L=>`Every plot you have placed bursts for ${pct(.8+.12*L)} rust and is gone.`},
    {n:'Too Big for the Door',ab:'',a:0,d:L=>`Passive. The hull cannot dash. Armour in the hull rises the longer you have worn it: +${3*L} every 2 seconds, up to 8 times.`},
    {n:'Slaughter Weight',ab:'SLAUGH-\nTER',a:1,cost:20,cd:12,d:L=>`Each drone and the bull become a rust plot where they stand, ${pct(.28+.05*L)} every half second. The flock is spent. You cannot do this from a chassis.`}]},
+ witness:{n:'Witness',tag:'Kept notes when Unity told everyone to stop looking. Stillwater watches and does nothing. The Witness writes it down. The record is paper.',hp:80,hpL:11,melee:true,mult:.72,ivl:.68,spd:4.2,col:'#8d9aab',
+  sk:[
+   {n:'Look',ab:'LOOK',a:1,cost:4,cd:.5,d:()=>`Mark one machine with Testimony. The stack grows while you can see them and you are not casting. No Record cost.`},
+   {n:'The Sentence',ab:'THE\nSENTENCE',a:1,cost:8,cd:2,d:L=>`Spend Record, up to 25. Delay that machine's next attack by ${(0.4+.08*L).toFixed(2)}s at a full page. Less Record, a shorter delay.`},
+   {n:'Margin',ab:'',a:0,d:L=>`Passive. Below half life the Record fills ${20*L}% faster.`},
+   {n:'Cross-reference',ab:'CROSS-\nREF',a:1,cost:14,cd:6,d:L=>`Spend 20 Record. Copy that machine's last attack onto another machine you have Testimony on, at ${Math.round((.75+.05*L)*100)}% of the blow.`},
+   {n:'Pull the Thread',ab:'PULL THE\nTHREAD',a:1,cost:12,cd:4,d:L=>`Spend most of the Record. One Impact hit: each point of Testimony on the target is ${pct(3.5+.45*L)} of a weapon swing's weight, and your weapon is not consulted. No Testimony, no blow.`},
+   {n:'Filed',ab:'',a:0,d:L=>`Passive. Testimony does not decay for ${(2+.4*L).toFixed(1)}s after the machine leaves the screen.`},
+   {n:'Correction',ab:'CORRECT',a:1,cost:10,cd:8,d:()=>`Once per district. Spend the whole Record to restore the life you lost on the last hit, not a share of your maximum. An empty Record corrects nothing.`},
+   {n:'Redaction',ab:'REDACT',a:1,cost:12,cd:8,d:()=>`Spend 30 Record. For 2s machines can see you and cannot land a blow. They still path toward you. This is not stealth.`},
+   {n:'The Footnote',ab:'',a:0,d:L=>`Passive. The Record fills ${8*L}% faster. Maximum life is ${4*L}% lower.`},
+   {n:'On the Record',ab:'ON THE\nRECORD',a:1,cost:16,cd:10,d:L=>`Spend 25 Record. A machine with high Testimony takes ${12*L}% more damage from everyone for 8s, including people with no points in this class.`},
+   {n:'Unnamed Source',ab:'UNNAMED\nSOURCE',a:1,cost:14,cd:12,d:()=>`Spend 20 Record. Grant one ally, or your hireling, a single swing that deals Sound. Then it is gone. You never deal Sound.`},
+   {n:'Colophon',ab:'',a:0,d:L=>`Passive. Record above 80: you take ${Math.min(45,4*L)}% less damage. Record below 20: you take ${6*L}% more. The meter is the defence.`},
+   {n:'Publish',ab:'PUBLISH',a:1,cost:18,cd:14,d:L=>`Consume all Testimony on screen. Each second you watched is ${pct(1.6+.25*L)} Impact. The Record drops to 0.`},
+   {n:'Named Party',ab:'',a:0,d:L=>`Passive. Allies deal +${5*L}% damage to machines you have Testimony on. You do not.`},
+   {n:'Retraction',ab:'',a:0,d:()=>`Passive. If you would die with Record above 80, you drop to 1 life, the Record hits 0, and this cannot happen again for a long time. If you would die with an empty Record, you die.`}]},
  /* Unlocked by finishing the story. Deals Sound damage, which nothing resists, because
     that is the joke and also the build. */
  maxi:{n:'The Maximalist',tag:'A paladin, essentially. He has not had a new thought since 2017 and has never needed one. His auras are always on, and everything he does is Sound damage, which nothing in this world resists.',hp:104,hpL:14,melee:true,mult:1.2,ivl:.5,spd:4.2,col:'#f7931a',locked:'story',
@@ -835,7 +855,7 @@ function updMerc(dt){const m=W.merc;if(!m||m.hp<=0)return;const t=MERCS[G.merc.k
   let tg=null,bd=7.5;for(const e of W.ents){if(!e.aggro)continue;const d=dist(e,P);if(d<bd){bd=d;tg=e}}
   const g=tg||P,d=dist(g,m)||1,want=tg?t.range*.85:1.8;m.mov=false;
   if(dist(m,P)>13){m.x=P.x;m.y=P.y}else if(d>want){const sp=t.spd*dt;if(!mv(m,(g.x-m.x)/d*sp,(g.y-m.y)/d*sp)&&dist(m,P)>5){m.x=P.x;m.y=P.y}m.mov=true;m.fx=(g.x-m.x)-(g.y-m.y)>0?1:-1}
-  if(tg&&d<=t.range+tg.r&&m.cd<=0){m.cd=t.ivl/toxicSwing(m);m.swing=.15;if(t.range>2){W.projs.push({x:m.x,y:m.y,vx:(tg.x-m.x)/d*12,vy:(tg.y-m.y)/d*12,life:.7,raw:s.dmg*nodeMul(false),done:[],pierce:0,col:t.col,kind:'merc'});sfx('throw')}else{dmgEnemy(tg,s.dmg*nodeMul(false),false);sfx('hit')}}
+  if(tg&&d<=t.range+tg.r&&m.cd<=0){m.cd=t.ivl/toxicSwing(m);m.swing=.15;const md=s.dmg*nodeMul(false),snd=m.soundSwing;if(snd||t.range<=2){witMercHit(m,tg,md);sfx(snd?'swing':'hit')}else{W.projs.push({x:m.x,y:m.y,vx:(tg.x-m.x)/d*12,vy:(tg.y-m.y)/d*12,life:.7,raw:md,done:[],pierce:0,col:t.col,kind:'merc',party:1});sfx('throw')}}
   if(G.merc.k==='sys'){m.hc-=dt;if(m.hc<=0){m.hc=4;if(G.hp<S.maxHp*.9){heal(S.maxHp*.07);G.en=Math.min(S.maxEn,G.en+6);W.fx.push({k:'bolt',x:m.x,y:m.y,x2:P.x,y2:P.y,t:0,life:.4,col:'#7be495'});sfx('mend')}}}
   if(!tg)m.hp=Math.min(m.max,m.hp+m.max*.04*dt);G.merc.hp=m.hp}
 function tanks(){const c=[];if(W.merc&&W.merc.hp>0)c.push(W.merc);if(W.tag&&W.tag.hp>0)c.push(W.tag);if(W.esc)c.push(W.esc);for(const a of W.allies)if(a.hp>0)c.push(a);return c}
@@ -846,7 +866,7 @@ function hurtAlly(a,d,src){d*=(a.armM||1)*partyD();if(a.hp!==undefined&&(a.k==='
   if(a===W.merc){G.merc.dead=true;G.merc.hp=0;toast(G.merc.name+' has fallen. Kestrel can bring them back.');sfx('bigkill');parts(a.x,a.y,14,['#b3261e','#888'],2.5)}
   else{const i=W.allies.indexOf(a);if(i>=0)W.allies.splice(i,1);parts(a.x,a.y,10,['#888','#ffb84a'],2.5);sfx('kill')}}
 function summon(o,cap){const same=W.allies.filter(a=>a.kind===o.kind);if(same.length>=cap)W.allies.splice(W.allies.indexOf(same[0]),1);W.allies.push(Object.assign({k:'minion',x:P.x+rnd(-.8,.8),y:P.y+rnd(-.8,.8),cd:0,ph:rnd(0,6),off:rnd(0,1),life:1e9,fx:1},o));parts(P.x,P.y,6,['#e0bd6e','#fff'],1.5,1.3)}
-Object.assign(SKS,{maxi:{0:'swing2',1:'crit',3:'buff',4:'buff',5:'dash',6:'throw',7:'buff',9:'nova',11:'throw',13:'buff'},anon:{0:'deploy',1:'dash',3:'deploy',4:'whiff',5:'mark',6:'throw',7:'summon',8:'horn',9:'swing',10:'horn',12:'dash',14:'whiff'},founder:{0:'summon',1:'mark',3:'summon',4:'buff',5:'horn',6:'summon',7:'mend',8:'boom',9:'mark',10:'mark',12:'summon',14:'boom'},homesteader:{0:'deploy',1:'horn',2:'summon',3:'deploy',4:'horn',5:'summon',6:'deploy',7:'whiff',9:'thunder',10:'horn',12:'boom',14:'boom'}});
+Object.assign(SKS,{maxi:{0:'swing2',1:'crit',3:'buff',4:'buff',5:'dash',6:'throw',7:'buff',9:'nova',11:'throw',13:'buff'},anon:{0:'deploy',1:'dash',3:'deploy',4:'whiff',5:'mark',6:'throw',7:'summon',8:'horn',9:'swing',10:'horn',12:'dash',14:'whiff'},founder:{0:'summon',1:'mark',3:'summon',4:'buff',5:'horn',6:'summon',7:'mend',8:'boom',9:'mark',10:'mark',12:'summon',14:'boom'},homesteader:{0:'deploy',1:'horn',2:'summon',3:'deploy',4:'horn',5:'summon',6:'deploy',7:'whiff',9:'thunder',10:'horn',12:'boom',14:'boom'},witness:{0:'mark',1:'mark',3:'throw',4:'swing',6:'mend',7:'whiff',9:'horn',10:'horn',12:'boom'}});
 function bloodSplat(n){sfx('blood');for(let i=0;i<n;i++){const edge=Math.random()<.7;let x=Math.random(),y=Math.random();if(edge){if(Math.random()<.5)x=Math.random()<.5?rnd(0,.16):rnd(.84,1);else y=Math.random()<.5?rnd(.08,.22):rnd(.7,.95)}BLOOD.push({x,y,r:rnd(5,17),b:tNow+rnd(0,.25),life:rnd(2.2,3.4),d:rnd(20,70),k:Math.random()})}}
 function tickFx(dt){for(const f of W.fx.slice()){if(f.stay)continue;f.t+=dt;if(f.t>=f.life)W.fx.splice(W.fx.indexOf(f),1)}
   for(const t of W.texts.slice()){t.t+=dt;if(t.t>.9)W.texts.splice(W.texts.indexOf(t),1)}
@@ -921,6 +941,7 @@ function calc(){
     if(f==='hound'){armM*=HS.houndArm;s.mspd+=HS.houndSpd}
     else if(f==='hull'){armM*=HS.hullArm;s.mspd+=HS.hullSpd;if(L(13))s.armor+=Math.min(HS.bigMax,Math.floor((G.formT||0)/HS.bigStep))*HS.bigArm*L(13)}
     else if(f==='worn'){armM*=HS.wornArm;s.mspd+=HS.hullSpd}}
+  if(G.cls==='witness'){if(L(2))s.margin=1+.2*L(2);if(L(5))s.filed=2+.4*L(5);if(L(8)){s.footnote=1+.08*L(8);hpM=Math.max(.4,hpM-.04*L(8))}if(L(11)){s.coloHi=1-Math.min(.45,.04*L(11));s.coloLo=1+.06*L(11)}if(L(13))s.named=.05*L(13)}
   if(s.sp.nda)s.dodge+=15;if(s.sp.cloud9)s.dodge+=10;if(s.sp.fineprint)s.cdr+=.2;if(s.sp.repair)s.cap+=4;
   hpM+=extra(s);
   s.dmg+=G.at.mgt*1.5;s.crit=Math.round((s.crit+5+G.at.ref*.3)*10)/10;
@@ -1161,7 +1182,7 @@ function pdmg(m,e){
   let c=P.e82>0||Math.random()*100<S.crit;if(c)d*=S.critM;
   if(S.sp.severance&&Math.random()<.15){d*=3;c=true}
   return[d,c]}
-function dmgEnemy(e,d,crit){if(e.hp<=0)return;if(e.mp){mpHurt(e,d,crit);return}e.hits=(e.hits||0)+1;d/=partyH();if(e.mark>0)d*=1.3;
+function dmgEnemy(e,d,crit){if(e.hp<=0)return;if(e.mp){mpHurt(e,d,crit);return}e.hits=(e.hits||0)+1;d/=partyH();if(e.mark>0)d*=1.3;if(e.onRecT>0&&e.onRecM)d*=e.onRecM;if(P&&P.partyHit&&S.named&&(e.tes||0)>0)d*=1+S.named;
   const snd=e.snd;e.snd=0;if(!snd){if(e.mods.shield)d*=.5;if(e.ward>0)d*=.6}e.hp-=d;e.flash=.12;wake(e);if(crit){sfx('crit');hitStop=.04}
   float(e.x,e.y,Math.round(d)+(crit?'!':''),crit?'#ffe36b':'#ffffff',0);parts(e.x,e.y,crit?5:2,['#ffd27a','#fff','#ff9a3c'],2.2);
   if(e.mods.arc&&e.arcCd<=0){const soft=defragAct1(e);e.arcCd=soft?2.1:1.3;const n=soft?4:6,sp=soft?3.2:5,dm=soft?.38:.5;for(let i=0;i<n;i++){const a=i*(6.283/n)+e.ph;const pr={x:e.x,y:e.y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:1.3,foe:true,dmg:e.dmg*dm,col:'#59e0e6'};if(soft)pr.src={dty:'surge',name:e.name};W.projs.push(pr)}}
@@ -1213,22 +1234,24 @@ function gainXp(v,fromParty){if(P.shr&&P.shr.k==='xp')v*=1.5;v*=(G.hc?1.25:1)*(S
 function deathFee(){if(S.sp&&S.sp.coldwallet)return 0;if(G.act2)return G.credits*.15;const early=(G.deaths||0)<10,rate=early?.05:.08,cap=early?15:hireCost()*.08;return Math.min(G.credits*rate,cap)}
 /* Act I Defrag (quest q3, before the Cloud). Later acts keep the old numbers. */
 function defragAct1(e){return !!(e&&e.q==='q3'&&!G.act2)}
-function hurt(d,slow,src){const pv=src&&src.pvp;if((P.inv>0&&!pv)||(mode!=='play'&&!pv)||G.god)return;if(P.dip){P.dip=0;float(P.x,P.y,'The dip','#f7931a',1);sfx('whiff');return}d*=partyD();if(P.mkAura>0&&!pv)d*=1.3;
+function hurt(d,slow,src){const pv=src&&src.pvp;if((P.inv>0&&!pv)||(mode!=='play'&&!pv)||G.god)return;if(P.redact>0){float(P.x,P.y,'Redacted','#e6dcc8',1);return}if(src&&W&&W.ents&&W.ents.indexOf(src)>=0)src.lastAtk=d;if(P.dip){P.dip=0;float(P.x,P.y,'The dip','#f7931a',1);sfx('whiff');return}d*=partyD();if(P.mkAura>0&&!pv)d*=1.3;
   if(S.dodge&&Math.random()*100<S.dodge){float(P.x,P.y,'Dodge','#9fe0d0',1);sfx('whiff');return}
   if(P.route>0&&G.cls==='courier'&&sl(10)&&!boonOn(10)&&Math.random()*100<6+2*sl(10)){float(P.x,P.y,'Route','#3fbf8f',1);sfx('whiff');return}
   d=typedIn(d,src);d*=S.taken||1;d*=100/(100+(S.armor+(G.cls==='scrapper'&&sl(11)&&!boonOn(11)?Math.floor(Math.min(6,P.lineT||0))*4*sl(11):0))*(P.mech>0?2:1)*(P.guard>0?1.6:1)*(P.shr&&P.shr.k==='guard'?2:1));
   if(S.enc){const a=Math.min(G.en,d*S.enc);G.en-=a;d-=a}
   if(P.barrier>0&&d>0){const a=Math.min(P.barrier,d);P.barrier-=a;d-=a;if(a>0)float(P.x,P.y,'patched','#59e0e6',1);if(d<=0)return}
-  G.hp-=d;P.flash=.15;sfx('hurt');float(P.x,P.y,'-'+Math.max(1,Math.round(d)),'#ff5a4d',1);if(slow&&!S.sp.offer&&!(P.lastShift>0)&&!(P.two&&P.two.n>0))P.slow=1.6;if(S.sp.clock&&G.hp>0&&G.hp<S.maxHp*.3&&!(G.clockT>0)){G.clockT=60;for(const o of W.ents)if(dist(o,P)<9){o.slow=4;o.stun=Math.max(o.stun,.6)}sfx('warn');toast('The dead alarm rings. Time drags for the machines.')}if(OPT.shake)shake=Math.max(shake,3);
+  if(G.cls==='witness'&&!(P&&P.tag)){const r=recGet();if(r>80&&S.coloHi)d*=S.coloHi;else if(r<20&&S.coloLo)d*=S.coloLo}
+  G.hp-=d;if(d>0)P.lastLoss=d;P.flash=.15;sfx('hurt');float(P.x,P.y,'-'+Math.max(1,Math.round(d)),'#ff5a4d',1);if(slow&&!S.sp.offer&&!(P.lastShift>0)&&!(P.two&&P.two.n>0))P.slow=1.6;if(S.sp.clock&&G.hp>0&&G.hp<S.maxHp*.3&&!(G.clockT>0)){G.clockT=60;for(const o of W.ents)if(dist(o,P)<9){o.slow=4;o.stun=Math.max(o.stun,.6)}sfx('warn');toast('The dead alarm rings. Time drags for the machines.')}if(OPT.shake)shake=Math.max(shake,3);
   if(src&&src.hp>0){if(src.mods&&src.mods.leech&&!(src.noheal>0))src.hp=Math.min(src.max,src.hp+src.max*(defragAct1(src)?.05:.15));if(S.sp.terms)src.stun=Math.max(src.stun,1);if(S.thorns)dmgEnemy(src,S.thorns,false)}
   if(G.hp<=0&&S.sp.still&&!(G.stillT>0)){G.stillT=90;G.hp=S.maxHp;P.inv=2;for(const o of W.ents)o.stun=Math.max(o.stun,2.5);sfx('shrine');toast('Still Water: the room holds its breath.');return}
   if(G.hp<=0&&G.cls==='maxi'&&sl(14)&&!(G.keyT>0)){const sac=(W.merc&&W.merc.hp>0)?W.merc:(W.tag&&W.tag.hp>0)?W.tag:null;if(sac){G.keyT=60;G.hp+=d;hurtAlly(sac,1e9);float(P.x,P.y,'Not your keys','#f7931a',1);toast('Not your keys.');return}}
+  if(G.hp<=0&&G.cls==='witness'&&!(P&&P.tag)&&sl(14)&&recGet()>80&&!(G.retractT>0)){G.hp=1;recSet(0);G.retractT=90/(1+(S.retr||0)/100);float(P.x,P.y,'Retraction','#e6dcc8',1);sfx('mend');return}
   if(G.hp<=0){if(S.sp.parachute&&G.chuteT<=0){G.chuteT=120;G.hp=S.maxHp*.5;P.inv=1.5;toast('The Golden Parachute opens.');return}
     if(W.z.sim){const n=W.sim.wave;if(W.sim.rush){G.hp=1;P.inv=9;sfx('death');dlg('Boss rush ended','You fell to number '+(W.sim.i+1)+' of '+W.sim.list.length+'. Nothing in here was real, so nothing was lost.',[['Unplug',()=>{G.hp=S.maxHp;enter(HT())}]]);return}G.simBest=Math.max(G.simBest||0,n-1);G.hp=1;P.inv=9;sfx('death');dlg('Simulation ended','You fell on wave '+n+'. Waves cleared: '+(n-1)+'. Your best: '+G.simBest+'. Nothing in here was real, so nothing was lost.',[['Unplug',()=>{G.hp=S.maxHp;enter(HT())}]]);return}
     adaptDeath();G.form=null;G.formDt=null;G.formT=0;G.hp=0;const fee=deathFee();G.credits-=fee;G.deaths=(G.deaths||0)+1;mode='dying';DY={t:0,fee,by:src&&src.name?src.name:'the machines',zi:W.zi,st:W.start,shown:0};sfx('death');music(null);parts(P.x,P.y,30,['#b3261e','#7a0f0c','#e2473a'],3,1.4);bloodSplat(14);shake=10;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;return}
   const band=Math.ceil(G.hp/S.maxHp*10);if(band<P.band&&band<=4){bloodSplat((5-band)*3)}P.band=band}
 function attack(){
-  if(P.atk>0||P.dash)return;const c=CLS[G.cls];unstealth();
+  if(P.atk>0||P.dash)return;const c=CLS[G.cls];unstealth();if(G.cls==='witness')P.witHold=1;
   if(P.mech>0){P.atk=.7;P.swing=.18;const t=nearest(2.6);if(t)face(t);burst(P.x+P.dir.x,P.y+P.dir.y,2,1.6+.25*sl(5),0,'#e0bd6e');return}
   const mel=c.melee||hsMelee();
   const two=mel&&P.two&&P.two.n>0;
@@ -1296,7 +1319,7 @@ function nodeMul(self){if(G.cls!=='maxi'||!sl(10)||!P.aura)return 1;const b=.06+
 function maxiTick(dt){if(G.keyT>0)G.keyT=Math.max(0,G.keyT-dt);const c=P.cite;if(!c)return;c.cd-=dt;if(c.cd>0)return;c.cd=c.gap;c.n--;const t=nearest(7);if(t)face(t);DT='sound';shoot(P.dir,c.m,0,{dt:'sound',col:'#f7931a'});DT=null;if(c.n<=0)P.cite=null}
 function openTarget(range,from){let b=null,bd=range;from=from||P;for(const e of W.ents){if(e.nc>0)continue;const d=dist(e,from);if(d<bd){bd=d;b=e}}return b}
 function founderLiq(L,m){const cs=(P.corpses||[]).filter(c=>c.t>0&&Math.hypot(c.x-P.x,c.y-P.y)<5);if(!cs.length){toast('No corpses to liquidate');return}for(const c of cs){c.t=0;burst(c.x,c.y,2.2,(1.1+.15*L)*m,0,'#e0bd6e')}P.corpses=P.corpses.filter(c=>c.t>0)}
-function skillTick(dt){if(P.dump&&P.dump.t>0){P.dump.t-=dt;if(P.dump.t<=0)P.dump=null}if(P.castWait>0)P.castWait=Math.max(0,P.castWait-dt);if(G.cls==='scrapper')scrTick(dt);else if(G.cls==='hacker')hackTick(dt);else if(G.cls==='courier')runTick(dt);else if(G.cls==='anon')anonTick(dt);else if(G.cls==='founder')founderTick(dt);else if(G.cls==='maxi')maxiTick(dt);else if(G.cls==='homesteader')hsTick(dt)}
+function skillTick(dt){if(P.dump&&P.dump.t>0){P.dump.t-=dt;if(P.dump.t<=0)P.dump=null}if(P.castWait>0)P.castWait=Math.max(0,P.castWait-dt);if(G.cls==='scrapper')scrTick(dt);else if(G.cls==='hacker')hackTick(dt);else if(G.cls==='courier')runTick(dt);else if(G.cls==='anon')anonTick(dt);else if(G.cls==='founder')founderTick(dt);else if(G.cls==='maxi')maxiTick(dt);else if(G.cls==='homesteader')hsTick(dt);else if(G.cls==='witness')witTick(dt)}
 /* Draft magnitudes for the Homesteader. The plan fixed the body; these are the row-3-sized coefficients. */
 const HS={leash:4.5,leashBull:7,graftLeash:1,graftDur:1.4,soakerDur:1.5,shed:.7,houndSpd:28,houndArm:.7,hullSpd:-28,hullArm:1.55,wornArm:1.35,plotR:2.2,plotLife:6,frostR:3.4,frostLife:8,hedgeLife:4,strayCap:4,bigStep:2,bigMax:8,bigArm:3,fallowPlot:1.6};
 function hsForm(){return P&&P.tag?(P.form||null):(G.form||null)}
@@ -1335,13 +1358,13 @@ function hsFlockStep(a,dt){
     const reach=foe===P?1.2:(a.rng||1.2)+(foe.r||.3);
     if(d<reach&&a.cd<=0){a.cd=a.ivl||.65;
       if(foe===P){a.bit=(a.bit||0)+1;hurt((a.bite||8)*fer*biteF,false,null)}
-      else{P.allySwing=1;DT=a.dt||'rust';hit(foe,(a.m||.4)*fer,true);P.allySwing=0;DT=null}}
+      else{P.allySwing=1;P.partyHit=1;DT=a.dt||'rust';hit(foe,(a.m||.4)*fer,true);P.allySwing=0;P.partyHit=0;DT=null}}
     if(!a.feral&&home<1.15&&(a.bit||0)>0)a.foe=0;
     return}
   let t=null;if(a.kind==='bull')t=nearest(8,a);else t=nearest(5.5,P);
   const g=t||P,d=dist(g,a)||1,rg=a.rng||1.15,want=t?rg*.85:1.35;
   if(d>want){a.x+=(g.x-a.x)/d*spd;a.y+=(g.y-a.y)/d*spd;a.mov=true;a.fx=(g.x-a.x)>0?1:-1}
-  if(t&&d<rg+t.r&&a.cd<=0){a.cd=a.ivl||.65;P.allySwing=1;DT=a.dt||(a.kind==='bull'?'heat':'rust');hit(t,a.m||.4,true);P.allySwing=0;DT=null}}
+  if(t&&d<rg+t.r&&a.cd<=0){a.cd=a.ivl||.65;P.allySwing=1;P.partyHit=1;DT=a.dt||(a.kind==='bull'?'heat':'rust');hit(t,a.m||.4,true);P.allySwing=0;P.partyHit=0;DT=null}}
 function hedgeAt(x,y,who){
   if(!W||!W.allies)return false;
   for(const a of W.allies){if(a.k!=='hedge'||!(a.life>0))continue;const rr=(a.r||.42)+(who&&who.r?Math.min(who.r,.32):.2);
@@ -1350,6 +1373,26 @@ function hedgeAt(x,y,who){
 function hsTick(dt){
   if(P.corpses){for(const c of P.corpses)c.t-=dt;P.corpses=P.corpses.filter(c=>c.t>0)}
   if(G.form==='hull'){const prev=Math.floor((G.formT||0)/HS.bigStep);G.formT=(G.formT||0)+dt;if(Math.floor(G.formT/HS.bigStep)!==prev)calc()}}
+/* Draft magnitudes for the Witness. The plan fixed the meter and the life total; these coefficients sit near a row-3 hit and are called out as draft. */
+const WIT={fill:8,still:1.6,book:1.22,carbon:1.3,cap:6,stack:1.15,decay:1,high:4,onRec:8,thread:.7,sentMax:25,pressStack:2};
+const WITMIN={1:1,3:20,4:1,6:1,7:30,9:25,10:20,12:1};
+function recBag(){return (P&&P.tag)?P:G}
+function recGet(){const b=recBag();return Math.max(0,Math.min(100,+b.page||0))}
+function recSet(v){recBag().page=Math.max(0,Math.min(100,v))}
+function witBook(){const w=(P&&P.tag)?(G.tag&&G.tag.eq&&G.tag.eq.weapon):(G.eq&&G.eq.weapon);const cls=(P&&P.tag)?G.cls:(G&&G.cls);return !!(w&&w.fam==='notebook'&&cls==='witness')}
+function witCap(){let n=WIT.cap;if(witBook())n+=1;if(S&&S.sp&&S.sp.press)n+=WIT.pressStack;return n}
+function witNeed(i){const base=WITMIN[i]||0;if(!base)return 0;return Math.max(1,Math.ceil(base*(1+((S&&S.recCost)||0)/100)))}
+function witSeen(e){if(!e||e.hp<=0||e.mp)return false;if(typeof SX!=='function')return dist(e,P)<8;const x=SX(e.x,e.y),y=SY(e.x,e.y);return x>-48&&y>-48&&x<VW+48&&y<VH+48}
+function witHostile(){if(!W||!W.ents)return false;for(const e of W.ents)if(witSeen(e))return true;return false}
+function witBlank(){toast('The page is blank');float(P.x,P.y,'the page is blank','#e6dcc8',0);sfx('err')}
+function witBlock(i){if(!G||G.cls!=='witness')return null;const sk=CLS.witness.sk[i];if(!sk||!sk.a||i===0)return null;if(recGet()<witNeed(i))return 'The page is blank';if(i===6&&!(P&&P.tag)&&G.corrZi===W.zi)return 'Already corrected in this district';if(i===6&&!(P.lastLoss>0))return 'Nothing to correct';return null}
+function witPay(n){if(recGet()<n)return 0;recSet(recGet()-n);return n}
+function witImpact(e,d){if(!e||e.hp<=0||!(d>0))return;const prev=DT;DT='impact';const out=typed(e,d);dmgEnemy(e,out,false);DT=prev}
+function witWrap(who,fn){const snd=who&&who.soundSwing;if(snd)who.soundSwing=0;const prev=DT;if(snd)DT='sound';const ph=P.partyHit;P.partyHit=1;try{fn(!!snd)}finally{P.partyHit=ph;DT=prev}}
+function witMercHit(m,e,d){witWrap(m,snd=>{const out=snd?typed(e,d):d;dmgEnemy(e,out,false)})}
+function witTick(dt){if(!W)return;const castHold=P.witCast||P.castWait>0,fillHold=castHold||P.witHold||P.atk>0;P.witCast=0;P.witHold=0;
+  for(const e of W.ents){if(e.onRecT>0)e.onRecT=Math.max(0,e.onRecT-dt);if(e.hp<=0||e.mp)continue;if(witSeen(e)){e.off=0;if(!castHold){e.watch=(e.watch||0)+dt;const slow=Math.max(.15,1+((S&&S.tes)||0)/100);e.acc=(e.acc||0)+dt*slow/WIT.stack;if(e.acc>=1){e.acc-=1;e.tes=Math.min(witCap(),(e.tes||0)+1)}}}else{e.off=(e.off||0)+dt;const grace=(S&&S.filed)||0;if(e.off>grace&&(e.tes||0)>0){e.dec=(e.dec||0)+dt*WIT.decay;if(e.dec>=1){e.dec-=1;e.tes=Math.max(0,(e.tes||0)-1)}}}}
+  if(fillHold||!witHostile())return;let rate=WIT.fill;if(!P.moving)rate*=WIT.still;if(S.margin&&G.hp<S.maxHp*.5)rate*=S.margin;if(S.footnote)rate*=S.footnote;if(S.recFill)rate*=1+S.recFill/100;if(witBook())rate*=WIT.book;if(S.sp&&S.sp.carbon)rate*=WIT.carbon;recSet(recGet()+rate*dt)}
 function hsSumFlock(o,cap){
   const same=W.allies.filter(a=>a.flock&&a.kind===o.kind&&!a.item);
   if(same.length>=cap)W.allies.splice(W.allies.indexOf(same[0]),1);
@@ -1464,12 +1507,23 @@ Object.assign(SKF,{
     const mul=(P.compost||1)*(G.doc==='fallow'?HS.fallowPlot:1);P.compost=0;DT='rust';
     for(const a of ps)burst(a.x,a.y,Math.max(1.6,a.r||1.6),(.8+.12*L)*m*mul,0,'#c9803a');DT=null;hsDropPlots()},
   14:(L,m)=>{if(hsForm()){toast('You cannot spend the flock from inside a chassis');return}const fs=W.allies.filter(a=>a.flock);if(!fs.length){toast('You have no flock to spend');return}
-    for(const a of fs){hsPlacePlot(a.x,a.y,{life:HS.plotLife*.8,r:1.8,m:(.28+.05*L)*m});const i=W.allies.indexOf(a);if(i>=0)W.allies.splice(i,1)}}}
+    for(const a of fs){hsPlacePlot(a.x,a.y,{life:HS.plotLife*.8,r:1.8,m:(.28+.05*L)*m});const i=W.allies.indexOf(a);if(i>=0)W.allies.splice(i,1)}}},
+ witness:{
+  0:()=>{const t=nearest(8);if(!t){toast('Nothing in view');return}const n=(S.sp&&S.sp.press)?WIT.pressStack:1;t.tes=Math.min(witCap(),(t.tes||0)+n);face(t);float(t.x,t.y,'Look','#e6dcc8',0);W.fx.push({k:'ring',x:t.x,y:t.y,r:1.15,t:0,life:.45,col:'#e6dcc8'})},
+  1:(L)=>{if(recGet()<witNeed(1)){witBlank();return}const t=nearest(7);if(!t){toast('Nobody to sentence');return}const cap=Math.max(1,Math.ceil(WIT.sentMax*(1+((S&&S.recCost)||0)/100))),spend=Math.min(recGet(),cap);if(!witPay(spend)){witBlank();return}const delay=(.4+.08*L)*(spend/WIT.sentMax);t.cd=(t.cd||0)+delay;t.wind=(t.wind||0)+delay*.5;face(t);float(t.x,t.y,'Sentenced','#e6dcc8',0)},
+  3:(L)=>{if(recGet()<witNeed(3)){witBlank();return}const src=nearest(8);if(!src){toast('Nothing in view');return}if(!(src.lastAtk>0)){toast('They have not swung');return}let dst=null,best=-1,bd=99;for(const e of W.ents){if(e===src||e.hp<=0||e.mp||!(e.tes>0))continue;const d=dist(e,P);if(e.tes>best||(e.tes===best&&d<bd)){best=e.tes;dst=e;bd=d}}if(!dst){toast('Nothing else is on the record');return}if(!witPay(witNeed(3))){witBlank();return}face(dst);witImpact(dst,src.lastAtk*(.75+.05*L))},
+  4:(L)=>{if(recGet()<witNeed(4)){witBlank();return}const t=nearest(6);if(!t){toast('Nothing in view');return}const spend=Math.max(1,Math.ceil(recGet()*WIT.thread));if(!witPay(spend)){witBlank();return}const d=(t.tes||0)*(3.5+.45*L)*(1+(G.lvl||1)*.012);face(t);if(!(d>0)){float(t.x,t.y,'the page is blank','#e6dcc8',0);return}witImpact(t,d)},
+  6:()=>{if(!(P&&P.tag)&&G.corrZi===W.zi){toast('Already corrected in this district');return}if(recGet()<1){witBlank();return}const loss=P.lastLoss||0;if(!(loss>0)){toast('Nothing to correct');return}recSet(0);let h=loss;if(S.retr)h*=1+S.retr/100;if(P&&P.tag)P.hp=Math.min(P.max||P.hp,(P.hp||0)+h);else{heal(h);G.corrZi=W.zi}float(P.x,P.y,'Corrected','#7be495',0)},
+  7:()=>{if(recGet()<witNeed(7)){witBlank();return}if(!witPay(witNeed(7))){witBlank();return}P.redact=2;float(P.x,P.y,'Redacted','#e6dcc8',0)},
+  9:(L)=>{if(recGet()<witNeed(9)){witBlank();return}let best=null,bt=-1;for(const e of W.ents){if(e.hp<=0||e.mp)continue;if((e.tes||0)>bt){bt=e.tes||0;best=e}}if(!best||bt<WIT.high){toast('The testimony is too thin');return}if(!witPay(witNeed(9))){witBlank();return}best.onRecT=WIT.onRec;best.onRecM=1+.12*L;float(best.x,best.y,'On the record','#e6dcc8',0);W.fx.push({k:'ring',x:best.x,y:best.y,r:1.4,t:0,life:.5,col:'#e6dcc8'})},
+  10:()=>{if(recGet()<witNeed(10)){witBlank();return}const cands=[];if(W.merc&&W.merc.hp>0)cands.push(W.merc);if(W.tag&&W.tag.hp>0&&!(P&&P.tag))cands.push(W.tag);for(const a of W.allies)if(a&&(a.hp===undefined||a.hp>0))cands.push(a);let who=null,bd=12;for(const a of cands){const d=dist(a,P);if(d<bd){bd=d;who=a}}if(!who){toast('Nobody to attribute');return}if(!witPay(witNeed(10))){witBlank();return}who.soundSwing=1;float(who.x,who.y,'Unnamed','#f7931a',0)},
+  12:(L)=>{if(recGet()<1){witBlank();return}const ons=W.ents.filter(e=>e.hp>0&&!e.mp&&witSeen(e)&&(e.tes||0)>0);if(!ons.length){toast('Nothing on the page');return}recSet(0);for(const e of ons){witImpact(e,(e.watch||0)*(1.6+.25*L)*(1+(G.lvl||1)*.01));e.tes=0;e.watch=0;e.acc=0}W.fx.push({k:'ring',x:P.x,y:P.y,r:3.2,t:0,life:.45,col:'#e6dcc8'})}}
 });
 function cast(slot){const i=G.slots[slot];if(mode!=='play'||i<0||i===undefined)return;if(P.castWait>0){toast('Still casting');sfx('err');return}const s=CLS[G.cls].sk[i],L=sl(i);if(!L||!s.a||P.cd[i]>0||P.dash)return;if(P.silence>0){toast('Silenced');sfx('err');return}
   if(G.cls==='homesteader'){const why=hsBlocked(i);if(why){toast(why);sfx('err');return}}
+  if(G.cls==='witness'){const why=witBlock(i);if(why){toast(why);if(why==='The page is blank')float(P.x,P.y,'the page is blank','#e6dcc8',0);sfx('err');return}}
   const fk=forkOf(i);let cost=s.cost*(S.sp.hoodie?.75:1)*(fk.cost||1);if(P.freeThrow&&G.cls==='courier'&&(i===0||i===6||i===9||i===12)){cost=0;P.freeThrow=0}if(G.en<cost){toast('Not enough energy');sfx('err');return}
-  const t=nearest(6.5);if(t)face(t);G.en-=cost;P.cd[i]=s.cd*(1-Math.min(.6,S.cdr))*(fk.cd||1)*(G.sk[i]>=10?.8:1);skvPlay(G.cls,i,P.x,P.y,P.dir);mpNoteCast(i);if(!(G.cls==='anon'&&i===3&&P.stealth>0&&sl(11)&&!boonOn(11)))unstealth();sfx(SKS[G.cls][i]||'cast');P.fm={m:fk.dm||1,t:(G.fork||{})[i]==='refund'?2:1.2,k:(G.fork||{})[i],dt:skType(G.cls,i)};forkCast((G.fork||{})[i]);const na=W.allies.length;SKF[G.cls][i](L,syn(i));for(let k=na;k<W.allies.length;k++)if(!W.allies[k].holdDt)W.allies[k].dt=skType(G.cls,i);for(const a of W.allies)if(a.per&&!a.dt)a.dt=skType(G.cls,i);forkAfter(i,L)}
+  const t=nearest(6.5);if(t)face(t);G.en-=cost;P.cd[i]=s.cd*(1-Math.min(.6,S.cdr))*(fk.cd||1)*(G.sk[i]>=10?.8:1);skvPlay(G.cls,i,P.x,P.y,P.dir);mpNoteCast(i);if(!(G.cls==='anon'&&i===3&&P.stealth>0&&sl(11)&&!boonOn(11)))unstealth();sfx(SKS[G.cls][i]||'cast');if(G.cls==='witness'){P.witHold=1;P.witCast=1}P.fm={m:fk.dm||1,t:(G.fork||{})[i]==='refund'?2:1.2,k:(G.fork||{})[i],dt:skType(G.cls,i)};forkCast((G.fork||{})[i]);const na=W.allies.length;SKF[G.cls][i](L,syn(i));for(let k=na;k<W.allies.length;k++)if(!W.allies[k].holdDt)W.allies[k].dt=skType(G.cls,i);for(const a of W.allies)if(a.per&&!a.dt)a.dt=skType(G.cls,i);forkAfter(i,L)}
 function stim(){if(mode!=='play')return;if(W.sub&&W.sub.mods.includes('dry')){toast('Stims do not work in these proceedings');sfx('err');return}if(G.stims<1){toast('No stims. Brenda sells them.');return}if(G.hp>=S.maxHp&&!(S.sp.repair&&G.en<S.maxEn))return;G.stims--;heal(S.maxHp*.45);if(S.sp.repair)G.en=S.maxEn;sfx('stim');float(P.x,P.y,'+stim','#7be495');parts(P.x,P.y,10,['#7be495','#fff'],1.5,1.5)}
 
 /* ================= interaction ================= */
@@ -1510,7 +1564,7 @@ function update(dt){
   for(let i=0;i<15;i++)P.cd[i]=Math.max(0,P.cd[i]-dt);
   if(P.shr){P.shr.t-=dt;if(P.shr.t<=0)P.shr=null}
   G.en=Math.min(S.maxEn,G.en+(4+S.regen+G.at.bnd*.05)*dt);heal((S.regenH+(S.sp.pension?S.maxHp*.02:0)+(W.z.town?S.maxHp*.3:0))*dt);
-  shake=Math.max(0,shake-dt*20);if(G.clockT>0)G.clockT-=dt;if(G.stillT>0)G.stillT-=dt;if(G.guardT>0)G.guardT-=dt;
+  shake=Math.max(0,shake-dt*20);if(G.clockT>0)G.clockT-=dt;if(G.stillT>0)G.stillT-=dt;if(G.guardT>0)G.guardT-=dt;if(G.retractT>0)G.retractT-=dt;if(P.redact>0)P.redact=Math.max(0,P.redact-dt);
   skillTick(dt);
   let sx=J.x,sy=J.y;
   if(keys.KeyA||keys.ArrowLeft)sx-=1;if(keys.KeyD||keys.ArrowRight)sx+=1;if(keys.KeyW||keys.ArrowUp)sy-=1;if(keys.KeyS||keys.ArrowDown)sy+=1;
@@ -1558,7 +1612,7 @@ function update(dt){
       if(dist(a,P)>14){a.x=P.x;a.y=P.y}else if(d>(t?rg*.8:1.5+(a.off||0))){a.x+=(g.x-a.x)/d*sp;a.y+=(g.y-a.y)/d*sp;a.fx=(g.x-a.x)-(g.y-a.y)>0?1:-1;a.mov=true}
       if(a.e){a.e.x=a.x;a.e.y=a.y;a.e.ph+=dt;a.e.fx=a.fx;a.e.hp=a.hp}
       if(t&&d<rg+t.r&&a.cd<=0){a.cd=(a.ivl||.6)*(cr?.6:1);const m=a.m*(a.per&&G.cls==='founder'?1+.08*sl(2):1)*(cr?1.3:1)*vestMul(a);
-        if(a.raw)dmgEnemy(t,a.raw*orgMul(true)*vestMul(a),false);else if(rg>2){sfx('throw');shoot({x:(t.x-a.x)/d,y:(t.y-a.y)/d},m,0,{from:a,life:.6,col:'#e0bd6e',nl:1})}else{P.allySwing=1;hit(t,m,true);P.allySwing=0;if(a.aoe)for(const o of W.ents.slice())if(o!==t&&!(o.nc>0)&&dist(o,t)<1.7){P.allySwing=1;hit(o,m*.6,true);P.allySwing=0}}}}
+        if(a.raw){P.partyHit=1;dmgEnemy(t,a.raw*orgMul(true)*vestMul(a),false);P.partyHit=0}else if(rg>2){sfx('throw');shoot({x:(t.x-a.x)/d,y:(t.y-a.y)/d},m,0,{from:a,life:.6,col:'#e0bd6e',nl:1})}else{P.allySwing=1;P.partyHit=1;hit(t,m,true);P.allySwing=0;P.partyHit=0;if(a.aoe)for(const o of W.ents.slice())if(o!==t&&!(o.nc>0)&&dist(o,t)<1.7){P.allySwing=1;P.partyHit=1;hit(o,m*.6,true);P.allySwing=0;P.partyHit=0}}}}
     if(a.k==='mine'){a.arm-=dt;if(a.arm<=0&&nearest(1.3,a)){if(!a.cut&&G.cls==='anon'&&sl(13)&&!boonOn(13))a.cut=1;else a.life=0}}
     if(a.k==='raid'&&a.cd<=0){a.cd=.13;const c2=W.ents.filter(e=>dist(e,P)<9);if(c2.length){const t=pick(c2);W.fx.push({k:'bolt',x:t.x+rnd(-5,5),y:t.y-rnd(3,6),x2:t.x,y2:t.y,t:0,life:.18,col:'#e6e2d6'});hit(t,a.m)}}
     if(a.life<=0){W.allies.splice(W.allies.indexOf(a),1);if(a.k==='decoy')burst(a.x,a.y,2.6,a.m,a.stun||0,'#ffb238');if((a.k==='mine'||a.k==='blast')&&!a.hush)burst(a.x,a.y,a.r||2.4,a.m,0,'#ff5d4d');if(a.k==='pail'){parts(a.x,a.y,8,['#c9a868','#7be495'],1.6);toast('The lunch pail is empty.')}}}
@@ -1566,7 +1620,7 @@ function update(dt){
   // projectiles
   for(const p of W.projs.slice()){p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;let gone=p.life<=0||!open(p.x,p.y);
     if(!gone){if(p.foe){if(dist(p,P)<P.r+.25){hurt(p.dmg,p.slow,p.src);if(p.drain&&!S.sp.offer&&P.inv<=0)G.en=Math.max(0,G.en-p.drain);if(p.sil&&!S.sp.offer&&P.inv<=0&&!G.god){P.silence=p.sil;float(P.x,P.y,'Silenced','#e6e2d6',1)}gone=true}else for(const a of tanks())if(dist(p,a)<(a.r||.3)+.25){hurtAlly(a,p.dmg,p.src);gone=true;break}}
-      else{for(const e of W.ents)if(!p.done.includes(e)&&dist(p,e)<e.r+.3){if(p.raw)dmgEnemy(e,p.raw,false);else{DT=p.dt||null;if(p.from&&p.from.per)P.allySwing=1;if(p.throw)P.fromThrow=1;hit(e,p.m,p.nl);P.fromThrow=0;P.allySwing=0;DT=null;if(p.split){p.split=0;const a=Math.atan2(p.vy,p.vx);for(const da of[-.4,.4])shoot({x:Math.cos(a+da),y:Math.sin(a+da)},p.m*.7,8,{from:p,life:.45,col:p.col,throw:1})}}if(p.pierce>0){p.pierce--;p.done.push(e)}else{gone=true}break}
+      else{for(const e of W.ents)if(!p.done.includes(e)&&dist(p,e)<e.r+.3){if(p.raw){if(p.party)P.partyHit=1;dmgEnemy(e,p.raw,false);P.partyHit=0}else{DT=p.dt||null;if(p.from&&p.from.per)P.allySwing=1;if(p.from&&p.from!==P)P.partyHit=1;if(p.throw)P.fromThrow=1;hit(e,p.m,p.nl);P.fromThrow=0;P.allySwing=0;P.partyHit=0;DT=null;if(p.split){p.split=0;const a=Math.atan2(p.vy,p.vx);for(const da of[-.4,.4])shoot({x:Math.cos(a+da),y:Math.sin(a+da)},p.m*.7,8,{from:p,life:.45,col:p.col,throw:1})}}if(p.pierce>0){p.pierce--;p.done.push(e)}else{gone=true}break}
         if(!walk(p.x,p.y))for(const o of W.objs)if(o.k==='crate'&&!o.used&&dist(o,p)<.6){breakCrate(o);if(!p.pierce)gone=true}
         if(!walk(p.x,p.y)&&open(p.x,p.y)&&!p.pierce&&W.map[(p.y|0)*W.N+(p.x|0)]===2)gone=true}}
     if(gone&&p.ret&&!p.returning){p.returning=1;p.vx=-p.vx;p.vy=-p.vy;p.life=.5;p.done=[];gone=false}
@@ -1701,7 +1755,7 @@ function shapeShift(cls,roll){if(G.sats<SHIFT_COST){toast('You need '+SHIFT_COST
   if(roll){let g=2000;while(sp>0&&g--){const i=ri(0,14),row=Math.floor(i/3);if(G.sk[i]>=10||G.lvl<ROWREQ[row]||(row>0&&!G.sk[i-3])||(row===3&&!G.act2)||(row===4&&!G.act3))continue;G.sk[i]++;sp--}
     while(ap>0){const k=Math.random()<.45?(CLS[cls].melee?'vit':'mgt'):pick(['mgt','ref','vit','bnd']),n=Math.min(ap,ri(1,5));G.at[k]+=n;ap-=n}
     const act=G.sk.map((v,i)=>v&&CLS[cls].sk[i].a?i:-1).filter(i=>i>=0).sort((a,b)=>G.sk[b]-G.sk[a]);G.slots=[0,1,2].map(i=>act[i]===undefined?-1:act[i])}
-  G.sp=sp;G.ap=ap;G.form=null;G.formDt=null;G.formT=0;W.allies=[];P.buff=P.mech=P.stealth=P.crunch=0;P.castWait=0;calc();G.hp=S.maxHp;G.en=S.maxEn;setSkillButtons();save(true);sfx('unique');
+  G.sp=sp;G.ap=ap;G.form=null;G.formDt=null;G.formT=0;G.page=0;W.allies=[];P.buff=P.mech=P.stealth=P.crunch=0;P.castWait=0;calc();G.hp=S.maxHp;G.en=S.maxEn;setSkillButtons();save(true);sfx('unique');
   $('sheet').hidden=true;$('pop').hidden=true;
   playScene([{art:'feed',text:'The rig hums. For a moment you are nobody at all. Then the simulation agrees with you about who you are.'}],()=>{mode='play';dlg('You are now a '+CLS[cls].n,BR?buildSummary(cls,BR)+' Everything can be changed from the menu.':roll?G.sk.reduce((a,b)=>a+b,0)+' points went into skills and the rest into attributes. Open the menu; Sister Null can return them.':'Spend '+G.sp+' skill points and '+G.ap+' attribute points from the menu.',[['Continue']])})}
 /* ================= seed words: sockets, single-word bonuses, and phrases ================= */
@@ -2202,8 +2256,9 @@ const DOCS={
  courier:[['express','Express','Faster than anything that could hurt you. Usually.',{mspd:12,aspd:15,hpP:-15}],['insured','Insured','Padded, strapped down, late.',{hpP:20,armorP:25,aspd:-10}],['cod','Cash on Delivery','You are here for the tips.',{mf:40,gold:60,dmg:-15}]],
  anon:[['nologs','No Logs','Nothing between you and the target, including armour.',{crit:10,dmg:15,taken:15}],['burner','Burner','Gone before it lands. Thin when it does.',{mspd:10,cdr:.15,hpP:-12}],['collective','Collective','We are many. None of us is sharp.',{hpP:15,leech:2,crit:-6}]],
  founder:[['boot','Bootstrapped','Your own hands, your own money, no runway.',{dmg:25,en:-20}],['venture','Venture Backed','Somebody else’s energy, and their terms.',{en:50,regen:4,taken:15}],['lifestyle','Lifestyle Business','Comfortable. Unambitious. Alive.',{hpP:25,regenH:5,dmg:-15}]],
- homesteader:[['tenant','Tenant','More life, slower. You are staying.',{hpP:22,mspd:-12}],['poacher','Poacher','More damage, less life. You are taking something and leaving.',{dmg:28,hpP:-18}],['fallow','Fallow','Plots tick harder. You and the flock deal less. The ground does the work.',{dmg:-15}]]};
-const DOCT={taken:'{v}% damage taken'};
+ homesteader:[['tenant','Tenant','More life, slower. You are staying.',{hpP:22,mspd:-12}],['poacher','Poacher','More damage, less life. You are taking something and leaving.',{dmg:28,hpP:-18}],['fallow','Fallow','Plots tick harder. You and the flock deal less. The ground does the work.',{dmg:-15}]],
+ witness:[['stringer','Stringer','Record fills faster, maximum life down further.',{hpP:-16,recFill:25}],['editor','Editor','Casts cost less record. Testimony stacks slower.',{recCost:-25,tes:-35}],['corrections','Corrections desk','Correction and Retraction recover more, and your damage is worse.',{dmg:-18,retr:40}]]};
+const DOCT={taken:'{v}% damage taken',recFill:'{v}% Record fill',recCost:'{v}% Record spent',tes:'{v}% Testimony gained',retr:'{v}% faster recovery on Correction and Retraction'};
 const docOf=()=>(DOCS[G.cls]||[]).find(d=>d[0]===G.doc);
 const docTxt=m=>Object.keys(m).map(k=>{const v=k==='cdr'?Math.round(m[k]*100):m[k];return(v>0?'+':'')+(DOCT[k]||WEBT[k]||AFK[k].t.replace(/^\+/,'')).replace('{v}',v)}).join(', ');
 const ROWB=[['Foundations','+8% life',{hpP:8}],['Reach','+15 energy',{en:15}],['Rhythm','5% faster skill recovery',{cdr:.05}],['Edge','+8% damage',{dmg:8}],['Crown','+4% deadly strike',{crit:4}]];
@@ -2334,6 +2389,22 @@ const SKV={scrapper:{
   12:{k:'ring',r:2.4},
   13:{k:'mark'},
   14:{k:'patch',r:1.8}
+},witness:{
+  0:{k:'mark',at:'foe'},
+  1:{k:'mark',at:'foe'},
+  2:{k:'mark'},
+  3:{k:'bolt',r:3,at:'foe'},
+  4:{k:'bolt',r:2.2,at:'foe',n:1},
+  5:{k:'mark'},
+  6:{k:'mark'},
+  7:{k:'patch',r:1.4},
+  8:{k:'mark'},
+  9:{k:'mark',at:'foe'},
+  10:{k:'mark'},
+  11:{k:'mark'},
+  12:{k:'ring',r:3.2},
+  13:{k:'mark'},
+  14:{k:'mark'}
 }};
 function skvOf(cls,i){const row=(SKV[cls]||{})[i];if(!row)return null;const sk=CLS[cls]&&CLS[cls].sk[i];let col=row.col;
   if(!col&&sk&&sk.a){const ty=skType(cls,i);if(DTY[ty])col=DTY[ty].c}if(!col)col=(CLS[cls]&&CLS[cls].col)||'#e6e2d6';
@@ -2375,7 +2446,8 @@ const FAM={sign:{cls:'scrapper',n:'Sign',bases:['Road Sign','Girder','Wrecking B
  sling:{cls:'courier',n:'Launcher',bases:['Parcel Sling','Courier Tube','Rail Launcher','Last-Mile Cannon'],dm:.9,sp:15,perk:'+10% attack speed, throws pierce more often',st:{aspd:10,pierce:15}},
  shiv:{cls:'anon',n:'Shiv',bases:['Letter Opener','Ceramic Shiv','Burner Blade','Null Edge'],dm:.95,sp:8,perk:'+6% deadly strike, deadlier deadly strikes',st:{crit:6,critM:.25}},
  pager:{cls:'founder',n:'Instrument',bases:['Pager','Term Sheet','Golden Stapler','Cap Table'],dm:.85,sp:0,perk:'+2 energy per second, 8% faster skill recovery',st:{regen:2,cdr:.08}},
- graft:{cls:'homesteader',n:'Graft',bases:['Pruner','Irrigation Spike','Fence Post','Combine Blade'],dm:1,sp:0,perk:'plots last longer, and the flock leash is a step more forgiving',st:{}}};
+ graft:{cls:'homesteader',n:'Graft',bases:['Pruner','Irrigation Spike','Fence Post','Combine Blade'],dm:1,sp:0,perk:'plots last longer, and the flock leash is a step more forgiving',st:{}},
+ notebook:{cls:'witness',n:'Notebook',bases:['Stub Pencil','Court Pad','Bound Minutes','The Seventh Part'],dm:1,sp:0,perk:'the Record fills a little faster, and Testimony stacks one higher',st:{}}};
 function famify(it){const mine=Object.keys(FAM).find(k=>FAM[k].cls===G.cls),k=Math.random()<.5&&mine?mine:pick(Object.keys(FAM)),F=FAM[k],nb=F.bases[tierOf(it.il)];
   if(it.name&&it.base&&it.name.includes(it.base))it.name=it.name.replace(it.base,nb);else if(it.q===0)it.name=nb;it.base=nb;it.fam=k;it.dmin=Math.max(1,Math.round(it.dmin*F.dm));it.dmax=Math.max(it.dmin+1,Math.round(it.dmax*F.dm));it.spd=(it.spd||0)+F.sp;return it}
 function famBonus(s){const w=G.eq.weapon;if(!w||!w.fam)return;const F=FAM[w.fam];if(F.cls!==G.cls)return;s.skills+=1;for(const k in F.st)s[k]=(s[k]||0)+F.st[k]}
@@ -2396,7 +2468,9 @@ UNI.push(
  {id:'coldwallet',n:'Cold Wallet',slot:'belt',il:16,base:'Tool Belt',mods:{hp:[40,60],armorP:[30,45]},sp:'You pay no fee when you die, and sats you pick up count for a quarter more',fl:'Never been online. Never will be.'},
  {id:'hashrate',n:'Hash Rate',slot:'gloves',il:28,base:'Servo Fists',mods:{aspd:[10,15],dmg:[20,35]},sp:'+1% damage for every kill in your streak, up to 40',fl:'More work, more weight.'},
  {id:'soaker',cls:'homesteader',n:'Soaker Hose',slot:'belt',il:12,base:'Tool Belt',mods:{hp:[30,50]},sp:'Homesteader only. Plots you place last half again as long',fl:'It weeps. That is the point.'},
- {id:'collar',cls:'homesteader',n:'One Collar',slot:'amulet',il:10,base:'Dog Tag',mods:{hp:[20,35]},sp:'Homesteader only. A single stray is already with you',fl:'You did not name it. It did not ask.'});
+ {id:'collar',cls:'homesteader',n:'One Collar',slot:'amulet',il:10,base:'Dog Tag',mods:{hp:[20,35]},sp:'Homesteader only. A single stray is already with you',fl:'You did not name it. It did not ask.'},
+ {id:'carbon',cls:'witness',n:'Carbon Sheet',slot:'belt',il:12,base:'Tool Belt',mods:{hp:[20,35]},sp:'Witness only. The Record fills faster',fl:'A copy that does not smudge.'},
+ {id:'press',cls:'witness',n:'Press Pass',slot:'amulet',il:14,base:'Dog Tag',mods:{hp:[15,25]},sp:'Witness only. Testimony stacks two higher, and the first Look lands twice',fl:'The name on it is not yours. It still opens the door.'});
 const UNIK={};for(const u of UNI)UNIK[u.id]=u;
 const uOk=it=>{const u=UNIK[it.uid];return!u||!u.cls||u.cls===G.cls};
 function uniTick(dt){if(W.z.town)return;const want=(flag,kind,n,o)=>{const have=W.allies.filter(a=>a.item===flag);if(S.sp[flag]){if(have.length<n){P['u_'+flag]=(P['u_'+flag]||0)-dt;if(P['u_'+flag]<=0){P['u_'+flag]=4;W.allies.push(Object.assign({k:'minion',kind,item:flag,per:1,x:P.x+rnd(-.8,.8),y:P.y+rnd(-.8,.8),cd:0,ph:rnd(0,6),off:rnd(0,1),life:1e9,fx:1},o(),{dt:null}))}}}else for(const a of have)W.allies.splice(W.allies.indexOf(a),1)};
@@ -2445,7 +2519,11 @@ const BUILDS={
  homesteader:[
   {k:'bed',n:'Cold Bed',p:'Cold Frame, then Compost, then the hedge. Kill Frost stays until you climb into a machine, which this plan never does.',doc:'fallow',at:[25,15,45,15],pr:[[0,10],[3,8],[6,6],[9,5],[12,4]],sl:[0,6,9],pa:[],web:[1,2],fk:['chill','lean','ward','echo']},
   {k:'hull',n:'Inside the Hull',p:'Wear the Hull and stay in it. Shed when you must. Nothing is planted.',doc:'tenant',at:[20,20,50,10],pr:[[1,4],[4,10],[7,4],[10,6],[13,8]],sl:[4,10,7],main:4,pa:[13],web:[1,2],fk:['ward','stun','lean','siphon']},
-  {k:'flock',n:'What Follows',p:'Strays and one bull. Cold Frame is only there so they have somewhere to stand. Slaughter Weight spends them into the ground.',doc:'poacher',at:[40,20,25,15],pr:[[2,10],[5,6],[8,8],[11,5],[14,4],[0,3]],sl:[2,5,14],pa:[8,11],web:[0,3],fk:['over','mark','echo','lean']}]};
+  {k:'flock',n:'What Follows',p:'Strays and one bull. Cold Frame is only there so they have somewhere to stand. Slaughter Weight spends them into the ground.',doc:'poacher',at:[40,20,25,15],pr:[[2,10],[5,6],[8,8],[11,5],[14,4],[0,3]],sl:[2,5,14],pa:[8,11],web:[0,3],fk:['over','mark','echo','lean']}],
+ witness:[
+  {k:'page',n:'The Page',p:'The Sentence, then Pull the Thread, then Correction. Slow, single target, and dull on purpose. There is no quiet way to clear a room.',doc:'editor',at:[20,15,55,10],pr:[[1,10],[4,10],[6,8],[0,4],[3,4],[2,6],[5,4],[8,6],[11,4]],sl:[1,4,6],pa:[2,8,11],web:[1,2],fk:['lean','ward','echo','mark']},
+  {k:'party',n:'Named in the Notes',p:'Look until the page is full. On the Record makes everyone hit harder. Unnamed Source lends one Sound swing. Named Party is the passive, and it is not for you.',doc:'stringer',at:[15,20,40,25],pr:[[0,8],[9,8],[10,6],[13,6],[3,4],[6,4],[1,4],[4,4],[7,3],[5,3],[2,3]],sl:[0,9,10],main:9,pa:[13,5,2],web:[1,6],fk:['mark','echo','lean','ward']},
+  {k:'risk',n:'Above Eighty',p:'Sit on a full Record and a thin life. Retraction is the save, and it spends the page. An empty Record is a death.',doc:'corrections',at:[10,15,65,10],pr:[[14,8],[11,6],[8,6],[5,4],[2,4],[0,4],[7,6],[6,6],[1,3],[4,3],[3,3]],sl:[0,7,6],main:7,pa:[14,11,8,2],web:[1,2],fk:['ward','lean','siphon','echo']}]};
 function buildApply(cls,key,sp,ap){const B=BUILDS[cls].find(b=>b.k===key),sk=CLS[cls].sk,ok=i=>{const row=Math.floor(i/3);return G.lvl>=ROWREQ[row]&&(row<3||G.act2)&&(row<4||G.act3)};
   const put=i=>{if(G.sk[i]>=10||!ok(i))return false;if(i>=3&&!G.sk[i-3]&&!put(i-3))return false;const c=G.sk[i]>=5?2:1;if(sp<c)return false;sp-=c;G.sk[i]++;return true};
   for(const[i]of B.pr)if(!G.sk[i])put(i);                                /* one point in everything the plan needs, so it works at once */
@@ -2503,14 +2581,14 @@ function tagRender(n){const og=tagG(n);if(!og||!CLS[og.cls])return;const c=tagCo
   playScene([{art:'feed',title:'Rendered',text:'The rig hums, and a second outline fills in beside you, one scan line at a time: somebody you have been. '+G.tag.name+' looks at their hands, then at you, and nods.'+(k<1?' The rig has to down-sample them to fit this world; they fight a little above your level, not at their own.':'')+(G.merc&&!G.merc.dead?' '+G.merc.name+' steps back to wait with Kestrel until they are gone.':'')}],()=>{mode='play'})}
 function tagDismiss(q){if(!G.tag)return;const n=G.tag.name;G.tag=null;W.tag=null;spawnMerc();if(!q)toast(n+' fades out of this world');save(true)}
 function spawnTag(){W.tag=null;const t=G.tag;if(!t||W.z.sim)return;if(W.z.town)t.hp=t.max;W.tag={x:P.x-.8,y:P.y+.7,r:.3,hp:Math.min(t.hp||t.max,t.max),max:t.max,ph:0,flash:0,armM:t.red,fx:1,swing:0,sc:t.sk.map((_,j)=>2+j*2.5),say:'',sayT:0,tag:1,
-  dir:{x:1,y:0},walkPh:0,moving:false,spin:0,buff:0,haste:0,guard:0,dash:null,stealth:0,mech:0,inv:0,oc:0,ambT:0,ambM:1,crunch:0,volley:null,cd:[],silence:0,fm:null,atk:0,slow:0}}
+  dir:{x:1,y:0},walkPh:0,moving:false,spin:0,buff:0,haste:0,guard:0,dash:null,stealth:0,mech:0,inv:0,oc:0,ambT:0,ambM:1,crunch:0,volley:null,cd:[],silence:0,fm:null,atk:0,slow:0,page:t.page||0}}
 var TAGQ=false;
 /* the companion borrows the player's own skill code: for the length of one call it stands where the player stands */
 function tagDo(fn){const m=W.tag,p0=P,c0=G.cls,d0=DT;P=m;G.cls=G.tag.cls;DT=null;TAGQ=true;try{fn();
     if(m.dash){const d=m.dash;m.dash=null;const far=d.spd*d.t;for(let s=0;s<far;s+=.25)if(!mv(m,m.dir.x*.25,m.dir.y*.25))break;W.fx.push({k:'arc',x:m.x,y:m.y,dx:m.dir.x,dy:m.dir.y,t:0,life:.22,w:1.5});if(d.m)burst(m.x,m.y,2.2,d.m,0,'#ff9a3c');if(d.end)d.end()}
   }catch(e){window.__tagErr=(e&&e.message)+' '+((e&&e.stack)||'').split('\n')[1]}finally{P=p0;G.cls=c0;DT=d0;TAGQ=false}}
 function updTag(dt){const m=W.tag,t=G.tag;if(!m||!t||m.hp<=0)return;const c=CLS[t.cls],formed=t.cls==='homesteader'&&!!m.form,rng=formed?1.5:(c.melee?1.5:5.5),base=Math.max(1,(S.dmin+S.dmax)/2*(1+S.dmg/100));
-  m.ph+=dt;m.sayT-=dt;m.atk-=dt;for(const k of['flash','swing','spin','buff','haste','guard','stealth','mech','crunch','oc'])m[k]=Math.max(0,m[k]-dt);m.armM=t.red*.7*(m.mech>0||m.guard>0?.5:1);if(t.cls==='homesteader'&&m.form==='hull'){m.formT=(m.formT||0)+dt;const rk=(t.sk.find(s=>s[0]===13)||[0,0])[1];if(rk)m.armM/=1+.08*rk*Math.min(8,Math.floor(m.formT/2))}
+  m.ph+=dt;m.sayT-=dt;m.atk-=dt;for(const k of['flash','swing','spin','buff','haste','guard','stealth','mech','crunch','oc'])m[k]=Math.max(0,m[k]-dt);m.armM=t.red*.7*(m.mech>0||m.guard>0?.5:1);if(t.cls==='homesteader'&&m.form==='hull'){m.formT=(m.formT||0)+dt;const rk=(t.sk.find(s=>s[0]===13)||[0,0])[1];if(rk)m.armM/=1+.08*rk*Math.min(8,Math.floor(m.formT/2))}if(t.cls==='witness'&&!(m.atk>0)&&!(m.swing>0)&&witHostile()){m.page=Math.min(100,(m.page||0)+WIT.fill*(m.moving?1:WIT.still)*dt)}
   const R=clamp(t.dmg/base,.15,6)*(m.buff>0||m.crunch>0?1.4:1)*(m.mech>0?1.5:1);
   let tg=null,bd=8;for(const e of W.ents){if(!e.aggro)continue;const d=dist(e,P);if(d<bd){bd=d;tg=e}}
   const g=tg||P,d=dist(g,m)||1,want=tg?rng*.85:1.9;m.moving=false;
@@ -2518,8 +2596,8 @@ function updTag(dt){const m=W.tag,t=G.tag;if(!m||!t||m.hp<=0)return;const c=CLS[
   if(m.volley){const v=m.volley;v.t-=dt;v.cd-=dt;if(v.cd<=0&&tg){v.cd=.12;tagDo(()=>{face(tg);shoot(P.dir,v.m,0)})}if(v.t<=0)m.volley=null}
   if(tg){m.dir={x:(tg.x-m.x)/d,y:(tg.y-m.y)/d};
     for(let j=0;j<t.sk.length;j++){m.sc[j]-=dt;if(m.sc[j]>0||d>7)continue;const[i,rk]=t.sk[j],s=c.sk[i],f=SKF[t.cls]&&SKF[t.cls][i];if(!f)continue;m.sc[j]=Math.max(4,(s.cd||5)*1.4)+j;m.say=s.n;m.sayT=1.4;m.swing=.18;sfx((SKS[t.cls]||{})[i]||'zap');tagDo(()=>{skvPlay(t.cls,i,P.x,P.y,m.dir);f(rk,R)});return}
-    if(d<=rng+tg.r+.3&&m.atk<=0){m.atk=c.ivl*1.15/toxicSwing(m);m.swing=.18;tagDo(()=>{if(c.melee||formed){sfx('swing');W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:1});for(const e of W.ents.slice()){const dd=dist(e,P);if(dd<1.75+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(dd||1)>.15)hit(e,c.mult*R)}}else{sfx(t.cls==='hacker'?'zap':'throw');shoot(P.dir,c.mult*R,0)}})}}
-  else m.hp=Math.min(m.max,m.hp+m.max*.04*dt);t.hp=m.hp}
+    if(d<=rng+tg.r+.3&&m.atk<=0){m.atk=c.ivl*1.15/toxicSwing(m);m.swing=.18;tagDo(()=>{witWrap(m,()=>{if(c.melee||formed){sfx('swing');W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:1});for(const e of W.ents.slice()){const dd=dist(e,P);if(dd<1.75+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(dd||1)>.15)hit(e,c.mult*R)}}else{sfx(t.cls==='hacker'?'zap':'throw');shoot(P.dir,c.mult*R,0)}})})}}
+  else m.hp=Math.min(m.max,m.hp+m.max*.04*dt);t.hp=m.hp;t.page=m.page||0}
 function tagProxy(){const t=G.tag,g=Object.create(G);g.cls=t.cls;g.eq=t.eq||{};g.form=W.tag.form||null;g.formDt=W.tag.formDt||null;g.formT=W.tag.formT||0;g.hp=W.tag.hp/W.tag.max*S.maxHp;return g}
 function tagMenu(){const b=[];if(G.tag)b.push(['Send '+G.tag.name+' back',()=>tagDismiss()]);for(let n=0;n<NSLOT;n++){const og=tagG(n);if(og&&CLS[og.cls]&&!(G.tag&&G.tag.slot===n))b.push(['Render level '+og.lvl+' '+CLS[og.cls].n+' · '+tagCost(og.lvl)+' sats',()=>tagRender(n)])}
   b.push(['Not now']);dlg('Render a companion',b.length>1?'The rig can pull one of your other characters into this world to fight beside you. They act on their own and use the skills they had on their buttons when last saved. It costs sats every time one is rendered: if they fall, or you send them back, rendering again is paid again. A hired companion waits with Kestrel while a rendered one is here, and Kestrel will not hire to you until they leave. You hold '+G.sats+' sats.':'The rig can pull one of your other characters into this world to fight beside you, but you have no other characters saved yet. Start one from Options, under Characters.',b)}
@@ -3044,7 +3122,7 @@ function drawPlayer(X,Y){
   if(P.buff>0||P.haste>0||P.guard>0){ctx.strokeStyle=P.buff>0?'#ff5d4d':P.guard>0?'#ffe36b':'#7be495';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(X,Y,19,9.5,0,0,6.283);ctx.stroke()}
   const dying=mode==='dying';if(dying){const u=Math.min(1,DY.t/.9);ctx.fillStyle='rgba(110,8,8,'+Math.min(.75,DY.t*.5)+')';ctx.beginPath();ctx.ellipse(X+10,Y,6+Math.min(26,DY.t*16),3+Math.min(13,DY.t*8),0,0,6.283);ctx.fill();ctx.save();ctx.translate(X,Y);ctx.rotate(u*u*1.5);ctx.translate(-X,-Y);ctx.globalAlpha=1-Math.max(0,DY.t-1.6)*.6}
   if(P.dash)ctx.globalAlpha=.6;if(P.stealth>0)ctx.globalAlpha=.3;
-  const dark={scrapper:'#9a5a1c',hacker:'#5c3aa8',courier:'#23805c',anon:'#22222a',founder:'#101016',homesteader:'#3d5438'}[G.cls];
+  const dark={scrapper:'#9a5a1c',hacker:'#5c3aa8',courier:'#23805c',anon:'#22222a',founder:'#101016',homesteader:'#3d5438',witness:'#2c3442'}[G.cls];
   if(G.cls==='homesteader'&&(G.form==='hound'||G.form==='hull'||G.form==='worn')){drawHsForm(X,Y,G.form,dying);return}
   if(P.mech>0){ctx.strokeStyle=OL;ctx.lineWidth=1.4;box(X-17,Y-34,9,14,2,'#e0bd6e');box(X+8,Y-34,9,14,2,'#e0bd6e');box(X-13,Y-14,9,14,2,'#a88a45');box(X+4,Y-14,9,14,2,'#a88a45');glow(X,Y-22,40,'#e0bd6e',.35)}
   const b=human(X,Y,{c:P.flash>0?'#fff':c.col,c2:dark,ph:P.walkPh,mov:P.moving,f,leg:G.cls==='hacker'?'#1d1830':'#2e2a36'});
@@ -3056,6 +3134,7 @@ function drawPlayer(X,Y){
   else if(G.cls==='anon'){ctx.beginPath();ctx.arc(X,hy,8,2.6,.54);ctx.lineTo(X+7,hy+7);ctx.lineTo(X-7,hy+7);ctx.closePath();ctx.fillStyle='#17171c';ctx.fill();ctx.stroke();ctx.beginPath();ctx.ellipse(X+f*1.5,hy+.5,5,5.6,0,0,6.283);ctx.fillStyle='#e6e2d6';ctx.fill();ctx.stroke();ctx.fillStyle='#0b0912';ctx.fillRect(X+f*1.5-3.2,hy-1.5,2.2,1.6);ctx.fillRect(X+f*1.5+1,hy-1.5,2.2,1.6)}
   else if(G.cls==='founder'){ctx.beginPath();ctx.arc(X,hy-2,6.8,3.3,6.1);ctx.closePath();ctx.fillStyle='#9a968c';ctx.fill();ctx.stroke();ctx.strokeStyle='#0b0912';ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(X+f*1.5-2.6,hy+.5,2,0,6.283);ctx.arc(X+f*1.5+2.6,hy+.5,2,0,6.283);ctx.stroke();ctx.lineWidth=1.4;ctx.strokeStyle=OL;box(X-8,Y-31+b,16,5,2,'#101016')}
   else if(G.cls==='homesteader'){ctx.beginPath();ctx.arc(X,hy-1,7,3.3,6.05);ctx.closePath();ctx.fillStyle='#4e6a48';ctx.fill();ctx.stroke();ctx.fillStyle='#c9803a';ctx.fillRect(X-5,Y-18+b,10,2)}
+  else if(G.cls==='witness'){ctx.beginPath();ctx.arc(X,hy-1,7,3.3,6.05);ctx.closePath();ctx.fillStyle='#2c3442';ctx.fill();ctx.stroke();ctx.fillStyle='#3a4250';ctx.fillRect(X-9,Y-24+b,18,10)}
   else{box(X-f*11-4,Y-30+b,8,12,2,'#8a6a40');ctx.strokeStyle='#5a4326';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X-7,Y-30+b);ctx.lineTo(X+7,Y-14+b);ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4;
     ctx.beginPath();ctx.arc(X,hy-1,7,3.14,0);ctx.closePath();ctx.fillStyle='#1f5a44';ctx.fill();ctx.stroke();box(X+(f>0?2:-11),hy-2.5,9,2.5,1,'#1f5a44')}
   const E=G.eq,qc=it=>QCOL[it.q];ctx.strokeStyle=OL;ctx.lineWidth=1.4;
@@ -3073,7 +3152,7 @@ function drawPlayer(X,Y){
   ctx.lineCap='round';ctx.strokeStyle=OL;ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(X+ux*5,Y-24+b);ctx.lineTo(hx,hyy);ctx.stroke();ctx.strokeStyle=dark;ctx.lineWidth=3;ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.lineCap='butt';
   if(E.gloves){ctx.fillStyle=qc(E.gloves);ctx.fillRect(hx-2.8,hyy-2.8,5.6,5.6);ctx.strokeRect(hx-2.8,hyy-2.8,5.6,5.6)}
   const wp=E.weapon,wt=wp?tierOf(wp.il):0;
-  if(wp&&G.cls!=='hacker'&&G.cls!=='founder'){const wc=wp.q?qc(wp):'#c8ccd4';
+  if(wp&&G.cls!=='hacker'&&G.cls!=='founder'&&G.cls!=='witness'){const wc=wp.q?qc(wp):'#c8ccd4';
     if(wp.spd<0){const tx=hx+ux*(13+wt),ty=hyy+uy*(13+wt)-10;ctx.strokeStyle='#8f8a80';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(hx-ux*4,hyy+3);ctx.lineTo(tx,ty);ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4;
       if(wt===0){const p=[];for(let i=0;i<8;i++){const a=i*.785+.39;p.push(tx+Math.cos(a)*8,ty+Math.sin(a)*8)}poly(p,'#c22d35');ctx.fillStyle='#fff';ctx.fillRect(tx-4.5,ty-1.2,9,2.4)}
       else{box(tx-7-wt,ty-6-wt,14+wt*2,11+wt*2,2,['','#6a6e7a','#8a94a8','#e0d8ff'][wt]);ctx.fillStyle=wc;ctx.fillRect(tx-7-wt,ty-1,14+wt*2,2)}}
@@ -3085,6 +3164,7 @@ function drawPlayer(X,Y){
   else if(G.cls==='hacker'){const r=4.5+wt*.8+Math.sin(tNow*8);if(wp&&wp.q)glow(hx,hyy-3,18+wt*3,qc(wp),.5);ctx.beginPath();ctx.arc(hx,hyy-3,r,0,6.283);ctx.fillStyle='#c8fbff';ctx.fill();glow(hx,hyy-3,22,'#59e0e6',.7);light(hx,hyy-3,60,'#59e0e6')}
   else if(G.cls==='founder'){box(hx-5,hyy-9,10,8,1,'#17131c');ctx.fillStyle='#59e0e6';ctx.fillRect(hx-3.5,hyy-7.5,7,5);glow(hx,hyy-5,14,'#59e0e6',.4)}
   else if(G.cls==='homesteader'){const tx=hx+ux*12,ty=hyy+uy*12-8;ctx.strokeStyle='#3d5438';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(hx-ux*2,hyy);ctx.lineTo(tx,ty);ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.beginPath();ctx.arc(tx,ty,4,.4,2.8);ctx.stroke()}
+  else if(G.cls==='witness'){const tx=hx+ux*10,ty=hyy+uy*10-8;ctx.fillStyle='#e6dcc8';ctx.fillRect(tx-7,ty-9,14,16);ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.strokeRect(tx-7,ty-9,14,16);ctx.strokeStyle='#cfc6b4';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(tx-4,ty-4);ctx.lineTo(tx+4,ty-4);ctx.moveTo(tx-4,ty);ctx.lineTo(tx+4,ty);ctx.moveTo(tx-4,ty+4);ctx.lineTo(tx+3,ty+4);ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4}
   else{poly([hx,hyy-2,hx+ux*11,hyy+uy*11-5,hx+ux*3+3,hyy+uy*3+1],'#d8e0e8')}
   ctx.globalAlpha=1;if(dying){ctx.restore();return}
   if(OPT.selfBars){const w=34,y=Y-56;ctx.fillStyle='#050409';ctx.fillRect(X-w/2-1,y-1,w+2,9);ctx.fillStyle='#d23a2e';ctx.fillRect(X-w/2,y,w*clamp(G.hp/S.maxHp,0,1),3.5);ctx.fillStyle='#3a7af0';ctx.fillRect(X-w/2,y+4,w*clamp(G.en/S.maxEn,0,1),3)}
@@ -3628,9 +3708,9 @@ function paintGlyphs(root){if(!root||!root.querySelectorAll)return;root.querySel
 let hudC={};
 function setT(id,v){if(hudC[id]!==v){hudC[id]=v;$(id).textContent=v}}
 function hud(){objHud();if(P&&P.dg)setT('dgn',P.dg.n);
-  $('hpF').style.height=clamp(G.hp/S.maxHp*100,0,100)+'%';$('enF').style.height=clamp(G.en/S.maxEn*100,0,100)+'%';$('xpb').style.width=(G.lvl>=lvlCap()?100:G.xp/xpNext(G.lvl)*100)+'%';
+  $('hpF').style.height=clamp(G.hp/S.maxHp*100,0,100)+'%';$('enF').style.height=clamp(G.en/S.maxEn*100,0,100)+'%';const rec=$('rec');if(rec){if(G.cls==='witness'){rec.hidden=false;const rf=$('recF');if(rf)rf.style.width=clamp(G.page||0,0,100)+'%'}else rec.hidden=true}$('xpb').style.width=(G.lvl>=lvlCap()?100:G.xp/xpNext(G.lvl)*100)+'%';
   setT('hpT',OPT.orbNums?Math.ceil(G.hp):'');setT('enT',OPT.orbNums?Math.floor(G.en):'');setT('cr',fmt(G.credits)+(G.sats?' · '+G.sats+' sats':''));setT('cpi','prices ×'+(G.cpi<100?G.cpi.toFixed(2):fmt(G.cpi).slice(1)));setT('potn',G.stims);
-  sbtn.forEach((b,i)=>{const k=G.slots[i];if(k<0||k===undefined||!G.sk[k]){b.classList.add('off');return}const s=CLS[G.cls].sk[k];b.classList.toggle('off',!!hsBlocked(k));b.classList.toggle('low',!hsBlocked(k)&&G.en<s.cost*(S.sp.hoodie?.75:1));b.querySelector('em').style.transform='scaleY('+clamp(P.cd[k]/(s.cd*(1-S.cdr)),0,1)+')'});
+  sbtn.forEach((b,i)=>{const k=G.slots[i];if(k<0||k===undefined||!G.sk[k]){b.classList.add('off');return}const s=CLS[G.cls].sk[k];const blank=!!witBlock(k);b.classList.toggle('off',!!hsBlocked(k)||blank);b.classList.toggle('low',!hsBlocked(k)&&!blank&&G.en<s.cost*(S.sp.hoodie?.75:1));b.querySelector('em').style.transform='scaleY('+clamp(P.cd[k]/(s.cd*(1-S.cdr)),0,1)+')'});
   $('bMenu').classList.toggle('pip',G.sp>0||G.ap>0);$('bRecall').hidden=W.z.town;$('bMap').hidden=W.z.town;
   const sw=$('bSwap');if(SWAP&&(SWAP.t-=1/60)>0&&G.bag.includes(SWAP.it)){sw.hidden=false;setT('bSwap','▲ '+SWAP.it.name+'\n'+dPct(SWAP.d)+' · tap')}else{sw.hidden=true;SWAP=null}
   const a=$('bAct');if(actTarget){a.hidden=false;setT('bAct',actTarget.label)}else a.hidden=true;

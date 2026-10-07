@@ -63,8 +63,9 @@ const DOCS={
  courier:[['express','Express','Faster than anything that could hurt you. Usually.',{mspd:12,aspd:15,hpP:-15}],['insured','Insured','Padded, strapped down, late.',{hpP:20,armorP:25,aspd:-10}],['cod','Cash on Delivery','You are here for the tips.',{mf:40,gold:60,dmg:-15}]],
  anon:[['nologs','No Logs','Nothing between you and the target, including armour.',{crit:10,dmg:15,taken:15}],['burner','Burner','Gone before it lands. Thin when it does.',{mspd:10,cdr:.15,hpP:-12}],['collective','Collective','We are many. None of us is sharp.',{hpP:15,leech:2,crit:-6}]],
  founder:[['boot','Bootstrapped','Your own hands, your own money, no runway.',{dmg:25,en:-20}],['venture','Venture Backed','Somebody else’s energy, and their terms.',{en:50,regen:4,taken:15}],['lifestyle','Lifestyle Business','Comfortable. Unambitious. Alive.',{hpP:25,regenH:5,dmg:-15}]],
- homesteader:[['tenant','Tenant','More life, slower. You are staying.',{hpP:22,mspd:-12}],['poacher','Poacher','More damage, less life. You are taking something and leaving.',{dmg:28,hpP:-18}],['fallow','Fallow','Plots tick harder. You and the flock deal less. The ground does the work.',{dmg:-15}]]};
-const DOCT={taken:'{v}% damage taken'};
+ homesteader:[['tenant','Tenant','More life, slower. You are staying.',{hpP:22,mspd:-12}],['poacher','Poacher','More damage, less life. You are taking something and leaving.',{dmg:28,hpP:-18}],['fallow','Fallow','Plots tick harder. You and the flock deal less. The ground does the work.',{dmg:-15}]],
+ witness:[['stringer','Stringer','Record fills faster, maximum life down further.',{hpP:-16,recFill:25}],['editor','Editor','Casts cost less record. Testimony stacks slower.',{recCost:-25,tes:-35}],['corrections','Corrections desk','Correction and Retraction recover more, and your damage is worse.',{dmg:-18,retr:40}]]};
+const DOCT={taken:'{v}% damage taken',recFill:'{v}% Record fill',recCost:'{v}% Record spent',tes:'{v}% Testimony gained',retr:'{v}% faster recovery on Correction and Retraction'};
 const docOf=()=>(DOCS[G.cls]||[]).find(d=>d[0]===G.doc);
 const docTxt=m=>Object.keys(m).map(k=>{const v=k==='cdr'?Math.round(m[k]*100):m[k];return(v>0?'+':'')+(DOCT[k]||WEBT[k]||AFK[k].t.replace(/^\+/,'')).replace('{v}',v)}).join(', ');
 const ROWB=[['Foundations','+8% life',{hpP:8}],['Reach','+15 energy',{en:15}],['Rhythm','5% faster skill recovery',{cdr:.05}],['Edge','+8% damage',{dmg:8}],['Crown','+4% deadly strike',{crit:4}]];
@@ -195,6 +196,22 @@ const SKV={scrapper:{
   12:{k:'ring',r:2.4},
   13:{k:'mark'},
   14:{k:'patch',r:1.8}
+},witness:{
+  0:{k:'mark',at:'foe'},
+  1:{k:'mark',at:'foe'},
+  2:{k:'mark'},
+  3:{k:'bolt',r:3,at:'foe'},
+  4:{k:'bolt',r:2.2,at:'foe',n:1},
+  5:{k:'mark'},
+  6:{k:'mark'},
+  7:{k:'patch',r:1.4},
+  8:{k:'mark'},
+  9:{k:'mark',at:'foe'},
+  10:{k:'mark'},
+  11:{k:'mark'},
+  12:{k:'ring',r:3.2},
+  13:{k:'mark'},
+  14:{k:'mark'}
 }};
 function skvOf(cls,i){const row=(SKV[cls]||{})[i];if(!row)return null;const sk=CLS[cls]&&CLS[cls].sk[i];let col=row.col;
   if(!col&&sk&&sk.a){const ty=skType(cls,i);if(DTY[ty])col=DTY[ty].c}if(!col)col=(CLS[cls]&&CLS[cls].col)||'#e6e2d6';
@@ -236,7 +253,8 @@ const FAM={sign:{cls:'scrapper',n:'Sign',bases:['Road Sign','Girder','Wrecking B
  sling:{cls:'courier',n:'Launcher',bases:['Parcel Sling','Courier Tube','Rail Launcher','Last-Mile Cannon'],dm:.9,sp:15,perk:'+10% attack speed, throws pierce more often',st:{aspd:10,pierce:15}},
  shiv:{cls:'anon',n:'Shiv',bases:['Letter Opener','Ceramic Shiv','Burner Blade','Null Edge'],dm:.95,sp:8,perk:'+6% deadly strike, deadlier deadly strikes',st:{crit:6,critM:.25}},
  pager:{cls:'founder',n:'Instrument',bases:['Pager','Term Sheet','Golden Stapler','Cap Table'],dm:.85,sp:0,perk:'+2 energy per second, 8% faster skill recovery',st:{regen:2,cdr:.08}},
- graft:{cls:'homesteader',n:'Graft',bases:['Pruner','Irrigation Spike','Fence Post','Combine Blade'],dm:1,sp:0,perk:'plots last longer, and the flock leash is a step more forgiving',st:{}}};
+ graft:{cls:'homesteader',n:'Graft',bases:['Pruner','Irrigation Spike','Fence Post','Combine Blade'],dm:1,sp:0,perk:'plots last longer, and the flock leash is a step more forgiving',st:{}},
+ notebook:{cls:'witness',n:'Notebook',bases:['Stub Pencil','Court Pad','Bound Minutes','The Seventh Part'],dm:1,sp:0,perk:'the Record fills a little faster, and Testimony stacks one higher',st:{}}};
 function famify(it){const mine=Object.keys(FAM).find(k=>FAM[k].cls===G.cls),k=Math.random()<.5&&mine?mine:pick(Object.keys(FAM)),F=FAM[k],nb=F.bases[tierOf(it.il)];
   if(it.name&&it.base&&it.name.includes(it.base))it.name=it.name.replace(it.base,nb);else if(it.q===0)it.name=nb;it.base=nb;it.fam=k;it.dmin=Math.max(1,Math.round(it.dmin*F.dm));it.dmax=Math.max(it.dmin+1,Math.round(it.dmax*F.dm));it.spd=(it.spd||0)+F.sp;return it}
 function famBonus(s){const w=G.eq.weapon;if(!w||!w.fam)return;const F=FAM[w.fam];if(F.cls!==G.cls)return;s.skills+=1;for(const k in F.st)s[k]=(s[k]||0)+F.st[k]}
@@ -257,7 +275,9 @@ UNI.push(
  {id:'coldwallet',n:'Cold Wallet',slot:'belt',il:16,base:'Tool Belt',mods:{hp:[40,60],armorP:[30,45]},sp:'You pay no fee when you die, and sats you pick up count for a quarter more',fl:'Never been online. Never will be.'},
  {id:'hashrate',n:'Hash Rate',slot:'gloves',il:28,base:'Servo Fists',mods:{aspd:[10,15],dmg:[20,35]},sp:'+1% damage for every kill in your streak, up to 40',fl:'More work, more weight.'},
  {id:'soaker',cls:'homesteader',n:'Soaker Hose',slot:'belt',il:12,base:'Tool Belt',mods:{hp:[30,50]},sp:'Homesteader only. Plots you place last half again as long',fl:'It weeps. That is the point.'},
- {id:'collar',cls:'homesteader',n:'One Collar',slot:'amulet',il:10,base:'Dog Tag',mods:{hp:[20,35]},sp:'Homesteader only. A single stray is already with you',fl:'You did not name it. It did not ask.'});
+ {id:'collar',cls:'homesteader',n:'One Collar',slot:'amulet',il:10,base:'Dog Tag',mods:{hp:[20,35]},sp:'Homesteader only. A single stray is already with you',fl:'You did not name it. It did not ask.'},
+ {id:'carbon',cls:'witness',n:'Carbon Sheet',slot:'belt',il:12,base:'Tool Belt',mods:{hp:[20,35]},sp:'Witness only. The Record fills faster',fl:'A copy that does not smudge.'},
+ {id:'press',cls:'witness',n:'Press Pass',slot:'amulet',il:14,base:'Dog Tag',mods:{hp:[15,25]},sp:'Witness only. Testimony stacks two higher, and the first Look lands twice',fl:'The name on it is not yours. It still opens the door.'});
 const UNIK={};for(const u of UNI)UNIK[u.id]=u;
 const uOk=it=>{const u=UNIK[it.uid];return!u||!u.cls||u.cls===G.cls};
 function uniTick(dt){if(W.z.town)return;const want=(flag,kind,n,o)=>{const have=W.allies.filter(a=>a.item===flag);if(S.sp[flag]){if(have.length<n){P['u_'+flag]=(P['u_'+flag]||0)-dt;if(P['u_'+flag]<=0){P['u_'+flag]=4;W.allies.push(Object.assign({k:'minion',kind,item:flag,per:1,x:P.x+rnd(-.8,.8),y:P.y+rnd(-.8,.8),cd:0,ph:rnd(0,6),off:rnd(0,1),life:1e9,fx:1},o(),{dt:null}))}}}else for(const a of have)W.allies.splice(W.allies.indexOf(a),1)};
@@ -306,7 +326,11 @@ const BUILDS={
  homesteader:[
   {k:'bed',n:'Cold Bed',p:'Cold Frame, then Compost, then the hedge. Kill Frost stays until you climb into a machine, which this plan never does.',doc:'fallow',at:[25,15,45,15],pr:[[0,10],[3,8],[6,6],[9,5],[12,4]],sl:[0,6,9],pa:[],web:[1,2],fk:['chill','lean','ward','echo']},
   {k:'hull',n:'Inside the Hull',p:'Wear the Hull and stay in it. Shed when you must. Nothing is planted.',doc:'tenant',at:[20,20,50,10],pr:[[1,4],[4,10],[7,4],[10,6],[13,8]],sl:[4,10,7],main:4,pa:[13],web:[1,2],fk:['ward','stun','lean','siphon']},
-  {k:'flock',n:'What Follows',p:'Strays and one bull. Cold Frame is only there so they have somewhere to stand. Slaughter Weight spends them into the ground.',doc:'poacher',at:[40,20,25,15],pr:[[2,10],[5,6],[8,8],[11,5],[14,4],[0,3]],sl:[2,5,14],pa:[8,11],web:[0,3],fk:['over','mark','echo','lean']}]};
+  {k:'flock',n:'What Follows',p:'Strays and one bull. Cold Frame is only there so they have somewhere to stand. Slaughter Weight spends them into the ground.',doc:'poacher',at:[40,20,25,15],pr:[[2,10],[5,6],[8,8],[11,5],[14,4],[0,3]],sl:[2,5,14],pa:[8,11],web:[0,3],fk:['over','mark','echo','lean']}],
+ witness:[
+  {k:'page',n:'The Page',p:'The Sentence, then Pull the Thread, then Correction. Slow, single target, and dull on purpose. There is no quiet way to clear a room.',doc:'editor',at:[20,15,55,10],pr:[[1,10],[4,10],[6,8],[0,4],[3,4],[2,6],[5,4],[8,6],[11,4]],sl:[1,4,6],pa:[2,8,11],web:[1,2],fk:['lean','ward','echo','mark']},
+  {k:'party',n:'Named in the Notes',p:'Look until the page is full. On the Record makes everyone hit harder. Unnamed Source lends one Sound swing. Named Party is the passive, and it is not for you.',doc:'stringer',at:[15,20,40,25],pr:[[0,8],[9,8],[10,6],[13,6],[3,4],[6,4],[1,4],[4,4],[7,3],[5,3],[2,3]],sl:[0,9,10],main:9,pa:[13,5,2],web:[1,6],fk:['mark','echo','lean','ward']},
+  {k:'risk',n:'Above Eighty',p:'Sit on a full Record and a thin life. Retraction is the save, and it spends the page. An empty Record is a death.',doc:'corrections',at:[10,15,65,10],pr:[[14,8],[11,6],[8,6],[5,4],[2,4],[0,4],[7,6],[6,6],[1,3],[4,3],[3,3]],sl:[0,7,6],main:7,pa:[14,11,8,2],web:[1,2],fk:['ward','lean','siphon','echo']}]};
 function buildApply(cls,key,sp,ap){const B=BUILDS[cls].find(b=>b.k===key),sk=CLS[cls].sk,ok=i=>{const row=Math.floor(i/3);return G.lvl>=ROWREQ[row]&&(row<3||G.act2)&&(row<4||G.act3)};
   const put=i=>{if(G.sk[i]>=10||!ok(i))return false;if(i>=3&&!G.sk[i-3]&&!put(i-3))return false;const c=G.sk[i]>=5?2:1;if(sp<c)return false;sp-=c;G.sk[i]++;return true};
   for(const[i]of B.pr)if(!G.sk[i])put(i);                                /* one point in everything the plan needs, so it works at once */
@@ -364,14 +388,14 @@ function tagRender(n){const og=tagG(n);if(!og||!CLS[og.cls])return;const c=tagCo
   playScene([{art:'feed',title:'Rendered',text:'The rig hums, and a second outline fills in beside you, one scan line at a time: somebody you have been. '+G.tag.name+' looks at their hands, then at you, and nods.'+(k<1?' The rig has to down-sample them to fit this world; they fight a little above your level, not at their own.':'')+(G.merc&&!G.merc.dead?' '+G.merc.name+' steps back to wait with Kestrel until they are gone.':'')}],()=>{mode='play'})}
 function tagDismiss(q){if(!G.tag)return;const n=G.tag.name;G.tag=null;W.tag=null;spawnMerc();if(!q)toast(n+' fades out of this world');save(true)}
 function spawnTag(){W.tag=null;const t=G.tag;if(!t||W.z.sim)return;if(W.z.town)t.hp=t.max;W.tag={x:P.x-.8,y:P.y+.7,r:.3,hp:Math.min(t.hp||t.max,t.max),max:t.max,ph:0,flash:0,armM:t.red,fx:1,swing:0,sc:t.sk.map((_,j)=>2+j*2.5),say:'',sayT:0,tag:1,
-  dir:{x:1,y:0},walkPh:0,moving:false,spin:0,buff:0,haste:0,guard:0,dash:null,stealth:0,mech:0,inv:0,oc:0,ambT:0,ambM:1,crunch:0,volley:null,cd:[],silence:0,fm:null,atk:0,slow:0}}
+  dir:{x:1,y:0},walkPh:0,moving:false,spin:0,buff:0,haste:0,guard:0,dash:null,stealth:0,mech:0,inv:0,oc:0,ambT:0,ambM:1,crunch:0,volley:null,cd:[],silence:0,fm:null,atk:0,slow:0,page:t.page||0}}
 var TAGQ=false;
 /* the companion borrows the player's own skill code: for the length of one call it stands where the player stands */
 function tagDo(fn){const m=W.tag,p0=P,c0=G.cls,d0=DT;P=m;G.cls=G.tag.cls;DT=null;TAGQ=true;try{fn();
     if(m.dash){const d=m.dash;m.dash=null;const far=d.spd*d.t;for(let s=0;s<far;s+=.25)if(!mv(m,m.dir.x*.25,m.dir.y*.25))break;W.fx.push({k:'arc',x:m.x,y:m.y,dx:m.dir.x,dy:m.dir.y,t:0,life:.22,w:1.5});if(d.m)burst(m.x,m.y,2.2,d.m,0,'#ff9a3c');if(d.end)d.end()}
   }catch(e){window.__tagErr=(e&&e.message)+' '+((e&&e.stack)||'').split('\n')[1]}finally{P=p0;G.cls=c0;DT=d0;TAGQ=false}}
 function updTag(dt){const m=W.tag,t=G.tag;if(!m||!t||m.hp<=0)return;const c=CLS[t.cls],formed=t.cls==='homesteader'&&!!m.form,rng=formed?1.5:(c.melee?1.5:5.5),base=Math.max(1,(S.dmin+S.dmax)/2*(1+S.dmg/100));
-  m.ph+=dt;m.sayT-=dt;m.atk-=dt;for(const k of['flash','swing','spin','buff','haste','guard','stealth','mech','crunch','oc'])m[k]=Math.max(0,m[k]-dt);m.armM=t.red*.7*(m.mech>0||m.guard>0?.5:1);if(t.cls==='homesteader'&&m.form==='hull'){m.formT=(m.formT||0)+dt;const rk=(t.sk.find(s=>s[0]===13)||[0,0])[1];if(rk)m.armM/=1+.08*rk*Math.min(8,Math.floor(m.formT/2))}
+  m.ph+=dt;m.sayT-=dt;m.atk-=dt;for(const k of['flash','swing','spin','buff','haste','guard','stealth','mech','crunch','oc'])m[k]=Math.max(0,m[k]-dt);m.armM=t.red*.7*(m.mech>0||m.guard>0?.5:1);if(t.cls==='homesteader'&&m.form==='hull'){m.formT=(m.formT||0)+dt;const rk=(t.sk.find(s=>s[0]===13)||[0,0])[1];if(rk)m.armM/=1+.08*rk*Math.min(8,Math.floor(m.formT/2))}if(t.cls==='witness'&&!(m.atk>0)&&!(m.swing>0)&&witHostile()){m.page=Math.min(100,(m.page||0)+WIT.fill*(m.moving?1:WIT.still)*dt)}
   const R=clamp(t.dmg/base,.15,6)*(m.buff>0||m.crunch>0?1.4:1)*(m.mech>0?1.5:1);
   let tg=null,bd=8;for(const e of W.ents){if(!e.aggro)continue;const d=dist(e,P);if(d<bd){bd=d;tg=e}}
   const g=tg||P,d=dist(g,m)||1,want=tg?rng*.85:1.9;m.moving=false;
@@ -379,8 +403,8 @@ function updTag(dt){const m=W.tag,t=G.tag;if(!m||!t||m.hp<=0)return;const c=CLS[
   if(m.volley){const v=m.volley;v.t-=dt;v.cd-=dt;if(v.cd<=0&&tg){v.cd=.12;tagDo(()=>{face(tg);shoot(P.dir,v.m,0)})}if(v.t<=0)m.volley=null}
   if(tg){m.dir={x:(tg.x-m.x)/d,y:(tg.y-m.y)/d};
     for(let j=0;j<t.sk.length;j++){m.sc[j]-=dt;if(m.sc[j]>0||d>7)continue;const[i,rk]=t.sk[j],s=c.sk[i],f=SKF[t.cls]&&SKF[t.cls][i];if(!f)continue;m.sc[j]=Math.max(4,(s.cd||5)*1.4)+j;m.say=s.n;m.sayT=1.4;m.swing=.18;sfx((SKS[t.cls]||{})[i]||'zap');tagDo(()=>{skvPlay(t.cls,i,P.x,P.y,m.dir);f(rk,R)});return}
-    if(d<=rng+tg.r+.3&&m.atk<=0){m.atk=c.ivl*1.15/toxicSwing(m);m.swing=.18;tagDo(()=>{if(c.melee||formed){sfx('swing');W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:1});for(const e of W.ents.slice()){const dd=dist(e,P);if(dd<1.75+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(dd||1)>.15)hit(e,c.mult*R)}}else{sfx(t.cls==='hacker'?'zap':'throw');shoot(P.dir,c.mult*R,0)}})}}
-  else m.hp=Math.min(m.max,m.hp+m.max*.04*dt);t.hp=m.hp}
+    if(d<=rng+tg.r+.3&&m.atk<=0){m.atk=c.ivl*1.15/toxicSwing(m);m.swing=.18;tagDo(()=>{witWrap(m,()=>{if(c.melee||formed){sfx('swing');W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:1});for(const e of W.ents.slice()){const dd=dist(e,P);if(dd<1.75+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(dd||1)>.15)hit(e,c.mult*R)}}else{sfx(t.cls==='hacker'?'zap':'throw');shoot(P.dir,c.mult*R,0)}})})}}
+  else m.hp=Math.min(m.max,m.hp+m.max*.04*dt);t.hp=m.hp;t.page=m.page||0}
 function tagProxy(){const t=G.tag,g=Object.create(G);g.cls=t.cls;g.eq=t.eq||{};g.form=W.tag.form||null;g.formDt=W.tag.formDt||null;g.formT=W.tag.formT||0;g.hp=W.tag.hp/W.tag.max*S.maxHp;return g}
 function tagMenu(){const b=[];if(G.tag)b.push(['Send '+G.tag.name+' back',()=>tagDismiss()]);for(let n=0;n<NSLOT;n++){const og=tagG(n);if(og&&CLS[og.cls]&&!(G.tag&&G.tag.slot===n))b.push(['Render level '+og.lvl+' '+CLS[og.cls].n+' · '+tagCost(og.lvl)+' sats',()=>tagRender(n)])}
   b.push(['Not now']);dlg('Render a companion',b.length>1?'The rig can pull one of your other characters into this world to fight beside you. They act on their own and use the skills they had on their buttons when last saved. It costs sats every time one is rendered: if they fall, or you send them back, rendering again is paid again. A hired companion waits with Kestrel while a rendered one is here, and Kestrel will not hire to you until they leave. You hold '+G.sats+' sats.':'The rig can pull one of your other characters into this world to fight beside you, but you have no other characters saved yet. Start one from Options, under Characters.',b)}

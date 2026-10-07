@@ -27,6 +27,9 @@ button:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
 .orb.en i{background:linear-gradient(#5aa0ff,#16347f)}
 .orb::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 34% 28%,rgba(255,255,255,.38),transparent 34%),radial-gradient(circle at 50% 50%,transparent 55%,rgba(0,0,0,.55))}
 .orb span{position:absolute;inset:0;display:grid;place-items:center;font:700 12px var(--display);color:#fff;text-shadow:0 1px 2px #000,0 0 4px #000;z-index:1}
+#enCol{display:flex;flex-direction:column;align-items:center;gap:3px;flex:none}
+#rec{width:62px;height:10px;border-radius:2px;background:#1a1814;border:1px solid #3a3428;overflow:hidden}
+#rec i{display:block;height:100%;width:0;background:#e6dcc8}
 #mid{flex:1;min-width:0;text-align:center;padding-top:2px}
 #zone{font:700 12px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--gold);text-shadow:0 1px 3px #000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #xpw{height:5px;background:#050409;border:1px solid var(--edge);margin:4px 0}
@@ -278,7 +281,7 @@ textarea{width:100%;height:70px;background:#050409;color:var(--ink);border:1px s
         <div id="wal"><span id="cr"></span><small id="cpi"></small></div>
         <div id="tbs"><button class="tb" id="bMap">Map</button><button class="tb" id="bRecall">Portal</button><button class="tb" id="bBug" title="Report a problem">Report</button></div>
       </div>
-      <div class="orb en"><i id="enF"></i><span id="enT"></span></div>
+      <div id="enCol"><div class="orb en"><i id="enF"></i><span id="enT"></span></div><div id="rec" hidden><i id="recF"></i></div></div>
     </div>
     <div id="boss" hidden><span id="bossn"></span><div class="bar"><i id="bossb"></i></div></div>
     <div id="buffs"></div>
