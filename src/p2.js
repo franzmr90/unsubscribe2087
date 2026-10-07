@@ -300,7 +300,7 @@ function simTick(dt){const s=W.sim;if(s.rush)return rushTick(dt);if(W.ents.lengt
 /* the Humming Fields must always hold Marrow's cage until she is freed, including in districts saved before a fix */
 function ensureCage(){if(W.zi!==3||G.marrow||W.objs.some(o=>o.k==='cage'&&!o.used))return;const N=W.N,c=W.suAt||W.goal||W.start,cx=Math.round(c.x),cy=Math.round(c.y);
   for(let r=2;r<12;r++)for(let y=cy-r;y<=cy+r;y++)for(let x=cx-r;x<=cx+r;x++){if(Math.max(Math.abs(x-cx),Math.abs(y-cy))!==r||x<2||y<2||x>N-3||y>N-3)continue;let ok=true;for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++)if(W.map[(y+j)*N+x+i]!==1)ok=false;if(ok){solid('cage',x,y);return}}}
-function goalPt(){if(W&&W.z.pre)return preGoal();if(!W||W.z.town||W.z.sim||W.hold)return null;const lg=W.objs.find(o=>o.k==='leg');if(lg)return lg;const qo=W.objs.find(o=>o.k==='qobj'&&!o.used);if(qo)return qo;const su=W.ents.find(e=>e.su&&e.q&&G.q[e.q]<2);if(su)return su;const cg=W.objs.find(o=>o.k==='cage'&&!o.used);if(cg&&!G.marrow)return cg;return W.goal}
+function goalPt(){if(W&&W.z.pre)return preGoal();if(!W||W.z.town||W.z.sim||W.hold)return null;const lg=W.objs.find(o=>o.k==='leg');if(lg)return lg;const qo=W.objs.find(o=>o.k==='qobj'&&!o.used);if(qo)return qo;const pg=W.objs.find(o=>o.k==='page'&&!o.used);if(pg&&(G.q.q8||0)<2)return pg;const su=W.ents.find(e=>e.su&&e.q&&G.q[e.q]<2);if(su)return su;const mn=W.objs.find(o=>o.k==='minute'&&!o.used);if(mn)return mn;const cg=W.objs.find(o=>o.k==='cage'&&!o.used);if(cg&&!G.marrow)return cg;return W.goal}
 const lvlCap=()=>G.act5?100:G.act4?90:G.act3?75:G.act2?50:25;
 /* machines scale to the hero: level follows yours, and 60% of any strength beyond what the level expects is matched */
 function zoneLevel(z){const b=z.lvl+G.tier*12;return OPT.dyn?Math.max(b,G.lvl):b}
@@ -364,7 +364,7 @@ function enter(zi,o){setTimeout(mpBeat,0);
   let at=o.at||W.start;if(o.from==='next'){const p=W.portals.find(p=>p.kind==='next');at=nearFree(p||W.goal||W.start)}else if(o.from==='exit'&&W.exit)at={x:W.exit.ix,y:W.exit.iy};else if(o.at&&!free(at.x,at.y,.3))at=nearFree(at,1.2);
   P={x:at.x,y:at.y,r:.32,dir:{x:1,y:0},atk:0,cd:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],silence:0,oc:0,swing:0,flash:0,inv:.5,slow:0,buff:0,haste:0,guard:0,dash:null,volley:null,moving:false,warn:0,movedT:0,spin:0,walkPh:0,shr:null,band:10,hb:0,stealth:0,ambT:0,ambM:1,mech:0,crunch:0,streak:0,streakT:0};BLOOD=[];for(const a of carry){a.x=P.x+rnd(-1,1);a.y=P.y+rnd(-1,1);W.allies.push(a)}spawnMerc();evEnd(1);if(old&&W.leftT!==undefined&&G.time-W.leftT>150&&repop())setTimeout(()=>toast('You were gone a while. The machines have drifted back.'),900);if(!z.town&&!z.sim){placeQuestObjs();ensureNode();}p7Enter();if(!z.town&&!z.sim){for(const k in SQ){const st=sqStep(k);if(st&&st.t==='esc'&&st.zi===zi)escStart(k,SQ[k].steps[G.sq[k].s-1].esc)}}if(z.town)for(const k in sqSkip)delete sqSkip[k];
   if(z.town){if(G.form){G.form=null;G.formDt=null;G.formT=0;calc()}G.hp=S.maxHp;G.en=S.maxEn}
-  else if(!z.sim){const q=z.su?z.su.q:z.bq;if(G.q[q]===0){G.q[q]=1;toast('New quest: '+QUESTS[q].n);sfx('questnew')}
+  else if(!z.sim){const q=z.su?z.su.q:z.bq;if(G.q[q]===0&&!QUESTS[q].brief){G.q[q]=1;toast('New quest: '+QUESTS[q].n);sfx('questnew')}if(q==='q3'&&G.q.q3===1&&!W.ents.some(e=>e.q==='q3'))G.q3open=1;if(q==='q8')ensurePage();if(q==='q12')ensureMinute()
   }
   $('zone').textContent=z.n+(G.tier?' · Tier '+G.tier:'');$('boss').hidden=true;hudC={};
   const act=actOf(zi);if(G.pre===1&&z.town&&!z.pre)preLeft();
@@ -459,6 +459,10 @@ function hit(e,m,nl){if(e.hp<=0)return;let[d,c]=pdmg(m,e);d=typed(e,d);if(G.cls=
   if(S.sp.intern&&!procLock&&Math.random()<.2){procLock=true;chain(e,3,.8);procLock=false}}
 function chain(from,n,m){const done=new Set();let f={x:from.x,y:from.y};for(let i=0;i<n;i++){let b=null,bd=i||from!==P?4.5:7;for(const e of W.ents)if(!done.has(e)){const d=dist(e,f);if(d<bd){bd=d;b=e}}if(!b)break;done.add(b);W.fx.push({k:'bolt',x:f.x,y:f.y,x2:b.x,y2:b.y,t:0,life:.2});f={x:b.x,y:b.y};hit(b,m)}return done.size}
 function boomFx(e){const low=!G.act2;return {k:'warn',x:e.x,y:e.y,r:low?1.35:2.2,t:0,life:low?1.35:.7,boom:e.dmg*(low?.85:1.5)}}
+function placeMinute(e){if(W.objs.some(o=>o.k==='minute'&&!o.used))return;W.objs.push({k:'minute',x:e.x,y:e.y})}
+function ensureMinute(){if(W.zi!==13||G.q.q12!==1||!G.q12down||W.objs.some(o=>o.k==='minute'&&!o.used))return;const p=W.suAt||W.goal||{x:P.x,y:P.y};W.objs.push({k:'minute',x:p.x,y:p.y})}
+function ensurePage(){if(W.zi!==9||(G.q.q8||0)!==1||G.q8page||W.objs.some(o=>o.k==='page'&&!o.used))return;const p=freeSpot(12);W.objs.push({k:'page',x:p.x,y:p.y})}
+function tallyKill(e){if(e.minion||e.su||e.q||!W||W.z.sim)return;for(const k in QUESTS){const q=QUESTS[k],t=q.tally;if(!t||G.q[k]!==1||W.zi!==q.zi||!t.kinds.includes(e.k))continue;G.qt=G.qt||{};if((G.qt[t.key]||0)>=t.n)continue;G.qt[t.key]=(G.qt[t.key]||0)+1;float(e.x,e.y,t.item+' '+G.qt[t.key]+'/'+t.n,'#59e0e6');sfx('pick');if(G.qt[t.key]>=t.n&&G.qt[t.key+'Down']){G.q[k]=2;mpShareQuest(k,2);sfx('quest');toast('Quest complete: return to '+q.back)}}}
 function kill(e){
   if(e.mp)return;
   if((G.cls==='founder'||G.cls==='homesteader')&&!e.minion){P.corpses=P.corpses||[];P.corpses.push({x:e.x,y:e.y,t:6});if(P.corpses.length>16)P.corpses.shift()}
@@ -482,7 +486,7 @@ function kill(e){
   if(S.sp.vigil)heal(S.maxHp*.03);
   if(e.mods.boom)W.fx.push(boomFx(e));
   if(S.sp.whistle){W.fx.push({k:'ring',x:e.x,y:e.y,r:2.2,t:0,life:.3,col:'#ff5d4d'});for(const o of W.ents.slice())if(dist(o,e)<2.2)dmgEnemy(o,e.max*.3,false)}
-  if(e.q&&G.q[e.q]<2){if(e.q==='q3'){sfx('quest');toast('Defrag falls. Follow the arrow to Marrow’s cage and open it.')}else{G.q[e.q]=2;mpShareQuest(e.q,2);sfx('quest');toast('Quest complete: return to '+QUESTS[e.q].back)}}
+  if(!W.z.sim)tallyKill(e);if(e.q&&G.q[e.q]<2){const qq=QUESTS[e.q],tt=qq.tally,got=tt?((G.qt&&G.qt[tt.key])||0):0;if(e.q==='q3'){G.q3open=1;sfx('quest');toast('Defrag falls. Follow the arrow to Marrow\u2019s cage and open it.')}else if(e.q==='q12'){G.q12down=1;placeMinute(e);sfx('quest');toast('The shorthand stops. Strike the minutes it already filed.')}else if(e.q==='q8'&&!G.q8page){G.q8down=1;ensurePage();sfx('quest');toast('Lethe falls. A letter is still above the water.')}else if(tt&&got<tt.n){G.qt=G.qt||{};G.qt[tt.key+'Down']=1;sfx('quest');toast(qq.n+': '+got+'/'+tt.n+'. '+tt.left)}else{G.q[e.q]=2;mpShareQuest(e.q,2);sfx('quest');toast('Quest complete: return to '+qq.back)}}
   if(boss&&W.z.sim){W.boss=null;$('boss').hidden=true;music(zoneMusic());for(const o of W.ents.slice())if(o.minion)W.ents.splice(W.ents.indexOf(o),1)}
   else if(boss){W.boss=null;music(zoneMusic());sfx('quest');$('boss').hidden=true;W.portals.push({x:e.x,y:e.y,kind:'home'});W.goal={x:e.x,y:e.y};if(OPT.shake)shake=12;const b3=e.k==='boss3';
     for(const o of W.ents.slice())if(o.minion)kill(o);W.projs=W.projs.filter(p=>!p.foe);if(e.k==='gap'||e.k==='boss4'||e.k==='boss5'){bossKill2(e);return}
@@ -807,7 +811,7 @@ function useObj(o){
   else if(o.k==='memo'){W.objs.splice(W.objs.indexOf(o),1);if(!G.memos.includes(o.id))G.memos.push(o.id);sfx('page');const m=MEMOS[o.id];dlg(m[0],m[1],[['Keep it']]);gainXp(20*(1+.8*(W.ml-1)))}
   else if(o.k==='stray'){W.objs.splice(W.objs.indexOf(o),1);let gave;if(G.stims>0){G.stims--;gave='a stim'}else{const c=G.credits*.15;G.credits-=c;gave=fmt(c)}G.unseen=(G.unseen||0)+1;
     dlg('A stranger',pick(['A Resident with her visor in her hand, shaking. ','An old man who took his visor off this morning and cannot find his street. ','A boy, no visor, hiding from the drones. '])+'You give up '+gave+' and point the way to Stillwater. No name is asked. Nobody saw.',[['Walk on']])}
-  else if(o.k==='qobj')sqUse(o);
+  else if(o.k==='page'){o.used=1;G.q8page=1;sfx('page');if(G.q8down){G.q.q8=2;mpShareQuest('q8',2);sfx('quest');toast('Quest complete: return to Marrow')}else toast('Lethe is still drowning the rest. Follow the arrow.')}else if(o.k==='minute'){o.used=1;G.q.q12=2;mpShareQuest('q12',2);sfx('page');sfx('quest');toast('Quest complete: return to Marrow')}else if(o.k==='qobj')sqUse(o);
   else if(o.k==='cage'){if(W.ents.some(e=>e.su)){toast('The cage is sealed while Defrag stands');return}o.used=1;G.marrow=true;G.q.q3=2;sfx('cage');sfx('quest');
     playScene(RESCUE,()=>{mode='play';toast('Quest complete: return to Gramps')})}}
 function portalLabel(p){const zi=W.zi;return p.kind==='home'?'Return to '+ZONES[HT()].n:p.kind==='exit'?'Walk out to '+ZONES[FIRST[W.z.act||1]].n:p.kind==='town'||p.kind==='prev'?'Walk back to '+ZONES[zi===FIRST[actOf(zi)]?townOf(zi):zi-1].n:p.kind==='next'?'Go on to '+ZONES[zi+1].n:'Portal to '+ZONES[G.portal.zi].n}
@@ -825,7 +829,7 @@ function findAct(){for(const o of W.objs)if(o.k==='qobj'&&!o.used&&Math.hypot(o.
     const rs=resStep();if(rs)for(const n of W.npcs)if(n.id==='res'&&!n.got)chk(n.x,n.y,rs.label,()=>sqRes(n));
     if(!rs)for(const n of W.npcs)if(n.id==='res')chk(n.x,n.y,'Talk to a Resident',()=>convo('res'));
     for(const n of W.npcs)if(n.id!=='res')chk(n.x,n.y,n.id==='gate'?'Use the Transit Gate':n.id==='vr'?'Use the VR rig':n.id==='board'?'Read the bounty board':n.id==='stash'?'Open your lockbox':n.id==='ubi'?'Collect the Stipend':n.act||'Talk to '+n.name,()=>talkTo(n.id))}
-  for(const o of W.objs){if(o.used)continue;if(o.k==='chest')chk(o.x,o.y,'Open lockbox',()=>useObj(o));else if(o.k==='shrine')chk(o.x,o.y,SHR[o.sk][0],()=>useObj(o));else if(o.k==='memo')chk(o.x,o.y,'Read the memo',()=>useObj(o));else if(o.k==='cage')chk(o.x,o.y,'Open the cage',()=>useObj(o));else if(o.k==='stray')chk(o.x,o.y,'Help the stranger',()=>useObj(o));else if(o.k==='qobj'){const st=sqStep(o.q);if(st)chk(o.x,o.y,st.label,()=>sqUse(o))}else if(o.k==='dnode'&&!G.nodes[W.zi])chk(o.x,o.y,'Bring this node online (5 sats)',()=>lightNode(o));else if(o.k==='leg')chk(o.x,o.y,'Pick up the servo leg',()=>legTake(o));else if(o.k==='pow'&&!W.pow)chk(o.x,o.y,'Begin proof of work (hold 60 seconds)',()=>powStart(o))}
+  for(const o of W.objs){if(o.used)continue;if(o.k==='chest')chk(o.x,o.y,'Open lockbox',()=>useObj(o));else if(o.k==='shrine')chk(o.x,o.y,SHR[o.sk][0],()=>useObj(o));else if(o.k==='memo')chk(o.x,o.y,'Read the memo',()=>useObj(o));else if(o.k==='cage')chk(o.x,o.y,'Open the cage',()=>useObj(o));else if(o.k==='page')chk(o.x,o.y,'Read the letter',()=>useObj(o));else if(o.k==='minute')chk(o.x,o.y,'Strike the minutes',()=>useObj(o));else if(o.k==='stray')chk(o.x,o.y,'Help the stranger',()=>useObj(o));else if(o.k==='qobj'){const st=sqStep(o.q);if(st)chk(o.x,o.y,st.label,()=>sqUse(o))}else if(o.k==='dnode'&&!G.nodes[W.zi])chk(o.x,o.y,'Bring this node online (5 sats)',()=>lightNode(o));else if(o.k==='leg')chk(o.x,o.y,'Pick up the servo leg',()=>legTake(o));else if(o.k==='pow'&&!W.pow)chk(o.x,o.y,'Begin proof of work (hold 60 seconds)',()=>powStart(o))}
   return best}
 
 /* ================= update ================= */

@@ -109,6 +109,7 @@ function repop(){const z=W.z,N=W.N,base=z.boss?24:46,have=W.ents.filter(e=>!isBo
 
 /* ================= tracked quest ================= */
 function trackList(){const l=[];for(const k in SQ)if(G.sq[k]&&!G.sq[k].done)l.push('s:'+k);return l}
+function briefReady(k){const q=QUESTS[k];if(!q||!q.brief||(G.q[k]||0))return false;for(const j in QUESTS){if(j===k)return true;if((G.q[j]||0)!==3)return false}return false}
 function storyStep(){const sg=storyGate();if(sg)return sg;
   if(G.q.q5===3&&!G.act2)return{n:'Act I complete',d:'Take the Transit Gate to The Landing to begin Act II'};
   if(G.q.q10===3&&!G.q.q11)return{n:'Act II complete',d:'Speak to Gramps in '+ZONES[HT()].n+' to begin Act III'};
@@ -116,6 +117,13 @@ function storyStep(){const sg=storyGate();if(sg)return sg;
   for(const k in QUESTS){const st=G.q[k]||0;if(st===3)continue;const q=QUESTS[k],z=ZONES[q.zi],who=z.su&&z.su.q===k?z.su.n:ET[z.bossK||'boss'].n;
     if(st===2)return{n:q.n,d:'Return to '+(q.back||'Gramps')+' in '+ZONES[HT()].n};
     if(k==='q1'&&!st)return{n:q.n,d:'Speak to Gramps in Stillwater Commons'};
+    if(!st&&q.brief)return{n:q.n,d:'Speak to '+(q.back||'Gramps')+' in '+ZONES[HT()].n};
+    if(!st&&k==='q12')return{n:q.n,d:'Go to the Hall of Minutes. End the Recording Secretary, then strike the page it already filed'};
+    if(!st&&k==='q13')return{n:q.n,d:'Go to the Nine Chairs. Break four directors, then close the motion on the Chair'};
+    if(st===1&&k==='q3'&&G.q3open)return{n:q.n,d:(W&&W.zi===3)?'Open Marrow\u2019s cage. Follow the arrow.':'Open Marrow\u2019s cage in the Humming Fields'};
+    if(st===1&&k==='q8'&&!G.q8page)return{n:q.n,d:G.q8down?'Lethe is down. Read the letter still above the water.':(W&&W.zi===9)?'Read the letter above the water, then destroy Lethe. Follow the arrow.':'Read the letter above the water in the Data Lake, then destroy Lethe'};
+    if(st===1&&k==='q12'&&G.q12down)return{n:q.n,d:(W&&W.zi===13)?'Strike the minutes. Follow the arrow.':'Strike the minutes in the Hall of Minutes'};
+    if(st===1&&q.tally){const t=q.tally,got=(G.qt&&G.qt[t.key])||0;if(got<t.n)return{n:q.n,d:(G.qt&&G.qt[t.key+'Down']?t.left:t.d)+' ('+got+'/'+t.n+')'}}
     return{n:q.n,d:W.zi===q.zi?'Destroy '+who+'. Follow the arrow.':W.z.town&&W.zi===townOf(q.zi)&&q.zi===FIRST[actOf(q.zi)]?'Walk out of the town gate to '+z.n+' and destroy '+who:'Go to '+z.n+' and destroy '+who}}
   return{n:'The story is complete'+(G.fate==='fail'?' · bitcoin failed':G.fate==='stale'?' · stalemate':''),d:G.adopt<100?'Bitcoin adoption stands at '+Math.floor(G.adopt)+'%. Light nodes and pay in sats to reach 100%.':'Bitcoin is the reserve currency. The world is yours to wander.'}}
 function sideStep(){const l=trackList();if(!l.length)return null;if(!l.includes(G.track))G.track=l[0];const k=G.track.slice(2),q=SQ[k],s=G.sq[k],st=q.steps[s.s];
