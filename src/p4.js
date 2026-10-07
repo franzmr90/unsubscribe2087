@@ -513,7 +513,7 @@ function drawSheet(){
     if(gateAct===6){
       h+=`<p style="font-size:13.5px">Each act has its own town, and you can walk out of its gate into the first district and on from one to the next. A district keeps what you have explored; its machines drift back if you stay away a few minutes.</p>`;
       h+=`<p style="font-size:13.5px">The VR rig in Stillwater runs the Simulator, which has no last wave, and a boss rush of lieutenants from districts you have left, plus any you have already broken, and the executives you have beaten. Difficulty and hardcore are in Options.</p>`;
-      if(OPT.dyn)h+=`<p style="font-size:13.5px">Machines scale to you: a fresh district is never more than two levels below yours, and they toughen as your gear improves. Turn this off in Options.</p>`;
+      if(OPT.dyn)h+=`<p style="font-size:13.5px">Machines scale to you: a fresh district is never below your level, and they toughen as your gear improves. Turn this off in Options.</p>`;
       if(G.leg)h+=`<button class="li" data-bull="1" ${G.sats<10?'disabled':''}><div><b style="color:#ffe36b">Jam the servo leg into the gate</b><span>The gate shudders and shows a field it is not supposed to know about. 10 sats to look the other way.</span></div></button>`;
       if(G.q.q5===3){const mx=G.subMax||1;h+=`<h3>Subpoenas</h3><p style="font-size:13.5px">A sealed district with two or three rules of its own, at your level and above. Break The Respondent to open the next level. 3 sats to serve.</p>`;for(let l=Math.max(1,mx-2);l<=mx;l++)h+=`<button class="li" data-sub="${l}" ${G.sats<3?'disabled':''}><div><b>Subpoena · Level ${l}</b><span>Machines +${15*l}% life, +${10*l}% damage. Pays ${5+3*l} sats and ${3*l} parts.</span></div></button>`}
     }
