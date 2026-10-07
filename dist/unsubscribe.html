@@ -1374,7 +1374,7 @@ function hsFlockStep(a,dt){
   const g=t||P,d=dist(g,a)||1,rg=a.rng||1.15,want=t?rg*.85:1.35;
   if(d>want){hsNudge(a,(g.x-a.x)/d*spd,(g.y-a.y)/d*spd);a.mov=true;a.fx=(g.x-a.x)>0?1:-1}
   if(t&&d<rg+t.r&&a.cd<=0){a.cd=a.ivl||.65;hsFlockHit(a,t,a.m||.4)}}
-function hsNudge(a,dx,dy){if(a.foe||a.feral)mv(a,dx,dy);else{a.x+=dx;a.y+=dy}}
+function hsNudge(a,dx,dy){if((a.foe||a.feral)&&hedgeAt(a.x+dx,a.y+dy,a))return;a.x+=dx;a.y+=dy}
 function hsFlockHit(a,foe,mul){const go=()=>{P.allySwing=1;hit(foe,mul,true);P.allySwing=0};DT=a.dt||(a.kind==='bull'?'heat':'rust');if(a.soundSwing)witWrap(a,go);else{P.partyHit=1;go();P.partyHit=0}DT=null}
 function hedgeAt(x,y,who){
   if(!W||!W.allies)return false;

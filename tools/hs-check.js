@@ -89,11 +89,11 @@ const fight=await p.evaluate(async()=>{
   g.G.merc={k:'hound',hp:100,dead:false,name:'Kit'};
   g.W.merc={x:px+.15,y:py,r:.28,hp:100,max:100,cd:9,ph:0,flash:0,swing:0,fx:1,armM:1};
   for(let i=0;i<40;i++)g.update(.05);
-  out.hedgeMerc=g.W.merc.x>px+.25&&g.W.merc.x<px+1.25;
+  out.hedgeMerc=g.W.merc.x>px+1.9;
   g.G.tag={cls:'scrapper',lvl:2,name:'Ash',sk:[],eq:{},dmg:4,red:1,max:40,hp:40};
   g.W.tag={x:px+.15,y:py+.35,r:.3,hp:40,max:40,ph:0,flash:0,armM:1,fx:1,swing:0,atk:9,sc:[],dir:{x:1,y:0},moving:false,walkPh:0,buff:0,haste:0,guard:0,dash:null,stealth:0,tag:1};
   for(let i=0;i<30;i++)g.update(.05);
-  out.hedgeTag=g.W.tag.x>px+.25&&g.W.tag.x<px+1.35;
+  out.hedgeTag=g.W.tag.x>px+1.9;
   g.W.ents.splice(0);g.P.x=px;
   const pal={k:'minion',flock:1,kind:'stray',x:px+3.1,y:py,r:.28,foe:0,cd:9,m:.2,ivl:9,rng:1.15,spd:6,ph:0,life:99};
   g.W.allies.push(pal);for(let i=0;i<40;i++)g.update(.05);
