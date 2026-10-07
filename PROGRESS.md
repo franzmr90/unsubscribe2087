@@ -167,6 +167,12 @@ measurement: **45–48 fps against a 46–52 fps baseline** across zones 1, 3, 1
   any other socket still pays the word. The wallet opens when all twelve have been
   found, even if the notes are already socketed. Nonce’s table is rare, set, and
   unique, in sats, and rank 1 is 10% off that price. Notes in `notes/sim-nonce-wallet.md`.
+- **Inventory, the lockbox, and salvage.** Struck-out pickup tiers leave that tier on
+  the ground whether or not it is named. Better-only is the filter that cannot judge
+  unidentified gear. The lockbox moves a piece at any level; the level is for wearing
+  it. Subscriptions are not worn from the pack. Ordinary machines drop a satoshi 13%
+  of the time in Golden Handshake, Vale pays 42, and the 30% satoshi roll is a lockbox
+  you open in a district. Notes in `notes/loot-clarity.md`.
 - **Acts I–III quest structure.** Four story quests no longer end on the lieutenant alone.
   The Audit is talk-first. The Data Lake asks you to read a letter, in either order with
   Lethe. The Hall of Minutes is struck after the secretary falls. Point of Order needs four
