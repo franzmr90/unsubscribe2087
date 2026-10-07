@@ -61,6 +61,37 @@ function delEdge(uid, other) {
   else friends.set(uid, { to: r.to });
 }
 
+/* At most FRIEND_CAP uids. Blocks sit past the friends, so a full list of
+   friends is never crowded out by people you are ignoring. */
+function links(uid) {
+  const r = load(uid);
+  if (!r) return [];
+  const rows = [];
+  for (const id in r.to) {
+    const e = r.to[id];
+    if (!e || !e.state) continue;
+    rows.push({ uid: id, name: e.name, state: e.state, at: e.at || 0 });
+  }
+  rows.sort((a, b) => {
+    const ab = a.state === 'blocked' ? 1 : 0, bb = b.state === 'blocked' ? 1 : 0;
+    if (ab !== bb) return ab - bb;
+    return a.at - b.at;
+  });
+  return rows.slice(0, FRIEND_CAP).map(e => ({ uid: e.uid, name: e.name, state: e.state }));
+}
+
+/* The edge itself, not the 25-long slice. An invite or a join has to see a
+   block even when that block sits past the cap. */
+function between(a, b) {
+  const mine = edge(a, b), theirs = edge(b, a);
+  const ms = mine && mine.state || '', ts = theirs && theirs.state || '';
+  return {
+    mine: ms, theirs: ts,
+    blocked: ms === 'blocked' || ts === 'blocked',
+    mutual: ms === 'friend' && ts === 'friend'
+  };
+}
+
 function list(uid) {
   const r = load(uid);
   const to = {};
@@ -90,7 +121,8 @@ function ask(from, name) {
   const at = Date.now();
   writeEdge(from.id, who.id, { name: who.name, at, state: 'pending' });
   writeEdge(who.id, from.id, { name: from.name, at, state: 'in' });
-  return { ok: true };
+  /* notify is for the socket, not the HTTP body. finish() sends r.body only. */
+  return { ok: true, notify: who.id };
 }
 
 function answer(from, name, accept) {
@@ -223,6 +255,6 @@ function del(uid, id) {
 }
 
 module.exports = {
-  friends, boxes, list, ask, answer, remove, block, purge, onLogin,
+  friends, boxes, list, links, between, ask, answer, remove, block, purge, onLogin,
   listMail, send, read, del, MISS, FRIEND_CAP, MAIL_CAP, MAIL_MAX
 };

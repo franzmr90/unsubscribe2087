@@ -49,6 +49,46 @@ const clean = (s, n) => String(s === undefined || s === null ? '' : s).slice(0, 
 function send(p, t, d) { if (p && p.conn) p.conn.send(Object.assign({ t }, d)); }
 function sys(p, text) { send(p, 'sys', { text }); }
 
+/* Loaded inside the call. social.js requires this module at the top, so a
+   top-level require here would hand it the exports object before it is filled. */
+function socialMod() { return require('./social'); }
+
+/* What a mutual friend is allowed to know. No game id and no document id:
+   joining a game that has left the lobby goes through the friend's uid. */
+function proj(p, mutual) {
+  const o = { uid: p.uid, name: p.name, online: true, cls: p.cls || '', lvl: +p.lvl || 1 };
+  if (mutual && p.game) {
+    const g = games.get(p.game);
+    if (g && g.name) o.gameName = g.name;
+  }
+  return o;
+}
+function pushFriends(p) {
+  if (!p) return;
+  const book = socialMod();
+  for (const row of book.links(p.uid)) {
+    const q = live.get(row.uid);
+    if (!q || q === p) continue;
+    if (!book.between(p.uid, q.uid).mutual) continue;
+    send(q, 'friend', proj(p, true));
+    send(p, 'friend', proj(q, true));
+  }
+}
+function pushOffline(p) {
+  if (!p) return;
+  const book = socialMod();
+  for (const row of book.links(p.uid)) {
+    const q = live.get(row.uid);
+    if (!q || q === p) continue;
+    if (!book.between(p.uid, q.uid).mutual) continue;
+    send(q, 'friend', { uid: p.uid, name: p.name, online: false, cls: p.cls || '', lvl: +p.lvl || 1 });
+  }
+}
+function poke(uid, text) {
+  const p = live.get(uid);
+  if (p && text) sys(p, text);
+}
+
 /* ---------- games ---------- */
 function gameOf(p) { return p.game ? games.get(p.game) : null; }
 function gamePlayers(g) { return g ? [...g.players].map(u => live.get(u)).filter(Boolean) : []; }
@@ -134,10 +174,11 @@ function joinGame(p, g) {
   for (const q of gamePlayers(g)) if (q !== p) sys(q, p.name + ' has entered the game.');
   pushRoster(g);
   pushLobby();
+  pushFriends(p);
   return null;
 }
 
-function leaveGame(p) {
+function leaveGame(p, opt) {
   const g = gameOf(p);
   leaveParty(p, true);
   zoneIndex(p, true);
@@ -149,7 +190,9 @@ function leaveGame(p) {
      waiting on the next coalesced push. */
   send(p, 'game', { game: null });
   send(p, 'lobby', { games: lobby(), max: MAX_GAME, diffs: DIFFS });
-  if (!g) return;
+  /* A dropped socket says offline once. Saying "still on, just not in a game"
+     first would flash them back online to everyone they know. */
+  if (!g) { if (!(opt && opt.silent)) pushFriends(p); return; }
   g.players.delete(p.uid);
   for (const q of gamePlayers(g)) { q.hostile.delete(p.uid); sys(q, p.name + ' has left the game.'); }
   /* A game is its players. When the last one leaves — or logs off, which is the same
@@ -160,6 +203,7 @@ function leaveGame(p) {
     pushRoster(g);
   }
   pushLobby();
+  if (!(opt && opt.silent)) pushFriends(p);
 }
 
 /* ---------- parties, inside a game ---------- */
@@ -236,6 +280,7 @@ const HANDLERS = {
     p.zi = +m.zi || 0; p.hp = +m.hp || 0; p.hpm = +m.hpm || 1;
     zoneIndex(p);
     if (p.game) pushRoster(gameOf(p)); else pushLobby();
+    pushFriends(p);
   },
 
   /* ---- the lobby ---- */
@@ -254,7 +299,17 @@ const HANDLERS = {
   },
 
   'game.join'(p, m) {
-    const g = games.get(clean(m.id, 20));
+    /* id is a key in the game table. The newest-60 lobby is a catalogue, not
+       the set of games that can be joined. A friend's game that has fallen
+       off that catalogue is still joined by id, resolved from their uid. */
+    let id = clean(m.id, 20);
+    if (!id && m.uid) {
+      const q = live.get(clean(m.uid, 64));
+      const rel = q && socialMod().between(p.uid, q.uid);
+      if (!q || !q.game || !rel || !rel.mutual) return sys(p, 'That game is over.');
+      id = q.game;
+    }
+    const g = games.get(id);
     if (!g) return sys(p, 'That game is over.');
     if (g.pass && g.pass !== clean(m.pass, 40)) return send(p, 'joinfail', { id: g.id, reason: 'That password is not right.' });
     if (g.players.size >= MAX_GAME) return send(p, 'joinfail', { id: g.id, reason: 'That game is full — it holds ' + MAX_GAME + '.' });
@@ -302,6 +357,8 @@ const HANDLERS = {
   invite(p, m) {
     const q = live.get(m.uid);
     if (!q || q.game !== p.game || !p.game) return sys(p, 'They are not in this game.');
+    /* A block is not announced. The invite is dropped and nothing is said. */
+    if (socialMod().between(p.uid, q.uid).blocked) return;
     if (mutualHostile(p, q)) return sys(p, 'You have declared against each other. That does not come back.');
     const party = partyOf(p);
     if (party && party.leader !== p.uid) return sys(p, 'Only the leader invites.');
@@ -448,7 +505,12 @@ function rate(p, key, max, win) {
 function attach(server, verify) {
   ws.attach(server, '/live', verify, (conn, ctx) => {
     const old = live.get(ctx.user.id);
-    if (old) { try { old.conn.close(); } catch (e) {} leaveGame(old); live.delete(old.uid); }
+    if (old) {
+      try { old.conn.close(); } catch (e) {}
+      leaveGame(old, { silent: true });
+      pushOffline(old);
+      if (live.get(old.uid) === old) live.delete(old.uid);
+    }
 
     if (live.size >= MAX_PLAYERS) {
       conn.send({ t: 'full', max: MAX_PLAYERS, text: 'The server is full — ' + MAX_PLAYERS + ' people are on it. Try again in a few minutes.' });
@@ -466,6 +528,7 @@ function attach(server, verify) {
 
     send(p, 'you', { uid: p.uid, name: p.name, maxParty: MAX_PARTY, maxGame: MAX_GAME, pvpScale: PVP_SCALE, simZone: SIM_ZONE });
     send(p, 'lobby', { games: lobby(), max: MAX_GAME, diffs: DIFFS });
+    pushFriends(p);
 
     conn.on('message', m => {
       if (!m || typeof m.t !== 'string') return;
@@ -476,7 +539,9 @@ function attach(server, verify) {
     });
 
     conn.on('close', () => {
-      leaveGame(p);
+      if (live.get(p.uid) !== p) return;
+      leaveGame(p, { silent: true });
+      pushOffline(p);
       live.delete(p.uid);
       pushLobby();
     });
@@ -493,5 +558,6 @@ function attach(server, verify) {
 
 module.exports = {
   attach, live, games, parties, MAX_PARTY, MAX_GAME, MAX_PLAYERS, MAX_GAMES,
-  PARTY_BONUS, PVP_SCALE, SIM_ZONE, TOWNS, canFight, mutualHostile, gameScale, DIFFS
+  PARTY_BONUS, PVP_SCALE, SIM_ZONE, TOWNS, canFight, mutualHostile, gameScale, DIFFS,
+  poke, pushFriends
 };

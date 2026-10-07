@@ -331,7 +331,13 @@ route('POST', '/api/friend/ask', async (req, res) => {
   const ctx = signed(req, res); if (!ctx) return;
   const b = await readBody(req);
   if (!A.rateLimit('fr:' + ctx.user.id, 10, 10 * 60 * 1000)) return bad(res, 429, 'Ten requests in ten minutes is the limit.');
-  finish(res, social.ask(ctx.user, b.name));
+  const r = social.ask(ctx.user, b.name);
+  if (r.ok && r.notify) {
+    live.poke(r.notify, ctx.user.name + ' asked to be your friend.');
+    const me = live.live.get(ctx.user.id);
+    if (me) live.pushFriends(me);
+  }
+  finish(res, r);
 });
 route('POST', '/api/friend/answer', async (req, res) => {
   const ctx = signed(req, res); if (!ctx) return;
@@ -339,7 +345,12 @@ route('POST', '/api/friend/answer', async (req, res) => {
   const accept = b.accept === true || b.answer === 'accept';
   const decline = b.accept === false || b.answer === 'decline';
   if (!accept && !decline) return bad(res, 400, 'Accept or decline.');
-  finish(res, social.answer(ctx.user, b.name, accept));
+  const r = social.answer(ctx.user, b.name, accept);
+  if (r.ok) {
+    const me = live.live.get(ctx.user.id);
+    if (me) live.pushFriends(me);
+  }
+  finish(res, r);
 });
 route('POST', '/api/friend/remove', async (req, res) => {
   const ctx = signed(req, res); if (!ctx) return;
