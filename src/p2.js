@@ -220,7 +220,7 @@ const b64=u=>{let s='';for(let i=0;i<u.length;i+=4096)s+=String.fromCharCode.app
 const unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 function encW(w){return{zi:w.zi,N:w.N,ml:w.ml,tier:w.tier,map:b64(w.map),wh:b64(w.wh),seen:b64(w.seen),leftT:w.leftT,sub:w.sub,suAt:w.suAt,ents:w.ents.filter(e=>!e.mp),objs:w.objs,drops:w.drops,decals:w.decals.slice(-40),portals:w.portals,goal:w.goal,start:w.start}}
 function decW(o){const w=Object.assign({},o);w.map=unb64(o.map);w.wh=unb64(o.wh);w.seen=unb64(o.seen);return w}
-function saveObj(){const zs={};for(const k in ZS)zs[k]=encW(ZS[k]);let cur=null;if(W&&!W.z.town&&!W.z.sim){zs[W.zi]=encW(W);cur={zi:W.zi,x:P.x,y:P.y}}return{G,zs,cur,opt:OPT,t:Date.now()}}
+function saveObj(){const zs={};for(const k in ZS)zs[k]=encW(ZS[k]);let cur=null;if(W&&P){if(!W.z.town&&!W.z.sim)zs[W.zi]=encW(W);cur={zi:W.zi,x:P.x,y:P.y};if(W.z.sim&&W.sim)cur.sim=W.sim.rush?{rush:1}:{wave:Math.max(1,W.sim.wave|0)}}return{G,zs,cur,opt:OPT,t:Date.now()}}
 function save(force){if(!G)return false;let ok=false;try{localStorage.setItem(skey(SLOT),JSON.stringify(saveObj()));localStorage.setItem(SAVEKEY+'_slot',SLOT);ok=true}catch(e){}
   if(CL&&(force||Date.now()-clAt>10000))cloudSave();return ok||!!CL}
 /* account save: the viewer's own private documents in this page's database, one for the hero and one per district */
@@ -240,8 +240,8 @@ function cloudNote(){const n=$('cloudNote');if(n)n.textContent=clState==='lookin
 function loadStored(n){try{const s=localStorage.getItem(skey(n===undefined?SLOT:n));return s?JSON.parse(s):null}catch(e){return null}}
 function applySave(o){if(!o||!o.G||!CLS[o.G.cls])return false;G=o.G;G.sats=G.sats||0;G.merc=G.merc||null;G.sq=G.sq||{};G.stash=G.stash||[];while(G.sk.length<15)G.sk.push(0);if(G.q.q10===3&&G.unlocked<12)G.unlocked=12;for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;if(G.q.q5===3&&G.unlocked<7)G.unlocked=7;if(G.hp<=0){G.hp=9999;o.cur=null}ZS={};for(const k in (o.zs||{}))ZS[k]=decW(o.zs[k]);if(o.opt)OPT=Object.assign({},OPT_DEF,o.opt);G._cur=o.cur||null;boonRefund();return true}
 function startPlay(){ensureG();mpConnect();mode='play';$('title').hidden=true;$('hud').hidden=false;calc();setSkillButtons();
-  const c=G._cur;delete G._cur;
-  if(c&&ZS[c.zi])enter(c.zi,{at:c});else if(G.pre===1){enter(PREZ);return}else enter(HT());
+  const c=G._cur;delete G._cur;const cz=c&&ZONES[c.zi];
+  if(cz&&(cz.town||cz.sim||ZS[c.zi])){const o={at:c,swap:1};if(cz.sim){o.wave=(c.sim&&c.sim.wave)||1;if(c.sim&&c.sim.rush)o.rush=1}enter(c.zi,o);if(cz.pre)return}else if(G.pre===1){enter(PREZ);return}else enter(HT());
   if(!G.q.q1&&W.z.town&&G.seenIntro!==false){talkTo('gramps')}
   if(G.rbNote){delete G.rbNote;setTimeout(()=>dlg('The deal is undone','Your acceptance of MANDATE’s offer has been struck from the record: its credits are gone, adoption is back where it was, and MANDATE is waiting at full strength in Still Water. This time the fight will pause and count down before you can answer.',[['Good']]),800)}}
 
@@ -357,10 +357,10 @@ function spawn(k,x,y,o){
   if(defragAct1(e)){e.dty='impact';e.dmg*=.85}
   p7Spawn(e);W.ents.push(e);if(isBoss(k))W.boss=e;return e}
 function enter(zi,o){setTimeout(mpBeat,0);
-  o=o||{};const carry=W&&W.allies?W.allies.filter(a=>a.per):[];if(W&&!W.z.town&&!W.z.sim){raidLeave();W.leftT=G.time;ZS[W.zi]=W;clDirty[W.zi]=1}
+  o=o||{};const carry=!o.swap&&W&&W.allies?W.allies.filter(a=>a.per):[];if(!o.swap&&W&&!W.z.town&&!W.z.sim){raidLeave();W.leftT=G.time;ZS[W.zi]=W;clDirty[W.zi]=1}
   const z=ZONES[zi];G.zone=zi;if(!z.sim)G.town=townOf(zi);let old=0;
   if(z.town)buildTown(zi);else if(z.sim)buildSim(o.wave||1,o.rush);else if(ZS[zi]&&ZS[zi].tier===G.tier&&!o.fresh){W=ZS[zi];old=1;ensureCage();initRuntime()}else genZone(zi);
-  let at=o.at||W.start;if(o.from==='next'){const p=W.portals.find(p=>p.kind==='next');at=nearFree(p||W.goal||W.start)}else if(o.from==='exit'&&W.exit)at={x:W.exit.ix,y:W.exit.iy};
+  let at=o.at||W.start;if(o.from==='next'){const p=W.portals.find(p=>p.kind==='next');at=nearFree(p||W.goal||W.start)}else if(o.from==='exit'&&W.exit)at={x:W.exit.ix,y:W.exit.iy};else if(o.at&&!free(at.x,at.y,.3))at=nearFree(at,1.2);
   P={x:at.x,y:at.y,r:.32,dir:{x:1,y:0},atk:0,cd:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],silence:0,oc:0,swing:0,flash:0,inv:.5,slow:0,buff:0,haste:0,guard:0,dash:null,volley:null,moving:false,warn:0,movedT:0,spin:0,walkPh:0,shr:null,band:10,hb:0,stealth:0,ambT:0,ambM:1,mech:0,crunch:0,streak:0,streakT:0};BLOOD=[];for(const a of carry){a.x=P.x+rnd(-1,1);a.y=P.y+rnd(-1,1);W.allies.push(a)}spawnMerc();evEnd(1);if(old&&W.leftT!==undefined&&G.time-W.leftT>150&&repop())setTimeout(()=>toast('You were gone a while. The machines have drifted back.'),900);if(!z.town&&!z.sim){placeQuestObjs();ensureNode();}p7Enter();if(!z.town&&!z.sim){for(const k in SQ){const st=sqStep(k);if(st&&st.t==='esc'&&st.zi===zi)escStart(k,SQ[k].steps[G.sq[k].s-1].esc)}}if(z.town)for(const k in sqSkip)delete sqSkip[k];
   if(z.town){if(G.form){G.form=null;G.formDt=null;G.formT=0;calc()}G.hp=S.maxHp;G.en=S.maxEn}
   else if(!z.sim){const q=z.su?z.su.q:z.bq;if(G.q[q]===0){G.q[q]=1;toast('New quest: '+QUESTS[q].n);sfx('questnew')}

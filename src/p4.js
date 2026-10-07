@@ -573,7 +573,7 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.save){toast(save(true)?(CL?'Saved to your account':'Saved in this browser'):'This browser would not store the save. Use a save code instead.')}
   if(d.code){const o=saveObj();o.zs={};o.cur=null;copyText(btoa(unescape(encodeURIComponent(JSON.stringify(o)))),$('codeOut'));return}
   if(d.delslot!==undefined){const n=+d.delslot;$('sheet').hidden=true;mode='play';askWipe(n,()=>{if(G.tag&&G.tag.slot===n)tagDismiss(1);openSheet('opts',{})});return}
-  if(d.swslot!==undefined){const n=+d.swslot,i=slotInfo(n);if(!i)return;save(true);const old=SLOT;SLOT=n;clDirty={};const fin=sv=>{if(applySave(sv)){$('sheet').hidden=true;$('pop').hidden=true;startPlay()}else{SLOT=old;toast('That save could not be loaded');drawSheet()}};if(i.cloud){b.disabled=true;cloudLoad(i.cloud,n).then(fin)}else fin(i.loc);return}
+  if(d.swslot!==undefined){const n=+d.swslot,i=slotInfo(n);if(!i)return;save(true);const fin=sv=>{if(applySave(sv)){SLOT=n;clDirty={};W=null;$('sheet').hidden=true;$('pop').hidden=true;startPlay()}else{toast('That save could not be loaded');drawSheet()}};if(i.cloud){b.disabled=true;cloudLoad(i.cloud,n).then(fin)}else fin(i.loc);return}
   if(d.newslot!==undefined){save(true);$('sheet').hidden=true;$('pop').hidden=true;$('hud').hidden=true;$('title').hidden=false;mode='title';music('scene');W=null;SLOT=+d.newslot;showContinue();const nh=$('newH');nh&&nh.scrollIntoView&&nh.scrollIntoView({block:'start'});return}
   if(d.title){save(true);$('sheet').hidden=true;$('hud').hidden=true;$('title').hidden=false;mode='title';music('scene');showContinue();W=null;return}
   if(d.dev){const k=d.dev;if(k==='lvl')gainXp(xpNext(G.lvl)-G.xp);if(k==='cr')G.credits+=5000*G.cpi*G.lvl;if(k==='zones')G.unlocked=5;if(k==='god')G.god=!G.god;if(k==='reset'){resetZones();toast('Every district is restocked')}
@@ -635,7 +635,7 @@ function drawSlots(){const el=$('slots');if(!el)return;let h='';
 $('slots').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b||b.disabled)return;sfx('ui');
   if(b.dataset.slotdel!==undefined){askWipe(+b.dataset.slotdel,()=>{mode='title';drawSlots()});return}
   if(b.dataset.slotnew!==undefined){SLOT=+b.dataset.slotnew;drawSlots();return}
-  const n=+b.dataset.slot,i=slotInfo(n);if(!i)return;SLOT=n;clDirty={};let sv;if(i.cloud){b.disabled=true;b.querySelector('b').textContent='Loading…';sv=await cloudLoad(i.cloud,n)}else sv=i.loc;if(applySave(sv))startPlay();else drawSlots()});
+  const n=+b.dataset.slot,i=slotInfo(n);if(!i)return;let sv;if(i.cloud){b.disabled=true;b.querySelector('b').textContent='Loading…';sv=await cloudLoad(i.cloud,n)}else sv=i.loc;if(applySave(sv)){SLOT=n;clDirty={};W=null;startPlay()}else drawSlots()});
 function pickSlot(){let n=0;try{n=+localStorage.getItem(SAVEKEY+'_slot')||0}catch(e){}SLOT=n<NSLOT?n:0}
 let last=0;
 function frame(t){const dt=Math.min(.05,(t-last)/1000||0);last=t;tNow=t/1000;

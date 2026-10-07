@@ -47,3 +47,11 @@ The button was calling `cast`. With the form up, that cast still bailed out befo
 Shed now leaves Hound, Hull, and a worn machine from that button anyway, then the hands are busy for 0.7s. Energy is still spent when you have the 4. Plot and flock stay grey in the form and come back after the leave. Town still clears the form on entry, the same way it did.
 
 Hound was already a long low body. Hull was a cab with a face in the glass. Worn used that same cab and only changed colour, so Wear What You Killed read as a repaint. Worn is now a lower, wider carcass with vents and no face. Hull keeps the cab.
+
+## Character places
+
+Owner playtest: switching characters left you where the previous one was standing.
+
+A slot remembered a place only out in a district. Town and the simulator stored no coordinates, so a switch from the square (where the sheet lives) reloaded the other hero at that town’s fixed start, which is the same square you were already in. Loading a hero also copied the live district into their zone list, so two heroes in one zone shared one map.
+
+Each save now keeps `{zone, x, y}` for the square, a district, and the simulator. Switching loads that hero’s own place. The district you just left stays on the hero who left it. A shared save code still carries no place.
