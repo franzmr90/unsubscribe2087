@@ -95,6 +95,7 @@ ZONES[0].act=1;for(const i of[1,3,8,10,16]){ZONES[i].out=1;ZONES[i].amb*=.8}
 const FIRST={0:33,1:1,2:7,3:12,4:22,5:28};
 const actOf=zi=>{const z=ZONES[zi];return z.act||(z.sim||z.sub||z.secret||z.pre?0:zi>=28?5:zi>=22?4:zi>=12?3:zi>=7?2:1)};
 function heroAct(g){if(!g)return 1;return g.act5?5:g.act4?4:g.act3?3:g.act2?2:1}
+function heroDead(g){return !!(g&&g.hc&&g.hp<=0)}
 function actRoman(n){return ['I','II','III','IV','V'][(n||1)-1]||'I'}
 const townOf=zi=>{const a=actOf(zi);return a===5?27:a===4?21:a===3?18:a===2?17:a===1?0:(G.town||0)};
 const HT=()=>G.town||0;
