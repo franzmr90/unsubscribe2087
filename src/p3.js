@@ -235,6 +235,9 @@ function drawHsForm(X,Y,fm,dying){
     box(X-20,Y-12,36,10,4,col);box(X-26,Y-16,12,10,3,darkc);box(X+14,Y-10,12,5,2,darkc);
     box(X-14,Y-4+w,5,8,1,darkc);box(X-4,Y-4-w,5,8,1,darkc);box(X+6,Y-4+w,5,8,1,darkc);box(X+12,Y-4-w,5,7,1,darkc);
     ctx.fillStyle='#1a120c';ctx.fillRect(X-24,Y-14,2.2,2.2)}
+  else if(fm==='worn'){shadow(X,Y,22);box(X-24,Y-6,16,10,2,'#1a1814');box(X+8,Y-6,16,10,2,'#1a1814');
+    box(X-22,Y-20,44,16,3,col);box(X-10,Y-26,20,8,2,darkc);
+    ctx.fillStyle='#c9803a';ctx.fillRect(X-16,Y-14,32,3);ctx.fillStyle='#1a120c';ctx.fillRect(X-14,Y-17,4,3);ctx.fillRect(X+10,Y-17,4,3)}
   else{shadow(X,Y,18);box(X-18,Y-8,12,12,2,'#2a2418');box(X+6,Y-8,12,12,2,'#2a2418');
     box(X-16,Y-30,32,24,4,col);box(X-10,Y-38,20,10,3,darkc);
     ctx.fillStyle='#d9b08c';ctx.fillRect(X-3,Y-34,6,4);ctx.fillStyle='#c9803a';ctx.fillRect(X-12,Y-22,24,3)}
