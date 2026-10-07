@@ -62,12 +62,12 @@ const shop=await p.evaluate(()=>__g.satShop.map(o=>o.it.q));
 if(!shop.length||shop.some(q=>q<2||q>4))fail('sat shop qualities '+shop.join(','));
 await p.evaluate(()=>{__g.G.rep.btc=0;__g.G.lean=0;__g.G.scs=700;__g.openSheet('sats',{only:['sats']})});
 await p.waitForTimeout(150);
-const base=await p.evaluate(()=>[...document.querySelectorAll('[data-sat]')].map(el=>+el.querySelector('.pr').textContent));
+const base=await p.evaluate(()=>[...document.querySelectorAll('[data-sat]')].map(el=>parseInt(el.querySelector('.pr').textContent,10)));
 const raw=await p.evaluate(()=>__g.satShop.map(o=>o.price));
 if(base.join()!==raw.join())fail('rank 0 price '+base+' vs '+raw);
 await p.evaluate(()=>{__g.G.rep.btc=10;__g.drawSheet()});
 await p.waitForTimeout(80);
-const off=await p.evaluate(()=>[...document.querySelectorAll('[data-sat]')].map(el=>+el.querySelector('.pr').textContent));
+const off=await p.evaluate(()=>[...document.querySelectorAll('[data-sat]')].map(el=>parseInt(el.querySelector('.pr').textContent,10)));
 const want=raw.map(n=>Math.ceil(n*.9));
 if(off.join()!==want.join())fail('rank 1 price '+off+' vs '+want);
 if(OUT)await p.screenshot({path:path.join(OUT,'sim-nonce.png')});
@@ -150,6 +150,8 @@ const wallet=await p.evaluate(()=>{
   return {t:document.getElementById('dT').textContent,b:[...document.querySelectorAll('#dBtns button')].map(x=>x.textContent),held:Object.keys(__g.G.words).length};
 });
 if(wallet.t!=='Nonce'||wallet.b[0]!=='Restore the wallet'||wallet.held!==0)fail('wallet '+JSON.stringify(wallet));
+const shown=await p.evaluate(()=>({t:document.getElementById('dT').textContent,b:[...document.querySelectorAll('#dBtns button')].map(x=>x.textContent)}));
+if(shown.t!=='Nonce'||shown.b[0]!=='Restore the wallet')fail('wallet left the screen '+JSON.stringify(shown));
 if(OUT)await p.screenshot({path:path.join(OUT,'sim-wallet.png')});
 
 if(errs.length)fail(errs[0]);
