@@ -44,11 +44,13 @@ await p.waitForTimeout(2800);
 const act1=await p.evaluate(()=>({
   btn:document.getElementById('bRise').textContent,
   note:document.getElementById('deathNote').textContent,
-  line:document.getElementById('deathP').textContent
+  line:document.getElementById('deathP').textContent,
+  stats:document.getElementById('deathS').textContent
 }));
 check('Act I rises in Stillwater Commons', act1.btn==='Rise in Stillwater Commons', act1.btn);
 check('the portal is the district entrance', /start of the district/.test(act1.note), act1.note);
 check('the slain line names the district', /The Parcel Moors/.test(act1.line), act1.line);
+check('softcore names a re-onboarding charge', /Re-onboarding fee/.test(act1.stats)&&/₡/.test(act1.stats), act1.stats);
 await p.click('#bRise');
 await p.waitForTimeout(400);
 await clearUI(p);
@@ -69,11 +71,12 @@ check('Act II death lands in The Landing', land===17, String(land));
 
 await p.evaluate(()=>{__g.G.hc=true;__g.enter(1);__g.setMode('play');__g.P.inv=0;__g.G.hp=__g.S.maxHp;__g.G.god=0});
 await clearUI(p);
-await p.evaluate(()=>__g.hurt(1e9,0,{name:'a Tick'}));
+const purse=await p.evaluate(()=>{const before=__g.G.credits;__g.hurt(1e9,0,{name:'a Tick'});return {before,after:__g.G.credits}});
 await p.waitForTimeout(2800);
-const hc=await p.evaluate(()=>({btn:document.getElementById('bRise').textContent,note:document.getElementById('deathNote').textContent}));
+const hc=await p.evaluate(()=>({btn:document.getElementById('bRise').textContent,note:document.getElementById('deathNote').textContent,stats:document.getElementById('deathS').textContent}));
 check('hardcore begins again', hc.btn==='Begin again', hc.btn);
 check('hardcore promises no portal', /no portal/i.test(hc.note)&&!/square/.test(hc.note), hc.note);
+check('hardcore does not charge a re-onboarding fee', purse.before===purse.after&&purse.before>0&&/Re-onboarding fee/.test(hc.stats)&&/none/.test(hc.stats)&&!/₡/.test(hc.stats), JSON.stringify({purse,stats:hc.stats}));
 
 await p.evaluate(()=>{
   const death=document.getElementById('death');if(death)death.hidden=true;

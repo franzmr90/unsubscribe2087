@@ -630,7 +630,7 @@ $('pop').addEventListener('click',ev=>{if(ev.target.id==='pop'){sel=null;sfx('ui
 function showDeath(){const town=ZONES[HT()]||{n:'town'};$('deathP').textContent='Slain by '+DY.by+' in '+ZONES[DY.zi].n+', with '+DTY[P.lastTy||'impact'].n+' damage.'+(G.hc?' This was a hardcore hero. They are gone, and a new wanderer will take the road.':'');
   $('deathNote').textContent=G.hc?'There is no portal. This hero does not get back up.':'The machines have not moved. A portal back to the start of the district will wait in the square.';
   $('bRise').textContent=G.hc?'Begin again':'Rise in '+town.n;
-  $('deathS').innerHTML=`<div>Level<b>${G.lvl}</b></div><div>Machines scrapped<b>${G.kills}</b></div><div>Re-onboarding fee<b>${fmt(DY.fee)}</b></div>`;$('death').hidden=false}
+  $('deathS').innerHTML=`<div>Level<b>${G.lvl}</b></div><div>Machines scrapped<b>${G.kills}</b></div><div>Re-onboarding fee<b>${G.hc?'none':fmt(DY.fee)}</b></div>`;$('death').hidden=false}
 $('bRise').onclick=()=>{if(!DY)return;if(G.hc){hcBegin();return}const d=DY;DY=null;$('death').hidden=true;G.hp=S.maxHp;G.en=S.maxEn;mode='play';G.portal={zi:d.zi,x:d.st.x,y:d.st.y};sfx('portal');enter(HT());toast('A portal back stands open in the square')};
 
 /* ================= input ================= */
