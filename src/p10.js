@@ -82,7 +82,8 @@ const DTK=Object.keys(DTY);
 const SKT={maxi:{0:'sound',1:'sound',3:'sound',4:'sound',5:'sound',6:'sound',7:'sound',9:'sound',11:'sound'},scrapper:{1:'rust',5:'noise',7:'heat',12:'noise'},hacker:{0:'surge',1:'surge',3:'noise',4:'surge',6:'rust',7:'noise',9:'heat',10:'noise'},courier:{3:'heat',4:'rust',7:'noise'},anon:{0:'heat',3:'heat',5:'noise',6:'heat',8:'noise'},founder:{1:'noise',3:'surge',8:'heat'},homesteader:{0:'rust',3:'rust',5:'heat',6:'rust',9:'rust',12:'rust',14:'rust'}};
 const skType=(cls,i)=>cls==='hacker'&&i===14?(G.schema||'surge'):((SKT[cls]||{})[i]||'impact');
 /* One shape per skill. Color comes from the damage type, then the class.
-   Passives are glyphs only: a mark that stays up is a later pass. */
+   A radius holds as a patch, a dash leaves a trail, a status keeps a mark,
+   and a handful of shots is an orbit. Passives stay glyphs. */
 const SKV_LIFE={arc:.22,bolt:.28,trail:.32,beam:.34,strike:.28,ring:.42,patch:.62,orbit:.55,mark:.8};
 const SKV={scrapper:{
   0:{k:'arc',w:1.5},
@@ -97,7 +98,7 @@ const SKV={scrapper:{
   9:{k:'patch',r:2.4},
   10:{k:'mark'},
   11:{k:'patch',r:1.6},
-  12:{k:'ring',r:3.4},
+  12:{k:'patch',r:4.2,tel:1},
   13:{k:'arc',w:2.3},
   14:{k:'beam'}
 },hacker:{
@@ -108,37 +109,37 @@ const SKV={scrapper:{
   4:{k:'orbit'},
   5:{k:'mark'},
   6:{k:'strike'},
-  7:{k:'bolt',r:4,at:'foe'},
+  7:{k:'orbit',n:3},
   8:{k:'mark'},
   9:{k:'patch',r:2.6},
   10:{k:'patch',r:1.7},
   11:{k:'mark'},
-  12:{k:'trail',r:3},
+  12:{k:'trail',r:4,at:'back',col:'#9a6cff'},
   13:{k:'patch',r:1.1},
   14:{k:'bolt',r:6,at:'foe',n:1}
 },courier:{
   0:{k:'arc',w:1.2},
-  1:{k:'trail',r:3},
+  1:{k:'trail',r:3,col:'#3fbf8f'},
   2:{k:'mark'},
   3:{k:'patch',r:1.6},
   4:{k:'patch',r:2.6},
   5:{k:'mark'},
-  6:{k:'bolt',r:4,at:'foe',n:4},
-  7:{k:'mark',at:'foe'},
+  6:{k:'orbit',n:3},
+  7:{k:'mark',at:'foe',n:0},
   8:{k:'mark'},
   9:{k:'trail',r:4.2},
   10:{k:'mark'},
   11:{k:'patch',r:1.15},
   12:{k:'beam'},
   13:{k:'mark'},
-  14:{k:'mark',at:'foe'}
+  14:{k:'mark',at:'foe',n:0,col:'#3fbf8f'}
 },anon:{
   0:{k:'patch',r:1.8},
   1:{k:'trail',r:2.6},
   2:{k:'mark'},
   3:{k:'patch',r:1.05},
   4:{k:'ring',r:1.4},
-  5:{k:'bolt',at:'foe'},
+  5:{k:'patch',r:3,at:'foe',tel:1},
   6:{k:'ring',r:2.8},
   7:{k:'orbit'},
   8:{k:'strike'},
@@ -150,15 +151,15 @@ const SKV={scrapper:{
   14:{k:'beam'}
 },founder:{
   0:{k:'orbit'},
-  1:{k:'patch',r:2.8},
+  1:{k:'patch',r:3,tel:1},
   2:{k:'mark'},
-  3:{k:'bolt',r:4,n:3},
+  3:{k:'orbit',n:3},
   4:{k:'ring',r:2},
   5:{k:'arc',w:2},
   6:{k:'arc',w:1.25},
-  7:{k:'bolt',r:3,at:'foe',n:1},
+  7:{k:'mark',at:'foe',n:0,col:'#7be495'},
   8:{k:'ring',r:3.1},
-  9:{k:'mark',at:'foe'},
+  9:{k:'mark',at:'foe',n:0,col:'#c9a868'},
   10:{k:'bolt',r:3.5,at:'foe',n:2},
   11:{k:'mark'},
   12:{k:'beam'},
@@ -174,9 +175,9 @@ const SKV={scrapper:{
   6:{k:'orbit',n:3},
   7:{k:'patch',r:1.5},
   8:{k:'mark'},
-  9:{k:'ring',r:4.2},
+  9:{k:'patch',r:4.2,tel:1},
   10:{k:'mark'},
-  11:{k:'bolt',r:5,n:3},
+  11:{k:'orbit',n:3},
   12:{k:'mark'},
   13:{k:'ring',r:.9},
   14:{k:'mark'}
@@ -197,7 +198,7 @@ const SKV={scrapper:{
   13:{k:'mark'},
   14:{k:'patch',r:1.8}
 },witness:{
-  0:{k:'mark',at:'foe'},
+  0:{k:'mark',at:'foe',n:0,col:'#e6dcc8'},
   1:{k:'mark',at:'foe'},
   2:{k:'mark'},
   3:{k:'bolt',r:3,at:'foe'},
@@ -206,18 +207,19 @@ const SKV={scrapper:{
   6:{k:'mark'},
   7:{k:'patch',r:1.4},
   8:{k:'mark'},
-  9:{k:'mark',at:'foe'},
+  9:{k:'mark',at:'foe',n:0,col:'#8d9aab'},
   10:{k:'mark'},
   11:{k:'mark'},
-  12:{k:'ring',r:3.2},
+  12:{k:'patch',r:3.2,tel:1,col:'#e6dcc8'},
   13:{k:'mark'},
   14:{k:'mark'}
 }};
 function skvOf(cls,i){const row=(SKV[cls]||{})[i];if(!row)return null;const sk=CLS[cls]&&CLS[cls].sk[i];let col=row.col;
   if(!col&&sk&&sk.a){const ty=skType(cls,i);if(DTY[ty])col=DTY[ty].c}if(!col)col=(CLS[cls]&&CLS[cls].col)||'#e6e2d6';
-  return {k:row.k,col:col,r:row.r||1.2,w:row.w||1,n:row.n||(row.k==='orbit'?3:1),life:row.life||SKV_LIFE[row.k]||.4,at:row.at||'',tel:row.tel?1:0}}
+  return {k:row.k,col:col,r:row.r||1.2,w:row.w||1,n:row.n!=null?row.n:(row.k==='orbit'?3:1),life:row.life||SKV_LIFE[row.k]||.4,at:row.at||'',tel:row.tel?1:0}}
 function skvPlay(cls,i,x,y,dir,remote){const v=skvOf(cls,i);if(!v||!W||!W.fx)return;const dx=(dir&&dir.x)||1,dy=(dir&&dir.y)||0;
   let px=x,py=y,x2=x+dx*(v.r||3),y2=y+dy*(v.r||3);
+  if(v.at==='back'){x2=x-dx*(v.r||3);y2=y-dy*(v.r||3)}
   if(v.at==='foe'&&!remote){const t=nearest(8);if(t){x2=t.x;y2=t.y;if(v.k==='mark'||v.k==='patch'||v.k==='ring'||v.k==='strike'){px=t.x;py=t.y}}}
   W.fx.push({k:v.k,x:px,y:py,x2:x2,y2:y2,dx:dx,dy:dy,r:v.r,w:v.w,n:v.n,col:v.col,t:0,life:v.life,tel:v.tel,remote:remote?1:0})}
 const baseType=()=>G.cls==='maxi'?'sound':(G.eq.weapon&&G.eq.weapon.dt)||(G.cls==='hacker'?'surge':'impact');
@@ -392,7 +394,7 @@ function spawnTag(){W.tag=null;const t=G.tag;if(!t||W.z.sim)return;if(W.z.town)t
 var TAGQ=false;
 /* the companion borrows the player's own skill code: for the length of one call it stands where the player stands */
 function tagDo(fn){const m=W.tag,p0=P,c0=G.cls,d0=DT;P=m;G.cls=G.tag.cls;DT=null;TAGQ=true;try{fn();
-    if(m.dash){const d=m.dash;m.dash=null;const far=d.spd*d.t;for(let s=0;s<far;s+=.25)if(!mv(m,m.dir.x*.25,m.dir.y*.25))break;W.fx.push({k:'arc',x:m.x,y:m.y,dx:m.dir.x,dy:m.dir.y,t:0,life:.22,w:1.5});if(d.m)burst(m.x,m.y,2.2,d.m,0,'#ff9a3c');if(d.end)d.end()}
+    if(m.dash){const d=m.dash;m.dash=null;const ox=m.x,oy=m.y,far=d.spd*d.t;for(let s=0;s<far;s+=.25)if(!mv(m,m.dir.x*.25,m.dir.y*.25))break;if(d.trail)fxTrail(ox,oy,m.x,m.y,d.trail,.4);else W.fx.push({k:'arc',x:m.x,y:m.y,dx:m.dir.x,dy:m.dir.y,t:0,life:.22,w:1.5});if(d.m)burst(m.x,m.y,2.2,d.m,0,'#ff9a3c');if(d.end)d.end()}
   }catch(e){window.__tagErr=(e&&e.message)+' '+((e&&e.stack)||'').split('\n')[1]}finally{P=p0;G.cls=c0;DT=d0;TAGQ=false}}
 function updTag(dt){const m=W.tag,t=G.tag;if(!m||!t||m.hp<=0)return;const c=CLS[t.cls],formed=t.cls==='homesteader'&&!!m.form,rng=formed?1.5:(c.melee?1.5:5.5),base=Math.max(1,(S.dmin+S.dmax)/2*(1+S.dmg/100));
   m.ph+=dt;m.sayT-=dt;m.atk-=dt;for(const k of['flash','swing','spin','buff','haste','guard','stealth','mech','crunch','oc'])m[k]=Math.max(0,m[k]-dt);m.armM=t.red*.7*(m.mech>0||m.guard>0?.5:1);if(t.cls==='homesteader'&&m.form==='hull'){m.formT=(m.formT||0)+dt;const rk=(t.sk.find(s=>s[0]===13)||[0,0])[1];if(rk)m.armM/=1+.08*rk*Math.min(8,Math.floor(m.formT/2))}if(t.cls==='witness'&&!(m.atk>0)&&!(m.swing>0)&&witHostile()){m.page=Math.min(100,(m.page||0)+WIT.fill*(m.moving?1:WIT.still)*dt)}
