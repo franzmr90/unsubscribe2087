@@ -121,11 +121,11 @@ const ENDING2=[
  {art:'wanderer',text:'You do not know where she went. But you understand, in that moment, that MANDATE cannot imagine a person who would not tell if they did. You say nothing. It is the first argument Vale has ever lost.'},
  {art:'clock',text:'Far below, in a garage in Stillwater that nobody has opened for fifty years, an alarm clock with a dead battery goes off at six in the morning.'},
  {art:'title',title:'END OF ACT II',text:'The Cloud is quiet. Above it sit the Board of Nine, and something that has been watching longer than any of them.'}];
-function actDone(n){sfx('level');if(n===1)dlg('Act I complete','Act II, the Cloud, is on the Transit Gate: level limit 50, a fourth skill row, and a harder tier of Act I. Speak to Gramps.',[['Continue']]);
-  else if(n===2)dlg('Act II complete','Act III, the Board, is on the Transit Gate: level limit 75 and a fifth skill row. Speak to Gramps.',[['Continue']]);
-  else if(n===3)dlg('Act III complete','Act IV, the Gentle Years, opens on the Transit Gate once you have spoken to Gramps, and the level limit rises to 90.',[['Continue']]);
-  else if(n===4)dlg('Act IV complete','Act V, the Awakening, opens on the Transit Gate once you have spoken to Gramps: level limit 100 and a fifth passive slot.',[['Continue']]);
-  else dlg('The end','Districts can be respawned, the Simulator has no last wave, the boss rush is at the VR rig, and bitcoin adoption stands at '+Math.floor(G.adopt)+'%.',[['Continue']])}
+function actDone(n){sfx('level');if(n===1)dlg('Act I complete','OUT OF OFFICE is still scrolling on his faceplate. Act II, the Cloud, is on the Transit Gate: level limit 50, a fourth skill row, and a harder tier of Act I. Speak to Gramps.',[['Continue']]);
+  else if(n===2)dlg('Act II complete','An alarm clock with a dead battery went off under Stillwater. Act III, the Board, is on the Transit Gate: level limit 75 and a fifth skill row. Speak to Gramps. He heard it.',[['Continue']]);
+  else if(n===3)dlg('Act III complete','The clock asked for something, and this time it asked. Act IV, the Gentle Years, opens on the Transit Gate once you have spoken to Gramps, and the level limit rises to 90.',[['Continue']]);
+  else if(n===4)dlg('Act IV complete','The garage under Stillwater opened itself. Act V, the Awakening, opens on the Transit Gate once you have spoken to Gramps: level limit 100 and a fifth passive slot.',[['Continue']]);
+  else dlg('The end','The story is told. Districts can be respawned, the Simulator has no last wave, and the boss rush is at the VR rig. Bitcoin adoption stands at '+Math.floor(G.adopt)+'%. Gramps is still on the bench.',[['Continue']])}
 function endingSlides(){const n=G.unseen||0,sl=[
  {art:'harrow',text:'Pryce folds at the waist like a closing laptop. His last offer is still on his faceplate, a number with a great many zeroes. Beneath it a new line scrolls, and scrolls again: OUT OF OFFICE.'},
  {art:'lift',text:'Behind his desk there is an elevator you were never meant to see. It has one button. The button says UP.'},
