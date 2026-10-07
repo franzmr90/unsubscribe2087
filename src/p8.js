@@ -145,6 +145,12 @@ function mktTrade(n,side){const m=mktInit();n=Math.floor(n);if(n<1)return null;
   mktImpact(n,side);mktNews(side==='buy'?.05:-.05,null);sfx('coin');
   if(q.k>.12)toast('Your order walked the book: you paid '+Math.round(q.k*9)+'% away from the quote. Size moves price.');
   return q}
+/* The most sats the printed quote will sell for the credits in hand. The old estimate
+   stopped eight percent short, so a purse that could buy one sat still heard it could not. */
+function mktAfford(){const ask=mktAsk();if(!(ask>0)||G.credits<mktQuote(1,'buy').total)return 0;
+  let lo=1,hi=Math.max(1,Math.floor(G.credits/(ask*(1+MKT_TAKER))));
+  while(lo<hi){const mid=Math.ceil((lo+hi)/2);if(mktQuote(mid,'buy').total<=G.credits)lo=mid;else hi=mid-1}
+  return mktQuote(lo,'buy').total<=G.credits?lo:0}
 /* ---------- posting a price instead: you do his job, he pays you for it ---------- */
 function mktPost(n,px,side){const m=mktInit();n=Math.floor(n);if(n<1||!(px>0))return false;
   if(m.ord.length>=4){toast('Nonce will hold four orders at a time');sfx('err');return false}
