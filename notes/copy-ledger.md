@@ -355,7 +355,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p8.js | 29 | dialog | fud | unread | Good to see somebody sensible. |
 | p5.js | 29 | dialog | gramps | unread | It is heavier than it looks, and the staff have noticed. |
 | p6.js | 29 | dialog |  | unread | The reserve |
-| p6.js | 29 | dialog | The reserve | unread | Bitcoin is the world’s reserve currency. Unity can still create credits, but nothing that matters is priced in them any more, so prices have stopped rising. You did not break the money printer. You made it irrelevant. |
+| p6.js | 29 | dialog | The reserve | unread | The baker’s loaf is priced in sats, and the street copied her. Unity can still create credits. Nothing you eat is priced in them, so prices have stopped rising. |
 | p8.js | 29 | dialog | normie | unread | You are the one with the internet money, are you not? |
 | p8.js | 29 | dialog | normie | unread | You seem normal. I like that. |
 | p8.js | 29 | dialog | mid | unread | You think about these things. I can tell. |
@@ -509,7 +509,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p1.js | 48 | tooltip | Technomancer | unread | STEP\nBACK |
 | p4.js | 48 | scene | ACT I | unread | The Regional Office |
 | p1.js | 48 | tooltip | Technomancer | unread | About four paces back along your facing. |
-| p11.js | 48 | quest | Sister Null | unread | The Seventh Year keeps them seated. End it. |
+| p11.js | 48 | quest | Sister Null | unread | The Seventh Year keeps them on the sofa. Mr. Bosk has not stood since spring. End the year. |
 | p6.js | 48 | sheet |  | unread | No Last Wave |
 | p6.js | 48 | sheet |  | unread | Clear wave 25 in the Simulator |
 | p11.js | 48 | quest | Sister Null | unread | +5 attribute points |
@@ -573,7 +573,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p10.js | 53 | toast |  | unread | Difficulty adjustment: +20%. Blocks were coming too fast. |
 | p6.js | 53 | sheet |  | unread | Buy sats while they trade under what they are worth |
 | p1.js | 53 | tooltip | Runner | unread | SCATTER |
-| p11.js | 53 | quest | Marrow | unread | In the Mempool a thing called First Seen decides whose payment waits and whose goes through. |
+| p11.js | 53 | quest | Marrow | unread | In the Mempool a thing called First Seen decides whose payment waits and whose goes through. It has never once been second. |
 | p1.js | 53 | tooltip | Runner | unread | Throw a fan of {3+Math.floor(L/2)} blades for {pct(.9+.1*L)} each. Anything within arm’s reach is also cut for {pct(.5+.06*L)}. |
 | p10.js | 53 | toast |  | unread | Retarget. You were finding kills quicker than one every ten minutes. |
 | p8.js | 53 | toast |  | unread | Social credit {…}{n} → {b}{…} |
@@ -1133,7 +1133,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p1.js | 124 | tooltip | Witness | unread | THE\nSENTENCE |
 | p4.js | 124 | dialog |  | unread | Act I complete |
 | p1.js | 124 | tooltip | Witness | unread | Spend Record, up to 25. Delay that machine's next attack by {(0.4+.08*L).toFixed(2)}s at a full page. Less Record, a shorter delay. |
-| p4.js | 124 | dialog | Act I complete | unread | Act II, the Cloud, is on the Transit Gate: level limit 50, a fourth skill row, and a harder tier of Act I. Speak to Gramps. |
+| p4.js | 124 | dialog | Act I complete | unread | OUT OF OFFICE is still scrolling on his faceplate. Act II, the Cloud, is on the Transit Gate: level limit 50, a fourth skill row, and a harder tier of Act I. Speak to Gramps. |
 | p4.js | 124 | dialog | Act I complete | unread | Continue |
 | p1.js | 125 | tooltip | Witness | unread | Margin |
 | p13.js | 125 | multiplayer |  | unread | Join them |
@@ -1141,7 +1141,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 125 | dialog |  | unread | Act II complete |
 | p1.js | 125 | tooltip | Witness | unread | Passive. Below half life the Record fills {20*L}% faster. |
 | p11.js | 125 | sheet |  | unread | Six years old the March morning it ended. Remembers his mother crying for a week and then planting beans. Tells you what to do next because somebody has to, and is the only person in Stillwater who still says Phonix’s name out loud. |
-| p4.js | 125 | dialog | Act II complete | unread | Act III, the Board, is on the Transit Gate: level limit 75 and a fifth skill row. Speak to Gramps. |
+| p4.js | 125 | dialog | Act II complete | unread | An alarm clock with a dead battery went off under Stillwater. Act III, the Board, is on the Transit Gate: level limit 75 and a fifth skill row. Speak to Gramps. He heard it. |
 | p13.js | 125 | multiplayer |  | unread | Not now |
 | p6.js | 125 | sheet |  | unread | Story · {esc(a.n)} |
 | p4.js | 125 | dialog | Act II complete | unread | Continue |
@@ -1151,7 +1151,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 126 | dialog |  | unread | Act III complete |
 | p1.js | 126 | tooltip | Witness | unread | CROSS-\nREF |
 | p11.js | 126 | sheet |  | unread | Deprogrammed two hundred Residents and watched a hundred and ninety put the visor back on, because the visor is warm and the world is not. Will take the wrong lessons out of you for a fee. It stings. |
-| p4.js | 126 | dialog | Act III complete | unread | Act IV, the Gentle Years, opens on the Transit Gate once you have spoken to Gramps, and the level limit rises to 90. |
+| p4.js | 126 | dialog | Act III complete | unread | The clock asked for something, and this time it asked. Act IV, the Gentle Years, opens on the Transit Gate once you have spoken to Gramps, and the level limit rises to 90. |
 | p6.js | 126 | sheet |  | unread | Hard |
 | p1.js | 126 | tooltip | Witness | unread | Spend 20 Record. Copy that machine's last attack onto another machine you have Testimony on, at {Math.round((.75+.05*L)*100)}% of the blow. |
 | p6.js | 126 | sheet |  | unread | Brutal |
@@ -1160,7 +1160,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p11.js | 127 | sheet |  | unread | Marrow |
 | p4.js | 127 | dialog |  | unread | Act IV complete |
 | p1.js | 127 | tooltip | Witness | unread | PULL THE\nTHREAD |
-| p4.js | 127 | dialog | Act IV complete | unread | Act V, the Awakening, opens on the Transit Gate once you have spoken to Gramps: level limit 100 and a fifth passive slot. |
+| p4.js | 127 | dialog | Act IV complete | unread | The garage under Stillwater opened itself. Act V, the Awakening, opens on the Transit Gate once you have spoken to Gramps: level limit 100 and a fifth passive slot. |
 | p11.js | 127 | sheet |  | unread | The last librarian, kept in a cage in the Humming Fields because Unity could not price what it could not find. Eleven thousand volumes, all of them in her head. She trained the machine that became Defrag and has never forgiven herself for it. She names your unidentified things for nothing, which is the only transaction in this town with no fee attached. |
 | p1.js | 127 | tooltip | Witness | unread | Spend most of the Record. One Impact hit: each point of Testimony on the target is {pct(3.5+.45*L)} of a weapon swing's weight, and your weapon is not consulted. No Testimony, no blow. |
 | p2.js | 127 | toast |  | unread | A Dividend Drone. Catch it before it gets away. |
@@ -1170,7 +1170,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p1.js | 128 | tooltip | Witness | unread | Filed |
 | p4.js | 128 | dialog |  | unread | The end |
 | p11.js | 128 | sheet |  | unread | Nonce |
-| p4.js | 128 | dialog | The end | unread | Districts can be respawned, the Simulator has no last wave, the boss rush is at the VR rig, and bitcoin adoption stands at {Math.floor(G.adopt)}%. |
+| p4.js | 128 | dialog | The end | unread | The story is told. Districts can be respawned, the Simulator has no last wave, and the boss rush is at the VR rig. Bitcoin adoption stands at {Math.floor(G.adopt)}%. Gramps is still on the bench. |
 | p1.js | 128 | tooltip | Witness | unread | Passive. Testimony does not decay for {(2+.4*L).toFixed(1)}s after the machine leaves the screen. |
 | p11.js | 128 | sheet |  | unread | Takes sats and will not take credits, and is not being difficult about it. Was never subscribed in the first place. |
 | p4.js | 128 | dialog | The end | unread | Continue |
@@ -1275,7 +1275,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 156 | quest | Gramps | unread | “The Receptionist is gone? Then for the first time in forty years, somebody is going to be seen.” You gain 1 skill point. |
 | p1.js | 156 | tooltip | The Maximalist | unread | Passive. If a hireling or a rendered companion is alive, the hit that would kill you kills them instead, once a minute. Alone, it does nothing. |
 | p13.js | 156 | multiplayer |  | unread | +{m.amount} party |
-| p4.js | 157 | quest | Marrow | unread | “It wrote the minutes before the meetings.” You gain 1 skill point. |
+| p4.js | 157 | quest | Marrow | unread | “It wrote the minutes before the meetings. I kept the ones from after. They are shorter, and nobody voted.” You gain 1 skill point. |
 | p4.js | 158 | quest | Nonce | unread | “Sixty-one to twenty-eight-seven, and they are furniture.” You receive 60 sats. |
 | p1.js | 158 | sheet |  | unread | Bodyguard |
 | p1.js | 158 | sheet |  | unread | A reprogrammed Enforcer. Machines attack it before you. |
@@ -1389,7 +1389,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p11.js | 181 | dialog | PROVIDENCE | unread | Refuse |
 | p1.js | 181 | sheet |  | unread | Censor |
 | p4.js | 181 | dialog |  | unread | Gramps |
-| p4.js | 181 | dialog | Gramps | unread | “Go and see Marrow.” You gain 1 skill point. |
+| p4.js | 181 | dialog | Gramps | unread | “Go and see Marrow. She will name what you cannot, and she will not take a fee. She is the only one left who gives a thing away.” You gain 1 skill point. |
 | p11.js | 181 | toast |  | unread | Unbought: +50% damage for 25 seconds |
 | p4.js | 181 | dialog | Gramps | unread | Take it |
 | p11.js | 182 | dialog | PROVIDENCE | unread | Tell it |
@@ -1495,12 +1495,12 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 194 | toast |  | unread | Not enough credits |
 | p4.js | 194 | toast |  | unread | Your points are returned to you |
 | p4.js | 195 | dialog |  | unread | The rig cannot do that yet |
-| p4.js | 195 | dialog | The rig cannot do that yet | unread | The rig can show you anyone. It cannot make the world believe it. For that it needs your citizen record, the one page MANDATE keeps on who you are, and those are not kept anywhere you can walk to in Act I. The deleted ones sink into the Data Lake, up in the Cloud. The Archivist there guards them. Bring yours back and the rig can rewrite it. |
+| p4.js | 195 | dialog | The rig cannot do that yet | unread | I can show you anyone. The town will not believe the face until I have your citizen record, the one page MANDATE keeps, and Act I does not keep those pages anywhere you can walk. Deleted ones sink into the Data Lake. The Archivist guards them. Bring yours back and I can rewrite it. |
 | p4.js | 195 | dialog | The rig cannot do that yet | unread | Understood |
 | p1.js | 196 | sheet |  | unread | Tick |
 | p4.js | 196 | dialog |  | unread | VR Simulator |
 | p11.js | 196 | quest |  | unread | Your Desk |
-| p4.js | 196 | dialog | VR Simulator | unread | Unity built this rig to train Enforcers. Kestrel rewired it. Inside, machines come in waves that grow larger, tougher and stranger, with a lieutenant every fifth wave. You earn experience and credits, but no loot except a lockbox every five waves. Falling costs nothing. Waves cleared, your best: {b}. |
+| p4.js | 196 | dialog | VR Simulator | unread | Kestrel left a note on the bezel. “I stole this off an Enforcer training floor and cut the leash. Waves grow larger, tougher and stranger, and a lieutenant walks in every fifth. You leave with experience, credits, and a lockbox every five waves. No other loot. Fall, and the floor puts you back: nothing in here was real, so nothing is lost. Your best: {b}.” |
 | p11.js | 196 | quest |  | unread | Sit down at your desk |
 | p11.js | 196 | scene |  | unread | Monday |
 | p11.js | 196 | scene | Monday | unread | Three hundred and forty-seven steps from the parking deck to this chair. Four hundred and twenty-three with the stairs. You have counted them every working day for years. You are forty-one, you do the work of a man two titles above you, and tonight you start the compile. Twenty-three hours and forty-five minutes. |
@@ -1587,7 +1587,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p1.js | 215 | sheet |  | unread | First kill: one unique for certain |
 | p11.js | 216 | dialog |  | unread | Ubiquitous Enterprises · January 2015 |
 | p1.js | 216 | sheet |  | unread | Crate |
-| p11.js | 216 | dialog | Ubiquitous Enterprises · January 2015 | unread | Walk to each marked place in turn and the week plays out. Follow the arrow. Nothing here fights back. |
+| p11.js | 216 | dialog | Ubiquitous Enterprises · January 2015 | unread | Your desk, the cage, Natalya, Room 813, the monitor, the parking deck. Follow the arrow. Nothing in this week fights back. |
 | p11.js | 216 | dialog | Ubiquitous Enterprises · January 2015 | unread | Begin |
 | p11.js | 216 | dialog | Ubiquitous Enterprises · January 2015 | unread | Skip to 2087 |
 | p1.js | 217 | sheet |  | unread | Lockbox |
@@ -2399,18 +2399,18 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 369 | sheet |  | unread | Finished. |
 | p4.js | 370 | sheet |  | unread | The people of Stillwater will have errands for you as you go further. |
 | p2.js | 371 | dialog |  | unread | Act V · The Awakening |
-| p2.js | 371 | dialog | Act V · The Awakening | unread | Level limit 100, a fifth passive slot, and fast machines that silence skills. The Old Drive is in the garage. |
+| p2.js | 371 | dialog | Act V · The Awakening | unread | Level limit 100, a fifth passive slot, and fast machines that silence skills. The Old Drive is in the garage, in a coffee can. It will talk, if the machines let you hear it. |
 | p2.js | 371 | dialog | Act V · The Awakening | unread | Begin |
 | p4.js | 372 | sheet |  | unread | Everything here is something your character would know or has been told. It fills in as you go. If a person or a machine has stopped making sense, it is in here. |
 | p4.js | 372 | sheet |  | unread | The story so far |
 | p2.js | 372 | dialog |  | unread | Act IV · The Gentle Years |
-| p2.js | 372 | dialog | Act IV · The Gentle Years | unread | Level limit 90: these machines slow you, drain energy, and hit harder than the Board. |
+| p2.js | 372 | dialog | Act IV · The Gentle Years | unread | Level limit 90. These machines slow you, drain your energy, and hit harder than the Board. They will not chase you if you sit down. Do not sit down. |
 | p2.js | 372 | dialog | Act IV · The Gentle Years | unread | Begin |
 | p2.js | 373 | dialog |  | unread | Act III · The Board |
-| p2.js | 373 | dialog | Act III · The Board | unread | Level limit 75, and a fifth skill row opens at level 51. |
+| p2.js | 373 | dialog | Act III · The Board | unread | Level limit 75, and a fifth skill row opens at level 51. They have been in those chairs longer than you have been alive. The row does not care. |
 | p2.js | 373 | dialog | Act III · The Board | unread | Begin |
 | p2.js | 374 | dialog |  | unread | Act II · The Cloud |
-| p2.js | 374 | dialog | Act II · The Cloud | unread | Level limit 50, and a fourth skill row opens. |
+| p2.js | 374 | dialog | Act II · The Cloud | unread | Level limit 50, and a fourth skill row opens. The fourth row is yours. Vale does not get a vote on it. |
 | p2.js | 374 | dialog | Act II · The Cloud | unread | Begin |
 | p2.js | 375 | dialog |  | unread | Go on |
 | p4.js | 375 | sheet |  | unread |  · new |
@@ -2576,7 +2576,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 396 | sheet |  | unread | beyond counting |
 | p1.js | 396 | quest | Sister Null | unread | +5 attribute points |
 | p1.js | 397 | quest | Gramps | unread | Still Water |
-| p1.js | 397 | quest | Gramps | unread | MANDATE has never lost. It will make you offers. |
+| p1.js | 397 | quest | Gramps | unread | MANDATE has never lost. It will offer your life back, then a bigger Stipend for everyone. Decline both. It is counting on the second one. |
 | p1.js | 397 | quest | Gramps | unread | The end of the story |
 | p4.js | 398 | sheet |  | unread | Restores 45% of your life. You carry {G.stims} of {S.cap}. |
 | p4.js | 398 | sheet |  | unread | Stim |
@@ -2623,7 +2623,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 404 | sheet |  | unread | Each box costs |
 | p1.js | 404 | gossip | Sister Null | unread | I deprogrammed two hundred Residents. One hundred and ninety went back. The visor is warm, and the world is not. |
 | p1.js | 404 | gossip | Sister Null | unread | If you have learned the wrong lessons, I can take them out of you. It costs, and it stings. |
-| p1.js | 404 | gossip | Sister Null | unread | Phonix gave people everything, and they stopped being people. Unity gives them almost nothing and gets the same result. |
+| p1.js | 404 | gossip | Sister Null | unread | I charge for unlearning. The visor is free. I have never won that argument, and I keep the chair anyway. |
 | p1.js | 405 | gossip | Marrow | unread | Bring me the things you cannot name. Naming is all I have left, and I give it freely. |
 | p4.js | 405 | sheet |  | unread | Bounty board |
 | p4.js | 405 | sheet |  | unread | Posted by anons, paid on proof. Three contracts at a time; a new one is pinned up when you claim one. You hold |
