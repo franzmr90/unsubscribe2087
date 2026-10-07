@@ -87,13 +87,13 @@ async function clickBtn(page, re, budget) {
     return {
       n: s.length,
       aggro: s.length === 1 && !!s[0].aggro,
-      pitch: s.length === 1 && !s[0].pitch,
+      quiet: s.length === 1 && !s[0].pitch,
       bags: bags.length,
       log: document.getElementById('log').textContent,
       mode: __g.mode
     };
   });
-  ok(fought.n === 1 && fought.aggro && !fought.pitch, 'the salesman stays and is hostile (' + JSON.stringify(fought) + ')');
+  ok(fought.n === 1 && fought.aggro && fought.quiet, 'the salesman stays and is hostile (' + JSON.stringify(fought) + ')');
   ok(/Get him/.test(fought.log), 'the fight toast is “Get him!”');
   ok(fought.bags === 0 && fought.mode === 'play', 'below level 8 he comes alone and play resumes');
 
