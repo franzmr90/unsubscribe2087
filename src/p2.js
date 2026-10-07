@@ -816,7 +816,8 @@ function useObj(o){
   else if(o.k==='shrine'){o.used=1;sfx('shrine');const s=SHR[o.sk];toast(s[0]+': '+s[1]);parts(o.x,o.y,24,['#59e0e6','#fff'],2,1.6);
     if(o.sk==='fill'){G.hp=S.maxHp;G.en=S.maxEn}else if(o.sk==='gold'){for(let i=0;i<7;i++)addDrop({cr:(3+W.ml*2)*rnd(1,2.5)*Math.pow(G.cpi,.9)},o.x,o.y)}else P.shr={k:o.sk,t:s[2],n:s[0]}}
   else if(o.k==='memo'){W.objs.splice(W.objs.indexOf(o),1);if(!G.memos.includes(o.id))G.memos.push(o.id);sfx('page');const m=MEMOS[o.id];dlg(m[0],m[1],[['Keep it']]);gainXp(20*(1+.8*(W.ml-1)))}
-  else if(o.k==='stray'){W.objs.splice(W.objs.indexOf(o),1);let gave;if(G.stims>0){G.stims--;gave='a stim'}else{const c=G.credits*.15;G.credits-=c;gave=fmt(c)}G.unseen=(G.unseen||0)+1;
+  /* The stranger's line prints whole credits, so the gift is the floor of fifteen percent. */
+  else if(o.k==='stray'){W.objs.splice(W.objs.indexOf(o),1);let gave;if(G.stims>0){G.stims--;gave='a stim'}else{const c=Math.floor(G.credits*.15);G.credits-=c;gave=fmt(c)}G.unseen=(G.unseen||0)+1;
     dlg('A stranger',pick(['A Resident with her visor in her hand, shaking. ','An old man who took his visor off this morning and cannot find his street. ','A boy, no visor, hiding from the drones. '])+'You give up '+gave+' and point the way to Stillwater. No name is asked. Nobody saw.',[['Walk on']])}
   else if(o.k==='page'){o.used=1;G.q8page=1;sfx('page');if(G.q8down){G.q.q8=2;mpShareQuest('q8',2);sfx('quest');toast('Quest complete: return to Marrow')}else toast('Lethe is still drowning the rest. Follow the arrow.')}else if(o.k==='minute'){o.used=1;G.q.q12=2;mpShareQuest('q12',2);sfx('page');sfx('quest');toast('Quest complete: return to Marrow')}else if(o.k==='qobj')sqUse(o);
   else if(o.k==='cage'){if(W.ents.some(e=>e.su)){toast('The cage is sealed while Defrag stands');return}o.used=1;G.marrow=true;G.q.q3=2;sfx('cage');sfx('quest');
