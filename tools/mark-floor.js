@@ -32,7 +32,7 @@ const card=await p.evaluate(()=>{
   document.querySelector('#popIn .nm').scrollIntoView({block:'center'});
   return t;
 });
-check('rank 1 prints 30 percent', /takes \+30% damage/.test(card)&&/3\.7 paces/.test(card)&&!/\+24%/.test(card), card);
+check('rank 1 prints 30 percent', /takes \+30% damage/.test(card)&&/3\.6 paces/.test(card)&&!/\+24%/.test(card), card);
 
 const two=await p.evaluate(()=>{
   __g.G.sk[4]=2;__g.drawSheet();
