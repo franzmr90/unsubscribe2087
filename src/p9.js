@@ -16,12 +16,11 @@ function sway(id,p,n){if(id==='res')return;const v=G.won[id]=(G.won[id]||0)+n,f=
   if(v>=3&&f[id]!==1){f[id]=1;mktNews(.09,p.n+' is stacking');setTimeout(()=>{sfx('quest');addAdopt(3,p.n+' now saves in sats')},600)}
   if(v<=-3&&f[id]!==-1){f[id]=-1;mktNews(-.09,p.n+' has given up on it');setTimeout(()=>addAdopt(-3,p.n+' has given up on it'),600)}}
 const STALE=[
- {art:'node',text:'Bitcoin does not win, and it does not die. A stubborn few keep their nodes humming in back rooms, and the Stipend goes on landing every minute, worth a little less each time.'},
- {art:'ticker',text:'It could still go either way. It is waiting, the way it always has, for enough people to decide that they would rather hold something that holds still.'}];
+ {art:'node',text:'Bitcoin does not win, and it does not die. A stubborn few keep their nodes humming in back rooms, and the Stipend goes on landing every minute, worth a little less each time.'}];
 const FAIL=[
  {art:'node',text:'The last node anyone knows of goes quiet on a Tuesday. Nonce packs his stall into one bag and does not say where he is going.'},
  {art:'feed',text:'Unity launches a coin of its own the same week. It has a mascot and a cap on its supply. The cap can be changed by a vote of the Board, and before the year is out, it is.'},
- {art:'ticker',text:'Nobody took it from you. It was sold, a few sats at a time, for things that were gone by evening. Somewhere a ledger still exists with nobody running it. That is not the same as gone.'}];
+ {art:'ticker',text:'Nobody took it from you. It was sold, a few sats at a time, for things that were gone by evening. Somewhere a ledger still exists with nobody running it.'}];
 function fateScene(then){const f=G.fate=fateOf();
   if(f==='reserve'){const was=G.adopt>=100;G.adopt=100;if(was||G.resSeen)return then();G.resSeen=1;return playScene(RESERVE,()=>{mode='play';then()})}
   playScene(f==='stale'?STALE:FAIL,()=>{mode='play';dlg(f==='stale'?'A stalemate':'Bitcoin fails',f==='stale'?'Adoption stands at '+Math.floor(G.adopt)+'%. The world did not choose. It can still be pushed past 60%, and the next time MANDATE falls the story will be told again.':'Adoption stands at '+Math.floor(G.adopt)+'%. Nonce’s stall is nearly bare and prices climb faster than ever. The network can be relit, node by node and conversation by conversation, and the next time MANDATE falls the story will be told again.',[['Continue',then]])})}

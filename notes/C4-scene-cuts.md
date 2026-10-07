@@ -1,8 +1,6 @@
 # C4 — bucket 6 proposals
 
-Not applied. No `playScene` string in `src/` changes in this pass. Slide counts stay as they are. Pick a scene, or decline it. A cut marked **drop slide** changes the count; the others are a sentence inside a slide that stays.
-
-The ledger tags every row `unread`. This list is the proposal. Regenerating the ledger does not apply it.
+Applied. Every cut under Applied is in the named scene string. Leave is unchanged. `STALE` is one slide. The ledger was not regenerated; these cuts are in the scene text itself.
 
 ## Leave
 
@@ -24,7 +22,9 @@ These are already the object, the number, or the joke. No cut proposed.
 - Boss-intro lines that are already one concrete offer: Phonix’s nine days, PROVIDENCE’s forty-one ways, the Air Gap’s one cable (`BINTRO` in `src/p11.js`).
 - Shape-shift rig slide (`src/p5.js`). One slide, already short.
 
-## Propose
+## Applied
+
+Each bullet below is in the source. **Drop slide** changed the count. The rest are a sentence removed from a slide that stayed.
 
 ### `INTRO` — `src/p4.js`
 
