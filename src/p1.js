@@ -177,8 +177,8 @@ const ET={
  splitter:{n:'Subsidiary',spr:'bot',hp:44,dmg:8,spd:2.2,r:.4,range:1.1,xp:14,atk:1.2,sight:7,pal:['#8a5ab8','#4a2a6a']},
  boss2:{n:'Vale, Senior Vice-President',spr:'boss',hp:1100,dmg:17,spd:1.9,r:.85,range:1.8,xp:1000,atk:1.3,sight:12,pal:['#e6e2d6','#b48cff']},
  director:{n:'Director',spr:'mech',hp:120,dmg:14,spd:1.8,r:.52,range:1.4,xp:44,atk:1.5,sight:8,pal:['#3a1a22','#c22d35']},
- proxy:{n:'Proxy',spr:'bot',hp:42,dmg:10,spd:2.6,r:.38,range:1.1,xp:18,atk:1,sight:9,pal:['#d8d8e0','#6a6a78']},
- censor:{n:'Censor',spr:'ad',hp:38,dmg:8,spd:1.9,r:.34,range:5.2,xp:18,atk:2.2,ranged:true,sil:2,sight:8,pal:['#17131c','#e6e2d6']},
+ proxy:{n:'Proxy',spr:'bot',hp:56,dmg:10,spd:2.6,r:.38,range:1.1,xp:18,atk:1,sight:9,pal:['#d8d8e0','#6a6a78']},
+ censor:{n:'Censor',spr:'ad',hp:60,dmg:8,spd:1.9,r:.34,range:5.2,xp:18,atk:2.2,ranged:true,sil:2,sight:8,pal:['#17131c','#e6e2d6']},
  boss3:{n:'MANDATE',spr:'mono',hp:1900,dmg:19,spd:0,r:1,range:1.6,xp:1500,atk:1.5,sight:13,pal:['#0b0912','#ffffff']},
  gob:{n:'Dividend Drone',spr:'drone',hp:70,dmg:0,spd:4.5,r:.3,range:0,xp:30,atk:9,sight:6,flee:1,pal:['#e0bd6e','#fff3c8']},
  boss:{n:'Pryce, Regional Vice-President',hp:700,dmg:15,spd:1.5,r:.85,range:1.8,xp:900,atk:1.4,sight:11,pal:['#2c2740','#d6a03c']}

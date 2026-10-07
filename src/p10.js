@@ -417,6 +417,7 @@ function partyH(){return (partyOn()?1.35+.2*(G.pp||0):1)*mpHp()}
 function partyD(){return (partyOn()?1.05+.06*(G.pp||0):1)*mpDmg()}
 function partyWake(e){e.wkT=G.time;if(partyOn()&&!e.ppx){e.ppx=1;e.xpM=(e.xpM||1)*1.3}}
 function partyKill(e){if(!partyOn()||e.minion||e.su||isBoss(e.k)||e.wkT===undefined)return;ppWin.push(G.time-e.wkT);if(ppWin.length<10)return;const avg=ppWin.reduce((a,b)=>a+b,0)/ppWin.length;ppWin=[];
-  if(avg<1.6&&(G.pp||0)<6){G.pp=(G.pp||0)+1;toast(pick(['Two of you. The machines have adjusted their difficulty.','The network noticed the extra hash power. Difficulty up.','More hands, harder blocks. Difficulty adjusts upward.']));sfx('growl')}
-  else if(avg>6&&(G.pp||0)>0){G.pp--;toast('The machines ease off a little. Difficulty adjusts downward.')}}
+  /* Half a second is a delete. 1.8s is slower than a geared normal in the arena, so the ease-off can run. */
+  if(avg<.45&&(G.pp||0)<6){G.pp=(G.pp||0)+1;toast(pick(['Two of you. The machines have adjusted their difficulty.','The network noticed the extra hash power. Difficulty up.','More hands, harder blocks. Difficulty adjusts upward.']));sfx('growl')}
+  else if(avg>1.8&&(G.pp||0)>0){G.pp--;toast('The machines ease off a little. Difficulty adjusts downward.')}}
 function partyDeath(){ppWin=[];G.pp=Math.max(0,(G.pp||0)-2)}
