@@ -135,5 +135,40 @@ const comp=await p.evaluate(()=>{
   g.W.tag={x:P.x-.8,y:P.y+.7,r:.3,hp:100,max:100,form:'hull',formDt:null,formT:1,dir:{x:1,y:0},flash:0,moving:false,buff:0,haste:0,guard:0,dash:null,stealth:0,tag:1};
   g.render();return {formed,blocked,draw:window.__tagDraw||''}});
 if(!comp.formed||!comp.blocked||comp.draw)fail('companion '+JSON.stringify(comp));
+/* The Shed button, not __g.cast. Empty energy, a dash, a cooldown and a silence used to refuse the leave. Town was the only way out. */
+const pressShed=async(form)=>{
+  await p.evaluate(f=>{
+    const g=__g;g.closeSheet();g.setMode('play');const death=document.getElementById('death');if(death)death.hidden=true;
+    g.G.god=true;g.G.hp=g.S.maxHp;
+    for(const i of [0,2,4,7])g.G.sk[i]=Math.max(g.G.sk[i]||0,1);
+    g.G.slots=[0,2,7];g.G.form=f;g.G.formDt=null;g.G.formT=f==='hull'?3:0;g.G.en=0;
+    g.P.castWait=0;g.P.silence=2;g.P.cd[7]=9;g.P.dash={t:4,spd:8,m:0,hit:[],end:null,trail:'',lx:g.P.x,ly:g.P.y,tr:0};
+    g.P.tag=0;g.calc();g.setSkillButtons();
+  },form);
+  await p.waitForTimeout(280);
+  const before=await p.evaluate(()=>{
+    const off=i=>document.querySelector('.sk[data-i="'+i+'"]').classList.contains('off');
+    const shed=document.querySelector('.sk[data-i="2"]');
+    const r=shed.getBoundingClientRect(),top=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);
+    return {form:__g.G.form,plot:off(0),flock:off(1),shed:off(2),hit:shed.contains(top)};
+  });
+  if(before.form!==form||!before.plot||!before.flock||before.shed||!before.hit)fail(form+' before '+JSON.stringify(before));
+  await p.click('.sk[data-i="2"]');
+  await p.waitForTimeout(280);
+  const after=await p.evaluate(()=>{
+    const off=i=>document.querySelector('.sk[data-i="'+i+'"]').classList.contains('off');
+    return {form:__g.G.form||null,wait:__g.P.castWait,dash:!!__g.P.dash,plot:off(0),flock:off(1),shed:off(2),en:__g.G.en};
+  });
+  if(after.form||!(after.wait>0.3)||after.dash||after.plot||after.flock||!after.shed)fail(form+' shed '+JSON.stringify(after));
+};
+await pressShed('hound');
+await pressShed('hull');
+const paid=await p.evaluate(()=>{const g=__g;g.G.form='hound';g.G.en=10;g.P.cd[7]=0;g.P.castWait=0;g.P.dash=null;g.P.silence=0;g.calc();return g.G.en});
+await p.click('.sk[data-i="2"]');
+await p.waitForTimeout(80);
+const paidAfter=await p.evaluate(()=>({form:__g.G.form||null,en:__g.G.en,wait:__g.P.castWait}));
+if(paidAfter.form||!(paidAfter.wait>0.3)||!(paidAfter.en<paid-3))fail('paid shed '+JSON.stringify(paidAfter));
+const town=await p.evaluate(()=>{__g.G.form='hull';__g.enter(0);return __g.G.form||null});
+if(town)fail('town clear '+town);
 console.log(errs.length?'ERRORS:\n'+errs.slice(0,20).join('\n'):'homesteader ok');
 await b.close();process.exit(errs.length?1:0)})();

@@ -38,4 +38,12 @@ Checked against the hireling, the rendered companion, and the flock. Remote part
 
 The Record bar was already the thin bar under the energy orb, hidden when you are not the Witness, including when the companion is. Refusal copy was already split: “The page is blank”, “Not enough energy”, and the chassis lines (“The hound has no hands for that”, “The hull does not dash”, “You are not wearing a chassis”). None of those strings changed.
 
+## Shed button
+
+Owner playtest: pressing Shed did not leave Hound. Walking into town did. Death was the same kind of clear and was left alone.
+
+The button was calling `cast`. With the form up, that cast still bailed out before the skill ran: not enough energy (a toast, and the form stayed), or a dash, a cooldown, or a silence (no toast at all). Town writes `G.form` to null on the way in and never looks at those gates. A hound in a fight is often on empty energy or mid-dodge, so the leave button did nothing and the square still worked.
+
+Shed now leaves Hound, Hull, and a worn machine from that button anyway, then the hands are busy for 0.7s. Energy is still spent when you have the 4. Plot and flock stay grey in the form and come back after the leave. Town still clears the form on entry, the same way it did.
+
 Hound was already a long low body. Hull was a cab with a face in the glass. Worn used that same cab and only changed colour, so Wear What You Killed read as a repaint. Worn is now a lower, wider carcass with vents and no face. Hull keeps the cab.
