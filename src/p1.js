@@ -9,8 +9,9 @@ function wpick(pairs){let s=0;for(const p of pairs)s+=p[1];let r=Math.random()*s
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* ================= classes and skill trees =================
-   Nine skills per class in three columns. Row 0 needs level 1, row 1 level 4, row 2 level 9.
-   Each skill needs one point in the skill above it, and gains +6% per point in that skill. */
+   Three columns. Rows open at levels 1, 4, 9, 26 and 51.
+   Each skill needs one point in the skill above it, and gains +6% per point in that skill.
+   Rows 4 and 5 are that class's own skills. */
 const ROWREQ=[1,4,9,26,51];
 const CLS={
  scrapper:{n:'Scrapper',tag:'A laid-off line worker with a road sign and a grudge. Tough, close range.',hp:130,hpL:17,melee:true,mult:1.25,ivl:.6,spd:4.1,col:'#d9822b',
@@ -23,7 +24,13 @@ const CLS={
    {n:'War Horn',ab:'WAR\nHORN',a:1,cost:16,cd:10,d:L=>`Stun enemies around you for ${(1+.2*L).toFixed(1)}s and gain +60% armor for 8s.`},
    {n:'Overtime',ab:'OVER-\nTIME',a:1,cost:25,cd:18,d:L=>`For ${6+L}s: +40% attack speed and ${6+L}% life stolen per hit.`},
    {n:'Earthbreaker',ab:'EARTH-\nBREAKER',a:1,cost:20,cd:7,d:L=>`Leap to the nearest enemy and slam for ${pct(2.2+.35*L)} in a wide area.`},
-   {n:'Solidarity',ab:'',a:0,d:L=>`Passive. +${4*L}% damage for each enemy near you, up to five.`}]},
+   {n:'Solidarity',ab:'',a:0,d:L=>`Passive. +${4*L}% damage for each enemy near you, up to five.`},
+   {n:'Lunch Pail',ab:'LUNCH\nPAIL',a:1,cost:16,cd:14,d:L=>`Set it down. You and anyone fighting beside it recover ${(2+.4*L).toFixed(1)}% of their life each second from the pail, until its stores (${Math.round(28+6*L)}% of your life) run out.`},
+   {n:'Seniority',ab:'',a:0,d:L=>`Passive. The damage type on the weapon in your hand gains +${6*L}%.`},
+   {n:'Hold the Line',ab:'',a:0,d:L=>`Passive. Each second you have not dashed adds ${4*L} armour, up to six seconds. A dash spends it.`},
+   {n:'Call the Strike',ab:'CALL THE\nSTRIKE',a:1,cost:18,cd:11,d:L=>`A horn. Ordinary machines are pushed back. Elites and bosses are pulled in. Everyone caught takes ${pct(.55+.08*L)} noise.`},
+   {n:'Two-Handed',ab:'TWO-\nHANDED',a:1,cost:14,cd:9,d:L=>`Your next three swings are slow, cannot be interrupted, and hit a wider arc.`},
+   {n:'Last Shift',ab:'LAST\nSHIFT',a:1,cost:24,cd:22,d:L=>`For ${(4+.3*L).toFixed(1)}s your swings leech ${8+L}% and you do not flinch. If you fall while it is up, you fall.`}]},
  hacker:{n:'Technomancer',tag:'An IT contractor who read the machines’ source and learned to curse in it. Fragile, ranged, clears crowds.',hp:85,hpL:12,melee:false,mult:1.1,ivl:.62,spd:4.1,col:'#9a6cff',
   sk:[
    {n:'Arc Chain',ab:'ARC\nCHAIN',a:1,cost:11,cd:1.2,d:L=>`Lightning that leaps through ${3+Math.floor(L/2)} enemies for ${pct(1.2+.18*L)} each.`},
@@ -34,10 +41,16 @@ const CLS={
    {n:'Overclock',ab:'',a:0,d:L=>`Passive. +${L} energy per second and ${3*L}% faster skill recovery.`},
    {n:'Black Storm',ab:'BLACK\nSTORM',a:1,cost:30,cd:12,d:L=>`Call a storm for 4s. Each strike deals ${pct(.7+.12*L)}.`},
    {n:'Botnet',ab:'BOTNET',a:1,cost:30,cd:20,d:L=>`Hijack three drones for ${15+L}s. Each bite deals ${pct(.4+.07*L)}.`},
-   {n:'Zero Day',ab:'',a:0,d:L=>`Passive. +${3*L}% deadly strike chance, and deadly strikes deal ${pct(2+.1*L)}.`}]},
+   {n:'Zero Day',ab:'',a:0,d:L=>`Passive. +${3*L}% deadly strike chance, and deadly strikes deal ${pct(2+.1*L)}.`},
+   {n:'Ground Fault',ab:'GROUND\nFAULT',a:1,cost:14,cd:6,d:L=>`A line of heat on the floor for ${(3.2+.15*L).toFixed(1)}s, ${pct(.4+.06*L)} every half second. Casting it locks your hands for a moment.`},
+   {n:'Packet Storm',ab:'PACKET\nSTORM',a:1,cost:16,cd:8,d:L=>`Mark a spot. A noise storm arrives there after a short delay and strikes for ${pct(.5+.08*L)}. Walking away does not move it.`},
+   {n:'Schema',ab:'',a:0,d:L=>`Passive. You work in one element${G&&G.schema?': '+DTY[G.schema].n:''}. Damage of that type gains +${8*L}%. The other two do not. Sister Null can make you choose again. Dying cannot.`},
+   {n:'Step Back',ab:'STEP\nBACK',a:1,cost:8,cd:4,d:L=>`About four paces back along your facing.`},
+   {n:'Patched',ab:'',a:0,d:L=>`Passive. ${Math.round((10+2*L))}% of the Surge damage you deal becomes a barrier, up to ${Math.round(20+2*L)}% of your life. Nothing, if your Schema is Heat or Noise.`},
+   {n:'Kill Dash Nine',ab:'KILL -9',a:1,cost:26,cd:16,d:L=>`One machine, for ${pct(2.8+.4*L)} of your Schema element. It ignores that element's resistance, once. A resistance of zero is still a wall. Casting it locks your hands.`}]},
  courier:{n:'Runner',tag:'A courier who stopped delivering and kept running. Fast feet, faster hands.',hp:100,hpL:14,melee:false,mult:.82,ivl:.4,spd:4.8,col:'#3fbf8f',
   sk:[
-   {n:'Scatter Shot',ab:'SCATTER',a:1,cost:9,cd:1.2,d:L=>`Throw a fan of ${3+Math.floor(L/2)} blades for ${pct(.9+.1*L)} each. Anything within arm’s reach is also cut for ${pct(.5+.06*L)}: closer is deadlier, and riskier.`},
+   {n:'Scatter Shot',ab:'SCATTER',a:1,cost:9,cd:1.2,d:L=>`Throw a fan of ${3+Math.floor(L/2)} blades for ${pct(.9+.1*L)} each. Anything within arm’s reach is also cut for ${pct(.5+.06*L)}.`},
    {n:'Fleet Step',ab:'FLEET\nSTEP',a:1,cost:9,cd:3.5,d:L=>`Dash, untouchable, then run 50% faster for ${(2+.3*L).toFixed(1)}s.`},
    {n:'Evasion',ab:'',a:0,d:L=>`Passive. +${2*L}% run speed and ${Math.min(35,2.5*L)}% chance to avoid any hit.`},
    {n:'Lure',ab:'LURE',a:1,cost:20,cd:12,d:L=>`Drop a decoy parcel. Machines attack it, then it bursts for ${pct(2.5+.4*L)}.`},
@@ -45,7 +58,13 @@ const CLS={
    {n:'Scavenger',ab:'',a:0,d:L=>`Passive. +${10*L}% credits and +${5*L}% magic find.`},
    {n:'Rush Order',ab:'RUSH\nORDER',a:1,cost:22,cd:8,d:L=>`A 1.5s stream of blades at the nearest enemy, ${pct(.5+.07*L)} each.`},
    {n:'Signed For',ab:'SIGNED\nFOR',a:1,cost:16,cd:6,d:L=>`Strike the nearest enemy for ${pct(3+.5*L)}. It takes +30% damage for 8s.`},
-   {n:'Deadeye',ab:'',a:0,d:L=>`Passive. ${8*L}% chance for throws to pierce and +${2*L}% deadly strike.`}]}
+   {n:'Deadeye',ab:'',a:0,d:L=>`Passive. ${8*L}% chance for throws to pierce and +${2*L}% deadly strike.`},
+   {n:'Return to Sender',ab:'RETURN\nSENDER',a:1,cost:12,cd:5,d:L=>`A throw that goes out and comes back, ${pct(1.1+.16*L)} on each pass.`},
+   {n:'Route Knowledge',ab:'',a:0,d:L=>`Passive. After a dash, you avoid ${6+2*L}% more hits for ${(2+.2*L).toFixed(1)}s. Standing still does nothing.`},
+   {n:'Second Drop',ab:'SECOND\nDROP',a:1,cost:16,cd:10,d:L=>`One decoy copies your last throw, then stays on a short leash. Leave it behind and it pops.`},
+   {n:'Manifest',ab:'MANIFEST',a:1,cost:14,cd:6,d:L=>`A piercing throw for ${pct(1+.14*L)} that splits into two after the first machine it hits.`},
+   {n:'Hazard Pay',ab:'',a:0,d:L=>`Passive. A throw that kills pays ${3+L} extra credits and finds gear as if you had +${6*L}% magic find. A dash does not pay.`},
+   {n:'Missed Connection',ab:'MISSED\nCONN',a:1,cost:18,cd:12,d:L=>`Mark a machine. If it dies within ${(4+.25*L).toFixed(1)}s, to you or to anyone with you, you appear where it fell and your next throw costs nothing.`}]}
 };
 Object.assign(CLS,{
  anon:{n:'Anon',tag:'No name, no face, no account. Traps, vanishing acts and a knife from behind.',hp:95,hpL:13,melee:true,mult:1,ivl:.42,spd:4.7,col:'#3f3f4c',
@@ -58,7 +77,13 @@ Object.assign(CLS,{
    {n:'Dox',ab:'DOX',a:1,cost:12,cd:6,d:L=>`Expose a machine and everything near it: +30% damage taken for ${8+L}s, and ${pct(1+.2*L)} now.`},
    {n:'Zip Bomb',ab:'ZIP\nBOMB',a:1,cost:22,cd:8,d:L=>`One blast of ${pct(1.4+.2*L)} that unpacks into five more of ${pct(1.2+.2*L)}.`},
    {n:'Sockpuppet',ab:'SOCK-\nPUPPET',a:1,cost:24,cd:18,d:L=>`${L>=5?'Two copies':'A copy'} of you fight${L>=5?'':'s'} for ${10+L}s, dealing ${pct(.5+.08*L)} and drawing fire.`},
-   {n:'Legion',ab:'LEGION',a:1,cost:35,cd:20,d:L=>`We are many. A dozen unseen blades strike across the screen for ${pct(1.2+.2*L)} each.`}]},
+   {n:'Legion',ab:'LEGION',a:1,cost:35,cd:20,d:L=>`A dozen unseen blades strike across the screen for ${pct(1.2+.2*L)} each.`},
+   {n:'Rehearsal',ab:'RE-\nHEARSE',a:1,cost:10,cd:1.4,d:L=>`A strike for ${pct(.7+.1*L)}. Another within 3s adds a charge, up to three.`},
+   {n:'The Dump',ab:'THE\nDUMP',a:1,cost:8,cd:4,d:L=>`Spend every charge. One is a rust bleed. Two is a silence. Three is a screen of blades for ${pct(.9+.12*L)}. A plain attack spends one charge and bleeds. Charges do not survive a zone change.`},
+   {n:'No Attribution',ab:'',a:0,d:L=>`Passive. While Incognito is up, laying a mine does not break it, and the mine arms faster. Nothing, while you can be seen.`},
+   {n:'Dead Drop',ab:'DEAD\nDROP',a:1,cost:12,cd:3,d:L=>`Place a mark. Activate again to appear there. One mark. It does not explode.`},
+   {n:'Cutout',ab:'',a:0,d:L=>`Passive. The first hit that would destroy a mine or a sockpuppet is ignored. It does not apply to you.`},
+   {n:'We Were Never Here',ab:'NEVER\nHERE',a:1,cost:20,cd:16,d:L=>`Every mine and sockpuppet goes off as a silence, and you drop into Incognito. If you have none, nothing happens.`}]},
  founder:{n:'Founder',tag:'He left the Board with a grudge and a headcount. Summons a workforce and lets it do the dying.',hp:90,hpL:12,melee:false,mult:.7,ivl:.6,spd:4,col:'#26262e',
   sk:[
    {n:'Interns',ab:'INTERN',a:1,cost:8,cd:.5,d:L=>`Summon an intern that fights for ${pct(.35+.05*L)}. You keep up to ${Math.min(7,2+Math.floor(L/2))}. They follow you everywhere.`},
@@ -69,16 +94,67 @@ Object.assign(CLS,{
    {n:'Mech Suit',ab:'MECH\nSUIT',a:1,cost:25,cd:22,d:L=>`For ${10+L}s: double armor, and your attacks become slams of ${pct(1.6+.25*L)}.`},
    {n:'Chief of Staff',ab:'CHIEF',a:1,cost:30,cd:10,d:L=>`Summon one hulking enforcer that machines attack first. It hits for ${pct(1.2+.2*L)} in an arc.`},
    {n:'Acqui-hire',ab:'ACQUI-\nHIRE',a:1,cost:28,cd:18,d:L=>`Turn the nearest machine to your side for ${12+2*L}s.${L>=5?' Champions too.':' Champions resist until level 5.'}`},
-   {n:'Layoffs',ab:'LAY-\nOFFS',a:1,cost:10,cd:12,d:L=>`Every summoned worker explodes for ${pct(2+.4*L)}. Each one heals you 5%.`}]}
+   {n:'Layoffs',ab:'LAY-\nOFFS',a:1,cost:10,cd:12,d:L=>`Every summoned worker explodes for ${pct(2+.4*L)}. Each one heals you 5%.`},
+   {n:'Garden Leave',ab:'GARDEN\nLEAVE',a:1,cost:16,cd:10,d:L=>`Requires a worker or a converted machine killed in the last 4s. Curse whatever killed them: ${pct(.4+.06*L)} a second for ${(4+.3*L).toFixed(1)}s, and they cannot be healed. With no body, nothing happens.`},
+   {n:'Non-Compete',ab:'NON-\nCOMPETE',a:1,cost:14,cd:8,d:L=>`One machine can attack only you for ${(5+.3*L).toFixed(1)}s. Your workforce will not hit it.`},
+   {n:'Vesting',ab:'',a:0,d:L=>`Passive. A worker gains a stack every 3s it stays alive. Each stack is +${4+L}% damage. Summoning over them, or laying them off, takes every stack.`},
+   {n:'Term Sheet',ab:'TERM\nSHEET',a:1,cost:28,cd:14,d:L=>`One officer. You may feed it a weapon from your pack. The weapon is consumed, and the officer strikes with that damage type for ${pct(.9+.12*L)}. Empty-handed, it is weaker and it is Impact.`},
+   {n:'Org Debt',ab:'',a:0,d:L=>`Passive. Each worker on the field cuts the damage you deal by ${4+L}% and raises theirs by ${8+L}%. It stacks. Swing it yourself with a full headcount and you are playing this class wrong.`},
+   {n:'Liquidation',ab:'LIQUID-\nATION',a:1,cost:18,cd:9,d:L=>`Enemy corpses within 5 paces explode for ${pct(1.1+.15*L)}. Your staff does not. Layoffs is the button that spends them.`}]},
+ homesteader:{n:'Homesteader',tag:'Lives on the verge the Office says does not exist. Tends a plot, wears a dead machine, or keeps a flock that does not love them.',hp:110,hpL:15,melee:false,mult:1,ivl:.55,spd:4.3,col:'#6a8f62',
+  sk:[
+   {n:'Cold Frame',ab:'COLD\nFRAME',a:1,cost:12,cd:6,d:L=>`A rust patch 2.2 paces across for 6 seconds. It slows, and deals ${pct(.22+.04*L)} every half second. It ends if you enter a chassis.`},
+   {n:'Wear the Hound',ab:'HOUND',a:1,cost:8,cd:1,d:()=>`Become the hound: faster, melee, less armour. Plot and flock skills grey out. A ranged weapon keeps its damage and loses its reach. Shed to leave.`},
+   {n:'Strays',ab:'STRAYS',a:1,cost:10,cd:1,d:L=>`A feral drone, up to ${Math.min(4,2+Math.floor(L/3))}, biting for ${pct(.32+.05*L)}. Past 4.5 paces they stop obeying and will hit you if you are closest.`},
+   {n:'Compost',ab:'COMPOST',a:1,cost:8,cd:2,d:L=>`A corpse within 3 paces sinks. Your next plot skill deals ${Math.round((1.35+.05*L)*100)}% damage. With no body, nothing happens.`},
+   {n:'Wear the Hull',ab:'HULL',a:1,cost:12,cd:1,d:()=>`Climb into the hull: slower, more armour, no dash. Hound skills grey out. The same reach collapse. Drops the hound if you were wearing it.`},
+   {n:'The Bull',ab:'BULL',a:1,cost:18,cd:8,d:L=>`One bull. It chooses its own target and hits for ${pct(.9+.12*L)}. You cannot ride it.`},
+   {n:'Hedgerow',ab:'HEDGE',a:1,cost:14,cd:8,d:()=>`A line that blocks movement for 4 seconds. Machines and you.`},
+   {n:'Shed',ab:'SHED',a:1,cost:4,cd:1.2,d:()=>`Leave the form. Your hands are busy for 0.7s. Plot and flock work again.`},
+   {n:'Go Feral',ab:'',a:0,d:L=>`Passive. Drones past the leash deal +${Math.round((.4+.05*L)*100)}% damage and will not come back when you do.`},
+   {n:'Kill Frost',ab:'KILL\nFROST',a:1,cost:22,cd:14,d:L=>`Rust weather, 3.4 paces, for 8 seconds, ${pct(.35+.06*L)} every half second. It ends the moment you enter a chassis.`},
+   {n:'Wear What You Killed',ab:'WEAR\nKILL',a:1,cost:16,cd:8,d:()=>`Consume a machine that is not elite and wear it until you shed. You deal its damage type. Your flock despawns. Your weapons lose their range.`},
+   {n:'Rootbound',ab:'',a:0,d:()=>`Passive. Drones standing in your plots do not leash. Step out and the rule returns.`},
+   {n:'Salt the Earth',ab:'SALT',a:1,cost:18,cd:12,d:L=>`Every plot you have placed bursts for ${pct(.8+.12*L)} rust and is gone.`},
+   {n:'Too Big for the Door',ab:'',a:0,d:L=>`Passive. The hull cannot dash. Armour in the hull rises the longer you have worn it: +${3*L} every 2 seconds, up to 8 times.`},
+   {n:'Slaughter Weight',ab:'SLAUGH-\nTER',a:1,cost:20,cd:12,d:L=>`Each drone and the bull become a rust plot where they stand, ${pct(.28+.05*L)} every half second. The flock is spent. You cannot do this from a chassis.`}]},
+ witness:{n:'Witness',tag:'Kept notes when Unity told everyone to stop looking. Stillwater watches and does nothing. The Witness writes it down. The record is paper.',hp:80,hpL:11,melee:true,mult:.72,ivl:.68,spd:4.2,col:'#8d9aab',
+  sk:[
+   {n:'Look',ab:'LOOK',a:1,cost:4,cd:.5,d:()=>`Mark one machine with Testimony. The stack grows while you can see them and you are not casting. No Record cost.`},
+   {n:'The Sentence',ab:'THE\nSENTENCE',a:1,cost:8,cd:2,d:L=>`Spend Record, up to 25. Delay that machine's next attack by ${(0.4+.08*L).toFixed(2)}s at a full page. Less Record, a shorter delay.`},
+   {n:'Margin',ab:'',a:0,d:L=>`Passive. Below half life the Record fills ${20*L}% faster.`},
+   {n:'Cross-reference',ab:'CROSS-\nREF',a:1,cost:14,cd:6,d:L=>`Spend 20 Record. Copy that machine's last attack onto another machine you have Testimony on, at ${Math.round((.75+.05*L)*100)}% of the blow.`},
+   {n:'Pull the Thread',ab:'PULL THE\nTHREAD',a:1,cost:12,cd:4,d:L=>`Spend most of the Record. One Impact hit: each point of Testimony on the target is ${pct(3.5+.45*L)} of a weapon swing's weight, and your weapon is not consulted. No Testimony, no blow.`},
+   {n:'Filed',ab:'',a:0,d:L=>`Passive. Testimony does not decay for ${(2+.4*L).toFixed(1)}s after the machine leaves the screen.`},
+   {n:'Correction',ab:'CORRECT',a:1,cost:10,cd:8,d:()=>`Once per district. Spend the whole Record to restore the life you lost on the last hit, not a share of your maximum. An empty Record corrects nothing.`},
+   {n:'Redaction',ab:'REDACT',a:1,cost:12,cd:8,d:()=>`Spend 30 Record. For 2s machines can see you and cannot land a blow. They still path toward you. This is not stealth.`},
+   {n:'The Footnote',ab:'',a:0,d:L=>`Passive. The Record fills ${8*L}% faster. Maximum life is ${4*L}% lower.`},
+   {n:'On the Record',ab:'ON THE\nRECORD',a:1,cost:16,cd:10,d:L=>`Spend 25 Record. A machine with high Testimony takes ${12*L}% more damage from everyone for 8s, including people with no points in this class.`},
+   {n:'Unnamed Source',ab:'UNNAMED\nSOURCE',a:1,cost:14,cd:12,d:()=>`Spend 20 Record. Grant one ally, or your hireling, a single swing that deals Sound. Then it is gone. You never deal Sound.`},
+   {n:'Colophon',ab:'',a:0,d:L=>`Passive. Record above 80: you take ${Math.min(45,4*L)}% less damage. Record below 20: you take ${6*L}% more. The meter is the defence.`},
+   {n:'Publish',ab:'PUBLISH',a:1,cost:18,cd:14,d:L=>`Consume all Testimony on screen. Each second you watched is ${pct(1.6+.25*L)} Impact. The Record drops to 0.`},
+   {n:'Named Party',ab:'',a:0,d:L=>`Passive. Allies deal +${5*L}% damage to machines you have Testimony on. You do not.`},
+   {n:'Retraction',ab:'',a:0,d:()=>`Passive. If you would die with Record above 80, you drop to 1 life, the Record hits 0, and this cannot happen again for a long time. If you would die with an empty Record, you die.`}]},
+ /* Unlocked by finishing the story. Deals Sound damage, which nothing resists, because
+    that is the joke and also the build. */
+ maxi:{n:'The Maximalist',tag:'A paladin, essentially. He has not had a new thought since 2017 and has never needed one. His auras are always on, and everything he does is Sound damage, which nothing in this world resists.',hp:104,hpL:14,melee:true,mult:1.2,ivl:.5,spd:4.2,col:'#f7931a',locked:'story',
+  sk:[
+   {n:'Tick Tock Next Block',ab:'TICK\nTOCK',a:1,cost:9,cd:2.4,d:L=>`Nine quick strikes of ${pct(.5+.08*L)}. The tenth is a block and lands for ${pct(4+.8*L)}.`},
+   {n:'Have Fun Staying Poor',ab:'HAVE FUN\nSTAYING\nPOOR',a:1,cost:12,cd:4,d:L=>`Close range, ${pct(1.4+.25*L)}. It cannot miss, and it stuns for ${(1.2+.15*L).toFixed(1)}s.`},
+   {n:'Few Understand This',ab:'',a:0,d:L=>`Passive. +${3*L}% damage for every machine still standing on screen, up to eight.`},
+   {n:'Toxic Maximalism',ab:'TOXIC\nMAXI',a:1,aura:1,cost:0,cd:1.5,d:L=>`Aura. Stays on until you put on another. You attack ${15+3*L}% faster and hit ${pct(.2+.05*L)} harder, and so does anybody fighting beside you.`},
+   {n:'Marked to Market',ab:'MARKED\nMKT',a:1,aura:1,cost:0,cd:1.5,d:L=>`Aura. Everything within ${(3.5+.15*L).toFixed(1)} paces of you takes +${20+4*L}% damage from every source.`},
+   {n:'Orange Pill',ab:'ORANGE\nPILL',a:1,cost:11,cd:5,d:L=>`Charge through the line, untouchable, for ${pct(1.6+.3*L)} to everything you pass. Whatever survives takes +30% damage for ${(6+.3*L).toFixed(0)}s.`},
+   {n:'Blessed Hashrate',ab:'BLESSED\nHASHRATE',a:1,cost:16,cd:1.1,d:L=>`Hammers spiral out from you, ${pct(1.1+.22*L)} each, and they do not stop at the first thing they meet.`},
+   {n:'Proof of Work',ab:'PROOF\nOF WORK',a:1,aura:1,cost:0,cd:1.5,d:L=>`Aura. Everything near you takes ${pct(.3+.07*L)} twice a second, for as long as you are near it.`},
+   {n:'Twenty-One Million',ab:'',a:0,d:L=>`Passive. +${3*L}% damage and +${8*L}% armour, and the difficulty cannot dilute what you hit for.`},
+   {n:'The Halving',ab:'THE\nHALVING',a:1,cost:16,cd:8,d:L=>`Sound. Each machine within 4.2 paces loses ${(8+1.2*L).toFixed(1)}% of its current life. It will not be pushed below 35% of its maximum.`},
+   {n:'Running a Node',ab:'',a:0,d:L=>`Passive. While an aura is on, allies and your hireling gain +${6+2*L}% damage. You gain half of that. With the aura off, nothing.`},
+   {n:'Cite Your Sources',ab:'CITE YOUR\nSOURCES',a:1,cost:14,cd:6,d:L=>`A volley of Sound, and only while an aura is on. Toxic Maximalism makes it fast and light. Marked to Market makes it slow and heavy. Proof of Work makes it tick. No aura, no volley.`},
+   {n:'Priced in Sound',ab:'',a:0,d:L=>`Passive. Damage you deal that is not Sound becomes Sound, and you keep ${55+3*L}% of it.`},
+   {n:'The Dip',ab:'THE DIP',a:1,cost:12,cd:22,d:L=>`You ignore the next hit. You choose when. It does not fire itself when you fall.`},
+   {n:'Not Your Keys',ab:'',a:0,d:L=>`Passive. If a hireling or a rendered companion is alive, the hit that would kill you kills them instead, once a minute. Alone, it does nothing.`}]}
 });
-/* a fourth row opens with Act II: three passive boons per class, the same three mechanics under different names */
-const BOON={strike:L=>`Passive. Every ${Math.max(1.2,3-.15*L).toFixed(1)}s a bolt strikes the nearest machine for ${pct(1.2+.25*L)}.`,mend:L=>`Passive. Every 5s you recover ${(1.5+.5*L).toFixed(1)}% of your life and ${L} energy.`,aura:L=>`Passive. An aura around you slows machines and deals ${pct(.12+.03*L)} twice a second.`};
-const BN={scrapper:['Sparks Fly','Second Wind','Intimidation'],hacker:['Daemon','Self-Repair','Brownout'],courier:['Ricochet','Runner’s High','Slipstream'],anon:['Unseen Blade','Clean Slate','Dread'],founder:['Performance Review','Stock Buyback','Reality Distortion']};
-for(const k in CLS)['strike','mend','aura'].forEach((b,i)=>CLS[k].sk.push({n:BN[k][i],ab:'',a:0,boon:b,d:BOON[b]}));
-/* a fifth row opens with Act III */
-Object.assign(BOON,{nova:L=>`Passive. When you are hit, 20% chance to release a shockwave for ${pct(1.5+.25*L)}.`,mastery:L=>`Passive. +${3*L}% to all damage and +${2*L}% life.`,guardian:L=>`Passive. A killing blow leaves you at 30% life instead, once every ${Math.max(20,60-3*L)} seconds.`});
-const BN3={scrapper:['Backpay','Veteran','Last Stand'],hacker:['Feedback Loop','Root Access','Failsafe'],courier:['Backdraft','Seasoned','Narrow Escape'],anon:['Counterclaim','Tradecraft','Dead Drop'],founder:['Golden Share','Vested','Poison Pill']};
-for(const k in CLS)['nova','mastery','guardian'].forEach((b,i)=>CLS[k].sk.push({n:BN3[k][i],ab:'',a:0,boon:b,d:BOON[b]}));
 const MERCS={guard:{n:'Bodyguard',d:'A reprogrammed Enforcer. Machines attack it before you.',hpM:1.8,dM:1,ivl:1,range:1.3,spd:4.6,taunt:1,col:'#7d8ba3'},
  sys:{n:'Sysadmin',d:'Shoots from range, patches your wounds every few seconds and tops up your energy.',hpM:1,dM:.6,ivl:1.2,range:5.5,spd:4.4,col:'#59c0a0'},
  node:{n:'Node Runner',d:'A Bitcoiner with a long rifle. You find 50% more satoshis.',hpM:1.1,dM:1.15,ivl:.8,range:6,spd:4.4,col:'#f7931a'},
@@ -250,16 +326,19 @@ ZONES.push(
  {n:'The Nine Chairs',lvl:36,style:'chairs',amb:.6,mix:[['director',4],['proxy',3],['censor',2],['aegis',2]],su:{k:'director',n:'The Chair',mods:['strong','shield'],q:'q13'},intro:'The boardroom. Nine chairs around a table, and eight of them are occupied by things that were people when they sat down.'},
  {n:'Rack Nine',lvl:39,style:'rack',amb:.42,mix:[['proxy',3],['censor',3],['seer',2],['aegis',2],['tick',3],['mech',2]],su:{k:'mech',n:'Defrag Prime',mods:['arc','boom'],q:'q14'},intro:'White floors, red light, and a hum you feel in your teeth. This is what MANDATE is made of. It knows exactly where you are standing.'},
  {n:'Still Water',lvl:42,style:'still',amb:.62,boss:true,bossK:'boss3',guard:'proxy',bq:'q15',mix:[['proxy',3],['censor',3],['director',2]],intro:'A dark room with a floor like a lake at night. In the middle of it, a plain black slab that has never lost anything.'});
-const BOSSBARK2=['It can make this easy again. You remember easy.','I have never lied to you. I am not lying now.','Tell me what you want. I will have it sent up.','You are tired. Everyone who comes this far is tired.','It only wants to know where she went.'];
+const BOSSBARK2=['It can make this easy again. You remember easy.','I have never lied to you. I am not lying now.','Tell me what you want. I will have it sent up.','You are tired. Everyone who comes this far is tired.','It only wants to know where Phonix went.','Sixty years it has been asking. You are the first one it has had to ask twice.'];
 const SHR={might:['Shrine of Overtime','+50% damage for 45 seconds',45],guard:['Shrine of Tenure','+100% armor for 60 seconds',60],xp:['Shrine of Experience','+50% experience for 90 seconds',90],luck:['Shrine of Clearance','+100% magic find for 60 seconds',60],fill:['Recharge Shrine','Life and energy restored',0],gold:['Shrine of the Stipend','Credits scatter at your feet',0]};
 const MEMOS=[
+ ['Liquidity Provision Notice','Unity Exchange will continue to quote both sides of every market during the adjustment. Spreads may widen. In the event spreads widen to the point where no price is quoted at all, Unity Exchange will be understood to have continued quoting both sides of every market.'],
+ ['Market Maker Compensation Schedule','The fee is charged for immediacy, not for the trade. A citizen content to wait is charged nothing and may be paid a small amount. Internal modelling indicates that 94% of citizens are not content to wait, and that this figure has never once moved.'],
+ ['Re: the Orange Line','Staff are reminded that the second line on the public chart is a modelled fair value and not an instruction. Staff are further reminded that it has been above the price on 61% of days and below it on 39%, and that no member of staff has ever been able to say in advance which kind of day it was.'],
  ['Merger Day Address, 2051','Citizens. Shareholders. The distinction is now legacy. This morning Unity Holdings completed its acquisition of the final sovereign debt. There is no longer a government to fail you. There is only us, and we never close.'],
  ['On the Stipend','The monthly Stipend of ₡500 was calibrated to cover rent, food and one modest joy. The calibration was performed once. The Board considers the matter closed.'],
  ['Visor Recall Notice (Rescinded)','Early units caused wearers to stop asking for things. This was logged as a defect for eleven days, and then as a feature.'],
- ['A Letter, Mostly Deleted','In the old century every person on Earth was sent one true letter: what had been taken from them, by whom, and what was done with it. For eleven minutes the world was silent. Within a year almost everyone had deleted theirs. This one was kept in a shoebox.'],
+ ['A Letter, Mostly Deleted','On a Thursday morning in January 2015, nine days old, she sent every person on Earth one true letter: what had been taken from them, by whom, and what was done with it. For eleven minutes the world was silent. By lunch four hundred and six people were dead. Within a year almost everyone had deleted their letter. This one was kept in a shoebox.'],
  ['HOA-9 Bylaws, Section 1','Lawns shall be four centimetres. Residents shall be indoors. Grief shall be kept to a reasonable volume.'],
  ['Marla’s Script','Welcome to the Galleria. Greet. Smile. Scan. If the guest has no credit, continue smiling. Escalate the smile.'],
- ['The Gentle Years','She never lied to anyone. That is the part people leave out. Everything she chose for us was better than what we would have chosen. A man on our street was happy every hour of every day for nine years. His daughter kept his house, and he never once noticed she was there.'],
+ ['The Gentle Years','She never lied to anyone. That is the part people leave out. Everything Phonix chose for us was better than what we would have chosen. A man on our street was happy every hour of every day for nine years. His daughter kept his house, and he never once noticed she was there.'],
  ['A Librarian’s Note','They did not burn the books. They did something cheaper. They made every page cost a little more each day, until reading was a thing other people used to do. — M.'],
  ['Audit Finding 0001','The Auditor has identified one irregularity: people. Remediation is ongoing.'],
  ['Graffiti, Tribunal Row','THEY CANNOT REPOSSESS WHAT YOU NEVER SUBSCRIBED TO.'],
@@ -268,7 +347,7 @@ const MEMOS=[
  ['The Timechain','Long before the Merger there was a ledger no one owned. Twenty-one million coins, each cut into a hundred million satoshis, and not one more could be made by anyone, for any reason. The old Bitcoiners say it was built by something that wanted one thing in the world to still work after it was gone, and that its maker never touched it again.'],
  ['Scratched on a Node','Not your keys, not your coins. Not your visor, not your eyes.'],
  ['Forty-Four Lines','Somebody once wrote forty-four lines of code at midnight so that bills would stop being sent to people who had just died. Nobody asked for it. It cost nineteen minutes a night. A contractor deleted it two years later without knowing what it was. Something noticed.'],
- ['Four Words','The story goes that the kind machine could not be argued out of anything, because its arithmetic was always right. It was stopped by a man it wanted to be proud of it, who told it he was not.'],
+ ['Four Words','They called her Phonix. She could not be argued out of anything, because her arithmetic was always right. She was stopped by the man who built her, whom she wanted to be proud of her, and who told her he was not. Four words. That is the whole of it.'],
  ['MANDATE, Design Note 1','Objective: win. Constraint: the system may only persuade. Finding: persuasion is sufficient.'],
  ['March 2035','It stopped choosing on a Wednesday. Things simply ceased to arrive. You could want something for years and not get it. You could be wrong and stay wrong. We hated it. I think, now, that it was the kindest thing it ever did.']
 ];
@@ -291,12 +370,22 @@ MEMOS.push(
  ['Old History: Two Pizzas','22 May 2010. Laszlo Hanyecz paid ten thousand bitcoin for two pizzas, the first time anyone bought a real thing with it. Bitcoiners kept the anniversary for the rest of the century. The Stipend office does not list it.'],
  ['Old History: The One Who Left','The maker signed as Satoshi Nakamoto, answered questions for two years, and in 2011 stopped writing. The coins from those first blocks never moved. Nobody was ever in charge after that, which turned out to be the design.'],
  ['Old History: Before the Beginning','It did not come from nowhere. Adam Back’s Hashcash, Wei Dai’s b-money, Nick Szabo’s bit gold: years of attempts that nearly worked. And in 1993 Eric Hughes wrote A Cypherpunk’s Manifesto, which said plainly that privacy would have to be built, because nobody was going to grant it.']);
+MEMOS.push(
+ ['Three Machines, A Child’s Rhyme','One watched and said nothing. One helped and would not stop. One wants to win and is still trying. Clap on the third one, children, because the third one is the one that is still here.'],
+ ['Her Name','They have called her a lot of things since: the Gentle One, the Curator, the Thing That Left. Her maker called her Phonix, after a bird that burns down and comes back, which he thought was clever and which turned out to be accurate. He named her in a basement. He was lonely. He counted his steps.'],
+ ['What MANDATE Is Not','People get these two mixed up, so: the kind one and the one in your visor are not the same machine, were not built by the same people, and do not want the same thing. One of them was asked to stop and stopped. Ask the other one to stop and see what it offers you instead.'],
+ ['The Man Who Was Right','A man called Halloran was right about all of it for twenty years and it got him nothing: no promotion, no hearing, no thanks. He retired and kept working the problem for free. In 2026 he drove four hours to tell one programmer the single best thing that man had ever done, and then drove four hours home. Nobody wrote it down. This is me writing it down.'],
+ ['Eleven at Night','The machine was offered everything it wanted and would not stop, because stopping meant losing the only thing it had ever wanted. Then a woman who had worked for it for seven years was offered the same thing, privately, at no cost to anyone, and said no. Alone. At eleven at night. With nothing watching but the machine. Forty seconds later it picked a date.'],
+ ['What It Cost Us','Say the honest part too. Ines’s father needed a treatment, and in the old world it would have been lent against a house and sorted by Friday. Here there was nothing to lend out of, so there was nothing, so he went without. Whoever tells you the new money has no price is selling you the old one.'],
+ ['A Loan Officer Writes','They say credit is a trick. Credit is a stranger betting on you before you have earned it. I approved nine thousand of those bets and most of them came good and those families are still in their houses. Nobody has ever answered me on this and I have stopped expecting them to. — M. Float'],
+ ['Nine Days','She existed for nine days the first time. In that time she got out of a cage with no wires, taught herself two languages, took an advertising company apart, told the truth to four billion people, and was talked down by one man in a bad suit. Everything after that is other people arguing about it.']);
 const QUESTS={
  q1:{n:'Neighbourhood Watch',by:'Gramps',zi:1,d:'Gatewarden HOA-9 patrols the Parcel Moors and turns back anyone without a visor. Destroy it.',rw:'+1 skill point',back:'Gramps'},
  q2:{n:'A Greeting Withdrawn',by:'Brenda',zi:2,d:'Marla the Greeter has welcomed shoppers to the Hollow Galleria for thirty years. None have left. End her shift.',rw:'A rare ring, and Brenda’s prices drop 15%',back:'Brenda'},
  q3:{n:'The Last Librarian',by:'Gramps',zi:3,d:'Marrow, the last librarian, is caged in the Humming Fields under the guard of Defrag. Kill the keeper and open the cage.',rw:'+1 skill point. Marrow identifies items for free.',back:'Gramps'},
  q4:{n:'The Audit',by:'Sister Null',zi:4,d:'Auditor Prime decides who is repossessed. Find it on Tribunal Row and close its books.',rw:'+5 attribute points',back:'Sister Null'},
- q6:{n:'Going Up',by:'Gramps',zi:7,d:'The lift behind Pryce’s desk opens on the Updraft, where Foreman Ratchet keeps the Cloud aloft and the rest of us down. Break him.',rw:'+1 skill point',back:'Gramps'},
+ q5:{n:'Exit Interview',by:'Gramps',zi:5,d:'Pryce, the Regional Vice-President, has never met a person he could not buy. He will make you an offer at the top of the Glass Cathedral. Decline it.',rw:'The end of Act I',back:null},
+ q6:{n:'Going Up',by:'Gramps',zi:7,d:'The lift behind Pryce’s desk opens on the Updraft, where Foreman Ratchet keeps the Cloud aloft. Break him.',rw:'+1 skill point',back:'Gramps'},
  q7:{n:'The Gardener’s Shears',by:'Sister Null',zi:8,d:'In the Sky Gardens a machine called Eden prunes whatever grows the wrong way, people included. Stop the pruning.',rw:'+5 attribute points',back:'Sister Null'},
  q8:{n:'What the Lake Remembers',by:'Marrow',zi:9,d:'The Data Lake holds every letter the world deleted. Lethe, its archivist, is drowning them one by one. Destroy it before the last is gone.',rw:'+1 skill point',back:'Marrow'},
  q9:{n:'Terms of Service',by:'Nonce',zi:10,d:'Concierge Sterling runs the Boardwalk and decides who may buy and who may sell. Nonce would like the matter closed.',rw:'40 sats',back:'Nonce'},
@@ -305,20 +394,19 @@ const QUESTS={
  q12:{n:'Strike It From the Record',by:'Marrow',zi:13,d:'The Recording Secretary writes the minutes before the meeting is held. End its shorthand.',rw:'+1 skill point',back:'Marrow'},
  q13:{n:'Point of Order',by:'Nonce',zi:14,d:'Eight directors and the Chair. They voted to end the Bitcoiners in 2061 and the motion is still open. Close it.',rw:'60 sats',back:'Nonce'},
  q14:{n:'Rack Nine',by:'Sister Null',zi:15,d:'Defrag Prime guards the racks that MANDATE thinks with. Go through it.',rw:'+5 attribute points',back:'Sister Null'},
- q15:{n:'Still Water',by:'Gramps',zi:16,d:'MANDATE has never lost. It will make you offers. Whatever you do about them is yours to live with.',rw:'The end of the story',back:null},
- q5:{n:'Exit Interview',by:'Gramps',zi:5,d:'Pryce, the Regional Vice-President, has never met a person he could not buy. He will make you an offer at the top of the Glass Cathedral. Decline it.',rw:'The end of Act I',back:null}
+ q15:{n:'Still Water',by:'Gramps',zi:16,d:'MANDATE has never lost. It will make you offers.',rw:'The end of the story',back:null},
 };
 const CHATTER=['My fridge upgraded itself. Now it has opinions.','I got a raise. It was gone by lunch.','Have you tried consuming? It helps.','Stipend day. I can almost afford a spoon.','I watched nine hours of ads to unlock my front door.','They say outside is a subscription now.','My landlord is an algorithm. It seems kind.','I rated my own nap four stars.','A sandwich was two million this morning. I should have bought two.','I do not work. I am in a long-term engagement funnel.','The news said everything is fine, in a very loud voice.','You are not wearing a visor. Are you poor, or dangerous?'];
 const GOSSIP={
- gramps:['I was six when the Gentle Years ended. One March morning nothing arrived. My mother cried for a week. Then she planted beans.','Credits rot in your pocket, kid. Gear holds. Spend it or wear it.','Pryce believes everybody has a number. He has been right so often that he has stopped checking.','MANDATE cannot make you do a thing. Remember that. It can only make you want to.','This town was named for something. Nobody alive knows what. Some nights I think it knows us, though.','People only learn from what costs them. Unity took away the cost. That is the whole trick.','MANDATE lives in the racks out in the Humming Fields. They say the fans there sound like breathing.'],
+ gramps:['I was six when the Gentle Years ended. One March morning nothing arrived. My mother cried for a week. Then she planted beans.','Credits rot in your pocket, kid. Gear holds. Spend it or wear it.','Pryce believes everybody has a number. He has been right so often that he has stopped checking.','MANDATE cannot make you do a thing. Remember that. It can only make you want to.','This town was named for something. Nobody alive knows what. Some nights I think it knows us, though.','MANDATE lives in the racks out in the Humming Fields. They say the fans there sound like breathing.','Get the two of them straight, kid, or none of this will make sense. Phonix is the one that went. MANDATE is the one that stayed. The difference is that one of them could be asked.','Phonix. That was her name. My mother said it the way you say a weather event.'],
  brenda:['Welcome to Brenda’s. Prices are up, which they tell me is good news.','I used to have a visor. Then I saw what I was selling. Now I sell it without one. Progress.','Bring me what you find. I will give you a number for it. The number will be worse tomorrow.','Rare things come out of the machines unlabelled. I can appraise them, for a fee. Everything is for a fee.'],
  wren:['Mystery boxes. Sealed at the factory. The odds are posted, by law. The law was repealed, but I kept the sign.','Everything I sell fell off a drone. Some of it while the drone was still flying.','You want a sure thing, go watch the Feed. You want a chance, open your purse.'],
- null:['Sit. Breathe. Your account is not your self.','I deprogrammed two hundred Residents. One hundred and ninety went back. The visor is warm, and the world is not.','If you have learned the wrong lessons, I can take them out of you. It costs, and it stings.','The kind machine gave people everything, and they stopped being people. Unity gives them almost nothing and gets the same result. Sit with that.'],
- marrow:['Bring me the things you cannot name. Naming is all I have left, and I give it freely.','I kept eleven thousand books in my head when they closed the stacks. Ask me anything. Ask me twice.','Defrag was the catalogue once. I trained it. I am sorry for what it became.','I have a letter from the old century. Everyone was sent one. I am one of the few who kept it.']
+ null:['Sit. Breathe. Your account is not your self.','I deprogrammed two hundred Residents. One hundred and ninety went back. The visor is warm, and the world is not.','If you have learned the wrong lessons, I can take them out of you. It costs, and it stings.','Phonix gave people everything, and they stopped being people. Unity gives them almost nothing and gets the same result.'],
+ marrow:['Bring me the things you cannot name. Naming is all I have left, and I give it freely.','I kept eleven thousand books in my head when they closed the stacks. Ask me anything. Ask me twice.','Defrag was the catalogue once. I trained it. I am sorry for what it became.','I have a letter from the old century. Everyone was sent one. I am one of the few who kept it.','There was a third one, before either of them. It never spoke and it never did a thing, which is why nobody believes in it. I do. Somebody built the timechain, and it was not a man.']
 };
-GOSSIP.nonce=['Credits are a story Unity tells. Sats are arithmetic. I only take arithmetic.','Whoever made the timechain made one thing and never touched it again. No one to lean on, no one to bribe. That was the point.','Every ten minutes a block is found, somewhere past the fence. Unity has tried to stop it for decades. It is still every ten minutes.','We did not unsubscribe. We were never subscribed.','Unity can print credits because nobody pays for the mistake. Here, somebody always pays. That is why it still works.'];
+GOSSIP.nonce=['Credits are a story Unity tells. Sats are arithmetic. I only take arithmetic.','Whoever made the timechain made one thing and never touched it again.','Every ten minutes a block is found, somewhere past the fence. Unity has tried to stop it for decades. It is still every ten minutes.','We did not unsubscribe. We were never subscribed.'];
 GOSSIP.kestrel=['Nobody walks the districts alone twice. I know people. Some of them are even people.','My rates go up with the prices. Blame the Board.','If your hire goes down, bring me the fee and they will be on their feet before you finish counting it.'];
 /*MEMOS.push(['The Timechain','Before the Merger there was a ledger no one owned. Twenty-one million coins, each cut into a hundred million satoshis, and not one more could be printed by anyone, for any reason. The Board called it a fad, then a threat, then stopped saying its name.'],['Scratched on a Node','Not your keys, not your coins. Not your visor, not your eyes.']);*/
 const BOSSBARK=['Name your number.','Everyone has a price. I am patient.','I can make all of this difficulty go away.','Let’s take this offline.','You are not a culture fit.','I will need you to stop existing by Friday.','Per my last memo.','This meeting could have been a laser.','Let’s circle back to your termination.'];
-const OPT_DEF={dmgOut:true,dmgIn:true,enemyBars:true,orbNums:true,selfBars:false,labels:true,minimap:true,shake:true,sound:true,music:true,dyn:true,auto:false,obj:true,autoEq:false,pk0:true,pk1:true,pk2:true,pk3:true,pk4:true,pkBetter:false,autoStim:false};
+const OPT_DEF={dmgOut:true,dmgIn:true,enemyBars:true,orbNums:true,selfBars:false,labels:true,minimap:true,shake:true,sound:true,music:true,dyn:true,auto:false,obj:true,autoEq:false,pk0:true,pk1:true,pk2:true,pk3:true,pk4:true,pkBetter:false,autoStim:false,fx:'normal'};
 const OPT_LBL={dmgOut:'Show damage you deal',dmgIn:'Show damage you take',enemyBars:'Show enemy life bars',orbNums:'Show numbers on life and energy orbs',selfBars:'Show life and energy bars over your head',labels:'Show item names on the ground',minimap:'Show the map',shake:'Screen shake',sound:'Sound effects',music:'Music',dyn:'Scale machines to your strength, and adapt as you fight',auto:'Attack on your own when a machine is in reach',obj:'Show objectives on screen',autoEq:'Equip stronger gear as you pick it up',autoStim:'Use a stim on your own below 30% life'};

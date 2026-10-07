@@ -8,7 +8,7 @@ const PHRASES=[
  {id:'timelock',n:'Timelock',slot:'armor',w:['garden','candle','border'],mods:{hp:80,regenH:8,en:50,regen:3},fl:'Not yet. Not yet. Now.'},
  {id:'fullnode',n:'Full Node',slot:'helm',w:['island','kernel'],mods:{mf:40,crit:8,skills:1},fl:'Trust nobody. Verify everything.'},
  {id:'longest',n:'Longest Chain',slot:'helm',w:['ladder','anchor'],mods:{armorP:80,mspd:12,hp:50},fl:'The one with the most work behind it wins.'}];
-function ensureG(){bookFix();G.words=G.words||{};G.st=G.st||{};const s=G.st;s.wf=s.wf||{};for(const k of['streak','gobs','shifts','phr','sold'])s[k]=s[k]||0;G.rep=G.rep||{btc:0,anon:0};G.ach=G.ach||{};G.adopt=G.adopt||0;G.nodes=G.nodes||{};G.rep.norm=G.rep.norm||0;G.cv=G.cv||{};G.lean=G.lean||0;G.web=G.web||{};G.fork=G.fork||{};if(!G.rb1){G.rb1=1;if(G.st.sold>0&&!G.boss3Kills){const n=G.st.sold;G.st.sold=0;G.adopt=Math.min(100,G.adopt+15*n);G.credits-=Math.min(G.credits*.98,6000*G.cpi*G.lvl*n);delete ZS[16];G.rbNote=1}}acctPara();chFix();accMigrate();G.camps=G.camps||{};G.won=G.won||{};if(!G.adInit){G.adInit=1;G.adopt=Math.min(100,G.adopt+20)}}
+function ensureG(){bookFix();G.words=G.words||{};G.st=G.st||{};const s=G.st;s.wf=s.wf||{};for(const k of['streak','gobs','shifts','phr','sold'])s[k]=s[k]||0;G.rep=G.rep||{btc:0,anon:0};G.ach=G.ach||{};G.adopt=G.adopt||0;G.nodes=G.nodes||{};G.rep.norm=G.rep.norm||0;G.cv=G.cv||{};G.lean=G.lean||0;G.web=G.web||{};G.fork=G.fork||{};if(!G.rb1){G.rb1=1;if(G.st.sold>0&&!G.boss3Kills){const n=G.st.sold;G.st.sold=0;G.adopt=Math.min(100,G.adopt+15*n);G.credits-=Math.min(G.credits*.98,6000*G.cpi*G.lvl*n);delete ZS[16];G.rbNote=1}}acctPara();chFix();accMigrate();G.camps=G.camps||{};G.won=G.won||{};mktInit();if(!G.adInit){G.adInit=1;G.adopt=Math.min(100,G.adopt+20)}boonRefund()}
 function gotWord(w){G.words[w]=(G.words[w]||0)+1;G.st.wf[w]=1}
 function socketWord(it,w){if(!it.soc||(it.words||[]).length>=it.soc||!G.words[w])return;G.words[w]--;it.words=it.words||[];it.words.push(w);const m=WORDS[w];it.aff.push({k:m[0],v:m[1],w});sfx('equip');
   if(it.words.length===it.soc){const r=PHRASES.find(p=>p.slot===it.slot&&p.w.join()===it.words.join());
@@ -17,18 +17,18 @@ function socketWord(it,w){if(!it.soc||(it.words||[]).length>=it.soc||!G.words[w]
 
 function freeSpotNear(r){for(let i=0;i<40;i++){const a=rnd(0,6.283),d=r*(1-i/60),x=P.x+Math.cos(a)*d,y=P.y+Math.sin(a)*d;if(free(x,y,.5))return{x,y}}return{x:P.x,y:P.y}}
 /* ================= reputation ================= */
-const REP={btc:{n:'The Bitcoiners',ranks:['Pleb','Stacker','Node Runner','Cypherpunk'],perks:['Nonce charges 10% less','You find 25% more satoshis','Nonce exchanges with no spread','A gift from the cache'],how:'Earned by trading with Nonce, lighting nodes and finishing his work.'},
+const REP={btc:{n:'The Bitcoiners',ranks:['Pleb','Stacker','Node Runner','Cypherpunk'],perks:['Nonce charges 10% less','You find 25% more satoshis','Nonce quotes you a tighter spread','A gift from the cache'],how:'Earned by trading with Nonce, lighting nodes and finishing his work.'},
  anon:{n:'The Anons',ranks:['Lurker','Contributor','Raider','Legion'],perks:['Bounties pay 25% more','A fourth bounty is posted','Each bounty also pays a seed word','A gift, sender unknown'],how:'Earned by filling bounties and helping strangers.'}};
 const REPT=[10,30,60,100];
 const repRank=f=>REPT.filter(t=>G.rep[f]>=t).length;
 function addRep(f,n){const a=repRank(f);G.rep[f]+=n;const b=repRank(f);if(b>a){sfx('level');toast(REP[f].n+': you are now '+REP[f].ranks[b-1]+'. '+REP[f].perks[b-1]+'.');if(b===4)giveItem(makeItem(G.lvl+3,4));if(f==='btc')addAdopt(2,'word spreads')}}
 
 /* ================= adoption: the long goal ================= */
-function addAdopt(n,why){if(n>0&&G.adopt>=100)return;const b4=Math.floor(G.adopt);G.adopt=clamp(G.adopt+n,0,100);if(Math.floor(G.adopt)!==b4||why)toast('Bitcoin adoption '+(n<0?'falls to ':'')+Math.floor(G.adopt)+'%'+(why?' · '+why:''));
+function addAdopt(n,why){if(n>0&&G.adopt>=100)return;mktNews(clamp(n*.02,-.2,.2),why||null);const b4=Math.floor(G.adopt);G.adopt=clamp(G.adopt+n,0,100);if(Math.floor(G.adopt)!==b4||why)toast('Bitcoin adoption '+(n<0?'falls to ':'')+Math.floor(G.adopt)+'%'+(why?' · '+why:''));
   if(G.adopt>=50&&!G.ad50){G.ad50=1;setTimeout(()=>toast('Half the world now saves in sats. The Stipend terminal pays one, too.'),1800)}
   if(G.adopt>=100&&!G.resSeen)setTimeout(()=>{if(mode==='play'){G.resSeen=1;playScene(RESERVE,()=>{mode='play';dlg('The reserve','Bitcoin is the world’s reserve currency. Unity can still create credits, but nothing that matters is priced in them any more, so prices have stopped rising. You did not break the money printer. You made it irrelevant.',[['Continue']])})}},2500)}
 function ensureNode(){if(W.z.town||W.z.sim||W.z.sub||W.objs.some(o=>o.k==='dnode'))return;const p=freeSpot(12);W.objs.push({k:'dnode',x:p.x,y:p.y})}
-function lightNode(o){if(cause()){G.sats+=5;toast('Sister Null’s people cover the cost. For the cause.')}if(G.sats<5){toast('Lighting a node costs 5 sats');sfx('err');return}G.sats-=5;o.used=1;G.nodes[W.zi]=1;sfx('shrine');parts(o.x,o.y,24,['#f7931a','#fff'],2.5,1.6);addRep('btc',5);addAdopt(5,'a node comes online in '+W.z.n)}
+function lightNode(o){if(cause()){G.sats+=5;toast('Sister Null’s people cover the cost. For the cause.')}if(G.sats<5){toast('Lighting a node costs 5 sats');sfx('err');return}G.sats-=5;o.used=1;G.nodes[W.zi]=1;sfx('shrine');parts(o.x,o.y,24,['#f7931a','#fff'],2.5,1.6);addRep('btc',5);mktNews(.12,'a node came online in '+W.z.n);addAdopt(5,'a node comes online in '+W.z.n)}
 
 /* ================= world events ================= */
 const EVS={stipend:{n:'Stipend Day',d:'Residents wander the district and credit drops are tripled.',t:45},audit:{n:'Surprise Audit',d:'A hunting party has your scent. Its leader carries a lockbox.',t:70},outage:{n:'Outage',d:'The lights fail and the machines stall. +50% experience while it lasts.',t:40},block:{n:'Block Found',d:'For a short while, any machine may drop a satoshi.',t:35}};
@@ -50,9 +50,13 @@ const ACH=[['first','First Blood','Destroy a machine',()=>G.kills>=1],['k100','S
  ['memo','Librarian','Collect every memo',()=>G.memos.length>=MEMOS.length],['seed','Twelve Words','Find all twelve seed words',()=>Object.keys(G.st.wf).length>=12],['phr','Not Your Keys','Complete a seed phrase',()=>G.st.phr>0],
  ['hodl','Stacker','Hold 100 sats at once',()=>G.sats>=100],['shill','Portfolio Manager','Liquidate five shitcoiners',()=>(G.st.shills||0)>=5],['unseen','Nobody Saw','Give something away three times',()=>(G.unseen||0)>=3],
  ['a1','Exit Interview','Finish Act I',()=>G.q.q5===3],['a2','The Voice','Finish Act II',()=>G.q.q10===3],['a3','Still Water','Finish Act III',()=>G.q.q15===3],
+ ['dip','Buy the Dip','Buy sats while they trade under what they are worth',()=>(G.st.dip||0)>0],
+ ['maker','Making the Market','Fill an order you posted yourself',()=>(G.st.maker||0)>0],
+ ['hodl2','Through the Trough','Hold a stack through a 20% fall and out the other side',()=>(G.st.hodl||0)>0],
+ ['liq','Margin Call','Get liquidated by Mr. Float',()=>(G.st.liq||0)>0],
  ['res','Reserve','Make bitcoin the world’s reserve currency',()=>G.adopt>=100],['sold','Everyone Has a Price','Accept MANDATE’s offer',()=>G.st.sold>0]];
 let achT=3;
-function achTick(dt){achT-=dt;if(achT>0)return;achT=2;for(const a of ACH)if(!G.ach[a[0]]&&a[3]()){G.ach[a[0]]=1;G.sats+=1;sfx('quest');toast('Feat: '+a[1]+' · +1 sat');return}}
+function achTick(dt){achT-=dt;if(achT>0)return;achT=2;maxiCheck();for(const a of ACH)if(!G.ach[a[0]]&&a[3]()){G.ach[a[0]]=1;G.sats+=1;sfx('quest');toast('Feat: '+a[1]+' · +1 sat');return}}
 
 /* ================= boss rush ================= */
 function rushList(){const l=[];for(const zi of[1,2,3,4,7,8,9,10,12,13,14,15,22,23,24,25,28,29,30,31])if(G.unlocked>zi||G.q[ZONES[zi].su.q]>=2)l.push({k:ZONES[zi].su.k,n:ZONES[zi].su.n,mods:ZONES[zi].su.mods});
@@ -75,15 +79,15 @@ Object.assign(SQ,{
   steps:[
    {t:'obj',zi:8,look:'person',label:'Speak to Tam',d:'Find Tam the gardener in the Sky Gardens',say:'A man kneeling in a flowerbed with his visor in the dirt beside him. “I grew something they did not ask for. A tomato. One. They are coming to correct it. Will you walk me out?”',esc:'Tam'},
    {t:'esc',zi:8,look:'lift',label:'Send Tam down the lift',d:'Walk Tam to the service lift in the Sky Gardens and keep him alive',say:'He steps into the lift holding the tomato in both hands like something that might go off. “I am going to plant the seeds,” he says. “I do not know what will come up. That is the part I like.”'},
-   {t:'talk',npc:'null',d:'Return to Sister Null',say:'“He is already digging up the square. Nobody told him he could. I think that is the first thing he has done without being told in his life.”',rw(){G.ap+=5;G.tam=true;addRep('anon',10);toast('You gain 5 attribute points')}}]},
+   {t:'talk',npc:'null',d:'Return to Sister Null',say:'“He is already digging up the square.”',rw(){G.ap+=5;G.tam=true;addRep('anon',10);toast('You gain 5 attribute points')}}]},
  letter:{n:'Return to Sender',by:'marrow',who:'Marrow',req:()=>G.q.q8===3,rw:'+1 skill point',
   offer:'“The Lake is safe, but letters in a lake are still unread. The Persuaders and Subsidiaries up there carry copies; they study them, to learn what moves us. Take three back. Then do the only thing a letter is for. Put them in the hands of three people in this square.”',
   steps:[
    {t:'kill',zi:9,kinds:['seer','splitter'],n:3,chance:{seer:.6,splitter:.4},item:'Letter',d:'Recover 3 letters from Persuaders and Subsidiaries in the Data Lake'},
    {t:'res',n:3,label:'Hand them a letter',d:'Hand the letters to three Residents in Stillwater'},
-   {t:'talk',npc:'marrow',d:'Return to Marrow',scene:[{art:'dawn',text:'Three visors come up, slowly, the way you lift a bandage. Three people stand in the square of Stillwater reading the same kind of page, not looking at each other yet.'}],say:'“They will be angry. Then sad. Then, if we are lucky, curious. That last one is the dangerous one, and it is why they made the visor.”',rw(){G.sp++;addRep('anon',10);toast('You gain 1 skill point')}}]}
+   {t:'talk',npc:'marrow',d:'Return to Marrow',scene:[{art:'dawn',text:'Three visors come up, slowly, the way you lift a bandage. Three people stand in the square of Stillwater reading the same kind of page, not looking at each other yet.'}],say:'“They will be angry.”',rw(){G.sp++;addRep('anon',10);toast('You gain 1 skill point')}}]}
 });
-GOSSIP.tam=['Tomatoes. Beans next. Nobody has corrected me yet.','You cannot make a plant grow faster by paying it. I find that restful.','Take one. They are not perfect. That is how you know they are real.'];
+GOSSIP.tam=['Tomatoes. Beans next. Nobody has corrected me yet.','You cannot make a plant grow faster by paying it. I find that restful.','Take one. They are not perfect.'];
 
 /* ================= a town for each act, and open-air districts ================= */
 ZONES.push({n:'The Landing',town:true,act:2,style:'landing',amb:.3},{n:'The Antechamber',town:true,act:3,style:'wait',amb:.5});

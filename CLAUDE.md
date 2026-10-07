@@ -5,7 +5,7 @@ aftermath of the author's novel *Project Phonix*. One self-contained HTML page, 
 
 ## Build
 `./build.sh` concatenates `src/p0.html` (CSS + markup, `<title>` first, no doctype/html/head/body) and the
-scripts, in this order, inside one IIFE: p1 p2 p5 p6 p7 p8 p9 p10 p11 p3 p4 p12. Output: `dist/unsubscribe.html`.
+scripts, in this order, inside one IIFE: p1 p2 p5 p6 p7 p8 p9 p10 p11 p3 p4 p12 p13. Output: `dist/unsubscribe.html`.
 All files share one scope, so load order decides what a top-level statement may reference.
 
 | File | Contents |
@@ -21,7 +21,8 @@ All files share one scope, so load order decides what a top-level statement may 
 | p11 | the book: prequel (zone 33), Act IV (town 21, zones 22-26), Act V (town 27, zones 28-32), bosses `boss4`/`boss5` |
 | p3 | renderer |
 | p4 | cinematics, dialogs, HUD, sheets/menus, input, `window.__g` test hook |
-| p12 | late additions that need p4 tables (quest turn-ins) |
+| p12 | late additions that need p4 tables (quest turn-ins), the Maximalist's unlock and auras |
+| p13 | games, parties, hostility, chat, proximity voice, the bug reporter — inert without the account server |
 
 Zones: 0 Stillwater, 1-5 Act I, 6 Simulator, 7-11 Act II, 12-16 Act III, 17/18 towns II/III, 19 subpoena, 20 Bull Run, 21-33 see p11.
 
@@ -43,4 +44,7 @@ Artifact URL: https://claude.ai/artifact/5i4v5MTCPoKQjHbi14NCxg (capabilities db
 - Acts III-V balance is unmeasured; the old balance bot stalls on dialog locks and needs a rewrite.
 - Cloud (account) paths for save slots, lockbox, character switching, delete and companion are untested.
 - Companion feel, party-pressure step logic, boss4/boss5 tuning are first guesses.
-- Held for later: multiplayer server, real sats over Lightning, auction house.
+- Held for later: real sats over Lightning, auction house.
+- The multiplayer server ships and is tested (`server/`, `MULTIPLAYER.md`). What it is *not*:
+  authoritative over monsters or damage, and there is no friends list, no messaging that
+  outlives a game, and no player directory.

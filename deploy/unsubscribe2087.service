@@ -1,0 +1,52 @@
+# systemd unit. Install to /etc/systemd/system/unsubscribe2087.service
+#
+#   systemctl daemon-reload
+#   systemctl enable --now unsubscribe2087
+#   journalctl -u unsubscribe2087 -f
+[Unit]
+Description=Unsubscribe 2087
+Documentation=https://github.com/franzmr90/unsubscribe2087
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=unsub
+Group=unsub
+WorkingDirectory=/opt/unsubscribe2087
+EnvironmentFile=/etc/unsubscribe2087.env
+ExecStart=/usr/bin/node server/server.js
+Restart=always
+RestartSec=3
+
+# The saves live outside the checkout on purpose, so a redeploy cannot take them with it.
+StateDirectory=unsubscribe2087
+ReadWritePaths=/var/lib/unsubscribe2087
+
+# Hardening. The process reads its own checkout and writes exactly one directory.
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+RestrictNamespaces=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+LockPersonality=true
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+# Deliberately NOT set: MemoryDenyWriteExecute. Node's JIT needs writable-executable
+# pages and the service will not start at all with it on.
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=unsubscribe2087
+
+[Install]
+WantedBy=multi-user.target

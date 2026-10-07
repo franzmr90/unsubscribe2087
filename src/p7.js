@@ -4,7 +4,7 @@ const forkOf=i=>FORKS[(G.fork||{})[i]]||{};
 function forkAfter(i,L){const f=forkOf(i),k=(G.fork||{})[i];if(k==='siphon')heal(S.maxHp*.04);
   if(k==='burn'){W.pat=W.pat||[];W.pat.push({x:P.x,y:P.y,t:4,c:0})}
   if(k==='echo'&&Math.random()<.25)setTimeout(()=>{if(mode==='play'&&G.hp>0){float(P.x,P.y,'Echo','#59e0e6',1);SKF[G.cls][i](L,syn(i))}},350)}
-function dodge(){if(mode!=='play'||P.dash)return;const g=P.dg=P.dg||{n:2,t:0};if(g.n<1){sfx('err');return}g.n--;unstealth&&0;dash(12,.2,0);sfx('dash')}
+function dodge(){if(mode!=='play'||P.dash)return;if(typeof hsNoDash==='function'&&hsNoDash()){dash(12,.2,0);return}const g=P.dg=P.dg||{n:2,t:0};if(g.n<1){sfx('err');return}g.n--;unstealth&&0;dash(12,.2,0);sfx('dash');if(S.sp.e82)P.e82=3}
 /* the ledger web */
 const WARMS=[['Might','dmg',3,10,'Leverage',{dmg:35,hpP:-12}],['Flesh','hp',12,40,'Cold Storage',{hpP:22,dmg:-12}],['Plate','armorP',6,20,'Air Gap',{armorP:50,mspd:-8}],['Nerve','crit',1,3,'Conviction',{crit:10,armorP:-25}],
  ['Current','en',6,20,'Lightning Channel',{cdr:.12,en:-20}],['Stride','mspd',1.5,4,'Velocity',{aspd:18,hpP:-10}],['Fortune','mf',4,14,'Stacker',{mf:40,dmg:-10}],['Thirst','regenH',.5,2,'Full Reserve',{leech:3,en:-15}]];
@@ -13,6 +13,7 @@ function webNode(id){if(id==='c')return{id,n:'The Genesis Node',m:{},a:-1,r:0};c
   if(r===10)return{id,a,r,n:A[4],m:A[5],key:1};if(r===5)return{id,a,r,n:'Greater '+A[0],m:{[A[1]]:A[3]},big:1};return{id,a,r,n:A[0],m:{[A[1]]:A[2]}}}
 function webAdj(id){if(id==='c')return WARMS.map((x,a)=>a+'_1');const[a,r]=id.split('_').map(Number),o=[r===1?'c':a+'_'+(r-1)];if(r<10)o.push(a+'_'+(r+1));if(r%3===0){o.push((a+1)%8+'_'+r,(a+7)%8+'_'+r)}return o}
 const webPts=()=>G.lvl-1+(G.para||0)-Object.keys(G.web||{}).length;
+function webNext(a){for(let r=1;r<=10;r++)if(!G.web[a+'_'+r])return a+'_'+r;return null}
 const webCan=id=>!G.web[id]&&webPts()>0&&webAdj(id).some(n=>n==='c'||G.web[n]);
 const modTxt=m=>Object.keys(m).map(k=>{const v=k==='cdr'?Math.round(m[k]*100):m[k];return (v>0?'+':'')+(WEBT[k]||AFK[k].t.replace(/^\+/,'')).replace('{v}',v)}).join(', ');
 let webSc=[270,230],SB=null,SUBP=null;
@@ -22,6 +23,15 @@ function webSvg(){const C=430,R=40,pos=id=>{if(id==='c')return[C,C];const[a,r]=i
     for(const o of webAdj(id))if(o<id||o==='c'){const q=pos(o),both=on&&(o==='c'||G.web[o]);ln+=`<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${both?'#e0bd6e':'#3a3250'}" stroke-width="${both?3:1.5}"/>`}
     nd+=`<circle data-web="${id}" cx="${p[0]}" cy="${p[1]}" r="${n.key?16:n.big?13:id==='c'?14:10}" fill="${on?'#e0bd6e':can?'#2a2440':'#14111c'}" stroke="${sel&&sel.web===id?'#fff':n.key?'#f7931a':can?'#59e0e6':'#4a4266'}" stroke-width="${sel&&sel.web===id?3:can||n.key?2:1}"/>`}
   for(let a=0;a<8;a++){const an=a*Math.PI/4-Math.PI/2;nd+=`<text x="${C+Math.cos(an)*11.2*R}" y="${C+Math.sin(an)*11.2*R+4}" fill="#a39c86" font-size="12" font-family="Cinzel,serif" text-anchor="middle">${WARMS[a][0]}</text>`}
+  if(webPts()>0)for(let a=0;a<8;a++){
+    if(!G.web[a+'_1']||!webNext(a))continue;
+    const p=pos(a+'_1'),an=a*Math.PI/4-Math.PI/2,px=Math.cos(an+Math.PI/2),py=Math.sin(an+Math.PI/2);
+    const x=p[0]+px*17,y=p[1]+py*17;
+    /* the visible badge is small; the circle under it is a thumb-sized target */
+    nd+=`<g data-webadd="${a}" style="cursor:pointer">
+      <circle cx="${x}" cy="${y}" r="17" fill="transparent"/>
+      <circle cx="${x}" cy="${y}" r="9" fill="#10313a" stroke="#59e0e6" stroke-width="2"/>
+      <text x="${x}" y="${y+4.5}" fill="#59e0e6" font-size="14" font-weight="700" font-family="Cinzel,serif" text-anchor="middle" style="pointer-events:none">+</text></g>`}
   return `<div id="webBox" style="overflow:auto;height:56vh;border:1px solid var(--edge);background:#07060b;touch-action:pan-x pan-y"><svg width="860" height="860" style="display:block">${ln}${nd}</svg></div>`}
 /* charms: small bonuses that work from the pack, so pack space is their price */
 ICON.charm='M12 3a6 6 0 016 6c0 4-6 12-6 12S6 13 6 9a6 6 0 016-6zm0 3.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z';
@@ -66,18 +76,19 @@ function powStart(o){if(W.pow)return;W.pow={o,t:60,w:1};sfx('shrine');toast('Pro
 function p7Enter(){legCheck();if(W.eased){W.eased=0;setTimeout(()=>toast(pick(DIFFDN)),1200)}W.pow=null;raidCheck();if(W.z.sim){SB={};calc()}else if(SB){SB=null;calc()}if(W.z.sub&&W.sub)SUBP=W.sub;ensurePow()}
 function simChoice(n){const all=[['+15% damage',{dmg:15}],['+12% life',{hpP:12}],['+8% attack speed',{aspd:8}],['+4% deadly strike',{crit:4}],['+2% life steal',{leech:2}],['+6% run speed',{mspd:6}],['+15 energy',{en:15}]].sort(()=>Math.random()-.5).slice(0,3);
   dlg('Wave '+(n-1)+' cleared','Take one. It lasts until you unplug.',all.map(c=>[c[0],()=>{for(const k in c[1])SB[k]=(SB[k]||0)+c[1][k];calc();heal(S.maxHp*.25);sfx('buff')}]))}
-function p7Tick(dt){uniTick(dt);if(OPT.autoStim&&G.hp>0&&G.hp<S.maxHp*.3&&G.stims>0){P.asT=(P.asT||0)-dt;if(P.asT<=0){P.asT=1.5;stim()}}upkeepTick(dt);shillTick(dt);storyTick(dt);
+function p7Tick(dt){mktTick(dt);mktLiqCheck();uniTick(dt);if(OPT.autoStim&&G.hp>0&&G.hp<S.maxHp*.3&&G.stims>0){P.asT=(P.asT||0)-dt;if(P.asT<=0){P.asT=1.5;stim()}}upkeepTick(dt);shillTick(dt);storyTick(dt);
   const g=P.dg=P.dg||{n:2,t:0};if(g.n<2){g.t+=dt;if(g.t>=3.5){g.n++;g.t=0}}
+  if(P.e82>0)P.e82-=dt;
   if(P.fm&&P.fm.t>0)P.fm.t-=dt;
   if(G.tpT>0){G.tpT-=dt;if(G.tpT<=0){calc();toast('The loan of strength runs out.')}}
   if(G.debt>0)G.debt*=Math.pow(loanRate(),dt);
   if(W.pat)for(const p of W.pat.slice()){p.t-=dt;p.c-=dt;if(p.c<=0){p.c=.5;W.fx.push({k:'ring',x:p.x,y:p.y,r:2,t:0,life:.45,col:'#ff7a3c'});for(const e of W.ents.slice())if(Math.hypot(e.x-p.x,e.y-p.y)<2+e.r)hit(e,.3,true)}if(p.t<=0)W.pat.splice(W.pat.indexOf(p),1)}
-  if(!W.z.town)for(const e of W.ents)if((e.champ||e.su)&&e.aggro&&e.stun<=0&&!isBoss(e.k)){e.slam=(e.slam===undefined?rnd(3,6):e.slam)-dt;if(e.slam<=0&&dist(e,P)<7){e.slam=e.su?4.5:6.5;W.fx.push({k:'warn',x:P.x,y:P.y,r:1.9,t:0,life:1,boom:e.dmg*1.6})}}
+  if(!W.z.town)for(const e of W.ents)if((e.champ||e.su)&&e.aggro&&e.stun<=0&&!isBoss(e.k)){e.slam=(e.slam===undefined?rnd(3,6):e.slam)-dt;if(e.slam<=0&&dist(e,P)<7){e.slam=e.su?4.5:6.5;const low=e.champ&&!e.su&&!G.act2,soft=defragAct1(e);W.fx.push({k:'warn',x:P.x,y:P.y,r:soft?1.4:(low?1.15:1.9),t:0,life:soft?1.55:(low?1.6:1),boom:e.dmg*(soft?.8:(low?.7:1.6))})}}
   const m=W.merc;if(m&&m.hp>0&&G.merc.ab2==='medic'&&dist(m,P)<6&&G.hp<S.maxHp)heal(S.maxHp*.02*dt);
   const pw=W.pow;if(pw){if(dist(P,pw.o)>9){W.pow=null;toast('You left the shrine. The work is lost.');sfx('err');return}pw.t-=dt;pw.w-=dt;
     if(pw.w<=0){pw.w=7;pw.n=(pw.n||0)+1;const k=wpick(W.z.mix),cnt=4+pw.n,pool=W.z.mix.filter(m=>m[0]!=='tick');for(let i=0;i<cnt;i++){const a=rnd(0,6.283),e=spawn(k,pw.o.x+Math.cos(a)*7.5,pw.o.y+Math.sin(a)*7.5);if(e)e.aggro=true}
       if(pw.n===4||pw.n===7){const a=rnd(0,6.283),c=spawn(wpick(pool),pw.o.x+Math.cos(a)*7.5,pw.o.y+Math.sin(a)*7.5,{champ:1});if(c){c.aggro=true;toast('A champion comes for the shrine.')}}}
-    if(pw.t<=0){W.pow=null;pw.o.used=1;const n=9+Math.floor(W.ml/3);for(let i=0;i<3;i++)addDrop({sat:Math.ceil(n/3)},pw.o.x,pw.o.y);sfx('quest');parts(pw.o.x,pw.o.y,30,['#f7931a','#fff'],3,1.6);addAdopt(1,'work was proven');campHit('ban');toast('Proof of work accepted. The block reward is on the ground: about '+n+' sats.')}}}
+    if(pw.t<=0){W.pow=null;pw.o.used=1;mktNews(.13,'work was proven in '+W.z.n);const n=9+Math.floor(W.ml/3);for(let i=0;i<3;i++)addDrop({sat:Math.ceil(n/3)},pw.o.x,pw.o.y);sfx('quest');parts(pw.o.x,pw.o.y,30,['#f7931a','#fff'],3,1.6);addAdopt(1,'work was proven');campHit('ban');toast('Proof of work accepted. The block reward is on the ground: about '+n+' sats.')}}}
 /* Mr. Float: now or later, and borrowing in a currency that melts */
 const loanAmt=()=>400*G.lvl*G.cpi,nowCost=()=>150*G.lvl*G.cpi*((G.lean||0)>50?1.2:1);
 function talkFloat(){const d=G.debt||0,real=d?Math.round(d/G.cpi/(G.debt0/G.debtCpi)*100):0;
