@@ -951,6 +951,8 @@ function calc(){
     else if(f==='hull'){armM*=HS.hullArm;s.mspd+=HS.hullSpd;if(L(13))s.armor+=Math.min(HS.bigMax,Math.floor((G.formT||0)/HS.bigStep))*HS.bigArm*L(13)}
     else if(f==='worn'){armM*=HS.wornArm;s.mspd+=HS.hullSpd}}
   if(G.cls==='witness'){if(L(2))s.margin=1+.2*L(2);if(L(5))s.filed=2+.4*L(5);if(L(8)){s.footnote=1+.08*L(8);hpM=Math.max(.4,hpM-.04*L(8))}if(L(11)){s.coloHi=1-Math.min(.45,.04*L(11));s.coloLo=1+.06*L(11)}if(L(13))s.named=.05*L(13)}
+  /* Twenty-One Million prints +8% armour per rank, the same multiplier Iron Hide uses. */
+  if(G.cls==='maxi'&&L(8))armM+=.08*L(8);
   if(s.sp.nda)s.dodge+=15;if(s.sp.cloud9)s.dodge+=10;if(s.sp.fineprint)s.cdr+=.2;if(s.sp.repair)s.cap+=4;
   hpM+=extra(s);
   s.dmg+=G.at.mgt*1.5;s.crit=Math.round((s.crit+5+G.at.ref*.3)*10)/10;
