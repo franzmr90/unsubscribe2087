@@ -23,3 +23,5 @@ Golden Handshake said every machine has a 10% chance. The roll is 13%, and only 
 The Codex named Pryce at 21 and a lockbox at 30%. Vale pays 42. The other executives pay 21. The 30% roll, for 2–5 sats, is the lockbox you open in a district. The rig’s chest is the other lockbox, and it does not make that roll.
 
 A belt worth 10 at prices ×1.15 sells for 4.6, and the button said ₡4 while the purse gained 4.6. Two of them said ₡9, the floor of 9.2, while each line was ₡4. The purse now gains the whole credits on the line: 4 for one, 8 for the pair. A subscription uses the same price.
+
+A credit pile prints the same way. A pile of 10.6 shows +₡10 and used to add 10.6. With 40% extra credits that pile is 14.84 and the line said +₡14. The purse now gains the whole credits on the line: 10, or 14 with the extra. A pile that floors to nothing adds nothing and does not flash +₡0.

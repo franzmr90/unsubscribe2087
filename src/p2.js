@@ -920,7 +920,8 @@ function update(dt){
   for(const d of W.drops.slice()){d.t+=dt;if(d.t<.35||dist(d,P)>((d.cr||d.sat||d.word)?(magn?5:2.2):.9))continue;
     if(d.word){gotWord(d.word);float(P.x,P.y,'“'+d.word+'”','#f7931a');toast('A torn note with one word on it: '+d.word);sfx('page');W.drops.splice(W.drops.indexOf(d),1);continue}
     if(d.sat){const n=Math.ceil(d.sat*(W.merc&&W.merc.hp>0&&G.merc.k==='node'?1.5:1)*(repRank('btc')>=2?1.25:1)*(S.sp.coldwallet?1.25:1));G.sats+=n;float(P.x,P.y,'+'+n+' sats','#f7931a');sfx('coin');W.drops.splice(W.drops.indexOf(d),1);continue}
-    if(d.cr){const v=d.cr*(1+S.gold/100);G.credits+=v;float(P.x,P.y,'+'+fmt(v),'#ffe36b');sfx('coin')}
+    /* The pickup line prints whole credits, so the purse gains that floor. */
+    if(d.cr){const v=Math.floor(d.cr*(1+S.gold/100));G.credits+=v;if(v){float(P.x,P.y,'+'+fmt(v),'#ffe36b');sfx('coin')}}
     else if(d.pot){if(G.stims>=S.cap)continue;G.stims++;float(P.x,P.y,'+stim','#7be495');sfx('pick')}
     else if(d.it.charm){if(!chTake(d.it)){if(P.warn<=0){toast('Your subscriptions are full (12)');P.warn=3}continue}sfx('pick');toast('Subscribed: '+d.it.name+(d.it.on?'':' (paused: six already running)'))}
     else{if(!d.force&&skipPick(d.it))continue;if(G.bag.length>=24){if(P.warn<=0){toast('Your pack is full');P.warn=3}continue}G.bag.push(d.it);sfx('pick');if(d.it.id&&G.lvl>=d.it.req&&!d.it.charm){const dl=itemDelta(d.it),emp=!G.eq[d.it.slot];if(emp||(OPT.autoEq&&dl>.01)){equipFromBag(G.bag.indexOf(d.it));toast('Equipped '+d.it.name);W.drops.splice(W.drops.indexOf(d),1);continue}if(dl>.2&&(!SWAP||dl>SWAP.d))SWAP={it:d.it,d:dl,t:8}}toast('Picked up '+(d.it.id?d.it.name:'an unidentified '+d.it.base))}
