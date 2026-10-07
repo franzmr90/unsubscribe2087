@@ -26,4 +26,4 @@ The declare dialog already said this. The blurb now says it too, and the line yo
 
 `hurt` multiplied every incoming hit by `partyD`. That multiplier is companion pressure times the game's monster bite. On a Hell game with a rendered companion it is `1.05 × 2.4 = 2.52`, so a player hit that the card calls 25% landed at 63% before armour.
 
-A player hit now skips `partyD`. Armour, resistances, and the rest of the sheet still apply. Machines still pay the tax. Checked by `node tools/pvp-clarity.js`: a Hell companion tax of 2.52 leaves a machine hit at 2.52 times a player hit of the same raw number.
+A player hit now skips `partyD`. Armour, resistances, and the rest of the sheet still apply. Machines still pay the tax. Checked by `node tools/pvp-clarity.js`. A raw hit of 8, on a Hell game with a rendered companion, lands as 8.00 from a player and 20.16 from a machine. That is the 2.52 tax, and it stays on the machine.
