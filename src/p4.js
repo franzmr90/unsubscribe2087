@@ -206,7 +206,8 @@ function talkTo0(id){if(W.z.pre)return preTalk(id);if(id==='float')return talkFl
   if(id==='ines')return dlg('Ines','“'+gos('ines')+'”',[['Leave']]);
   if(id==='gate')return openSheet('travel',{only:['travel'],gFresh:1});
   if(id==='ubi'){if(G.ubiT>0)return dlg('The Stipend','Your next disbursement is in '+Math.ceil(G.ubiT)+' seconds. Please enjoy a complimentary advertisement while you wait.',[['Fine']]);if(scs()<300)return dlg('The Stipend','ACCOUNT RESTRICTED. Your disbursement has been redirected to a Resident in better standing. Have a compliant day.',[['Leave']]);G.ubiT=60;scsAdj(2);const ubiPay=Math.round(500*(scs()<500?.5:scs()>=850?1.2:1)*(repRank('norm')>=2?1.25:1));G.credits+=ubiPay;if(G.adopt>=50)G.sats+=1;sfx('coin');
-    return dlg('The Stipend','₡'+ubiPay+' deposited'+(ubiPay<500?' (halved: account under review)':'')+'. The base amount was set in 2051 and is reviewed never. At today’s prices it buys '+(500/stimPrice()).toFixed(2)+' stims.',[['Thank you, Unity']])}
+    const stims=payTag(stimPrice()),loaves=stims>0?Math.floor(500/stims):0;
+    return dlg('The Stipend','₡'+ubiPay+' deposited'+(ubiPay<500?' (halved: account under review)':'')+'. The base amount was set in 2051 and is reviewed never. At today’s prices it buys '+loaves+' stim'+(loaves===1?'':'s')+'.',[['Thank you, Unity']])}
   if(id==='gramps'){
     if(G.q.q1===0){G.q.q1=1;sfx('questnew');return dlg('Gramps','“You took the visor off. Good. Sit a moment, then get up again. The Regional Office is five districts deep and a man named Pryce sits at the end of it. Start with the Parcel Moors. A machine called HOA-9 turns our people back at the gate. Break it. And spend your credits fast, kid. They rot.”',[['I will break it']])}
     if(G.q.q1===2){G.q.q1=3;G.sp++;sfx('level');return dlg('Gramps','“Ha. Forty years of bylaws, gone.” You gain 1 skill point.',[['Take it']])}
