@@ -43,17 +43,19 @@ Because they were right, and because they are the rules people already know.
   people and in a party with none of them.
 - **Experience is shared by level, among whoever is actually there.** Only members in the
   same district as the killer get a share, weighted by their level against the sum of the
-  levels present, multiplied by Diablo II's own party bonus — 1.5× for two, 1.75× for
-  three, up to 3× for eight. Somebody standing in town is not helping.
+  levels present. The pool is a third again the kill (×1.35), the same on a party of two
+  as on a party of eight. Somebody standing in town is not helping.
 - **Quest progress is shared** with the members who are in the district when it happens.
-- **Hostility is declared, not ambient.** You press a button with somebody's name on it.
-  It takes them out of your party, it is announced to everyone, and **it does not come
-  back** while you are both in the game. That is the whole reason it means anything. Leave
-  the game and it is over, which is also how Diablo II ended it.
+- **Hostility is declared, not ambient.** You press a button with somebody's name on it,
+  in town, once a minute, and both of you need to be level 9. It takes them out of your
+  party and it is announced. Outside a town you can fight. Standing down, also in town,
+  stops only your own swings; theirs remain, so the party does not come back while either
+  flag is still up. Leave the game and both flags are gone.
 - **Town is safe.** No damage between players in any town, ever.
 - **Five seconds of grace** on entering a district, so nobody can camp a doorway.
-- **Damage between players lands at 25%.** People are much harder to put down than
-  machines, which is what makes a duel a fight rather than an ambush.
+- **Damage between players lands at 25%**, then armour, the same as a machine hit.
+  Game difficulty and companion pressure do not multiply it. People are much harder to
+  put down than machines, which is what makes a duel a fight rather than an ambush.
 
 ## Talking
 

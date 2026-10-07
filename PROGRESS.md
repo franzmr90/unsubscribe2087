@@ -149,6 +149,11 @@ measurement: **45–48 fps against a 46–52 fps baseline** across zones 1, 3, 1
   companion's class. Marked to Market stayed at +30% at every rank; rank 1–2 stay
   on that floor (the other mark buttons already say +30%) and rank 3 and up follow
   the card, up to +60% at rank 10. Notes in `notes/class-feel-six.md`.
+- **PvP hostility clarity.** The party sheet said a declaration could not be taken back.
+  Stand down was already in the panel, and it only clears your flag. The sheet and the
+  declaration line now say that. A player hit stays at a quarter: Hell difficulty and a
+  rendered companion were multiplying it through `partyD`, which is the machine tax.
+  Notes in `notes/pvp-hostility.md`.
 - **Acts I–III quest structure.** Four story quests no longer end on the lieutenant alone.
   The Audit is talk-first. The Data Lake asks you to read a letter, in either order with
   Lethe. The Hall of Minutes is struck after the secretary falls. Point of Order needs four
@@ -251,9 +256,10 @@ too. Storage is JSON files written through a rename, so backup is `cp -r`.
 
 Diablo II's rules. A party is an invitation both sides agree to, up to eight; experience is
 split only among members in the district with the killer, weighted by level, with D2's own
-party bonus; quest progress is shared with whoever is standing there; hostility is declared,
-throws you out of the party, is announced, and does not come back; town is safe; a doorway
-buys five seconds of grace; damage between players lands at a quarter. The Simulator takes a
+party bonus; quest progress is shared with whoever is standing there; hostility is declared
+in town, throws you out of the party, is announced, and standing down clears only your flag;
+town is safe; a doorway buys five seconds of grace; damage between players lands at a quarter,
+before armour. The Simulator takes a
 party, for waves together or for duelling.
 
 Two ideas carried the implementation:
