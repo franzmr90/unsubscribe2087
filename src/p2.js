@@ -376,7 +376,7 @@ function enter(zi,o){setTimeout(mpBeat,0);
   else if(!z.town&&!G['in'+zi]&&z.intro){G['in'+zi]=1;dlg(z.n,z.intro,[['Go on']])}
   else toast(z.town?z.n:'Entering '+z.n);
   if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}seenT=0;music(zoneMusic());save(true)}
-function openPortal(){if(mode!=='play'||W.z.town)return;if(W.z.sim){sfx('portal');enter(HT());return}if(nearest(4)){toast('Machines are too close to open a portal');return}
+function openPortal(){if(mode!=='play'||W.z.town)return;if(mpPortalBlocked())return;if(W.z.sim){sfx('portal');enter(HT());return}if(nearest(4)){toast('Machines are too close to open a portal');return}
   G.portal={zi:W.zi,x:P.x,y:P.y};sfx('portal');enter(HT());toast('A portal back stands open in the square')}
 function resetZones(){ZS={};G.portal=null}
 

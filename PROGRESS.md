@@ -154,6 +154,11 @@ measurement: **45–48 fps against a 46–52 fps baseline** across zones 1, 3, 1
   declaration line now say that. A player hit stays at a quarter: Hell difficulty and a
   rendered companion were multiplying it through `partyD`, which is the machine tax.
   Notes in `notes/pvp-hostility.md`.
+- **Town, death, and the way back.** The death button always said Stillwater. You rise
+  in the town of the act you were in, and the portal puts you at the start of the
+  district, not on the corpse. Hardcore does not get that portal. A declaration holds
+  you in town: the Transit Gate, the rig, and the town portal now wait with the doors.
+  Notes in `notes/town-return.md`.
 - **Acts I–III quest structure.** Four story quests no longer end on the lieutenant alone.
   The Audit is talk-first. The Data Lake asks you to read a letter, in either order with
   Lethe. The Hall of Minutes is struck after the secretary falls. Point of Order needs four
