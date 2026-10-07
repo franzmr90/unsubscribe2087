@@ -4921,6 +4921,7 @@ function mpWhisperPane() {
 }
 function mpMailPane() {
   let h = '<h3>Letters</h3>';
+  h += '<p style="font-size:13px">A whisper while they are off waits here. The box holds forty, for thirty days. A whisper while they are on is said on this page and then forgotten.</p>';
   if (!MP.mail.length) h += '<p>The box is empty.</p>';
   else {
     h += '<div class="list">';
@@ -4958,7 +4959,7 @@ function mpFriendBtns(r) {
 }
 function mpFriendSection() {
   let h = '<h3>Friends</h3>';
-  h += '<p style="font-size:13px">A person you accept can see your class, your level, and the name of the game you are standing in, and they can walk into it. You can see the same of them. The list holds twenty-five.</p>';
+  h += '<p style="font-size:13px">A person you accept can see your class, your level, and the name of the game you are standing in, and they can walk into it. You can see the same of them. Friends and asks stop at twenty-five. People you block sit past that.</p>';
   h += '<button class="tog' + (MP.closed ? ' on' : '') + '" data-mpfq="1"><span>Not taking messages</span><i>' + (MP.closed ? 'ON' : 'OFF') + '</i></button>';
   h += '<div class="row"><input id="mpFriend" maxlength="40" placeholder="Their name" style="flex:1;background:#0a0912;border:1px solid #3a3350;color:#e8e2d4;border-radius:6px;padding:10px;font:15px Georgia,serif"><button class="ghost" data-mpfa="1">Ask</button></div>';
   const rows = [];
@@ -5075,7 +5076,7 @@ function mpGamePanel() {
           : '<button class="ghost" data-mph="' + r.uid + '">Hostile</button>') + '</div>';
     }
     h += '</div>';
-    h += '<p style="font-size:13px">Muting somebody silences their voice and their messages both. Declaring hostility takes them out of your party and lets the two of you fight anywhere that is not a town. Standing down in town stops only your own swings; theirs remain, and the party does not come back while either flag is still up.</p>';
+    h += '<p style="font-size:13px">Muting somebody silences their voice and what they type in this game. A whisper still arrives. Declaring hostility takes them out of your party and lets the two of you fight anywhere that is not a town. Standing down in town stops only your own swings; theirs remain, and the party does not come back while either flag is still up.</p>';
   }
 
   h += '<h3>What has been said</h3><div class="list">';

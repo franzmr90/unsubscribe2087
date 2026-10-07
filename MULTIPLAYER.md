@@ -77,7 +77,7 @@ It needs **https** (`getUserMedia` will not run otherwise) and uses public STUN 
 minority behind strict NATs would need a TURN relay, which is not configured and does cost
 bandwidth; those people simply will not connect to some peers.
 
-**Muting somebody mutes all of them** — their voice and their typing both.
+**Muting somebody mutes their voice and their typing in the game.** A whisper still arrives.
 
 ## The rig
 
@@ -113,9 +113,15 @@ that is a rewrite of the game loop, not a patch to it.
   everything else. Refused at the handshake if the session is not valid.
 - `server/lib/ws.js` is RFC 6455 in the standard library: handshake, text frames, ping and
   pong. Still no dependencies.
-- `server/lib/live.js` holds the whole social model. It is about three hundred lines and
-  there is no database behind it — presence is in memory, and when the server restarts
-  everybody reconnects.
+- `server/lib/live.js` holds games, parties, hostility and who is on. Those live in memory.
+  When the server restarts, everybody reconnects and the open games are gone.
+- `server/lib/social.js` holds the friends list and the offline letter box, as files beside
+  the saves, outside the emailed document backup. A friendship and a letter survive that
+  restart. Friends and asks stop at twenty-five; a block sits past that. The box holds
+  forty letters for thirty days, and a letter is a whisper sent while they were off. An
+  online whisper is handed across the socket and then forgotten. There is no player
+  directory: a whisper to someone who is not a friend gets the same line as a name that
+  is not registered.
 - `src/p13.js` is the client half, loaded last so everything else is in scope. **It is
   inert unless the page is being served by the account server**, which is why the same
   build still runs as an Artifact and from a file with no multiplayer at all.
@@ -186,7 +192,7 @@ Two ceilings sit above that, both of which refuse clearly rather than degrading:
 `MAX_PLAYERS` (default 400) and `MAX_GAMES` (default 200). One over either gets told what
 happened and what to do, and keeps playing alone.
 
-The remaining limit is **one process**: presence is in memory and saves are files on disk,
+The remaining limit is **one process**: presence is in memory, and saves, friends and the letter box are files on disk,
 so running several copies behind a load balancer would give you several servers that cannot
 see each other, fighting over the same directory. Run one. Several hundred people across
 several dozen games is a reasonable expectation for it; it has not been load-tested, and
