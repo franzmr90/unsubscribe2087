@@ -136,9 +136,11 @@ measurement: **45–48 fps against a 46–52 fps baseline** across zones 1, 3, 1
   end of Act I could not be raised until Act IV. Those controls now live on More.
 - **No new art assets.** There are none in the project and none can be made; everything
   above is drawing code.
-- **Acts I–III quest *structure*** is unchanged. I rewrote framing text, not quest design.
-  The quests are still all "go to district N and break the named thing", which is fine for
-  a Diablo-like but is the place to look if you want the acts to feel less uniform.
+- **Acts I–III quest structure.** Four story quests no longer end on the lieutenant alone.
+  The Audit is talk-first. The Data Lake asks you to read a letter, in either order with
+  Lethe. The Hall of Minutes is struck after the secretary falls. Point of Order needs four
+  directors before the Chair closes it. The cage objective now says so once Defrag is down.
+  Before and after are in `notes/quest-variety.md`. Boss scenes are the same.
 
 ---
 
