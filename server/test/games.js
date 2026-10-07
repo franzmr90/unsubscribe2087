@@ -176,6 +176,67 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 
   function lobby() { return [...live.games.values()].filter(x => x.players.size).map(x => ({ name: x.name })); }
 
+  /* ---- declare in town, level 9, once a minute, and a one-sided stand down ---- */
+  A.forget('game');
+  A.send({ t: 'game.leave' });
+  await wait(200);
+  A.forget('game');
+  A.send({ t: 'game.create', name: 'Duel Yard', diff: 'normal' });
+  const yard = await A.wait('game');
+  ok('a yard for the declaration', !!(yard && yard.game && yard.game.name === 'Duel Yard'), JSON.stringify(yard && yard.game));
+  B.forget('game');
+  B.send({ t: 'game.join', id: yard.game.id });
+  await B.wait('game');
+  await wait(80);
+  const lastSys = c => { const rows = c.seen.filter(m => m.t === 'sys'); return rows.length ? rows[rows.length - 1].text : ''; };
+  A.seen.length = 0;
+  place(A, 20, 1); place(B, 20, 1); await wait(100);
+  A.send({ t: 'hostile', uid: uidOf(B) });
+  await wait(150);
+  ok('a declaration outside town is refused', /town/.test(lastSys(A)), lastSys(A));
+
+  A.seen.length = 0;
+  place(A, 8, 0); place(B, 20, 0); await wait(100);
+  A.send({ t: 'hostile', uid: uidOf(B) });
+  await wait(150);
+  ok('hostility starts at level 9', /level 9/.test(lastSys(A)), lastSys(A));
+
+  place(A, 9, 0); place(B, 9, 0); await wait(100);
+  A.seen.length = 0; B.seen.length = 0;
+  A.send({ t: 'hostile', uid: uidOf(B) });
+  await wait(200);
+  ok('a declaration in town is accepted', A.seen.some(m => m.t === 'hostile') && B.seen.some(m => m.t === 'hostile'));
+
+  const who = name => [...live.live.values()].find(p => p.name === name);
+  const pa = who('Ines'), pb = who('Vale');
+  A.send({ t: 'move', x: 1, y: 1, zi: 5, hp: 10, hpm: 10 });
+  await wait(80);
+  ok('the declarer cannot leave the district yet', pa.zi === 0, 'zi=' + pa.zi);
+
+  A.seen.length = 0;
+  A.send({ t: 'stand', uid: uidOf(B) });
+  await wait(150);
+  ok('standing down clears only your flag', !pa.hostile.has(pb.uid) && pb.hostile.has(pa.uid) && /still hit you/.test(lastSys(A)), lastSys(A));
+
+  A.seen.length = 0;
+  A.send({ t: 'hostile', uid: uidOf(B) });
+  await wait(150);
+  ok('a second declaration inside a minute is refused', /minute/.test(lastSys(A)), lastSys(A));
+
+  pa.portalLock = 0;
+  A.send({ t: 'move', x: 3, y: 3, zi: 5, hp: 10, hpm: 10 });
+  B.send({ t: 'move', x: 3, y: 3, zi: 5, hp: 10, hpm: 10 });
+  await wait(80);
+  pa.safeUntil = 0; pb.safeUntil = 0;
+  B.seen.length = 0;
+  A.send({ t: 'pvp', uid: uidOf(B), dmg: 1000 });
+  await wait(150);
+  ok('after standing down you cannot damage them', !B.seen.some(m => m.t === 'pvp'));
+  A.seen.length = 0;
+  B.send({ t: 'pvp', uid: uidOf(A), dmg: 1000 });
+  await wait(150);
+  ok('after standing down they can still damage you', A.seen.some(m => m.t === 'pvp' && m.dmg > 0 && m.dmg < 1000), JSON.stringify(A.seen.filter(m => m.t === 'pvp')));
+
   A.s.close(); B.s.close(); for (const c of extra) c.s.close();
   await wait(400);
   ok('with everybody gone, no games remain', live.games.size === 0, String(live.games.size));

@@ -796,7 +796,7 @@ function useObj(o){
   else if(o.k==='cage'){if(W.ents.some(e=>e.su)){toast('The cage is sealed while Defrag stands');return}o.used=1;G.marrow=true;G.q.q3=2;sfx('cage');sfx('quest');
     playScene(RESCUE,()=>{mode='play';toast('Quest complete: return to Gramps')})}}
 function portalLabel(p){const zi=W.zi;return p.kind==='home'?'Return to '+ZONES[HT()].n:p.kind==='exit'?'Walk out to '+ZONES[FIRST[W.z.act||1]].n:p.kind==='town'||p.kind==='prev'?'Walk back to '+ZONES[zi===FIRST[actOf(zi)]?townOf(zi):zi-1].n:p.kind==='next'?'Go on to '+ZONES[zi+1].n:'Portal to '+ZONES[G.portal.zi].n}
-function usePortal(p){const zi=W.zi;sfx(p.kind==='home'||p.kind==='back'?'portal':'ui');
+function usePortal(p){if(mpPortalBlocked())return;const zi=W.zi;sfx(p.kind==='home'||p.kind==='back'?'portal':'ui');
   if(p.kind==='exit'){const f=FIRST[W.z.act||1];G.unlocked=Math.max(G.unlocked,f);enter(f)}
   else if(p.kind==='town'||p.kind==='prev'){if(zi===FIRST[actOf(zi)])enter(townOf(zi),{from:'exit'});else enter(zi-1,{from:'next'})}
   else if(p.kind==='home')enter(HT());

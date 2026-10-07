@@ -9,10 +9,10 @@
    publicly: every cost below is bounded by the size of a game rather than by the number
    of people on the server.
 
-   The rules: a party is an invitation both sides agree to; experience is shared by level
-   among the members who are actually in the district; hostility is declared rather than
-   ambient, it throws you out of the party, and it cannot be taken back while the game
-   lasts. Town is safe. The arena is not.
+   The rules: a party is an invitation both sides agree to; experience is one pool, split
+   by level among the members in the district; hostility is declared in town rather than
+   ambient, it throws you out of the party, and standing down clears only your own flag.
+   Town is safe. The arena is not.
 
    What the server is authoritative over: who exists, which game they are in, who is in
    which party, who is hostile to whom, who is in which district, and the Simulator's wave
@@ -202,6 +202,8 @@ function leaveGame(p, opt) {
   p.game = null;
   /* Hostility belongs to a game, exactly as it did in Diablo II: leave and it is over. */
   p.hostile.clear();
+  p.declaredAt.clear();
+  p.portalLock = 0;
   p.invites.clear();
   /* Straight back to the lobby, with the list already in hand rather than a blank panel
      waiting on the next coalesced push. */
@@ -258,7 +260,9 @@ function canFight(a, b) {
   if (!a || !b || a.uid === b.uid) return false;
   if (!a.game || a.game !== b.game) return false;
   if (a.zi !== b.zi) return false;
-  if (!mutualHostile(a, b)) return false;
+  /* Your own flag is what lets you swing. Theirs is what lets them swing back.
+     Declaring sets both, and standing down clears only yours. */
+  if (!a.hostile.has(b.uid)) return false;
   if (TOWNS.has(a.zi)) return false;                      /* town is safe, always */
   if (a.safeUntil > Date.now() || b.safeUntil > Date.now()) return false;
   return true;
@@ -342,6 +346,7 @@ const HANDLERS = {
   move(p, m) {
     p.x = +m.x || 0; p.y = +m.y || 0; p.dir = +m.dir || 0;
     p.hp = +m.hp || 0; p.hpm = +m.hpm || 1;
+    if ('lvl' in m) p.lvl = Math.max(1, +m.lvl || 1);
     const cosmetic = ('sk' in m) || ('au' in m) || ('sw' in m);
     if ('sk' in m) p.sk = m.sk === null ? null : skillIx(m.sk);
     if ('au' in m) p.au = auraIx(m.au);
@@ -349,11 +354,16 @@ const HANDLERS = {
     if (!p.game) return;
     const zi = +m.zi, inst = m.inst || null;
     if (zi !== p.zi || inst !== p.inst) {
-      p.zi = zi; p.inst = inst;
-      zoneIndex(p);
-      pushRoster(gameOf(p));
-      /* Walking in buys five seconds, so a hostile cannot camp the doorway. */
-      p.safeUntil = Date.now() + 5000;
+      /* A declaration holds them in the district the server already recorded, for ten
+         seconds. A modified client can ignore the local half and walk anyway. This is
+         the server's half: it does not follow them, so they are not a combatant there. */
+      if (!(p.portalLock > Date.now())) {
+        p.zi = zi; p.inst = inst;
+        zoneIndex(p);
+        pushRoster(gameOf(p));
+        /* Walking in buys five seconds, so a hostile cannot camp the doorway. */
+        p.safeUntil = Date.now() + 5000;
+      }
     }
     pushZone(p);
     if (cosmetic) pushPeers(p);
@@ -451,13 +461,33 @@ const HANDLERS = {
   hostile(p, m) {
     const q = live.get(m.uid);
     if (!q || q.game !== p.game || !p.game) return;
+    if (!TOWNS.has(p.zi)) return sys(p, 'Declare in town.');
+    if ((+p.lvl || 1) < 9 || (+q.lvl || 1) < 9) return sys(p, 'Hostility starts at level 9.');
     if (p.hostile.has(q.uid)) return sys(p, 'Already declared.');
+    const last = p.declaredAt.get(q.uid) || 0;
+    if (Date.now() - last < 60000) return sys(p, 'Once a minute, against the same person.');
+    p.declaredAt.set(q.uid, Date.now());
     p.hostile.add(q.uid);
+    /* Their flag is what lets them hit back after you stand down. Not their party. */
+    q.hostile.add(p.uid);
+    p.portalLock = Date.now() + 10000;
     const party = partyOf(p);
     if (party && party.members.has(q.uid)) leaveParty(p, true);
     inGame(gameOf(p), 'hostile', { from: p.name, fromUid: p.uid, to: q.name, toUid: q.uid });
     sys(q, p.name + ' has declared hostility against you.');
     sys(p, 'You have declared against ' + q.name + '. That stands until one of you leaves the game.');
+    pushRoster(gameOf(p));
+  },
+
+  stand(p, m) {
+    const q = live.get(m.uid);
+    if (!q || q.game !== p.game || !p.game) return;
+    if (!TOWNS.has(p.zi)) return sys(p, 'Stand down in town.');
+    if (!p.hostile.has(q.uid)) return sys(p, 'You have not declared against them.');
+    p.hostile.delete(q.uid);
+    inGame(gameOf(p), 'stand', { from: p.name, fromUid: p.uid, to: q.name, toUid: q.uid });
+    sys(p, 'You stand down. They can still hit you.');
+    sys(q, p.name + ' stands down. You can still hit them.');
     pushRoster(gameOf(p));
   },
 
@@ -593,7 +623,7 @@ function attach(server, verify) {
       uid: ctx.user.id, name: ctx.user.name, conn,
       lvl: 1, cls: '', zi: 0, inst: null, zoneKey: undefined, x: 0, y: 0, dir: 0, hp: 1, hpm: 1,
       sk: null, au: null, sw: 0,
-      game: null, party: null, hostile: new Set(), invites: new Map(), safeUntil: 0, voice: false, joined: Date.now()
+      game: null, party: null, hostile: new Set(), declaredAt: new Map(), portalLock: 0, invites: new Map(), safeUntil: 0, voice: false, joined: Date.now()
     };
     live.set(p.uid, p);
 

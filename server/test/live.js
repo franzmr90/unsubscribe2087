@@ -162,12 +162,21 @@ async function until(page, fn, arg, ms) {
   const far = await until(B, () => __mp.MP.lastCast && __mp.MP.lastCast.n ? __mp.MP.lastCast : null);
   ok('the other client plays one cast', !!far && far.n === 1 && far.k === want.k && far.col === want.col, JSON.stringify(far));
 
-  /* ---- hostility ---- */
+  /* ---- hostility. Declaring is a town act, and it holds the declarer there for ten seconds. ---- */
+  await A.evaluate(() => { __g.enter(0); __mp.send('hello', { lvl: __g.G.lvl, cls: __g.G.cls, zi: 0, hp: __g.G.hp, hpm: __g.S.maxHp }); });
+  await B.evaluate(() => { __g.enter(0); __mp.send('hello', { lvl: __g.G.lvl, cls: __g.G.cls, zi: 0, hp: __g.G.hp, hpm: __g.S.maxHp }); });
+  await wait(300);
   await A.evaluate(u => { __mp.MP.hostile[u] = 1; __mp.send('hostile', { uid: u }); }, uidB);
   const bKnows = await until(B, u => __mp.MP.hostile[u] ? 1 : 0, uidA);
   ok('hostility reaches the other player', !!bKnows);
   const partyGone = await until(A, () => !__mp.MP.party ? 1 : 0);
   ok('declaring throws you out of the party', !!partyGone);
+
+  /* The declaration ignores a zone-leave for ten seconds. Then both walk back to the district. */
+  await wait(10500);
+  await A.evaluate(() => __g.enter(1));
+  await B.evaluate(() => __g.enter(1));
+  await wait(500);
 
   /* ---- a hostile becomes a target the game can aim at ---- */
   await A.evaluate(() => { const o = __mp.MP.others[0]; if (o) { __g.P.x = o.x + .4; __g.P.y = o.y; } });
