@@ -2174,7 +2174,8 @@ function mktTick(dt){const m=G.mkt;if(!m||!(m.p>0))return;if(!(m.r>0))m.r=1;
 /* size against depth. Nobody pays the headline price for a large order, in any market. */
 function mktQuote(n,side){const mid=mktMid(),sp=mktSpread(),k=Math.min(.55,n/mktDepth()),buy=side==='buy';
   const px=mid*(1+(buy?sp/2:-sp/2))*(1+(buy?k*.09:-k*.09)),gross=px*n,fee=gross*MKT_TAKER;
-  return{mid,sp,k,px,gross,fee,total:buy?gross+fee:gross-fee}}
+  /* The quote prints whole credits, so the purse pays that floor. Size still walks the book. */
+  return{mid,sp,k,px,gross,fee,total:Math.floor(buy?gross+fee:gross-fee)}}
 function mktImpact(n,side){const m=G.mkt,k=Math.min(.55,n/mktDepth());m.r=clamp(m.r*(1+(side==='buy'?k*.16:-k*.16)),.34,2.6);m.p=mktFair()*m.r;return k}
 function mktBasisAdd(n,cr){const c=G.mkt.cb;c.n+=n;c.cr+=cr;c.st+=cr/Math.max(1,stimPrice())}
 function mktBasisTake(n){const c=G.mkt.cb;if(c.n<=0)return;const f=Math.min(1,n/c.n);c.cr-=c.cr*f;c.st-=c.st*f;c.n=Math.max(0,c.n-n)}
