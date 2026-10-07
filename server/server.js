@@ -16,6 +16,7 @@ const { docs } = require('./lib/store');
 const mail = require('./lib/mail');
 const live = require('./lib/live');
 const bugs = require('./lib/bugs');
+const social = require('./lib/social');
 
 const PORT = +(process.env.PORT || 8087);
 const ROOT = path.join(__dirname, '..');
@@ -110,6 +111,7 @@ route('POST', '/api/register', async (req, res) => {
   const u = A.createUser(b.name, b.pass, b.email);
   if (!u) return bad(res, 409, 'That name is taken.');
   const s = openSession(res, u);
+  social.onLogin(u.id);
   if (u.email) {
     const t = A.newToken(u.id, 'verify');
     const link = ORIGIN + '/verify?t=' + t;
@@ -135,6 +137,7 @@ route('POST', '/api/login', async (req, res) => {
   if (!u || !good) return bad(res, 401, 'No account by that name, or the wrong password.');
   u.seen = Date.now(); A.users.flush();
   A.rateClear('lu:' + name.toLowerCase());
+  social.onLogin(u.id);
   const s = openSession(res, u);
   ok(res, { user: pub(u), csrf: s.csrf });
 });
@@ -221,6 +224,7 @@ route('POST', '/api/reset', async (req, res) => {
   const u = A.byId(rec.uid);
   if (!u) return bad(res, 400, 'That account is gone.');
   A.setPass(u, b.pass);
+  social.onLogin(u.id);
   const s = openSession(res, u);
   ok(res, { user: pub(u), csrf: s.csrf });
 });
@@ -303,6 +307,70 @@ route('POST', '/api/doc/del', async (req, res) => {
   const b = await readBody(req);
   docs.del(ctx.user.id, String(b.id || ''));
   ok(res);
+});
+
+/* Friends and the offline box. The account comes from the session, the same way a
+   document does. A name lookup is projected down to { name } inside social.js. */
+function signed(req, res) {
+  const ctx = auth(req);
+  if (!ctx) { bad(res, 401, 'Not signed in.'); return null; }
+  if (!csrfOK(req, ctx)) { bad(res, 403, 'Stale page. Reload and try again.'); return null; }
+  return ctx;
+}
+function finish(res, r) {
+  if (!r.ok) return bad(res, r.status || 400, r.error);
+  ok(res, r.body || { ok: true });
+}
+
+route('POST', '/api/friend/list', async (req, res) => {
+  const ctx = signed(req, res); if (!ctx) return;
+  await readBody(req);
+  finish(res, social.list(ctx.user.id));
+});
+route('POST', '/api/friend/ask', async (req, res) => {
+  const ctx = signed(req, res); if (!ctx) return;
+  const b = await readBody(req);
+  if (!A.rateLimit('fr:' + ctx.user.id, 10, 10 * 60 * 1000)) return bad(res, 429, 'Ten requests in ten minutes is the limit.');
+  finish(res, social.ask(ctx.user, b.name));
+});
+route('POST', '/api/friend/answer', async (req, res) => {
+  const ctx = signed(req, res); if (!ctx) return;
+  const b = await readBody(req);
+  const accept = b.accept === true || b.answer === 'accept';
+  const decline = b.accept === false || b.answer === 'decline';
+  if (!accept && !decline) return bad(res, 400, 'Accept or decline.');
+  finish(res, social.answer(ctx.user, b.name, accept));
+});
+route('POST', '/api/friend/remove', async (req, res) => {
+  const ctx = signed(req, res); if (!ctx) return;
+  const b = await readBody(req);
+  finish(res, social.remove(ctx.user, b.name));
+});
+route('POST', '/api/friend/block', async (req, res) => {
+  const ctx = signed(req, res); if (!ctx) return;
+  const b = await readBody(req);
+  finish(res, social.block(ctx.user, b.name));
+});
+route('POST', '/api/mail/list', async (req, res) => {
+  const ctx = signed(req, res); if (!ctx) return;
+  await readBody(req);
+  finish(res, social.listMail(ctx.user.id));
+});
+route('POST', '/api/mail/send', async (req, res) => {
+  const ctx = signed(req, res); if (!ctx) return;
+  const b = await readBody(req);
+  if (!A.rateLimit('ml:' + ctx.user.id, 10, 10 * 60 * 1000)) return bad(res, 429, 'Ten letters in ten minutes is the limit.');
+  finish(res, social.send(ctx.user, b.name, b.text));
+});
+route('POST', '/api/mail/read', async (req, res) => {
+  const ctx = signed(req, res); if (!ctx) return;
+  const b = await readBody(req);
+  finish(res, social.read(ctx.user.id, b.id));
+});
+route('POST', '/api/mail/del', async (req, res) => {
+  const ctx = signed(req, res); if (!ctx) return;
+  const b = await readBody(req);
+  finish(res, social.del(ctx.user.id, b.id));
 });
 
 /* Bug reports. Open to anyone who can load the page, because the person who most needs
