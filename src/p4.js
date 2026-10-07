@@ -482,17 +482,18 @@ function drawSheet(){
       <div class="row"><button class="ghost" data-mko="s3">Ask 3% over</button><button class="ghost" data-mko="s7">Ask 7% over</button></div>
       <p style="font-size:13px">A posted order waits. If the price comes to you it fills, you pay no fee, and Nonce pays you ${(MKT_MAKER*100).toFixed(1)}% for the trouble — because while it sat there you were the one willing to deal, which is his job. If the price never comes, it never fills. That is the trade: a better number, or a certain one.</p>`;
     if(m.ord.length){h+=`<div class="list">${m.ord.map((o,i)=>`<button class="li on" data-mkx="${i}"><div><b>${o.s==='buy'?'Bid':'Ask'} ${o.n} sats at ${fmt(o.px)}</b><span>${o.s==='buy'?'Fills if one sat falls to that. '+fmt(o.esc)+' is held.':'Fills if one sat rises to that. '+o.esc+' sats are held.'} Tap to withdraw.</span></div></button>`).join('')}</div>`}
-    if(!m.pos&&G.sats>=10){const n=Math.max(10,Math.min(G.sats,mktQty)),lent=Math.floor(mktBid()*n*MKT_LTV),liq=lent/(n*MKT_LIQ);
+    /* The call is the bid times the liquidation ratio, the same threshold the loan stores. */
+    if(!m.pos&&G.sats>=10){const n=Math.max(10,Math.min(G.sats,mktQty)),lent=Math.floor(mktBid()*n*MKT_LTV),liq=mktBid()*MKT_LIQ;
       h+=`<h3>Mr. Float will lend against them</h3>
         <p style="font-size:13px">He gives you credits now and holds your sats as the promise. You keep the sats — unless the price falls far enough that they stop covering what you owe, and then he keeps them instead. That is the whole of a margin call and it is not personal.</p>
         <div class="tick"><div>Pledge<b>${n} sats</b></div><div>He hands you<b>${fmt(lent)}</b></div>
           <div>Against a stack worth<b>${fmt(mktBid()*n)}</b></div><div>He takes them below<b class="dn2">${fmt(liq)}</b></div></div>
         <div class="row"><button class="big" data-mkb="1">Borrow ${fmt(lent)} against ${n} sats</button></div>
         <p style="font-size:13px">Borrowing to buy more is how people turn a ${(100-MKT_LIQ*100).toFixed(0)}% fall into a total one. Nonce watches this part of the counter without saying anything.</p>`}
-    if(m.pos){const p0=m.pos,safe=(mktMid()/p0.liq-1)*100;
-      h+=`<h3>Mr. Float holds ${p0.n} of your sats</h3><div class="tick"><div>He lent you<b>${fmt(p0.lent)}</b></div><div>You owe him<b>${fmt(p0.lent*1.08)}</b></div>
+    if(m.pos){const p0=m.pos,safe=(mktMid()/p0.liq-1)*100,owe=Math.floor(p0.lent*1.08);
+      h+=`<h3>Mr. Float holds ${p0.n} of your sats</h3><div class="tick"><div>He lent you<b>${fmt(p0.lent)}</b></div><div>You owe him<b>${fmt(owe)}</b></div>
         <div>He keeps them below<b>${fmt(p0.liq)}</b></div><div>Room left<b class="${safe<12?'dn2':'up2'}">${safe.toFixed(0)}%</b></div></div>
-        <div class="row"><button class="big" data-mkr="1" ${G.credits<p0.lent*1.08?'disabled':''}>Repay and take them back</button></div>`}
+        <div class="row"><button class="big" data-mkr="1" ${G.credits<owe?'disabled':''}>Repay and take them back</button></div>`}
     h+=`<h3>Nonce’s goods</h3><div class="list">`;
     satShop.forEach((o,i)=>{h+=`<button class="li${sel&&sel.sat===i?' on':''}" data-sat="${i}"><div><b class="q${o.it.q}">${esc(o.it.name)}</b><span>${QN[o.it.q]} ${SNAME[o.it.slot]} · level ${o.it.il}</span></div><span class="pr" style="color:#f7931a">${satPrice(o)} sats</span></button>`});
     if(!satShop.length)h+=`<p>Sold out. Nonce restocks each time you return to town.</p>`;h+=`</div>`;
@@ -587,7 +588,8 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.mkx!==undefined)mktCancel(+d.mkx);
   if(mpClick(d))return;
   if(d.mkr)if(!mktRepay()){toast('Not enough credits to repay him');sfx('err')}
-  if(d.mkb){const n=Math.max(1,Math.min(G.sats,mktQty));if(!mktBorrow(n)){toast(G.mkt.pos?'He will only hold one position':'Not enough sats');sfx('err')}}
+  /* The pledge is the one printed on the sheet, and it never goes under ten sats. */
+  if(d.mkb){const n=Math.max(10,Math.min(G.sats,mktQty));if(!mktBorrow(n)){toast(G.mkt.pos?'He will only hold one position':'Not enough sats');sfx('err')}}
   if(d.satbuy){const o=satShop[sel.sat];if(o&&G.sats>=satPrice(o)&&G.bag.length<24){G.sats-=satPrice(o);addRep('btc',Math.ceil(o.price/4));addAdopt(1,'you paid in sats');G.bag.push(o.it);satShop.splice(sel.sat,1);sel=null;sfx('coin');toast('Paid in sats')}}
   if(d.node!==undefined)sel={sk:+d.node};
   if(d.learn!==undefined){const i=+d.learn;G.sp-=skCost(i);G.sk[i]++;if(G.sk[i]===10)toast(CLS[G.cls].sk[i].n+' is mastered: two extra ranks’ worth of power'+(CLS[G.cls].sk[i].a?' and 20% faster recovery':'')+'.');if(CLS[G.cls].sk[i].a&&!G.slots.includes(i)){const e=G.slots.indexOf(-1);if(e>=0)G.slots[e]=i}if(!CLS[G.cls].sk[i].a&&G.pas&&!G.pas.includes(i)&&G.pas.length<PCAP())G.pas.push(i);calc();sfx('learn');if(G.cls==='hacker'&&i===11&&G.sk[11]===1&&!G.schema)schemaAsk()}

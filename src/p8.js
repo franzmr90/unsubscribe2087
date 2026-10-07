@@ -164,10 +164,11 @@ function mktFills(){const m=G.mkt,mid=m.p;
 /* ---------- Mr. Float lends against them, and is delighted either way ---------- */
 const MKT_LTV=.5, MKT_LIQ=.72;
 function mktBorrow(n){const m=mktInit();if(m.pos)return false;n=Math.floor(n);if(n<1||G.sats<n)return false;
-  const px=mktBid(),lent=n*px*MKT_LTV;G.sats-=n;G.credits+=lent;
+  /* The sheet prints whole credits, so the purse gains that floor. */
+  const px=mktBid(),lent=Math.floor(n*px*MKT_LTV);G.sats-=n;G.credits+=lent;
   m.pos={n,px,lent,liq:px*MKT_LIQ};mktNews(-.06,'collateral posted with Mr. Float');sfx('coin');
   dlg('Mr. Float','“'+n+' sats, held by me, and '+fmt(lent)+' in your hand today. If one sat falls under '+fmt(m.pos.liq)+' I keep the collateral and you keep the credits. People always take that deal. They are always surprised.”',[['Understood']]);return true}
-function mktRepay(){const m=G.mkt,p=m&&m.pos;if(!p)return false;const owed=p.lent*1.08;if(G.credits<owed)return false;
+function mktRepay(){const m=G.mkt,p=m&&m.pos;if(!p)return false;/* The owe line prints whole credits, so the purse pays that floor. */const owed=Math.floor(p.lent*1.08);if(G.credits<owed)return false;
   G.credits-=owed;G.sats+=p.n;m.pos=null;sfx('coin');toast('Collateral released: '+p.n+' sats back, '+fmt(owed)+' paid');return true}
 function mktLiqCheck(){const m=G.mkt,p=m&&m.pos;if(!p)return;if(mktMid()>p.liq)return;m.pos=null;
   G.st.liq=(G.st.liq||0)+1;mktNews(-.1,'a position was liquidated');sfx('err');
