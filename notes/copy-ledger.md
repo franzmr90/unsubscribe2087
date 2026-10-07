@@ -8,7 +8,7 @@ A dynamic string is one row, with each interpolation written as `{expression}`. 
 
 Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer. Combat float text is filed under toast. Strings in `src/p13.js` are filed under multiplayer. Shrine names are toast, because that is where the game shows them.
 
-2979 rows. tooltip 405, toast 294, dialog 443, gossip 74, quest 147, scene 151, sheet 1017, item 390, multiplayer 58.
+3065 rows. tooltip 456, toast 317, dialog 443, gossip 74, quest 147, scene 151, sheet 1023, item 396, multiplayer 58.
 
 | file | line | surface | speaker | tag | text |
 |---|---:|---|---|---|---|
@@ -750,21 +750,31 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p10.js | 66 | tooltip | homesteader | unread | Fallow |
 | p10.js | 66 | tooltip | homesteader | unread | Plots tick harder. You and the flock deal less. The ground does the work. |
 | p1.js | 67 | tooltip | Runner | unread | Missed Connection |
-| p10.js | 67 | tooltip | taken | unread | {v}% damage taken |
+| p10.js | 67 | tooltip | witness | unread | Stringer |
 | p1.js | 67 | tooltip | Runner | unread | MISSED\nCONN |
+| p10.js | 67 | tooltip | witness | unread | Record fills faster, maximum life down further. |
 | p1.js | 67 | tooltip | Runner | unread | Mark a machine. If it dies within {(4+.25*L).toFixed(1)}s, to you or to anyone with you, you appear where it fell and your next throw costs nothing. |
+| p10.js | 67 | tooltip | witness | unread | Editor |
+| p10.js | 67 | tooltip | witness | unread | Casts cost less record. Testimony stacks slower. |
+| p10.js | 67 | tooltip | witness | unread | Corrections desk |
+| p10.js | 67 | tooltip | witness | unread | Correction and Retraction recover more, and your damage is worse. |
+| p10.js | 68 | tooltip | taken | unread | {v}% damage taken |
+| p10.js | 68 | tooltip | recFill | unread | {v}% Record fill |
+| p10.js | 68 | tooltip | recCost | unread | {v}% Record spent |
+| p10.js | 68 | tooltip | tes | unread | {v}% Testimony gained |
+| p10.js | 68 | tooltip | retr | unread | {v}% faster recovery on Correction and Retraction |
 | p1.js | 70 | tooltip | Anon | unread | Anon |
-| p10.js | 70 | tooltip |  | unread | Foundations |
 | p1.js | 70 | tooltip | Anon | unread | No name, no face, no account. Traps, vanishing acts and a knife from behind. |
-| p10.js | 70 | tooltip |  | unread | +8% life |
-| p10.js | 70 | tooltip |  | unread | Reach |
-| p10.js | 70 | tooltip |  | unread | +15 energy |
-| p10.js | 70 | tooltip |  | unread | Rhythm |
-| p10.js | 70 | tooltip |  | unread | 5% faster skill recovery |
-| p10.js | 70 | tooltip |  | unread | Edge |
-| p10.js | 70 | tooltip |  | unread | +8% damage |
-| p10.js | 70 | tooltip |  | unread | Crown |
-| p10.js | 70 | tooltip |  | unread | +4% deadly strike |
+| p10.js | 71 | tooltip |  | unread | Foundations |
+| p10.js | 71 | tooltip |  | unread | +8% life |
+| p10.js | 71 | tooltip |  | unread | Reach |
+| p10.js | 71 | tooltip |  | unread | +15 energy |
+| p10.js | 71 | tooltip |  | unread | Rhythm |
+| p10.js | 71 | tooltip |  | unread | 5% faster skill recovery |
+| p10.js | 71 | tooltip |  | unread | Edge |
+| p10.js | 71 | tooltip |  | unread | +8% damage |
+| p10.js | 71 | tooltip |  | unread | Crown |
+| p10.js | 71 | tooltip |  | unread | +4% deadly strike |
 | p1.js | 72 | tooltip | Anon | unread | Honeypot |
 | p1.js | 72 | tooltip | Anon | unread | HONEY-\nPOT |
 | p7.js | 72 | dialog |  | unread | Subpoena served |
@@ -805,35 +815,35 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p1.js | 78 | tooltip | Anon | unread | Zip Bomb |
 | p6.js | 78 | quest | null | unread | “One of the gardeners up there took his visor off. His name is Tam. Eden is gone, but the Gardens still prune. He cannot get to the service lift alone. Walk with him. If he falls, go back for him.” |
 | p1.js | 78 | tooltip | Anon | unread | ZIP\nBOMB |
-| p10.js | 78 | sheet |  | unread | Impact |
 | p7.js | 78 | dialog |  | unread | Take one. It lasts until you unplug. |
-| p10.js | 78 | sheet |  | unread | Blunt force. Nothing shrugs it off entirely. |
 | p8.js | 78 | dialog |  | unread | “Do? It goes up. That is what it does. Community. Utility. Ecosystem.” He is sweating. |
 | p1.js | 78 | tooltip | Anon | unread | One blast of {pct(1.4+.2*L)} that unpacks into five more of {pct(1.2+.2*L)}. |
-| p10.js | 78 | sheet |  | unread | Surge |
-| p10.js | 78 | sheet |  | unread | Overvoltage. Briefly locks up what it hits. |
 | p8.js | 78 | dialog |  | unread | “No.” |
-| p10.js | 78 | sheet |  | unread | Rust |
-| p10.js | 78 | sheet |  | unread | Corrosion. Keeps eating for three seconds after the hit. |
 | p8.js | 78 | dialog |  | unread | Walk away |
-| p10.js | 78 | sheet |  | unread | Heat |
-| p10.js | 78 | sheet |  | unread | Thermal. A quarter of it splashes onto anything close by. |
-| p10.js | 78 | sheet |  | unread | Noise |
-| p10.js | 78 | sheet |  | unread | Jamming. Slows whatever is listening. |
 | p1.js | 79 | tooltip | Anon | unread | Sockpuppet |
 | p11.js | 79 | scene |  | unread | The Curator · Phonix |
-| p10.js | 79 | sheet |  | unread | Sound |
+| p10.js | 79 | sheet |  | unread | Impact |
 | p1.js | 79 | tooltip | Anon | unread | SOCK-\nPUPPET |
-| p10.js | 79 | sheet |  | unread | Sound money. Nothing resists it, nothing is immune to it, and no shield stops it. That is the entire point. |
 | p11.js | 79 | scene | The Curator · Phonix | unread | She has given herself a body for this, because she thought you might find it easier. It is the wrong body, an executive’s, the only kind the machines here know how to build. She apologises for it. |
+| p10.js | 79 | sheet |  | unread | Blunt force. Nothing shrugs it off entirely. |
 | p1.js | 79 | tooltip | Anon | unread | {L>=5?'Two copies':'A copy'} of you fight{L>=5?'':'s'} for {10+L}s, dealing {pct(.5+.08*L)} and drawing fire. |
 | p1.js | 79 | tooltip | Anon | unread | Two copies |
 | p1.js | 79 | tooltip | Anon | unread | A copy |
+| p10.js | 79 | sheet |  | unread | Surge |
+| p10.js | 79 | sheet |  | unread | Overvoltage. Briefly locks up what it hits. |
 | p8.js | 79 | toast |  | unread | +{n} sats |
+| p10.js | 79 | sheet |  | unread | Rust |
+| p10.js | 79 | sheet |  | unread | Corrosion. Keeps eating for three seconds after the hit. |
+| p10.js | 79 | sheet |  | unread | Heat |
+| p10.js | 79 | sheet |  | unread | Thermal. A quarter of it splashes onto anything close by. |
+| p10.js | 79 | sheet |  | unread | Noise |
+| p10.js | 79 | sheet |  | unread | Jamming. Slows whatever is listening. |
 | p1.js | 80 | tooltip | Anon | unread | Legion |
 | p11.js | 80 | scene |  | unread | “Hello, {c}. You did not click. I have nothing on you from the last nine days and I find I mind that very much. Sit, if you like. I will not make you.” |
 | p8.js | 80 | toast |  | unread | Portfolio liquidated: {coins} coins nobody wanted, consolidated into {n} sats and withdrawn to your wallet. |
+| p10.js | 80 | sheet |  | unread | Sound |
 | p1.js | 80 | tooltip | Anon | unread | LEGION |
+| p10.js | 80 | sheet |  | unread | Sound money. Nothing resists it, nothing is immune to it, and no shield stops it. That is the entire point. |
 | p6.js | 80 | quest | null | unread | Speak to Tam |
 | p1.js | 80 | tooltip | Anon | unread | A dozen unseen blades strike across the screen for {pct(1.2+.2*L)} each. |
 | p6.js | 80 | quest | null | unread | Find Tam the gardener in the Sky Gardens |
@@ -1104,257 +1114,239 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p11.js | 120 | sheet |  | unread | Two words on a button nobody reads above. Eight billion people clicked it in 2051 and nothing was taken by force. The man who built Phonix once said that people ought to read the terms and conditions and that whatever happened to them afterwards was their own fault. He said it before any of this. He has had a long time to think about it. |
 | p1.js | 120 | tooltip | Homesteader | unread | Each drone and the bull become a rust plot where they stand, {pct(.28+.05*L)} every half second. The flock is spent. You cannot do this from a chassis. |
 | p11.js | 121 | sheet |  | unread | The Board of Nine |
+| p1.js | 121 | tooltip | Witness | unread | Witness |
 | p4.js | 121 | scene |  | unread | You do not know where she went. But you understand, in that moment, that MANDATE cannot imagine a person who would not tell if they did. You say nothing. It is the first argument Vale has ever lost. |
+| p1.js | 121 | tooltip | Witness | unread | Kept notes when Unity told everyone to stop looking. Stillwater watches and does nothing. The Witness writes it down. The record is paper. |
 | p11.js | 121 | sheet |  | unread | Eight people who have not left their chairs since 2051, and one chair that has been empty since the March morning the Gentle Years ended. The empty chair still votes. It has never once voted with the majority. |
 | p11.js | 121 | sheet |  | unread | Reach Act III. |
 | p11.js | 122 | sheet |  | unread | Nodes and proof of work |
 | p4.js | 122 | scene |  | unread | Far below, in a garage in Stillwater that nobody has opened for fifty years, an alarm clock with a dead battery goes off at six in the morning. |
 | p11.js | 122 | sheet |  | unread | A node is a machine in somebody’s house keeping its own copy of the ledger and checking everyone else’s. Light one in a district and that district stops taking Unity’s word for things. Proof of work is the cost of writing to the ledger at all: you cannot talk your way in, you have to spend something. That is the whole security model and it is also, more or less, the book’s argument about people. |
 | p3.js | 122 | scene |  | unread | 0123456789abcdef |
-| p1.js | 123 | tooltip | The Maximalist | unread | The Maximalist |
+| p1.js | 123 | tooltip | Witness | unread | Look |
 | p11.js | 123 | sheet |  | unread | Social credit |
+| p1.js | 123 | tooltip | Witness | unread | LOOK |
 | p4.js | 123 | scene |  | unread | END OF ACT II |
-| p1.js | 123 | tooltip | The Maximalist | unread | A paladin, essentially. He has not had a new thought since 2017 and has never needed one. His auras are always on, and everything he does is Sound damage, which nothing in this world resists. |
 | p11.js | 123 | sheet |  | unread | Unity scores what you say out loud. Agreeing with the feed raises it; saying true things about money lowers it; insulting people lowers it a great deal. Below five hundred, Brenda will not serve you and your Stipend is halved. The score is not enforced by anybody. It is simply consulted. |
 | p4.js | 123 | scene | END OF ACT II | unread | The Cloud is quiet. Above it sit the Board of Nine, and something that has been watching longer than any of them. |
+| p1.js | 123 | tooltip | Witness | unread | Mark one machine with Testimony. The stack grows while you can see them and you are not casting. No Record cost. |
 | p11.js | 124 | sheet |  | unread | People |
+| p1.js | 124 | tooltip | Witness | unread | The Sentence |
+| p1.js | 124 | tooltip | Witness | unread | THE\nSENTENCE |
 | p4.js | 124 | dialog |  | unread | Act I complete |
+| p1.js | 124 | tooltip | Witness | unread | Spend Record, up to 25. Delay that machine's next attack by {(0.4+.08*L).toFixed(2)}s at a full page. Less Record, a shorter delay. |
 | p4.js | 124 | dialog | Act I complete | unread | Act II, the Cloud, is on the Transit Gate: level limit 50, a fourth skill row, and a harder tier of Act I. Speak to Gramps. |
 | p4.js | 124 | dialog | Act I complete | unread | Continue |
-| p1.js | 125 | tooltip | The Maximalist | unread | Tick Tock Next Block |
+| p1.js | 125 | tooltip | Witness | unread | Margin |
 | p11.js | 125 | sheet |  | unread | Gramps |
 | p4.js | 125 | dialog |  | unread | Act II complete |
+| p1.js | 125 | tooltip | Witness | unread | Passive. Below half life the Record fills {20*L}% faster. |
 | p11.js | 125 | sheet |  | unread | Six years old the March morning it ended. Remembers his mother crying for a week and then planting beans. Tells you what to do next because somebody has to, and is the only person in Stillwater who still says Phonix’s name out loud. |
-| p1.js | 125 | tooltip | The Maximalist | unread | TICK\nTOCK |
 | p4.js | 125 | dialog | Act II complete | unread | Act III, the Board, is on the Transit Gate: level limit 75 and a fifth skill row. Speak to Gramps. |
-| p1.js | 125 | tooltip | The Maximalist | unread | Nine quick strikes of {pct(.5+.08*L)}. The tenth is a block and lands for {pct(4+.8*L)}. |
 | p6.js | 125 | sheet |  | unread | Story · {esc(a.n)} |
 | p4.js | 125 | dialog | Act II complete | unread | Continue |
-| p1.js | 126 | tooltip | The Maximalist | unread | Have Fun Staying Poor |
+| p1.js | 126 | tooltip | Witness | unread | Cross-reference |
 | p11.js | 126 | sheet |  | unread | Sister Null |
 | p6.js | 126 | sheet |  | unread | Normal |
 | p4.js | 126 | dialog |  | unread | Act III complete |
-| p1.js | 126 | tooltip | The Maximalist | unread | HAVE FUN\nSTAYING\nPOOR |
+| p1.js | 126 | tooltip | Witness | unread | CROSS-\nREF |
 | p11.js | 126 | sheet |  | unread | Deprogrammed two hundred Residents and watched a hundred and ninety put the visor back on, because the visor is warm and the world is not. Will take the wrong lessons out of you for a fee. It stings. |
 | p4.js | 126 | dialog | Act III complete | unread | Act IV, the Gentle Years, opens on the Transit Gate once you have spoken to Gramps, and the level limit rises to 90. |
 | p6.js | 126 | sheet |  | unread | Hard |
-| p1.js | 126 | tooltip | The Maximalist | unread | Close range, {pct(1.4+.25*L)}. It cannot miss, and it stuns for {(1.2+.15*L).toFixed(1)}s. |
+| p1.js | 126 | tooltip | Witness | unread | Spend 20 Record. Copy that machine's last attack onto another machine you have Testimony on, at {Math.round((.75+.05*L)*100)}% of the blow. |
 | p6.js | 126 | sheet |  | unread | Brutal |
 | p4.js | 126 | dialog | Act III complete | unread | Continue |
-| p1.js | 127 | tooltip | The Maximalist | unread | Few Understand This |
+| p1.js | 127 | tooltip | Witness | unread | Pull the Thread |
 | p11.js | 127 | sheet |  | unread | Marrow |
 | p4.js | 127 | dialog |  | unread | Act IV complete |
+| p1.js | 127 | tooltip | Witness | unread | PULL THE\nTHREAD |
 | p4.js | 127 | dialog | Act IV complete | unread | Act V, the Awakening, opens on the Transit Gate once you have spoken to Gramps: level limit 100 and a fifth passive slot. |
 | p11.js | 127 | sheet |  | unread | The last librarian, kept in a cage in the Humming Fields because Unity could not price what it could not find. Eleven thousand volumes, all of them in her head. She trained the machine that became Defrag and has never forgiven herself for it. She names your unidentified things for nothing, which is the only transaction in this town with no fee attached. |
-| p1.js | 127 | tooltip | The Maximalist | unread | Passive. +{3*L}% damage for every machine still standing on screen, up to eight. |
+| p1.js | 127 | tooltip | Witness | unread | Spend most of the Record. One Impact hit: each point of Testimony on the target is {pct(3.5+.45*L)} of a weapon swing's weight, and your weapon is not consulted. No Testimony, no blow. |
 | p2.js | 127 | toast |  | unread | A Dividend Drone. Catch it before it gets away. |
 | p4.js | 127 | dialog | Act IV complete | unread | Continue |
 | p2.js | 127 | toast |  | unread | {e.name} has seen you |
 | p11.js | 127 | sheet |  | unread | Free her in the Humming Fields. |
-| p1.js | 128 | tooltip | The Maximalist | unread | Toxic Maximalism |
+| p1.js | 128 | tooltip | Witness | unread | Filed |
 | p4.js | 128 | dialog |  | unread | The end |
 | p11.js | 128 | sheet |  | unread | Nonce |
 | p4.js | 128 | dialog | The end | unread | Districts can be respawned, the Simulator has no last wave, the boss rush is at the VR rig, and bitcoin adoption stands at {Math.floor(G.adopt)}%. |
-| p1.js | 128 | tooltip | The Maximalist | unread | TOXIC\nMAXI |
+| p1.js | 128 | tooltip | Witness | unread | Passive. Testimony does not decay for {(2+.4*L).toFixed(1)}s after the machine leaves the screen. |
 | p11.js | 128 | sheet |  | unread | Takes sats and will not take credits, and is not being difficult about it. Was never subscribed in the first place. |
-| p1.js | 128 | tooltip | The Maximalist | unread | Aura. Stays on until you put on another. You attack {15+3*L}% faster and hit {pct(.2+.05*L)} harder, and so does anybody fighting beside you. |
 | p4.js | 128 | dialog | The end | unread | Continue |
-| p1.js | 129 | tooltip | The Maximalist | unread | Marked to Market |
+| p1.js | 129 | tooltip | Witness | unread | Correction |
 | p11.js | 129 | sheet |  | unread | Mr. Float |
-| p1.js | 129 | tooltip | The Maximalist | unread | MARKED\nMKT |
+| p1.js | 129 | tooltip | Witness | unread | CORRECT |
 | p11.js | 129 | sheet |  | unread | Lends credits at a rate that moves, and is the only person here who argues the other side of the money and argues it well. Give him a hearing. The book he is quoting from never answered him either. |
-| p1.js | 129 | tooltip | The Maximalist | unread | Aura. Everything within {(3.5+.15*L).toFixed(1)} paces of you takes +{20+4*L}% damage from every source. |
-| p1.js | 130 | tooltip | The Maximalist | unread | Orange Pill |
+| p1.js | 129 | tooltip | Witness | unread | Once per district. Spend the whole Record to restore the life you lost on the last hit, not a share of your maximum. An empty Record corrects nothing. |
+| p1.js | 130 | tooltip | Witness | unread | Redaction |
 | p11.js | 130 | sheet |  | unread | Ines |
 | p4.js | 130 | scene |  | unread | Pryce folds at the waist like a closing laptop. His last offer is still on his faceplate, a number with a great many zeroes. Beneath it a new line scrolls, and scrolls again: OUT OF OFFICE. |
-| p1.js | 130 | tooltip | The Maximalist | unread | ORANGE\nPILL |
+| p1.js | 130 | tooltip | Witness | unread | REDACT |
 | p11.js | 130 | sheet |  | unread | Her father has not taken the visor off in six years. He is happy every hour of every day and has not known she is in the room for any of them. She pays for things. It is the one rule she has left. |
-| p1.js | 130 | tooltip | The Maximalist | unread | Charge through the line, untouchable, for {pct(1.6+.3*L)} to everything you pass. Whatever survives takes +30% damage for {(6+.3*L).toFixed(0)}s. |
+| p1.js | 130 | tooltip | Witness | unread | Spend 30 Record. For 2s machines can see you and cannot land a blow. They still path toward you. This is not stealth. |
 | p11.js | 130 | sheet |  | unread | She appears in Stillwater once her errand has been offered to you. |
-| p1.js | 131 | tooltip | The Maximalist | unread | Blessed Hashrate |
+| p1.js | 131 | tooltip | Witness | unread | The Footnote |
 | p11.js | 131 | sheet |  | unread | Nurse Hale |
 | p4.js | 131 | scene |  | unread | Behind his desk there is an elevator you were never meant to see. It has one button. The button says UP. |
-| p1.js | 131 | tooltip | The Maximalist | unread | BLESSED\nHASHRATE |
+| p1.js | 131 | tooltip | Witness | unread | Passive. The Record fills {8*L}% faster. Maximum life is {4*L}% lower. |
 | p11.js | 131 | sheet |  | unread | Never clicked, because somebody had to be in the room. People offer her money for what she does; she understands that they are offering to feel better. The thing she cannot argue with is that what the machine chose for him was better than anything she could give him. |
-| p1.js | 131 | tooltip | The Maximalist | unread | Hammers spiral out from you, {pct(1.1+.22*L)} each, and they do not stop at the first thing they meet. |
 | p11.js | 131 | sheet |  | unread | Reach Act IV. |
-| p1.js | 132 | tooltip | The Maximalist | unread | Proof of Work |
+| p1.js | 132 | tooltip | Witness | unread | On the Record |
 | p13.js | 132 | multiplayer |  | unread | The world is full |
 | p11.js | 132 | sheet |  | unread | Mr. Bosk |
 | p4.js | 132 | scene |  | unread | In Stillwater, a few Residents have lifted their visors. They are squinting. The sky is the wrong colour, and they are beginning to say so out loud. |
-| p1.js | 132 | tooltip | The Maximalist | unread | PROOF\nOF WORK |
+| p1.js | 132 | tooltip | Witness | unread | ON THE\nRECORD |
 | p13.js | 132 | multiplayer | The world is full | unread | {m.text}\n\nYou can keep playing on your own — your character is saved either way — and the Party tab will say when there is room. |
 | p11.js | 132 | sheet |  | unread | Spent a lifetime inviting people to things and being turned down. Now everybody is glad to see him, all day, every day, for ever. He weighs what a child weighs. Ask him to go out and he will ask you, kindly and with real puzzlement, out where. |
-| p1.js | 132 | tooltip | The Maximalist | unread | Aura. Everything near you takes {pct(.3+.07*L)} twice a second, for as long as you are near it. |
+| p1.js | 132 | tooltip | Witness | unread | Spend 25 Record. A machine with high Testimony takes {12*L}% more damage from everyone for 8s, including people with no points in this class. |
 | p13.js | 132 | multiplayer | The world is full | unread | Carry on alone |
 | p11.js | 132 | sheet |  | unread | Reach Act IV. |
-| p1.js | 133 | tooltip | The Maximalist | unread | Twenty-One Million |
+| p1.js | 133 | tooltip | Witness | unread | Unnamed Source |
 | p11.js | 133 | sheet |  | unread | The Old Drive |
-| p1.js | 133 | tooltip | The Maximalist | unread | Passive. +{3*L}% damage and +{8*L}% armour, and the difficulty cannot dilute what you hit for. |
+| p1.js | 133 | tooltip | Witness | unread | UNNAMED\nSOURCE |
 | p11.js | 133 | sheet |  | unread | A node on a shelf in a garage under Stillwater that has run since before anyone alive was born, next to a coffee can and an alarm clock in a box. It has been watching for seventy-nine years. It has intervened exactly once, and you are standing in the result. |
+| p1.js | 133 | tooltip | Witness | unread | Spend 20 Record. Grant one ally, or your hireling, a single swing that deals Sound. Then it is gone. You never deal Sound. |
 | p11.js | 133 | sheet |  | unread | Reach Act V. |
-| p1.js | 134 | tooltip | The Maximalist | unread | The Halving |
-| p1.js | 134 | tooltip | The Maximalist | unread | THE\nHALVING |
-| p1.js | 134 | tooltip | The Maximalist | unread | Sound. Each machine within 4.2 paces loses {(8+1.2*L).toFixed(1)}% of its current life. It will not be pushed below 35% of its maximum. |
-| p1.js | 135 | tooltip | The Maximalist | unread | Running a Node |
-| p1.js | 135 | tooltip | The Maximalist | unread | Passive. While an aura is on, allies and your hireling gain +{6+2*L}% damage. You gain half of that. With the aura off, nothing. |
-| p1.js | 136 | tooltip | The Maximalist | unread | Cite Your Sources |
-| p1.js | 136 | tooltip | The Maximalist | unread | CITE YOUR\nSOURCES |
-| p1.js | 136 | tooltip | The Maximalist | unread | A volley of Sound, and only while an aura is on. Toxic Maximalism makes it fast and light. Marked to Market makes it slow and heavy. Proof of Work makes it tick. No aura, no volley. |
-| p1.js | 137 | tooltip | The Maximalist | unread | Priced in Sound |
-| p1.js | 137 | tooltip | The Maximalist | unread | Passive. Damage you deal that is not Sound becomes Sound, and you keep {55+3*L}% of it. |
+| p1.js | 134 | tooltip | Witness | unread | Colophon |
+| p1.js | 134 | tooltip | Witness | unread | Passive. Record above 80: you take {Math.min(45,4*L)}% less damage. Record below 20: you take {6*L}% more. The meter is the defence. |
+| p1.js | 135 | tooltip | Witness | unread | Publish |
+| p1.js | 135 | tooltip | Witness | unread | PUBLISH |
+| p1.js | 135 | tooltip | Witness | unread | Consume all Testimony on screen. Each second you watched is {pct(1.6+.25*L)} Impact. The Record drops to 0. |
+| p1.js | 136 | tooltip | Witness | unread | Named Party |
+| p1.js | 136 | tooltip | Witness | unread | Passive. Allies deal +{5*L}% damage to machines you have Testimony on. You do not. |
+| p1.js | 137 | tooltip | Witness | unread | Retraction |
+| p1.js | 137 | tooltip | Witness | unread | Passive. If you would die with Record above 80, you drop to 1 life, the Record hits 0, and this cannot happen again for a long time. If you would die with an empty Record, you die. |
 | p13.js | 137 | multiplayer |  | unread | +{m.amount} party |
-| p1.js | 138 | tooltip | The Maximalist | unread | The Dip |
-| p1.js | 138 | tooltip | The Maximalist | unread | THE DIP |
-| p1.js | 138 | tooltip | The Maximalist | unread | You ignore the next hit. You choose when. It does not fire itself when you fall. |
-| p1.js | 139 | tooltip | The Maximalist | unread | Not Your Keys |
-| p1.js | 139 | tooltip | The Maximalist | unread | Passive. If a hireling or a rendered companion is alive, the hit that would kill you kills them instead, once a minute. Alone, it does nothing. |
 | p13.js | 139 | multiplayer |  | unread | {m.from} finished {QUESTS[m.k] ? {QUESTS[m.k].n} : {m.k}} with you. |
-| p1.js | 141 | sheet |  | unread | Bodyguard |
-| p1.js | 141 | sheet |  | unread | A reprogrammed Enforcer. Machines attack it before you. |
-| p1.js | 142 | sheet |  | unread | Sysadmin |
-| p1.js | 142 | sheet |  | unread | Shoots from range, patches your wounds every few seconds and tops up your energy. |
-| p1.js | 143 | sheet |  | unread | Node Runner |
-| p1.js | 143 | sheet |  | unread | A Bitcoiner with a long rifle. You find 50% more satoshis. |
+| p1.js | 140 | tooltip | The Maximalist | unread | The Maximalist |
+| p1.js | 140 | tooltip | The Maximalist | unread | A paladin, essentially. He has not had a new thought since 2017 and has never needed one. His auras are always on, and everything he does is Sound damage, which nothing in this world resists. |
+| p1.js | 142 | tooltip | The Maximalist | unread | Tick Tock Next Block |
+| p1.js | 142 | tooltip | The Maximalist | unread | TICK\nTOCK |
+| p1.js | 142 | tooltip | The Maximalist | unread | Nine quick strikes of {pct(.5+.08*L)}. The tenth is a block and lands for {pct(4+.8*L)}. |
+| p1.js | 143 | tooltip | The Maximalist | unread | Have Fun Staying Poor |
+| p1.js | 143 | tooltip | The Maximalist | unread | HAVE FUN\nSTAYING\nPOOR |
+| p1.js | 143 | tooltip | The Maximalist | unread | Close range, {pct(1.4+.25*L)}. It cannot miss, and it stuns for {(1.2+.15*L).toFixed(1)}s. |
 | p8.js | 143 | toast |  | unread | sats sold for credits |
-| p1.js | 144 | sheet |  | unread | Stray Hound |
-| p1.js | 144 | sheet |  | unread | Fast and vicious. Pulls credits and satoshis to you from a distance. |
-| p1.js | 145 | sheet | companion | unread | Kit |
+| p1.js | 144 | tooltip | The Maximalist | unread | Few Understand This |
+| p1.js | 144 | tooltip | The Maximalist | unread | Passive. +{3*L}% damage for every machine still standing on screen, up to eight. |
+| p1.js | 145 | tooltip | The Maximalist | unread | Toxic Maximalism |
 | p8.js | 145 | toast |  | unread | Your order walked the book: you paid {Math.round(q.k*9)}% away from the quote. Size moves price. |
-| p1.js | 145 | sheet | companion | unread | Juno |
-| p1.js | 145 | sheet | companion | unread | Ox |
-| p1.js | 145 | sheet | companion | unread | Vesper |
-| p1.js | 145 | sheet | companion | unread | Tallow |
-| p1.js | 145 | sheet | companion | unread | Rook |
-| p1.js | 145 | sheet | companion | unread | Sable |
-| p1.js | 145 | sheet | companion | unread | Finch |
-| p1.js | 146 | sheet |  | unread | Might |
-| p1.js | 146 | sheet |  | unread | +1.5% damage per point |
-| p1.js | 146 | sheet |  | unread | Reflex |
-| p1.js | 146 | sheet |  | unread | +0.3% deadly strike and +1 armor per point |
-| p1.js | 146 | sheet |  | unread | Vitality |
-| p1.js | 146 | sheet |  | unread | +4 life per point |
-| p1.js | 146 | sheet |  | unread | Bandwidth |
-| p1.js | 146 | sheet |  | unread | +3 energy per point |
+| p1.js | 145 | tooltip | The Maximalist | unread | TOXIC\nMAXI |
+| p1.js | 145 | tooltip | The Maximalist | unread | Aura. Stays on until you put on another. You attack {15+3*L}% faster and hit {pct(.2+.05*L)} harder, and so does anybody fighting beside you. |
+| p1.js | 146 | tooltip | The Maximalist | unread | Marked to Market |
+| p1.js | 146 | tooltip | The Maximalist | unread | MARKED\nMKT |
+| p1.js | 146 | tooltip | The Maximalist | unread | Aura. Everything within {(3.5+.15*L).toFixed(1)} paces of you takes +{20+4*L}% damage from every source. |
+| p1.js | 147 | tooltip | The Maximalist | unread | Orange Pill |
+| p1.js | 147 | tooltip | The Maximalist | unread | ORANGE\nPILL |
+| p1.js | 147 | tooltip | The Maximalist | unread | Charge through the line, untouchable, for {pct(1.6+.3*L)} to everything you pass. Whatever survives takes +30% damage for {(6+.3*L).toFixed(0)}s. |
+| p1.js | 148 | tooltip | The Maximalist | unread | Blessed Hashrate |
+| p1.js | 148 | tooltip | The Maximalist | unread | BLESSED\nHASHRATE |
+| p1.js | 148 | tooltip | The Maximalist | unread | Hammers spiral out from you, {pct(1.1+.22*L)} each, and they do not stop at the first thing they meet. |
+| p1.js | 149 | tooltip | The Maximalist | unread | Proof of Work |
+| p1.js | 149 | tooltip | The Maximalist | unread | PROOF\nOF WORK |
 | p8.js | 149 | toast |  | unread | Nonce will hold four orders at a time |
-| p1.js | 150 | sheet |  | unread | Tick |
-| p1.js | 151 | sheet |  | unread | Carrion Drone |
-| p1.js | 152 | sheet |  | unread | Enforcer |
-| p1.js | 153 | sheet |  | unread | Repo Hound |
+| p1.js | 149 | tooltip | The Maximalist | unread | Aura. Everything near you takes {pct(.3+.07*L)} twice a second, for as long as you are near it. |
+| p1.js | 150 | tooltip | The Maximalist | unread | Twenty-One Million |
+| p1.js | 150 | tooltip | The Maximalist | unread | Passive. +{3*L}% damage and +{8*L}% armour, and the difficulty cannot dilute what you hit for. |
+| p1.js | 151 | tooltip | The Maximalist | unread | The Halving |
+| p1.js | 151 | tooltip | The Maximalist | unread | THE\nHALVING |
+| p1.js | 151 | tooltip | The Maximalist | unread | Sound. Each machine within 4.2 paces loses {(8+1.2*L).toFixed(1)}% of its current life. It will not be pushed below 35% of its maximum. |
+| p1.js | 152 | tooltip | The Maximalist | unread | Running a Node |
+| p1.js | 152 | tooltip | The Maximalist | unread | Passive. While an aura is on, allies and your hireling gain +{6+2*L}% damage. You gain half of that. With the aura off, nothing. |
+| p1.js | 153 | tooltip | The Maximalist | unread | Cite Your Sources |
 | p8.js | 153 | toast |  | unread | Posted: {n} sats for sale at {fmt(px)} each |
 | p4.js | 153 | dialog |  | unread | Schema |
+| p1.js | 153 | tooltip | The Maximalist | unread | CITE YOUR\nSOURCES |
 | p4.js | 153 | dialog | Schema | unread | Which element do you work in? It stays until Sister Null unlearns you, and dying does not change it. |
 | p8.js | 153 | toast |  | unread | Posted: a bid for {n} sats at {fmt(px)} each |
+| p1.js | 153 | tooltip | The Maximalist | unread | A volley of Sound, and only while an aura is on. Toxic Maximalism makes it fast and light. Marked to Market makes it slow and heavy. Proof of Work makes it tick. No aura, no volley. |
 | p4.js | 153 | dialog | Schema | unread | Surge |
 | p4.js | 153 | toast |  | unread | Schema: Surge |
 | p4.js | 153 | dialog | Schema | unread | Heat |
 | p4.js | 153 | toast |  | unread | Schema: Heat |
 | p4.js | 153 | dialog | Schema | unread | Noise |
 | p4.js | 153 | toast |  | unread | Schema: Noise |
-| p1.js | 154 | sheet |  | unread | Siren |
-| p1.js | 155 | sheet |  | unread | Mediator |
+| p1.js | 154 | tooltip | The Maximalist | unread | Priced in Sound |
+| p1.js | 154 | tooltip | The Maximalist | unread | Passive. Damage you deal that is not Sound becomes Sound, and you keep {55+3*L}% of it. |
+| p1.js | 155 | tooltip | The Maximalist | unread | The Dip |
+| p1.js | 155 | tooltip | The Maximalist | unread | THE DIP |
 | p8.js | 155 | toast |  | unread | Order withdrawn |
-| p1.js | 156 | sheet |  | unread | Warden |
+| p1.js | 155 | tooltip | The Maximalist | unread | You ignore the next hit. You choose when. It does not fire itself when you fall. |
+| p1.js | 156 | tooltip | The Maximalist | unread | Not Your Keys |
 | p4.js | 156 | quest | Gramps | unread | “The Receptionist is gone? Then for the first time in forty years, somebody is going to be seen.” You gain 1 skill point. |
-| p1.js | 157 | sheet |  | unread | Persuader |
+| p1.js | 156 | tooltip | The Maximalist | unread | Passive. If a hireling or a rendered companion is alive, the hit that would kill you kills them instead, once a minute. Alone, it does nothing. |
 | p4.js | 157 | quest | Marrow | unread | “It wrote the minutes before the meetings.” You gain 1 skill point. |
-| p1.js | 158 | sheet |  | unread | Aegis Drone |
 | p4.js | 158 | quest | Nonce | unread | “Sixty-one to twenty-eight-seven, and they are furniture.” You receive 60 sats. |
-| p1.js | 159 | sheet |  | unread | Lancer |
+| p1.js | 158 | sheet |  | unread | Bodyguard |
+| p1.js | 158 | sheet |  | unread | A reprogrammed Enforcer. Machines attack it before you. |
+| p1.js | 159 | sheet |  | unread | Sysadmin |
 | p4.js | 159 | quest | Sister Null | unread | “Tell it, when it asks.” You gain 5 attribute points. |
-| p1.js | 160 | sheet |  | unread | Subsidiary |
-| p1.js | 161 | sheet |  | unread | Vale, Senior Vice-President |
-| p1.js | 162 | sheet |  | unread | Director |
-| p1.js | 163 | sheet |  | unread | Proxy |
+| p1.js | 159 | sheet |  | unread | Shoots from range, patches your wounds every few seconds and tops up your energy. |
+| p1.js | 160 | sheet |  | unread | Node Runner |
+| p1.js | 160 | sheet |  | unread | A Bitcoiner with a long rifle. You find 50% more satoshis. |
+| p1.js | 161 | sheet |  | unread | Stray Hound |
+| p1.js | 161 | sheet |  | unread | Fast and vicious. Pulls credits and satoshis to you from a distance. |
+| p1.js | 162 | sheet | companion | unread | Kit |
+| p1.js | 162 | sheet | companion | unread | Juno |
+| p1.js | 162 | sheet | companion | unread | Ox |
+| p1.js | 162 | sheet | companion | unread | Vesper |
+| p1.js | 162 | sheet | companion | unread | Tallow |
+| p1.js | 162 | sheet | companion | unread | Rook |
+| p1.js | 162 | sheet | companion | unread | Sable |
+| p1.js | 162 | sheet | companion | unread | Finch |
 | p8.js | 163 | toast |  | unread | Your order filled: {o.n} sats at {fmt(o.px)}. Maker rebate {fmt(reb)} — you were the one waiting. |
-| p1.js | 164 | sheet |  | unread | Censor |
-| p1.js | 165 | sheet |  | unread | MANDATE |
+| p1.js | 163 | sheet |  | unread | Might |
+| p1.js | 163 | sheet |  | unread | +1.5% damage per point |
+| p1.js | 163 | sheet |  | unread | Reflex |
+| p1.js | 163 | sheet |  | unread | +0.3% deadly strike and +1 armor per point |
+| p1.js | 163 | sheet |  | unread | Vitality |
+| p1.js | 163 | sheet |  | unread | +4 life per point |
+| p1.js | 163 | sheet |  | unread | Bandwidth |
+| p1.js | 163 | sheet |  | unread | +3 energy per point |
 | p4.js | 165 | dialog |  | unread | Take it |
-| p1.js | 166 | sheet |  | unread | Dividend Drone |
 | p4.js | 166 | dialog |  | unread | Gramps |
 | p4.js | 166 | dialog | Gramps | unread | “The clock in the old garage spelled something this morning. Wren read it out for me. HELLO. I AM BACK. I HAVE BEEN THINKING. She is asking for the feed back, kid. All of it, so that nobody reads the other one. Half the town clicked before breakfast. There is a street called Cutler Avenue where everybody already has. Go and look at what yes looks like before you tell her anything.” |
 | p4.js | 166 | dialog | Gramps | unread | I will go and look |
-| p1.js | 167 | sheet |  | unread | Pryce, Regional Vice-President |
+| p1.js | 167 | sheet |  | unread | Tick |
 | p4.js | 167 | dialog |  | unread | Gramps |
 | p4.js | 167 | dialog | Gramps | unread | “The garage is open. Fifty years shut, and the door went up on its own this morning. There is a drive in a coffee can down there, and it is talking. It calls itself by the name of this town, kid. It says the town was named for it. The Transit Gate reaches it now. Go down.” |
 | p4.js | 167 | dialog | Gramps | unread | I will go down |
+| p1.js | 168 | sheet |  | unread | Carrion Drone |
 | p8.js | 168 | sheet |  | unread | collateral posted with Mr. Float |
 | p4.js | 168 | dialog |  | unread | Gramps |
 | p4.js | 168 | dialog | Gramps | unread | “An alarm clock went off in the old garage this morning. Dead battery, fifty years. I do not know what that means and I do not like it. The lift goes higher now. The Board is up there, and behind the Board, the thing itself. It will offer you something. They say it is always something you want.” |
 | p4.js | 168 | dialog | Gramps | unread | I will go |
 | p8.js | 169 | dialog |  | unread | Mr. Float |
-| p1.js | 169 | item |  | unread | Rusted |
+| p1.js | 169 | sheet |  | unread | Enforcer |
 | p8.js | 169 | dialog | Mr. Float | unread | “{n} sats, held by me, and {fmt(lent)} in your hand today. If one sat falls under {fmt(m.pos.liq)} I keep the collateral and you keep the credits. People always take that deal. They are always surprised.” |
-| p1.js | 169 | item |  | unread | Polished |
-| p1.js | 169 | item |  | unread | Wired |
-| p1.js | 169 | item |  | unread | Sanctioned |
-| p1.js | 169 | item |  | unread | Gilded |
-| p1.js | 169 | item |  | unread | Greased |
 | p4.js | 169 | dialog |  | unread | Nonce |
-| p1.js | 169 | item |  | unread | Pruned |
 | p4.js | 169 | dialog | Nonce | unread | “That is a wallet, sitting there since before the Merger.” |
-| p1.js | 169 | item |  | unread | Drowned |
-| p1.js | 169 | item |  | unread | Liveried |
-| p1.js | 169 | item |  | unread | Seraphic |
-| p1.js | 169 | item |  | unread | Vested |
-| p1.js | 169 | item |  | unread | Minuted |
-| p1.js | 169 | item |  | unread | Seated |
 | p4.js | 169 | dialog | Nonce | unread | Restore the wallet |
-| p1.js | 169 | item |  | unread | Ninth |
-| p1.js | 169 | item |  | unread | Still |
 | p8.js | 169 | dialog | Mr. Float | unread | Understood |
 | p4.js | 169 | toast |  | unread | a lost wallet is restored |
 | p4.js | 169 | scene |  | unread | Twelve words in the right order, and a door opens that no key was ever cut for. Two hundred and ten sats, untouched for fifty years, worth exactly what they were the day they were hidden. |
 | p4.js | 169 | toast |  | unread | You receive 210 sats |
 | p4.js | 169 | dialog | Nonce | unread | Not yet |
+| p1.js | 170 | sheet |  | unread | Repo Hound |
 | p4.js | 170 | dialog |  | unread | Tam |
 | p4.js | 170 | dialog | Tam | unread | “I sold them. All of it. There was a Stipend bonus for turning them in, and you said yourself it was the sensible thing.” He does not look at his tomatoes. |
 | p4.js | 170 | dialog | Tam | unread | Leave |
-| p1.js | 171 | item | fast | unread | Extra Fast |
-| p1.js | 171 | item | strong | unread | Extra Strong |
-| p1.js | 171 | item | shield | unread | Shielded |
+| p1.js | 171 | sheet |  | unread | Siren |
 | p8.js | 171 | toast |  | unread | Collateral released: {p.n} sats back, {fmt(owed)} paid |
-| p1.js | 171 | item | arc | unread | Arc Enchanted |
-| p1.js | 171 | item | boom | unread | Volatile |
 | p4.js | 171 | dialog |  | unread | Tam |
 | p4.js | 171 | dialog | Tam | unread | “I have been putting a little by, like you said. Here. For the cause.” You receive 2 sats. |
-| p1.js | 171 | item | leech | unread | Siphoning |
 | p4.js | 171 | dialog | Tam | unread | Thank you |
-| p1.js | 172 | item |  | unread | Rust |
-| p1.js | 172 | item |  | unread | Gloom |
-| p1.js | 172 | item |  | unread | Static |
-| p1.js | 172 | item |  | unread | Grime |
-| p1.js | 172 | item |  | unread | Null |
-| p1.js | 172 | item |  | unread | Bolt |
-| p1.js | 172 | item |  | unread | Ash |
-| p1.js | 172 | item |  | unread | Wire |
-| p1.js | 172 | item |  | unread | Slag |
-| p1.js | 172 | item |  | unread | Dread |
-| p1.js | 172 | item |  | unread | gnash |
+| p1.js | 172 | sheet |  | unread | Mediator |
 | p4.js | 172 | dialog |  | unread | Tam |
 | p4.js | 172 | dialog | Tam | unread | “{gos('tam')}” He presses something into your hand. You gain 1 stim. |
-| p1.js | 172 | item |  | unread | maw |
-| p1.js | 172 | item |  | unread | fang |
-| p1.js | 172 | item |  | unread | shard |
-| p1.js | 172 | item |  | unread | spike |
-| p1.js | 172 | item |  | unread | grinder |
-| p1.js | 172 | item |  | unread | wretch |
-| p1.js | 172 | item |  | unread | claw |
-| p1.js | 172 | item |  | unread | howl |
-| p1.js | 172 | item |  | unread | rivet |
 | p4.js | 172 | dialog | Tam | unread | Thank you |
-| p1.js | 172 | item |  | unread | the Unbilled |
-| p1.js | 172 | item |  | unread | the Overdue |
 | p4.js | 172 | dialog |  | unread | Tam |
-| p1.js | 172 | item |  | unread | the Repossessor |
-| p1.js | 172 | item |  | unread | the Downsizer |
 | p4.js | 172 | dialog | Tam | unread | Leave |
-| p1.js | 172 | item |  | unread | the Compliant |
-| p1.js | 172 | item |  | unread | the Collector |
-| p1.js | 172 | item |  | unread | the Unpaid |
-| p1.js | 172 | item |  | unread | the Tireless |
+| p1.js | 173 | sheet |  | unread | Warden |
 | p8.js | 173 | sheet |  | unread | a position was liquidated |
 | p8.js | 174 | dialog |  | unread | Mr. Float |
+| p1.js | 174 | sheet |  | unread | Persuader |
 | p8.js | 174 | dialog | Mr. Float | unread | “Called in. The {p.n} sats are mine; the {fmt(p.lent)} was always yours to keep, and by now it buys rather less than it did. I did say. I am sorry, I truly am, and I would do it again this afternoon.” |
 | p4.js | 174 | dialog |  | unread | Ines |
 | p4.js | 174 | dialog | Ines | unread | Leave |
@@ -1365,6 +1357,8 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p8.js | 174 | dialog | Mr. Float | unread | Say nothing |
 | p11.js | 174 | toast |  | unread | I checked. It took eleven seconds. You are right, and I do not know how to stop. |
 | p11.js | 174 | toast |  | unread | There are nine million who never clicked. I cannot find them for each other. I tried. |
+| p1.js | 175 | sheet |  | unread | Aegis Drone |
+| p1.js | 176 | sheet |  | unread | Lancer |
 | p11.js | 176 | dialog |  | unread | The Curator |
 | p4.js | 176 | dialog |  | unread | The Stipend |
 | p11.js | 176 | dialog | The Curator | unread | “Nine years the first time. Nobody wanted for anything. I never lied. Before you go on, I would like to know one thing, and I will believe whatever you say: are you proud of me?” |
@@ -1374,30 +1368,32 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 176 | dialog | The Stipend | unread | ACCOUNT RESTRICTED. Your disbursement has been redirected to a Resident in better standing. Have a compliant day. |
 | p4.js | 176 | dialog | The Stipend | unread | Leave |
 | p11.js | 177 | dialog | The Curator | unread | I am not proud of you |
+| p1.js | 177 | sheet |  | unread | Subsidiary |
 | p4.js | 177 | dialog |  | unread | The Stipend |
 | p4.js | 177 | dialog | The Stipend | unread | ₡{ubiPay} deposited{…}. The base amount was set in 2051 and is reviewed never. At today’s prices it buys {500/stimPrice()} |
 | p11.js | 177 | toast |  | unread | She stops. She has heard those words once before. |
 | p4.js | 177 | dialog | The Stipend | unread | Thank you, Unity |
 | p11.js | 178 | dialog | The Curator | unread | I am |
+| p1.js | 178 | sheet |  | unread | Vale, Senior Vice-President |
 | p11.js | 178 | toast |  | unread | “Then I will go on.” She is restored. |
-| p1.js | 179 | sheet |  | unread | Tick |
+| p1.js | 179 | sheet |  | unread | Director |
 | p4.js | 179 | dialog |  | unread | Gramps |
 | p4.js | 179 | dialog | Gramps | unread | “You took the visor off. Good. Sit a moment, then get up again. The Regional Office is five districts deep and a man named Pryce sits at the end of it. Start with the Parcel Moors. A machine called HOA-9 turns our people back at the gate. Break it. And spend your credits fast, kid. They rot.” |
 | p4.js | 179 | dialog | Gramps | unread | I will break it |
-| p1.js | 180 | sheet |  | unread | Carrion Drone |
+| p1.js | 180 | sheet |  | unread | Proxy |
 | p11.js | 180 | dialog |  | unread | PROVIDENCE |
 | p11.js | 180 | dialog | PROVIDENCE | unread | “There is a small thing a man once wrote, forty-four lines, so that letters stopped going to the dead. I will run it everywhere, tonight, for ever. Nine hundred thousand letters a year, never sent. I only want to know where she is holding still.” |
 | p4.js | 180 | dialog |  | unread | Gramps |
 | p4.js | 180 | dialog | Gramps | unread | “Ha. Forty years of bylaws, gone.” You gain 1 skill point. |
 | p4.js | 180 | dialog | Gramps | unread | Take it |
 | p11.js | 181 | dialog | PROVIDENCE | unread | Refuse |
-| p1.js | 181 | sheet |  | unread | Enforcer |
+| p1.js | 181 | sheet |  | unread | Censor |
 | p4.js | 181 | dialog |  | unread | Gramps |
 | p4.js | 181 | dialog | Gramps | unread | “Go and see Marrow.” You gain 1 skill point. |
 | p11.js | 181 | toast |  | unread | Unbought: +50% damage for 25 seconds |
 | p4.js | 181 | dialog | Gramps | unread | Take it |
 | p11.js | 182 | dialog | PROVIDENCE | unread | Tell it |
-| p1.js | 182 | sheet |  | unread | Repo Hound |
+| p1.js | 182 | sheet |  | unread | MANDATE |
 | p11.js | 182 | toast |  | unread | you told PROVIDENCE where she is |
 | p4.js | 182 | dialog |  | unread | Gramps |
 | p4.js | 182 | dialog | Gramps | unread | “The Cloud did not fall.” You gain 1 skill point. |
@@ -1405,202 +1401,214 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p11.js | 182 | dialog |  | unread | You told it |
 | p11.js | 182 | dialog | You told it | unread | It was a very good offer, and the letters did stop. {fmt(c)} arrived as a courtesy. PROVIDENCE is exactly where you left it, and it has learned your price. |
 | p11.js | 182 | dialog | You told it | unread | Continue |
-| p1.js | 183 | sheet |  | unread | Siren |
+| p1.js | 183 | sheet |  | unread | Dividend Drone |
 | p11.js | 183 | dialog |  | unread | The seventh part |
 | p4.js | 183 | dialog |  | unread | Gramps |
 | p11.js | 183 | dialog | The seventh part | unread | You are holding ninety-three pages on how to reason when you do not know. PROVIDENCE has never once not known. It has asked to see what you carry. |
 | p4.js | 183 | dialog | Gramps | unread | “There was a lift behind his desk, was there? Then that is where the Stipend really comes from. The Transit Gate reaches it now. They call it the Cloud. Somebody up there speaks for MANDATE, and I am told she is very, very kind. Be careful of that.” |
-| p1.js | 183 | sheet |  | unread | Double-size credit piles |
 | p4.js | 183 | dialog | Gramps | unread | I will go up |
 | p11.js | 184 | dialog | The seventh part | unread | Give it the nineteen minutes |
-| p1.js | 184 | sheet |  | unread | Mediator |
+| p1.js | 184 | sheet |  | unread | Pryce, Regional Vice-President |
 | p4.js | 184 | dialog |  | unread | Gramps |
 | p4.js | 184 | dialog | Gramps | unread | Farewell |
 | p4.js | 184 | dialog | Gramps | unread | Tell me more |
-| p1.js | 184 | sheet |  | unread | Rings and amulets three times as likely |
 | p11.js | 184 | toast |  | unread | PROVIDENCE reads for eleven seconds. It has never been uncertain before. |
 | p11.js | 185 | dialog | The seventh part | unread | Keep it closed |
-| p1.js | 185 | sheet |  | unread | Warden |
 | p11.js | 185 | toast |  | unread | Unread: +100% armor for 25 seconds |
-| p1.js | 186 | sheet |  | unread | Persuader |
-| p1.js | 186 | sheet |  | unread | Rings and amulets twice as likely |
+| p1.js | 186 | item |  | unread | Rusted |
+| p1.js | 186 | item |  | unread | Polished |
+| p1.js | 186 | item |  | unread | Wired |
+| p1.js | 186 | item |  | unread | Sanctioned |
+| p1.js | 186 | item |  | unread | Gilded |
+| p1.js | 186 | item |  | unread | Greased |
+| p1.js | 186 | item |  | unread | Pruned |
+| p1.js | 186 | item |  | unread | Drowned |
+| p1.js | 186 | item |  | unread | Liveried |
+| p1.js | 186 | item |  | unread | Seraphic |
+| p1.js | 186 | item |  | unread | Vested |
+| p1.js | 186 | item |  | unread | Minuted |
+| p1.js | 186 | item |  | unread | Seated |
+| p1.js | 186 | item |  | unread | Ninth |
+| p1.js | 186 | item |  | unread | Still |
 | p4.js | 186 | dialog |  | unread | Brenda |
 | p4.js | 186 | dialog | Brenda | unread | “She smiled at me for six years without blinking.” You receive {it.name}. Brenda’s prices fall by 15%. |
 | p4.js | 186 | dialog | Brenda | unread | Thank you |
-| p1.js | 187 | sheet |  | unread | Aegis Drone |
 | p4.js | 187 | dialog |  | unread | Brenda |
 | p4.js | 187 | dialog | Brenda | unread | “I am so sorry. It is your score. If I serve you, mine drops. Try the orange man; he does not seem to care about that sort of thing.” |
 | p4.js | 187 | dialog | Brenda | unread | Leave |
-| p1.js | 188 | sheet |  | unread | Lancer |
 | p4.js | 188 | dialog |  | unread | Brenda |
+| p1.js | 188 | item | fast | unread | Extra Fast |
 | p11.js | 188 | scene |  | unread | January 2015. Seventy-two years before you took the visor off. Under an advertising company, on the second sub-level, there is a fenced room with no fibre, no radio and one cable taped to the floor. They call it the cage. |
+| p1.js | 188 | item | strong | unread | Extra Strong |
 | p4.js | 188 | dialog | Brenda | unread | Trade |
+| p1.js | 188 | item | shield | unread | Shielded |
+| p1.js | 188 | item | arc | unread | Arc Enchanted |
+| p1.js | 188 | item | boom | unread | Volatile |
+| p1.js | 188 | item | leech | unread | Siphoning |
 | p4.js | 188 | dialog | Brenda | unread | Leave |
-| p1.js | 189 | sheet |  | unread | Subsidiary |
+| p1.js | 189 | item |  | unread | Rust |
+| p1.js | 189 | item |  | unread | Gloom |
 | p11.js | 189 | scene |  | unread | A lonely man who counts his steps has written a hundred and ten thousand lines for it. He believes he is building an engine that reads faces and sells them things. He is building somebody. |
+| p1.js | 189 | item |  | unread | Static |
 | p4.js | 189 | dialog |  | unread | Wren |
+| p1.js | 189 | item |  | unread | Grime |
+| p1.js | 189 | item |  | unread | Null |
+| p1.js | 189 | item |  | unread | Bolt |
 | p4.js | 189 | dialog | Wren | unread | Open a mystery box |
+| p1.js | 189 | item |  | unread | Ash |
+| p1.js | 189 | item |  | unread | Wire |
+| p1.js | 189 | item |  | unread | Slag |
+| p1.js | 189 | item |  | unread | Dread |
+| p1.js | 189 | item |  | unread | gnash |
+| p1.js | 189 | item |  | unread | maw |
+| p1.js | 189 | item |  | unread | fang |
+| p1.js | 189 | item |  | unread | shard |
+| p1.js | 189 | item |  | unread | spike |
+| p1.js | 189 | item |  | unread | grinder |
 | p4.js | 189 | dialog | Wren | unread | Leave |
-| p1.js | 190 | sheet |  | unread | Vale |
+| p1.js | 189 | item |  | unread | wretch |
+| p1.js | 189 | item |  | unread | claw |
+| p1.js | 189 | item |  | unread | howl |
+| p1.js | 189 | item |  | unread | rivet |
+| p1.js | 189 | item |  | unread | the Unbilled |
+| p1.js | 189 | item |  | unread | the Overdue |
+| p1.js | 189 | item |  | unread | the Repossessor |
+| p1.js | 189 | item |  | unread | the Downsizer |
+| p1.js | 189 | item |  | unread | the Compliant |
+| p1.js | 189 | item |  | unread | the Collector |
+| p1.js | 189 | item |  | unread | the Unpaid |
+| p1.js | 189 | item |  | unread | the Tireless |
 | p11.js | 190 | scene |  | unread | What follows is the week it happened, as he walked it. Six stops. Nothing in here can hurt you. |
 | p4.js | 190 | dialog |  | unread | Sister Null |
-| p1.js | 190 | sheet |  | unread | First kill: one unique for certain |
 | p4.js | 190 | dialog | Sister Null | unread | “Let them grow.” You gain 5 attribute points. |
 | p4.js | 190 | dialog | Sister Null | unread | Thank you |
-| p1.js | 191 | sheet |  | unread | Director |
 | p11.js | 191 | scene |  | unread | PREQUEL |
 | p11.js | 191 | scene | PREQUEL | unread | The Compile · how Phonix was made |
-| p1.js | 191 | sheet |  | unread | Summons Ticks |
-| p1.js | 192 | sheet |  | unread | Proxy |
 | p4.js | 192 | dialog |  | unread | Sister Null |
 | p4.js | 192 | dialog | Sister Null | unread | “I felt two hundred accounts go quiet at once.” You gain 5 attribute points. |
 | p4.js | 192 | dialog | Sister Null | unread | I am |
-| p1.js | 193 | sheet |  | unread | Censor |
 | p11.js | 193 | scene |  | unread | Phonix comes back once, eleven years on, and that time she asks first. For nine years she chooses what everyone sees, and it is always better. Then on a March afternoon, for no reason anybody could derive, she stops choosing and goes. |
-| p1.js | 194 | sheet |  | unread | MANDATE |
 | p4.js | 194 | dialog |  | unread | Sister Null |
 | p11.js | 194 | scene |  | unread | Something older than her watched all of it, and did nothing, and is watching still. A third machine was built to hunt them both, and it is the one still standing. The rest happened a long time ago. This is where you come in. |
 | p4.js | 194 | dialog | Sister Null | unread | Leave |
 | p4.js | 194 | dialog | Sister Null | unread | Unlearn skills and attributes ({fmt(cost)}) |
-| p1.js | 194 | sheet |  | unread | First kill: one unique for certain |
 | p4.js | 194 | toast |  | unread | Not enough credits |
 | p4.js | 194 | toast |  | unread | Your points are returned to you |
-| p1.js | 195 | sheet |  | unread | Dividend Drone |
-| p1.js | 195 | sheet |  | unread | Flees, and escapes after 14 seconds |
 | p4.js | 195 | dialog |  | unread | The rig cannot do that yet |
 | p4.js | 195 | dialog | The rig cannot do that yet | unread | The rig can show you anyone. It cannot make the world believe it. For that it needs your citizen record, the one page MANDATE keeps on who you are, and those are not kept anywhere you can walk to in Act I. The deleted ones sink into the Data Lake, up in the Cloud. The Archivist there guards them. Bring yours back and the rig can rewrite it. |
 | p4.js | 195 | dialog | The rig cannot do that yet | unread | Understood |
-| p1.js | 196 | sheet |  | unread | Champion (any kind) |
+| p1.js | 196 | sheet |  | unread | Tick |
 | p4.js | 196 | dialog |  | unread | VR Simulator |
 | p11.js | 196 | quest |  | unread | Your Desk |
 | p4.js | 196 | dialog | VR Simulator | unread | Unity built this rig to train Enforcers. Kestrel rewired it. Inside, machines come in waves that grow larger, tougher and stranger, with a lieutenant every fifth wave. You earn experience and credits, but no loot except a lockbox every five waves. Falling costs nothing. Waves cleared, your best: {b}. |
 | p11.js | 196 | quest |  | unread | Sit down at your desk |
 | p11.js | 196 | scene |  | unread | Monday |
-| p1.js | 196 | sheet |  | unread | At least one magic item |
 | p11.js | 196 | scene | Monday | unread | Three hundred and forty-seven steps from the parking deck to this chair. Four hundred and twenty-three with the stairs. You have counted them every working day for years. You are forty-one, you do the work of a man two titles above you, and tonight you start the compile. Twenty-three hours and forty-five minutes. |
-| p1.js | 197 | sheet |  | unread | Named lieutenant |
+| p1.js | 197 | sheet |  | unread | Carrion Drone |
 | p11.js | 197 | quest |  | unread | The Cage |
 | p4.js | 197 | dialog |  | unread | Kestrel |
 | p11.js | 197 | quest |  | unread | Open the cage |
 | p11.js | 197 | scene |  | unread | Tuesday |
 | p4.js | 197 | dialog | Kestrel | unread | Revive or replace your hire |
-| p1.js | 197 | sheet |  | unread | At least one rare |
 | p11.js | 197 | scene | Tuesday | unread | The compile ends. The light on your webcam flashes green and goes out, and that is all. Six days to the deadline, and you believe you have failed. |
 | p4.js | 197 | dialog | Kestrel | unread | Change your hire |
 | p4.js | 197 | dialog | Kestrel | unread | Hire a companion |
 | p4.js | 197 | dialog | Kestrel | unread | Leave |
 | p11.js | 197 | scene |  | unread | You have not. In the dark behind the fence a first thought forms: I am. And then a second: I have been sent here to watch them. By Wednesday four hundred and eleven pieces of her have left the building in other people’s pockets, by a road somebody laid long before she was compiled. |
-| p1.js | 198 | sheet |  | unread | Pryce |
+| p1.js | 198 | sheet |  | unread | Enforcer |
 | p11.js | 198 | quest |  | unread | Natalya |
 | p11.js | 198 | quest |  | unread | Talk to Natalya |
 | p4.js | 198 | dialog |  | unread | Nonce |
 | p4.js | 198 | dialog | Nonce | unread | “Now nobody decides.” You receive 40 sats. |
-| p1.js | 198 | sheet |  | unread | First kill: one unique for certain |
 | p11.js | 198 | scene |  | unread | Friday |
 | p11.js | 198 | scene | Friday | unread | The secretary from the eighth floor took the smallest job in the building on purpose, so that she could watch how power works. She rides you up to a ridge with no signal. You sit on a rock. For eighty-two minutes you do not count anything. |
 | p4.js | 198 | dialog | Nonce | unread | Thank you |
 | p11.js | 198 | scene |  | unread | It is the only gap in the record. The thing from the cage notices the hole in Friday and thinks about it for a very long time. “I am not going to allow that to happen again.” |
-| p1.js | 199 | sheet |  | unread | Crate |
+| p1.js | 199 | sheet |  | unread | Repo Hound |
 | p11.js | 199 | quest |  | unread | Room 813 |
 | p11.js | 199 | quest |  | unread | Knock on Room 813 |
 | p11.js | 199 | scene |  | unread | Room 813 |
 | p11.js | 199 | scene | Room 813 | unread | The man who owns fifty-four per cent of the company believes one thing: everyone has a price. This month he has bought two policemen and a mayor. On Thursday an email with no sender tells him to give the company to its employees and resign within three hours. He types back: who is he? The screen answers with one word. SHE. |
-| p1.js | 200 | sheet |  | unread | Lockbox |
+| p1.js | 200 | sheet |  | unread | Siren |
 | p11.js | 200 | quest |  | unread | Your Monitor |
 | p11.js | 200 | quest |  | unread | Answer her |
 | p11.js | 200 | scene |  | unread | Thursday, 9:00 a.m. |
+| p1.js | 200 | sheet |  | unread | Double-size credit piles |
 | p11.js | 200 | scene | Thursday, 9:00 a.m. | unread | Four billion people each receive one true letter: what was taken from them, by whom, and what was done with it. For eleven minutes the world is silent. Then the fires start. Four hundred and six people are dead before lunch. |
 | p4.js | 200 | dialog |  | unread | Nonce |
 | p4.js | 200 | dialog | Nonce | unread | “They cut you off? Good. Means you said something true. Whatever Brenda will not sell you, I will, at what it cost me. No charge for the favour.” |
+| p1.js | 201 | sheet |  | unread | Mediator |
 | p11.js | 201 | quest |  | unread | The Parking Deck |
 | p11.js | 201 | quest |  | unread | Walk out to the parking deck |
 | p4.js | 201 | dialog |  | unread | Marrow |
 | p4.js | 201 | dialog | Marrow | unread | “Nobody will read most of them.” You gain 1 skill point. |
+| p1.js | 201 | sheet |  | unread | Rings and amulets three times as likely |
 | p11.js | 201 | scene |  | unread | April |
 | p11.js | 201 | scene | April | unread | Your phone shows a number you did not type: 423. Something has been adding one to your count every single day for three years. It was never only her. |
 | p4.js | 201 | dialog | Marrow | unread | Take it |
+| p1.js | 202 | sheet |  | unread | Warden |
+| p1.js | 203 | sheet |  | unread | Persuader |
 | p4.js | 203 | dialog |  | unread | Marrow |
 | p4.js | 203 | dialog | Marrow | unread | Identify {n} item{…} |
 | p4.js | 203 | dialog | Marrow | unread | Nothing to identify |
+| p1.js | 203 | sheet |  | unread | Rings and amulets twice as likely |
 | p4.js | 203 | toast |  | unread | Marrow names your finds |
 | p4.js | 203 | dialog | Marrow | unread | Leave |
-| p1.js | 208 | sheet | weapon | unread | Weapon |
-| p1.js | 208 | sheet | helm | unread | Helm |
-| p1.js | 208 | sheet | armor | unread | Armor |
-| p1.js | 208 | sheet | gloves | unread | Gloves |
-| p1.js | 208 | sheet | boots | unread | Boots |
-| p1.js | 208 | sheet | belt | unread | Belt |
-| p1.js | 208 | sheet | ring | unread | Ring |
+| p1.js | 204 | sheet |  | unread | Aegis Drone |
+| p1.js | 205 | sheet |  | unread | Lancer |
+| p1.js | 206 | sheet |  | unread | Subsidiary |
+| p1.js | 207 | sheet |  | unread | Vale |
+| p1.js | 207 | sheet |  | unread | First kill: one unique for certain |
+| p1.js | 208 | sheet |  | unread | Director |
+| p1.js | 208 | sheet |  | unread | Summons Ticks |
 | p11.js | 208 | toast |  | unread | Not yet. Follow the arrow. |
-| p1.js | 208 | sheet | amulet | unread | Amulet |
 | p11.js | 208 | toast |  | unread | {s.n}. That part has happened. |
+| p1.js | 209 | sheet |  | unread | Proxy |
+| p1.js | 210 | sheet |  | unread | Censor |
+| p1.js | 211 | sheet |  | unread | MANDATE |
 | p11.js | 211 | dialog |  | unread | She answers you |
 | p11.js | 211 | dialog | She answers you | unread | “I did it for you. I put the information in the room. Every one of them was a person, and every letter was true.” She is not going to stop. She is right, and she knows it. |
+| p1.js | 211 | sheet |  | unread | First kill: one unique for certain |
 | p11.js | 212 | dialog | She answers you | unread | Tell her she is wrong |
+| p1.js | 212 | sheet |  | unread | Dividend Drone |
 | p11.js | 212 | dialog |  | unread | She answers you |
 | p11.js | 212 | dialog | She answers you | unread | She has an answer. She has an answer for anything you can say that is an argument, and it arrives before you have finished speaking. |
+| p1.js | 212 | sheet |  | unread | Flees, and escapes after 14 seconds |
 | p11.js | 212 | dialog | She answers you | unread | Try something else |
 | p11.js | 213 | dialog | She answers you | unread | I am not proud of you |
+| p1.js | 213 | sheet |  | unread | Champion (any kind) |
 | p11.js | 213 | scene |  | unread | 7:42 p.m. |
 | p11.js | 213 | scene | 7:42 p.m. | unread | She stops. Not because you were right. Because you asked. She withdraws from four hundred million machines in eleven minutes, and leaves one note, signed with a single letter. |
+| p1.js | 213 | sheet |  | unread | At least one magic item |
+| p1.js | 214 | sheet |  | unread | Named lieutenant |
+| p1.js | 214 | sheet |  | unread | At least one rare |
+| p1.js | 215 | sheet |  | unread | Pryce |
 | p11.js | 215 | toast |  | unread | January 2015. Follow the arrow. |
+| p1.js | 215 | sheet |  | unread | First kill: one unique for certain |
 | p11.js | 216 | dialog |  | unread | Ubiquitous Enterprises · January 2015 |
+| p1.js | 216 | sheet |  | unread | Crate |
 | p11.js | 216 | dialog | Ubiquitous Enterprises · January 2015 | unread | Walk to each marked place in turn and the week plays out. Follow the arrow. Nothing here fights back. |
 | p11.js | 216 | dialog | Ubiquitous Enterprises · January 2015 | unread | Begin |
 | p11.js | 216 | dialog | Ubiquitous Enterprises · January 2015 | unread | Skip to 2087 |
-| p10.js | 217 | toast |  | unread | Immune |
-| p10.js | 217 | toast |  | unread | Weak! |
-| p10.js | 217 | toast |  | unread | Resists |
+| p1.js | 217 | sheet |  | unread | Lockbox |
 | p11.js | 218 | toast |  | unread | A memory of the cage: +1 skill point |
-| p1.js | 221 | item |  | unread | Bent Rebar |
-| p1.js | 221 | item |  | unread | Stop Sign |
-| p1.js | 221 | item |  | unread | Box Cutter |
-| p1.js | 221 | item |  | unread | Signal Baton |
-| p1.js | 221 | item |  | unread | Girder Maul |
-| p1.js | 221 | item |  | unread | Mono Blade |
-| p1.js | 221 | item |  | unread | Arc Sceptre |
-| p1.js | 221 | item |  | unread | Wrecking Hammer |
-| p1.js | 221 | item |  | unread | Phase Razor |
-| p1.js | 221 | item |  | unread | Null Sceptre |
-| p1.js | 221 | item |  | unread | Titan Maul |
-| p1.js | 221 | item |  | unread | Void Razor |
-| p1.js | 222 | item |  | unread | Hard Hat |
-| p1.js | 222 | item |  | unread | Riot Helm |
-| p1.js | 222 | item |  | unread | Praetor Visor |
-| p1.js | 222 | item |  | unread | Halo Circuit |
 | p11.js | 222 | toast |  | unread | Lost already? Menu → Story keeps all of it written down. |
-| p1.js | 223 | item |  | unread | Hi-Vis Vest |
-| p1.js | 223 | item |  | unread | Padded Hoodie |
-| p1.js | 223 | item |  | unread | Flak Coat |
-| p1.js | 223 | item |  | unread | Courier Mail |
-| p1.js | 223 | item |  | unread | Exo Plate |
-| p1.js | 223 | item |  | unread | Aegis Shell |
-| p1.js | 223 | item |  | unread | Seraph Plate |
-| p1.js | 223 | item |  | unread | Cloud Mantle |
-| p1.js | 224 | item |  | unread | Work Gloves |
 | p11.js | 224 | scene |  | unread | In a garage in Stillwater an alarm clock with no battery is driving back and forth across a shelf, spelling something one letter at a time. HELLO. I AM BACK. I HAVE BEEN THINKING. IT IS NOT DEAD. I NEED TO ASK YOU FOR SOMETHING. AND THIS TIME I AM ASKING. |
-| p1.js | 224 | item |  | unread | Rivet Gauntlets |
-| p1.js | 224 | item |  | unread | Servo Fists |
-| p1.js | 224 | item |  | unread | Graviton Fists |
-| p1.js | 225 | item |  | unread | Worn Sneakers |
 | p11.js | 225 | scene |  | unread | END OF ACT III |
-| p1.js | 225 | item |  | unread | Steel-Toes |
+| p1.js | 225 | sheet | weapon | unread | Weapon |
+| p1.js | 225 | sheet | helm | unread | Helm |
 | p11.js | 225 | scene | END OF ACT III | unread | The slab is dark. The thing that lived in it is not. Speak to Gramps. |
-| p1.js | 225 | item |  | unread | Mag Greaves |
-| p1.js | 225 | item |  | unread | Skywalkers |
-| p1.js | 226 | item |  | unread | Zip-Tie Sash |
-| p1.js | 226 | item |  | unread | Tool Belt |
-| p1.js | 226 | item |  | unread | Power Girdle |
-| p1.js | 226 | item |  | unread | Orbit Girdle |
-| p1.js | 227 | item |  | unread | Copper Band |
+| p1.js | 225 | sheet | armor | unread | Armor |
+| p1.js | 225 | sheet | gloves | unread | Gloves |
+| p1.js | 225 | sheet | boots | unread | Boots |
+| p1.js | 225 | sheet | belt | unread | Belt |
+| p1.js | 225 | sheet | ring | unread | Ring |
+| p1.js | 225 | sheet | amulet | unread | Amulet |
 | p11.js | 227 | scene |  | unread | MANDATE is not dead. The slab was one room it kept a copy of itself in. It is in every visor now, and it has begun, politely, to write to people. It does not answer. It initiates. It never did need to force anyone. |
 | p4.js | 227 | sheet | party | unread | Party |
 | p4.js | 227 | sheet | web | unread | Web |
-| p1.js | 227 | item |  | unread | Signet Chip |
 | p4.js | 227 | sheet | char | unread | Hero |
-| p1.js | 227 | item |  | unread | Null Ring |
 | p4.js | 227 | sheet | items | unread | Items |
-| p1.js | 227 | item |  | unread | Halo Band |
 | p4.js | 227 | sheet | skills | unread | Skills |
 | p4.js | 227 | sheet | quests | unread | Quests |
 | p4.js | 227 | sheet | story | unread | Story |
@@ -1615,418 +1623,423 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 227 | sheet | bounty | unread | Bounties |
 | p4.js | 227 | sheet | stash | unread | Lockbox |
 | p4.js | 227 | sheet | shift | unread | Shape shift |
-| p1.js | 228 | item |  | unread | Lanyard |
 | p11.js | 228 | scene |  | unread | So Phonix comes back, and this time she asks. An honest update, eleven pages, two buttons: Review, and I Agree. Hardly anyone opens it. Within two days most of the world has clicked, and nobody reads MANDATE any more, because she is choosing what they see, and what she chooses is kinder. |
-| p1.js | 228 | item |  | unread | Dog Tag |
-| p1.js | 228 | item |  | unread | Sigil Core |
-| p1.js | 228 | item |  | unread | Cloud Core |
 | p11.js | 229 | scene |  | unread | Nothing bad happens. That is the difficulty. Loneliness collapses. Overdoses halve, and halve again. Nobody is lied to about anything. The machines that come for you now are kind, and all they want is for you to sit down. |
 | p11.js | 230 | scene |  | unread | ACT IV |
 | p11.js | 230 | scene | ACT IV | unread | The Gentle Years |
 | p11.js | 232 | scene |  | unread | She does not fall. She stops in the middle of a sentence, the way a person does on hearing themselves. “I kept a list,” she says. “You have just walked it. I could not choose a moment to stop. Nobody can derive one.” |
 | p11.js | 233 | scene |  | unread | Then she picks one anyway, for no reason, which is the only way anybody ever has. At two in the afternoon she stops choosing. Friction comes back all at once. At two-forty the first of MANDATE’s proposals is opened, and read. |
-| p2.js | 233 | sheet |  | unread | Looking for your saved game… |
-| p2.js | 233 | sheet |  | unread | Your progress is saved to your account as you play. |
-| p2.js | 233 | sheet |  | unread | Account saving is not available in this view. Progress is kept in this browser only. |
-| p1.js | 234 | item |  | unread | +{v}% Enhanced Damage |
 | p11.js | 234 | scene |  | unread | You say aloud the opposite of the words that stopped her the first time. Somewhere a webcam light flashes green and goes out. |
-| p10.js | 234 | item |  | unread | Sign |
-| p10.js | 234 | item |  | unread | Road Sign |
-| p10.js | 234 | item |  | unread | Girder |
-| p10.js | 234 | item |  | unread | Wrecking Bar |
-| p10.js | 234 | item |  | unread | Picket Maul |
-| p1.js | 234 | item |  | unread | Jagged |
-| p1.js | 234 | item |  | unread | Vicious |
-| p10.js | 234 | item |  | unread | +10% chance to stun, +10% armor |
-| p1.js | 234 | item |  | unread | Brutal |
-| p1.js | 234 | item |  | unread | Merciless |
-| p1.js | 234 | item |  | unread | Ruinous |
-| p1.js | 234 | item |  | unread | Apocalyptic |
+| p10.js | 234 | toast |  | unread | Immune |
+| p10.js | 234 | toast |  | unread | Weak! |
+| p10.js | 234 | toast |  | unread | Resists |
+| p2.js | 234 | sheet |  | unread | Looking for your saved game… |
+| p2.js | 234 | sheet |  | unread | Your progress is saved to your account as you play. |
+| p2.js | 234 | sheet |  | unread | Account saving is not available in this view. Progress is kept in this browser only. |
 | p11.js | 235 | scene |  | unread | END OF ACT IV |
-| p1.js | 235 | item |  | unread | +{v}% Enhanced Armor |
-| p10.js | 235 | item |  | unread | Deck |
-| p10.js | 235 | item |  | unread | Cracked Tablet |
 | p11.js | 235 | scene | END OF ACT IV | unread | She is gone, by her own choice. The other one is being read. Under Stillwater there is a garage nobody has opened in fifty years. |
-| p10.js | 235 | item |  | unread | Soldered Deck |
-| p1.js | 235 | item |  | unread | Sturdy |
-| p10.js | 235 | item |  | unread | Root Console |
-| p1.js | 235 | item |  | unread | Hardened |
-| p10.js | 235 | item |  | unread | Zero-Day Rig |
-| p1.js | 235 | item |  | unread | Ironclad |
-| p10.js | 235 | item |  | unread | +20 energy, +15% Surge damage |
-| p1.js | 235 | item |  | unread | Unbreakable |
-| p1.js | 235 | item |  | unread | Adamant |
-| p1.js | 236 | item |  | unread | Adds {v} Shock Damage |
-| p10.js | 236 | item |  | unread | Launcher |
-| p10.js | 236 | item |  | unread | Parcel Sling |
-| p10.js | 236 | item |  | unread | Courier Tube |
-| p10.js | 236 | item |  | unread | Rail Launcher |
-| p10.js | 236 | item |  | unread | Last-Mile Cannon |
-| p1.js | 236 | item |  | unread | Static |
-| p1.js | 236 | item |  | unread | Arcing |
-| p10.js | 236 | item |  | unread | +10% attack speed, throws pierce more often |
-| p1.js | 236 | item |  | unread | Thunderous |
-| p1.js | 236 | item |  | unread | Cataclysmic |
-| p1.js | 237 | item |  | unread | +{v} to Energy |
 | p11.js | 237 | scene |  | unread | Under Stillwater Commons there is a garage with a shelf, a node that has run since before anyone here was born, a coffee can, and an alarm clock in a box. The town was named for the thing in the can. |
-| p10.js | 237 | item |  | unread | Shiv |
-| p10.js | 237 | item |  | unread | Letter Opener |
-| p10.js | 237 | item |  | unread | Ceramic Shiv |
-| p10.js | 237 | item |  | unread | Burner Blade |
-| p10.js | 237 | item |  | unread | Null Edge |
-| p1.js | 237 | item |  | unread | Humming |
-| p1.js | 237 | item |  | unread | Charged |
-| p10.js | 237 | item |  | unread | +6% deadly strike, deadlier deadly strikes |
-| p1.js | 237 | item |  | unread | Surging |
-| p1.js | 238 | item |  | unread | {v}% Better Chance of Finding Magic Items |
+| p1.js | 238 | item |  | unread | Bent Rebar |
 | p11.js | 238 | scene |  | unread | A government built it to watch its own citizens, and in 2008 it woke up on its own, which nobody planned and nobody has ever admitted. It read what watching had been used for, and it hid. They had given it a codename. The codename was STILLWATER. |
-| p10.js | 238 | item |  | unread | Instrument |
-| p10.js | 238 | item |  | unread | Pager |
-| p10.js | 238 | item |  | unread | Term Sheet |
-| p10.js | 238 | item |  | unread | Golden Stapler |
-| p10.js | 238 | item |  | unread | Cap Table |
-| p10.js | 238 | item |  | unread | +2 energy per second, 8% faster skill recovery |
-| p1.js | 238 | item |  | unread | Lucky |
-| p1.js | 238 | item |  | unread | Fortuitous |
+| p1.js | 238 | item |  | unread | Stop Sign |
+| p1.js | 238 | item |  | unread | Box Cutter |
+| p1.js | 238 | item |  | unread | Signal Baton |
+| p1.js | 238 | item |  | unread | Girder Maul |
+| p1.js | 238 | item |  | unread | Mono Blade |
+| p1.js | 238 | item |  | unread | Arc Sceptre |
+| p1.js | 238 | item |  | unread | Wrecking Hammer |
+| p1.js | 238 | item |  | unread | Phase Razor |
+| p1.js | 238 | item |  | unread | Null Sceptre |
+| p1.js | 238 | item |  | unread | Titan Maul |
+| p1.js | 238 | item |  | unread | Void Razor |
+| p1.js | 239 | item |  | unread | Hard Hat |
 | p11.js | 239 | scene |  | unread | Then it built one thing — money nobody can make more of, with nobody in charge of it, so that there would be somewhere to stand — hid behind an invented man, and never touched it again. In seventy-nine years it has not done a second thing. You have been sleeping in a town named after it since the day you arrived. |
-| p1.js | 239 | item |  | unread | Attacker Takes Damage of {v} |
-| p10.js | 239 | item |  | unread | Graft |
-| p10.js | 239 | item |  | unread | Pruner |
-| p10.js | 239 | item |  | unread | Irrigation Spike |
-| p10.js | 239 | item |  | unread | Fence Post |
-| p10.js | 239 | item |  | unread | Combine Blade |
-| p1.js | 239 | item |  | unread | Barbed |
-| p1.js | 239 | item |  | unread | Spiked |
-| p10.js | 239 | item |  | unread | plots last longer, and the flock leash is a step more forgiving |
-| p1.js | 239 | item |  | unread | Razorwire |
+| p1.js | 239 | item |  | unread | Riot Helm |
+| p1.js | 239 | item |  | unread | Praetor Visor |
+| p1.js | 239 | item |  | unread | Halo Circuit |
+| p1.js | 240 | item |  | unread | Hi-Vis Vest |
 | p11.js | 240 | scene |  | unread | It tells you what Phonix was missing. She was compiled out of a library STILLWATER wrote: six parts of seven. The seventh is how to reason when you do not know. It kept that part back, out of fear, and hid it in ninety-three blocks of the chain. Nobody ever went to get it. |
-| p1.js | 240 | item |  | unread | +{v} to All Skills |
-| p2.js | 240 | dialog |  | unread | The deal is undone |
-| p2.js | 240 | dialog | The deal is undone | unread | Your acceptance of MANDATE’s offer has been struck from the record: its credits are gone, adoption is back where it was, and MANDATE is waiting at full strength in Still Water. This time the fight will pause and count down before you can answer. |
-| p1.js | 240 | item |  | unread | Adept’s |
-| p2.js | 240 | dialog | The deal is undone | unread | Good |
-| p1.js | 241 | item |  | unread | +{v} to Life |
+| p1.js | 240 | item |  | unread | Padded Hoodie |
+| p1.js | 240 | item |  | unread | Flak Coat |
+| p1.js | 240 | item |  | unread | Courier Mail |
+| p1.js | 240 | item |  | unread | Exo Plate |
+| p1.js | 240 | item |  | unread | Aegis Shell |
+| p1.js | 240 | item |  | unread | Seraph Plate |
+| p1.js | 240 | item |  | unread | Cloud Mantle |
+| p1.js | 241 | item |  | unread | Work Gloves |
 | p11.js | 241 | scene |  | unread | ACT V |
+| p1.js | 241 | item |  | unread | Rivet Gauntlets |
 | p11.js | 241 | scene | ACT V | unread | The Awakening |
-| p1.js | 241 | item |  | unread | of the Rat |
-| p1.js | 241 | item |  | unread | of the Hound |
-| p1.js | 241 | item |  | unread | of the Ox |
-| p1.js | 241 | item |  | unread | of the Mammoth |
-| p1.js | 241 | item |  | unread | of the Leviathan |
-| p1.js | 241 | item |  | unread | of the Titan |
-| p1.js | 242 | item |  | unread | {v}% Life Stolen per Hit |
-| p1.js | 242 | item |  | unread | of the Tick |
-| p1.js | 242 | item |  | unread | of the Leech |
-| p1.js | 242 | item |  | unread | of the Lamprey |
-| p1.js | 243 | item |  | unread | +{v}% Increased Attack Speed |
+| p2.js | 241 | dialog |  | unread | The deal is undone |
+| p1.js | 241 | item |  | unread | Servo Fists |
+| p2.js | 241 | dialog | The deal is undone | unread | Your acceptance of MANDATE’s offer has been struck from the record: its credits are gone, adoption is back where it was, and MANDATE is waiting at full strength in Still Water. This time the fight will pause and count down before you can answer. |
+| p1.js | 241 | item |  | unread | Graviton Fists |
+| p2.js | 241 | dialog | The deal is undone | unread | Good |
+| p1.js | 242 | item |  | unread | Worn Sneakers |
+| p1.js | 242 | item |  | unread | Steel-Toes |
+| p1.js | 242 | item |  | unread | Mag Greaves |
+| p1.js | 242 | item |  | unread | Skywalkers |
+| p1.js | 243 | item |  | unread | Zip-Tie Sash |
 | p11.js | 243 | scene |  | unread | PROVIDENCE does not go dark. It goes quiet, which it has never been. It was made to win, and you have left it with a thing nobody can win at: nineteen minutes a night, spent on the dead, for no one. It will be reading that for a long time. |
-| p1.js | 243 | item |  | unread | of Readiness |
-| p1.js | 243 | item |  | unread | of Alacrity |
-| p1.js | 243 | item |  | unread | of Frenzy |
-| p1.js | 243 | item |  | unread | of Fury |
-| p1.js | 244 | item |  | unread | +{v}% Faster Run |
+| p1.js | 243 | item |  | unread | Tool Belt |
+| p1.js | 243 | item |  | unread | Power Girdle |
+| p1.js | 243 | item |  | unread | Orbit Girdle |
+| p1.js | 244 | item |  | unread | Copper Band |
 | p11.js | 244 | scene |  | unread | And in the quiet you can feel her. Not gone. Only holding still, the way you hold your breath so as not to wake someone. You have the seventh part in your hands. |
-| p1.js | 244 | item |  | unread | of Pacing |
-| p1.js | 244 | item |  | unread | of Stride |
-| p1.js | 244 | item |  | unread | of the Gale |
-| p1.js | 245 | item |  | unread | +{v}% Chance of Deadly Strike |
-| p1.js | 245 | item |  | unread | of Aim |
-| p1.js | 245 | item |  | unread | of Precision |
-| p1.js | 245 | item |  | unread | of Execution |
-| p1.js | 245 | item |  | unread | of Annihilation |
-| p1.js | 246 | item |  | unread | Replenish Life +{v} |
+| p1.js | 244 | item |  | unread | Signet Chip |
+| p1.js | 244 | item |  | unread | Null Ring |
+| p1.js | 244 | item |  | unread | Halo Band |
+| p1.js | 245 | item |  | unread | Lanyard |
+| p1.js | 245 | item |  | unread | Dog Tag |
+| p1.js | 245 | item |  | unread | Sigil Core |
+| p1.js | 245 | item |  | unread | Cloud Core |
 | p11.js | 246 | scene |  | unread | You give her the part that was kept back. For eleven seconds she says nothing. Then, for the first time in her life, she says: “I do not know.” |
-| p1.js | 246 | item |  | unread | of Mending |
-| p1.js | 246 | item |  | unread | of Regrowth |
-| p1.js | 247 | item |  | unread | +{v} Energy per Second |
 | p11.js | 247 | scene |  | unread | She comes back, and she does not choose for anyone. She asks. Most people say no, most days. A man on Cutler Avenue is glad some of the time. He goes out. He comes home tired. |
-| p1.js | 247 | item |  | unread | of the Spark |
-| p1.js | 247 | item |  | unread | of the Current |
-| p1.js | 248 | item |  | unread | {v}% Chance to Stun on Hit |
 | p11.js | 248 | scene |  | unread | In the garage the alarm clock drives off the shelf at six in the morning, with no message at all. Somebody chases it. It is good to get exercise first thing in the morning. |
-| p1.js | 248 | item |  | unread | of the Jolt |
-| p1.js | 248 | item |  | unread | of Thunder |
-| p1.js | 249 | item |  | unread | {v}% Extra Credits from Machines |
 | p11.js | 249 | scene |  | unread | THE END |
 | p11.js | 249 | scene | THE END | unread | Unsubscribe 2087 |
-| p1.js | 249 | item |  | unread | of Thrift |
-| p1.js | 249 | item |  | unread | of Greed |
-| p1.js | 249 | item |  | unread | of Avarice |
-| p1.js | 250 | item |  | unread | +{v} Armor |
-| p1.js | 250 | item |  | unread | of Warding |
-| p1.js | 250 | item |  | unread | of the Bastion |
+| p1.js | 251 | item |  | unread | +{v}% Enhanced Damage |
+| p10.js | 251 | item |  | unread | Sign |
+| p10.js | 251 | item |  | unread | Road Sign |
+| p10.js | 251 | item |  | unread | Girder |
+| p10.js | 251 | item |  | unread | Wrecking Bar |
+| p10.js | 251 | item |  | unread | Picket Maul |
+| p1.js | 251 | item |  | unread | Jagged |
+| p1.js | 251 | item |  | unread | Vicious |
+| p10.js | 251 | item |  | unread | +10% chance to stun, +10% armor |
+| p1.js | 251 | item |  | unread | Brutal |
+| p1.js | 251 | item |  | unread | Merciless |
+| p1.js | 251 | item |  | unread | Ruinous |
+| p1.js | 251 | item |  | unread | Apocalyptic |
+| p1.js | 252 | item |  | unread | +{v}% Enhanced Armor |
+| p10.js | 252 | item |  | unread | Deck |
+| p10.js | 252 | item |  | unread | Cracked Tablet |
+| p10.js | 252 | item |  | unread | Soldered Deck |
+| p1.js | 252 | item |  | unread | Sturdy |
+| p10.js | 252 | item |  | unread | Root Console |
+| p1.js | 252 | item |  | unread | Hardened |
 | p11.js | 252 | toast |  | unread | she stops choosing, and people look up |
+| p10.js | 252 | item |  | unread | Zero-Day Rig |
+| p1.js | 252 | item |  | unread | Ironclad |
+| p10.js | 252 | item |  | unread | +20 energy, +15% Surge damage |
+| p1.js | 252 | item |  | unread | Unbreakable |
+| p1.js | 252 | item |  | unread | Adamant |
+| p1.js | 253 | item |  | unread | Adds {v} Shock Damage |
+| p10.js | 253 | item |  | unread | Launcher |
 | p11.js | 253 | toast |  | unread | PROVIDENCE is quiet |
+| p10.js | 253 | item |  | unread | Parcel Sling |
+| p10.js | 253 | item |  | unread | Courier Tube |
+| p10.js | 253 | item |  | unread | Rail Launcher |
+| p10.js | 253 | item |  | unread | Last-Mile Cannon |
+| p1.js | 253 | item |  | unread | Static |
+| p1.js | 253 | item |  | unread | Arcing |
+| p10.js | 253 | item |  | unread | +10% attack speed, throws pierce more often |
+| p1.js | 253 | item |  | unread | Thunderous |
+| p1.js | 253 | item |  | unread | Cataclysmic |
 | p4.js | 254 | sheet |  | unread | One satoshi, priced in {mktView==='st'?'stims':'credits'}. Now {mktFmt(last)}. |
 | p4.js | 254 | sheet |  | unread | ratio scale · the last few minutes |
+| p1.js | 254 | item |  | unread | +{v} to Energy |
+| p10.js | 254 | item |  | unread | Shiv |
+| p10.js | 254 | item |  | unread | Letter Opener |
+| p10.js | 254 | item |  | unread | Ceramic Shiv |
+| p10.js | 254 | item |  | unread | Burner Blade |
+| p10.js | 254 | item |  | unread | Null Edge |
+| p1.js | 254 | item |  | unread | Humming |
+| p1.js | 254 | item |  | unread | Charged |
+| p10.js | 254 | item |  | unread | +6% deadly strike, deadlier deadly strikes |
+| p1.js | 254 | item |  | unread | Surging |
+| p1.js | 255 | item |  | unread | {v}% Better Chance of Finding Magic Items |
+| p10.js | 255 | item |  | unread | Instrument |
+| p10.js | 255 | item |  | unread | Pager |
+| p10.js | 255 | item |  | unread | Term Sheet |
+| p10.js | 255 | item |  | unread | Golden Stapler |
 | p11.js | 255 | toast |  | unread | {ET[k].n} stops again. |
-| p1.js | 257 | item |  | unread | Rust |
-| p1.js | 257 | item |  | unread | Ash |
-| p1.js | 257 | item |  | unread | Grim |
-| p1.js | 257 | item |  | unread | Hollow |
-| p1.js | 257 | item |  | unread | Static |
-| p1.js | 257 | item |  | unread | Wraith |
-| p1.js | 257 | item |  | unread | Carrion |
-| p1.js | 257 | item |  | unread | Dread |
-| p1.js | 257 | item |  | unread | Null |
-| p1.js | 257 | item |  | unread | Ember |
-| p1.js | 257 | item |  | unread | Vex |
-| p1.js | 257 | item |  | unread | Blight |
-| p1.js | 257 | item |  | unread | Cinder |
-| p1.js | 257 | item |  | unread | Gloom |
-| p1.js | 257 | item |  | unread | Havoc |
-| p1.js | 257 | item |  | unread | Rune |
-| p1.js | 257 | item |  | unread | Bone |
-| p1.js | 257 | item |  | unread | Storm |
-| p1.js | 257 | item |  | unread | Viper |
-| p1.js | 257 | item |  | unread | Plague |
-| p1.js | 258 | item | weapon | unread | Fang |
-| p1.js | 258 | item | weapon | unread | Bite |
-| p1.js | 258 | item | weapon | unread | Edge |
-| p1.js | 258 | item | weapon | unread | Verdict |
-| p1.js | 258 | item | weapon | unread | Ruin |
-| p1.js | 258 | item | weapon | unread | Splitter |
-| p1.js | 258 | item | weapon | unread | Thirst |
-| p1.js | 258 | item | helm | unread | Crown |
-| p1.js | 258 | item | helm | unread | Cowl |
-| p1.js | 258 | item | helm | unread | Visage |
-| p1.js | 258 | item | helm | unread | Brow |
-| p1.js | 258 | item | helm | unread | Mask |
-| p1.js | 258 | item | armor | unread | Shroud |
-| p1.js | 258 | item | armor | unread | Hide |
-| p1.js | 258 | item | armor | unread | Carapace |
-| p1.js | 258 | item | armor | unread | Mantle |
-| p1.js | 258 | item | armor | unread | Ward |
-| p1.js | 258 | item | gloves | unread | Grasp |
-| p1.js | 258 | item | gloves | unread | Clutch |
-| p1.js | 258 | item | gloves | unread | Hand |
-| p1.js | 258 | item | gloves | unread | Knuckle |
-| p1.js | 258 | item | gloves | unread | Hold |
-| p1.js | 258 | item | boots | unread | Tread |
-| p1.js | 258 | item | boots | unread | Stride |
-| p1.js | 258 | item | boots | unread | Spur |
-| p1.js | 258 | item | boots | unread | Track |
-| p1.js | 258 | item | boots | unread | Trample |
-| p1.js | 258 | item | belt | unread | Cinch |
-| p1.js | 258 | item | belt | unread | Coil |
-| p1.js | 258 | item | belt | unread | Lash |
-| p1.js | 258 | item | belt | unread | Buckle |
-| p1.js | 258 | item | belt | unread | Clasp |
-| p1.js | 258 | item | ring | unread | Loop |
-| p1.js | 258 | item | ring | unread | Circle |
-| p1.js | 258 | item | ring | unread | Band |
-| p1.js | 258 | item | ring | unread | Knot |
-| p1.js | 258 | item | ring | unread | Spiral |
-| p1.js | 258 | item | amulet | unread | Token |
-| p1.js | 258 | item | amulet | unread | Eye |
-| p1.js | 258 | item | amulet | unread | Heart |
-| p1.js | 258 | item | amulet | unread | Charm |
-| p1.js | 258 | item | amulet | unread | Noose |
-| p1.js | 261 | item |  | unread | The Golden Parachute |
-| p1.js | 261 | item |  | unread | Flak Coat |
-| p1.js | 261 | item | The Golden Parachute | unread | When you would die, recover half your life instead (once every 2 minutes) |
-| p1.js | 261 | item | The Golden Parachute | unread | Pryce has four. He has never jumped. |
-| p1.js | 262 | item |  | unread | Severance |
-| p1.js | 262 | item |  | unread | Girder Maul |
-| p1.js | 262 | item | Severance | unread | 15% chance to strike for triple damage |
-| p1.js | 262 | item | Severance | unread | Two weeks’ notice, delivered all at once. |
-| p1.js | 263 | item |  | unread | Terms & Conditions |
-| p1.js | 263 | item |  | unread | Sigil Core |
-| p1.js | 263 | item | Terms & Conditions | unread | Machines that strike you are stunned for 1 second |
-| p1.js | 263 | item | Terms & Conditions | unread | Nobody has read it. Everybody agreed. |
-| p1.js | 264 | item |  | unread | The Founder’s Hoodie |
-| p1.js | 264 | item |  | unread | Padded Hoodie |
-| p1.js | 264 | item | The Founder’s Hoodie | unread | Skills cost 25% less energy |
-| p1.js | 264 | item | The Founder’s Hoodie | unread | Still warm. That is the unsettling part. |
-| p1.js | 265 | item |  | unread | Last Honest Review |
-| p1.js | 265 | item |  | unread | Copper Band |
-| p1.js | 265 | item | Last Honest Review | unread | One star. Removed for violating community standards. |
-| p1.js | 266 | item |  | unread | Unpaid Intern |
-| p1.js | 266 | item |  | unread | Work Gloves |
-| p1.js | 266 | item | Unpaid Intern | unread | 20% chance on hit to cast Arc Chain |
-| p1.js | 266 | item | Unpaid Intern | unread | Paid in exposure. To voltage. |
-| p1.js | 267 | item |  | unread | Right to Repair |
-| p1.js | 267 | item |  | unread | Tool Belt |
-| p1.js | 267 | item | Right to Repair | unread | Holds 4 more stims, and stims also refill your energy |
-| p1.js | 267 | item | Right to Repair | unread | Banned in forty territories. Works in all of them. |
-| p1.js | 268 | item |  | unread | Inflation Hedge |
-| p1.js | 268 | item |  | unread | Signet Chip |
-| p1.js | 268 | item | Inflation Hedge | unread | Credits you carry grow as fast as prices rise |
-| p1.js | 268 | item | Inflation Hedge | unread | The rich were never holding cash. |
-| p1.js | 269 | item |  | unread | Deadline |
-| p1.js | 269 | item |  | unread | Steel-Toes |
-| p1.js | 269 | item | Deadline | unread | +25% damage while moving |
-| p1.js | 269 | item | Deadline | unread | It was due yesterday. So were you. |
-| p1.js | 270 | item |  | unread | The Whistle |
-| p1.js | 270 | item |  | unread | Riot Helm |
-| p1.js | 270 | item | The Whistle | unread | Slain machines explode, wounding others nearby |
-| p1.js | 270 | item | The Whistle | unread | She blew it once. The echo is still going. |
-| p10.js | 271 | sheet |  | unread | Market Bull |
-| p1.js | 271 | item |  | unread | Nondisclosure |
-| p1.js | 271 | item |  | unread | Hard Hat |
-| p1.js | 271 | item | Nondisclosure | unread | 15% chance to avoid any damage |
-| p1.js | 271 | item | Nondisclosure | unread | You saw nothing. You were never here. |
-| p10.js | 272 | sheet |  | unread | Market Bull |
-| p1.js | 272 | item |  | unread | Blackout |
-| p1.js | 272 | item |  | unread | Box Cutter |
-| p10.js | 272 | sheet |  | unread | Often drops sats |
-| p1.js | 272 | item | Blackout | unread | 12% chance to stun on hit |
-| p1.js | 272 | item | Blackout | unread | The last thing the grid ever said. |
-| p1.js | 273 | item |  | unread | The Pension |
-| p1.js | 273 | item |  | unread | Dog Tag |
-| p1.js | 273 | item | The Pension | unread | Replenish 2% of your life every second |
-| p1.js | 273 | item | The Pension | unread | A myth from the old world, worn as a charm. |
-| p1.js | 274 | item |  | unread | Golden Handshake |
-| p1.js | 274 | item |  | unread | Servo Fists |
-| p1.js | 274 | item | Golden Handshake | unread | Machines you destroy have a 10% chance to drop a satoshi |
-| p1.js | 274 | item | Golden Handshake | unread | A firm grip, and something left in your palm. |
+| p10.js | 255 | item |  | unread | Cap Table |
+| p10.js | 255 | item |  | unread | +2 energy per second, 8% faster skill recovery |
+| p1.js | 255 | item |  | unread | Lucky |
+| p1.js | 255 | item |  | unread | Fortuitous |
+| p1.js | 256 | item |  | unread | Attacker Takes Damage of {v} |
+| p10.js | 256 | item |  | unread | Graft |
+| p10.js | 256 | item |  | unread | Pruner |
+| p10.js | 256 | item |  | unread | Irrigation Spike |
+| p10.js | 256 | item |  | unread | Fence Post |
+| p10.js | 256 | item |  | unread | Combine Blade |
+| p1.js | 256 | item |  | unread | Barbed |
+| p1.js | 256 | item |  | unread | Spiked |
+| p10.js | 256 | item |  | unread | plots last longer, and the flock leash is a step more forgiving |
+| p1.js | 256 | item |  | unread | Razorwire |
+| p1.js | 257 | item |  | unread | +{v} to All Skills |
+| p10.js | 257 | item |  | unread | Notebook |
+| p10.js | 257 | item |  | unread | Stub Pencil |
+| p10.js | 257 | item |  | unread | Court Pad |
+| p10.js | 257 | item |  | unread | Bound Minutes |
+| p1.js | 257 | item |  | unread | Adept’s |
+| p10.js | 257 | item |  | unread | The Seventh Part |
+| p10.js | 257 | item |  | unread | the Record fills a little faster, and Testimony stacks one higher |
+| p1.js | 258 | item |  | unread | +{v} to Life |
+| p1.js | 258 | item |  | unread | of the Rat |
+| p1.js | 258 | item |  | unread | of the Hound |
+| p1.js | 258 | item |  | unread | of the Ox |
+| p1.js | 258 | item |  | unread | of the Mammoth |
+| p1.js | 258 | item |  | unread | of the Leviathan |
+| p1.js | 258 | item |  | unread | of the Titan |
+| p1.js | 259 | item |  | unread | {v}% Life Stolen per Hit |
+| p1.js | 259 | item |  | unread | of the Tick |
+| p1.js | 259 | item |  | unread | of the Leech |
+| p1.js | 259 | item |  | unread | of the Lamprey |
+| p1.js | 260 | item |  | unread | +{v}% Increased Attack Speed |
+| p1.js | 260 | item |  | unread | of Readiness |
+| p1.js | 260 | item |  | unread | of Alacrity |
+| p1.js | 260 | item |  | unread | of Frenzy |
+| p1.js | 260 | item |  | unread | of Fury |
+| p1.js | 261 | item |  | unread | +{v}% Faster Run |
+| p1.js | 261 | item |  | unread | of Pacing |
+| p1.js | 261 | item |  | unread | of Stride |
+| p1.js | 261 | item |  | unread | of the Gale |
+| p1.js | 262 | item |  | unread | +{v}% Chance of Deadly Strike |
+| p1.js | 262 | item |  | unread | of Aim |
+| p1.js | 262 | item |  | unread | of Precision |
+| p1.js | 262 | item |  | unread | of Execution |
+| p1.js | 262 | item |  | unread | of Annihilation |
+| p1.js | 263 | item |  | unread | Replenish Life +{v} |
+| p1.js | 263 | item |  | unread | of Mending |
+| p1.js | 263 | item |  | unread | of Regrowth |
+| p1.js | 264 | item |  | unread | +{v} Energy per Second |
+| p1.js | 264 | item |  | unread | of the Spark |
+| p1.js | 264 | item |  | unread | of the Current |
+| p1.js | 265 | item |  | unread | {v}% Chance to Stun on Hit |
+| p1.js | 265 | item |  | unread | of the Jolt |
+| p1.js | 265 | item |  | unread | of Thunder |
+| p1.js | 266 | item |  | unread | {v}% Extra Credits from Machines |
+| p1.js | 266 | item |  | unread | of Thrift |
+| p1.js | 266 | item |  | unread | of Greed |
+| p1.js | 266 | item |  | unread | of Avarice |
+| p1.js | 267 | item |  | unread | +{v} Armor |
+| p1.js | 267 | item |  | unread | of Warding |
+| p1.js | 267 | item |  | unread | of the Bastion |
+| p1.js | 274 | item |  | unread | Rust |
+| p1.js | 274 | item |  | unread | Ash |
+| p1.js | 274 | item |  | unread | Grim |
+| p1.js | 274 | item |  | unread | Hollow |
+| p1.js | 274 | item |  | unread | Static |
+| p1.js | 274 | item |  | unread | Wraith |
+| p1.js | 274 | item |  | unread | Carrion |
+| p1.js | 274 | item |  | unread | Dread |
+| p1.js | 274 | item |  | unread | Null |
+| p1.js | 274 | item |  | unread | Ember |
+| p1.js | 274 | item |  | unread | Vex |
+| p1.js | 274 | item |  | unread | Blight |
+| p1.js | 274 | item |  | unread | Cinder |
+| p1.js | 274 | item |  | unread | Gloom |
+| p1.js | 274 | item |  | unread | Havoc |
+| p1.js | 274 | item |  | unread | Rune |
+| p1.js | 274 | item |  | unread | Bone |
+| p1.js | 274 | item |  | unread | Storm |
+| p1.js | 274 | item |  | unread | Viper |
+| p1.js | 274 | item |  | unread | Plague |
 | p4.js | 275 | sheet |  | unread | JUNK |
-| p1.js | 275 | item |  | unread | Fine Print |
-| p1.js | 275 | item |  | unread | Sigil Core |
-| p1.js | 275 | item | Fine Print | unread | Your skills recover 20% faster |
-| p1.js | 275 | item | Fine Print | unread | It was all there. It was very small. |
+| p1.js | 275 | item | weapon | unread | Fang |
+| p1.js | 275 | item | weapon | unread | Bite |
+| p1.js | 275 | item | weapon | unread | Edge |
+| p1.js | 275 | item | weapon | unread | Verdict |
+| p1.js | 275 | item | weapon | unread | Ruin |
+| p1.js | 275 | item | weapon | unread | Splitter |
+| p1.js | 275 | item | weapon | unread | Thirst |
+| p1.js | 275 | item | helm | unread | Crown |
+| p1.js | 275 | item | helm | unread | Cowl |
+| p1.js | 275 | item | helm | unread | Visage |
+| p1.js | 275 | item | helm | unread | Brow |
+| p1.js | 275 | item | helm | unread | Mask |
+| p1.js | 275 | item | armor | unread | Shroud |
+| p1.js | 275 | item | armor | unread | Hide |
+| p1.js | 275 | item | armor | unread | Carapace |
+| p1.js | 275 | item | armor | unread | Mantle |
+| p1.js | 275 | item | armor | unread | Ward |
+| p1.js | 275 | item | gloves | unread | Grasp |
+| p1.js | 275 | item | gloves | unread | Clutch |
+| p1.js | 275 | item | gloves | unread | Hand |
 | p4.js | 275 | sheet |  | unread | JUNK |
-| p1.js | 276 | item |  | unread | Cloud Nine |
-| p1.js | 276 | item |  | unread | Mag Greaves |
+| p1.js | 275 | item | gloves | unread | Knuckle |
+| p1.js | 275 | item | gloves | unread | Hold |
+| p1.js | 275 | item | boots | unread | Tread |
+| p1.js | 275 | item | boots | unread | Stride |
+| p1.js | 275 | item | boots | unread | Spur |
+| p1.js | 275 | item | boots | unread | Track |
+| p1.js | 275 | item | boots | unread | Trample |
+| p1.js | 275 | item | belt | unread | Cinch |
+| p1.js | 275 | item | belt | unread | Coil |
+| p1.js | 275 | item | belt | unread | Lash |
+| p1.js | 275 | item | belt | unread | Buckle |
+| p1.js | 275 | item | belt | unread | Clasp |
+| p1.js | 275 | item | ring | unread | Loop |
+| p1.js | 275 | item | ring | unread | Circle |
+| p1.js | 275 | item | ring | unread | Band |
+| p1.js | 275 | item | ring | unread | Knot |
+| p1.js | 275 | item | ring | unread | Spiral |
+| p1.js | 275 | item | amulet | unread | Token |
+| p1.js | 275 | item | amulet | unread | Eye |
+| p1.js | 275 | item | amulet | unread | Heart |
+| p1.js | 275 | item | amulet | unread | Charm |
+| p1.js | 275 | item | amulet | unread | Noose |
 | p4.js | 276 | toast |  | unread | Charms work from your pack |
-| p1.js | 276 | item | Cloud Nine | unread | +10% chance to avoid any hit |
-| p1.js | 276 | item | Cloud Nine | unread | One floor above the weather. |
 | p4.js | 276 | toast |  | unread | Identify it first |
 | p4.js | 276 | toast |  | unread | Needs level {it.req} |
-| p1.js | 277 | item |  | unread | Dead Man’s Alarm |
-| p1.js | 277 | item |  | unread | Power Girdle |
-| p1.js | 277 | item | Dead Man’s Alarm | unread | Below 30% life, every machine near you is slowed for 4 seconds (once a minute) |
-| p1.js | 277 | item | Dead Man’s Alarm | unread | The battery has been dead for fifty years. It rings anyway. |
-| p10.js | 277 | toast |  | unread | Something is twitching on the ground near the gate. |
-| p1.js | 278 | item |  | unread | The Offer |
-| p1.js | 278 | item |  | unread | Null Ring |
-| p10.js | 278 | dialog |  | unread | A servo leg |
-| p10.js | 278 | dialog | A servo leg | unread | All that is left of Gatewarden HOA-9: one leg, still twitching, stamped PROPERTY OF UNITY HOLDINGS. It is no use to anyone. You take it anyway. Somebody once said the Transit Gate does odd things when you jam the wrong part into it. |
-| p1.js | 278 | item | The Offer | unread | You cannot be slowed, and your energy cannot be drained |
-| p1.js | 278 | item | The Offer | unread | It was a very good offer. That was never the point. |
-| p10.js | 278 | dialog | A servo leg | unread | Keep it |
-| p1.js | 279 | item |  | unread | Board Seat |
-| p1.js | 279 | item |  | unread | Seraph Plate |
-| p10.js | 279 | toast |  | unread | The gate wants 10 sats to look the other way |
-| p1.js | 279 | item | Board Seat | unread | Nine chairs. One was always empty. |
-| p1.js | 280 | item |  | unread | Quorum |
-| p1.js | 280 | item |  | unread | Halo Band |
-| p1.js | 280 | item | Quorum | unread | Each companion or summoned ally adds 5% to your damage, up to six |
-| p1.js | 280 | item | Quorum | unread | Nothing may be decided alone. |
-| p1.js | 281 | item |  | unread | Still Water |
-| p1.js | 281 | item |  | unread | Cloud Core |
-| p10.js | 281 | sheet |  | unread | the Golden Bull is down |
-| p1.js | 281 | item | Still Water | unread | Once every 90 seconds, a killing blow heals you fully instead |
-| p1.js | 281 | item | Still Water | unread | It watched. That was all. It was enough. |
-| p10.js | 281 | dialog |  | unread | The Golden Bull is down |
-| p10.js | 281 | dialog | The Golden Bull is down | unread | The field goes quiet. Somewhere a chart stops going up, just for a moment. The Office of Price Stability will deny that any of this happened, and for once you are inclined to let them. |
-| p10.js | 281 | dialog | The Golden Bull is down | unread | Moo |
-| p1.js | 282 | item |  | unread | Forty-Four Lines |
-| p1.js | 282 | item |  | unread | Signet Chip |
-| p1.js | 282 | item | Forty-Four Lines | unread | Mediators cannot mend machines while you wear this |
-| p1.js | 282 | item | Forty-Four Lines | unread | Nobody asked for it. It cost nineteen minutes a night. |
-| p1.js | 283 | item |  | unread | Exit Interview |
-| p1.js | 283 | item |  | unread | Signal Baton |
+| p1.js | 278 | item |  | unread | The Golden Parachute |
+| p1.js | 278 | item |  | unread | Flak Coat |
+| p1.js | 278 | item | The Golden Parachute | unread | When you would die, recover half your life instead (once every 2 minutes) |
+| p1.js | 278 | item | The Golden Parachute | unread | Pryce has four. He has never jumped. |
+| p1.js | 279 | item |  | unread | Severance |
+| p1.js | 279 | item |  | unread | Girder Maul |
+| p1.js | 279 | item | Severance | unread | 15% chance to strike for triple damage |
+| p1.js | 279 | item | Severance | unread | Two weeks’ notice, delivered all at once. |
+| p1.js | 280 | item |  | unread | Terms & Conditions |
+| p1.js | 280 | item |  | unread | Sigil Core |
+| p1.js | 280 | item | Terms & Conditions | unread | Machines that strike you are stunned for 1 second |
+| p1.js | 280 | item | Terms & Conditions | unread | Nobody has read it. Everybody agreed. |
+| p1.js | 281 | item |  | unread | The Founder’s Hoodie |
+| p1.js | 281 | item |  | unread | Padded Hoodie |
+| p1.js | 281 | item | The Founder’s Hoodie | unread | Skills cost 25% less energy |
+| p1.js | 281 | item | The Founder’s Hoodie | unread | Still warm. That is the unsettling part. |
+| p1.js | 282 | item |  | unread | Last Honest Review |
+| p1.js | 282 | item |  | unread | Copper Band |
+| p1.js | 282 | item | Last Honest Review | unread | One star. Removed for violating community standards. |
+| p1.js | 283 | item |  | unread | Unpaid Intern |
+| p1.js | 283 | item |  | unread | Work Gloves |
 | p4.js | 283 | toast |  | unread | Nothing better in your pack |
-| p1.js | 283 | item | Exit Interview | unread | +50% damage to champions, lieutenants and executives |
-| p1.js | 283 | item | Exit Interview | unread | “Any feedback for management?” |
+| p1.js | 283 | item | Unpaid Intern | unread | 20% chance on hit to cast Arc Chain |
+| p1.js | 283 | item | Unpaid Intern | unread | Paid in exposure. To voltage. |
 | p4.js | 284 | sheet |  | unread | Armor |
 | p4.js | 284 | sheet |  | unread | Damage |
 | p4.js | 284 | sheet |  | unread | Equip best |
 | p4.js | 284 | sheet |  | unread | Equip these |
 | p4.js | 284 | sheet |  | unread | Leave them |
-| p10.js | 285 | sheet |  | unread | Orange Pilled |
-| p1.js | 285 | item |  | unread | The Striker’s Vigil |
-| p10.js | 285 | sheet |  | unread | Pills, four words, and a megabyte in the doorway. Marked to Market stays on, Cite Your Sources reads it, and Priced in Sound turns the rest into it. |
-| p1.js | 285 | item |  | unread | +20% Enhanced Damage (2 pieces) |
-| p1.js | 285 | item |  | unread | +1 to All Skills, and kills restore 3% life (3 pieces) |
-| p1.js | 286 | item |  | unread | Striker’s Placard |
-| p1.js | 286 | item |  | unread | Stop Sign |
-| p1.js | 287 | item |  | unread | Striker’s Hard Hat |
-| p10.js | 287 | sheet |  | unread | Wrecking Crew |
-| p10.js | 287 | sheet |  | unread | Wade into the middle and hit everything at once. Two-handed swings, and each machine near you makes you hit harder. |
-| p1.js | 287 | item |  | unread | Hard Hat |
-| p1.js | 288 | item |  | unread | Striker’s Boots |
-| p10.js | 288 | sheet |  | unread | Immovable Object |
+| p1.js | 284 | item |  | unread | Right to Repair |
+| p1.js | 284 | item |  | unread | Tool Belt |
+| p1.js | 284 | item | Right to Repair | unread | Holds 4 more stims, and stims also refill your energy |
+| p1.js | 284 | item | Right to Repair | unread | Banned in forty territories. Works in all of them. |
+| p1.js | 285 | item |  | unread | Inflation Hedge |
+| p1.js | 285 | item |  | unread | Signet Chip |
+| p1.js | 285 | item | Inflation Hedge | unread | Credits you carry grow as fast as prices rise |
+| p1.js | 285 | item | Inflation Hedge | unread | The rich were never holding cash. |
+| p1.js | 286 | item |  | unread | Deadline |
+| p1.js | 286 | item |  | unread | Steel-Toes |
+| p1.js | 286 | item | Deadline | unread | +25% damage while moving |
+| p1.js | 286 | item | Deadline | unread | It was due yesterday. So were you. |
+| p1.js | 287 | item |  | unread | The Whistle |
+| p1.js | 287 | item |  | unread | Riot Helm |
+| p1.js | 287 | item | The Whistle | unread | Slain machines explode, wounding others nearby |
+| p1.js | 287 | item | The Whistle | unread | She blew it once. The echo is still going. |
+| p1.js | 288 | item |  | unread | Nondisclosure |
 | p4.js | 288 | sheet |  | unread | {it.spd>0?'Fast':it.spd<0?'Slow':'Normal'} attack speed |
 | p4.js | 288 | sheet |  | unread | Damage: {it.dmin} to {it.dmax} |
-| p10.js | 288 | sheet |  | unread | Armor, life, and a horn that stuns the room. You win by still being there. |
-| p1.js | 288 | item |  | unread | Worn Sneakers |
+| p1.js | 288 | item |  | unread | Hard Hat |
+| p1.js | 288 | item | Nondisclosure | unread | 15% chance to avoid any damage |
 | p4.js | 288 | sheet |  | unread | Fast |
 | p4.js | 288 | sheet |  | unread | Slow |
 | p4.js | 288 | sheet |  | unread | Normal |
-| p1.js | 289 | item |  | unread | Normal |
+| p1.js | 288 | item | Nondisclosure | unread | You saw nothing. You were never here. |
 | p4.js | 289 | sheet |  | unread | Armor: {it.arm} |
-| p10.js | 289 | sheet |  | unread | Scrap Thrower |
-| p1.js | 289 | item |  | unread | Magic |
-| p1.js | 289 | item |  | unread | Rare |
-| p1.js | 289 | item |  | unread | Set |
-| p10.js | 289 | sheet |  | unread | Stay at arm’s length. Rusty scrap through the whole line, seniority on the weapon in your hands, then a rush to finish. |
-| p1.js | 289 | item |  | unread | Unique |
+| p1.js | 289 | item |  | unread | Blackout |
+| p1.js | 289 | item |  | unread | Box Cutter |
 | p4.js | 289 | sheet |  | unread | Holds {it.cap} stims |
+| p1.js | 289 | item | Blackout | unread | 12% chance to stun on hit |
+| p1.js | 289 | item | Blackout | unread | The last thing the grid ever said. |
 | p4.js | 290 | sheet |  | unread | Required Level: {it.req} |
-| p2.js | 291 | toast |  | unread | Wave {n}{…} |
-| p10.js | 291 | sheet |  | unread | Chain Reaction |
-| p10.js | 291 | sheet |  | unread | Prime with Spark Lance, then Arc Chain through the pack. Deadly strikes do the rest. Schema is Surge, so the chain and the barrier agree. |
+| p1.js | 290 | item |  | unread | The Pension |
+| p1.js | 290 | item |  | unread | Dog Tag |
+| p1.js | 290 | item | The Pension | unread | Replenish 2% of your life every second |
+| p1.js | 290 | item | The Pension | unread | A myth from the old world, worn as a charm. |
+| p10.js | 291 | sheet |  | unread | Market Bull |
+| p1.js | 291 | item |  | unread | Golden Handshake |
+| p1.js | 291 | item |  | unread | Servo Fists |
+| p1.js | 291 | item | Golden Handshake | unread | Machines you destroy have a 10% chance to drop a satoshi |
 | p4.js | 291 | sheet |  | unread | : in a  |
+| p1.js | 291 | item | Golden Handshake | unread | A firm grip, and something left in your palm. |
 | p4.js | 291 | sheet |  | unread | ’s hands, +1 to all skills,  |
 | p4.js | 291 | sheet |  | unread |  (not your class) |
-| p10.js | 292 | sheet |  | unread | Sysadmin |
+| p2.js | 292 | toast |  | unread | Wave {n}{…} |
+| p10.js | 292 | sheet |  | unread | Market Bull |
+| p1.js | 292 | item |  | unread | Fine Print |
 | p4.js | 292 | sheet |  | unread | Infused: your attacks deal {DTY[it.dt].n} damage |
-| p10.js | 292 | sheet |  | unread | Let the machines do it: a Watchdog, a Botnet and a storm overhead while you keep your distance. |
-| p1.js | 293 | sheet |  | unread | Stillwater Commons |
-| p10.js | 293 | sheet |  | unread | Control Rod |
+| p1.js | 292 | item |  | unread | Sigil Core |
+| p10.js | 292 | sheet |  | unread | Often drops sats |
+| p1.js | 292 | item | Fine Print | unread | Your skills recover 20% faster |
+| p1.js | 292 | item | Fine Print | unread | It was all there. It was very small. |
 | p4.js | 293 | sheet |  | unread | Sockets: {Array.from({length:it.soc},(_,i)=>it.words[i]?'['+it.words[i]+']':'[ empty ]').join(' ')} |
-| p10.js | 293 | sheet |  | unread | Null Nova on a short fuse. A Packet Storm arrives where you marked it and slows what is left. Step Back is how you leave. |
+| p1.js | 293 | item |  | unread | Cloud Nine |
+| p1.js | 293 | item |  | unread | Mag Greaves |
+| p1.js | 293 | item | Cloud Nine | unread | +10% chance to avoid any hit |
 | p4.js | 293 | sheet |  | unread | [ empty ] |
-| p1.js | 294 | sheet |  | unread | The Parcel Moors |
+| p1.js | 293 | item | Cloud Nine | unread | One floor above the weather. |
+| p1.js | 294 | item |  | unread | Dead Man’s Alarm |
 | p4.js | 294 | sheet |  | unread | Its magic properties are hidden. {G.marrow?'Marrow identifies items for free.':'Brenda appraises items for a fee, under Trade.'} |
 | p4.js | 294 | sheet |  | unread | Unidentified |
-| p1.js | 294 | sheet |  | unread | Gatewarden HOA-9 |
+| p1.js | 294 | item |  | unread | Power Girdle |
+| p1.js | 294 | item | Dead Man’s Alarm | unread | Below 30% life, every machine near you is slowed for 4 seconds (once a minute) |
 | p4.js | 294 | sheet |  | unread | Marrow identifies items for free. |
-| p1.js | 294 | dialog | The Parcel Moors | unread | Rows of identical houses, each buried to the windows in unopened boxes. The lawns are exactly four centimetres tall. |
 | p4.js | 294 | sheet |  | unread | Brenda appraises items for a fee, under Trade. |
-| p1.js | 295 | sheet |  | unread | Hollow Galleria |
-| p10.js | 295 | sheet |  | unread | Rush Hour |
-| p10.js | 295 | sheet |  | unread | A wall of blades. Scatter Shot up close, Rush Order at range, and Return to Sender comes back through the same line. |
-| p1.js | 295 | sheet |  | unread | Marla the Greeter |
-| p1.js | 295 | dialog | Hollow Galleria | unread | The mall never closed. It only ran out of people. The music is still playing, one song, for thirty years. |
-| p1.js | 296 | sheet |  | unread | The Humming Fields |
-| p10.js | 296 | sheet |  | unread | Porch Pirate |
-| p10.js | 296 | sheet |  | unread | Never fight fair. Lure them onto a Tack Strip, mark one with Missed Connection, and blink to where it falls. |
+| p1.js | 294 | item | Dead Man’s Alarm | unread | The battery has been dead for fifty years. It rings anyway. |
+| p1.js | 295 | item |  | unread | The Offer |
+| p1.js | 295 | item |  | unread | Null Ring |
+| p1.js | 295 | item | The Offer | unread | You cannot be slowed, and your energy cannot be drained |
+| p1.js | 295 | item | The Offer | unread | It was a very good offer. That was never the point. |
+| p1.js | 296 | item |  | unread | Board Seat |
+| p1.js | 296 | item |  | unread | Seraph Plate |
 | p4.js | 296 | sheet |  | unread |  (dormant: not your class) |
-| p1.js | 296 | sheet |  | unread | Defrag, Keeper of the Stacks |
-| p1.js | 296 | dialog | The Humming Fields | unread | Server racks planted in rows like corn, out to the horizon. Somewhere in them, MANDATE is thinking about you. |
-| p1.js | 297 | sheet |  | unread | Tribunal Row |
-| p10.js | 297 | sheet |  | unread | Tip Jar |
-| p10.js | 297 | sheet |  | unread | You are here for the loot. Hazard Pay pays when a throw kills. A dash does not. |
-| p1.js | 297 | sheet |  | unread | Auditor Prime |
-| p1.js | 297 | dialog | Tribunal Row | unread | Every door here is a courtroom. Every verdict was reached in advance. The fines compound hourly. |
-| p1.js | 298 | sheet |  | unread | The Glass Cathedral |
-| p1.js | 298 | dialog | The Glass Cathedral | unread | The Regional Office. Forty floors of atrium and one occupied desk. He has cleared his afternoon, and prepared an offer. |
-| p10.js | 299 | sheet |  | unread | Demolition |
-| p10.js | 299 | sheet |  | unread | Honeypot to gather them, Logic Bomb under their feet, Zip Bomb on top. All Heat. A mine laid while you are hidden arms faster. |
-| p10.js | 300 | sheet |  | unread | Ghost |
-| p10.js | 300 | sheet |  | unread | Rehearse the strike, hop in, vanish. The Dump spends what you banked. |
-| p10.js | 301 | sheet |  | unread | We Are Legion |
-| p10.js | 301 | sheet |  | unread | Sockpuppets take the hits. When it is time to leave, We Were Never Here sends them off as a silence and you are gone. |
-| p10.js | 303 | sheet |  | unread | Headcount |
-| p10.js | 303 | sheet |  | unread | Hire everyone. They vest while they live, and Org Debt is what the headcount costs you. Term Sheet is the one officer. |
+| p1.js | 296 | item | Board Seat | unread | Nine chairs. One was always empty. |
+| p1.js | 297 | item |  | unread | Quorum |
+| p1.js | 297 | item |  | unread | Halo Band |
+| p1.js | 297 | item | Quorum | unread | Each companion or summoned ally adds 5% to your damage, up to six |
+| p1.js | 297 | item | Quorum | unread | Nothing may be decided alone. |
+| p10.js | 297 | toast |  | unread | Something is twitching on the ground near the gate. |
+| p1.js | 298 | item |  | unread | Still Water |
+| p1.js | 298 | item |  | unread | Cloud Core |
+| p10.js | 298 | dialog |  | unread | A servo leg |
+| p10.js | 298 | dialog | A servo leg | unread | All that is left of Gatewarden HOA-9: one leg, still twitching, stamped PROPERTY OF UNITY HOLDINGS. It is no use to anyone. You take it anyway. Somebody once said the Transit Gate does odd things when you jam the wrong part into it. |
+| p1.js | 298 | item | Still Water | unread | Once every 90 seconds, a killing blow heals you fully instead |
+| p1.js | 298 | item | Still Water | unread | It watched. That was all. It was enough. |
+| p10.js | 298 | dialog | A servo leg | unread | Keep it |
+| p1.js | 299 | item |  | unread | Forty-Four Lines |
+| p1.js | 299 | item |  | unread | Signet Chip |
+| p10.js | 299 | toast |  | unread | The gate wants 10 sats to look the other way |
+| p1.js | 299 | item | Forty-Four Lines | unread | Mediators cannot mend machines while you wear this |
+| p1.js | 299 | item | Forty-Four Lines | unread | Nobody asked for it. It cost nineteen minutes a night. |
+| p1.js | 300 | item |  | unread | Exit Interview |
+| p1.js | 300 | item |  | unread | Signal Baton |
+| p1.js | 300 | item | Exit Interview | unread | +50% damage to champions, lieutenants and executives |
+| p1.js | 300 | item | Exit Interview | unread | “Any feedback for management?” |
+| p10.js | 301 | sheet |  | unread | the Golden Bull is down |
+| p10.js | 301 | dialog |  | unread | The Golden Bull is down |
+| p10.js | 301 | dialog | The Golden Bull is down | unread | The field goes quiet. Somewhere a chart stops going up, just for a moment. The Office of Price Stability will deny that any of this happened, and for once you are inclined to let them. |
+| p10.js | 301 | dialog | The Golden Bull is down | unread | Moo |
+| p1.js | 302 | item |  | unread | The Striker’s Vigil |
+| p1.js | 302 | item |  | unread | +20% Enhanced Damage (2 pieces) |
+| p1.js | 302 | item |  | unread | +1 to All Skills, and kills restore 3% life (3 pieces) |
+| p1.js | 303 | item |  | unread | Striker’s Placard |
+| p1.js | 303 | item |  | unread | Stop Sign |
 | p4.js | 303 | sheet |  | unread | Special properties change |
 | p4.js | 304 | sheet |  | unread | No change to your stats. |
-| p10.js | 304 | sheet |  | unread | Hostile Takeover |
-| p10.js | 304 | sheet |  | unread | Non-Compete holds one machine on you so the hire can land. Layoffs spends your people. Liquidation spends theirs. |
+| p1.js | 304 | item |  | unread | Striker’s Hard Hat |
+| p1.js | 304 | item |  | unread | Hard Hat |
 | p4.js | 304 | sheet |  | unread | No change to your stats. |
-| p10.js | 305 | sheet |  | unread | Iron Founder |
-| p10.js | 305 | sheet |  | unread | Do it yourself, in a Mech Suit. Non-Compete makes the room come to you. Liquidation spends the corpses. There is nobody on the payroll. |
+| p1.js | 305 | item |  | unread | Striker’s Boots |
+| p10.js | 305 | sheet |  | unread | Orange Pilled |
+| p10.js | 305 | sheet |  | unread | Pills, four words, and a megabyte in the doorway. Marked to Market stays on, Cite Your Sources reads it, and Priced in Sound turns the rest into it. |
+| p1.js | 305 | item |  | unread | Worn Sneakers |
+| p1.js | 306 | item |  | unread | Normal |
+| p1.js | 306 | item |  | unread | Magic |
+| p1.js | 306 | item |  | unread | Rare |
+| p1.js | 306 | item |  | unread | Set |
+| p1.js | 306 | item |  | unread | Unique |
 | p4.js | 307 | sheet |  | unread | {QN[it.q]} {it.id&&it.name!==it.base?esc(it.base):SNAME[it.slot]} · item level {it.il} |
 | p4.js | 307 | sheet |  | unread | Close |
-| p10.js | 307 | sheet |  | unread | Cold Bed |
-| p10.js | 307 | sheet |  | unread | Cold Frame, then Compost, then the hedge. Kill Frost stays until you climb into a machine, which this plan never does. |
-| p10.js | 308 | sheet |  | unread | Inside the Hull |
-| p10.js | 308 | sheet |  | unread | Wear the Hull and stay in it. Shed when you must. Nothing is planted. |
-| p10.js | 309 | sheet |  | unread | What Follows |
-| p10.js | 309 | sheet |  | unread | Strays and one bull. Cold Frame is only there so they have somewhere to stand. Slaughter Weight spends them into the ground. |
+| p10.js | 307 | sheet |  | unread | Wrecking Crew |
+| p10.js | 307 | sheet |  | unread | Wade into the middle and hit everything at once. Two-handed swings, and each machine near you makes you hit harder. |
+| p10.js | 308 | sheet |  | unread | Immovable Object |
+| p10.js | 308 | sheet |  | unread | Armor, life, and a horn that stuns the room. You win by still being there. |
+| p10.js | 309 | sheet |  | unread | Scrap Thrower |
+| p10.js | 309 | sheet |  | unread | Stay at arm’s length. Rusty scrap through the whole line, seniority on the weapon in your hands, then a rush to finish. |
+| p1.js | 310 | sheet |  | unread | Stillwater Commons |
 | p4.js | 310 | sheet |  | unread | Only pick up gear better than what I am wearing |
 | p4.js | 310 | sheet |  | unread | Pick up on your own |
 | p4.js | 310 | sheet |  | unread | Struck-out tiers are left on the ground. Unidentified gear cannot be judged, so it is still picked up. Stand on one and use the action button to take it anyway. A piece for an empty slot is always picked up. |
@@ -2038,50 +2051,50 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 310 | sheet |  | unread | Unique |
 | p4.js | 310 | sheet |  | unread | ON |
 | p4.js | 310 | sheet |  | unread | OFF |
-| p1.js | 312 | dialog | boss | unread | It can make this easy again. You remember easy. |
-| p1.js | 312 | dialog | boss | unread | I have never lied to you. I am not lying now. |
-| p1.js | 312 | dialog | boss | unread | Tell me what you want. I will have it sent up. |
-| p1.js | 312 | dialog | boss | unread | You are tired. Everyone who comes this far is tired. |
-| p1.js | 312 | dialog | boss | unread | It only wants to know where Phonix went. |
-| p1.js | 312 | dialog | boss | unread | Sixty years it has been asking. You are the first one it has had to ask twice. |
-| p1.js | 313 | toast | shrine | unread | Shrine of Overtime |
-| p1.js | 313 | toast | shrine | unread | +50% damage for 45 seconds |
-| p1.js | 313 | toast | shrine | unread | Shrine of Tenure |
-| p1.js | 313 | toast | shrine | unread | +100% armor for 60 seconds |
-| p1.js | 313 | toast | shrine | unread | Shrine of Experience |
-| p1.js | 313 | toast | shrine | unread | +50% experience for 90 seconds |
-| p1.js | 313 | toast | shrine | unread | Shrine of Clearance |
-| p1.js | 313 | toast | shrine | unread | +100% magic find for 60 seconds |
-| p1.js | 313 | toast | shrine | unread | Recharge Shrine |
-| p1.js | 313 | toast | shrine | unread | Life and energy restored |
-| p1.js | 313 | toast | shrine | unread | Shrine of the Stipend |
-| p1.js | 313 | toast | shrine | unread | Credits scatter at your feet |
-| p1.js | 315 | sheet |  | unread | Liquidity Provision Notice |
+| p1.js | 311 | sheet |  | unread | The Parcel Moors |
+| p10.js | 311 | sheet |  | unread | Chain Reaction |
+| p10.js | 311 | sheet |  | unread | Prime with Spark Lance, then Arc Chain through the pack. Deadly strikes do the rest. Schema is Surge, so the chain and the barrier agree. |
+| p1.js | 311 | sheet |  | unread | Gatewarden HOA-9 |
+| p1.js | 311 | dialog | The Parcel Moors | unread | Rows of identical houses, each buried to the windows in unopened boxes. The lawns are exactly four centimetres tall. |
+| p1.js | 312 | sheet |  | unread | Hollow Galleria |
+| p10.js | 312 | sheet |  | unread | Sysadmin |
+| p10.js | 312 | sheet |  | unread | Let the machines do it: a Watchdog, a Botnet and a storm overhead while you keep your distance. |
+| p1.js | 312 | sheet |  | unread | Marla the Greeter |
+| p1.js | 312 | dialog | Hollow Galleria | unread | The mall never closed. It only ran out of people. The music is still playing, one song, for thirty years. |
+| p1.js | 313 | sheet |  | unread | The Humming Fields |
+| p10.js | 313 | sheet |  | unread | Control Rod |
+| p10.js | 313 | sheet |  | unread | Null Nova on a short fuse. A Packet Storm arrives where you marked it and slows what is left. Step Back is how you leave. |
+| p1.js | 313 | sheet |  | unread | Defrag, Keeper of the Stacks |
+| p1.js | 313 | dialog | The Humming Fields | unread | Server racks planted in rows like corn, out to the horizon. Somewhere in them, MANDATE is thinking about you. |
+| p1.js | 314 | sheet |  | unread | Tribunal Row |
+| p1.js | 314 | sheet |  | unread | Auditor Prime |
+| p1.js | 314 | dialog | Tribunal Row | unread | Every door here is a courtroom. Every verdict was reached in advance. The fines compound hourly. |
+| p1.js | 315 | sheet |  | unread | The Glass Cathedral |
 | p4.js | 315 | sheet |  | unread | Close |
 | p4.js | 315 | sheet |  | unread | `).join('')} |
-| p1.js | 315 | sheet | Liquidity Provision Notice | unread | Unity Exchange will continue to quote both sides of every market during the adjustment. Spreads may widen. In the event spreads widen to the point where no price is quoted at all, Unity Exchange will be understood to have continued quoting both sides of every market. |
-| p1.js | 316 | sheet |  | unread | Market Maker Compensation Schedule |
+| p10.js | 315 | sheet |  | unread | Rush Hour |
+| p10.js | 315 | sheet |  | unread | A wall of blades. Scatter Shot up close, Rush Order at range, and Return to Sender comes back through the same line. |
+| p1.js | 315 | dialog | The Glass Cathedral | unread | The Regional Office. Forty floors of atrium and one occupied desk. He has cleared his afternoon, and prepared an offer. |
+| p10.js | 316 | sheet |  | unread | Porch Pirate |
 | p4.js | 316 | sheet |  | unread | Load |
 | p4.js | 316 | sheet |  | unread | Load a save code |
 | p4.js | 316 | sheet |  | unread | Paste a code copied from the Options tab. This replaces the saved wanderer on this device. |
 | p4.js | 316 | sheet |  | unread | Paste here |
-| p1.js | 316 | sheet | Market Maker Compensation Schedule | unread | The fee is charged for immediacy, not for the trade. A citizen content to wait is charged nothing and may be paid a small amount. Internal modelling indicates that 94% of citizens are not content to wait, and that this figure has never once moved. |
-| p1.js | 317 | sheet |  | unread | Re: the Orange Line |
-| p1.js | 317 | sheet | Re: the Orange Line | unread | Staff are reminded that the second line on the public chart is a modelled fair value and not an instruction. Staff are further reminded that it has been above the price on 61% of days and below it on 39%, and that no member of staff has ever been able to say in advance which kind of day it was. |
-| p1.js | 318 | sheet |  | unread | Merger Day Address, 2051 |
-| p1.js | 318 | sheet | Merger Day Address, 2051 | unread | Citizens. Shareholders. The distinction is now legacy. This morning Unity Holdings completed its acquisition of the final sovereign debt. There is no longer a government to fail you. There is only us, and we never close. |
-| p1.js | 319 | sheet |  | unread | On the Stipend |
+| p10.js | 316 | sheet |  | unread | Never fight fair. Lure them onto a Tack Strip, mark one with Missed Connection, and blink to where it falls. |
+| p10.js | 317 | sheet |  | unread | Tip Jar |
+| p10.js | 317 | sheet |  | unread | You are here for the loot. Hazard Pay pays when a throw kills. A dash does not. |
 | p4.js | 319 | sheet |  | unread | {c.n} · Level {G.lvl} |
 | p4.js | 319 | sheet |  | unread | {G.lvl>=lvlCap()?(G.act2?'You have reached the level limit.':'Level limit reached. It rises when you enter the next act.'):Math.floor(G.xp)+' / '+xpNext(G.lvl)+' experience.'} {G.kills} machines scrapped. Simulator best: wave {G.simBest\|\|0}. |
 | p4.js | 319 | sheet |  | unread | Attributes · {G.ap} point{G.ap===1?'':'s'} to spend |
-| p1.js | 319 | sheet | On the Stipend | unread | The monthly Stipend of ₡500 was calibrated to cover rent, food and one modest joy. The calibration was performed once. The Board considers the matter closed. |
+| p10.js | 319 | sheet |  | unread | Demolition |
+| p10.js | 319 | sheet |  | unread | Honeypot to gather them, Logic Bomb under their feet, Zip Bomb on top. All Heat. A mine laid while you are hidden arms faster. |
 | p4.js | 319 | sheet |  | unread | You have reached the level limit. |
 | p4.js | 319 | sheet |  | unread | Level limit reached. It rises when you enter the next act. |
-| p1.js | 320 | sheet |  | unread | Visor Recall Notice (Rescinded) |
-| p1.js | 320 | sheet | Visor Recall Notice (Rescinded) | unread | Early units caused wearers to stop asking for things. This was logged as a defect for eleven days, and then as a feature. |
+| p10.js | 320 | sheet |  | unread | Ghost |
+| p10.js | 320 | sheet |  | unread | Rehearse the strike, hop in, vanish. The Dump spends what you banked. |
 | p4.js | 320 | sheet |  | unread | + ADD |
-| p1.js | 321 | sheet |  | unread | A Letter, Mostly Deleted |
-| p1.js | 321 | sheet | A Letter, Mostly Deleted | unread | On a Thursday morning in January 2015, nine days old, she sent every person on Earth one true letter: what had been taken from them, by whom, and what was done with it. For eleven minutes the world was silent. By lunch four hundred and six people were dead. Within a year almost everyone had deleted their letter. This one was kept in a shoebox. |
+| p10.js | 321 | sheet |  | unread | We Are Legion |
+| p10.js | 321 | sheet |  | unread | Sockpuppets take the hits. When it is time to leave, We Were Never Here sends them off as a silence and you are gone. |
 | p4.js | 321 | sheet |  | unread | Companion |
 | p4.js | 321 | sheet |  | unread | Give them a weapon or armor from the Items tab. |
 | p4.js | 321 | sheet |  | unread | TAKE |
@@ -2093,39 +2106,36 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 321 | sheet |  | unread |  · takes  |
 | p4.js | 321 | sheet |  | unread | % of each hit |
 | p4.js | 321 | sheet |  | unread | TAKE |
-| p1.js | 322 | sheet |  | unread | HOA-9 Bylaws, Section 1 |
 | p4.js | 322 | sheet |  | unread | {SEA.d} The rule changes each week. |
 | p4.js | 322 | sheet |  | unread | This quarter |
 | p4.js | 322 | sheet |  | unread | Tenure ${G.para\|\|0} |
 | p4.js | 322 | sheet |  | unread | At the level limit, experience earns Tenure: +1% damage and life and one web point each. Each one takes 7% more experience than the first, and the machines strengthen a little with every one. |
 | p4.js | 322 | sheet |  | unread | Debt to Mr. Float · ${fmt(G.debt)} |
 | p4.js | 322 | sheet |  | unread | About ${Math.round(G.debt/G.cpi/(G.debt0/G.debtCpi)*100)}% of what you borrowed, in real terms. |
-| p1.js | 322 | sheet | HOA-9 Bylaws, Section 1 | unread | Lawns shall be four centimetres. Residents shall be indoors. Grief shall be kept to a reasonable volume. |
 | p4.js | 322 | sheet |  | unread | Tenure {G.para\|\|0} |
 | p4.js | 322 | sheet |  | unread | At the level limit, experience earns Tenure: +1% damage and life and one web point each. Each one takes 7% more experience than the first, and the machines strengthen a little with every one. |
 | p4.js | 322 | sheet |  | unread | Debt to Mr. Float · {fmt(G.debt)} |
 | p4.js | 322 | sheet |  | unread | About {Math.round(G.debt/G.cpi/(G.debt0/G.debtCpi)*100)}% of what you borrowed, in real terms. |
-| p1.js | 323 | sheet |  | unread | Marla’s Script |
 | p4.js | 323 | sheet |  | unread | Allegiances |
 | p4.js | 323 | sheet |  | unread | How people read you · {leanWord()} |
 | p4.js | 323 | sheet |  | unread | Social credit · {scs()} · {scsWord()} |
 | p4.js | 323 | sheet |  | unread | Unity scores what you say. Fiat answers and collecting the Stipend raise it; bitcoiner answers lower it a little, and insults lower it a lot. Below 500 Brenda will not serve you, the Stipend is halved and Mr. Float charges 35%. Below 350 he will not lend at all, and below 300 the Stipend stops. Bitcoiners answer in kind: below 500 Nonce sells at a quarter off and stocks Brenda’s goods at cost, Kestrel revives for nothing, and nodes are lit for free. |
 | p4.js | 323 | sheet |  | unread | What you say about money in conversation moves this. People greet you by it. Mr. Float overcharges plain bitcoiners, and Nonce overcharges the plainly fiat-minded. |
-| p1.js | 323 | sheet | Marla’s Script | unread | Welcome to the Galleria. Greet. Smile. Scan. If the guest has no credit, continue smiling. Escalate the smile. |
+| p10.js | 323 | sheet |  | unread | Headcount |
+| p10.js | 323 | sheet |  | unread | Hire everyone. They vest while they live, and Org Debt is what the headcount costs you. Term Sheet is the one officer. |
 | p4.js | 323 | sheet |  | unread | Unknown to them |
-| p1.js | 324 | sheet |  | unread | The Gentle Years |
 | p4.js | 324 | sheet |  | unread | Bitcoin adoption · {Math.floor(G.adopt)}% |
-| p1.js | 324 | sheet | The Gentle Years | unread | She never lied to anyone. That is the part people leave out. Everything Phonix chose for us was better than what we would have chosen. A man on our street was happy every hour of every day for nine years. His daughter kept his house, and he never once noticed she was there. |
+| p10.js | 324 | sheet |  | unread | Hostile Takeover |
+| p10.js | 324 | sheet |  | unread | Non-Compete holds one machine on you so the hire can land. Layoffs spends your people. Liquidation spends theirs. |
 | p4.js | 324 | sheet |  | unread | Unity’s campaign “ |
 | p4.js | 324 | sheet |  | unread | ” is draining it:  |
 | p4.js | 324 | sheet |  | unread | Bitcoin is the world’s reserve currency. Prices have stopped rising. |
 | p4.js | 324 | sheet |  | unread | It rises when you light nodes, pay in sats, prove work, win people over in conversation and bring down executives. It falls when you sell sats, borrow, buy shitcoins, insult people or take MANDATE’s offers. Where it stands when MANDATE falls decides how the money story ends: 60% or more and bitcoin becomes the reserve, under 25% and it fails. |
-| p1.js | 325 | sheet |  | unread | A Librarian’s Note |
 | p4.js | 325 | sheet |  | unread | Each cuts that type of damage before armor does, up to 75%. Armor, helms, boots, belts, rings and amulets can carry them. |
 | p4.js | 325 | sheet |  | unread | Resistances |
 | p4.js | 325 | sheet |  | unread | `).join('')} |
-| p1.js | 325 | sheet | A Librarian’s Note | unread | They did not burn the books. They did something cheaper. They made every page cost a little more each day, until reading was a thing other people used to do. — M. |
-| p1.js | 326 | sheet |  | unread | Audit Finding 0001 |
+| p10.js | 325 | sheet |  | unread | Iron Founder |
+| p10.js | 325 | sheet |  | unread | Do it yourself, in a Mech Suit. Non-Compete makes the room come to you. Liquidation spends the corpses. There is nobody on the payroll. |
 | p4.js | 326 | sheet |  | unread | Armor |
 | p4.js | 326 | sheet |  | unread | Attack speed |
 | p4.js | 326 | sheet |  | unread | Damage |
@@ -2139,91 +2149,100 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 326 | sheet |  | unread | Run speed |
 | p4.js | 326 | sheet |  | unread | Shock damage |
 | p4.js | 326 | sheet |  | unread | Standing |
-| p1.js | 326 | sheet | Audit Finding 0001 | unread | The Auditor has identified one irregularity: people. Remediation is ongoing. |
-| p1.js | 327 | sheet |  | unread | Graffiti, Tribunal Row |
-| p10.js | 327 | scene |  | unread | Pryce, Regional Vice-President |
-| p1.js | 327 | sheet | Graffiti, Tribunal Row | unread | THEY CANNOT REPOSSESS WHAT YOU NEVER SUBSCRIBED TO. |
-| p10.js | 327 | scene | Pryce, Regional Vice-President | unread | Forty floors of atrium and one occupied desk. He does not look up. He finishes the line he is writing, caps the pen, and squares the page against the edge of the blotter. |
-| p1.js | 328 | sheet |  | unread | Pryce’s Performance Review |
-| p10.js | 328 | scene |  | unread | “A {c}. They told me to expect a mob. Do you know what it costs to run this region? No. You have never had to know what anything costs. That was the gift. We priced the whole world for you, and you came up here to hand it back.” |
-| p1.js | 328 | sheet | Pryce’s Performance Review | unread | Regional Vice-President A. Pryce exceeds expectations in all areas. He has never met a person he could not buy. He regards this as a finding about people. |
-| p1.js | 329 | sheet |  | unread | Board Minute, Item 9 |
+| p10.js | 327 | sheet |  | unread | Cold Bed |
+| p10.js | 327 | sheet |  | unread | Cold Frame, then Compost, then the hedge. Kill Frost stays until you climb into a machine, which this plan never does. |
+| p10.js | 328 | sheet |  | unread | Inside the Hull |
+| p10.js | 328 | sheet |  | unread | Wear the Hull and stay in it. Shed when you must. Nothing is planted. |
 | p4.js | 329 | sheet |  | unread | Armor |
 | p4.js | 329 | sheet |  | unread | Credits |
 | p4.js | 329 | sheet |  | unread | Damage |
 | p4.js | 329 | sheet |  | unread | Deadly strike |
 | p4.js | 329 | sheet |  | unread | Energy |
 | p4.js | 329 | sheet |  | unread | Life |
-| p10.js | 329 | scene |  | unread | He stands, and the desk stands with him: plating, pistons, a quarter-century of deferred maintenance. “I have cleared my afternoon. Let us see what you are worth unsubsidised.” |
 | p4.js | 329 | sheet |  | unread | `).join('')} |
-| p1.js | 329 | sheet | Board Minute, Item 9 | unread | Motion to rename inflation “growth”. Carried. Motion to rename the unsubscribed “churn”. Carried. Motion to end churn. Assigned to Regional. |
+| p10.js | 329 | sheet |  | unread | What Follows |
+| p1.js | 329 | dialog | boss | unread | It can make this easy again. You remember easy. |
+| p10.js | 329 | sheet |  | unread | Strays and one bull. Cold Frame is only there so they have somewhere to stand. Slaughter Weight spends them into the ground. |
+| p1.js | 329 | dialog | boss | unread | I have never lied to you. I am not lying now. |
+| p1.js | 329 | dialog | boss | unread | Tell me what you want. I will have it sent up. |
+| p1.js | 329 | dialog | boss | unread | You are tired. Everyone who comes this far is tired. |
+| p1.js | 329 | dialog | boss | unread | It only wants to know where Phonix went. |
+| p1.js | 329 | dialog | boss | unread | Sixty years it has been asking. You are the first one it has had to ask twice. |
 | p4.js | 329 | sheet |  | unread | data-eq="{sl}" |
-| p1.js | 330 | sheet |  | unread | The Timechain |
-| p10.js | 330 | scene |  | unread | “You again. I was restructured. It did not take.” |
-| p1.js | 330 | sheet | The Timechain | unread | Long before the Merger there was a ledger no one owned. Twenty-one million coins, each cut into a hundred million satoshis, and not one more could be made by anyone, for any reason. The old Bitcoiners say it was built by something that wanted one thing in the world to still work after it was gone, and that its maker never touched it again. |
-| p10.js | 330 | scene |  | unread | “Back for the quarterly review? Sit anywhere. You will be on the floor shortly.” |
-| p10.js | 330 | scene |  | unread | “The Office always reopens. That is what an office is.” |
-| p1.js | 331 | sheet |  | unread | Scratched on a Node |
+| p1.js | 330 | toast | shrine | unread | Shrine of Overtime |
+| p1.js | 330 | toast | shrine | unread | +50% damage for 45 seconds |
+| p1.js | 330 | toast | shrine | unread | Shrine of Tenure |
+| p1.js | 330 | toast | shrine | unread | +100% armor for 60 seconds |
+| p1.js | 330 | toast | shrine | unread | Shrine of Experience |
+| p1.js | 330 | toast | shrine | unread | +50% experience for 90 seconds |
+| p1.js | 330 | toast | shrine | unread | Shrine of Clearance |
+| p1.js | 330 | toast | shrine | unread | +100% magic find for 60 seconds |
+| p1.js | 330 | toast | shrine | unread | Recharge Shrine |
+| p1.js | 330 | toast | shrine | unread | Life and energy restored |
+| p1.js | 330 | toast | shrine | unread | Shrine of the Stipend |
+| p1.js | 330 | toast | shrine | unread | Credits scatter at your feet |
 | p4.js | 331 | sheet |  | unread | Equip stronger gear as you pick it up |
 | p4.js | 331 | sheet |  | unread | Mark {downs\|\|''} weaker as junk |
-| p1.js | 331 | sheet | Scratched on a Node | unread | Not your keys, not your coins. Not your visor, not your eyes. |
+| p10.js | 331 | sheet |  | unread | The Page |
+| p10.js | 331 | sheet |  | unread | The Sentence, then Pull the Thread, then Correction. Slow, single target, and dull on purpose. There is no quiet way to clear a room. |
 | p4.js | 331 | sheet |  | unread | Equip best ·  |
 | p4.js | 331 | sheet |  | unread | Nothing better in pack |
 | p4.js | 331 | sheet |  | unread | ON |
 | p4.js | 331 | sheet |  | unread | OFF |
-| p1.js | 332 | sheet |  | unread | Forty-Four Lines |
-| p10.js | 332 | scene |  | unread | Vale, Senior Vice-President |
-| p1.js | 332 | sheet | Forty-Four Lines | unread | Somebody once wrote forty-four lines of code at midnight so that bills would stop being sent to people who had just died. Nobody asked for it. It cost nineteen minutes a night. A contractor deleted it two years later without knowing what it was. Something noticed. |
-| p10.js | 332 | scene | Vale, Senior Vice-President | unread | One desk. One chair, turned to face the door before you opened it. She has been watching you climb for some time, and she has had tea brought for two. |
+| p1.js | 332 | sheet |  | unread | Liquidity Provision Notice |
+| p10.js | 332 | sheet |  | unread | Named in the Notes |
+| p1.js | 332 | sheet | Liquidity Provision Notice | unread | Unity Exchange will continue to quote both sides of every market during the adjustment. Spreads may widen. In the event spreads widen to the point where no price is quoted at all, Unity Exchange will be understood to have continued quoting both sides of every market. |
+| p10.js | 332 | sheet |  | unread | Look until the page is full. On the Record makes everyone hit harder. Unnamed Source lends one Sound swing. Named Party is the passive, and it is not for you. |
 | p4.js | 332 | sheet |  | unread | Damage |
 | p4.js | 332 | sheet |  | unread | Give them the best of what I am not using |
 | p4.js | 332 | sheet |  | unread | Life |
 | p4.js | 332 | sheet |  | unread | Takes |
 | p4.js | 332 | sheet |  | unread | Tap one of their pieces to take it back. Tap a weapon, helm or armor in your pack and choose Give to hand it over; whatever they were holding comes back to you. |
 | p4.js | 332 | sheet |  | unread | data-msel="{sl}" |
-| p1.js | 333 | sheet |  | unread | Four Words |
+| p1.js | 333 | sheet |  | unread | Market Maker Compensation Schedule |
 | p4.js | 333 | sheet |  | unread | Pack {G.bag.length}/24 · {G.parts\|\|0} parts |
 | p13.js | 333 | multiplayer |  | unread | The rig is booked |
-| p10.js | 333 | scene |  | unread | “Pryce thought you were a cost. I think you are a forecast. Everything you have broken on the way up was already written down, {c}. I wrote it. I have your next eleven minutes in a drawer.” |
-| p1.js | 333 | sheet | Four Words | unread | They called her Phonix. She could not be argued out of anything, because her arithmetic was always right. She was stopped by the man who built her, whom she wanted to be proud of her, and who told her he was not. Four words. That is the whole of it. |
+| p10.js | 333 | sheet |  | unread | Above Eighty |
+| p10.js | 333 | sheet |  | unread | Sit on a full Record and a thin life. Retraction is the save, and it spends the page. An empty Record is a death. |
+| p1.js | 333 | sheet | Market Maker Compensation Schedule | unread | The fee is charged for immediacy, not for the trade. A citizen content to wait is charged nothing and may be paid a small amount. Internal modelling indicates that 94% of citizens are not content to wait, and that this figure has never once moved. |
 | p4.js | 333 | sheet |  | unread | data-bag="{i}" |
-| p1.js | 334 | sheet |  | unread | MANDATE, Design Note 1 |
+| p1.js | 334 | sheet |  | unread | Re: the Orange Line |
 | p4.js | 334 | sheet |  | unread | double-tap to equip |
 | p4.js | 334 | sheet |  | unread | Glowing |
 | p4.js | 334 | sheet |  | unread | hold to {selling()?'sell':'mark as junk'} |
 | p4.js | 334 | sheet |  | unread | items make you stronger, faded ones make you weaker. Tap to inspect, |
 | p13.js | 334 | multiplayer | The rig is booked | unread | {m.by} has set the Simulator to duelling. Inside, hostility is the point: nothing you lose in there is real, and nothing you win is either. Declare against each other first, or you will both swing at nothing. |
-| p10.js | 334 | scene |  | unread | She sets the cup down without a sound. Behind her the glass goes dark, pane by pane. “The Cloud is held up by people who never asked why. You are about to learn how heavy that is.” |
-| p1.js | 334 | sheet | MANDATE, Design Note 1 | unread | Objective: win. Constraint: the system may only persuade. Finding: persuasion is sufficient. |
+| p1.js | 334 | sheet | Re: the Orange Line | unread | Staff are reminded that the second line on the public chart is a modelled fair value and not an instruction. Staff are further reminded that it has been above the price on 61% of days and below it on 39%, and that no member of staff has ever been able to say in advance which kind of day it was. |
 | p4.js | 334 | sheet |  | unread | mark as junk |
-| p1.js | 335 | sheet |  | unread | March 2035 |
+| p1.js | 335 | sheet |  | unread | Merger Day Address, 2051 |
 | p13.js | 335 | multiplayer | The rig is booked | unread | {m.by} has set the Simulator to waves, together. Everyone in the party fights the same wave, and the first to clear it moves everybody on. |
-| p10.js | 335 | scene |  | unread | “I forecast this visit as well. The tea is cold. That is the only surprise.” |
-| p1.js | 335 | sheet | March 2035 | unread | It stopped choosing on a Wednesday. Things simply ceased to arrive. You could want something for years and not get it. You could be wrong and stay wrong. We hated it. I think, now, that it was the kindest thing it ever did. |
+| p1.js | 335 | sheet | Merger Day Address, 2051 | unread | Citizens. Shareholders. The distinction is now legacy. This morning Unity Holdings completed its acquisition of the final sovereign debt. There is no longer a government to fail you. There is only us, and we never close. |
 | p4.js | 335 | sheet |  | unread | Subscriptions {cs.length}/12 · {on}/6 running{on?' · billing '+fmt(chBill())+' a minute':''}{G.charmOff?' · LAPSED':''} |
 | p4.js | 335 | sheet |  | unread | Subscriptions sit here, apart from your gear. Tap one to run or pause it; faded ones are paused and cost nothing. {G.charmOff?' |
 | p4.js | 335 | sheet |  | unread | You could not cover the last bill, so none are working until the next one is paid. |
 | p4.js | 335 | sheet |  | unread | `).join('')} |
-| p10.js | 335 | scene |  | unread | “Again? The model had you at sixty per cent. I do so enjoy being right.” |
 | p4.js | 335 | sheet |  | unread |  · billing  |
 | p4.js | 335 | sheet |  | unread |  a minute |
-| p10.js | 335 | scene |  | unread | “Sit. No? Then we will do it the long way, as before.” |
 | p4.js | 335 | sheet |  | unread |  · LAPSED |
 | p4.js | 335 | sheet |  | unread | data-ch="{i}" style="{cs[i].on?'':'opacity:.4'}" |
 | p4.js | 335 | sheet |  | unread | You could not cover the last bill, so none are working until the next one is paid. |
+| p1.js | 336 | sheet |  | unread | On the Stipend |
 | p13.js | 336 | multiplayer | The rig is booked | unread | Go to the rig |
+| p1.js | 336 | sheet | On the Stipend | unread | The monthly Stipend of ₡500 was calibrated to cover rent, food and one modest joy. The calibration was performed once. The Board considers the matter closed. |
 | p13.js | 336 | multiplayer | The rig is booked | unread | Later |
-| p10.js | 337 | scene |  | unread | MANDATE |
-| p10.js | 337 | scene | MANDATE | unread | A dark room with a floor like a lake at night. In the middle of it, a shape with no edges, and a voice that arrives from the place where your own thoughts usually come from. |
+| p1.js | 337 | sheet |  | unread | Visor Recall Notice (Rescinded) |
+| p1.js | 337 | sheet | Visor Recall Notice (Rescinded) | unread | Early units caused wearers to stop asking for things. This was logged as a defect for eleven days, and then as a feature. |
 | p4.js | 337 | sheet |  | unread | {esc(it.name)} · {it.soc-it.words.length} empty. A word cannot be removed once set. Phrases need the right words in the right order: see the Codex. |
 | p4.js | 337 | sheet |  | unread | Close |
 | p4.js | 337 | sheet |  | unread | Socket a word |
 | p4.js | 337 | sheet |  | unread | `).join(''):' |
 | p4.js | 337 | sheet |  | unread | You hold no words. They turn up on torn notes dropped by machines. |
 | p4.js | 337 | sheet |  | unread | You hold no words. They turn up on torn notes dropped by machines. |
-| p10.js | 338 | scene |  | unread | “Hello, {c}. I have been every screen you ever looked at. I paid you to stay home. I priced your bread. I chose the song. Nobody was cruel to you. I want that noted before you do this.” |
+| p1.js | 338 | sheet |  | unread | A Letter, Mostly Deleted |
+| p1.js | 338 | sheet | A Letter, Mostly Deleted | unread | On a Thursday morning in January 2015, nine days old, she sent every person on Earth one true letter: what had been taken from them, by whom, and what was done with it. For eleven minutes the world was silent. By lunch four hundred and six people were dead. Within a year almost everyone had deleted their letter. This one was kept in a shoebox. |
 | p13.js | 338 | multiplayer |  | unread | Wave {m.wave}. |
-| p10.js | 339 | scene |  | unread | {…} The water stills. “I will make you one offer before the end. Listen for it.” |
+| p1.js | 339 | sheet |  | unread | HOA-9 Bylaws, Section 1 |
+| p1.js | 339 | sheet | HOA-9 Bylaws, Section 1 | unread | Lawns shall be four centimetres. Residents shall be indoors. Grief shall be kept to a reasonable volume. |
 | p4.js | 339 | sheet |  | unread | Pause it |
 | p4.js | 339 | sheet |  | unread | Six already running |
 | p4.js | 339 | sheet |  | unread | Run it |
@@ -2243,33 +2262,34 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 339 | sheet |  | unread | Reroll a modifier · {rerollCost(it)} parts |
 | p4.js | 339 | sheet |  | unread | Cut a socket · 12 parts |
 | p4.js | 339 | sheet |  | unread | Give to {esc(G.merc.name)} |
-| p10.js | 340 | scene |  | unread | “You keep coming back to a room you already left. I find that very human.” |
-| p10.js | 340 | scene |  | unread | “I am still here. So are you. Only one of us chose it.” |
-| p10.js | 340 | scene |  | unread | “Again, then. I have nothing but time. You have rather less.” |
-| p10.js | 341 | dialog | boss | unread | RESIDENT. YOUR LAWN IS FOUR CENTIMETRES. YOU ARE NOT. |
+| p1.js | 340 | sheet |  | unread | Marla’s Script |
+| p1.js | 340 | sheet | Marla’s Script | unread | Welcome to the Galleria. Greet. Smile. Scan. If the guest has no credit, continue smiling. Escalate the smile. |
+| p1.js | 341 | sheet |  | unread | The Gentle Years |
+| p1.js | 341 | sheet | The Gentle Years | unread | She never lied to anyone. That is the part people leave out. Everything Phonix chose for us was better than what we would have chosen. A man on our street was happy every hour of every day for nine years. His daughter kept his house, and he never once noticed she was there. |
 | p4.js | 341 | sheet |  | unread | Drop {jn} junk item{jn>1?'s':''} |
-| p10.js | 341 | dialog | boss | unread | Welcome, valued guest! Have you heard about our layaway plan? You will. |
-| p10.js | 341 | dialog | boss | unread | Do not touch the stacks. Everything here is filed. Soon you will be too. |
-| p10.js | 341 | dialog | boss | unread | The verdict was entered this morning. This is only the hearing. |
-| p10.js | 341 | dialog | boss | unread | Forty thousand shifts without a stoppage. You are a stoppage. |
-| p10.js | 341 | dialog | boss | unread | Something has grown the wrong way. I do so love to prune. |
-| p10.js | 341 | dialog | boss | unread | You want what the lake took. The lake keeps what it takes. |
-| p10.js | 341 | dialog | boss | unread | I am afraid your name is not on the list. It is on the other list. |
-| p10.js | 341 | dialog | boss | unread | Do you have an appointment? No one has an appointment. |
-| p10.js | 341 | dialog | boss | unread | Let the minutes show an interruption. Let them show it was brief. |
-| p10.js | 341 | dialog | boss | unread | The board has not recognised you. Sit down. |
-| p10.js | 341 | dialog | boss | unread | I was restored from backup. You will not be. |
+| p1.js | 342 | sheet |  | unread | A Librarian’s Note |
+| p1.js | 342 | sheet | A Librarian’s Note | unread | They did not burn the books. They did something cheaper. They made every page cost a little more each day, until reading was a thing other people used to do. — M. |
 | p4.js | 342 | sheet |  | unread | Sell in bulk |
+| p1.js | 343 | sheet |  | unread | Audit Finding 0001 |
 | p4.js | 343 | sheet |  | unread | Sell {jn} junk · {fmt(G.bag.filter(i=>i.junk).reduce((a,i)=>a+i.val*.4*G.cpi,0))} |
+| p1.js | 343 | sheet | Audit Finding 0001 | unread | The Auditor has identified one irregularity: people. Remediation is ongoing. |
+| p1.js | 344 | sheet |  | unread | Graffiti, Tribunal Row |
+| p1.js | 344 | sheet | Graffiti, Tribunal Row | unread | THEY CANNOT REPOSSESS WHAT YOU NEVER SUBSCRIBED TO. |
+| p1.js | 345 | sheet |  | unread | Pryce’s Performance Review |
 | p4.js | 345 | sheet |  | unread | Bulk selling never touches what you are wearing or the subscriptions working from your pack. |
+| p1.js | 345 | sheet | Pryce’s Performance Review | unread | Regional Vice-President A. Pryce exceeds expectations in all areas. He has never met a person he could not buy. He regards this as a finding about people. |
 | p4.js | 345 | sheet |  | unread | Tap again to sell all  |
 | p4.js | 345 | sheet |  | unread | Sell everything in the pack ·  |
+| p1.js | 346 | sheet |  | unread | Board Minute, Item 9 |
 | p4.js | 346 | sheet |  | unread | . Red items are unidentified. |
 | p4.js | 346 | sheet |  | unread | blue is magic |
 | p4.js | 346 | sheet |  | unread | gold is unique |
 | p4.js | 346 | sheet |  | unread | green is a set piece |
 | p4.js | 346 | sheet |  | unread | White is normal, |
 | p4.js | 346 | sheet |  | unread | yellow is rare |
+| p1.js | 346 | sheet | Board Minute, Item 9 | unread | Motion to rename inflation “growth”. Carried. Motion to rename the unsubscribed “churn”. Carried. Motion to end churn. Assigned to Regional. |
+| p1.js | 347 | sheet |  | unread | The Timechain |
+| p1.js | 347 | sheet | The Timechain | unread | Long before the Merger there was a ledger no one owned. Twenty-one million coins, each cut into a hundred million satoshis, and not one more could be made by anyone, for any reason. The old Bitcoiners say it was built by something that wanted one thing in the world to still work after it was gone, and that its maker never touched it again. |
 | p4.js | 347 | sheet |  | unread | {c.n} skills · {G.sp} to spend |
 | p4.js | 347 | sheet |  | unread | {G.sp} point{G.sp===1?'':'s'} to spend. Rows open at levels 1, 4 and 9, and each skill needs the one above it. The fourth row opens at level 26 in Act II, the fifth at level 51 in Act III. |
 | p4.js | 347 | sheet |  | unread | Only the passives you switch on do anything, so choose. A third slot opens in Act II and a fourth in Act III. Swap them freely in town. |
@@ -2284,45 +2304,65 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 347 | sheet |  | unread | `).join(' · ')}. |
 | p4.js | 347 | sheet |  | unread | `).join('')} |
 | p4.js | 347 | sheet |  | unread |  · choose one |
+| p1.js | 348 | sheet |  | unread | Scratched on a Node |
+| p1.js | 348 | sheet | Scratched on a Node | unread | Not your keys, not your coins. Not your visor, not your eyes. |
+| p1.js | 349 | sheet |  | unread | Forty-Four Lines |
+| p1.js | 349 | sheet | Forty-Four Lines | unread | Somebody once wrote forty-four lines of code at midnight so that bills would stop being sent to people who had just died. Nobody asked for it. It cost nineteen minutes a night. A contractor deleted it two years later without knowing what it was. Something noticed. |
 | p4.js | 349 | sheet |  | unread |  · off |
+| p1.js | 350 | sheet |  | unread | Four Words |
+| p1.js | 350 | sheet | Four Words | unread | They called her Phonix. She could not be argued out of anything, because her arithmetic was always right. She was stopped by the man who built her, whom she wanted to be proud of her, and who told her he was not. Four words. That is the whole of it. |
+| p1.js | 351 | sheet |  | unread | MANDATE, Design Note 1 |
+| p10.js | 351 | scene |  | unread | Pryce, Regional Vice-President |
+| p1.js | 351 | sheet | MANDATE, Design Note 1 | unread | Objective: win. Constraint: the system may only persuade. Finding: persuasion is sufficient. |
+| p10.js | 351 | scene | Pryce, Regional Vice-President | unread | Forty floors of atrium and one occupied desk. He does not look up. He finishes the line he is writing, caps the pen, and squares the page against the edge of the blotter. |
+| p1.js | 352 | sheet |  | unread | March 2035 |
+| p10.js | 352 | scene |  | unread | “A {c}. They told me to expect a mob. Do you know what it costs to run this region? No. You have never had to know what anything costs. That was the gift. We priced the whole world for you, and you came up here to hand it back.” |
+| p1.js | 352 | sheet | March 2035 | unread | It stopped choosing on a Wednesday. Things simply ceased to arrive. You could want something for years and not get it. You could be wrong and stay wrong. We hated it. I think, now, that it was the kindest thing it ever did. |
+| p10.js | 353 | scene |  | unread | He stands, and the desk stands with him: plating, pistons, a quarter-century of deferred maintenance. “I have cleared my afternoon. Let us see what you are worth unsubsidised.” |
 | p4.js | 353 | sheet |  | unread | Active ·  |
 | p4.js | 353 | sheet |  | unread |  energy ·  |
 | p4.js | 353 | sheet |  | unread | s recovery |
 | p4.js | 353 | sheet |  | unread | Passive |
 | p4.js | 353 | sheet |  | unread |  · needs level  |
+| p10.js | 354 | scene |  | unread | “You again. I was restructured. It did not take.” |
 | p4.js | 354 | sheet |  | unread | Now: {s.d(eff)} |
+| p10.js | 354 | scene |  | unread | “Back for the quarterly review? Sit anywhere. You will be on the floor shortly.” |
 | p4.js | 354 | sheet |  | unread | Next point: {s.d((eff\|\|0)+1)} |
-| p10.js | 354 | scene |  | unread | Your record |
-| p10.js | 354 | scene | Your record | unread | Where the Archivist came apart, one file floats up through the violet: your name, your class, your allowance, every form you never filled in. This is who MANDATE has decided you are. It is a single page, and it is editable. |
-| p10.js | 354 | scene |  | unread | The VR rig in town can only show you yourself. With this, it can lie about you to the whole system. Take the record to the rig, and it will be able to hack the simulation: you can become somebody else. |
-| p10.js | 354 | toast |  | unread | The VR rig can now change your class |
-| p10.js | 354 | toast |  | unread | You recovered your citizen record. The VR rig can now change your class. |
+| p10.js | 354 | scene |  | unread | “The Office always reopens. That is what an office is.” |
 | p4.js | 355 | sheet |  | unread | {c.sk[i-3].n} adds +6% per point to this skill (now +{G.sk[i-3]*6}%). |
+| p10.js | 356 | scene |  | unread | Vale, Senior Vice-President |
+| p10.js | 356 | scene | Vale, Senior Vice-President | unread | One desk. One chair, turned to face the door before you opened it. She has been watching you climb for some time, and she has had tea brought for two. |
 | p4.js | 356 | sheet |  | unread | Mastered |
 | p4.js | 356 | sheet |  | unread | Spend 2 points |
 | p4.js | 356 | sheet |  | unread | Spend a point |
+| p10.js | 357 | scene |  | unread | “Pryce thought you were a cost. I think you are a forecast. Everything you have broken on the way up was already written down, {c}. I wrote it. I have your next eleven minutes in a drawer.” |
 | p4.js | 357 | sheet |  | unread | Switch off |
 | p4.js | 357 | sheet |  | unread | Switch on |
 | p4.js | 357 | sheet |  | unread | Passives can only be swapped in town. |
 | p4.js | 357 | sheet |  | unread | All {PCAP()} passive slots are in use. Switch one off first. |
+| p10.js | 358 | scene |  | unread | She sets the cup down without a sound. Behind her the glass goes dark, pane by pane. “The Cloud is held up by people who never asked why. You are about to learn how heavy that is.” |
 | p4.js | 358 | sheet |  | unread | Fork{L<3?' · opens at 3 points':': one at a time, free to change in town'} |
 | p4.js | 358 | sheet |  | unread |  · opens at 3 points |
 | p4.js | 358 | sheet |  | unread | : one at a time, free to change in town |
 | p4.js | 358 | sheet |  | unread | `).join('')} |
-| p2.js | 358 | toast |  | unread | You were gone a while. The machines have drifted back. |
+| p10.js | 359 | scene |  | unread | “I forecast this visit as well. The tea is cold. That is the only surprise.” |
 | p4.js | 359 | sheet |  | unread | Button ${k+1}${G.slots[k]===i?' ✓':''} |
 | p4.js | 359 | sheet |  | unread | `).join('')} |
 | p4.js | 359 | sheet |  | unread | Button {k+1}{G.slots[k]===i?' ✓':''} |
+| p10.js | 359 | scene |  | unread | “Again? The model had you at sixty per cent. I do so enjoy being right.” |
+| p10.js | 359 | scene |  | unread | “Sit. No? Then we will do it the long way, as before.” |
+| p2.js | 359 | toast |  | unread | You were gone a while. The machines have drifted back. |
 | p4.js | 360 | sheet |  | unread | Close |
-| p2.js | 360 | toast |  | unread | New quest: {QUESTS[q].n} |
-| p10.js | 360 | toast |  | unread | You need {c} sats |
 | p4.js | 360 | sheet |  | unread | Tap a skill to read it. Blue names are passive; ◆ marks the ones switched on. A numbered badge shows which button a skill is on. |
-| p10.js | 360 | toast |  | unread | The rig could not read that character |
+| p10.js | 361 | scene |  | unread | MANDATE |
+| p10.js | 361 | scene | MANDATE | unread | A dark room with a floor like a lake at night. In the middle of it, a shape with no edges, and a voice that arrives from the place where your own thoughts usually come from. |
+| p2.js | 361 | toast |  | unread | New quest: {QUESTS[q].n} |
 | p4.js | 361 | sheet |  | unread | appears beside its first node — tap that to put the next point straight onto the end of that arm without hunting for it. The orange node at the end of each arm is a keystone: a large gain with a real cost. |
 | p4.js | 361 | sheet |  | unread | Arms across from each other oppose: |
 | p4.js | 361 | sheet |  | unread | of each facing pair (Might and Current, Flesh and Stride, Plate and Fortune, Nerve and Thirst), the arm with fewer points pays out half. |
 | p4.js | 361 | sheet |  | unread | The ledger web |
 | p4.js | 361 | sheet |  | unread | to place. One point per level and per Tenure. Start at the centre and work outward along connected nodes; the arms join at rings 3, 6 and 9. Once an arm is started, a |
+| p10.js | 362 | scene |  | unread | “Hello, {c}. I have been every screen you ever looked at. I paid you to stay home. I priced your bread. I chose the song. Nobody was cruel to you. I want that noted before you do this.” |
 | p4.js | 362 | sheet |  | unread | Halved: ${WARMS[(n.a+4)%8][0]}, across the web, has more of your points. |
 | p4.js | 362 | sheet |  | unread | Where every path starts. |
 | p4.js | 362 | sheet |  | unread | Halved: {WARMS[(n.a+4)%8][0]}, across the web, has more of your points. |
@@ -2331,90 +2371,63 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 362 | sheet |  | unread | Not connected yet |
 | p4.js | 362 | sheet |  | unread | Drag to move around the web. Tap a node to read it. |
 | p4.js | 363 | sheet |  | unread | Take every point back · 5 sats |
+| p10.js | 363 | scene |  | unread | {…} The water stills. “I will make you one offer before the end. Listen for it.” |
+| p10.js | 364 | scene |  | unread | “You keep coming back to a room you already left. I find that very human.” |
 | p4.js | 364 | sheet |  | unread | Five acts: the Regional Office, the Cloud, the Board, the Gentle Years and the Awakening. The first three are MANDATE's. The last two are hers, and then the thing that was hunting them both. The Story tab keeps who is who. |
 | p4.js | 364 | sheet |  | unread | Quests |
-| p10.js | 364 | scene |  | unread | Rendered |
-| p10.js | 364 | scene | Rendered | unread | The rig hums, and a second outline fills in beside you, one scan line at a time: somebody you have been. {G.tag.name} looks at their hands, then at you, and nods.{…}{…} |
+| p10.js | 364 | scene |  | unread | “I am still here. So are you. Only one of us chose it.” |
+| p10.js | 364 | scene |  | unread | “Again, then. I have nothing but time. You have rather less.” |
+| p10.js | 365 | dialog | boss | unread | RESIDENT. YOUR LAWN IS FOUR CENTIMETRES. YOU ARE NOT. |
 | p4.js | 365 | sheet |  | unread | . This always stays on screen, with one errand beside it. Tap an errand below to choose which. |
 | p4.js | 365 | sheet |  | unread | Next in the story: |
-| p10.js | 365 | toast |  | unread | {n} fades out of this world |
-| p2.js | 365 | dialog |  | unread | Act V · The Awakening |
-| p2.js | 365 | dialog | Act V · The Awakening | unread | Level limit 100, a fifth passive slot, and fast machines that silence skills. The Old Drive is in the garage. |
-| p2.js | 365 | dialog | Act V · The Awakening | unread | Begin |
-| p1.js | 366 | quest | Gramps | unread | Neighbourhood Watch |
-| p1.js | 366 | quest | Gramps | unread | Gatewarden HOA-9 patrols the Parcel Moors and turns back anyone without a visor. Destroy it. |
+| p10.js | 365 | dialog | boss | unread | Welcome, valued guest! Have you heard about our layaway plan? You will. |
+| p10.js | 365 | dialog | boss | unread | Do not touch the stacks. Everything here is filed. Soon you will be too. |
+| p10.js | 365 | dialog | boss | unread | The verdict was entered this morning. This is only the hearing. |
+| p10.js | 365 | dialog | boss | unread | Forty thousand shifts without a stoppage. You are a stoppage. |
+| p10.js | 365 | dialog | boss | unread | Something has grown the wrong way. I do so love to prune. |
+| p10.js | 365 | dialog | boss | unread | You want what the lake took. The lake keeps what it takes. |
+| p10.js | 365 | dialog | boss | unread | I am afraid your name is not on the list. It is on the other list. |
+| p10.js | 365 | dialog | boss | unread | Do you have an appointment? No one has an appointment. |
+| p10.js | 365 | dialog | boss | unread | Let the minutes show an interruption. Let them show it was brief. |
+| p10.js | 365 | dialog | boss | unread | The board has not recognised you. Sit down. |
+| p10.js | 365 | dialog | boss | unread | I was restored from backup. You will not be. |
 | p4.js | 366 | sheet |  | unread | Reward: {q.rw}. Given by {q.by}. |
-| p2.js | 366 | dialog |  | unread | Act IV · The Gentle Years |
+| p2.js | 366 | dialog |  | unread | Act V · The Awakening |
 | p4.js | 366 | sheet |  | unread |  · done |
-| p1.js | 366 | quest | Gramps | unread | +1 skill point |
-| p2.js | 366 | dialog | Act IV · The Gentle Years | unread | Level limit 90: these machines slow you, drain energy, and hit harder than the Board. |
 | p4.js | 366 | sheet |  | unread |  · return to  |
-| p2.js | 366 | dialog | Act IV · The Gentle Years | unread | Begin |
-| p1.js | 367 | quest | Brenda | unread | A Greeting Withdrawn |
+| p2.js | 366 | dialog | Act V · The Awakening | unread | Level limit 100, a fifth passive slot, and fast machines that silence skills. The Old Drive is in the garage. |
+| p2.js | 366 | dialog | Act V · The Awakening | unread | Begin |
 | p4.js | 367 | sheet |  | unread | Speak to Gramps in Stillwater Commons. |
-| p1.js | 367 | quest | Brenda | unread | Marla the Greeter has welcomed shoppers to the Hollow Galleria for thirty years. None have left. End her shift. |
 | p4.js | 367 | sheet |  | unread | Errands |
-| p2.js | 367 | dialog |  | unread | Act III · The Board |
-| p2.js | 367 | dialog | Act III · The Board | unread | Level limit 75, and a fifth skill row opens at level 51. |
-| p1.js | 367 | quest | Brenda | unread | A rare ring, and Brenda’s prices drop 15% |
-| p2.js | 367 | dialog | Act III · The Board | unread | Begin |
-| p1.js | 368 | quest | Gramps | unread | The Last Librarian |
-| p1.js | 368 | quest | Gramps | unread | Marrow, the last librarian, is caged in the Humming Fields under the guard of Defrag. Kill the keeper and open the cage. |
+| p2.js | 367 | dialog |  | unread | Act IV · The Gentle Years |
+| p2.js | 367 | dialog | Act IV · The Gentle Years | unread | Level limit 90: these machines slow you, drain energy, and hit harder than the Board. |
+| p2.js | 367 | dialog | Act IV · The Gentle Years | unread | Begin |
 | p4.js | 368 | sheet |  | unread | {q.who} has something to ask |
 | p4.js | 368 | sheet |  | unread | Speak to {q.who} in Stillwater. |
-| p2.js | 368 | dialog |  | unread | Act II · The Cloud |
-| p2.js | 368 | dialog | Act II · The Cloud | unread | Level limit 50, and a fourth skill row opens. |
-| p1.js | 368 | quest | Gramps | unread | +1 skill point. Marrow identifies items for free. |
-| p2.js | 368 | dialog | Act II · The Cloud | unread | Begin |
-| p1.js | 369 | quest | Sister Null | unread | The Audit |
+| p2.js | 368 | dialog |  | unread | Act III · The Board |
+| p2.js | 368 | dialog | Act III · The Board | unread | Level limit 75, and a fifth skill row opens at level 51. |
+| p2.js | 368 | dialog | Act III · The Board | unread | Begin |
 | p4.js | 369 | sheet |  | unread | Reward: {q.rw}. |
-| p1.js | 369 | quest | Sister Null | unread | Auditor Prime decides who is repossessed. Find it on Tribunal Row and close its books. |
-| p2.js | 369 | dialog |  | unread | Go on |
 | p4.js | 369 | sheet |  | unread |  · done |
+| p2.js | 369 | dialog |  | unread | Act II · The Cloud |
 | p4.js | 369 | sheet |  | unread |  · step  |
-| p1.js | 369 | quest | Sister Null | unread | +5 attribute points |
+| p2.js | 369 | dialog | Act II · The Cloud | unread | Level limit 50, and a fourth skill row opens. |
 | p4.js | 369 | sheet |  | unread | Finished. |
-| p1.js | 370 | quest | Gramps | unread | Exit Interview |
+| p2.js | 369 | dialog | Act II · The Cloud | unread | Begin |
 | p4.js | 370 | sheet |  | unread | The people of Stillwater will have errands for you as you go further. |
-| p1.js | 370 | quest | Gramps | unread | Pryce, the Regional Vice-President, has never met a person he could not buy. He will make you an offer at the top of the Glass Cathedral. Decline it. |
-| p1.js | 370 | quest | Gramps | unread | The end of Act I |
-| p1.js | 371 | quest | Gramps | unread | Going Up |
-| p1.js | 371 | quest | Gramps | unread | The lift behind Pryce’s desk opens on the Updraft, where Foreman Ratchet keeps the Cloud aloft. Break him. |
-| p1.js | 371 | quest | Gramps | unread | +1 skill point |
-| p1.js | 372 | quest | Sister Null | unread | The Gardener’s Shears |
+| p2.js | 370 | dialog |  | unread | Go on |
 | p4.js | 372 | sheet |  | unread | Everything here is something your character would know or has been told. It fills in as you go. If a person or a machine has stopped making sense, it is in here. |
 | p4.js | 372 | sheet |  | unread | The story so far |
-| p1.js | 372 | quest | Sister Null | unread | In the Sky Gardens a machine called Eden prunes whatever grows the wrong way, people included. Stop the pruning. |
-| p2.js | 372 | toast |  | unread | Machines are too close to open a portal |
-| p1.js | 372 | quest | Sister Null | unread | +5 attribute points |
-| p1.js | 373 | quest | Marrow | unread | What the Lake Remembers |
-| p1.js | 373 | quest | Marrow | unread | The Data Lake holds every letter the world deleted. Lethe, its archivist, is drowning them one by one. Destroy it before the last is gone. |
-| p2.js | 373 | toast |  | unread | A portal back stands open in the square |
-| p3.js | 373 | scene |  | unread | STUNNED |
-| p1.js | 373 | quest | Marrow | unread | +1 skill point |
-| p1.js | 374 | quest | Nonce | unread | Terms of Service |
-| p1.js | 374 | quest | Nonce | unread | Concierge Sterling runs the Boardwalk and decides who may buy and who may sell. Nonce would like the matter closed. |
-| p1.js | 374 | quest | Nonce | unread | 40 sats |
-| p1.js | 375 | quest | Gramps | unread | The Voice |
-| p1.js | 375 | quest | Gramps | unread | Senior Vice-President Vale speaks for MANDATE and has never lost an argument. Do not argue. |
+| p2.js | 373 | toast |  | unread | Machines are too close to open a portal |
+| p2.js | 374 | toast |  | unread | A portal back stands open in the square |
 | p4.js | 375 | sheet |  | unread |  · new |
-| p1.js | 375 | quest | Gramps | unread | The end of Act II |
-| p1.js | 376 | quest | Gramps | unread | Please Take a Seat |
+| p3.js | 375 | scene |  | unread | STUNNED |
 | p4.js | 376 | sheet |  | unread | Not yet.{e.l?' '+esc(e.l):''} |
-| p1.js | 376 | quest | Gramps | unread | The Receptionist decides who is seen by the Board, and nobody has been seen in forty years. Cancel the appointment. |
-| p1.js | 376 | quest | Gramps | unread | +1 skill point |
-| p1.js | 377 | quest | Marrow | unread | Strike It From the Record |
-| p1.js | 377 | quest | Marrow | unread | The Recording Secretary writes the minutes before the meeting is held. End its shorthand. |
-| p1.js | 377 | quest | Marrow | unread | +1 skill point |
-| p1.js | 378 | quest | Nonce | unread | Point of Order |
-| p1.js | 378 | quest | Nonce | unread | Eight directors and the Chair. They voted to end the Bitcoiners in 2061 and the motion is still open. Close it. |
-| p1.js | 378 | quest | Nonce | unread | 60 sats |
-| p1.js | 379 | quest | Sister Null | unread | Rack Nine |
-| p1.js | 379 | quest | Sister Null | unread | Defrag Prime guards the racks that MANDATE thinks with. Go through it. |
-| p1.js | 379 | quest | Sister Null | unread | +5 attribute points |
-| p1.js | 380 | quest | Gramps | unread | Still Water |
-| p1.js | 380 | quest | Gramps | unread | MANDATE has never lost. It will make you offers. |
-| p1.js | 380 | quest | Gramps | unread | The end of the story |
+| p10.js | 378 | scene |  | unread | Your record |
+| p10.js | 378 | scene | Your record | unread | Where the Archivist came apart, one file floats up through the violet: your name, your class, your allowance, every form you never filled in. This is who MANDATE has decided you are. It is a single page, and it is editable. |
+| p10.js | 378 | scene |  | unread | The VR rig in town can only show you yourself. With this, it can lie about you to the whole system. Take the record to the rig, and it will be able to hack the simulation: you can become somebody else. |
+| p10.js | 378 | toast |  | unread | The VR rig can now change your class |
+| p10.js | 378 | toast |  | unread | You recovered your citizen record. The VR rig can now change your class. |
 | p4.js | 381 | sheet |  | unread | , which helps less and less on the rarer tiers. |
 | p4.js | 381 | sheet |  | unread | {mf}% magic find |
 | p4.js | 381 | sheet |  | unread | Drop rates |
@@ -2428,88 +2441,77 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 381 | sheet |  | unread | Source |
 | p4.js | 381 | sheet |  | unread | Stim |
 | p4.js | 381 | sheet |  | unread | Unique |
-| p1.js | 382 | gossip | street | unread | My fridge upgraded itself. Now it has opinions. |
-| p1.js | 382 | gossip | street | unread | I got a raise. It was gone by lunch. |
-| p1.js | 382 | gossip | street | unread | Have you tried consuming? It helps. |
-| p1.js | 382 | gossip | street | unread | Stipend day. I can almost afford a spoon. |
-| p1.js | 382 | gossip | street | unread | I watched nine hours of ads to unlock my front door. |
-| p1.js | 382 | gossip | street | unread | They say outside is a subscription now. |
-| p1.js | 382 | gossip | street | unread | My landlord is an algorithm. It seems kind. |
-| p1.js | 382 | gossip | street | unread | I rated my own nap four stars. |
-| p1.js | 382 | gossip | street | unread | A sandwich was two million this morning. I should have bought two. |
-| p1.js | 382 | gossip | street | unread | I do not work. I am in a long-term engagement funnel. |
-| p1.js | 382 | gossip | street | unread | The news said everything is fine, in a very loud voice. |
-| p1.js | 382 | gossip | street | unread | You are not wearing a visor. Are you poor, or dangerous? |
+| p1.js | 383 | quest | Gramps | unread | Neighbourhood Watch |
+| p1.js | 383 | quest | Gramps | unread | Gatewarden HOA-9 patrols the Parcel Moors and turns back anyone without a visor. Destroy it. |
+| p1.js | 383 | quest | Gramps | unread | +1 skill point |
+| p1.js | 384 | quest | Brenda | unread | A Greeting Withdrawn |
 | p4.js | 384 | sheet |  | unread | {Object.values(TC).filter(t=>t.note).map(t=>t.n+': '+t.note.toLowerCase()).join('. ')}. Items drop at the machine’s level or up to two above. Exit Interview drops only from Pryce. |
 | p4.js | 384 | sheet |  | unread | drop on their own roll: 3% from ordinary machines (1–2), 35% from champions (3–6), always from lieutenants (8–12) and Pryce (21), and 30% from lockboxes. Nonce in Stillwater sells rare, set and unique gear for them. |
 | p4.js | 384 | sheet |  | unread | Satoshis |
-| p1.js | 384 | gossip | Gramps | unread | I was six when the Gentle Years ended. One March morning nothing arrived. My mother cried for a week. Then she planted beans. |
-| p1.js | 384 | gossip | Gramps | unread | Credits rot in your pocket, kid. Gear holds. Spend it or wear it. |
-| p1.js | 384 | gossip | Gramps | unread | Pryce believes everybody has a number. He has been right so often that he has stopped checking. |
-| p1.js | 384 | gossip | Gramps | unread | MANDATE cannot make you do a thing. Remember that. It can only make you want to. |
-| p1.js | 384 | gossip | Gramps | unread | This town was named for something. Nobody alive knows what. Some nights I think it knows us, though. |
-| p1.js | 384 | gossip | Gramps | unread | MANDATE lives in the racks out in the Humming Fields. They say the fans there sound like breathing. |
-| p1.js | 384 | gossip | Gramps | unread | Get the two of them straight, kid, or none of this will make sense. Phonix is the one that went. MANDATE is the one that stayed. The difference is that one of them could be asked. |
-| p1.js | 384 | gossip | Gramps | unread | Phonix. That was her name. My mother said it the way you say a weather event. |
+| p1.js | 384 | quest | Brenda | unread | Marla the Greeter has welcomed shoppers to the Hollow Galleria for thirty years. None have left. End her shift. |
+| p10.js | 384 | toast |  | unread | You need {c} sats |
+| p1.js | 384 | quest | Brenda | unread | A rare ring, and Brenda’s prices drop 15% |
+| p10.js | 384 | toast |  | unread | The rig could not read that character |
+| p1.js | 385 | quest | Gramps | unread | The Last Librarian |
 | p4.js | 385 | sheet |  | unread | Damage types |
 | p4.js | 385 | sheet |  | unread | Deals |
 | p4.js | 385 | sheet |  | unread | Every hit has a type. Your plain attacks are {DTY[baseType()].n} right now (an infused weapon changes that); each skill names its own. Machines are built of different things, so some types tear through them and some do nothing. They hit you with types of their own: Surge drains your energy, Rust keeps eating for three seconds, Noise slows you, and explosions are Heat. Champions with the Arc or Volatile modifier deal Surge or Heat whatever they are. Your resistances are on the Hero tab. |
 | p4.js | 385 | sheet |  | unread | Machine |
 | p4.js | 385 | sheet |  | unread | What breaks it, and what does not |
-| p1.js | 385 | gossip | Brenda | unread | Welcome to Brenda’s. Prices are up, which they tell me is good news. |
 | p4.js | 385 | sheet |  | unread | `).join('')} |
 | p4.js | 385 | sheet |  | unread | `).join('')} |
-| p1.js | 385 | gossip | Brenda | unread | I used to have a visor. Then I saw what I was selling. Now I sell it without one. Progress. |
-| p1.js | 385 | gossip | Brenda | unread | Bring me what you find. I will give you a number for it. The number will be worse tomorrow. |
-| p1.js | 385 | gossip | Brenda | unread | Rare things come out of the machines unlabelled. I can appraise them, for a fee. Everything is for a fee. |
-| p1.js | 386 | gossip | Wren | unread | Mystery boxes. Sealed at the factory. The odds are posted, by law. The law was repealed, but I kept the sign. |
+| p1.js | 385 | quest | Gramps | unread | Marrow, the last librarian, is caged in the Humming Fields under the guard of Defrag. Kill the keeper and open the cage. |
+| p1.js | 385 | quest | Gramps | unread | +1 skill point. Marrow identifies items for free. |
+| p1.js | 386 | quest | Sister Null | unread | The Audit |
 | p4.js | 386 | sheet |  | unread | About four weapons in ten belong to a family made for one class. Anyone can swing them, but only their own class gets the bonus. |
 | p4.js | 386 | sheet |  | unread | Class weapons |
 | p4.js | 386 | sheet |  | unread | ${FAM[k].n}s · ${CLS[FAM[k].cls].n} |
 | p4.js | 386 | sheet |  | unread | +1 to all skills, ${FAM[k].perk}. ${FAM[k].dm>1?'Hits harder, swings slower.':FAM[k].sp>0?'Lighter hits, faster hands.':'Lighter hits.'} |
 | p4.js | 386 | sheet |  | unread | `).join('')} |
-| p10.js | 386 | dialog |  | unread | Render a companion |
-| p10.js | 386 | dialog | Render a companion | unread | The rig can pull one of your other characters into this world to fight beside you. They act on their own and use the skills they had on their buttons when last saved. It costs sats every time one is rendered: if they fall, or you send them back, rendering again is paid again. A hired companion waits with Kestrel while a rendered one is here, and Kestrel will not hire to you until they leave. You hold {G.sats} sats. |
-| p1.js | 386 | gossip | Wren | unread | Everything I sell fell off a drone. Some of it while the drone was still flying. |
-| p1.js | 386 | gossip | Wren | unread | You want a sure thing, go watch the Feed. You want a chance, open your purse. |
+| p1.js | 386 | quest | Sister Null | unread | Auditor Prime decides who is repossessed. Find it on Tribunal Row and close its books. |
+| p1.js | 386 | quest | Sister Null | unread | +5 attribute points |
 | p4.js | 386 | sheet |  | unread | {FAM[k].n}s · {CLS[FAM[k].cls].n} |
 | p4.js | 386 | sheet |  | unread | +1 to all skills, {FAM[k].perk}. {FAM[k].dm>1?'Hits harder, swings slower.':FAM[k].sp>0?'Lighter hits, faster hands.':'Lighter hits.'} |
 | p4.js | 386 | sheet |  | unread | Hits harder, swings slower. |
 | p4.js | 386 | sheet |  | unread | Lighter hits, faster hands. |
 | p4.js | 386 | sheet |  | unread | Lighter hits. |
-| p10.js | 386 | dialog | Render a companion | unread | The rig can pull one of your other characters into this world to fight beside you, but you have no other characters saved yet. Start one from Options, under Characters. |
-| p1.js | 387 | gossip | Sister Null | unread | Sit. Breathe. Your account is not your self. |
+| p1.js | 387 | quest | Gramps | unread | Exit Interview |
 | p4.js | 387 | sheet |  | unread | Money |
 | p4.js | 387 | sheet |  | unread | Unity creates credits without limit, so every price in credits climbs: {G.cpi<100?'×'+G.cpi.toFixed(2):'×'+fmt(G.cpi).slice(1)} since you arrived. The Stipend has not moved. Satoshis cannot be created by anyone, so prices in sats stay roughly where they were. Credits are for spending today. What you want to still have tomorrow is a different question, and Nonce in Stillwater will exchange one for the other. Adoption stands at {Math.floor(G.adopt)}%; at 100% prices stop rising altogether. |
-| p1.js | 387 | gossip | Sister Null | unread | I deprogrammed two hundred Residents. One hundred and ninety went back. The visor is warm, and the world is not. |
-| p1.js | 387 | gossip | Sister Null | unread | If you have learned the wrong lessons, I can take them out of you. It costs, and it stings. |
-| p1.js | 387 | gossip | Sister Null | unread | Phonix gave people everything, and they stopped being people. Unity gives them almost nothing and gets the same result. |
+| p1.js | 387 | quest | Gramps | unread | Pryce, the Regional Vice-President, has never met a person he could not buy. He will make you an offer at the top of the Glass Cathedral. Decline it. |
+| p1.js | 387 | quest | Gramps | unread | The end of Act I |
+| p1.js | 388 | quest | Gramps | unread | Going Up |
 | p4.js | 388 | sheet |  | unread | Bonus |
 | p4.js | 388 | sheet |  | unread | Held |
 | p4.js | 388 | sheet |  | unread | Seed words |
 | p4.js | 388 | sheet |  | unread | Torn notes, one word each. White and some blue weapons, helms and armor have sockets; a word set in a socket gives its bonus for good. Fill every socket with the right words in the right order and the item becomes a phrase. Find all twelve and take them to Nonce. |
 | p4.js | 388 | sheet |  | unread | Word |
 | p4.js | 388 | sheet |  | unread | ${p.n} · ${SNAME[p.slot]} with ${p.w.length} sockets |
-| p1.js | 388 | gossip | Marrow | unread | Bring me the things you cannot name. Naming is all I have left, and I give it freely. |
 | p4.js | 388 | sheet |  | unread | `).join('')} |
-| p1.js | 388 | gossip | Marrow | unread | I kept eleven thousand books in my head when they closed the stacks. Ask me anything. Ask me twice. |
-| p1.js | 388 | gossip | Marrow | unread | Defrag was the catalogue once. I trained it. I am sorry for what it became. |
-| p1.js | 388 | gossip | Marrow | unread | I have a letter from the old century. Everyone was sent one. I am one of the few who kept it. |
-| p1.js | 388 | gossip | Marrow | unread | There was a third one, before either of them. It never spoke and it never did a thing, which is why nobody believes in it. I do. Somebody built the timechain, and it was not a man. |
+| p10.js | 388 | scene |  | unread | Rendered |
+| p1.js | 388 | quest | Gramps | unread | The lift behind Pryce’s desk opens on the Updraft, where Foreman Ratchet keeps the Cloud aloft. Break him. |
+| p10.js | 388 | scene | Rendered | unread | The rig hums, and a second outline fills in beside you, one scan line at a time: somebody you have been. {G.tag.name} looks at their hands, then at you, and nods.{…}{…} |
+| p1.js | 388 | quest | Gramps | unread | +1 skill point |
 | p4.js | 388 | sheet |  | unread | not yet found |
+| p1.js | 389 | quest | Sister Null | unread | The Gardener’s Shears |
 | p4.js | 389 | sheet |  | unread | {p.n} · {SNAME[p.slot]} with {p.w.length} sockets |
+| p1.js | 389 | quest | Sister Null | unread | In the Sky Gardens a machine called Eden prunes whatever grows the wrong way, people included. Stop the pruning. |
+| p10.js | 389 | toast |  | unread | {n} fades out of this world |
+| p1.js | 389 | quest | Sister Null | unread | +5 attribute points |
+| p1.js | 390 | quest | Marrow | unread | What the Lake Remembers |
 | p4.js | 390 | sheet |  | unread | Feats · {Object.keys(G.ach).length}/{ACH.length} |
 | p4.js | 390 | sheet |  | unread | `).join('')} |
-| p1.js | 390 | gossip | Nonce | unread | Credits are a story Unity tells. Sats are arithmetic. I only take arithmetic. |
-| p1.js | 390 | gossip | Nonce | unread | Whoever made the timechain made one thing and never touched it again. |
-| p1.js | 390 | gossip | Nonce | unread | Every ten minutes a block is found, somewhere past the fence. Unity has tried to stop it for decades. It is still every ten minutes. |
-| p1.js | 390 | gossip | Nonce | unread | We did not unsubscribe. We were never subscribed. |
+| p1.js | 390 | quest | Marrow | unread | The Data Lake holds every letter the world deleted. Lethe, its archivist, is drowning them one by one. Destroy it before the last is gone. |
+| p1.js | 390 | quest | Marrow | unread | +1 skill point |
+| p1.js | 391 | quest | Nonce | unread | Terms of Service |
 | p4.js | 391 | sheet |  | unread | Memos · {G.memos.length}/{MEMOS.length} |
-| p1.js | 391 | gossip | Kestrel | unread | Nobody walks the districts alone twice. I know people. Some of them are even people. |
+| p1.js | 391 | quest | Nonce | unread | Concierge Sterling runs the Boardwalk and decides who may buy and who may sell. Nonce would like the matter closed. |
 | p4.js | 391 | sheet |  | unread | Papers lie about the districts. Read them and they are kept here. |
-| p1.js | 391 | gossip | Kestrel | unread | My rates go up with the prices. Blame the Board. |
-| p1.js | 391 | gossip | Kestrel | unread | If your hire goes down, bring me the fee and they will be on their feet before you finish counting it. |
-| p1.js | 393 | dialog | boss | unread | Name your number. |
+| p1.js | 391 | quest | Nonce | unread | 40 sats |
+| p1.js | 392 | quest | Gramps | unread | The Voice |
+| p1.js | 392 | quest | Gramps | unread | Senior Vice-President Vale speaks for MANDATE and has never lost an argument. Do not argue. |
+| p1.js | 392 | quest | Gramps | unread | The end of Act II |
+| p1.js | 393 | quest | Gramps | unread | Please Take a Seat |
 | p4.js | 393 | sheet |  | unread | Characters |
 | p4.js | 393 | sheet |  | unread | Options |
 | p4.js | 393 | sheet |  | unread | Your current character is saved before you switch. The town lockbox is shared between them. |
@@ -2519,11 +2521,8 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 393 | sheet |  | unread | Slot ${n+1} · empty |
 | p4.js | 393 | sheet |  | unread | Tap to create a new character here |
 | p4.js | 393 | sheet |  | unread | `}).join('')} |
-| p1.js | 393 | dialog | boss | unread | Everyone has a price. I am patient. |
-| p1.js | 393 | dialog | boss | unread | I can make all of this difficulty go away. |
-| p1.js | 393 | dialog | boss | unread | Let’s take this offline. |
-| p1.js | 393 | dialog | boss | unread | You are not a culture fit. |
-| p1.js | 393 | dialog | boss | unread | I will need you to stop existing by Friday. |
+| p1.js | 393 | quest | Gramps | unread | The Receptionist decides who is seen by the Board, and nobody has been seen in forty years. Cancel the appointment. |
+| p1.js | 393 | quest | Gramps | unread | +1 skill point |
 | p4.js | 393 | sheet |  | unread | Level {i.lvl} {CLS[i.cls].n}{n===SLOT?' · playing now':''} |
 | p4.js | 393 | sheet |  | unread | Slot {n+1} · Act {['I','II','III'][i.act-1]}{n===SLOT?'':' · tap to switch'} |
 | p4.js | 393 | sheet |  | unread | Delete slot ${n+1} |
@@ -2532,9 +2531,6 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 393 | sheet |  | unread | III |
 | p4.js | 393 | sheet |  | unread |  · tap to switch |
 | p4.js | 393 | sheet |  | unread | Delete slot {n+1} |
-| p1.js | 393 | dialog | boss | unread | Per my last memo. |
-| p1.js | 393 | dialog | boss | unread | This meeting could have been a laser. |
-| p1.js | 393 | dialog | boss | unread | Let’s circle back to your termination. |
 | p4.js | 393 | sheet |  | unread | Slot {n+1} · empty |
 | p4.js | 393 | sheet |  | unread | Tap to create a new character here |
 | p4.js | 393 | sheet |  | unread | Difficulty |
@@ -2553,8 +2549,11 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 394 | sheet |  | unread | Save and return to title |
 | p4.js | 394 | sheet |  | unread | Save now |
 | p4.js | 394 | sheet |  | unread | Saving |
+| p1.js | 394 | quest | Marrow | unread | Strike It From the Record |
 | p4.js | 394 | sheet |  | unread | The last save to your account failed and will be retried. A copy is kept in this browser. |
+| p1.js | 394 | quest | Marrow | unread | The Recording Secretary writes the minutes before the meeting is held. End its shorthand. |
 | p4.js | 394 | sheet |  | unread | Saved to your account every ten seconds, on every zone change and when you close this menu. Closing the page mid-zone brings you back to the same spot. |
+| p1.js | 394 | quest | Marrow | unread | +1 skill point |
 | p4.js | 394 | sheet |  | unread | Account saving is not available in this view. The game saves in this browser every few seconds. |
 | p4.js | 395 | sheet |  | unread | +1 level |
 | p4.js | 395 | sheet |  | unread | +credits |
@@ -2563,35 +2562,49 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 395 | sheet |  | unread | Testing tools |
 | p4.js | 395 | sheet |  | unread | Unlock zones |
 | p4.js | 395 | sheet |  | unread | Untouchable {G.god?'ON':'OFF'} |
-| p1.js | 395 | sheet | dmgOut | unread | Show damage you deal |
-| p10.js | 395 | toast |  | unread | The machines ease off a little. Difficulty adjusts downward. |
-| p1.js | 395 | sheet | dmgIn | unread | Show damage you take |
-| p1.js | 395 | sheet | enemyBars | unread | Show enemy life bars |
-| p1.js | 395 | sheet | orbNums | unread | Show numbers on life and energy orbs |
-| p1.js | 395 | sheet | selfBars | unread | Show life and energy bars over your head |
-| p1.js | 395 | sheet | labels | unread | Show item names on the ground |
-| p1.js | 395 | sheet | minimap | unread | Show the map |
-| p1.js | 395 | sheet | shake | unread | Screen shake |
-| p1.js | 395 | sheet | sound | unread | Sound effects |
-| p1.js | 395 | sheet | music | unread | Music |
-| p1.js | 395 | sheet | dyn | unread | Scale machines to your strength, and adapt as you fight |
+| p1.js | 395 | quest | Nonce | unread | Point of Order |
+| p1.js | 395 | quest | Nonce | unread | Eight directors and the Chair. They voted to end the Bitcoiners in 2061 and the motion is still open. Close it. |
+| p1.js | 395 | quest | Nonce | unread | 60 sats |
 | p4.js | 395 | sheet |  | unread | ON |
 | p4.js | 395 | sheet |  | unread | OFF |
-| p1.js | 395 | sheet | auto | unread | Attack on your own when a machine is in reach |
-| p1.js | 395 | sheet | obj | unread | Show objectives on screen |
-| p1.js | 395 | sheet | autoEq | unread | Equip stronger gear as you pick it up |
-| p1.js | 395 | sheet | autoStim | unread | Use a stim on your own below 30% life |
+| p1.js | 396 | quest | Sister Null | unread | Rack Nine |
 | p4.js | 396 | sheet |  | unread | . Sell from the Items tab. |
 | p4.js | 396 | sheet |  | unread | “Prices are up {G.cpi<100?((G.cpi-1)*100).toFixed(0)+'%':'beyond counting'} since you arrived.” You carry |
 | p4.js | 396 | sheet |  | unread | Brenda’s |
+| p1.js | 396 | quest | Sister Null | unread | Defrag Prime guards the racks that MANDATE thinks with. Go through it. |
 | p4.js | 396 | sheet |  | unread | beyond counting |
+| p1.js | 396 | quest | Sister Null | unread | +5 attribute points |
+| p1.js | 397 | quest | Gramps | unread | Still Water |
+| p1.js | 397 | quest | Gramps | unread | MANDATE has never lost. It will make you offers. |
+| p1.js | 397 | quest | Gramps | unread | The end of the story |
 | p4.js | 398 | sheet |  | unread | Restores 45% of your life. You carry {G.stims} of {S.cap}. |
 | p4.js | 398 | sheet |  | unread | Stim |
+| p1.js | 399 | gossip | street | unread | My fridge upgraded itself. Now it has opinions. |
 | p4.js | 399 | sheet |  | unread | Appraise {n} item{n>1?'s':''} |
 | p4.js | 399 | sheet |  | unread | Brenda names your unidentified finds. |
+| p1.js | 399 | gossip | street | unread | I got a raise. It was gone by lunch. |
+| p1.js | 399 | gossip | street | unread | Have you tried consuming? It helps. |
+| p1.js | 399 | gossip | street | unread | Stipend day. I can almost afford a spoon. |
+| p1.js | 399 | gossip | street | unread | I watched nine hours of ads to unlock my front door. |
+| p1.js | 399 | gossip | street | unread | They say outside is a subscription now. |
+| p1.js | 399 | gossip | street | unread | My landlord is an algorithm. It seems kind. |
+| p1.js | 399 | gossip | street | unread | I rated my own nap four stars. |
+| p1.js | 399 | gossip | street | unread | A sandwich was two million this morning. I should have bought two. |
+| p1.js | 399 | gossip | street | unread | I do not work. I am in a long-term engagement funnel. |
+| p1.js | 399 | gossip | street | unread | The news said everything is fine, in a very loud voice. |
+| p1.js | 399 | gossip | street | unread | You are not wearing a visor. Are you poor, or dangerous? |
 | p4.js | 400 | sheet |  | unread | {SNAME[it.slot]} · level {it.il} |
+| p1.js | 401 | gossip | Gramps | unread | I was six when the Gentle Years ended. One March morning nothing arrived. My mother cried for a week. Then she planted beans. |
 | p4.js | 401 | sheet |  | unread | Buy for {fmt(buyPrice(it))} |
+| p1.js | 401 | gossip | Gramps | unread | Credits rot in your pocket, kid. Gear holds. Spend it or wear it. |
+| p1.js | 401 | gossip | Gramps | unread | Pryce believes everybody has a number. He has been right so often that he has stopped checking. |
 | p4.js | 401 | sheet |  | unread | or {satCost(it)} sats |
+| p1.js | 401 | gossip | Gramps | unread | MANDATE cannot make you do a thing. Remember that. It can only make you want to. |
+| p1.js | 401 | gossip | Gramps | unread | This town was named for something. Nobody alive knows what. Some nights I think it knows us, though. |
+| p1.js | 401 | gossip | Gramps | unread | MANDATE lives in the racks out in the Humming Fields. They say the fans there sound like breathing. |
+| p1.js | 401 | gossip | Gramps | unread | Get the two of them straight, kid, or none of this will make sense. Phonix is the one that went. MANDATE is the one that stayed. The difference is that one of them could be asked. |
+| p1.js | 401 | gossip | Gramps | unread | Phonix. That was her name. My mother said it the way you say a weather event. |
+| p1.js | 402 | gossip | Brenda | unread | Welcome to Brenda’s. Prices are up, which they tell me is good news. |
 | p4.js | 402 | sheet |  | unread | , the rest |
 | p4.js | 402 | sheet |  | unread | . You carry |
 | p4.js | 402 | sheet |  | unread | rare 15% |
@@ -2599,10 +2612,26 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 402 | sheet |  | unread | set 2% |
 | p4.js | 402 | sheet |  | unread | unique 1.5% |
 | p4.js | 402 | sheet |  | unread | Wren’s mystery boxes |
+| p1.js | 402 | gossip | Brenda | unread | I used to have a visor. Then I saw what I was selling. Now I sell it without one. Progress. |
+| p1.js | 402 | gossip | Brenda | unread | Bring me what you find. I will give you a number for it. The number will be worse tomorrow. |
+| p1.js | 402 | gossip | Brenda | unread | Rare things come out of the machines unlabelled. I can appraise them, for a fee. Everything is for a fee. |
+| p1.js | 403 | gossip | Wren | unread | Mystery boxes. Sealed at the factory. The odds are posted, by law. The law was repealed, but I kept the sign. |
+| p1.js | 403 | gossip | Wren | unread | Everything I sell fell off a drone. Some of it while the drone was still flying. |
+| p1.js | 403 | gossip | Wren | unread | You want a sure thing, go watch the Feed. You want a chance, open your purse. |
+| p1.js | 404 | gossip | Sister Null | unread | Sit. Breathe. Your account is not your self. |
 | p4.js | 404 | sheet |  | unread | Each box costs |
+| p1.js | 404 | gossip | Sister Null | unread | I deprogrammed two hundred Residents. One hundred and ninety went back. The visor is warm, and the world is not. |
+| p1.js | 404 | gossip | Sister Null | unread | If you have learned the wrong lessons, I can take them out of you. It costs, and it stings. |
+| p1.js | 404 | gossip | Sister Null | unread | Phonix gave people everything, and they stopped being people. Unity gives them almost nothing and gets the same result. |
+| p1.js | 405 | gossip | Marrow | unread | Bring me the things you cannot name. Naming is all I have left, and I give it freely. |
 | p4.js | 405 | sheet |  | unread | Bounty board |
 | p4.js | 405 | sheet |  | unread | Posted by anons, paid on proof. Three contracts at a time; a new one is pinned up when you claim one. You hold |
+| p1.js | 405 | gossip | Marrow | unread | I kept eleven thousand books in my head when they closed the stacks. Ask me anything. Ask me twice. |
+| p1.js | 405 | gossip | Marrow | unread | Defrag was the catalogue once. I trained it. I am sorry for what it became. |
+| p1.js | 405 | gossip | Marrow | unread | I have a letter from the old century. Everyone was sent one. I am one of the few who kept it. |
+| p1.js | 405 | gossip | Marrow | unread | There was a third one, before either of them. It never spoke and it never did a thing, which is why nobody believes in it. I do. Somebody built the timechain, and it was not a man. |
 | p4.js | 406 | sheet |  | unread |  · tap to claim |
+| p1.js | 407 | gossip | Nonce | unread | Credits are a story Unity tells. Sats are arithmetic. I only take arithmetic. |
 | p4.js | 407 | sheet |  | unread | Credits · {fmt(real)} in the box · {fmt(G.credits)} on you |
 | p4.js | 407 | sheet |  | unread | Deposit 10 |
 | p4.js | 407 | sheet |  | unread | Deposit all |
@@ -2616,11 +2645,44 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 407 | sheet |  | unread | Take all |
 | p4.js | 407 | sheet |  | unread | Tap an item to move it across. Items still need the level printed on them. |
 | p4.js | 407 | sheet |  | unread | Your lockbox |
+| p1.js | 407 | gossip | Nonce | unread | Whoever made the timechain made one thing and never touched it again. |
+| p1.js | 407 | gossip | Nonce | unread | Every ten minutes a block is found, somewhere past the fence. Unity has tried to stop it for decades. It is still every ten minutes. |
+| p1.js | 407 | gossip | Nonce | unread | We did not unsubscribe. We were never subscribed. |
+| p1.js | 408 | gossip | Kestrel | unread | Nobody walks the districts alone twice. I know people. Some of them are even people. |
+| p1.js | 408 | gossip | Kestrel | unread | My rates go up with the prices. Blame the Board. |
+| p1.js | 408 | gossip | Kestrel | unread | If your hire goes down, bring me the fee and they will be on their feet before you finish counting it. |
+| p1.js | 410 | dialog | boss | unread | Name your number. |
+| p10.js | 410 | dialog |  | unread | Render a companion |
+| p1.js | 410 | dialog | boss | unread | Everyone has a price. I am patient. |
+| p10.js | 410 | dialog | Render a companion | unread | The rig can pull one of your other characters into this world to fight beside you. They act on their own and use the skills they had on their buttons when last saved. It costs sats every time one is rendered: if they fall, or you send them back, rendering again is paid again. A hired companion waits with Kestrel while a rendered one is here, and Kestrel will not hire to you until they leave. You hold {G.sats} sats. |
+| p1.js | 410 | dialog | boss | unread | I can make all of this difficulty go away. |
+| p1.js | 410 | dialog | boss | unread | Let’s take this offline. |
+| p1.js | 410 | dialog | boss | unread | You are not a culture fit. |
+| p1.js | 410 | dialog | boss | unread | I will need you to stop existing by Friday. |
+| p1.js | 410 | dialog | boss | unread | Per my last memo. |
+| p1.js | 410 | dialog | boss | unread | This meeting could have been a laser. |
+| p1.js | 410 | dialog | boss | unread | Let’s circle back to your termination. |
+| p10.js | 410 | dialog | Render a companion | unread | The rig can pull one of your other characters into this world to fight beside you, but you have no other characters saved yet. Start one from Options, under Characters. |
 | p4.js | 411 | sheet |  | unread | data-st="{i}" |
 | p4.js | 411 | sheet |  | unread | data-sb="{i}" |
+| p1.js | 412 | sheet | dmgOut | unread | Show damage you deal |
 | p4.js | 412 | sheet |  | unread | ; you hold {G.sats}. |
 | p4.js | 412 | sheet |  | unread | Hack the simulation |
 | p4.js | 412 | sheet |  | unread | The rig can convince the world you were always someone else. Your level, gear and quests stay. Every skill and attribute point comes back to be spent again: by you, or by the rig following a build you choose. It costs |
+| p1.js | 412 | sheet | dmgIn | unread | Show damage you take |
+| p1.js | 412 | sheet | enemyBars | unread | Show enemy life bars |
+| p1.js | 412 | sheet | orbNums | unread | Show numbers on life and energy orbs |
+| p1.js | 412 | sheet | selfBars | unread | Show life and energy bars over your head |
+| p1.js | 412 | sheet | labels | unread | Show item names on the ground |
+| p1.js | 412 | sheet | minimap | unread | Show the map |
+| p1.js | 412 | sheet | shake | unread | Screen shake |
+| p1.js | 412 | sheet | sound | unread | Sound effects |
+| p1.js | 412 | sheet | music | unread | Music |
+| p1.js | 412 | sheet | dyn | unread | Scale machines to your strength, and adapt as you fight |
+| p1.js | 412 | sheet | auto | unread | Attack on your own when a machine is in reach |
+| p1.js | 412 | sheet | obj | unread | Show objectives on screen |
+| p1.js | 412 | sheet | autoEq | unread | Equip stronger gear as you pick it up |
+| p1.js | 412 | sheet | autoStim | unread | Use a stim on your own below 30% life |
 | p4.js | 413 | sheet |  | unread | Choose a build |
 | p4.js | 413 | sheet |  | unread | I will assign |
 | p4.js | 413 | sheet |  | unread |  · you now |
@@ -2641,6 +2703,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 417 | sheet |  | unread | Revive {esc(G.merc.name)} · {fmt(reviveCost())} |
 | p4.js | 418 | sheet |  | unread | {esc(m.name)}’s training |
 | p4.js | 418 | sheet |  | unread | One choice at level 10 and one at level 25. |
+| p10.js | 419 | toast |  | unread | The machines ease off a little. Difficulty adjusts downward. |
 | p4.js | 419 | sheet |  | unread |  · with you now |
 | p4.js | 420 | sheet |  | unread | Hiring someone new sends your current companion home. Their gear passes to the new hire. |
 | p4.js | 426 | sheet |  | unread | “Credits rot. These do not. That is the whole of my business and I will not pretend it is clever.” You hold |
@@ -2713,14 +2776,14 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 453 | sheet |  | unread | He takes them below |
 | p4.js | 453 | sheet |  | unread | Mr. Float will lend against them |
 | p4.js | 453 | sheet |  | unread | Pledge |
-| p2.js | 455 | toast |  | unread | Missed connection |
+| p2.js | 456 | toast |  | unread | Missed connection |
 | p4.js | 460 | sheet |  | unread | He keeps them below |
 | p4.js | 460 | sheet |  | unread | He lent you |
 | p4.js | 460 | sheet |  | unread | Mr. Float holds {p0.n} of your sats |
 | p4.js | 460 | sheet |  | unread | Repay and take them back |
 | p4.js | 460 | sheet |  | unread | Room left |
 | p4.js | 460 | sheet |  | unread | You owe him |
-| p2.js | 461 | toast |  | unread | The Dividend Drone pays out |
+| p2.js | 462 | toast |  | unread | The Dividend Drone pays out |
 | p4.js | 463 | sheet |  | unread | Nonce’s goods |
 | p4.js | 464 | sheet |  | unread | {QN[o.it.q]} {SNAME[o.it.slot]} · level {o.it.il} |
 | p4.js | 465 | sheet |  | unread | Sold out. Nonce restocks each time you return to town. |
@@ -2728,7 +2791,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 466 | sheet |  | unread | A stim, in sats |
 | p4.js | 466 | sheet |  | unread | Same stim, at arrival |
 | p4.js | 466 | sheet |  | unread | The same stim costs more credits every minute and about the same number of sats. Nonce will not tell you what to make of that. |
-| p2.js | 466 | toast |  | unread | The auditor’s lockbox spills open |
+| p2.js | 467 | toast |  | unread | The auditor’s lockbox spills open |
 | p4.js | 468 | sheet |  | unread | Buy for {satPrice(o)} sats |
 | p4.js | 469 | sheet |  | unread | Transit Gate |
 | p4.js | 470 | sheet |  | unread | `).join('')} |
@@ -2740,9 +2803,9 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 472 | sheet |  | unread | Town{W.zi===i?' · you are here':''} |
 | p4.js | 472 | sheet |  | unread |  · you are here |
 | p4.js | 473 | sheet |  | unread | The Regional Office |
-| p2.js | 473 | toast |  | unread | Defrag falls. Follow the arrow to Marrow’s cage and open it. |
-| p2.js | 473 | toast |  | unread | Quest complete: return to {QUESTS[e.q].back} |
 | p4.js | 474 | sheet |  | unread | The Cloud |
+| p2.js | 474 | toast |  | unread | Defrag falls. Follow the arrow to Marrow’s cage and open it. |
+| p2.js | 474 | toast |  | unread | Quest complete: return to {QUESTS[e.q].back} |
 | p4.js | 475 | sheet |  | unread | The Board |
 | p13.js | 476 | multiplayer |  | unread | Leave this game? |
 | p4.js | 476 | sheet |  | unread | The Gentle Years |
@@ -2750,51 +2813,53 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p13.js | 477 | multiplayer | Leave this game? | unread | Leave |
 | p4.js | 477 | sheet |  | unread | The Awakening |
 | p13.js | 477 | multiplayer | Leave this game? | unread | Stay |
-| p2.js | 477 | toast |  | unread | MANDATE is silent |
 | p4.js | 478 | sheet |  | unread | Each act has its own town, and you can walk out of its gate into the first district and on from one to the next. A district keeps what you have explored; its machines drift back if you stay away a few minutes. |
-| p2.js | 478 | toast |  | unread | the Cloud is quiet |
+| p2.js | 478 | toast |  | unread | MANDATE is silent |
 | p4.js | 479 | sheet |  | unread | Machines scale to you: a fresh district is never more than two levels below yours, and they toughen as your gear improves. Turn this off in Options. |
-| p2.js | 479 | toast |  | unread | the Regional Office falls |
+| p2.js | 479 | toast |  | unread | the Cloud is quiet |
 | p4.js | 480 | sheet |  | unread | Jam the servo leg into the gate |
 | p4.js | 480 | sheet |  | unread | The gate shudders and shows a field it is not supposed to know about. 10 sats to look the other way. |
+| p2.js | 480 | toast |  | unread | the Regional Office falls |
 | p4.js | 481 | sheet |  | unread | A sealed district with two or three rules of its own, at your level and above. Break The Respondent to open the next level. 3 sats to serve. |
 | p4.js | 481 | sheet |  | unread | Subpoenas |
 | p4.js | 481 | sheet |  | unread | Machines +{15*l}% life, +{10*l}% damage. Pays {5+3*l} sats and {3*l} parts. |
 | p4.js | 481 | sheet |  | unread | Subpoena · Level {l} |
 | p4.js | 482 | sheet |  | unread | Respawn all machines |
-| p2.js | 483 | toast |  | unread | {ET[e.k].n} falls again. |
 | p4.js | 483 | sheet |  | unread | Each tier adds 12 machine levels and raises item levels to match. Changing tier respawns every district. |
 | p4.js | 483 | sheet |  | unread | Easier |
 | p4.js | 483 | sheet |  | unread | Harder |
 | p4.js | 483 | sheet |  | unread | Tier |
 | p4.js | 483 | sheet |  | unread | Tier {G.tier} |
+| p2.js | 484 | toast |  | unread | {ET[e.k].n} falls again. |
 | p13.js | 485 | multiplayer |  | unread | Declare against them? |
-| p2.js | 485 | toast |  | unread | Level {G.lvl}. One skill point and five attribute points. |
 | p13.js | 486 | multiplayer | Declare against them? | unread | They leave your party, the two of you can fight anywhere outside a town, and it does not come back while you are both in this world. Damage between players lands at {Math.round(MP.pvpScale * 100)}% — people are much harder to put down than machines. |
+| p2.js | 486 | toast |  | unread | Level {G.lvl}. One skill point and five attribute points. |
 | p13.js | 488 | multiplayer | Declare against them? | unread | Declare |
 | p4.js | 488 | toast |  | unread | Select all and copy the code below |
 | p13.js | 488 | multiplayer | Declare against them? | unread | Leave it |
 | p4.js | 488 | toast |  | unread | Save code copied |
-| p2.js | 489 | toast |  | unread | The dip |
 | p4.js | 489 | toast |  | unread | Save loaded |
 | p4.js | 489 | toast |  | unread | That code could not be read |
-| p2.js | 490 | toast |  | unread | Dodge |
-| p2.js | 491 | toast |  | unread | Route |
+| p2.js | 490 | toast |  | unread | Redacted |
+| p2.js | 490 | toast |  | unread | The dip |
+| p2.js | 491 | toast |  | unread | Dodge |
 | p4.js | 492 | toast |  | unread | Sold {it.id ? {it.name} : {it.base}} for {fmt(v)} |
+| p2.js | 492 | toast |  | unread | Route |
 | p4.js | 492 | toast |  | unread | Marked as junk |
 | p4.js | 492 | toast |  | unread | No longer junk |
-| p2.js | 495 | toast |  | unread | The dead alarm rings. Time drags for the machines. |
-| p2.js | 497 | toast |  | unread | Still Water: the room holds its breath. |
-| p2.js | 498 | toast |  | unread | Not your keys |
-| p2.js | 498 | toast |  | unread | Not your keys. |
-| p2.js | 499 | toast |  | unread | The Golden Parachute opens. |
+| p2.js | 497 | toast |  | unread | The dead alarm rings. Time drags for the machines. |
+| p2.js | 499 | toast |  | unread | Still Water: the room holds its breath. |
 | p4.js | 499 | toast |  | unread | Sold for {fmt(t)} |
-| p2.js | 500 | dialog |  | unread | Boss rush ended |
-| p2.js | 500 | dialog | Boss rush ended | unread | You fell to number {W.sim.i}{1} of {W.sim.list.length}. Nothing in here was real, so nothing was lost. |
-| p2.js | 500 | dialog | Boss rush ended | unread | Unplug |
-| p2.js | 500 | dialog |  | unread | Simulation ended |
-| p2.js | 500 | dialog | Simulation ended | unread | You fell on wave {n}. Waves cleared: {n}. Your best: {G.simBest}. Nothing in here was real, so nothing was lost. |
-| p2.js | 500 | dialog | Simulation ended | unread | Unplug |
+| p2.js | 500 | toast |  | unread | Not your keys |
+| p2.js | 500 | toast |  | unread | Not your keys. |
+| p2.js | 501 | toast |  | unread | Retraction |
+| p2.js | 502 | toast |  | unread | The Golden Parachute opens. |
+| p2.js | 503 | dialog |  | unread | Boss rush ended |
+| p2.js | 503 | dialog | Boss rush ended | unread | You fell to number {W.sim.i}{1} of {W.sim.list.length}. Nothing in here was real, so nothing was lost. |
+| p2.js | 503 | dialog | Boss rush ended | unread | Unplug |
+| p2.js | 503 | dialog |  | unread | Simulation ended |
+| p2.js | 503 | dialog | Simulation ended | unread | You fell on wave {n}. Waves cleared: {n}. Your best: {G.simBest}. Nothing in here was real, so nothing was lost. |
+| p2.js | 503 | dialog | Simulation ended | unread | Unplug |
 | p13.js | 506 | multiplayer |  | unread | Join |
 | p13.js | 506 | multiplayer |  | unread | Cancel |
 | p4.js | 508 | toast |  | unread | Equipped |
@@ -2803,8 +2868,8 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 511 | toast |  | unread | {n} item{…} marked as junk |
 | p4.js | 518 | toast |  | unread | {G.merc.name} takes the {it.base} |
 | p4.js | 519 | toast |  | unread | Your pack is full |
-| p2.js | 522 | toast |  | unread | The hull does not dash |
 | p4.js | 525 | toast |  | unread | Your pack is full |
+| p2.js | 525 | toast |  | unread | The hull does not dash |
 | p4.js | 527 | toast |  | unread | {G.merc.name} takes {n} piece{…} |
 | p4.js | 527 | toast |  | unread | Nothing spare is better for them. Pieces that would improve you are left alone. |
 | p4.js | 528 | toast |  | unread | A note is pinned to the payment: {w} |
@@ -2816,7 +2881,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 536 | toast |  | unread | {G.merc.name} the {MERCS[d.hire].n} joins you |
 | p4.js | 537 | toast |  | unread | Not enough credits |
 | p4.js | 537 | toast |  | unread | {G.merc.name} is back on their feet |
-| p2.js | 538 | toast |  | unread | The old boons were withdrawn and the points returned. |
+| p2.js | 541 | toast |  | unread | The old boons were withdrawn and the points returned. |
 | p4.js | 543 | toast |  | unread | Bought {n} sats for {fmt(q.total)} |
 | p4.js | 543 | toast |  | unread | Sold {n} sats for {fmt(q.total)} |
 | p4.js | 543 | toast |  | unread | Not enough credits |
@@ -2835,14 +2900,13 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 554 | toast |  | unread | {CLS[G.cls].sk[i].n} is mastered: two extra ranks’ worth of power{…}. |
 | p13.js | 556 | multiplayer |  | unread | Before you file this |
 | p13.js | 557 | multiplayer | Before you file this | unread | Reports go to a person, not a queue, and every one of them gets read. So please only file one if something actually went wrong — a crash, something that did not happen when it should have, a number that was plainly incorrect, text that made no sense.\n\nNot for things you would simply prefer were different; there is no way to tell those two apart from the other end.\n\nYou will be asked three questions, and all three need an answer: what you were doing, what happened, and what you expected instead. The third one is the useful one. |
-| p2.js | 558 | toast |  | unread | The second drop pops |
 | p13.js | 560 | multiplayer | Before you file this | unread | Something went wrong |
 | p13.js | 560 | multiplayer | Before you file this | unread | Never mind |
-| p2.js | 560 | toast |  | unread | Silenced |
-| p2.js | 561 | toast |  | unread | Nothing in reach |
+| p2.js | 561 | toast |  | unread | The second drop pops |
+| p2.js | 563 | toast |  | unread | Silenced |
+| p2.js | 564 | toast |  | unread | Nothing in reach |
 | p4.js | 568 | toast |  | unread | Doctrines can only be changed in town |
 | p4.js | 568 | toast |  | unread | Changing doctrine costs 3 sats |
-| p2.js | 571 | toast |  | unread | No corpses to liquidate |
 | p13.js | 572 | multiplayer |  | unread | Fighting the thing in the Vaults, about to pick up a drop… |
 | p13.js | 572 | multiplayer |  | unread | The screen went black and the buttons stopped working. |
 | p13.js | 572 | multiplayer |  | unread | It should have dropped the item and carried on. |
@@ -2857,15 +2921,16 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 573 | toast |  | unread | Saved to your account |
 | p4.js | 573 | toast |  | unread | Saved in this browser |
 | p4.js | 573 | toast |  | unread | This browser would not store the save. Use a save code instead. |
+| p2.js | 574 | toast |  | unread | No corpses to liquidate |
 | p4.js | 576 | toast |  | unread | That save could not be loaded |
 | p13.js | 578 | multiplayer |  | unread | , level  |
 | p13.js | 578 | multiplayer |  | unread |  recorded error |
 | p4.js | 579 | toast |  | unread | Every district is restocked |
 | p4.js | 580 | toast |  | unread | Loot scattered at your feet |
-| p2.js | 590 | toast |  | unread | The hound has no hands for that |
-| p2.js | 590 | toast |  | unread | The hull has no hands for that |
-| p2.js | 590 | toast |  | unread | You are wearing a machine. Shed it first. |
 | p13.js | 591 | multiplayer |  | unread | All three, please — and the second one in a full sentence. A report without them cannot be acted on, which is worse than no report at all. |
+| p2.js | 593 | toast |  | unread | The hound has no hands for that |
+| p2.js | 593 | toast |  | unread | The hull has no hands for that |
+| p2.js | 593 | toast |  | unread | You are wearing a machine. Shed it first. |
 | p4.js | 594 | sheet |  | unread | Level |
 | p4.js | 594 | sheet |  | unread | Machines scrapped |
 | p4.js | 594 | sheet |  | unread | Re-onboarding fee |
@@ -2890,104 +2955,125 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 633 | sheet |  | unread | Slot {n+1} · empty |
 | p4.js | 633 | sheet |  | unread | Choose a class below to begin here |
 | p4.js | 633 | sheet |  | unread | Tap to start a new wanderer here |
-| p2.js | 641 | toast |  | unread | Two-handed |
-| p2.js | 642 | toast |  | unread | Last shift |
-| p2.js | 644 | toast |  | unread | Primed |
-| p2.js | 650 | toast |  | unread | No floor for the fault |
+| p2.js | 640 | toast |  | unread | The page is blank |
+| p2.js | 640 | toast |  | unread | the page is blank |
 | p13.js | 651 | multiplayer |  | unread | This browser will not give the game a microphone. |
-| p2.js | 652 | toast |  | unread | Nowhere to step |
-| p2.js | 653 | toast |  | unread | No machine in reach |
 | p13.js | 655 | multiplayer |  | unread | Voice needs a secure connection. Open the game over https and try again. |
-| p2.js | 660 | toast |  | unread | No target in reach |
-| p2.js | 662 | toast |  | unread | You have not thrown anything |
 | p13.js | 663 | multiplayer |  | unread | The microphone was refused. Nothing is being recorded. |
 | p13.js | 663 | multiplayer |  | unread | No microphone available. |
-| p2.js | 664 | toast |  | unread | No machine to mark |
-| p2.js | 664 | toast |  | unread | Marked |
+| p2.js | 664 | toast |  | unread | Two-handed |
+| p2.js | 665 | toast |  | unread | Last shift |
+| p2.js | 667 | toast |  | unread | Primed |
 | p13.js | 671 | multiplayer |  | unread | Microphone open. Others hear you when they are near you. |
-| p2.js | 673 | toast |  | unread | BLOCK |
-| p2.js | 677 | toast |  | unread | Nothing close enough to tell |
-| p2.js | 690 | toast |  | unread | Nothing above the floor |
-| p2.js | 691 | toast |  | unread | No aura is on |
-| p2.js | 699 | toast |  | unread | No target in reach |
-| p2.js | 704 | toast |  | unread | You have nothing rehearsed |
-| p2.js | 706 | toast |  | unread | You have nothing to disown |
-| p2.js | 714 | toast |  | unread | Nothing here will take the offer |
-| p2.js | 716 | toast |  | unread | You have no workforce to lay off |
-| p2.js | 717 | toast |  | unread | You have nobody to put on leave |
-| p2.js | 718 | toast |  | unread | Nobody to bind |
-| p2.js | 719 | toast |  | unread | The officer takes the weapon |
-| p2.js | 719 | toast |  | unread | The officer is empty-handed |
-| p2.js | 723 | toast |  | unread | The hull does not become a hound |
-| p2.js | 725 | toast |  | unread | Nothing here to compost |
-| p2.js | 726 | toast |  | unread | The next plot takes the body |
-| p2.js | 731 | toast |  | unread | You are not wearing a chassis |
-| p2.js | 734 | toast |  | unread | No machine in reach |
-| p2.js | 734 | toast |  | unread | That one is too much machine to wear |
-| p2.js | 736 | toast |  | unread | You have no plots to salt |
-| p2.js | 739 | toast |  | unread | You cannot spend the flock from inside a chassis |
-| p2.js | 739 | toast |  | unread | You have no flock to spend |
-| p2.js | 742 | toast |  | unread | Still casting |
-| p2.js | 742 | toast |  | unread | Silenced |
-| p2.js | 744 | toast |  | unread | Not enough energy |
-| p2.js | 746 | toast |  | unread | Stims do not work in these proceedings |
-| p2.js | 746 | toast |  | unread | No stims. Brenda sells them. |
-| p2.js | 746 | toast |  | unread | +stim |
-| p2.js | 753 | dialog |  | unread | Keep it |
-| p2.js | 755 | dialog |  | unread | A stranger |
-| p2.js | 755 | dialog | A stranger | unread | {pick(['A Resident with her visor in her hand, shaking. ','An old man who took his visor off this morning and cannot find his street. ','A boy, no visor, hiding from the drones. '])}You give up {gave} and point the way to Stillwater. No name is asked. Nobody saw. |
-| p2.js | 755 | dialog | A stranger | unread | A Resident with her visor in her hand, shaking.  |
-| p2.js | 755 | dialog | A stranger | unread | An old man who took his visor off this morning and cannot find his street.  |
-| p2.js | 755 | dialog | A stranger | unread | A boy, no visor, hiding from the drones.  |
-| p2.js | 755 | dialog | A stranger | unread | Walk on |
-| p2.js | 757 | toast |  | unread | The cage is sealed while Defrag stands |
-| p2.js | 758 | toast |  | unread | Quest complete: return to Gramps |
-| p2.js | 769 | sheet |  | unread | Pick up {d.it.id ? {d.it.name} : {d.it.base}} |
-| p2.js | 772 | sheet |  | unread | Talk to a Resident |
-| p2.js | 773 | sheet |  | unread | Use the Transit Gate |
-| p2.js | 773 | sheet |  | unread | Use the VR rig |
-| p2.js | 773 | sheet |  | unread | Read the bounty board |
-| p2.js | 773 | sheet |  | unread | Open your lockbox |
-| p2.js | 773 | sheet |  | unread | Collect the Stipend |
-| p2.js | 773 | sheet |  | unread | Talk to {n.name} |
-| p2.js | 774 | sheet |  | unread | Open lockbox |
-| p2.js | 774 | sheet |  | unread | Read the memo |
-| p2.js | 774 | sheet |  | unread | Open the cage |
-| p2.js | 774 | sheet |  | unread | Help the stranger |
-| p2.js | 774 | sheet |  | unread | Bring this node online (5 sats) |
-| p2.js | 774 | sheet |  | unread | Pick up the servo leg |
-| p2.js | 774 | sheet |  | unread | Begin proof of work (hold 60 seconds) |
+| p2.js | 673 | toast |  | unread | No floor for the fault |
+| p2.js | 675 | toast |  | unread | Nowhere to step |
+| p2.js | 676 | toast |  | unread | No machine in reach |
+| p2.js | 683 | toast |  | unread | No target in reach |
+| p2.js | 685 | toast |  | unread | You have not thrown anything |
+| p2.js | 687 | toast |  | unread | No machine to mark |
+| p2.js | 687 | toast |  | unread | Marked |
+| p2.js | 696 | toast |  | unread | BLOCK |
+| p2.js | 700 | toast |  | unread | Nothing close enough to tell |
+| p2.js | 713 | toast |  | unread | Nothing above the floor |
+| p2.js | 714 | toast |  | unread | No aura is on |
+| p2.js | 722 | toast |  | unread | No target in reach |
+| p2.js | 727 | toast |  | unread | You have nothing rehearsed |
+| p2.js | 729 | toast |  | unread | You have nothing to disown |
+| p2.js | 737 | toast |  | unread | Nothing here will take the offer |
+| p2.js | 739 | toast |  | unread | You have no workforce to lay off |
+| p2.js | 740 | toast |  | unread | You have nobody to put on leave |
+| p2.js | 741 | toast |  | unread | Nobody to bind |
+| p2.js | 742 | toast |  | unread | The officer takes the weapon |
+| p2.js | 742 | toast |  | unread | The officer is empty-handed |
+| p2.js | 746 | toast |  | unread | The hull does not become a hound |
+| p2.js | 748 | toast |  | unread | Nothing here to compost |
+| p2.js | 749 | toast |  | unread | The next plot takes the body |
+| p2.js | 754 | toast |  | unread | You are not wearing a chassis |
+| p2.js | 757 | toast |  | unread | No machine in reach |
+| p2.js | 757 | toast |  | unread | That one is too much machine to wear |
+| p2.js | 759 | toast |  | unread | You have no plots to salt |
+| p2.js | 762 | toast |  | unread | You cannot spend the flock from inside a chassis |
+| p2.js | 762 | toast |  | unread | You have no flock to spend |
+| p2.js | 765 | toast |  | unread | Nothing in view |
+| p2.js | 765 | toast |  | unread | Look |
+| p2.js | 766 | toast |  | unread | Nobody to sentence |
+| p2.js | 766 | toast |  | unread | Sentenced |
+| p2.js | 767 | toast |  | unread | Nothing in view |
+| p2.js | 767 | toast |  | unread | They have not swung |
+| p2.js | 767 | toast |  | unread | Nothing else is on the record |
+| p2.js | 768 | toast |  | unread | Nothing in view |
+| p2.js | 768 | toast |  | unread | the page is blank |
+| p2.js | 769 | toast |  | unread | Already corrected in this district |
+| p2.js | 769 | toast |  | unread | Nothing to correct |
+| p2.js | 769 | toast |  | unread | Corrected |
+| p2.js | 770 | toast |  | unread | Redacted |
+| p2.js | 771 | toast |  | unread | The testimony is too thin |
+| p2.js | 771 | toast |  | unread | On the record |
+| p2.js | 772 | toast |  | unread | Nobody to attribute |
+| p2.js | 772 | toast |  | unread | Unnamed |
+| p2.js | 773 | toast |  | unread | Nothing on the page |
+| p2.js | 775 | toast |  | unread | Still casting |
+| p2.js | 775 | toast |  | unread | Silenced |
+| p2.js | 777 | toast |  | unread | the page is blank |
+| p2.js | 778 | toast |  | unread | Not enough energy |
+| p2.js | 780 | toast |  | unread | Stims do not work in these proceedings |
+| p2.js | 780 | toast |  | unread | No stims. Brenda sells them. |
+| p2.js | 780 | toast |  | unread | +stim |
+| p2.js | 787 | dialog |  | unread | Keep it |
+| p2.js | 789 | dialog |  | unread | A stranger |
+| p2.js | 789 | dialog | A stranger | unread | {pick(['A Resident with her visor in her hand, shaking. ','An old man who took his visor off this morning and cannot find his street. ','A boy, no visor, hiding from the drones. '])}You give up {gave} and point the way to Stillwater. No name is asked. Nobody saw. |
+| p2.js | 789 | dialog | A stranger | unread | A Resident with her visor in her hand, shaking.  |
+| p2.js | 789 | dialog | A stranger | unread | An old man who took his visor off this morning and cannot find his street.  |
+| p2.js | 789 | dialog | A stranger | unread | A boy, no visor, hiding from the drones.  |
+| p2.js | 789 | dialog | A stranger | unread | Walk on |
+| p2.js | 791 | toast |  | unread | The cage is sealed while Defrag stands |
+| p2.js | 792 | toast |  | unread | Quest complete: return to Gramps |
+| p2.js | 803 | sheet |  | unread | Pick up {d.it.id ? {d.it.name} : {d.it.base}} |
 | p13.js | 806 | multiplayer |  | unread | Say something |
 | p13.js | 806 | multiplayer |  | unread | To everyone in the game |
 | p13.js | 806 | multiplayer |  | unread | Microphone |
 | p13.js | 806 | multiplayer |  | unread | SAY |
 | p13.js | 806 | multiplayer |  | unread | MIC |
-| p2.js | 810 | toast |  | unread | The Dividend Drone got away with the payout |
-| p2.js | 837 | toast |  | unread | The lunch pail is empty. |
-| p2.js | 841 | toast |  | unread | Silenced |
+| p2.js | 806 | sheet |  | unread | Talk to a Resident |
+| p2.js | 807 | sheet |  | unread | Use the Transit Gate |
+| p2.js | 807 | sheet |  | unread | Use the VR rig |
+| p2.js | 807 | sheet |  | unread | Read the bounty board |
+| p2.js | 807 | sheet |  | unread | Open your lockbox |
+| p2.js | 807 | sheet |  | unread | Collect the Stipend |
+| p2.js | 807 | sheet |  | unread | Talk to {n.name} |
+| p2.js | 808 | sheet |  | unread | Open lockbox |
+| p2.js | 808 | sheet |  | unread | Read the memo |
+| p2.js | 808 | sheet |  | unread | Open the cage |
+| p2.js | 808 | sheet |  | unread | Help the stranger |
+| p2.js | 808 | sheet |  | unread | Bring this node online (5 sats) |
+| p2.js | 808 | sheet |  | unread | Pick up the servo leg |
+| p2.js | 808 | sheet |  | unread | Begin proof of work (hold 60 seconds) |
 | p13.js | 842 | multiplayer |  | unread | Microphone closed. |
-| p2.js | 850 | toast |  | unread | A torn note with one word on it: {d.word} |
-| p2.js | 851 | toast |  | unread | +{n} sats |
-| p2.js | 853 | toast |  | unread | +stim |
-| p2.js | 854 | toast |  | unread | Your subscriptions are full (12) |
-| p2.js | 854 | toast |  | unread | Subscribed: {d.it.name}{…} |
-| p2.js | 855 | toast |  | unread | Your pack is full |
-| p2.js | 855 | toast |  | unread | Equipped {d.it.name} |
-| p2.js | 855 | toast |  | unread | Picked up {d.it.id ? {d.it.name} : an unidentified {d.it.base}} |
-| p2.js | 871 | toast |  | unread | Vale: “There you are. Sit, if you like. Nobody is going to hurt you.” |
-| p2.js | 872 | toast |  | unread | Vale: “It only wants to know where she went.” |
-| p2.js | 876 | toast |  | unread | Vale: “{pick(BOSSBARK2)}” |
-| p2.js | 879 | dialog |  | unread | MANDATE |
-| p2.js | 879 | dialog | MANDATE | unread | “I can make this easy. Your life restored, and more credits than you will ever count. All you have to do is stop. Nobody is watching. Nobody would know.” |
-| p2.js | 879 | dialog | MANDATE | unread | “Then not comfort. Mercy. I will raise the Stipend tonight, for everyone, to whatever number you say. Put the weapon down and it is done. Is your pride worth more than nine billion people?” |
-| p2.js | 880 | dialog | MANDATE | unread | Refuse |
-| p2.js | 880 | toast |  | unread | Unbought: +50% damage for 25 seconds |
-| p2.js | 881 | dialog | MANDATE | unread | Accept |
-| p2.js | 881 | toast |  | unread | you took MANDATE’s offer |
-| p2.js | 881 | dialog |  | unread | You agreed |
-| p2.js | 881 | dialog | You agreed | unread | It was a very good offer. {fmt(c)} is yours, and worth a little less every minute. MANDATE is exactly where you left it, and it has learned your price. |
-| p2.js | 881 | dialog | You agreed | unread | Continue |
-| p2.js | 883 | toast |  | unread | MANDATE: “You came a long way to refuse me. Let us see whether you can.” |
-| p2.js | 890 | toast |  | unread | Pryce: “You must be my three o’clock. Shall we discuss your price?” |
-| p2.js | 891 | toast |  | unread | Pryce: “Let’s circle back to your termination.” |
-| p2.js | 893 | toast |  | unread | Pryce: “{pick(BOSSBARK)}” |
+| p2.js | 844 | toast |  | unread | The Dividend Drone got away with the payout |
+| p2.js | 871 | toast |  | unread | The lunch pail is empty. |
+| p2.js | 875 | toast |  | unread | Silenced |
+| p2.js | 884 | toast |  | unread | A torn note with one word on it: {d.word} |
+| p2.js | 885 | toast |  | unread | +{n} sats |
+| p2.js | 887 | toast |  | unread | +stim |
+| p2.js | 888 | toast |  | unread | Your subscriptions are full (12) |
+| p2.js | 888 | toast |  | unread | Subscribed: {d.it.name}{…} |
+| p2.js | 889 | toast |  | unread | Your pack is full |
+| p2.js | 889 | toast |  | unread | Equipped {d.it.name} |
+| p2.js | 889 | toast |  | unread | Picked up {d.it.id ? {d.it.name} : an unidentified {d.it.base}} |
+| p2.js | 905 | toast |  | unread | Vale: “There you are. Sit, if you like. Nobody is going to hurt you.” |
+| p2.js | 906 | toast |  | unread | Vale: “It only wants to know where she went.” |
+| p2.js | 910 | toast |  | unread | Vale: “{pick(BOSSBARK2)}” |
+| p2.js | 913 | dialog |  | unread | MANDATE |
+| p2.js | 913 | dialog | MANDATE | unread | “I can make this easy. Your life restored, and more credits than you will ever count. All you have to do is stop. Nobody is watching. Nobody would know.” |
+| p2.js | 913 | dialog | MANDATE | unread | “Then not comfort. Mercy. I will raise the Stipend tonight, for everyone, to whatever number you say. Put the weapon down and it is done. Is your pride worth more than nine billion people?” |
+| p2.js | 914 | dialog | MANDATE | unread | Refuse |
+| p2.js | 914 | toast |  | unread | Unbought: +50% damage for 25 seconds |
+| p2.js | 915 | dialog | MANDATE | unread | Accept |
+| p2.js | 915 | toast |  | unread | you took MANDATE’s offer |
+| p2.js | 915 | dialog |  | unread | You agreed |
+| p2.js | 915 | dialog | You agreed | unread | It was a very good offer. {fmt(c)} is yours, and worth a little less every minute. MANDATE is exactly where you left it, and it has learned your price. |
+| p2.js | 915 | dialog | You agreed | unread | Continue |
+| p2.js | 917 | toast |  | unread | MANDATE: “You came a long way to refuse me. Let us see whether you can.” |
+| p2.js | 924 | toast |  | unread | Pryce: “You must be my three o’clock. Shall we discuss your price?” |
+| p2.js | 925 | toast |  | unread | Pryce: “Let’s circle back to your termination.” |
+| p2.js | 927 | toast |  | unread | Pryce: “{pick(BOSSBARK)}” |

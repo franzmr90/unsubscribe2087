@@ -212,9 +212,9 @@ function paintGlyphs(root){if(!root||!root.querySelectorAll)return;root.querySel
 let hudC={};
 function setT(id,v){if(hudC[id]!==v){hudC[id]=v;$(id).textContent=v}}
 function hud(){objHud();if(P&&P.dg)setT('dgn',P.dg.n);
-  $('hpF').style.height=clamp(G.hp/S.maxHp*100,0,100)+'%';$('enF').style.height=clamp(G.en/S.maxEn*100,0,100)+'%';$('xpb').style.width=(G.lvl>=lvlCap()?100:G.xp/xpNext(G.lvl)*100)+'%';
+  $('hpF').style.height=clamp(G.hp/S.maxHp*100,0,100)+'%';$('enF').style.height=clamp(G.en/S.maxEn*100,0,100)+'%';const rec=$('rec');if(rec){if(G.cls==='witness'){rec.hidden=false;const rf=$('recF');if(rf)rf.style.width=clamp(G.rec||0,0,100)+'%'}else rec.hidden=true}$('xpb').style.width=(G.lvl>=lvlCap()?100:G.xp/xpNext(G.lvl)*100)+'%';
   setT('hpT',OPT.orbNums?Math.ceil(G.hp):'');setT('enT',OPT.orbNums?Math.floor(G.en):'');setT('cr',fmt(G.credits)+(G.sats?' · '+G.sats+' sats':''));setT('cpi','prices ×'+(G.cpi<100?G.cpi.toFixed(2):fmt(G.cpi).slice(1)));setT('potn',G.stims);
-  sbtn.forEach((b,i)=>{const k=G.slots[i];if(k<0||k===undefined||!G.sk[k]){b.classList.add('off');return}const s=CLS[G.cls].sk[k];b.classList.toggle('off',!!hsBlocked(k));b.classList.toggle('low',!hsBlocked(k)&&G.en<s.cost*(S.sp.hoodie?.75:1));b.querySelector('em').style.transform='scaleY('+clamp(P.cd[k]/(s.cd*(1-S.cdr)),0,1)+')'});
+  sbtn.forEach((b,i)=>{const k=G.slots[i];if(k<0||k===undefined||!G.sk[k]){b.classList.add('off');return}const s=CLS[G.cls].sk[k];const blank=!!witBlock(k);b.classList.toggle('off',!!hsBlocked(k)||blank);b.classList.toggle('low',!hsBlocked(k)&&!blank&&G.en<s.cost*(S.sp.hoodie?.75:1));b.querySelector('em').style.transform='scaleY('+clamp(P.cd[k]/(s.cd*(1-S.cdr)),0,1)+')'});
   $('bMenu').classList.toggle('pip',G.sp>0||G.ap>0);$('bRecall').hidden=W.z.town;$('bMap').hidden=W.z.town;
   const sw=$('bSwap');if(SWAP&&(SWAP.t-=1/60)>0&&G.bag.includes(SWAP.it)){sw.hidden=false;setT('bSwap','▲ '+SWAP.it.name+'\n'+dPct(SWAP.d)+' · tap')}else{sw.hidden=true;SWAP=null}
   const a=$('bAct');if(actTarget){a.hidden=false;setT('bAct',actTarget.label)}else a.hidden=true;

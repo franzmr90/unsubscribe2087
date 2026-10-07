@@ -118,6 +118,23 @@ Object.assign(CLS,{
    {n:'Salt the Earth',ab:'SALT',a:1,cost:18,cd:12,d:L=>`Every plot you have placed bursts for ${pct(.8+.12*L)} rust and is gone.`},
    {n:'Too Big for the Door',ab:'',a:0,d:L=>`Passive. The hull cannot dash. Armour in the hull rises the longer you have worn it: +${3*L} every 2 seconds, up to 8 times.`},
    {n:'Slaughter Weight',ab:'SLAUGH-\nTER',a:1,cost:20,cd:12,d:L=>`Each drone and the bull become a rust plot where they stand, ${pct(.28+.05*L)} every half second. The flock is spent. You cannot do this from a chassis.`}]},
+ witness:{n:'Witness',tag:'Kept notes when Unity told everyone to stop looking. Stillwater watches and does nothing. The Witness writes it down. The record is paper.',hp:80,hpL:11,melee:true,mult:.72,ivl:.68,spd:4.2,col:'#8d9aab',
+  sk:[
+   {n:'Look',ab:'LOOK',a:1,cost:4,cd:.5,d:()=>`Mark one machine with Testimony. The stack grows while you can see them and you are not casting. No Record cost.`},
+   {n:'The Sentence',ab:'THE\nSENTENCE',a:1,cost:8,cd:2,d:L=>`Spend Record, up to 25. Delay that machine's next attack by ${(0.4+.08*L).toFixed(2)}s at a full page. Less Record, a shorter delay.`},
+   {n:'Margin',ab:'',a:0,d:L=>`Passive. Below half life the Record fills ${20*L}% faster.`},
+   {n:'Cross-reference',ab:'CROSS-\nREF',a:1,cost:14,cd:6,d:L=>`Spend 20 Record. Copy that machine's last attack onto another machine you have Testimony on, at ${Math.round((.75+.05*L)*100)}% of the blow.`},
+   {n:'Pull the Thread',ab:'PULL THE\nTHREAD',a:1,cost:12,cd:4,d:L=>`Spend most of the Record. One Impact hit: each point of Testimony on the target is ${pct(3.5+.45*L)} of a weapon swing's weight, and your weapon is not consulted. No Testimony, no blow.`},
+   {n:'Filed',ab:'',a:0,d:L=>`Passive. Testimony does not decay for ${(2+.4*L).toFixed(1)}s after the machine leaves the screen.`},
+   {n:'Correction',ab:'CORRECT',a:1,cost:10,cd:8,d:()=>`Once per district. Spend the whole Record to restore the life you lost on the last hit, not a share of your maximum. An empty Record corrects nothing.`},
+   {n:'Redaction',ab:'REDACT',a:1,cost:12,cd:8,d:()=>`Spend 30 Record. For 2s machines can see you and cannot land a blow. They still path toward you. This is not stealth.`},
+   {n:'The Footnote',ab:'',a:0,d:L=>`Passive. The Record fills ${8*L}% faster. Maximum life is ${4*L}% lower.`},
+   {n:'On the Record',ab:'ON THE\nRECORD',a:1,cost:16,cd:10,d:L=>`Spend 25 Record. A machine with high Testimony takes ${12*L}% more damage from everyone for 8s, including people with no points in this class.`},
+   {n:'Unnamed Source',ab:'UNNAMED\nSOURCE',a:1,cost:14,cd:12,d:()=>`Spend 20 Record. Grant one ally, or your hireling, a single swing that deals Sound. Then it is gone. You never deal Sound.`},
+   {n:'Colophon',ab:'',a:0,d:L=>`Passive. Record above 80: you take ${Math.min(45,4*L)}% less damage. Record below 20: you take ${6*L}% more. The meter is the defence.`},
+   {n:'Publish',ab:'PUBLISH',a:1,cost:18,cd:14,d:L=>`Consume all Testimony on screen. Each second you watched is ${pct(1.6+.25*L)} Impact. The Record drops to 0.`},
+   {n:'Named Party',ab:'',a:0,d:L=>`Passive. Allies deal +${5*L}% damage to machines you have Testimony on. You do not.`},
+   {n:'Retraction',ab:'',a:0,d:()=>`Passive. If you would die with Record above 80, you drop to 1 life, the Record hits 0, and this cannot happen again for a long time. If you would die with an empty Record, you die.`}]},
  /* Unlocked by finishing the story. Deals Sound damage, which nothing resists, because
     that is the joke and also the build. */
  maxi:{n:'The Maximalist',tag:'A paladin, essentially. He has not had a new thought since 2017 and has never needed one. His auras are always on, and everything he does is Sound damage, which nothing in this world resists.',hp:104,hpL:14,melee:true,mult:1.2,ivl:.5,spd:4.2,col:'#f7931a',locked:'story',

@@ -78,6 +78,6 @@ function shapeShift(cls,roll){if(G.sats<SHIFT_COST){toast('You need '+SHIFT_COST
   if(roll){let g=2000;while(sp>0&&g--){const i=ri(0,14),row=Math.floor(i/3);if(G.sk[i]>=10||G.lvl<ROWREQ[row]||(row>0&&!G.sk[i-3])||(row===3&&!G.act2)||(row===4&&!G.act3))continue;G.sk[i]++;sp--}
     while(ap>0){const k=Math.random()<.45?(CLS[cls].melee?'vit':'mgt'):pick(['mgt','ref','vit','bnd']),n=Math.min(ap,ri(1,5));G.at[k]+=n;ap-=n}
     const act=G.sk.map((v,i)=>v&&CLS[cls].sk[i].a?i:-1).filter(i=>i>=0).sort((a,b)=>G.sk[b]-G.sk[a]);G.slots=[0,1,2].map(i=>act[i]===undefined?-1:act[i])}
-  G.sp=sp;G.ap=ap;G.form=null;G.formDt=null;G.formT=0;W.allies=[];P.buff=P.mech=P.stealth=P.crunch=0;P.castWait=0;calc();G.hp=S.maxHp;G.en=S.maxEn;setSkillButtons();save(true);sfx('unique');
+  G.sp=sp;G.ap=ap;G.form=null;G.formDt=null;G.formT=0;G.rec=0;W.allies=[];P.buff=P.mech=P.stealth=P.crunch=0;P.castWait=0;calc();G.hp=S.maxHp;G.en=S.maxEn;setSkillButtons();save(true);sfx('unique');
   $('sheet').hidden=true;$('pop').hidden=true;
   playScene([{art:'feed',text:'The rig hums. For a moment you are nobody at all. Then the simulation agrees with you about who you are.'}],()=>{mode='play';dlg('You are now a '+CLS[cls].n,BR?buildSummary(cls,BR)+' Everything can be changed from the menu.':roll?G.sk.reduce((a,b)=>a+b,0)+' points went into skills and the rest into attributes. Open the menu; Sister Null can return them.':'Spend '+G.sp+' skill points and '+G.ap+' attribute points from the menu.',[['Continue']])})}
