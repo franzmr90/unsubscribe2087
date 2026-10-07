@@ -42,7 +42,7 @@ const card=await p.evaluate(()=>{
   document.querySelector('#popIn .nm').scrollIntoView({block:'center'});
   return {t,lines};
 });
-check('the card prints twelve ranks of Iron Hide', /Now: \+96% armor and \+48% life/.test(card.t)&&/Mastered\. Two extra ranks\./.test(card.t)&&!/Now: \+80%/.test(card.t), card.t);
+check('the card prints twelve ranks of Iron Hide', /Now: Passive\. \+96% armor and \+48% life/.test(card.t)&&/Mastered\. Two extra ranks\./.test(card.t)&&!/\+80% armor/.test(card.t), card.t);
 
 const swing=await p.evaluate(()=>{
   __g.G.sk[0]=10;__g.drawSheet();
@@ -58,7 +58,7 @@ const nine=await p.evaluate(()=>{
   const t=document.getElementById('popIn').innerText;
   return {t,hp:__g.S.maxHp};
 });
-check('nine ranks show the tenth as mastered', /Now: \+72% armor and \+36% life/.test(nine.t)&&/Next point: \+96% armor and \+48% life/.test(nine.t)&&/The next rank masters it\./.test(nine.t), nine.t);
+check('nine ranks show the tenth as mastered', /Now: Passive\. \+72% armor and \+36% life/.test(nine.t)&&/Next point: Passive\. \+96% armor and \+48% life/.test(nine.t)&&/The next rank masters it\./.test(nine.t), nine.t);
 check('nine ranks are not mastered yet', nine.hp===Math.round(life.base*1.36), JSON.stringify({hp:nine.hp,base:life.base}));
 
 const five=await p.evaluate(()=>{
