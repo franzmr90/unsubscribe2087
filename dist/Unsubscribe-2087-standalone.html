@@ -2192,9 +2192,11 @@ function mktTrade(n,side){const m=mktInit();n=Math.floor(n);if(n<1)return null;
 /* ---------- posting a price instead: you do his job, he pays you for it ---------- */
 function mktPost(n,px,side){const m=mktInit();n=Math.floor(n);if(n<1||!(px>0))return false;
   if(m.ord.length>=4){toast('Nonce will hold four orders at a time');sfx('err');return false}
+  /* The held line prints whole credits, so a bid escrows that floor. The limit stays the price you named. */
+  const held=side==='buy'?Math.floor(n*px):n;
   if(side==='sell'){if(G.sats<n)return false;G.sats-=n}
-  else{const need=n*px;if(G.credits<need)return false;G.credits-=need}
-  m.ord.push({s:side,n,px,esc:side==='buy'?n*px:n});sfx('ui');
+  else{if(held<1||G.credits<held)return false;G.credits-=held}
+  m.ord.push({s:side,n,px,esc:held});sfx('ui');
   toast(side==='sell'?'Posted: '+n+' sats for sale at '+fmt(px)+' each':'Posted: a bid for '+n+' sats at '+fmt(px)+' each');return true}
 function mktCancel(i){const m=G.mkt,o=m.ord[i];if(!o)return;if(o.s==='buy')G.credits+=o.esc;else G.sats+=o.esc;
   m.ord.splice(i,1);sfx('ui');toast('Order withdrawn')}
@@ -2202,7 +2204,7 @@ function mktFills(){const m=G.mkt,mid=m.p;
   for(let i=m.ord.length-1;i>=0;i--){const o=m.ord[i];
     if(o.s==='buy'?mid>o.px:mid<o.px)continue;
     m.ord.splice(i,1);const gross=o.n*o.px,reb=gross*MKT_MAKER;
-    if(o.s==='buy'){G.sats+=o.n;mktBasisAdd(o.n,gross-reb);G.credits+=reb;addRep('btc',Math.ceil(o.n/6))}
+    if(o.s==='buy'){G.sats+=o.n;mktBasisAdd(o.n,o.esc-reb);G.credits+=reb;addRep('btc',Math.ceil(o.n/6))}
     else{G.credits+=gross+reb;mktBasisTake(o.n)}
     G.st.maker=(G.st.maker||0)+1;mktImpact(o.n*.5,o.s);sfx('coin');
     toast('Your order filled: '+o.n+' sats at '+fmt(o.px)+'. Maker rebate '+fmt(reb)+' — you were the one waiting.')}}
