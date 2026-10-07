@@ -119,6 +119,35 @@ The old window raised pressure under 1.6s and lowered it over 6s. Every geared n
 
 The window is now under 0.45s to rise and over 1.8s to fall. 0.45s is a delete. 1.8s is slower than any geared normal here, so a struggling kill can ease the district off. A Cathedral mech at 0.73s no longer counts as too fast.
 
+## After
+
+Same arena, same seeds. Bosses and the machines that were left alone reprint the same life totals (Pryce 14359, the Curator 314101, PROVIDENCE 548981). The seven edits moved.
+
+Opening frame, impact, seed 2:
+
+| Fight | Before | After | Pack of six |
+|---|---:|---:|---|
+| Vestibule proxy | 1.30× | 0.97× | 0.63s, full life |
+| Still Water censor | 1.57× | 0.99× | one frame, full life |
+| Mile wisher | 2.57× | 1.34× | one frame, full life |
+| Block orphan | 3.27× | 0.99× | one frame, full life |
+| Block validator | 1.69× | 1.35× | one frame, full life |
+| Blocks sniper | 1.41× | 0.99× | one frame, full life |
+| Room oracle | 2.84× | 1.36× | one frame, full life |
+
+A high roll still crosses the line, so some seeds still kill on the first frame. The third seed, which was the one that did not, now takes 0.57–1.10s on the orphan, the sniper and the oracle, where the oracle used to die in one frame on every seed. Wrecking Crew hits harder when several machines are in range, so a pack of six bodies that are each one hit still falls to that swing. The Cathedral mech pack is still the long one, 3.2s, life 88%.
+
+Pressure, ten kills with a companion, after the new window:
+
+| Target | Median TTK | Pressure |
+|---|---:|---|
+| Parcel drone | 0.03s | rises to 1 |
+| Cathedral mech | 0.73s | stays 0 |
+| Tomari caretaker | 0.63s | stays 0 |
+| Blocks sniper | 0.19s | rises to 1 |
+
+The mech and the caretaker no longer count as too fast. A sniper that still dies in a frame still does. A scripted row of ten kills at 3.0s each, starting from pressure 2, steps down to 1, which the old 6s bar could not do.
+
 ## Milestone 6
 
 Left as it is. `node server/test/games.js` passed 38, failed 0.
