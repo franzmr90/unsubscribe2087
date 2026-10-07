@@ -140,6 +140,8 @@ setInterval(() => { const t = now(); for (const [k, b] of buckets) if (b.until <
 function deleteUser(rec) {
   killSessions(rec.id);
   for (const id of docs.list(rec.id)) docs.del(rec.id, id);
+  /* Lazy so this file and social.js can load in either order. Purge is by uid. */
+  require('./social').purge(rec.id);
   users.del(rec.key);
 }
 
