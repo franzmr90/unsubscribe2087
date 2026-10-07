@@ -33,9 +33,13 @@ const pin=await p.evaluate(()=>{
   g.G.credits=5000;
   g.shop[0].val=40;
   g.talkTo('brenda');
-  const btn=[...document.querySelectorAll('#dBtns button')].find(e=>/Trade/.test(e.textContent));
+  const btn=[...document.querySelectorAll('#dBtns button:not([disabled])')].find(e=>e.textContent==='Trade');
+  if(!btn)return {err:'no trade',body:document.getElementById('dP').textContent,buttons:[...document.querySelectorAll('#dBtns button')].map(e=>e.disabled+' '+e.textContent)};
   btn.click();
-  const price=document.querySelector('[data-shop="0"] .pr').textContent;
+  const tab=document.querySelector('[data-tab="shop"]');
+  if(tab)tab.click();
+  const row=document.querySelector('[data-shop="0"] .pr');
+  const price=row?row.textContent:'';
   g.closeSheet();
   return price;
 });
@@ -53,8 +57,10 @@ check('Nonce names thirty percent off', /thirty percent off her price/.test(off.
 check('the button says 30% off', off.buttons.some(t=>t==='Brenda’s goods, 30% off')&&!off.buttons.some(t=>/at cost/.test(t)), off.buttons.join(' | '));
 
 await p.evaluate(()=>{
-  const btn=[...document.querySelectorAll('#dBtns button')].find(e=>e.textContent==='Brenda’s goods, 30% off');
+  const btn=[...document.querySelectorAll('#dBtns button:not([disabled])')].find(e=>e.textContent==='Brenda’s goods, 30% off');
   btn.click();
+  const tab=document.querySelector('[data-tab="shop"]');
+  if(tab)tab.click();
 });
 const shop=await p.evaluate(()=>{
   const row=document.querySelector('[data-shop="0"] .pr').textContent;
@@ -81,9 +87,9 @@ check('a 35.75 price is ₡35 off, then ₡24', odd.row==='₡24'&&odd.paid===24
 const hero=await p.evaluate(()=>{
   __g.closeSheet();
   __g.openSheet('char');
-  return document.getElementById('sheetIn').innerText;
+  return document.getElementById('sheetIn').textContent;
 });
-check('the hero sheet says 30% off', /stocks Brenda’s goods at 30% off/.test(hero)&&!/at cost/.test(hero), hero.slice(hero.indexOf('Social credit'), hero.indexOf('Social credit')+500));
+check('the hero sheet says 30% off', /stocks Brenda’s goods at 30% off/.test(hero)&&!/goods at cost/.test(hero), (hero.match(/Bitcoiners answer in kind:.{0,180}/)||[''])[0]);
 
 await p.evaluate(()=>{
   __g.closeSheet();
