@@ -475,7 +475,7 @@ const HANDLERS = {
     const pool = amount * PARTY_POOL;
     const sum = here.reduce((a, q) => a + Math.max(1, q.lvl), 0);
     for (const q of here) {
-      const share = Math.round(pool * (Math.max(1, q.lvl) / sum));
+      const share = Math.round(pool * (Math.max(1, q.lvl) / sum) * xpCurve(q.lvl, m.ml));
       if (share > 0) send(q, 'xp', { amount: share, from: p.name, self: q.uid === p.uid ? 1 : 0 });
     }
   },
@@ -552,6 +552,18 @@ const HANDLERS = {
 };
 
 const rates = new WeakMap();
+/* Within 5 levels the share is whole. It slides from 6 to 9 and floors at 5%
+   once the gap is 10. No separate penalty at level 70 or above: the later
+   decay table is not this game's. */
+function xpCurve(lvl, ml) {
+  const monster = +ml || 0;
+  if (!(monster > 0)) return 1;
+  const d = Math.abs((+lvl || 1) - monster);
+  if (d <= 5) return 1;
+  if (d >= 10) return 0.05;
+  return 1 - (d - 5) * 0.19;
+}
+
 function rate(p, key, max, win) {
   let m = rates.get(p);
   if (!m) { m = new Map(); rates.set(p, m); }

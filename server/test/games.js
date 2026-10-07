@@ -104,15 +104,15 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   ok('a second player makes monsters tougher again', ros.scale.hp === 7.5, JSON.stringify(ros.scale));
   ok('and worth more again', Math.abs(ros.scale.xp - 4.2) < 1e-9, JSON.stringify(ros.scale));
 
-  /* ---- one pool, killer included. Old totals, for the same reports: two same-level
-     members summed to 2800 (1.75×) and a member ten below still took 450. ---- */
+  /* ---- one pool, killer included. A member ten below the monster takes 5% of the
+     level-weighted share (23), which was the full 450 before the curve. ---- */
   await partyUp(A, [B]);
   place(A, 10, 2); place(B, 10, 2); await wait(80);
   const two = await xpReport([A, B], 1600);
   ok('two same-level members share 1.35×, killer included', two.length === 2 && two.reduce((a, b) => a + b, 0) === 2160, JSON.stringify(two));
   place(A, 20, 2); place(B, 10, 2); await wait(80);
   const gap = (await xpReport([A, B], 1000, 20)).slice().sort((a, b) => a - b);
-  ok('ten levels below still takes the full share', gap.join() === '450,900', JSON.stringify(gap));
+  ok('ten levels below takes 5% of the share', gap.join() === '23,900', JSON.stringify(gap));
 
   /* ---- text reaches the whole game ---- */
   B.send({ t: 'chat', text: 'credits rot' });
