@@ -48,7 +48,8 @@ const hud=await p.evaluate(()=>document.getElementById('cr').textContent);
 check('the purse on screen reads ₡429', hud.startsWith('₡429'), hud);
 
 const short=await p.evaluate(()=>{
-  __g.G.credits=470;__g.talkFloat();
+  /* Interest keeps compounding in play, so pin the balance the line was written for. */
+  __g.G.debt=471.9;__g.G.credits=470;__g.talkFloat();
   const btn=[...document.querySelectorAll('#dBtns button')].find(e=>e.textContent.startsWith('Repay'));
   const label=btn?btn.textContent:'';
   btn.click();
@@ -57,7 +58,7 @@ const short=await p.evaluate(()=>{
 check('one credit under the repay line does not clear it', /₡471/.test(short.label)&&short.credits===470&&Math.abs(short.debt-471.9)<1e-6&&/Not enough credits/.test(short.log), JSON.stringify(short));
 
 const paid=await p.evaluate(()=>{
-  __g.G.credits=471;__g.talkFloat();
+  __g.G.debt=471.9;__g.G.credits=471;__g.talkFloat();
   const btn=[...document.querySelectorAll('#dBtns button')].find(e=>e.textContent.startsWith('Repay'));
   btn.click();
   return {credits:__g.G.credits,debt:__g.G.debt,log:document.getElementById('log').textContent};
