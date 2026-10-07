@@ -45,6 +45,6 @@ Artifact URL: https://claude.ai/artifact/5i4v5MTCPoKQjHbi14NCxg (capabilities db
 - Cloud (account) paths for save slots, lockbox, character switching, delete and companion are untested.
 - Companion feel, party-pressure step logic, boss4/boss5 tuning are first guesses.
 - Held for later: real sats over Lightning, auction house.
-- The multiplayer server ships and is tested (`server/`, `MULTIPLAYER.md`). What it is *not*:
-  authoritative over monsters or damage, and there is no friends list, no messaging that
-  outlives a game, and no player directory.
+- The multiplayer server ships and is tested (`server/`, `MULTIPLAYER.md`). It is not
+  authoritative over monsters or damage, and there is no player directory. Friends, and
+  letters left while someone is off, are stored on the account and survive a restart.
