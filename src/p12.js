@@ -120,7 +120,7 @@ function maxiAura(dt) {
         else { a.haste = Math.max(a.haste || 0, .3); a.toxL = Math.max(a.toxL || 0, h.L); }
       }
     } else if (h.i === 4) {
-      /* The card is +20+4*L percent. Orange Pill, Signed For, and Dox already
+      /* The card prints max(30, 20+4*L). Orange Pill, Signed For, and Dox already
          print +30% and share the mark timer, so a low rank stays at that 30%
          and a higher rank uses the card once it passes 30%. They do not stack. */
       const bonus = .2 + .04 * h.L;
