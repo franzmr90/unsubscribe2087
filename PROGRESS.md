@@ -136,6 +136,13 @@ measurement: **45–48 fps against a 46–52 fps baseline** across zones 1, 3, 1
   end of Act I could not be raised until Act IV. Those controls now live on More.
 - **No new art assets.** There are none in the project and none can be made; everything
   above is drawing code.
+- **Original six, class feel.** Act I still deletes a Tick for Scrapper through
+  Maximalist, and the sheets were left alone. Three party lines were not landing.
+  A hireling in Toxic Maximalism swung faster and did not hit harder. A rendered
+  companion never received Running a Node, because that swing borrows the
+  companion's class. Marked to Market stayed at +30% at every rank; rank 1–2 stay
+  on that floor (the other mark buttons already say +30%) and rank 3 and up follow
+  the card, up to +60% at rank 10. Notes in `notes/class-feel-six.md`.
 - **Acts I–III quest structure.** Four story quests no longer end on the lieutenant alone.
   The Audit is talk-first. The Data Lake asks you to read a letter, in either order with
   Lethe. The Hall of Minutes is struck after the secretary falls. Point of Order needs four

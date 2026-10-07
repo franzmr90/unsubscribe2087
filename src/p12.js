@@ -97,12 +97,19 @@ function toxicSwing(body) {
   if (!(L > 0)) return 1;
   return 1 + (15 + 3 * L) / 100;
 }
+/* Damage half of the same card: +20% and +5% per rank. pdmg already applies it
+   to whoever is swinging through hit(). A hireling's shot is raw, so it multiplies here. */
+function toxicDmg(L) {
+  if (!(L > 0)) return 1;
+  return 1 + .2 + .05 * L;
+}
 function maxiAura(dt) {
   if (!G || !P) return;
   dt = dt || 0;
-  P.toxL = 0; P.mkAura = 0;
+  P.toxL = 0; P.mkAura = 0; P.mkP = 0;
   if (W && W.merc) W.merc.toxL = 0;
-  if (W && W.tag) W.tag.toxL = 0;
+  if (W && W.tag) { W.tag.toxL = 0; W.tag.nodeM = 0; }
+  if (W && W.ents) for (const e of W.ents) if (e) e.mkP = 0;
   if (mode !== 'play' || !W) return;
   if (G.cls === 'maxi' && P.aura) P.aura.t -= dt;
   for (const h of auraSpecs()) {
@@ -113,8 +120,15 @@ function maxiAura(dt) {
         else { a.haste = Math.max(a.haste || 0, .3); a.toxL = Math.max(a.toxL || 0, h.L); }
       }
     } else if (h.i === 4) {
-      for (const e of auraFoes(h)) e.mark = Math.max(e.mark || 0, .4);
-      if (h.hostile && inAura(P, h)) P.mkAura = .4;
+      /* The card is +20+4*L percent. Orange Pill, Signed For, and Dox already
+         print +30% and share the mark timer, so a low rank stays at that 30%
+         and a higher rank uses the card once it passes 30%. They do not stack. */
+      const bonus = .2 + .04 * h.L;
+      for (const e of auraFoes(h)) {
+        e.mark = Math.max(e.mark || 0, .4);
+        e.mkP = Math.max(e.mkP || 0, bonus);
+      }
+      if (h.hostile && inAura(P, h)) { P.mkAura = .4; P.mkP = Math.max(P.mkP || 0, bonus); }
     } else if (h.i === 7) {
       let ready = false;
       if (h.self) { if (P.aura.t <= 0) { P.aura.t = .5; ready = true; } }
@@ -125,6 +139,9 @@ function maxiAura(dt) {
       if (h.self) W.fx.push({ k: 'ring', x: P.x, y: P.y, r: auraVisR(7, h.L), t: 0, life: .25, col: '#f7931a' });
     }
   }
+  /* Running a Node. The hireling's shot already multiplies nodeMul. A companion
+     swing borrows the companion's class, so the same check never sees the Maximalist. */
+  if (G.cls === 'maxi' && sl(10) && P.aura && W.tag && W.tag.hp > 0) W.tag.nodeM = nodeMul(false);
 }
 
 /* The heads-up display already lists what is running; the aura belongs there. */
