@@ -74,10 +74,12 @@ async function sheetAct(flags){
     const G=__g.G;
     G.act2=G.act3=G.act4=G.act5=false;
     Object.assign(G,f);
+    __g.setMode('play');
     __g.openSheet('opts',{});
-    const row=[...document.querySelectorAll('#sheet .li span')].map(n=>n.textContent).find(t=>/playing now/.test(t))||'';
-    const el=[...document.querySelectorAll('#sheet .li span')].find(n=>/playing now/.test(n.textContent));
-    const clip=el?el.scrollHeight>el.clientHeight+2:true;
+    const el=[...document.querySelectorAll('#sheet .li')].find(n=>/playing now/.test(n.textContent));
+    const span=el?el.querySelector('span'):null;
+    const row=span?span.textContent:'';
+    const clip=span?span.scrollHeight>span.clientHeight+2:true;
     return {row,clip};
   }, flags);
 }
