@@ -87,7 +87,7 @@ Object.assign(SQ,{
    {t:'res',n:3,label:'Hand them a letter',d:'Hand the letters to three Residents in Stillwater'},
    {t:'talk',npc:'marrow',d:'Return to Marrow',scene:[{art:'dawn',text:'Three visors come up, slowly, the way you lift a bandage. Three people stand in the square of Stillwater reading the same kind of page, not looking at each other yet.'}],say:'“They will be angry. Then sad. Then, if we are lucky, curious. That last one is the dangerous one, and it is why they made the visor.”',rw(){G.sp++;addRep('anon',10);toast('You gain 1 skill point')}}]}
 });
-GOSSIP.tam=['Tomatoes. Beans next. Nobody has corrected me yet.','You cannot make a plant grow faster by paying it. I find that restful.','Take one. They are not perfect. That is how you know they are real.'];
+GOSSIP.tam=['Tomatoes. Beans next. Nobody has corrected me yet.','You cannot make a plant grow faster by paying it. I find that restful.','Take one. They are not perfect.'];
 
 /* ================= a town for each act, and open-air districts ================= */
 ZONES.push({n:'The Landing',town:true,act:2,style:'landing',amb:.3},{n:'The Antechamber',town:true,act:3,style:'wait',amb:.5});

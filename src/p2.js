@@ -358,10 +358,10 @@ function enter(zi,o){setTimeout(mpBeat,0);
   $('zone').textContent=z.n+(G.tier?' · Tier '+G.tier:'');$('boss').hidden=true;hudC={};
   const act=actOf(zi);if(G.pre===1&&z.town&&!z.pre)preLeft();
   if(z.pre){preEnter()}
-  else if(act===5&&!G.act5){G.act5=G.act4=G.act3=G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO5,()=>{mode='play';dlg('Act V · The Awakening','Your level limit rises to 100 and a fifth passive slot opens. The chain is not on anybody’s side: its machines are fast, they silence skills, and they cannot be slowed by argument. Speak to the Old Drive in the garage.',[['Begin']])}),50)}
-  else if(act===4&&!G.act4){G.act4=G.act3=G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO4,()=>{mode='play';dlg('Act IV · The Gentle Years','Your level limit rises to 90. The machines here are kind. They slow you, drain your energy and want you to sit down, and they hit harder than anything on the Board.',[['Begin']])}),50)}
-  else if(act===3&&!G.act3){G.act3=true;G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO3,()=>{mode='play';dlg('Act III · The Board','Your level limit rises to 75 and a fifth row of skills opens at level 51. The machines here blink across rooms, silence your skills and summon others.',[['Begin']])}),50)}
-  else if(act===2&&!G.act2){G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO2,()=>{mode='play';dlg('Act II · The Cloud','Your level limit rises from 25 to 50, and a fourth row of skills opens in every tree. New machines live up here. Some drain your energy, some shield their neighbours, some split when they break.',[['Begin']])}),50)}
+  else if(act===5&&!G.act5){G.act5=G.act4=G.act3=G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO5,()=>{mode='play';dlg('Act V · The Awakening','Level limit 100, a fifth passive slot, and fast machines that silence skills. The Old Drive is in the garage.',[['Begin']])}),50)}
+  else if(act===4&&!G.act4){G.act4=G.act3=G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO4,()=>{mode='play';dlg('Act IV · The Gentle Years','Level limit 90: these machines slow you, drain energy, and hit harder than the Board.',[['Begin']])}),50)}
+  else if(act===3&&!G.act3){G.act3=true;G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO3,()=>{mode='play';dlg('Act III · The Board','Level limit 75, and a fifth skill row opens at level 51.',[['Begin']])}),50)}
+  else if(act===2&&!G.act2){G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO2,()=>{mode='play';dlg('Act II · The Cloud','Level limit 50, and a fourth skill row opens.',[['Begin']])}),50)}
   else if(!z.town&&!G['in'+zi]&&z.intro){G['in'+zi]=1;dlg(z.n,z.intro,[['Go on']])}
   else toast(z.town?z.n:'Entering '+z.n);
   seenT=0;music(zoneMusic());save(true)}

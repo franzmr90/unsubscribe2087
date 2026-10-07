@@ -111,7 +111,7 @@ function mpRecv(m) {
   } else if (m.t === 'invited') {
     MP.invite = m;
     dlg(m.from + ' asks you to party', 'Level ' + m.lvl + ' ' + ((CLS[m.cls] || {}).n || 'stranger') +
-      '. Experience in a party is split among whoever is in the district with you, by level, and there is more of it the more of you there are.',
+      ': accept or stay out, experience in the district is split by level, and there is more of it the more of you there are.',
       [['Join them', () => { mpSend('accept', { uid: m.uid }); MP.invite = null; }], ['Not now', () => { mpSend('decline', { uid: m.uid }); MP.invite = null; }]]);
   } else if (m.t === 'zone') {
     mpZone(m);

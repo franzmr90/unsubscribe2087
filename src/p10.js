@@ -7,10 +7,10 @@ function forkHit(e){const f=P.fm;if(!f||f.t<=0||!f.k)return;if(f.k==='stun')e.st
 function forkCast(k){if(k==='surge')P.haste=Math.max(P.haste,3);if(k==='ward')P.guard=Math.max(P.guard,3);if(k==='burst')burst(P.x,P.y,2.4,.6,0,'#59e0e6')}
 /* each town has people of its own; three of them echo the old history */
 const LOCALS={
- laz:{n:'Laz',col:'#c9803a',town:0,say:['Two pizzas. That is what I paid for with ten thousand of them, once. Best meal I ever had. I would do it again, and I have stopped explaining why.','Somebody had to be first to buy a real thing with it. Otherwise it is just a number people admire.'],buy:1},
+ laz:{n:'Laz',col:'#c9803a',town:0,say:['Two pizzas. That is what I paid for with ten thousand of them, once. Best meal I ever had.'],buy:1},
  finn:{n:'Finn',col:'#7fa8d0',town:17,say:['I was running it the first week. There were two of us on the network, him and me. He sent me some to see if it worked. It worked.','I do not go out much now. I type slowly. The node still runs, though. It does not need me to be quick.']},
  vane:{n:'Ms. Vane',col:'#d8c8ff',town:17,say:['Welcome to the Landing. Please keep your visor at a compliant brightness.','The lift is perfectly safe. It has only ever gone up.']},
- zabo:{n:'Zabo',col:'#a8997e',town:18,say:['Long before any of it, I wrote down how you might make gold out of arithmetic. I was nearly right, which in my trade is the same as wrong.','A contract that keeps itself. That was the idea. Nobody to trust, so nobody to bribe.']},
+ zabo:{n:'Zabo',col:'#a8997e',town:18,say:['Long before any of it, I wrote down how you might make gold out of arithmetic. I was nearly right, which in my trade is the same as wrong.','A contract that keeps itself. That was the idea.']},
  usher:{n:'The Usher',col:'#6a5a4a',town:18,say:['The Board will see you presently. It has been saying so since 2051.','Please do not touch the chairs. One of them is still warm.']}};
 Object.assign(PERS,{laz:{n:'Laz',g:'mid',know:2,o:2},finn:{n:'Finn',g:'maxi',know:3,o:4},vane:{n:'Ms. Vane',g:'fud',know:0,o:1},zabo:{n:'Zabo',g:'mid',know:3,o:7},usher:{n:'The Usher',g:'fud',know:0,o:3}});
 function talkLocal(id){const L=LOCALS[id],b=[];if(L.buy)b.push(['A slice · 2 sats (refills your stims)',()=>{if(G.sats<2){toast('Not enough sats');sfx('err');return}G.sats-=2;G.stims=S.cap;sfx('stim');addAdopt(.5,'');toast('Hot, and paid for in the only thing he takes.')}]);b.push(['Leave']);dlg(L.n,'“'+pick(L.say)+'”',b)}
