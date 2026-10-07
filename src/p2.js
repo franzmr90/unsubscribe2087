@@ -113,7 +113,7 @@ function updMerc(dt){const m=W.merc;if(!m||m.hp<=0)return;const t=MERCS[G.merc.k
   const tg=mercTarget(m,t),g=tg||P,d0=dist(g,m)||1,want=tg?Math.max(.42,t.range*.85):1.8;m.mov=false;
   const home=dist(m,P),inSwing=!!(tg&&d0<=t.range+(tg.r||0));
   /* Catch up at 8 tiles. A swing already in range may stay out to 13. A blocked step slides, then comes home. */
-  if(home>(inSwing?13:8)){const sp=mercSpot();m.x=sp.x;m.y=sp.y;m.stuck=0}
+  if(home>(inSwing?13:8)){m.x=P.x;m.y=P.y;m.stuck=0}
   else if(d0>want){const sp=t.spd*dt;if(!mercStep(m,(g.x-m.x)/d0*sp,(g.y-m.y)/d0*sp)){m.stuck=(m.stuck||0)+dt;if(m.stuck>.4&&home>1.15&&!inSwing){const q=mercSpot();m.x=q.x;m.y=q.y;m.stuck=0}}else m.stuck=0;m.mov=true;m.fx=(g.x-m.x)-(g.y-m.y)>0?1:-1}
   else m.stuck=0;
   const d=tg?(dist(tg,m)||1):d0;

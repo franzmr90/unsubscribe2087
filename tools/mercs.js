@@ -68,7 +68,8 @@ const rows=await p.evaluate(()=>{
   function ticks(n){for(let i=0;i<n;i++)g.update(0.05)}
   function strike(k){
     quiet();
-    const e=foe(1.15);
+    const ranged=k==='sys'||k==='node';
+    const e=foe(ranged?3.6:1.15);
     if(!e){say(k,'strike','','no room to spawn a machine');return}
     const hp0=e.hp,asleep=!e.aggro;
     const times=[];let prev=g.W.merc.cd,projs=0;
@@ -81,7 +82,6 @@ const rows=await p.evaluate(()=>{
     }
     const ivl=g.MERCS?null:null;
     const spec={guard:1,sys:1.2,node:.8,hound:.5}[k];
-    const ranged=k==='sys'||k==='node';
     const dmg=hp0-e.hp;
     say(k,ranged?'shot':'strike',dmg>1&&times.length>=2,'damage '+dmg.toFixed(1)+' shots '+times.length+(times.length>=2?' gap '+(times[1]-times[0]).toFixed(2)+'s':'')+' asleep-start '+asleep+' woke '+e.aggro);
     say(k,'cooldown',times.length>=2&&times[1]-times[0]>=spec-0.08&&times[1]-times[0]<=spec+0.35,'want ~'+spec+'s got '+(times.length>=2?(times[1]-times[0]).toFixed(2):'none'));
@@ -267,19 +267,35 @@ const portal=await p.evaluate(()=>{
   g.setMode('shot');
   for(let i=0;i<10;i++)g.update(0.05);
   out.still=g.W.zi===zi;
-  g.update(0.05);
-  out.label=g.actTarget&&g.actTarget.label||'';
-  g.render();
   out.x=x;out.y=y;out.zi=zi;
   return out;
 });
+await p.evaluate(()=>__g.setMode('play'));
+await p.waitForTimeout(200);
+portal.label=await p.evaluate(()=>{const b=document.getElementById('bAct');return b&&!b.hidden?b.textContent:''});
+const aside=await p.evaluate((spot)=>{
+  const g=__g,x=spot.x,y=spot.y,N=g.W.N,map=g.W.map;
+  g.setMode('shot');
+  const tile=(qx,qy)=>{const tx=qx|0,ty=qy|0;return tx>0&&ty>0&&tx<N-1&&ty<N-1&&map[ty*N+tx]!==0};
+  let nx=x,ny=y,best=0;
+  for(let dy=-4;dy<=4;dy++)for(let dx=-4;dx<=4;dx++){
+    const d=Math.hypot(dx,dy);
+    if(d<2.4||d>4.2||!tile(x+dx,y+dy))continue;
+    if(d>best){best=d;nx=x+dx;ny=y+dy}
+  }
+  g.P.x=nx;g.P.y=ny;
+  if(g.W.seen){for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++){const si=((y+dy)|0)*N+((x+dx)|0);if(si>=0&&si<g.W.seen.length)g.W.seen[si]=1}}
+  g.render();
+  return {dist:Math.hypot(g.P.x-x,g.P.y-y),portals:g.W.portals.filter(tp=>tp.cast).length};
+}, {x:portal.x,y:portal.y});
+console.log('portal shot  aside '+aside.dist.toFixed(2)+' cast gates '+aside.portals);
+await p.screenshot({path:'/opt/cursor/artifacts/screenshot_portal_cast.png'});
 const labelOk=/Return to /.test(portal.label);
 console.log((portal.blocked?'PASS':'FAIL')+'  portal  refused while machines are close');
 console.log((portal.stayed&&portal.placed?'PASS':'FAIL')+'  portal  opens at your feet  zone '+portal.zi);
 console.log((portal.still?'PASS':'FAIL')+'  portal  standing on it does not send you to town');
 console.log((labelOk?'PASS':'FAIL')+'  portal  the button offers the town  '+(portal.label||'(none)'));
 if(!portal.blocked||!portal.stayed||!portal.placed||!portal.still||!labelOk)fail++;
-await p.screenshot({path:'/opt/cursor/artifacts/screenshot_portal_cast.png'});
 
 const back=await p.evaluate((spot)=>{
   const g=__g, out={};
@@ -306,7 +322,7 @@ const back=await p.evaluate((spot)=>{
 }, {x:portal.x,y:portal.y,zi:portal.zi});
 console.log((back.left?'PASS':'FAIL')+'  portal  stepping off leaves you in the district');
 console.log((back.town&&back.remember?'PASS':'FAIL')+'  portal  stepping back in returns you to town');
-console.log((back.backZi===portal.zi&&back.backDist<2?'PASS':'FAIL')+'  portal  the square brings you back  dist '+back.backDist.toFixed(2)+' label '+(back.backLabel||'(none)'));
+console.log((back.backZi===portal.zi&&back.backDist<2?'PASS':'FAIL')+'  portal  the square brings you back  dist '+back.backDist.toFixed(2));
 console.log((back.simTown?'PASS':'FAIL')+'  portal  the simulator still leaves at once');
 if(!back.left||!back.town||!back.remember||back.backZi!==portal.zi||back.backDist>=2||!back.simTown)fail++;
 
@@ -321,7 +337,9 @@ await p.evaluate(()=>__g.hurt(1e9,0,{name:'a Tick'}));
 await p.waitForTimeout(2800);
 const death=await p.evaluate(()=>({
   btn:document.getElementById('bRise').textContent,
-  note:document.getElementById('deathNote').textContent
+  note:document.getElementById('deathNote').textContent,
+  hidden:document.getElementById('death').hidden,
+  mode:__g.mode
 }));
 console.log((/Stillwater/.test(death.btn)?'PASS':'FAIL')+'  portal  death still offers the town  '+death.btn);
 console.log((/start of the district/.test(death.note)?'PASS':'FAIL')+'  portal  death still promises the square  '+death.note);

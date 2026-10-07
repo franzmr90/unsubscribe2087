@@ -519,7 +519,7 @@ function render(){
     if(f.k==='ring'){ctx.fillStyle=f.col;ctx.globalAlpha=(1-u)*.16;ctx.beginPath();ctx.ellipse(X,Y,f.r*45*u,f.r*22.5*u,0,0,6.283);ctx.fill();ctx.strokeStyle=f.col;ctx.globalAlpha=1-u;ctx.lineWidth=5*(1-u)+1.5;ctx.stroke();ctx.globalAlpha=1;light(X,Y,f.r*60,f.col,1,f.remote?0:1)}
     if(f.k==='warn'){ctx.fillStyle='rgba(255,70,60,'+(.15+.3*u)+')';ctx.beginPath();ctx.ellipse(X,Y,f.r*45,f.r*22.5,0,0,6.283);ctx.fill();ctx.strokeStyle='#ff5d4d';ctx.lineWidth=2;ctx.stroke()}
     if(f.k==='patch'&&!f.stay&&!f.tel){const a=Math.max(0,1-u);ctx.beginPath();ctx.ellipse(X,Y,(f.r||1)*45,(f.r||1)*22.5,0,0,6.283);ctx.fillStyle=f.col||'#ff7a3c';ctx.globalAlpha=a*.14;ctx.fill();ctx.strokeStyle=f.col||'#ff7a3c';ctx.globalAlpha=a*.9;ctx.lineWidth=1.5;ctx.stroke();ctx.globalAlpha=1}}
-  for(const p of W.portals)if(vis(p))dl.push({d:p.x+p.y,k:4,x:p.x,y:p.y,arch:p.kind!=='home',col:p.kind==='next'?'#ff7a3c':p.kind==='home'?'#4a8cff':'#7be495'});
+  for(const p of W.portals)if(vis(p))dl.push({d:p.x+p.y+(p.cast?0.45:0),k:4,x:p.x,y:p.y,arch:p.kind!=='home',col:p.kind==='next'?'#ff7a3c':p.kind==='home'?'#4a8cff':'#7be495'});
   if(z.town&&G.portal)dl.push({d:24,k:4,x:12.5,y:11.5,col:'#4a8cff'});
   for(const e of W.ents)if(!e.mp&&vis(e))dl.push({d:e.x+e.y,k:1,o:e});
   for(const n of W.npcs)dl.push({d:n.x+n.y,k:2,o:n});
