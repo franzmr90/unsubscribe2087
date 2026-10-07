@@ -4339,9 +4339,9 @@ function auraFoes(h) {
   }
   return out;
 }
-/* Toxic Maximalism's attack-speed line is the one already printed on the skill:
-   15+3*L percent. The owner's own swing is unchanged. Bodies standing in someone
-   else's copy of it, and the hireling in yours, use that percent. */
+/* Toxic Maximalism's attack-speed line is the one printed on the skill:
+   15+3*L percent. The owner, a hireling, and anyone standing in the aura all
+   take it. toxicSwing reads toxL. */
 function toxicSwing(body) {
   const L = body && body.toxL;
   if (!(L > 0)) return 1;
@@ -4364,7 +4364,7 @@ function maxiAura(dt) {
   if (G.cls === 'maxi' && P.aura) P.aura.t -= dt;
   for (const h of auraSpecs()) {
     if (h.i === 3 && !h.hostile) {
-      if (h.self) P.haste = Math.max(P.haste, .3);
+      if (h.self) { P.haste = Math.max(P.haste, .3); P.toxL = Math.max(P.toxL, h.L); }
       for (const a of nearbyAllies(h)) {
         if (a === P) { P.haste = Math.max(P.haste, .3); P.toxL = Math.max(P.toxL, h.L); }
         else { a.haste = Math.max(a.haste || 0, .3); a.toxL = Math.max(a.toxL || 0, h.L); }

@@ -112,7 +112,7 @@ const report=await p.evaluate(()=>{
     P.atk=0;g.attack();const ivl0=P.atk;
     P.aura={i:3,L:1,t:1};g.maxiAura(0.02);
     P.atk=0;g.attack();
-    check('your own Toxic swing interval stays put', Math.abs(ivl0-P.atk)<1e-6, ivl0+' vs '+P.atk);
+    check('your own Toxic swing is 18% faster at rank 1', Math.abs(ivl0/P.atk-1.18)<1e-6, ivl0+' vs '+P.atk);
   }
 
   function tagHit(node){
