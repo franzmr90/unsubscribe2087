@@ -303,8 +303,8 @@ async function until(page, fn, arg, ms) {
     child.on('exit', code => { clearTimeout(t); reject(new Error('child exited ' + code + '\n' + boot)); });
   });
   const base2 = 'http://127.0.0.1:' + port;
-  async function revive(page) {
-    await page.goto(base2 + '/', { waitUntil: 'domcontentloaded' });
+  async function revive(page, origin) {
+    await page.goto((origin || base2) + '/', { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(700);
     await page.evaluate(() => { __g.skipDisc(); const a = document.getElementById('acc'); if (a) a.className = 'off'; __g.newGame('scrapper'); });
     for (let i = 0; i < 24; i++) {
@@ -323,6 +323,139 @@ async function until(page, fn, arg, ms) {
   const stillB = await until(B, u => __mp.MP.friends[u] && __mp.MP.friends[u].state === 'friend' ? 1 : 0, uidA, 8000);
   ok('the friendship is still there', !!stillA && !!stillB);
 
+  /* ---- whispers: online stays off the box and off the game chat ---- */
+  await A.evaluate(u => __mp.send('whisper', { uid: u, text: 'on the line' }), uidB);
+  const whispered = await until(B, () => __mp.MP.whispers.some(w => w.text === 'on the line' && w.from === 'Ines' && !w.out) ? 1 : 0);
+  const delivered = await until(A, () => __mp.MP.whispers.some(w => w.text === 'delivered.') ? 1 : 0);
+  ok('a whisper arrives and the sender hears delivered', !!whispered && !!delivered);
+  const inChat = await A.evaluate(() => __mp.MP.chat.some(c => /on the line|delivered/.test(c.text || '')))
+    || await B.evaluate(() => __mp.MP.chat.some(c => /on the line|delivered/.test(c.text || '')));
+  ok('a whisper stays out of game chat', !inChat);
+  const noLetter = await post(B, '/api/mail/list', {});
+  ok('an online whisper is not a letter', !((noLetter.json && noLetter.json.box) || []).some(m => m.text === 'on the line'), JSON.stringify(noLetter.json));
+
+  await B.evaluate(() => {
+    const d = document.getElementById('dlg'); if (d) d.hidden = true;
+    __g.setMode('play'); __g.openSheet('party');
+  });
+  await B.waitForTimeout(300);
+  await B.evaluate(() => {
+    const heads = [...document.querySelectorAll('#sheetIn h3')];
+    const w = heads.find(h => h.textContent === 'Whispers');
+    if (w && w.scrollIntoView) w.scrollIntoView({ block: 'center' });
+  });
+  try {
+    const shot = '/opt/cursor/artifacts/whispers-friends.png';
+    fs.mkdirSync(path.dirname(shot), { recursive: true });
+    await B.screenshot({ path: shot });
+  } catch (e) { ok('whisper sheet screenshot', false, e.message); }
+
+  /* A friend in another game: the invite names it, and accepting joins. No party. */
+  await A.evaluate(() => __mp.send('game.create', { name: 'North', diff: 'normal' }));
+  await B.evaluate(() => __mp.send('game.create', { name: 'South', diff: 'normal' }));
+  ok('two separate games', !!(await until(A, () => __mp.MP.game && __mp.MP.game.name === 'North' ? 1 : 0))
+    && !!(await until(B, () => __mp.MP.game && __mp.MP.game.name === 'South' ? 1 : 0)));
+  await A.evaluate(u => __mp.send('invite', { uid: u }), uidB);
+  ok('the invite names the game', !!(await until(B, () => __mp.MP.invite && __mp.MP.invite.game === 'North' ? 1 : 0)));
+  await B.evaluate(u => __mp.send('game.join', { uid: u }), uidA);
+  ok('accepting joins that game and not a party', !!(await until(B, () => __mp.MP.game && __mp.MP.game.name === 'North' ? 1 : 0))
+    && !(await A.evaluate(() => __mp.MP.party)) && !(await B.evaluate(() => __mp.MP.party)));
+
+  await B.evaluate(() => { const c = __mp.MP.conn; if (c) c.close(); });
+  ok('one side drops the line', !!(await until(B, () => !__mp.on ? 1 : 0, null, 4000)));
+  await wait(400);
+  await A.evaluate(u => __mp.send('whisper', { uid: u, text: 'for the box' }), uidB);
+  ok('an offline whisper is left in the box', !!(await until(A, () => __mp.MP.whispers.some(w => w.text === 'They are not on. Left in their box.') ? 1 : 0)));
+  ok('back on to read it', !!(await revive(B)));
+  const listed = await post(B, '/api/mail/list', {});
+  const letter = ((listed.json && listed.json.box) || []).find(m => m.text === 'for the box');
+  ok('reconnect lists the letter', !!letter && letter.read === false, JSON.stringify(listed.json && listed.json.box));
+  const marked = letter ? await post(B, '/api/mail/read', { id: letter.id }) : { status: 0 };
+  ok('mark read', marked.status === 200, marked.text);
+  const reread = await post(B, '/api/mail/list', {});
+  ok('the letter is read', ((reread.json && reread.json.box) || []).some(m => m.text === 'for the box' && m.read === true));
+
+  const shut = await post(B, '/api/friend/quiet', { on: true });
+  ok('not taking messages', shut.status === 200 && shut.json && shut.json.closed === true, shut.text);
+  await B.evaluate(() => __mp.loadFriends());
+  ok('the sheet shows the flag', !!(await until(B, () => __mp.MP.closed ? 1 : 0)));
+  await A.evaluate(u => __mp.send('whisper', { uid: u, text: 'while closed' }), uidB);
+  ok('a closed friend refuses a whisper', !!(await until(A, () => __mp.MP.whispers.some(w => w.text === 'They are not taking messages.') ? 1 : 0)));
+  ok('and does not receive it', !(await B.evaluate(() => __mp.MP.whispers.some(w => w.text === 'while closed'))));
+  await B.evaluate(() => { const c = __mp.MP.conn; if (c) c.close(); });
+  await until(B, () => !__mp.on ? 1 : 0, null, 4000);
+  await wait(400);
+  await A.evaluate(u => __mp.send('whisper', { uid: u, text: 'while gone' }), uidB);
+  ok('offline and closed use the same reply', !!(await until(A, () => __mp.MP.whispers.filter(w => w.text === 'They are not taking messages.').length >= 2 ? 1 : 0)));
+  const quietBox = await post(B, '/api/mail/list', {});
+  ok('neither quiet whisper was boxed', !((quietBox.json && quietBox.json.box) || []).some(m => m.text === 'while closed' || m.text === 'while gone'));
+  ok('the flag survives a reload', !!(await revive(B)) && !!(await until(B, () => __mp.MP.closed ? 1 : 0, null, 8000)));
+
+  async function arrive(name, origin) {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 800 } });
+    const p = await ctx.newPage();
+    p.on('pageerror', e => errs.push(name + ': ' + e.message));
+    await p.goto(origin + '/');
+    await p.waitForTimeout(500);
+    await p.evaluate(n => fetch('/api/register', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: n, pass: 'duelling-partner-1' })
+    }).then(r => r.json()), name);
+    await p.goto(origin + '/');
+    await p.waitForTimeout(700);
+    await p.evaluate(() => { __g.skipDisc(); const a = document.getElementById('acc'); if (a) a.className = 'off'; __g.newGame('scrapper'); });
+    for (let i = 0; i < 24; i++) {
+      await p.evaluate(() => {
+        const s = document.getElementById('scene'); if (s && !s.hidden) { const b = document.getElementById('scSkip'); b && b.click(); }
+        const d = document.getElementById('dlg'); if (d && !d.hidden) { const x = d.querySelector('#dBtns button:not([disabled])'); x && x.click(); }
+        const a = document.getElementById('acc'); if (a) a.className = 'off';
+      });
+      await p.waitForTimeout(120);
+    }
+    await until(p, () => __mp.on ? 1 : 0, null, 8000);
+    return p;
+  }
+  const C = await arrive('Nia', base2);
+  ok('a third player is on', !!(await C.evaluate(() => __mp.on ? 1 : 0)));
+  await C.evaluate(u => __mp.send('whisper', { uid: u, text: 'from a stranger' }), uidA);
+  await C.evaluate(() => __mp.send('whisper', { name: 'NoSuchWanderer', text: 'from nowhere' }));
+  const stranger = await until(C, () => __mp.MP.whispers.length >= 2 ? __mp.MP.whispers.map(w => w.text) : 0);
+  ok('a stranger fails like a bad name', !!stranger && stranger.every(t => t === 'Nobody by that name.'), JSON.stringify(stranger));
+  ok('and the stranger is not delivered', !(await A.evaluate(() => __mp.MP.whispers.some(w => w.text === 'from a stranger'))));
+  const stamps = [];
+  for (let i = 0; i < 11; i++) stamps.push((await post(C, '/api/mail/send', { name: 'Ines', text: 'rate ' + i })).status);
+  ok('the 11th letter in the window is refused', stamps[9] !== 429 && stamps[10] === 429, stamps.join(','));
+
+  if (child) {
+    child.kill('SIGTERM');
+    await new Promise(r => { const t = setTimeout(r, 2000); child.on('exit', () => { clearTimeout(t); r(); }); });
+    child = null;
+  }
+  const port3 = await new Promise(resolve => {
+    const s = net.createServer();
+    s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => resolve(p)); });
+  });
+  child = spawn(process.execPath, [path.join(__dirname, '..', 'server.js')], {
+    cwd: path.join(__dirname, '..', '..'),
+    env: Object.assign({}, process.env, { DATA_DIR: tmp, PORT: String(port3), SMTP_HOST: '' }),
+    stdio: ['ignore', 'pipe', 'pipe']
+  });
+  let boot3 = '';
+  await new Promise((resolve, reject) => {
+    const t = setTimeout(() => reject(new Error('second child did not start\n' + boot3)), 12000);
+    const on = d => { boot3 += d; if (boot3.includes('server on')) { clearTimeout(t); resolve(); } };
+    child.stdout.on('data', on);
+    child.stderr.on('data', on);
+    child.on('exit', code => { clearTimeout(t); reject(new Error('second child exited ' + code + '\n' + boot3)); });
+  });
+  const base3 = 'http://127.0.0.1:' + port3;
+  ok('on again after the mailbox restart', !!(await revive(B, base3)));
+  const kept = await post(B, '/api/mail/list', {});
+  ok('the letter is still read', ((kept.json && kept.json.box) || []).some(m => m.text === 'for the box' && m.read === true), JSON.stringify(kept.json && kept.json.box));
+  ok('not taking messages is still on', !!(await until(B, () => __mp.MP.closed ? 1 : 0, null, 8000)));
+  await post(B, '/api/friend/quiet', { on: false });
+  ok('Ines is back too', !!(await revive(A, base3)));
+
   await A.evaluate(() => __mp.send('game.create', { name: 'After', diff: 'normal' }));
   const after = await until(A, () => __mp.MP.game && __mp.MP.game.id);
   await B.evaluate(id => __mp.send('game.join', { id }), after);
@@ -334,6 +467,11 @@ async function until(page, fn, arg, ms) {
   await wait(700);
   ok('a blocked invite does not arrive', !(await A.evaluate(() => !!__mp.MP.invite)));
   ok('and the block is not mentioned', !(await B.evaluate(() => (__mp.MP.chat || []).some(c => /block/i.test(c.text || '')))));
+  await B.evaluate(u => __mp.send('whisper', { uid: u, text: 'after the block' }), uidA);
+  const denied = await until(B, () => __mp.MP.whispers.some(w => w.text === 'Nobody by that name.') ? 1 : 0);
+  const leaked = await A.evaluate(() => __mp.MP.whispers.some(w => w.text === 'after the block'));
+  const told = await B.evaluate(() => __mp.MP.whispers.some(w => /block/i.test(w.text || '')) || __mp.MP.chat.some(c => /block/i.test(c.text || '')));
+  ok('a blocked whisper fails like a bad name', !!denied && !leaked && !told);
 
   ok('no page errors', errs.length === 0, errs.join(' | '));
 

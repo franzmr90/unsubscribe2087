@@ -89,6 +89,21 @@ function poke(uid, text) {
   if (p && text) sys(p, text);
 }
 
+/* A whisper note stays off the game chat. The server does not keep the line. */
+function whisperNote(p, text, extra) {
+  send(p, 'whispernote', Object.assign({ text: text }, extra || {}));
+}
+function accountById(uid) {
+  const u = require('./auth').byId(uid);
+  if (!u || !u.id) return null;
+  return { id: u.id, name: u.name };
+}
+function accountByName(name) {
+  const u = require('./auth').findByName(name);
+  if (!u || !u.id) return null;
+  return { id: u.id, name: u.name };
+}
+
 /* ---------- games ---------- */
 function gameOf(p) { return p.game ? games.get(p.game) : null; }
 function gamePlayers(g) { return g ? [...g.players].map(u => live.get(u)).filter(Boolean) : []; }
@@ -356,9 +371,23 @@ const HANDLERS = {
 
   invite(p, m) {
     const q = live.get(m.uid);
-    if (!q || q.game !== p.game || !p.game) return sys(p, 'They are not in this game.');
+    if (!q) return sys(p, 'They are not on.');
+    const rel = socialMod().between(p.uid, q.uid);
     /* A block is not announced. The invite is dropped and nothing is said. */
-    if (socialMod().between(p.uid, q.uid).blocked) return;
+    if (rel.blocked) return;
+    const same = !!(p.game && q.game === p.game);
+    if (!same) {
+      /* A friend in some other game, or in none. The invite names this game.
+         Accepting joins it. It does not make a party across that boundary. */
+      if (!p.game) return sys(p, 'You are not in a game.');
+      if (!rel.mutual) return sys(p, 'They are not in this game.');
+      const g = games.get(p.game);
+      if (!g) return sys(p, 'That game is over.');
+      if (g.players.size >= MAX_GAME) return sys(p, 'That game is full — it holds ' + MAX_GAME + '.');
+      send(q, 'invited', { from: p.name, uid: p.uid, lvl: p.lvl, cls: p.cls, game: g.name, locked: !!g.pass });
+      sys(p, 'Asked ' + q.name + ' to join ' + g.name + '.');
+      return;
+    }
     if (mutualHostile(p, q)) return sys(p, 'You have declared against each other. That does not come back.');
     const party = partyOf(p);
     if (party && party.leader !== p.uid) return sys(p, 'Only the leader invites.');
@@ -367,6 +396,31 @@ const HANDLERS = {
     q.invites.set(p.uid, Date.now() + 60000);
     send(q, 'invited', { from: p.name, uid: p.uid, lvl: p.lvl, cls: p.cls });
     sys(p, 'Asked ' + q.name + ' to join.');
+  },
+
+  /* Online: handed to whoever is connected, and forgotten here. Offline: the
+     box. The sender hears one line either way, and never the game chat. */
+  whisper(p, m) {
+    const book = socialMod();
+    const raw = typeof m.text === 'string' ? m.text.trim() : '';
+    if (!raw) return whisperNote(p, 'Write something.');
+    if (raw.length > book.MAIL_MAX) return whisperNote(p, 'A letter stops at 240 characters.');
+    if (!rate(p, 'whisper', 12, 10000)) return whisperNote(p, 'Slow down.');
+    const who = m.uid ? accountById(clean(m.uid, 64)) : accountByName(clean(m.name, 40));
+    if (!who || who.id === p.uid) return whisperNote(p, book.MISS);
+    const rel = book.between(p.uid, who.id);
+    if (!rel.mutual || rel.blocked) return whisperNote(p, book.MISS);
+    if (book.closed(who.id)) return whisperNote(p, book.QUIET);
+    const q = live.get(who.id);
+    if (q) {
+      send(q, 'whisper', { from: p.name, uid: p.uid, text: raw });
+      whisperNote(p, 'delivered.', { to: who.id, name: who.name, line: raw });
+      return;
+    }
+    if (!require('./auth').rateLimit('ml:' + p.uid, 10, 10 * 60 * 1000)) return whisperNote(p, 'Ten letters in ten minutes is the limit.');
+    const r = book.send({ id: p.uid, name: p.name }, who.name, raw);
+    if (!r.ok) return whisperNote(p, r.error);
+    whisperNote(p, 'They are not on. Left in their box.', { to: who.id, name: who.name, line: raw });
   },
 
   accept(p, m) {

@@ -362,6 +362,12 @@ route('POST', '/api/friend/block', async (req, res) => {
   const b = await readBody(req);
   finish(res, social.block(ctx.user, b.name));
 });
+route('POST', '/api/friend/quiet', async (req, res) => {
+  const ctx = signed(req, res); if (!ctx) return;
+  const b = await readBody(req);
+  if (b.on !== true && b.on !== false) return bad(res, 400, 'Say whether you are taking messages.');
+  finish(res, social.setClosed(ctx.user.id, b.on === true));
+});
 route('POST', '/api/mail/list', async (req, res) => {
   const ctx = signed(req, res); if (!ctx) return;
   await readBody(req);

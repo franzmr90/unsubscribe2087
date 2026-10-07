@@ -30,11 +30,6 @@ function lookup(name) {
   return { id: u.id, name: u.name };
 }
 
-function load(uid) {
-  const r = friends.get(uid);
-  if (!r || !r.to || typeof r.to !== 'object') return null;
-  return r;
-}
 function edge(uid, other) {
   const r = load(uid);
   return r && r.to[other] || null;
@@ -48,17 +43,32 @@ function toward(r) {
   }
   return n;
 }
+function load(uid) {
+  const r = friends.get(uid);
+  if (!r || typeof r !== 'object') return null;
+  if (!r.to || typeof r.to !== 'object') {
+    if (!r.closed) return null;
+    return { to: {}, closed: true };
+  }
+  return r;
+}
+function persist(uid, r) {
+  const to = r && r.to && typeof r.to === 'object' ? r.to : {};
+  const row = { to: to };
+  if (r && r.closed) row.closed = true;
+  if (!Object.keys(to).length && !row.closed) friends.del(uid);
+  else friends.set(uid, row);
+}
 function writeEdge(uid, other, e) {
   const r = load(uid) || { to: {} };
   r.to[other] = { name: e.name, at: e.at, state: e.state };
-  friends.set(uid, { to: r.to });
+  persist(uid, r);
 }
 function delEdge(uid, other) {
   const r = load(uid);
   if (!r || !r.to[other]) return;
   delete r.to[other];
-  if (!Object.keys(r.to).length) friends.del(uid);
-  else friends.set(uid, { to: r.to });
+  persist(uid, r);
 }
 
 /* At most FRIEND_CAP uids. Blocks sit past the friends, so a full list of
@@ -100,7 +110,20 @@ function list(uid) {
     if (!e) continue;
     to[id] = { name: e.name, at: e.at, state: e.state };
   }
-  return { ok: true, body: { to } };
+  return { ok: true, body: { to, closed: !!(r && r.closed) } };
+}
+
+/* On the account's own friends row, not on an edge. A reload reads it back.
+   A session mute would not. */
+function closed(uid) {
+  const r = friends.get(uid);
+  return !!(r && r.closed);
+}
+function setClosed(uid, on) {
+  const r = load(uid) || { to: {} };
+  r.closed = !!on;
+  persist(uid, r);
+  return { ok: true, body: { closed: !!on } };
 }
 
 /* pending: I asked. in: they asked me. friend: both accepted. blocked: I
@@ -178,7 +201,7 @@ function purge(uid) {
     if (!r || !r.to || !Object.prototype.hasOwnProperty.call(r.to, uid)) continue;
     delete r.to[uid];
     dirty = true;
-    if (!Object.keys(r.to).length) delete all[k];
+    if (!Object.keys(r.to).length && !r.closed) delete all[k];
   }
   if (dirty) friends.flush();
   boxes.del(uid);
@@ -210,9 +233,12 @@ function listMail(uid) {
   return { ok: true, body: { box: sweep(uid).map(pubMail) } };
 }
 
-/* Online delivery is milestone 5 and goes over the socket. A letter is only
-   written when they are not connected. Not-a-friend, missing, and blocked all
-   answer with the same sentence, so sending is not a directory. */
+const QUIET = 'They are not taking messages.';
+
+/* The box is for when they are not connected. An open line is delivered on the
+   socket and never written here. Not-a-friend, missing, and blocked all answer
+   with the same sentence, so sending is not a directory. Not-taking-messages
+   is checked before online, so the reply does not say which they are. */
 function send(from, name, text) {
   if (typeof text !== 'string') return fail(400, 'Write something.');
   const body = text.trim();
@@ -226,6 +252,7 @@ function send(from, name, text) {
   const blocked = (mine && mine.state === 'blocked') || (theirs && theirs.state === 'blocked');
   const mutual = mine && mine.state === 'friend' && theirs && theirs.state === 'friend';
   if (blocked || !mutual) return miss();
+  if (closed(who.id)) return fail(400, QUIET);
   if (live.live && live.live.get(who.id)) return fail(400, 'They are on. Say it when the line is open.');
   const box = freshBox(who.id);
   const msg = { id: 'm' + A.rand(9), from: from.id, fromName: from.name, text: body, at: Date.now(), read: false };
@@ -256,5 +283,6 @@ function del(uid, id) {
 
 module.exports = {
   friends, boxes, list, links, between, ask, answer, remove, block, purge, onLogin,
-  listMail, send, read, del, MISS, FRIEND_CAP, MAIL_CAP, MAIL_MAX
+  listMail, send, read, del, closed, setClosed,
+  MISS, QUIET, FRIEND_CAP, MAIL_CAP, MAIL_MAX
 };
