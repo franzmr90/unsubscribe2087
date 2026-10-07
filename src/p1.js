@@ -288,7 +288,7 @@ const UNI=[
  {id:'nda',n:'Nondisclosure',slot:'helm',il:3,base:'Hard Hat',mods:{armorP:[40,60],en:[10,20]},sp:'15% chance to avoid any damage',fl:'You saw nothing. You were never here.'},
  {id:'blackout',n:'Blackout',slot:'weapon',il:3,base:'Box Cutter',bi:2,mods:{shock:[6,10],aspd:[10,18]},sp:'12% chance to stun on hit',fl:'The last thing the grid ever said.'},
  {id:'pension',n:'The Pension',slot:'amulet',il:5,base:'Dog Tag',mods:{hp:[45,70]},sp:'Replenish 2% of your life every second',fl:'A myth from the old world, worn as a charm.'},
- {id:'handshake',n:'Golden Handshake',slot:'gloves',il:16,base:'Servo Fists',mods:{aspd:[18,26],dmg:[30,45]},sp:'Machines you destroy have a 10% chance to drop a satoshi',fl:'A firm grip, and something left in your palm.'},
+ {id:'handshake',n:'Golden Handshake',slot:'gloves',il:16,base:'Servo Fists',mods:{aspd:[18,26],dmg:[30,45]},sp:'Ordinary machines you destroy have a 13% chance to drop a satoshi',fl:'A firm grip, and something left in your palm.'},
  {id:'fineprint',n:'Fine Print',slot:'amulet',il:18,base:'Sigil Core',mods:{skills:[1,2],en:[30,45]},sp:'Your skills recover 20% faster',fl:'It was all there. It was very small.'},
  {id:'cloud9',n:'Cloud Nine',slot:'boots',il:17,base:'Mag Greaves',mods:{mspd:[22,25],hp:[40,60]},sp:'+10% chance to avoid any hit',fl:'One floor above the weather.'},
  {id:'clock',n:'Dead Man’s Alarm',slot:'belt',il:19,base:'Power Girdle',mods:{hp:[50,80],regenH:[4,6]},sp:'Below 30% life, every machine near you is slowed for 4 seconds (once a minute)',fl:'The battery has been dead for fifty years. It rings anyway.'},
