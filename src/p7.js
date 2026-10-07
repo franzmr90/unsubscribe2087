@@ -90,7 +90,7 @@ function p7Tick(dt){mktTick(dt);mktLiqCheck();uniTick(dt);if(OPT.autoStim&&G.hp>
       if(pw.n===4||pw.n===7){const a=rnd(0,6.283),c=spawn(wpick(pool),pw.o.x+Math.cos(a)*7.5,pw.o.y+Math.sin(a)*7.5,{champ:1});if(c){c.aggro=true;toast('A champion comes for the shrine.')}}}
     if(pw.t<=0){W.pow=null;pw.o.used=1;mktNews(.13,'work was proven in '+W.z.n);const n=9+Math.floor(W.ml/3);for(let i=0;i<3;i++)addDrop({sat:Math.ceil(n/3)},pw.o.x,pw.o.y);sfx('quest');parts(pw.o.x,pw.o.y,30,['#f7931a','#fff'],3,1.6);addAdopt(1,'work was proven');campHit('ban');toast('Proof of work accepted. The block reward is on the ground: about '+n+' sats.')}}}
 /* Mr. Float: now or later, and borrowing in a currency that melts */
-const loanAmt=()=>400*G.lvl*G.cpi,nowCost=()=>150*G.lvl*G.cpi*((G.lean||0)>50?1.2:1);
+const loanAmt=()=>400*G.lvl*G.cpi,nowCost=()=>payTag(150*G.lvl*G.cpi*((G.lean||0)>50?1.2:1));
 function talkFloat(){const d=G.debt||0,real=d?Math.round(d/G.cpi/(G.debt0/G.debtCpi)*100):0;
   dlg('Mr. Float',d?'“You owe me '+fmt(d)+'. I charge interest, naturally.” He does not mention that prices have been rising faster than his interest. In real terms you now owe about '+real+'% of what you borrowed.':'“Everybody wants it now. I sell now. The orange fellow across the square sells later. And if you are short, I lend, at a very reasonable rate.”',[
    ['Now: +40% damage for 5 minutes · '+fmt(nowCost()),()=>{if(G.credits<nowCost()){toast('Not enough credits');sfx('err');return}G.credits-=nowCost();addAdopt(-1,'you chose now');G.tpT=300;calc();sfx('buff');toast('Strength on credit: +40% damage for 5 minutes')}],
