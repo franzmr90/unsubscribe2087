@@ -47,8 +47,9 @@ const hints=await p.evaluate(()=>{
   __g.closeSheet();
   __g.openSheet('skills');
   const skills=document.getElementById('sheetIn').innerText;
-  __g.openSheet('web');
+  document.querySelector('[data-tab="web"]').click();
   const web=document.getElementById('sheetIn').innerText;
+  __g.closeSheet();
   __g.openSheet('shift',{only:['shift']});
   const shift=document.getElementById('sheetIn').innerText;
   return {skills,web,shift,rw:__g.SQ.carer.rw};
@@ -57,14 +58,14 @@ if(!/a fifth in Act V/.test(hints.skills))fail('passive slots '+hints.skills.sli
 if(!/Each level you gain adds one/.test(hints.web)||/One point per level/.test(hints.web))fail('web line');
 if(!/two for each rank from 6 to 10/.test(hints.shift))fail('shift line');
 if(!/\+3 attribute points/.test(hints.rw))fail('caretaker '+hints.rw);
-await p.evaluate(()=>__g.openSheet('skills'));
+await p.evaluate(()=>{__g.closeSheet();__g.openSheet('skills')});
 if(OUT)await p.screenshot({path:path.join(OUT,'skills-level-skills.png')});
-await p.evaluate(()=>__g.openSheet('web'));
+await p.evaluate(()=>document.querySelector('[data-tab="web"]').click());
 if(OUT)await p.screenshot({path:path.join(OUT,'skills-level-web.png')});
 
 const syn=await p.evaluate(()=>{
   const g=__g,fail=[],sk=g.CLS[g.G.cls].sk;
-  g.openSheet('skills');
+  g.closeSheet();g.openSheet('skills');
   let shown=0,hidden=0;
   for(let i=0;i<sk.length;i++){
     if(!Math.floor(i/3)||!sk[i].a)continue;
