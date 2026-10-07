@@ -12,6 +12,8 @@ The button always said Rise in Stillwater. `HT()` is Stillwater Commons in Act I
 
 Hardcore still showed the portal sentence and the Stillwater button. That path deletes the hero and starts the prequel over. The note now says there is no portal, and the button says Begin again.
 
+A player hit is allowed while a dialog is up. It was also allowed during the fall, so a second blow ran the death again: another fine, another count, and the notice started over with the new name. While you are already falling, that blow does not land.
+
 ## The declaration
 
 Declaring holds you for ten seconds. Doors in the world already refused. The Transit Gate, the VR rig, the prequel replay, and a town portal opened from a district did not. They now use the same refusal: "The declaration holds you here for a moment."
