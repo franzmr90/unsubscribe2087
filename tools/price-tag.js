@@ -59,7 +59,7 @@ await p.click('[data-buy="id"]');
 const idPay=await p.evaluate(()=>({credits:__g.G.credits,named:__g.G.bag[0]&&__g.G.bag[0].id}));
 check('appraisal takes 42 and names the piece', idPay.credits===0&&idPay.named, JSON.stringify(idPay));
 
-await p.evaluate(()=>{__g.closeSheet();__g.setMode('play');__g.G.credits=125;__g.G.bag=[];__g.openSheet('items',{only:['items','gamble']})});
+await p.evaluate(()=>{__g.closeSheet();__g.setMode('play');__g.G.credits=125;__g.G.bag=[];__g.openSheet('gamble',{only:['items','gamble']})});
 const box=await p.evaluate(()=>{
   const line=[...document.querySelectorAll('#sheet p')].map(n=>n.textContent).find(t=>/Each box costs/.test(t))||'';
   const btn=document.querySelector('[data-box]');
