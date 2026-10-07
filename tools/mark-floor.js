@@ -60,7 +60,7 @@ const hit=await p.evaluate(()=>{
   g.dmgEnemy(e2,100,false);
   return {low,dealt,dealt3:1000-e2.hp,mk3:e2.mkP};
 });
-check('rank 1 deals the 30 percent mark', hit.dealt===130&&hit.low===0.24, JSON.stringify(hit));
+check('rank 1 deals the 30 percent mark', hit.dealt===130&&Math.abs(hit.low-0.24)<1e-9, JSON.stringify(hit));
 check('rank 3 deals the printed 32 percent', hit.dealt3===132&&Math.abs(hit.mk3-0.32)<1e-9, JSON.stringify(hit));
 
 await p.evaluate(()=>{
