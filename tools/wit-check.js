@@ -54,7 +54,8 @@ const fight=await p.evaluate(()=>{
   if(a&&c){a.tes=6;c.tes=0;a.hp=c.hp=a.max=c.max=5000;arm(9);g.G.page=40;g.cast(0);out.onRec=a.onRecT>0&&a.onRecM>1;
     g.S.crit=0;g.S.dmin=g.S.dmax=20;g.S.shock=0;const ha=a.hp,hc=c.hp;g.hit(a,1);g.hit(c,1);out.markLoss=ha-a.hp;out.plainLoss=hc-c.hp;out.second=out.markLoss>out.plainLoss&&out.plainLoss>0}
   g.G.pas=[13];g.G.sk[13]=1;g.calc();g.S.crit=0;g.S.dmin=g.S.dmax=20;g.S.shock=0;
-  if(a&&c){a.onRecT=0;a.onRecM=0;c.onRecT=0;a.tes=5;c.tes=0;a.hp=c.hp=5000;const ha=a.hp,hc=c.hp;g.hit(a,1);g.hit(c,1);out.namedSelf=Math.abs((ha-a.hp)-(hc-c.hp))<0.01}
+  if(a&&c){a.onRecT=0;a.onRecM=0;c.onRecT=0;a.tes=5;c.tes=0;a.hp=c.hp=5000;const ha=a.hp,hc=c.hp;g.hit(a,1);g.hit(c,1);out.namedSelf=Math.abs((ha-a.hp)-(hc-c.hp))<0.01;
+    g.S.dmin=g.S.dmax=5;g.S.shock=0;g.S.crit=0;g.S.dmg=0;a.hp=c.hp=500;a.tes=4;c.tes=0;g.P.partyHit=1;const nha=a.hp,nhc=c.hp;g.hit(a,1);g.hit(c,1);g.P.partyHit=0;out.namedShow=Math.round(nha-a.hp)>Math.round(nhc-c.hp)}
   g.G.pas=[14];g.G.sk[14]=1;g.G.sk[13]=0;g.calc();g.G.god=false;g.P.inv=0;g.setMode('play');g.G.page=90;g.G.hp=30;g.hurt(1e9,false,null);
   out.saved=g.G.hp===1&&g.G.page===0&&g.mode!=='dying';
   g.G.page=0;g.G.hp=30;g.P.inv=0;g.G.god=false;g.setMode('play');g.hurt(1e9,false,null);out.died=g.mode==='dying';
@@ -62,14 +63,19 @@ const fight=await p.evaluate(()=>{
   g.W.ents.splice(0);const src=near();
   g.G.merc={k:'hound',hp:100,dead:false,name:'Kit'};
   g.W.merc={x:g.P.x+1,y:g.P.y,r:.28,hp:100,max:100,cd:0,ph:0,flash:0,swing:0,fx:1,armM:1,soundSwing:0};
+  g.W.allies.push({k:'plot',plot:1,x:g.P.x,y:g.P.y,life:6,r:2});
   arm(10);g.G.page=40;g.cast(0);out.granted=!!(g.W.merc&&g.W.merc.soundSwing===1);
+  out.plotIgnored=!g.W.allies.some(a=>a.plot&&a.soundSwing);
   if(src){src.hp=src.max=800;g.P.atk=0;g.attack();out.ownSound=src.lt==='sound';out.ownType=src.lt||'';
     src.aggro=true;src.hp=800;g.W.merc.x=src.x;g.W.merc.y=src.y;g.W.merc.cd=0;
-    g.update(.05);out.allySound=src.lt==='sound';out.spentSwing=g.W.merc.soundSwing===0}
+    g.update(.05);out.allySound=src.lt==='sound';out.spentSwing=g.W.merc.soundSwing===0;
+    const fl={k:'minion',flock:1,kind:'stray',x:src.x-.35,y:src.y,r:.28,foe:0,cd:0,m:.4,ivl:.65,rng:1.3,spd:4,ph:0,life:99,dt:'rust',soundSwing:1};
+    g.W.allies.push(fl);src.hp=800;src.lt='';g.update(.15);out.flockSound=src.lt==='sound';out.flockSpent=fl.soundSwing===0;
+    src.lt='';src.hp=800;fl.cd=0;g.update(.15);out.flockOnce=src.lt==='rust'}
   const keep=g.G.page;g.P.tag=1;g.P.page=50;if(src){src.hp=800;g.SKF.witness[1](1,1)}out.tagSpent=g.P.page<50&&g.G.page===keep;g.P.tag=0;g.P.page=0;
   g.W.ents.splice(0);g.G.page=72;g.render();
   return out});
-const want={idle:0,spawned:true,look:true,blankHp:true,blankCd:true,blankLog:true,onRec:true,second:true,namedSelf:true,saved:true,died:true,granted:true,ownSound:false,allySound:true,spentSwing:true,tagSpent:true};
+const want={idle:0,spawned:true,look:true,blankHp:true,blankCd:true,blankLog:true,onRec:true,second:true,namedSelf:true,namedShow:true,saved:true,died:true,granted:true,plotIgnored:true,ownSound:false,allySound:true,spentSwing:true,flockSound:true,flockSpent:true,flockOnce:true,tagSpent:true};
 if(!(fight.rose>1))fail('record did not rise '+JSON.stringify(fight));
 if(!(fight.atkDelta<0.05))fail('attack did not stop the rise '+JSON.stringify(fight));
 if(!(fight.castDelta<0.05))fail('cast did not stop the rise '+JSON.stringify(fight));

@@ -966,7 +966,7 @@ const b64=u=>{let s='';for(let i=0;i<u.length;i+=4096)s+=String.fromCharCode.app
 const unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 function encW(w){return{zi:w.zi,N:w.N,ml:w.ml,tier:w.tier,map:b64(w.map),wh:b64(w.wh),seen:b64(w.seen),leftT:w.leftT,sub:w.sub,suAt:w.suAt,ents:w.ents.filter(e=>!e.mp),objs:w.objs,drops:w.drops,decals:w.decals.slice(-40),portals:w.portals,goal:w.goal,start:w.start}}
 function decW(o){const w=Object.assign({},o);w.map=unb64(o.map);w.wh=unb64(o.wh);w.seen=unb64(o.seen);return w}
-function saveObj(){const zs={};for(const k in ZS)zs[k]=encW(ZS[k]);let cur=null;if(W&&!W.z.town&&!W.z.sim){zs[W.zi]=encW(W);cur={zi:W.zi,x:P.x,y:P.y}}return{G,zs,cur,opt:OPT,t:Date.now()}}
+function saveObj(){const zs={};for(const k in ZS)zs[k]=encW(ZS[k]);let cur=null;if(W&&P){if(!W.z.town&&!W.z.sim)zs[W.zi]=encW(W);cur={zi:W.zi,x:P.x,y:P.y};if(W.z.sim&&W.sim)cur.sim=W.sim.rush?{rush:1}:{wave:Math.max(1,W.sim.wave|0)}}return{G,zs,cur,opt:OPT,t:Date.now()}}
 function save(force){if(!G)return false;let ok=false;try{localStorage.setItem(skey(SLOT),JSON.stringify(saveObj()));localStorage.setItem(SAVEKEY+'_slot',SLOT);ok=true}catch(e){}
   if(CL&&(force||Date.now()-clAt>10000))cloudSave();return ok||!!CL}
 /* account save: the viewer's own private documents in this page's database, one for the hero and one per district */
@@ -986,8 +986,8 @@ function cloudNote(){const n=$('cloudNote');if(n)n.textContent=clState==='lookin
 function loadStored(n){try{const s=localStorage.getItem(skey(n===undefined?SLOT:n));return s?JSON.parse(s):null}catch(e){return null}}
 function applySave(o){if(!o||!o.G||!CLS[o.G.cls])return false;G=o.G;G.sats=G.sats||0;G.merc=G.merc||null;G.sq=G.sq||{};G.stash=G.stash||[];while(G.sk.length<15)G.sk.push(0);if(G.q.q10===3&&G.unlocked<12)G.unlocked=12;for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;if(G.q.q5===3&&G.unlocked<7)G.unlocked=7;if(G.hp<=0){G.hp=9999;o.cur=null}ZS={};for(const k in (o.zs||{}))ZS[k]=decW(o.zs[k]);if(o.opt)OPT=Object.assign({},OPT_DEF,o.opt);G._cur=o.cur||null;boonRefund();return true}
 function startPlay(){ensureG();mpConnect();mode='play';$('title').hidden=true;$('hud').hidden=false;calc();setSkillButtons();
-  const c=G._cur;delete G._cur;
-  if(c&&ZS[c.zi])enter(c.zi,{at:c});else if(G.pre===1){enter(PREZ);return}else enter(HT());
+  const c=G._cur;delete G._cur;const cz=c&&ZONES[c.zi];
+  if(cz&&(cz.town||cz.sim||ZS[c.zi])){const o={at:c,swap:1};if(cz.sim){o.wave=(c.sim&&c.sim.wave)||1;if(c.sim&&c.sim.rush)o.rush=1}enter(c.zi,o);if(cz.pre)return}else if(G.pre===1){enter(PREZ);return}else enter(HT());
   if(!G.q.q1&&W.z.town&&G.seenIntro!==false){talkTo('gramps')}
   if(G.rbNote){delete G.rbNote;setTimeout(()=>dlg('The deal is undone','Your acceptance of MANDATE’s offer has been struck from the record: its credits are gone, adoption is back where it was, and MANDATE is waiting at full strength in Still Water. This time the fight will pause and count down before you can answer.',[['Good']]),800)}}
 
@@ -1103,10 +1103,10 @@ function spawn(k,x,y,o){
   if(defragAct1(e)){e.dty='impact';e.dmg*=.85}
   p7Spawn(e);W.ents.push(e);if(isBoss(k))W.boss=e;return e}
 function enter(zi,o){setTimeout(mpBeat,0);
-  o=o||{};const carry=W&&W.allies?W.allies.filter(a=>a.per):[];if(W&&!W.z.town&&!W.z.sim){raidLeave();W.leftT=G.time;ZS[W.zi]=W;clDirty[W.zi]=1}
+  o=o||{};const carry=!o.swap&&W&&W.allies?W.allies.filter(a=>a.per):[];if(!o.swap&&W&&!W.z.town&&!W.z.sim){raidLeave();W.leftT=G.time;ZS[W.zi]=W;clDirty[W.zi]=1}
   const z=ZONES[zi];G.zone=zi;if(!z.sim)G.town=townOf(zi);let old=0;
   if(z.town)buildTown(zi);else if(z.sim)buildSim(o.wave||1,o.rush);else if(ZS[zi]&&ZS[zi].tier===G.tier&&!o.fresh){W=ZS[zi];old=1;ensureCage();initRuntime()}else genZone(zi);
-  let at=o.at||W.start;if(o.from==='next'){const p=W.portals.find(p=>p.kind==='next');at=nearFree(p||W.goal||W.start)}else if(o.from==='exit'&&W.exit)at={x:W.exit.ix,y:W.exit.iy};
+  let at=o.at||W.start;if(o.from==='next'){const p=W.portals.find(p=>p.kind==='next');at=nearFree(p||W.goal||W.start)}else if(o.from==='exit'&&W.exit)at={x:W.exit.ix,y:W.exit.iy};else if(o.at&&!free(at.x,at.y,.3))at=nearFree(at,1.2);
   P={x:at.x,y:at.y,r:.32,dir:{x:1,y:0},atk:0,cd:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],silence:0,oc:0,swing:0,flash:0,inv:.5,slow:0,buff:0,haste:0,guard:0,dash:null,volley:null,moving:false,warn:0,movedT:0,spin:0,walkPh:0,shr:null,band:10,hb:0,stealth:0,ambT:0,ambM:1,mech:0,crunch:0,streak:0,streakT:0};BLOOD=[];for(const a of carry){a.x=P.x+rnd(-1,1);a.y=P.y+rnd(-1,1);W.allies.push(a)}spawnMerc();evEnd(1);if(old&&W.leftT!==undefined&&G.time-W.leftT>150&&repop())setTimeout(()=>toast('You were gone a while. The machines have drifted back.'),900);if(!z.town&&!z.sim){placeQuestObjs();ensureNode();}p7Enter();if(!z.town&&!z.sim){for(const k in SQ){const st=sqStep(k);if(st&&st.t==='esc'&&st.zi===zi)escStart(k,SQ[k].steps[G.sq[k].s-1].esc)}}if(z.town)for(const k in sqSkip)delete sqSkip[k];
   if(z.town){if(G.form){G.form=null;G.formDt=null;G.formT=0;calc()}G.hp=S.maxHp;G.en=S.maxEn}
   else if(!z.sim){const q=z.su?z.su.q:z.bq;if(G.q[q]===0){G.q[q]=1;toast('New quest: '+QUESTS[q].n);sfx('questnew')}
@@ -1172,7 +1172,7 @@ function stateMarks(){if(!W||!W.fx||!P)return;const live={};
   if(W.ents)for(let i=0;i<W.ents.length;i++){const e=W.ents[i];if(!e)continue;if(e.nc>0)keep('nc'+i,{k:'mark',x:e.x,y:e.y,col:'#e0bd6e'});if(e.leave)keep('lv'+i,{k:'patch',x:e.x,y:e.y,r:1.15,col:'#c9a868'});if(!(e.hp>0)||noted>=12)continue;if((e.tes||0)>0){keep('tes'+i,{k:'mark',x:e.x,y:e.y,col:'#e6dcc8',n:e.tes});noted++}if(noted<12&&e.onRecT>0){keep('orec'+i,{k:'mark',x:e.x+.35,y:e.y,col:'#8d9aab'});noted++}if(noted<12&&e.mc>0){keep('mc'+i,{k:'mark',x:e.x,y:e.y,col:'#3fbf8f'});noted++}}
   if(P.two&&P.two.n>0)keep('two',{k:'mark',x:P.x,y:P.y,col:'#d9822b',n:P.two.n});
   if(P.redact>0)keep('redact',{k:'patch',x:P.x,y:P.y,r:1.15,col:'#e6dcc8'});
-  if(G.cls==='homesteader'){const fm=hsForm();if(fm==='hound')keep('form',{k:'mark',x:P.x,y:P.y,col:'#6a8f62'});else if(fm==='hull')keep('form',{k:'patch',x:P.x,y:P.y,r:1.45,col:'#4e6a48'});else if(fm==='worn')keep('form',{k:'mark',x:P.x,y:P.y,col:'#c9803a'})}
+  if(G.cls==='homesteader'){const fm=hsWearing();if(fm==='hound')keep('form',{k:'mark',x:P.x,y:P.y,col:'#6a8f62'});else if(fm==='hull')keep('form',{k:'patch',x:P.x,y:P.y,r:1.45,col:'#4e6a48'});else if(fm==='worn')keep('form',{k:'mark',x:P.x,y:P.y,col:'#c9803a'})}
   for(let i=W.fx.length-1;i>=0;i--)if(W.fx[i].sid&&!live[W.fx[i].sid])W.fx.splice(i,1)}
 function parts(x,y,n,cols,sp,up){if(OPT.fx==='thin')return;for(let i=0;i<n;i++){const a=rnd(0,6.283),v=rnd(.3,1)*sp;W.parts.push({x,y,z:rnd(8,26),vx:Math.cos(a)*v,vy:Math.sin(a)*v,vz:rnd(40,120)*(up||1),t:0,life:rnd(.4,.9),col:pick(cols),s:rnd(2,4.5)})}}
 function pdmg(m,e){
@@ -1191,7 +1191,7 @@ function pdmg(m,e){
   let c=P.e82>0||Math.random()*100<S.crit;if(c)d*=S.critM;
   if(S.sp.severance&&Math.random()<.15){d*=3;c=true}
   return[d,c]}
-function dmgEnemy(e,d,crit){if(e.hp<=0)return;if(e.mp){mpHurt(e,d,crit);return}e.hits=(e.hits||0)+1;d/=partyH();if(e.mark>0)d*=1.3;if(e.onRecT>0&&e.onRecM)d*=e.onRecM;if(P&&P.partyHit&&S.named&&(e.tes||0)>0)d*=1+S.named;
+function dmgEnemy(e,d,crit){if(e.hp<=0)return;if(e.mp){mpHurt(e,d,crit);return}e.hits=(e.hits||0)+1;d/=partyH();if(e.mark>0)d*=1.3;if(e.onRecT>0&&e.onRecM)d*=e.onRecM;if(P&&P.partyHit&&S.named&&(e.tes||0)>0){const base=d,up=d*(1+S.named),shown=Math.round(base);d=Math.round(up)===shown?shown+.5:up}
   const snd=e.snd;e.snd=0;if(!snd){if(e.mods.shield)d*=.5;if(e.ward>0)d*=.6}e.hp-=d;e.flash=.12;wake(e);if(crit){sfx('crit');hitStop=.04}
   float(e.x,e.y,Math.round(d)+(crit?'!':''),crit?'#ffe36b':'#ffffff',0);parts(e.x,e.y,crit?5:2,['#ffd27a','#fff','#ff9a3c'],2.2);
   if(e.mods.arc&&e.arcCd<=0){const soft=defragAct1(e);e.arcCd=soft?2.1:1.3;const n=soft?4:6,sp=soft?3.2:5,dm=soft?.38:.5;for(let i=0;i<n;i++){const a=i*(6.283/n)+e.ph;const pr={x:e.x,y:e.y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:1.3,foe:true,dmg:e.dmg*dm,col:'#59e0e6'};if(soft)pr.src={dty:'surge',name:e.name};W.projs.push(pr)}}
@@ -1332,6 +1332,11 @@ function skillTick(dt){if(P.dump&&P.dump.t>0){P.dump.t-=dt;if(P.dump.t<=0)P.dump
 /* Draft magnitudes for the Homesteader. The plan fixed the body; these are the row-3-sized coefficients. */
 const HS={leash:4.5,leashBull:7,graftLeash:1,graftDur:1.4,soakerDur:1.5,shed:.7,houndSpd:28,houndArm:.7,hullSpd:-28,hullArm:1.55,wornArm:1.35,plotR:2.2,plotLife:6,frostR:3.4,frostLife:8,hedgeLife:4,strayCap:4,bigStep:2,bigMax:8,bigArm:3,fallowPlot:1.6};
 function hsForm(){return P&&P.tag?(P.form||null):(G.form||null)}
+/* The body on screen is G.form. A companion cast (TAGQ) is the only time the form lives on P. */
+function hsWearing(){const via=typeof TAGQ!=='undefined'&&TAGQ&&P&&P.tag;return via?(P.form||null):((G&&G.form)||null)}
+function hsShed(){const via=typeof TAGQ!=='undefined'&&TAGQ&&P&&P.tag,f=hsWearing();if(!f){toast('You are not wearing a chassis');return false}
+  if(via){P.form=null;P.formDt=null;P.formT=0}else{const was=G.form;G.form=null;G.formDt=null;G.formT=0;if(was)calc()}
+  if(P&&P.dash)P.dash=null;P.castWait=(S&&S.shed)||HS.shed;return true}
 function hsSetForm(f,dt){
   if(P&&P.tag){P.form=f||null;P.formDt=f?(dt||null):null;if(f!=='hull')P.formT=0;return}
   const was=G.form;G.form=f||null;G.formDt=f?(dt||null):null;if(f!=='hull')G.formT=0;if(was!==G.form)calc()}
@@ -1341,7 +1346,7 @@ function hsGraft(){const w=P&&P.tag?(G.tag&&G.tag.eq&&G.tag.eq.weapon):(G.eq&&G.
 function hsLeash(){return HS.leash+(hsGraft()?HS.graftLeash:0)}
 function hsDur(sec){return sec*(hsGraft()?HS.graftDur:1)*((S.sp&&S.sp.soaker)?HS.soakerDur:1)}
 function hsBlocked(i){
-  if(!G||G.cls!=='homesteader')return null;const sk=CLS.homesteader.sk[i];if(!sk||!sk.a)return null;const f=hsForm();
+  if(!G||G.cls!=='homesteader')return null;const sk=CLS.homesteader.sk[i];if(!sk||!sk.a)return null;const f=hsWearing();
   if(!f&&i===7)return 'You are not wearing a chassis';
   if(f==='hull'&&i===1)return 'The hull does not become a hound';
   if(f&&(i%3===0||i%3===2))return f==='hound'?'The hound has no hands for that':f==='hull'?'The hull has no hands for that':'You are wearing a machine. Shed it first.';
@@ -1363,19 +1368,22 @@ function hsFlockStep(a,dt){
   if(a.foe){
     let foe=P,bd=home;for(const e of W.ents){if(e.hp<=0||e.mp)continue;const d=dist(e,a);if(d<bd){bd=d;foe=e}}
     const d=dist(foe,a)||1;
-    if(d>1.05){a.x+=(foe.x-a.x)/d*spd;a.y+=(foe.y-a.y)/d*spd;a.mov=true;a.fx=(foe.x-a.x)>0?1:-1}
+    if(d>1.05){hsNudge(a,(foe.x-a.x)/d*spd,(foe.y-a.y)/d*spd);a.mov=true;a.fx=(foe.x-a.x)>0?1:-1}
     const reach=foe===P?1.2:(a.rng||1.2)+(foe.r||.3);
     if(d<reach&&a.cd<=0){a.cd=a.ivl||.65;
       if(foe===P){a.bit=(a.bit||0)+1;hurt((a.bite||8)*fer*biteF,false,null)}
-      else{P.allySwing=1;P.partyHit=1;DT=a.dt||'rust';hit(foe,(a.m||.4)*fer,true);P.allySwing=0;P.partyHit=0;DT=null}}
+      else hsFlockHit(a,foe,(a.m||.4)*fer)}
     if(!a.feral&&home<1.15&&(a.bit||0)>0)a.foe=0;
     return}
   let t=null;if(a.kind==='bull')t=nearest(8,a);else t=nearest(5.5,P);
   const g=t||P,d=dist(g,a)||1,rg=a.rng||1.15,want=t?rg*.85:1.35;
-  if(d>want){a.x+=(g.x-a.x)/d*spd;a.y+=(g.y-a.y)/d*spd;a.mov=true;a.fx=(g.x-a.x)>0?1:-1}
-  if(t&&d<rg+t.r&&a.cd<=0){a.cd=a.ivl||.65;P.allySwing=1;P.partyHit=1;DT=a.dt||(a.kind==='bull'?'heat':'rust');hit(t,a.m||.4,true);P.allySwing=0;P.partyHit=0;DT=null}}
+  if(d>want){hsNudge(a,(g.x-a.x)/d*spd,(g.y-a.y)/d*spd);a.mov=true;a.fx=(g.x-a.x)>0?1:-1}
+  if(t&&d<rg+t.r&&a.cd<=0){a.cd=a.ivl||.65;hsFlockHit(a,t,a.m||.4)}}
+function hsNudge(a,dx,dy){if((a.foe||a.feral)&&hedgeAt(a.x+dx,a.y+dy,a))return;a.x+=dx;a.y+=dy}
+function hsFlockHit(a,foe,mul){const go=()=>{P.allySwing=1;hit(foe,mul,true);P.allySwing=0};DT=a.dt||(a.kind==='bull'?'heat':'rust');if(a.soundSwing)witWrap(a,go);else{P.partyHit=1;go();P.partyHit=0}DT=null}
 function hedgeAt(x,y,who){
   if(!W||!W.allies)return false;
+  if(who&&who!==P&&(who===W.merc||who===W.tag||who===W.esc))return false;
   for(const a of W.allies){if(a.k!=='hedge'||!(a.life>0))continue;const rr=(a.r||.42)+(who&&who.r?Math.min(who.r,.32):.2);
     if(Math.hypot(a.x-x,a.y-y)>=rr)continue;if(who&&Math.hypot(a.x-who.x,a.y-who.y)<rr)continue;return true}
   return false}
@@ -1399,6 +1407,7 @@ function witPay(n){if(recGet()<n)return 0;recSet(recGet()-n);return n}
 function witImpact(e,d){if(!e||e.hp<=0||!(d>0))return;const prev=DT;DT='impact';const out=typed(e,d);dmgEnemy(e,out,false);DT=prev}
 function witWrap(who,fn){const snd=who&&who.soundSwing;if(snd)who.soundSwing=0;const prev=DT;if(snd)DT='sound';const ph=P.partyHit;P.partyHit=1;try{fn(!!snd)}finally{P.partyHit=ph;DT=prev}}
 function witMercHit(m,e,d){witWrap(m,snd=>{const out=snd?typed(e,d):d;dmgEnemy(e,out,false)})}
+function witLends(a){return !!(a&&a.k==='minion'&&(a.hp===undefined||a.hp>0))}
 function witTick(dt){if(!W)return;const castHold=P.witCast||P.castWait>0,fillHold=castHold||P.witHold||P.atk>0;P.witCast=0;P.witHold=0;
   for(const e of W.ents){if(e.onRecT>0)e.onRecT=Math.max(0,e.onRecT-dt);if(e.hp<=0||e.mp)continue;if(witSeen(e)){e.off=0;if(!castHold){e.watch=(e.watch||0)+dt;const slow=Math.max(.15,1+((S&&S.tes)||0)/100);e.acc=(e.acc||0)+dt*slow/WIT.stack;if(e.acc>=1){e.acc-=1;e.tes=Math.min(witCap(),(e.tes||0)+1)}}}else{e.off=(e.off||0)+dt;const grace=(S&&S.filed)||0;if(e.off>grace&&(e.tes||0)>0){e.dec=(e.dec||0)+dt*WIT.decay;if(e.dec>=1){e.dec-=1;e.tes=Math.max(0,(e.tes||0)-1)}}}}
   if(fillHold||!witHostile())return;let rate=WIT.fill;if(!P.moving)rate*=WIT.still;if(S.margin&&G.hp<S.maxHp*.5)rate*=S.margin;if(S.footnote)rate*=S.footnote;if(S.recFill)rate*=1+S.recFill/100;if(witBook())rate*=WIT.book;if(S.sp&&S.sp.carbon)rate*=WIT.carbon;recSet(recGet()+rate*dt)}
@@ -1507,7 +1516,7 @@ Object.assign(SKF,{
   5:(L,m)=>{if(hsHands())return;hsSumFlock({kind:'bull',m:(.9+.12*L)*m,ivl:.9,rng:1.35,bite:10+2*L,r:.46,spd:3.4,dt:'heat'},1)},
   6:()=>{if(hsHands())return;const mul=P.compost||1;P.compost=0;const life=hsDur(HS.hedgeLife)*(mul>1?mul:1);const dx=P.dir.x,dy=P.dir.y,len=Math.hypot(dx,dy)||1,ux=dx/len,uy=dy/len,px=-uy,py=ux;
     for(let i=-2;i<=2;i++)W.allies.push({k:'hedge',plot:1,x:P.x+ux*1.2+px*i*.72,y:P.y+uy*1.2+py*i*.72,life,r:.42})},
-  7:()=>{if(!hsForm()){toast('You are not wearing a chassis');return}hsSetForm(null,null);P.castWait=(S.shed||HS.shed)},
+  7:()=>{hsShed()},
   9:(L,m)=>{if(hsHands())return;hsPlacePlot(P.x,P.y,{life:HS.frostLife,r:HS.frostR,m:(.35+.06*L)*m})},
   10:()=>{let t=null,bd=3.2;for(const e of W.ents){if(e.mp||e.hp<=0)continue;const d=dist(e,P);if(d<bd){bd=d;t=e}}
     if(!t){toast('No machine in reach');return}if(t.champ||t.su||isBoss(t.k)){toast('That one is too much machine to wear');return}
@@ -1525,13 +1534,13 @@ Object.assign(SKF,{
   6:()=>{if(!(P&&P.tag)&&G.corrZi===W.zi){toast('Already corrected in this district');return}if(recGet()<1){witBlank();return}const loss=P.lastLoss||0;if(!(loss>0)){toast('Nothing to correct');return}recSet(0);let h=loss;if(S.retr)h*=1+S.retr/100;if(P&&P.tag)P.hp=Math.min(P.max||P.hp,(P.hp||0)+h);else{heal(h);G.corrZi=W.zi}float(P.x,P.y,'Corrected','#7be495',0)},
   7:()=>{if(recGet()<witNeed(7)){witBlank();return}if(!witPay(witNeed(7))){witBlank();return}P.redact=2;float(P.x,P.y,'Redacted','#e6dcc8',0)},
   9:(L)=>{if(recGet()<witNeed(9)){witBlank();return}let best=null,bt=-1;for(const e of W.ents){if(e.hp<=0||e.mp)continue;if((e.tes||0)>bt){bt=e.tes||0;best=e}}if(!best||bt<WIT.high){toast('The testimony is too thin');return}if(!witPay(witNeed(9))){witBlank();return}best.onRecT=WIT.onRec;best.onRecM=1+.12*L;float(best.x,best.y,'On the record','#e6dcc8',0);fxAim('mark',best.x,best.y)},
-  10:()=>{if(recGet()<witNeed(10)){witBlank();return}const cands=[];if(W.merc&&W.merc.hp>0)cands.push(W.merc);if(W.tag&&W.tag.hp>0&&!(P&&P.tag))cands.push(W.tag);for(const a of W.allies)if(a&&(a.hp===undefined||a.hp>0))cands.push(a);let who=null,bd=12;for(const a of cands){const d=dist(a,P);if(d<bd){bd=d;who=a}}if(!who){toast('Nobody to attribute');return}if(!witPay(witNeed(10))){witBlank();return}who.soundSwing=1;float(who.x,who.y,'Unnamed','#f7931a',0)},
+  10:()=>{if(recGet()<witNeed(10)){witBlank();return}const cands=[];if(W.merc&&W.merc.hp>0)cands.push(W.merc);if(W.tag&&W.tag.hp>0&&!(P&&P.tag))cands.push(W.tag);for(const a of W.allies)if(witLends(a))cands.push(a);let who=null,bd=12;for(const a of cands){const d=dist(a,P);if(d<bd){bd=d;who=a}}if(!who){toast('Nobody to attribute');return}if(!witPay(witNeed(10))){witBlank();return}who.soundSwing=1;float(who.x,who.y,'Unnamed','#f7931a',0)},
   12:(L)=>{if(recGet()<1){witBlank();return}const ons=W.ents.filter(e=>e.hp>0&&!e.mp&&witSeen(e)&&(e.tes||0)>0);if(!ons.length){toast('Nothing on the page');return}recSet(0);for(const e of ons){witImpact(e,(e.watch||0)*(1.6+.25*L)*(1+(G.lvl||1)*.01));e.tes=0;e.watch=0;e.acc=0}}}
 });
-function cast(slot){const i=G.slots[slot];if(mode!=='play'||i<0||i===undefined)return;if(P.castWait>0){toast('Still casting');sfx('err');return}const s=CLS[G.cls].sk[i],L=sl(i);if(!L||!s.a||P.cd[i]>0||P.dash)return;if(P.silence>0){toast('Silenced');sfx('err');return}
-  if(G.cls==='homesteader'){const why=hsBlocked(i);if(why){toast(why);sfx('err');return}}
+function cast(slot){const i=G.slots[slot];if(mode!=='play'||i<0||i===undefined)return;const s=CLS[G.cls].sk[i],L=sl(i);const leaving=G.cls==='homesteader'&&i===7&&!!hsWearing();if(!leaving&&P.castWait>0){toast('Still casting');sfx('err');return}if(!L||!s.a||(!leaving&&(P.cd[i]>0||P.dash)))return;if(!leaving&&P.silence>0){toast('Silenced');sfx('err');return}
+  if(G.cls==='homesteader'&&!leaving){const why=hsBlocked(i);if(why){toast(why);sfx('err');return}}
   if(G.cls==='witness'){const why=witBlock(i);if(why){toast(why);if(why==='The page is blank')float(P.x,P.y,'the page is blank','#e6dcc8',0);sfx('err');return}}
-  const fk=forkOf(i);let cost=s.cost*(S.sp.hoodie?.75:1)*(fk.cost||1);if(P.freeThrow&&G.cls==='courier'&&(i===0||i===6||i===9||i===12)){cost=0;P.freeThrow=0}if(G.en<cost){toast('Not enough energy');sfx('err');return}
+  const fk=forkOf(i);let cost=s.cost*(S.sp.hoodie?.75:1)*(fk.cost||1);if(P.freeThrow&&G.cls==='courier'&&(i===0||i===6||i===9||i===12)){cost=0;P.freeThrow=0}if(G.en<cost){if(leaving)cost=0;else{toast('Not enough energy');sfx('err');return}}
   const t=nearest(6.5);if(t)face(t);G.en-=cost;P.cd[i]=s.cd*(1-Math.min(.6,S.cdr))*(fk.cd||1)*(G.sk[i]>=10?.8:1);skvPlay(G.cls,i,P.x,P.y,P.dir);mpNoteCast(i);if(!(G.cls==='anon'&&i===3&&P.stealth>0&&sl(11)&&!boonOn(11)))unstealth();sfx(SKS[G.cls][i]||'cast');if(G.cls==='witness'){P.witHold=1;P.witCast=1}P.fm={m:fk.dm||1,t:(G.fork||{})[i]==='refund'?2:1.2,k:(G.fork||{})[i],dt:skType(G.cls,i)};forkCast((G.fork||{})[i]);const na=W.allies.length;SKF[G.cls][i](L,syn(i));for(let k=na;k<W.allies.length;k++)if(!W.allies[k].holdDt)W.allies[k].dt=skType(G.cls,i);for(const a of W.allies)if(a.per&&!a.dt)a.dt=skType(G.cls,i);forkAfter(i,L)}
 function stim(){if(mode!=='play')return;if(W.sub&&W.sub.mods.includes('dry')){toast('Stims do not work in these proceedings');sfx('err');return}if(G.stims<1){toast('No stims. Brenda sells them.');return}if(G.hp>=S.maxHp&&!(S.sp.repair&&G.en<S.maxEn))return;G.stims--;heal(S.maxHp*.45);if(S.sp.repair)G.en=S.maxEn;sfx('stim');float(P.x,P.y,'+stim','#7be495');parts(P.x,P.y,10,['#7be495','#fff'],1.5,1.5)}
 
@@ -1622,7 +1631,8 @@ function update(dt){
       if(dist(a,P)>14){a.x=P.x;a.y=P.y}else if(d>(t?rg*.8:1.5+(a.off||0))){a.x+=(g.x-a.x)/d*sp;a.y+=(g.y-a.y)/d*sp;a.fx=(g.x-a.x)-(g.y-a.y)>0?1:-1;a.mov=true}
       if(a.e){a.e.x=a.x;a.e.y=a.y;a.e.ph+=dt;a.e.fx=a.fx;a.e.hp=a.hp}
       if(t&&d<rg+t.r&&a.cd<=0){a.cd=(a.ivl||.6)*(cr?.6:1);const m=a.m*(a.per&&G.cls==='founder'?1+.08*sl(2):1)*(cr?1.3:1)*vestMul(a);
-        if(a.raw){P.partyHit=1;dmgEnemy(t,a.raw*orgMul(true)*vestMul(a),false);P.partyHit=0}else if(rg>2){sfx('throw');shoot({x:(t.x-a.x)/d,y:(t.y-a.y)/d},m,0,{from:a,life:.6,col:'#e0bd6e',nl:1})}else{P.allySwing=1;P.partyHit=1;hit(t,m,true);P.allySwing=0;P.partyHit=0;if(a.aoe)for(const o of W.ents.slice())if(o!==t&&!(o.nc>0)&&dist(o,t)<1.7){P.allySwing=1;P.partyHit=1;hit(o,m*.6,true);P.allySwing=0;P.partyHit=0}}}}
+        const strike=snd=>{if(a.raw){dmgEnemy(t,snd?typed(t,a.raw*orgMul(true)*vestMul(a)):a.raw*orgMul(true)*vestMul(a),false);return}if(snd||!(rg>2)){P.allySwing=1;hit(t,m,true);P.allySwing=0;if(a.aoe)for(const o of W.ents.slice())if(o!==t&&!(o.nc>0)&&dist(o,t)<1.7){P.allySwing=1;hit(o,m*.6,true);P.allySwing=0}}else{sfx('throw');shoot({x:(t.x-a.x)/d,y:(t.y-a.y)/d},m,0,{from:a,life:.6,col:'#e0bd6e',nl:1})}};
+        if(a.soundSwing)witWrap(a,strike);else{const ph=P.partyHit;P.partyHit=1;strike(false);P.partyHit=ph}}}
     if(a.k==='mine'){a.arm-=dt;if(a.arm<=0&&nearest(1.3,a)){if(!a.cut&&G.cls==='anon'&&sl(13)&&!boonOn(13))a.cut=1;else a.life=0}}
     if(a.k==='raid'&&a.cd<=0){a.cd=.13;const c2=W.ents.filter(e=>dist(e,P)<9);if(c2.length){const t=pick(c2);W.fx.push({k:'bolt',x:t.x+rnd(-5,5),y:t.y-rnd(3,6),x2:t.x,y2:t.y,t:0,life:.18,col:'#e6e2d6'});hit(t,a.m)}}
     if(a.life<=0){W.allies.splice(W.allies.indexOf(a),1);if(a.k==='decoy')burst(a.x,a.y,2.6,a.m,a.stun||0,'#ffb238');if((a.k==='mine'||a.k==='blast')&&!a.hush)burst(a.x,a.y,a.r||2.4,a.m,0,'#ff5d4d');if(a.k==='pail'){parts(a.x,a.y,8,['#c9a868','#7be495'],1.6);toast('The lunch pail is empty.')}}}
@@ -2074,10 +2084,10 @@ function shillRare(){return (G.lvl||1)<6&&Math.random()<.65}
 function shillTurn(s,line){s.pitch=0;s.aggro=true;sfx('growl');toast(line);const n=shillTough()?2:0;for(let i=0;i<n;i++){const m=spawn('bot',s.x+rnd(-1.2,1.2),s.y+rnd(-1.2,1.2),{minion:1});if(m){m.name='Bagholder';m.aggro=true}}}
 function shillTalk(s){const c=s.coin,price=Math.min(10,G.sats);
   dlg(s.name,'“Friend! Have you heard about '+c+'? '+pick(SHILLQ)+' Ten sats gets you ten thousand '+c+'. What do you say?”',[
-   ['“No. There is bitcoin, and there is everything else.”',()=>{G.lean=clamp((G.lean||0)+6,-100,100);if(G.rep)addRep('btc',1);shillLeave(s,'“Maxi! Dinosaur!” He jogs off to find an easier mark.')}],
+   ['“No. There is bitcoin, and there is everything else.”',()=>{G.lean=clamp((G.lean||0)+6,-100,100);if(G.rep)addRep('btc',1);shillTurn(s,'“Maxi! Dinosaur! Get him!”')}],
    ['Trade '+price+' sats for 10,000 '+c,()=>{if(price<1){shillLeave(s,'“No sats? Then I am wasting the pitch.” He leaves.');return}G.sats-=price;addAdopt(-3,'sats sold for '+c);G.bagsHeld=(G.bagsHeld||0)+1;G.lean=clamp((G.lean||0)-15,-100,100);repAdj('btc',-3);W.ents.splice(W.ents.indexOf(s),1);sfx('coin');toast('You hold 10,000 '+c+'. He is already gone.');
      setTimeout(()=>{if(G)dlg(c,'The '+c+' chart goes straight down and then stops being a chart. The website is gone. Your ten thousand '+c+' are worth nothing, and the '+price+' sats you paid are in somebody else’s wallet. Nonce will hear about this.',[['Lesson learned']])},25000)}],
-   ['“What does it actually do?”',()=>dlg(s.name,'“Do? It goes up. That is what it does. Community. Utility. Ecosystem.” He is sweating.',[['“No.”',()=>shillLeave(s,'“You just hate innovation.” He leaves anyway.')],['Walk away',()=>shillLeave(s,'He lets you walk. The pamphlet stays in his hand.')]])]],3)}
+   ['“What does it actually do?”',()=>dlg(s.name,'“Do? It goes up. That is what it does. Community. Utility. Ecosystem.” He is sweating.',[['“No.”',()=>shillTurn(s,'“You just hate innovation!”')],['Walk away',()=>shillLeave(s,'He lets you walk. The pamphlet stays in his hand.')]])]],3)}
 function shillDie(e){campHit('coin');const coins=ri(6,14),n=ri(4,9)+Math.floor(W.ml/8);G.sats+=n;G.st.shills=(G.st.shills||0)+1;sfx('quest');float(e.x,e.y,'+'+n+' sats','#f7931a');addRep('btc',2);
   toast('Portfolio liquidated: '+coins+' coins nobody wanted, consolidated into '+n+' sats and withdrawn to your wallet.')}
 
@@ -3123,6 +3133,9 @@ function drawHsForm(X,Y,fm,dying){
     box(X-20,Y-12,36,10,4,col);box(X-26,Y-16,12,10,3,darkc);box(X+14,Y-10,12,5,2,darkc);
     box(X-14,Y-4+w,5,8,1,darkc);box(X-4,Y-4-w,5,8,1,darkc);box(X+6,Y-4+w,5,8,1,darkc);box(X+12,Y-4-w,5,7,1,darkc);
     ctx.fillStyle='#1a120c';ctx.fillRect(X-24,Y-14,2.2,2.2)}
+  else if(fm==='worn'){shadow(X,Y,22);box(X-24,Y-6,16,10,2,'#1a1814');box(X+8,Y-6,16,10,2,'#1a1814');
+    box(X-22,Y-20,44,16,3,col);box(X-10,Y-26,20,8,2,darkc);
+    ctx.fillStyle='#c9803a';ctx.fillRect(X-16,Y-14,32,3);ctx.fillStyle='#1a120c';ctx.fillRect(X-14,Y-17,4,3);ctx.fillRect(X+10,Y-17,4,3)}
   else{shadow(X,Y,18);box(X-18,Y-8,12,12,2,'#2a2418');box(X+6,Y-8,12,12,2,'#2a2418');
     box(X-16,Y-30,32,24,4,col);box(X-10,Y-38,20,10,3,darkc);
     ctx.fillStyle='#d9b08c';ctx.fillRect(X-3,Y-34,6,4);ctx.fillStyle='#c9803a';ctx.fillRect(X-12,Y-22,24,3)}
@@ -3721,7 +3734,7 @@ function setT(id,v){if(hudC[id]!==v){hudC[id]=v;$(id).textContent=v}}
 function hud(){objHud();if(P&&P.dg)setT('dgn',P.dg.n);
   $('hpF').style.height=clamp(G.hp/S.maxHp*100,0,100)+'%';$('enF').style.height=clamp(G.en/S.maxEn*100,0,100)+'%';const rec=$('rec');if(rec){if(G.cls==='witness'){rec.hidden=false;const rf=$('recF');if(rf)rf.style.width=clamp(G.page||0,0,100)+'%'}else rec.hidden=true}$('xpb').style.width=(G.lvl>=lvlCap()?100:G.xp/xpNext(G.lvl)*100)+'%';
   setT('hpT',OPT.orbNums?Math.ceil(G.hp):'');setT('enT',OPT.orbNums?Math.floor(G.en):'');setT('cr',fmt(G.credits)+(G.sats?' · '+G.sats+' sats':''));setT('cpi','prices ×'+(G.cpi<100?G.cpi.toFixed(2):fmt(G.cpi).slice(1)));setT('potn',G.stims);
-  sbtn.forEach((b,i)=>{const k=G.slots[i];if(k<0||k===undefined||!G.sk[k]){b.classList.add('off');return}const s=CLS[G.cls].sk[k];const blank=!!witBlock(k);b.classList.toggle('off',!!hsBlocked(k)||blank);b.classList.toggle('low',!hsBlocked(k)&&!blank&&G.en<s.cost*(S.sp.hoodie?.75:1));b.querySelector('em').style.transform='scaleY('+clamp(P.cd[k]/(s.cd*(1-S.cdr)),0,1)+')'});
+  sbtn.forEach((b,i)=>{const k=G.slots[i];if(k<0||k===undefined||!G.sk[k]){b.classList.add('off');return}const s=CLS[G.cls].sk[k];const blank=!!witBlock(k);b.classList.toggle('off',!!hsBlocked(k)||blank);b.classList.toggle('low',!hsBlocked(k)&&!blank&&!(G.cls==='homesteader'&&k===7&&G.form)&&G.en<s.cost*(S.sp.hoodie?.75:1));b.querySelector('em').style.transform='scaleY('+clamp(P.cd[k]/(s.cd*(1-S.cdr)),0,1)+')'});
   $('bMenu').classList.toggle('pip',G.sp>0||G.ap>0);$('bRecall').hidden=W.z.town;$('bMap').hidden=W.z.town;
   const sw=$('bSwap');if(SWAP&&(SWAP.t-=1/60)>0&&G.bag.includes(SWAP.it)){sw.hidden=false;setT('bSwap','▲ '+SWAP.it.name+'\n'+dPct(SWAP.d)+' · tap')}else{sw.hidden=true;SWAP=null}
   const a=$('bAct');if(actTarget){a.hidden=false;setT('bAct',actTarget.label)}else a.hidden=true;
@@ -4080,7 +4093,7 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.save){toast(save(true)?(CL?'Saved to your account':'Saved in this browser'):'This browser would not store the save. Use a save code instead.')}
   if(d.code){const o=saveObj();o.zs={};o.cur=null;copyText(btoa(unescape(encodeURIComponent(JSON.stringify(o)))),$('codeOut'));return}
   if(d.delslot!==undefined){const n=+d.delslot;$('sheet').hidden=true;mode='play';askWipe(n,()=>{if(G.tag&&G.tag.slot===n)tagDismiss(1);openSheet('opts',{})});return}
-  if(d.swslot!==undefined){const n=+d.swslot,i=slotInfo(n);if(!i)return;save(true);const old=SLOT;SLOT=n;clDirty={};const fin=sv=>{if(applySave(sv)){$('sheet').hidden=true;$('pop').hidden=true;startPlay()}else{SLOT=old;toast('That save could not be loaded');drawSheet()}};if(i.cloud){b.disabled=true;cloudLoad(i.cloud,n).then(fin)}else fin(i.loc);return}
+  if(d.swslot!==undefined){const n=+d.swslot,i=slotInfo(n);if(!i)return;save(true);const fin=sv=>{if(applySave(sv)){SLOT=n;clDirty={};W=null;$('sheet').hidden=true;$('pop').hidden=true;startPlay()}else{toast('That save could not be loaded');drawSheet()}};if(i.cloud){b.disabled=true;cloudLoad(i.cloud,n).then(fin)}else fin(i.loc);return}
   if(d.newslot!==undefined){save(true);$('sheet').hidden=true;$('pop').hidden=true;$('hud').hidden=true;$('title').hidden=false;mode='title';music('scene');W=null;SLOT=+d.newslot;showContinue();const nh=$('newH');nh&&nh.scrollIntoView&&nh.scrollIntoView({block:'start'});return}
   if(d.title){save(true);$('sheet').hidden=true;$('hud').hidden=true;$('title').hidden=false;mode='title';music('scene');showContinue();W=null;return}
   if(d.dev){const k=d.dev;if(k==='lvl')gainXp(xpNext(G.lvl)-G.xp);if(k==='cr')G.credits+=5000*G.cpi*G.lvl;if(k==='zones')G.unlocked=5;if(k==='god')G.god=!G.god;if(k==='reset'){resetZones();toast('Every district is restocked')}
@@ -4142,7 +4155,7 @@ function drawSlots(){const el=$('slots');if(!el)return;let h='';
 $('slots').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b||b.disabled)return;sfx('ui');
   if(b.dataset.slotdel!==undefined){askWipe(+b.dataset.slotdel,()=>{mode='title';drawSlots()});return}
   if(b.dataset.slotnew!==undefined){SLOT=+b.dataset.slotnew;drawSlots();return}
-  const n=+b.dataset.slot,i=slotInfo(n);if(!i)return;SLOT=n;clDirty={};let sv;if(i.cloud){b.disabled=true;b.querySelector('b').textContent='Loading…';sv=await cloudLoad(i.cloud,n)}else sv=i.loc;if(applySave(sv))startPlay();else drawSlots()});
+  const n=+b.dataset.slot,i=slotInfo(n);if(!i)return;let sv;if(i.cloud){b.disabled=true;b.querySelector('b').textContent='Loading…';sv=await cloudLoad(i.cloud,n)}else sv=i.loc;if(applySave(sv)){SLOT=n;clDirty={};W=null;startPlay()}else drawSlots()});
 function pickSlot(){let n=0;try{n=+localStorage.getItem(SAVEKEY+'_slot')||0}catch(e){}SLOT=n<NSLOT?n:0}
 let last=0;
 function frame(t){const dt=Math.min(.05,(t-last)/1000||0);last=t;tNow=t/1000;

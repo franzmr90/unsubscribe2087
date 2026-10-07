@@ -79,8 +79,30 @@ const fight=await p.evaluate(async()=>{
   g.enter(1);g.setMode('play');g.G.form='hull';g.G.formT=4;g.P.inv=0;g.G.god=false;g.G.hp=40;
   g.hurt(1e9,false,null);out.died=!g.G.form&&g.mode==='dying';
   g.G.hp=g.S.maxHp;g.G.en=g.S.maxEn;g.setMode('play');const death=document.getElementById('death');if(death)death.hidden=true;
+  g.G.god=true;g.G.form=null;g.P.dash=null;g.W.ents.splice(0);g.W.allies.splice(0);g.W.merc=null;g.W.tag=null;
+  const px=g.P.x,py=g.P.y;
+  g.W.allies.push({k:'hedge',plot:1,x:px+1.6,y:py,life:9,r:.42});
+  g.P.dir={x:1,y:0};g.dodge();for(let i=0;i<10;i++)g.update(.05);
+  out.hedgeYou=(g.P.x-px)<1.15;
+  g.P.x=px;g.P.dash=null;
+  const foe=g.spawn('tick',px+3.4,py);if(foe){foe.stun=40;foe.aggro=true;foe.hp=400}
+  g.G.merc={k:'hound',hp:100,dead:false,name:'Kit'};
+  g.W.merc={x:px+.15,y:py,r:.28,hp:100,max:100,cd:9,ph:0,flash:0,swing:0,fx:1,armM:1};
+  for(let i=0;i<40;i++)g.update(.05);
+  out.hedgeMerc=g.W.merc.x>px+1.9;
+  g.G.tag={cls:'scrapper',lvl:2,name:'Ash',sk:[],eq:{},dmg:4,red:1,max:40,hp:40};
+  g.W.tag={x:px+.15,y:py+.35,r:.3,hp:40,max:40,ph:0,flash:0,armM:1,fx:1,swing:0,atk:9,sc:[],dir:{x:1,y:0},moving:false,walkPh:0,buff:0,haste:0,guard:0,dash:null,stealth:0,tag:1};
+  for(let i=0;i<30;i++)g.update(.05);
+  out.hedgeTag=g.W.tag.x>px+1.9;
+  g.W.ents.splice(0);g.P.x=px;
+  const pal={k:'minion',flock:1,kind:'stray',x:px+3.1,y:py,r:.28,foe:0,cd:9,m:.2,ivl:9,rng:1.15,spd:6,ph:0,life:99};
+  g.W.allies.push(pal);for(let i=0;i<40;i++)g.update(.05);
+  out.hedgePal=pal.x<px+1.55;
+  const fer={k:'minion',flock:1,kind:'stray',x:px+3.1,y:py+.7,r:.28,foe:1,feral:1,cd:9,m:.2,ivl:9,rng:1.15,spd:6,ph:0,life:99,bite:1};
+  g.W.allies.push(fer);for(let i=0;i<40;i++)g.update(.05);
+  out.hedgeFeral=fer.x>px+1.9;
   return out});
-const want={ranged:true,plot:1,form:'hound',plotsInHound:0,melee:true,plotBlocked:0,houndToast:true,grey:true,sheetLock:true,shed:null,plotBack:1,hull:'hull',noDash:true,hullBlocksHound:true,flock:true,hostile:true,bit:true,hadFlock:true,champ:true,refused:true,tick:true,wore:true,zoned:true,town:true,died:true};
+const want={ranged:true,plot:1,form:'hound',plotsInHound:0,melee:true,plotBlocked:0,houndToast:true,grey:true,sheetLock:true,shed:null,plotBack:1,hull:'hull',noDash:true,hullBlocksHound:true,flock:true,hostile:true,bit:true,hadFlock:true,champ:true,refused:true,tick:true,wore:true,zoned:true,town:true,died:true,hedgeYou:true,hedgeMerc:true,hedgeTag:true,hedgePal:true,hedgeFeral:true};
 for(const k in want)if(fight[k]!==want[k])fail(k+' got '+JSON.stringify(fight[k])+' want '+JSON.stringify(want[k]));
 await clear(8);
 const sheet=await p.evaluate(()=>{__g.openSheet('skills');const h=document.getElementById('sheetIn').innerHTML;__g.closeSheet();__g.openSheet('codex');const c=document.getElementById('sheetIn').innerHTML;__g.closeSheet();return {skills:h,codex:c}});
@@ -113,5 +135,40 @@ const comp=await p.evaluate(()=>{
   g.W.tag={x:P.x-.8,y:P.y+.7,r:.3,hp:100,max:100,form:'hull',formDt:null,formT:1,dir:{x:1,y:0},flash:0,moving:false,buff:0,haste:0,guard:0,dash:null,stealth:0,tag:1};
   g.render();return {formed,blocked,draw:window.__tagDraw||''}});
 if(!comp.formed||!comp.blocked||comp.draw)fail('companion '+JSON.stringify(comp));
+/* The Shed button, not __g.cast. Empty energy, a dash, a cooldown and a silence used to refuse the leave. Town was the only way out. */
+const pressShed=async(form)=>{
+  await p.evaluate(f=>{
+    const g=__g;g.closeSheet();g.setMode('play');const death=document.getElementById('death');if(death)death.hidden=true;
+    g.G.god=true;g.G.hp=g.S.maxHp;
+    for(const i of [0,2,4,7])g.G.sk[i]=Math.max(g.G.sk[i]||0,1);
+    g.G.slots=[0,2,7];g.G.form=f;g.G.formDt=null;g.G.formT=f==='hull'?3:0;g.G.en=0;
+    g.P.castWait=0;g.P.silence=2;g.P.cd[7]=9;g.P.dash={t:4,spd:8,m:0,hit:[],end:null,trail:'',lx:g.P.x,ly:g.P.y,tr:0};
+    g.P.tag=0;g.calc();g.setSkillButtons();
+  },form);
+  await p.waitForTimeout(280);
+  const before=await p.evaluate(()=>{
+    const off=i=>document.querySelector('.sk[data-i="'+i+'"]').classList.contains('off');
+    const shed=document.querySelector('.sk[data-i="2"]');
+    const r=shed.getBoundingClientRect(),top=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);
+    return {form:__g.G.form,plot:off(0),flock:off(1),shed:off(2),hit:shed.contains(top)};
+  });
+  if(before.form!==form||!before.plot||!before.flock||before.shed||!before.hit)fail(form+' before '+JSON.stringify(before));
+  await p.click('.sk[data-i="2"]');
+  await p.waitForTimeout(280);
+  const after=await p.evaluate(()=>{
+    const off=i=>document.querySelector('.sk[data-i="'+i+'"]').classList.contains('off');
+    return {form:__g.G.form||null,wait:__g.P.castWait,dash:!!__g.P.dash,plot:off(0),flock:off(1),shed:off(2),en:__g.G.en};
+  });
+  if(after.form||!(after.wait>0.3)||after.dash||after.plot||after.flock||!after.shed)fail(form+' shed '+JSON.stringify(after));
+};
+await pressShed('hound');
+await pressShed('hull');
+const paid=await p.evaluate(()=>{const g=__g;g.G.form='hound';g.G.en=10;g.P.cd[7]=0;g.P.castWait=0;g.P.dash=null;g.P.silence=0;g.calc();return g.G.en});
+await p.click('.sk[data-i="2"]');
+await p.waitForTimeout(80);
+const paidAfter=await p.evaluate(()=>({form:__g.G.form||null,en:__g.G.en,wait:__g.P.castWait}));
+if(paidAfter.form||!(paidAfter.wait>0.3)||!(paidAfter.en<paid-3))fail('paid shed '+JSON.stringify(paidAfter));
+const town=await p.evaluate(()=>{__g.G.form='hull';__g.enter(0);return __g.G.form||null});
+if(town)fail('town clear '+town);
 console.log(errs.length?'ERRORS:\n'+errs.slice(0,20).join('\n'):'homesteader ok');
 await b.close();process.exit(errs.length?1:0)})();
