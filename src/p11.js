@@ -213,7 +213,7 @@ function preAsk(next){dlg('She answers you','“I did it for you. I put the info
   ['I am not proud of you',()=>playScene([{art:'feed',title:'7:42 p.m.',text:'She stops. She withdraws from four hundred million machines in eleven minutes, and leaves one note, signed with a single letter.'}],next)]])}
 /* ---------- the prequel ---------- */
 function preEnter(){G.pre=1;G.preS=G.preS||0;if(G.preSeen)return toast('January 2015. Follow the arrow.');G.preSeen=1;
-  dlg('Ubiquitous Enterprises · January 2015','Walk to each marked place in turn and the week plays out. Follow the arrow. Nothing here fights back.',[['Begin'],['Skip to 2087',()=>preOut(0)]])}
+  dlg('Ubiquitous Enterprises · January 2015','Your desk, the cage, Natalya, Room 813, the monitor, the parking deck. Follow the arrow. Nothing in this week fights back.',[['Begin'],['Skip to 2087',()=>preOut(0)]])}
 function preOut(won){G.pre=2;G.preS=0;const first=won&&!G.preWon;if(won){G.preWon=1;if(first)G.sp++}
   const go=()=>{G.seenIntro=true;mode='play';enter(0);if(first)toast('A memory of the cage: +1 skill point');if(!G.q.q1)talkTo('gramps');sdxNudge()};
   const sl=(won?PRE_END:[]).concat(G.seenIntro?[]:INTRO);if(sl.length)playScene(sl,go);else go()}
