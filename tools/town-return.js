@@ -51,6 +51,8 @@ check('Act I rises in Stillwater Commons', act1.btn==='Rise in Stillwater Common
 check('the portal is the district entrance', /start of the district/.test(act1.note), act1.note);
 check('the slain line names the district', /The Parcel Moors/.test(act1.line), act1.line);
 check('softcore names a re-onboarding charge', /Re-onboarding fee/.test(act1.stats)&&/₡/.test(act1.stats), act1.stats);
+const heldPortal=await p.evaluate(()=>__g.G.portal);
+check('the return portal is written before Rise', heldPortal&&heldPortal.zi===1&&heldPortal.x===start.x&&heldPortal.y===start.y, JSON.stringify(heldPortal)+' start '+start.x+','+start.y);
 await p.click('#bRise');
 await p.waitForTimeout(400);
 await clearUI(p);
@@ -77,6 +79,24 @@ const hc=await p.evaluate(()=>({btn:document.getElementById('bRise').textContent
 check('hardcore begins again', hc.btn==='Begin again', hc.btn);
 check('hardcore promises no portal', /no portal/i.test(hc.note)&&!/square/.test(hc.note), hc.note);
 check('hardcore does not charge a re-onboarding fee', purse.before===purse.after&&purse.before>0&&/Re-onboarding fee/.test(hc.stats)&&/none/.test(hc.stats)&&!/₡/.test(hc.stats), JSON.stringify({purse,stats:hc.stats}));
+
+await p.evaluate(()=>{
+  const death=document.getElementById('death');if(death)death.hidden=true;
+  __g.G.hc=false;__g.G.hp=__g.S.maxHp;__g.setMode('play');__g.enter(1);
+});
+await clearUI(p);
+await p.evaluate(()=>{__g.setMode('play');__g.P.inv=0;__g.G.god=0;__g.G.hc=false});
+const again=await p.evaluate(()=>{const st={x:__g.W.start.x,y:__g.W.start.y};__g.hurt(1e9,0,{name:'a Tick'});return st});
+await p.waitForTimeout(400);
+const woke=await p.evaluate(()=>{
+  const g=JSON.parse(JSON.stringify(__g.G));
+  __g.applySave({G:g,zs:{},cur:{zi:1,x:2,y:2},t:1});
+  __g.G.walkNew=0;__g.OPT.noWalk=1;
+  __g.startPlay();
+  return {hp:__g.G.hp,zi:__g.W.zi,mode:__g.mode,portal:__g.G.portal};
+});
+check('a saved death wakes in town with the portal', woke.hp>0&&woke.zi===0&&woke.mode==='play'&&woke.portal&&woke.portal.zi===1&&woke.portal.x===again.x&&woke.portal.y===again.y, JSON.stringify({woke,again}));
+await clearUI(p);
 
 await p.evaluate(()=>{
   const death=document.getElementById('death');if(death)death.hidden=true;
