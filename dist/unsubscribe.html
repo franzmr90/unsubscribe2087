@@ -481,7 +481,7 @@ Object.assign(CLS,{
    {n:'Few Understand This',ab:'',a:0,d:L=>`Passive. +${3*L}% damage for every machine still standing on screen, up to eight.`},
    {n:'Toxic Maximalism',ab:'TOXIC\nMAXI',a:1,aura:1,cost:0,cd:1.5,d:L=>`Aura. Stays on until you put on another. You attack ${15+3*L}% faster and hit ${pct(.2+.05*L)} harder, and so does anybody fighting beside you.`},
    {n:'Marked to Market',ab:'MARKED\nMKT',a:1,aura:1,cost:0,cd:1.5,d:L=>{const bonus=Math.max(30,20+4*L);return `Aura. Everything within ${(3.5+.15*L).toFixed(1)} paces of you takes +${bonus}% damage from every source.`}},
-   {n:'Orange Pill',ab:'ORANGE\nPILL',a:1,cost:11,cd:5,d:L=>`Charge through the line, untouchable, for ${pct(1.6+.3*L)} to everything you pass. Whatever survives takes +30% damage for ${(6+.3*L).toFixed(0)}s.`},
+   {n:'Orange Pill',ab:'ORANGE\nPILL',a:1,cost:11,cd:5,d:L=>{const sec=Math.round((6+.3*L)*10)/10;return `Charge through the line, untouchable, for ${pct(1.6+.3*L)} to everything you pass. Whatever survives takes +30% damage for ${sec}s.`}},
    {n:'Blessed Hashrate',ab:'BLESSED\nHASHRATE',a:1,cost:16,cd:1.1,d:L=>`Hammers spiral out from you, ${pct(1.1+.22*L)} each, and they do not stop at the first thing they meet.`},
    {n:'Proof of Work',ab:'PROOF\nOF WORK',a:1,aura:1,cost:0,cd:1.5,d:L=>`Aura. Everything near you takes ${pct(.3+.07*L)} twice a second, for as long as you are near it.`},
    {n:'Twenty-One Million',ab:'',a:0,d:L=>`Passive. +${3*L}% damage and +${8*L}% armour, and the difficulty cannot dilute what you hit for.`},
