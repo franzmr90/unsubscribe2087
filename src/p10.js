@@ -71,6 +71,7 @@ const docTxt=m=>Object.keys(m).map(k=>{const v=k==='cdr'?Math.round(m[k]*100):m[
 const ROWB=[['Foundations','+8% life',{hpP:8}],['Reach','+15 energy',{en:15}],['Rhythm','5% faster skill recovery',{cdr:.05}],['Edge','+8% damage',{dmg:8}],['Crown','+4% deadly strike',{crit:4}]];
 const rowDone=r=>[0,1,2].every(j=>G.sk[r*3+j]>0);
 const skCost=i=>G.sk[i]>=5?2:1;
+const skSpent=L=>L<=5?L:5+(L-5)*2;
 const webCount=()=>{const c=[0,0,0,0,0,0,0,0];for(const id in G.web||{}){const a=+id.split('_')[0];if(a>=0)c[a]++}return c};
 const webWeak=a=>{const c=webCount();return c[a]<c[(a+4)%8]};
 function extra2(s,add){let hp=0;const d=docOf();if(d)for(const k in d[3]){if(k==='taken')s.taken=(s.taken||1)*(1+d[3][k]/100);else add(k,d[3][k])}
