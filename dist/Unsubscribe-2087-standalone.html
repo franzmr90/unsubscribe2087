@@ -4313,7 +4313,8 @@ const MP = {
   maxParty: 8, maxGame: 8, pvpScale: .25, simZone: 6, lastMove: 0, note: '',
   game: null, lobby: [], diffs: null, scale: null, view: 'lobby',
   mkName: '', mkDiff: 'normal', mkPass: '',
-  voice: false, muted: {}, speaking: {}, peers: {}, stream: null
+  voice: false, muted: {}, speaking: {}, peers: {}, stream: null,
+  friends: {}, face: {}, joinUid: '', csrf: ''
 };
 
 const mpOn = () => MP.on && !!MP.conn && MP.conn.readyState === 1;
@@ -4375,6 +4376,7 @@ function mpRecv(m) {
     MP.me = { uid: m.uid, name: m.name };
     MP.maxParty = m.maxParty; MP.pvpScale = m.pvpScale; MP.simZone = m.simZone;
     mpHello();
+    mpFriendsLoad();
   } else if (m.t === 'roster') {
     MP.roster = m.players || [];
     if (m.game) MP.game = m.game;
@@ -4399,6 +4401,13 @@ function mpRecv(m) {
     if (mode === 'sheet' && tab === 'party') drawSheet();
   } else if (m.t === 'joinfail') {
     toast(m.reason); sfx('err');
+    if (MP.joinUid && /password/i.test(m.reason || '')) {
+      const uid = MP.joinUid;
+      MP.joinUid = '';
+      dlgPrompt('That game is locked', 'It needs a password.', pw => { MP.joinUid = uid; mpSend('game.join', { uid: uid, pass: pw }); });
+    } else MP.joinUid = '';
+  } else if (m.t === 'friend') {
+    mpFriendPush(m);
   } else if (m.t === 'rtc') {
     mpRtc(m);
   } else if (m.t === 'voice') {
@@ -4430,6 +4439,7 @@ function mpRecv(m) {
     dlg('The world is full', m.text + '\n\nYou can keep playing on your own — your character is saved either way — and the Party tab will say when there is room.', [['Carry on alone']]);
   } else if (m.t === 'sys') {
     mpSay(m.text);
+    if (m.text && /asked to be your friend/.test(m.text)) mpFriendsLoad();
   } else if (m.t === 'xp') {
     /* A party member's kill, already weighted and bonused by the server. */
     if (G && mode !== 'title') { gainXp(m.amount, 1); if (mode === 'play') float(P.x, P.y, '+' + m.amount + ' party', '#9fd0ff', 1); }
@@ -4640,11 +4650,131 @@ function mpSimMsg(m) {
 }
 function mpSimWave(w) { if (mpOn() && MP.party && W && W.zi === MP.simZone) mpSend('sim', { action: 'wave', wave: w }); }
 
+/* ---------- friends, on the party sheet ---------- */
+function mpApi(path, body, again) {
+  if (!window.__u2087server || !location.protocol.startsWith('http')) return Promise.reject(new Error('Not connected.'));
+  const send = csrf => fetch(path, {
+    method: 'POST', credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF': csrf || '' },
+    body: JSON.stringify(body || {})
+  }).then(r => r.json().catch(() => ({})).then(j => {
+    if (r.status === 403 && !again) { MP.csrf = ''; return mpApi(path, body, 1); }
+    if (!r.ok) throw new Error(j.error || 'That did not go through.');
+    return j;
+  }));
+  if (MP.csrf) return send(MP.csrf);
+  return fetch('/api/me', { credentials: 'same-origin' }).then(r => r.json()).then(j => {
+    MP.csrf = (j && j.csrf) || '';
+    return send(MP.csrf);
+  });
+}
+let mpFriendGen = 0;
+function mpFriendsLoad() {
+  if (!window.__u2087server || !location.protocol.startsWith('http')) return;
+  const gen = ++mpFriendGen;
+  mpApi('/api/friend/list', {}).then(j => { if (gen === mpFriendGen) mpApplyFriends(j); }).catch(() => {});
+}
+function mpApplyFriends(body) {
+  const to = (body && body.to) || {}, next = {};
+  for (const uid in to) {
+    const e = to[uid];
+    if (!e || typeof e !== 'object') continue;
+    const row = { name: e.name || '', at: e.at || 0, state: e.state || '' };
+    const face = MP.face[uid];
+    if (face) { row.online = !!face.online; row.cls = face.cls || ''; row.lvl = +face.lvl || 0; }
+    if (row.state === 'friend' && face && face.online && face.gameName) row.gameName = face.gameName;
+    next[uid] = row;
+  }
+  MP.friends = next;
+  if (mode === 'sheet' && tab === 'party') drawSheet();
+}
+function mpFriendPush(m) {
+  if (!m || !m.uid) return;
+  MP.lastFriend = m;
+  MP.face[m.uid] = { name: m.name || '', online: !!m.online, cls: m.cls || '', lvl: +m.lvl || 0, gameName: m.gameName || '' };
+  const row = MP.friends[m.uid];
+  if (row) {
+    row.online = !!m.online; row.cls = m.cls || ''; row.lvl = +m.lvl || 0;
+    if (row.state === 'friend' && m.online && m.gameName) row.gameName = m.gameName;
+    else delete row.gameName;
+  }
+  if (mode === 'sheet' && tab === 'party') drawSheet();
+  mpFriendsLoad();
+}
+function mpFriendAct(kind, uid) {
+  const row = MP.friends[uid];
+  if (!row || !row.name) return;
+  let path = '', body = { name: row.name };
+  if (kind === 'accept') { path = '/api/friend/answer'; body.accept = true; }
+  else if (kind === 'decline') { path = '/api/friend/answer'; body.accept = false; }
+  else if (kind === 'remove') path = '/api/friend/remove';
+  else if (kind === 'block') path = '/api/friend/block';
+  else return;
+  mpApi(path, body).then(() => mpFriendsLoad()).catch(e => { toast(e.message || 'That did not go through.'); sfx('err'); });
+}
+function mpJoinFriend(uid) {
+  const row = MP.friends[uid], face = MP.face[uid] || {};
+  if (!row || row.state !== 'friend') return;
+  const gameName = face.gameName || '';
+  const listed = gameName && MP.lobby.find(g => g.name === gameName);
+  if (listed) {
+    MP.joinUid = '';
+    if (listed.locked) dlgPrompt('“' + listed.name + '” is locked', 'It needs a password.', pw => mpSend('game.join', { id: listed.id, pass: pw }));
+    else mpSend('game.join', { id: listed.id });
+    return;
+  }
+  MP.joinUid = uid;
+  mpSend('game.join', { uid: uid });
+}
+function mpFriendNote() {
+  return '<h3>Friends</h3><p>Not connected. Playing together needs the account server — on a single copy of the page there is nobody else to ask.</p>';
+}
+function mpFriendLine(r) {
+  if (r.state === 'pending') return 'Asked. Waiting on them.';
+  if (r.state === 'in') return 'Asked to be your friend.';
+  if (r.state === 'blocked') return 'Blocked. They are not told.';
+  const cn = (CLS[r.cls] || {}).n || '';
+  const who = r.cls ? ('Level ' + (r.lvl || 1) + ' ' + cn) : '';
+  if (!r.online) return who ? (who + ' · not on') : 'Not on.';
+  if (r.gameName) return (who || 'On') + ' · in ' + r.gameName;
+  return (who ? who + ' · ' : '') + 'on, not in a game';
+}
+function mpFriendBtns(r) {
+  const u = esc(r.uid);
+  if (r.state === 'pending') return '<button class="ghost" data-mpfr="' + u + '">Take it back</button>';
+  if (r.state === 'in') return '<button class="ghost" data-mpfy="' + u + '">Accept</button><button class="ghost" data-mpfn="' + u + '">Decline</button>';
+  if (r.state === 'blocked') return '<button class="ghost" data-mpfr="' + u + '">Unblock</button>';
+  let h = '';
+  if (r.online && r.gameName) h += '<button class="ghost" data-mpfj="' + u + '">Join</button>';
+  h += '<button class="ghost" data-mpfr="' + u + '">Remove</button><button class="ghost" data-mpfb="' + u + '">Block</button>';
+  return h;
+}
+function mpFriendSection() {
+  let h = '<h3>Friends</h3>';
+  h += '<p style="font-size:13px">A person you accept can see your class, your level, and the name of the game you are standing in, and they can walk into it. You can see the same of them. The list holds twenty-five.</p>';
+  h += '<div class="row"><input id="mpFriend" maxlength="40" placeholder="Their name" style="flex:1;background:#0a0912;border:1px solid #3a3350;color:#e8e2d4;border-radius:6px;padding:10px;font:15px Georgia,serif"><button class="ghost" data-mpfa="1">Ask</button></div>';
+  const rows = [];
+  for (const uid in MP.friends) rows.push(Object.assign({ uid }, MP.friends[uid]));
+  const rank = { in: 0, pending: 1, friend: 2, blocked: 3 };
+  rows.sort((a, b) => (rank[a.state] == null ? 9 : rank[a.state]) - (rank[b.state] == null ? 9 : rank[b.state]) || String(a.name).localeCompare(String(b.name)));
+  if (!rows.length) h += '<p>Nobody on the list yet.</p>';
+  else {
+    h += '<div class="list">';
+    for (const r of rows) {
+      const col = (CLS[r.cls] || {}).col || '#888';
+      h += '<div class="li"><i style="background:' + col + '"></i><div><b>' + esc(r.name) + '</b><span>' + esc(mpFriendLine(r)) + '</span></div></div>';
+      h += '<div class="row">' + mpFriendBtns(r) + '</div>';
+    }
+    h += '</div>';
+  }
+  return h;
+}
+
 /* ---------- the panel: a lobby, then the game you are in ---------- */
 function mpPanel() {
-  if (MP.note && !mpOn()) return '<p>' + esc(MP.note) + '</p><p>Your character is saved and nothing is lost by waiting. Reload to try again.</p>';
-  if (!mpOn()) return '<p>Not connected. Playing together needs the account server — on a single copy of the page there is nobody else to ask.</p>';
-  return MP.game ? mpGamePanel() : mpLobbyPanel();
+  if (MP.note && !mpOn()) return '<p>' + esc(MP.note) + '</p><p>Your character is saved and nothing is lost by waiting. Reload to try again.</p>' + mpFriendNote();
+  if (!mpOn()) return mpFriendNote();
+  return mpFriendSection() + (MP.game ? mpGamePanel() : mpLobbyPanel());
 }
 
 function mpLobbyPanel() {
@@ -4746,7 +4876,7 @@ function mpGamePanel() {
   return h;
 }
 
-window.__mp={MP,send:mpSend,get on(){return mpOn()},get inGame(){return mpIn()},get roster(){return MP.roster},get me(){return MP.me},get scale(){return MP.scale},mpHp,mpXp,mpDmg,mute:mpMute};
+window.__mp={MP,send:mpSend,get on(){return mpOn()},get inGame(){return mpIn()},get roster(){return MP.roster},get me(){return MP.me},get scale(){return MP.scale},mpHp,mpXp,mpDmg,mute:mpMute,loadFriends:mpFriendsLoad};
 
 function mpWhere(zi) {
   if (zi === undefined || zi === null) return 'somewhere';
@@ -4756,6 +4886,17 @@ function mpWhere(zi) {
 }
 
 function mpClick(d) {
+  if (d.mpfa) {
+    const n = document.getElementById('mpFriend'), name = n ? n.value.trim() : '';
+    if (!name) return true;
+    mpApi('/api/friend/ask', { name }).then(() => { if (n) n.value = ''; mpFriendsLoad(); }).catch(e => { toast(e.message || 'That did not go through.'); sfx('err'); });
+    return true;
+  }
+  if (d.mpfj) { mpJoinFriend(d.mpfj); return true; }
+  if (d.mpfy) { mpFriendAct('accept', d.mpfy); return true; }
+  if (d.mpfn) { mpFriendAct('decline', d.mpfn); return true; }
+  if (d.mpfr) { mpFriendAct('remove', d.mpfr); return true; }
+  if (d.mpfb) { mpFriendAct('block', d.mpfb); return true; }
   if (d.mpj) {
     const g = MP.lobby.find(x => x.id === d.mpj);
     if (g && g.locked) {

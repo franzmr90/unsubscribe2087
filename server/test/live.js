@@ -1,7 +1,7 @@
 /* Two browsers, one server, a party and a fight.
    `node server/test/live.js` — needs Playwright and a build in dist/. */
 'use strict';
-const fs = require('fs'), os = require('os'), path = require('path');
+const fs = require('fs'), os = require('os'), path = require('path'), net = require('net'), { spawn } = require('child_process');
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'u2087-live-'));
 process.env.DATA_DIR = tmp;
 delete process.env.SMTP_HOST;
@@ -9,7 +9,7 @@ delete process.env.SMTP_HOST;
 const { chromium } = require('playwright');
 const { server } = require('../server');
 
-let pass = 0, fail = 0; const out = [];
+let pass = 0, fail = 0, child = null; const out = [];
 const ok = (n, c, d) => { if (c) { pass++; out.push('  ok   ' + n); } else { fail++; out.push('  FAIL ' + n + (d ? '  <' + d + '>' : '')); } };
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
@@ -180,12 +180,168 @@ async function until(page, fn, arg, ms) {
   const solo = await A.evaluate(() => __mp.mpHp());
   ok('and the difficulty drops back', solo === 1, 'mpHp=' + solo);
 
+  /* ---- friends: pending hides the game, mutual friends see class and level ---- */
+  await B.evaluate(() => __mp.send('game.create', { name: 'Quiet Table', diff: 'normal' }));
+  const quiet = await until(B, () => __mp.MP.game && __mp.MP.game.name === 'Quiet Table' ? 1 : 0);
+  ok('a second game can be made', !!quiet);
+
+  async function post(page, path, body) {
+    return page.evaluate(async ({ path, body }) => {
+      const me = await fetch('/api/me').then(r => r.json());
+      const r = await fetch(path, {
+        method: 'POST', credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', 'X-CSRF': me.csrf || '' },
+        body: JSON.stringify(body || {})
+      });
+      const text = await r.text();
+      let json = null; try { json = JSON.parse(text); } catch (e) {}
+      return { status: r.status, text, json };
+    }, { path, body });
+  }
+
+  const asked = await post(A, '/api/friend/ask', { name: 'Vale' });
+  ok('the ask is only an ok', asked.status === 200 && asked.text.indexOf('hero') < 0 && !asked.text.includes('notify'), asked.text);
+  const heardAsk = await until(B, () => __mp.MP.chat.some(c => c.text === 'Ines asked to be your friend.') ? 1 : 0);
+  ok('a pending request is one line to its subject', !!heardAsk);
+  await A.evaluate(() => __mp.loadFriends());
+  const aPend = await until(A, u => {
+    const row = __mp.MP.friends[u];
+    return row && row.state === 'pending' && !row.gameName ? 1 : 0;
+  }, uidB);
+  ok('the asker sees a pending name and not the game', !!aPend);
+  const bIn = await until(B, u => {
+    const row = __mp.MP.friends[u];
+    return row && row.state === 'in' && !row.gameName ? 1 : 0;
+  }, uidA);
+  ok('the asked sees the name and not the game', !!bIn);
+
+  await A.evaluate(() => { const d = document.getElementById('dlg'); if (d) d.hidden = true; __g.setMode('play'); __g.openSheet('party'); });
+  await B.evaluate(() => { const d = document.getElementById('dlg'); if (d) d.hidden = true; __g.setMode('play'); __g.openSheet('party'); });
+  const pendA = await A.evaluate(() => document.getElementById('sheetIn').innerText);
+  const pendB = await B.evaluate(() => document.getElementById('sheetIn').innerText);
+  ok('the party sheet says the ask is waiting', /Vale/.test(pendA) && /Asked\. Waiting/.test(pendA) && !/Quiet Table/.test(pendA), pendA.slice(0, 240));
+  ok('and the other sheet does not name the game', /Ines/.test(pendB) && /Asked to be your friend/.test(pendB) && !/Test Game/.test(pendB), pendB.slice(0, 240));
+
+  const accepted = await post(B, '/api/friend/answer', { name: 'Ines', accept: true });
+  ok('the answer is accepted', accepted.status === 200, accepted.text);
+  await A.evaluate(() => __mp.send('hello', { lvl: __g.G.lvl, cls: __g.G.cls, zi: __g.W.zi, hp: __g.G.hp, hpm: __g.S.maxHp }));
+  await B.evaluate(() => __mp.send('hello', { lvl: __g.G.lvl, cls: __g.G.cls, zi: __g.W.zi, hp: __g.G.hp, hpm: __g.S.maxHp }));
+  const aSees = await until(A, u => {
+    const row = __mp.MP.friends[u];
+    return row && row.state === 'friend' && row.cls === 'scrapper' && row.lvl === 20 && row.gameName === 'Quiet Table' ? 1 : 0;
+  }, uidB);
+  const bSees = await until(B, u => {
+    const row = __mp.MP.friends[u];
+    return row && row.state === 'friend' && row.cls === 'scrapper' && row.lvl === 20 && row.gameName === 'Test Game' ? 1 : 0;
+  }, uidA);
+  ok('each friend sees the other\'s class and level', !!aSees && !!bSees);
+
+  await A.evaluate(() => { const d = document.getElementById('dlg'); if (d) d.hidden = true; __g.setMode('play'); __g.openSheet('party'); });
+  await A.waitForTimeout(400);
+  const shown = await A.evaluate(() => document.getElementById('sheetIn').innerText);
+  ok('the party sheet shows the friend', /Vale/.test(shown) && /Level 20/.test(shown) && /Scrapper/.test(shown) && /Quiet Table/.test(shown), shown.slice(0, 400));
+  try {
+    const shot = '/opt/cursor/artifacts/friends-party-sheet.png';
+    fs.mkdirSync(path.dirname(shot), { recursive: true });
+    await A.screenshot({ path: shot });
+  } catch (e) { ok('friends sheet screenshot', false, e.message); }
+
+  const face = await A.evaluate(() => JSON.stringify(__mp.MP.lastFriend || {}));
+  const faceKeys = await A.evaluate(() => Object.keys(__mp.MP.lastFriend || {}).filter(k => k !== 't').sort().join(','));
+  ok('presence carries no document id', faceKeys === 'cls,gameName,lvl,name,online,uid' && !/hero\d/.test(face), faceKeys + ' ' + face);
+
+  const { docs } = require('../lib/store');
+  docs.set(uidB, 'hero1', { s: '{"lvl":9}' });
+  const listText = (await post(A, '/api/friend/list', {})).text;
+  ok('a friend response contains no document id', !/hero\d/.test(listText) && listText.indexOf('"lvl":9') < 0, listText.slice(0, 300));
+  let listJson = {}; try { listJson = JSON.parse(listText); } catch (e) {}
+  const rowKeys = Object.keys(listJson.to || {}).map(id => Object.keys(listJson.to[id]).sort().join(',')).join('|');
+  ok('friend rows are name, at and state', !!rowKeys && rowKeys.split('|').every(k => k === 'at,name,state'), rowKeys);
+  const got = await post(A, '/api/doc/get', { id: 'hero1' });
+  ok('a document id learned beside a friend still fails', got.json && got.json.exists === false, JSON.stringify(got.json));
+
+  /* ---- a game that has fallen off the newest 60 is still joined by the friend's uid ---- */
+  await A.evaluate(() => __mp.send('game.leave', {}));
+  ok('leaving before the join', !!(await until(A, () => !__mp.MP.game ? 1 : 0)));
+  const liveMod = require('../lib/live');
+  for (let i = 0; i < 60; i++) {
+    liveMod.games.set('gfake' + i, {
+      id: 'gfake' + i, name: 'Phantom ' + i, diff: 'normal', host: 'phantom' + i,
+      pass: '', players: new Set(['phantom' + i]), created: Date.now() + 10000 + i
+    });
+  }
+  await A.evaluate(() => __mp.send('game.list', {}));
+  const buried = await until(A, () => {
+    const names = (__mp.MP.lobby || []).map(g => g.name);
+    return names.length >= 60 && names.indexOf('Quiet Table') < 0 ? 1 : 0;
+  });
+  ok('the friend\'s game can fall off the lobby', !!buried);
+  await A.evaluate(u => __mp.send('game.join', { uid: u }), uidB);
+  const found = await until(A, () => __mp.MP.game && __mp.MP.game.name === 'Quiet Table' ? 1 : 0);
+  ok('joining that friend by id still works', !!found);
+  for (let i = 0; i < 60; i++) liveMod.games.delete('gfake' + i);
+
+  /* ---- restart the process: the friendship is on disk, the game is not ----
+     The original server stays up until the browsers leave it. Closing it first
+     would wait on their sockets. The child is a second process on the same
+     data directory and a different port, with an empty game table. */
+  const port = await new Promise(resolve => {
+    const s = net.createServer();
+    s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => resolve(p)); });
+  });
+  child = spawn(process.execPath, [path.join(__dirname, '..', 'server.js')], {
+    cwd: path.join(__dirname, '..', '..'),
+    env: Object.assign({}, process.env, { DATA_DIR: tmp, PORT: String(port), SMTP_HOST: '' }),
+    stdio: ['ignore', 'pipe', 'pipe']
+  });
+  let boot = '';
+  await new Promise((resolve, reject) => {
+    const t = setTimeout(() => reject(new Error('child server did not start\n' + boot)), 12000);
+    const on = d => { boot += d; if (boot.includes('server on')) { clearTimeout(t); resolve(); } };
+    child.stdout.on('data', on);
+    child.stderr.on('data', on);
+    child.on('exit', code => { clearTimeout(t); reject(new Error('child exited ' + code + '\n' + boot)); });
+  });
+  const base2 = 'http://127.0.0.1:' + port;
+  async function revive(page) {
+    await page.goto(base2 + '/', { waitUntil: 'domcontentloaded' });
+    await page.waitForTimeout(700);
+    await page.evaluate(() => { __g.skipDisc(); const a = document.getElementById('acc'); if (a) a.className = 'off'; __g.newGame('scrapper'); });
+    for (let i = 0; i < 24; i++) {
+      await page.evaluate(() => {
+        const s = document.getElementById('scene'); if (s && !s.hidden) { const b = document.getElementById('scSkip'); b && b.click(); }
+        const d = document.getElementById('dlg'); if (d && !d.hidden) { const x = d.querySelector('#dBtns button:not([disabled])'); x && x.click(); }
+        const a = document.getElementById('acc'); if (a) a.className = 'off';
+      });
+      await page.waitForTimeout(120);
+    }
+    return until(page, () => __mp.on ? 1 : 0, null, 8000);
+  }
+  ok('both reconnect after the restart', !!(await revive(A)) && !!(await revive(B)));
+  ok('the game they were in is gone', !(await A.evaluate(() => __mp.MP.game)) && !(await B.evaluate(() => __mp.MP.game)));
+  const stillA = await until(A, u => __mp.MP.friends[u] && __mp.MP.friends[u].state === 'friend' ? 1 : 0, uidB, 8000);
+  const stillB = await until(B, u => __mp.MP.friends[u] && __mp.MP.friends[u].state === 'friend' ? 1 : 0, uidA, 8000);
+  ok('the friendship is still there', !!stillA && !!stillB);
+
+  await A.evaluate(() => __mp.send('game.create', { name: 'After', diff: 'normal' }));
+  const after = await until(A, () => __mp.MP.game && __mp.MP.game.id);
+  await B.evaluate(id => __mp.send('game.join', { id }), after);
+  ok('they can share a game again', !!(await until(B, () => __mp.roster.length >= 2 ? 1 : 0)));
+  const blocked = await post(A, '/api/friend/block', { name: 'Vale' });
+  ok('the block is accepted', blocked.status === 200, blocked.text);
+  await A.evaluate(() => { __mp.MP.invite = null; });
+  await B.evaluate(u => { __mp.MP.invite = null; __mp.send('invite', { uid: u }); }, uidA);
+  await wait(700);
+  ok('a blocked invite does not arrive', !(await A.evaluate(() => !!__mp.MP.invite)));
+  ok('and the block is not mentioned', !(await B.evaluate(() => (__mp.MP.chat || []).some(c => /block/i.test(c.text || '')))));
+
   ok('no page errors', errs.length === 0, errs.join(' | '));
 
   console.log(out.join('\n'));
   console.log('\n' + pass + ' passed, ' + fail + ' failed');
+  if (child) child.kill('SIGTERM');
   await browser.close();
-  server.close();
+  try { server.close(); } catch (e) {}
   fs.rmSync(tmp, { recursive: true, force: true });
   process.exit(fail ? 1 : 0);
-})().catch(e => { console.error(e); process.exit(1); });
+})().catch(e => { console.error(e); if (child) child.kill('SIGTERM'); process.exit(1); });
