@@ -123,7 +123,10 @@ const report=await p.evaluate(()=>{
   MP.others.push({uid:'foe',name:'Vale',x:stand.x,y:stand.y,hp:200,hpm:200,au:3,cls:'maxi'});
   __g.maxiAura(.02);
   check('toxic does not haste a hostile', !(stand.haste>0));
-  check('a hostile toxic aura does not haste you', !(P.toxL>0));
+  check('your own aura still speeds you beside a hostile', Math.abs(__g.toxicSwing(P)-1.18)<1e-9);
+  P.aura=null;P.haste=0;
+  __g.maxiAura(.02);
+  check('a hostile toxic aura does not haste you', !(P.toxL>0) && !(P.haste>0));
   P.haste=0;P.aura=null;
   MP.others[0].au=4;MP.others[0].aL=1;
   __g.maxiAura(.02);
