@@ -46,6 +46,28 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
     });
   }
 
+  const uidOf = c => c.last.you && c.last.you.uid;
+  function place(c, lvl, zi) { c.send({ t: 'hello', lvl, zi, cls: 'scrapper', hp: 100, hpm: 100 }); }
+  async function partyUp(leader, rest) {
+    for (const c of rest) {
+      c.forget('invited');
+      leader.send({ t: 'invite', uid: uidOf(c) });
+      const inv = await c.wait('invited');
+      if (!inv) throw new Error('no invite for ' + (c.last.you && c.last.you.name));
+      c.send({ t: 'accept', uid: uidOf(leader) });
+      await wait(40);
+    }
+    await wait(80);
+  }
+  async function xpReport(clients, amount, ml) {
+    for (const c of clients) c.seen.length = 0;
+    clients[0].send({ t: 'xp', amount, ml: ml || 0 });
+    await wait(250);
+    const parts = [];
+    for (const c of clients) for (const m of c.seen) if (m.t === 'xp') parts.push(m.amount);
+    return parts;
+  }
+
   const A = await client(reg('Ines'));
   const B = await client(reg('Vale'));
 
@@ -82,6 +104,16 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   ok('a second player makes monsters tougher again', ros.scale.hp === 7.5, JSON.stringify(ros.scale));
   ok('and worth more again', Math.abs(ros.scale.xp - 4.2) < 1e-9, JSON.stringify(ros.scale));
 
+  /* ---- one pool, killer included. A member ten below the monster takes 5% of the
+     level-weighted share (23), which was the full 450 before the curve. ---- */
+  await partyUp(A, [B]);
+  place(A, 10, 2); place(B, 10, 2); await wait(80);
+  const two = await xpReport([A, B], 1600);
+  ok('two same-level members share 1.35×, killer included', two.length === 2 && two.reduce((a, b) => a + b, 0) === 2160, JSON.stringify(two));
+  place(A, 20, 2); place(B, 10, 2); await wait(80);
+  const gap = (await xpReport([A, B], 1000, 20)).slice().sort((a, b) => a - b);
+  ok('ten levels below takes 5% of the share', gap.join() === '23,900', JSON.stringify(gap));
+
   /* ---- text reaches the whole game ---- */
   B.send({ t: 'chat', text: 'credits rot' });
   const ch = await A.wait('chat');
@@ -99,6 +131,13 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   const extra = [];
   for (let i = 0; i < 6; i++) { const c = await client(reg('Filler' + i)); c.send({ t: 'game.join', id: g.game.id }); extra.push(c); await wait(60); }
   await wait(400);
+  /* Eight same-level used to sum to 5800 (3.625×): the killer kept 1600 and seven others took 600. */
+  await partyUp(A, extra);
+  const eight = [A, B].concat(extra);
+  for (const c of eight) place(c, 10, 4);
+  await wait(120);
+  const all = await xpReport(eight, 1600);
+  ok('eight same-level members still share 1.35×', all.length === 8 && all.reduce((a, b) => a + b, 0) === 2160, JSON.stringify(all));
   const C = await client(reg('Latecomer'));
   C.send({ t: 'game.join', id: g.game.id });
   const jf = await C.wait('joinfail');
@@ -136,6 +175,67 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   ok('and it stops being listed', !lobby().some(x => x.name === 'Quiet Room'));
 
   function lobby() { return [...live.games.values()].filter(x => x.players.size).map(x => ({ name: x.name })); }
+
+  /* ---- declare in town, level 9, once a minute, and a one-sided stand down ---- */
+  A.forget('game');
+  A.send({ t: 'game.leave' });
+  await wait(200);
+  A.forget('game');
+  A.send({ t: 'game.create', name: 'Duel Yard', diff: 'normal' });
+  const yard = await A.wait('game');
+  ok('a yard for the declaration', !!(yard && yard.game && yard.game.name === 'Duel Yard'), JSON.stringify(yard && yard.game));
+  B.forget('game');
+  B.send({ t: 'game.join', id: yard.game.id });
+  await B.wait('game');
+  await wait(80);
+  const lastSys = c => { const rows = c.seen.filter(m => m.t === 'sys'); return rows.length ? rows[rows.length - 1].text : ''; };
+  A.seen.length = 0;
+  place(A, 20, 1); place(B, 20, 1); await wait(100);
+  A.send({ t: 'hostile', uid: uidOf(B) });
+  await wait(150);
+  ok('a declaration outside town is refused', /town/.test(lastSys(A)), lastSys(A));
+
+  A.seen.length = 0;
+  place(A, 8, 0); place(B, 20, 0); await wait(100);
+  A.send({ t: 'hostile', uid: uidOf(B) });
+  await wait(150);
+  ok('hostility starts at level 9', /level 9/.test(lastSys(A)), lastSys(A));
+
+  place(A, 9, 0); place(B, 9, 0); await wait(100);
+  A.seen.length = 0; B.seen.length = 0;
+  A.send({ t: 'hostile', uid: uidOf(B) });
+  await wait(200);
+  ok('a declaration in town is accepted', A.seen.some(m => m.t === 'hostile') && B.seen.some(m => m.t === 'hostile'));
+
+  const who = name => [...live.live.values()].find(p => p.name === name);
+  const pa = who('Ines'), pb = who('Vale');
+  A.send({ t: 'move', x: 1, y: 1, zi: 5, hp: 10, hpm: 10 });
+  await wait(80);
+  ok('the declarer cannot leave the district yet', pa.zi === 0, 'zi=' + pa.zi);
+
+  A.seen.length = 0;
+  A.send({ t: 'stand', uid: uidOf(B) });
+  await wait(150);
+  ok('standing down clears only your flag', !pa.hostile.has(pb.uid) && pb.hostile.has(pa.uid) && /still hit you/.test(lastSys(A)), lastSys(A));
+
+  A.seen.length = 0;
+  A.send({ t: 'hostile', uid: uidOf(B) });
+  await wait(150);
+  ok('a second declaration inside a minute is refused', /minute/.test(lastSys(A)), lastSys(A));
+
+  pa.portalLock = 0;
+  A.send({ t: 'move', x: 3, y: 3, zi: 5, hp: 10, hpm: 10 });
+  B.send({ t: 'move', x: 3, y: 3, zi: 5, hp: 10, hpm: 10 });
+  await wait(80);
+  pa.safeUntil = 0; pb.safeUntil = 0;
+  B.seen.length = 0;
+  A.send({ t: 'pvp', uid: uidOf(B), dmg: 1000 });
+  await wait(150);
+  ok('after standing down you cannot damage them', !B.seen.some(m => m.t === 'pvp'));
+  A.seen.length = 0;
+  B.send({ t: 'pvp', uid: uidOf(A), dmg: 1000 });
+  await wait(150);
+  ok('after standing down they can still damage you', A.seen.some(m => m.t === 'pvp' && m.dmg > 0 && m.dmg < 1000), JSON.stringify(A.seen.filter(m => m.t === 'pvp')));
 
   A.s.close(); B.s.close(); for (const c of extra) c.s.close();
   await wait(400);

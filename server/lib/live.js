@@ -9,10 +9,10 @@
    publicly: every cost below is bounded by the size of a game rather than by the number
    of people on the server.
 
-   The rules: a party is an invitation both sides agree to; experience is shared by level
-   among the members who are actually in the district; hostility is declared rather than
-   ambient, it throws you out of the party, and it cannot be taken back while the game
-   lasts. Town is safe. The arena is not.
+   The rules: a party is an invitation both sides agree to; experience is one pool, split
+   by level among the members in the district; hostility is declared in town rather than
+   ambient, it throws you out of the party, and standing down clears only your own flag.
+   Town is safe. The arena is not.
 
    What the server is authoritative over: who exists, which game they are in, who is in
    which party, who is hostile to whom, who is in which district, and the Simulator's wave
@@ -25,8 +25,10 @@ const MAX_GAME = 8;                /* Diablo II's number, and the reason this sc
 const MAX_PARTY = 8;
 const MAX_GAMES = +(process.env.MAX_GAMES || 200);
 const MAX_PLAYERS = +(process.env.MAX_PLAYERS || 400);
-/* Diablo II's party experience multiplier, by number of members present. */
-const PARTY_BONUS = [1, 1, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3];
+/* One pool for the party, then a level-weighted split. Diablo II 1.08 added a flat
+   35% when another member was in the district. It did not grow with party size.
+   gameScale, which follows the people in the game, is separate and stays. */
+const PARTY_POOL = 1.35;
 const PVP_SCALE = 0.25;            /* players are much tougher to each other than monsters */
 const TOWNS = new Set([0, 17, 18, 21, 27]);
 const SIM_ZONE = 6;
@@ -200,6 +202,8 @@ function leaveGame(p, opt) {
   p.game = null;
   /* Hostility belongs to a game, exactly as it did in Diablo II: leave and it is over. */
   p.hostile.clear();
+  p.declaredAt.clear();
+  p.portalLock = 0;
   p.invites.clear();
   /* Straight back to the lobby, with the list already in hand rather than a blank panel
      waiting on the next coalesced push. */
@@ -256,7 +260,9 @@ function canFight(a, b) {
   if (!a || !b || a.uid === b.uid) return false;
   if (!a.game || a.game !== b.game) return false;
   if (a.zi !== b.zi) return false;
-  if (!mutualHostile(a, b)) return false;
+  /* Your own flag is what lets you swing. Theirs is what lets them swing back.
+     Declaring sets both, and standing down clears only yours. */
+  if (!a.hostile.has(b.uid)) return false;
   if (TOWNS.has(a.zi)) return false;                      /* town is safe, always */
   if (a.safeUntil > Date.now() || b.safeUntil > Date.now()) return false;
   return true;
@@ -340,6 +346,7 @@ const HANDLERS = {
   move(p, m) {
     p.x = +m.x || 0; p.y = +m.y || 0; p.dir = +m.dir || 0;
     p.hp = +m.hp || 0; p.hpm = +m.hpm || 1;
+    if ('lvl' in m) p.lvl = Math.max(1, +m.lvl || 1);
     const cosmetic = ('sk' in m) || ('au' in m) || ('sw' in m);
     if ('sk' in m) p.sk = m.sk === null ? null : skillIx(m.sk);
     if ('au' in m) p.au = auraIx(m.au);
@@ -347,11 +354,16 @@ const HANDLERS = {
     if (!p.game) return;
     const zi = +m.zi, inst = m.inst || null;
     if (zi !== p.zi || inst !== p.inst) {
-      p.zi = zi; p.inst = inst;
-      zoneIndex(p);
-      pushRoster(gameOf(p));
-      /* Walking in buys five seconds, so a hostile cannot camp the doorway. */
-      p.safeUntil = Date.now() + 5000;
+      /* A declaration holds them in the district the server already recorded, for ten
+         seconds. A modified client can ignore the local half and walk anyway. This is
+         the server's half: it does not follow them, so they are not a combatant there. */
+      if (!(p.portalLock > Date.now())) {
+        p.zi = zi; p.inst = inst;
+        zoneIndex(p);
+        pushRoster(gameOf(p));
+        /* Walking in buys five seconds, so a hostile cannot camp the doorway. */
+        p.safeUntil = Date.now() + 5000;
+      }
     }
     pushZone(p);
     if (cosmetic) pushPeers(p);
@@ -449,13 +461,33 @@ const HANDLERS = {
   hostile(p, m) {
     const q = live.get(m.uid);
     if (!q || q.game !== p.game || !p.game) return;
+    if (!TOWNS.has(p.zi)) return sys(p, 'Declare in town.');
+    if ((+p.lvl || 1) < 9 || (+q.lvl || 1) < 9) return sys(p, 'Hostility starts at level 9.');
     if (p.hostile.has(q.uid)) return sys(p, 'Already declared.');
+    const last = p.declaredAt.get(q.uid) || 0;
+    if (Date.now() - last < 60000) return sys(p, 'Once a minute, against the same person.');
+    p.declaredAt.set(q.uid, Date.now());
     p.hostile.add(q.uid);
+    /* Their flag is what lets them hit back after you stand down. Not their party. */
+    q.hostile.add(p.uid);
+    p.portalLock = Date.now() + 10000;
     const party = partyOf(p);
     if (party && party.members.has(q.uid)) leaveParty(p, true);
     inGame(gameOf(p), 'hostile', { from: p.name, fromUid: p.uid, to: q.name, toUid: q.uid });
     sys(q, p.name + ' has declared hostility against you.');
     sys(p, 'You have declared against ' + q.name + '. That stands until one of you leaves the game.');
+    pushRoster(gameOf(p));
+  },
+
+  stand(p, m) {
+    const q = live.get(m.uid);
+    if (!q || q.game !== p.game || !p.game) return;
+    if (!TOWNS.has(p.zi)) return sys(p, 'Stand down in town.');
+    if (!p.hostile.has(q.uid)) return sys(p, 'You have not declared against them.');
+    p.hostile.delete(q.uid);
+    inGame(gameOf(p), 'stand', { from: p.name, fromUid: p.uid, to: q.name, toUid: q.uid });
+    sys(p, 'You stand down. They can still hit you.');
+    sys(q, p.name + ' stands down. You can still hit them.');
     pushRoster(gameOf(p));
   },
 
@@ -465,13 +497,16 @@ const HANDLERS = {
     const party = partyOf(p);
     if (!party) return;
     const here = membersOf(party).filter(q => q.zi === p.zi && q.inst === p.inst && q.game === p.game);
-    if (here.length < 2) return;
-    const bonus = PARTY_BONUS[Math.min(here.length, 8)];
+    /* Alone in the district: the killer's client deferred, so hand the whole report back. */
+    if (here.length < 2) {
+      send(p, 'xp', { amount: Math.round(amount), from: p.name, self: 1 });
+      return;
+    }
+    const pool = amount * PARTY_POOL;
     const sum = here.reduce((a, q) => a + Math.max(1, q.lvl), 0);
     for (const q of here) {
-      if (q.uid === p.uid) continue;
-      const share = Math.round(amount * bonus * (Math.max(1, q.lvl) / sum));
-      if (share > 0) send(q, 'xp', { amount: share, from: p.name });
+      const share = Math.round(pool * (Math.max(1, q.lvl) / sum) * xpCurve(q.lvl, m.ml));
+      if (share > 0) send(q, 'xp', { amount: share, from: p.name, self: q.uid === p.uid ? 1 : 0 });
     }
   },
 
@@ -547,6 +582,18 @@ const HANDLERS = {
 };
 
 const rates = new WeakMap();
+/* Within 5 levels the share is whole. It slides from 6 to 9 and floors at 5%
+   once the gap is 10. No separate penalty at level 70 or above: the later
+   decay table is not this game's. */
+function xpCurve(lvl, ml) {
+  const monster = +ml || 0;
+  if (!(monster > 0)) return 1;
+  const d = Math.abs((+lvl || 1) - monster);
+  if (d <= 5) return 1;
+  if (d >= 10) return 0.05;
+  return 1 - (d - 5) * 0.19;
+}
+
 function rate(p, key, max, win) {
   let m = rates.get(p);
   if (!m) { m = new Map(); rates.set(p, m); }
@@ -576,7 +623,7 @@ function attach(server, verify) {
       uid: ctx.user.id, name: ctx.user.name, conn,
       lvl: 1, cls: '', zi: 0, inst: null, zoneKey: undefined, x: 0, y: 0, dir: 0, hp: 1, hpm: 1,
       sk: null, au: null, sw: 0,
-      game: null, party: null, hostile: new Set(), invites: new Map(), safeUntil: 0, voice: false, joined: Date.now()
+      game: null, party: null, hostile: new Set(), declaredAt: new Map(), portalLock: 0, invites: new Map(), safeUntil: 0, voice: false, joined: Date.now()
     };
     live.set(p.uid, p);
 
@@ -612,6 +659,6 @@ function attach(server, verify) {
 
 module.exports = {
   attach, live, games, parties, MAX_PARTY, MAX_GAME, MAX_PLAYERS, MAX_GAMES,
-  PARTY_BONUS, PVP_SCALE, SIM_ZONE, TOWNS, canFight, mutualHostile, gameScale, DIFFS,
+  PARTY_POOL, PVP_SCALE, SIM_ZONE, TOWNS, canFight, mutualHostile, gameScale, DIFFS,
   poke, pushFriends
 };
