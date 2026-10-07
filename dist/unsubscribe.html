@@ -2202,11 +2202,12 @@ function mktCancel(i){const m=G.mkt,o=m.ord[i];if(!o)return;if(o.s==='buy')G.cre
 function mktFills(){const m=G.mkt,mid=m.p;
   for(let i=m.ord.length-1;i>=0;i--){const o=m.ord[i];
     if(o.s==='buy'?mid>o.px:mid<o.px)continue;
-    m.ord.splice(i,1);const gross=o.n*o.px,reb=gross*MKT_MAKER;
-    if(o.s==='buy'){G.sats+=o.n;mktBasisAdd(o.n,o.esc-reb);G.credits+=reb;addRep('btc',Math.ceil(o.n/6))}
-    else{G.credits+=gross+reb;mktBasisTake(o.n)}
+    m.ord.splice(i,1);const gross=o.n*o.px,reb=gross*MKT_MAKER,rebate=Math.floor(reb);
+    /* The fill line prints whole credits, so the purse gains that floor. */
+    if(o.s==='buy'){G.sats+=o.n;mktBasisAdd(o.n,o.esc-rebate);G.credits+=rebate;addRep('btc',Math.ceil(o.n/6))}
+    else{G.credits+=Math.floor(gross)+rebate;mktBasisTake(o.n)}
     G.st.maker=(G.st.maker||0)+1;mktImpact(o.n*.5,o.s);sfx('coin');
-    toast('Your order filled: '+o.n+' sats at '+fmt(o.px)+'. Maker rebate '+fmt(reb)+' — you were the one waiting.')}}
+    toast('Your order filled: '+o.n+' sats at '+fmt(o.px)+'. Maker rebate '+fmt(rebate)+' — you were the one waiting.')}}
 /* ---------- Mr. Float lends against them, and is delighted either way ---------- */
 const MKT_LTV=.5, MKT_LIQ=.72;
 function mktBorrow(n){const m=mktInit();if(m.pos)return false;n=Math.floor(n);if(n<1||G.sats<n)return false;
