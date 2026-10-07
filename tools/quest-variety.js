@@ -27,6 +27,7 @@ const done=async(upto,qpatch,flags)=>{await p.evaluate(({upto,qpatch,flags})=>{c
 const step=()=>p.evaluate(()=>__g.storyStep());
 const near=async(k,o)=>{const e=await p.evaluate(({k,o})=>{const P=__g.P;for(let i=0;i<16;i++){const a=i*0.7,e=__g.spawn(k,P.x+Math.cos(a)*(0.8+i*0.15),P.y+Math.sin(a)*(0.8+i*0.15),o||null);if(e)return true}return false},{k,o});if(!e)fail('could not spawn '+k)};
 const pop=()=>p.evaluate(()=>{const e=__g.W.ents[__g.W.ents.length-1];__g.kill(e);return {q:e.q,k:e.k}});
+const fell=async q=>{const k=await p.evaluate(q=>{let e=__g.W.ents.find(e=>e.su&&e.q===q);if(!e){const z=__g.ZONES.find(z=>z.su&&z.su.q===q),P=__g.P;for(let i=0;i<12&&!e;i++){const a=i*0.8;e=__g.spawn(z.su.k,P.x+Math.cos(a)*(1+i*0.2),P.y+Math.sin(a)*(1+i*0.2),{su:z.su})}}if(!e)return '';__g.kill(e);return e.k},q);if(!k)fail('no lieutenant '+q)};
 
 await done(3,{q3:1},{q3open:1});
 let st=await step();
@@ -53,9 +54,9 @@ await p.evaluate(()=>{__g.G.q.q8=1;__g.G.q8page=0;__g.G.q8down=0;__g.enter(9,{fr
 for(let i=0;i<6;i++){await sk();await p.waitForTimeout(30)}
 let lake=await p.evaluate(()=>({page:__g.W.objs.some(o=>o.k==='page'&&!o.used),d:__g.storyStep().d,goal:__g.goalPt()&&__g.goalPt().k}));
 if(!lake.page||lake.goal!=='page'||!lake.d.includes('letter'))fail('letter first '+JSON.stringify(lake));
-await p.evaluate(()=>{const z=__g.ZONES[9].su,P=__g.P;let e=null;for(let i=0;i<12&&!e;i++){const a=i*0.8;e=__g.spawn(z.k,P.x+Math.cos(a)*(1+i*0.2),P.y+Math.sin(a)*(1+i*0.2),{su:z})}if(!e)throw new Error('no lethe');__g.kill(e)});
-lake=await p.evaluate(()=>({q:__g.G.q.q8,down:__g.G.q8down,d:__g.storyStep().d}));
-if(lake.q!==1||!lake.down||!lake.d.includes('Lethe is down'))fail('lethe early '+JSON.stringify(lake));
+await fell('q8');
+lake=await p.evaluate(()=>({q:__g.G.q.q8,down:__g.G.q8down,d:__g.storyStep().d,goal:__g.goalPt()&&__g.goalPt().k}));
+if(lake.q!==1||!lake.down||lake.goal!=='page'||!lake.d.includes('Lethe is down'))fail('lethe early '+JSON.stringify(lake));
 await p.evaluate(()=>{const o=__g.W.objs.find(o=>o.k==='page'&&!o.used);__g.useObj(o)});
 lake=await p.evaluate(()=>__g.G.q.q8);
 if(lake!==2)fail('letter did not close the lake '+lake);
@@ -65,7 +66,7 @@ for(let i=0;i<4;i++){await sk();await p.waitForTimeout(20)}
 await p.evaluate(()=>{const o=__g.W.objs.find(o=>o.k==='page'&&!o.used);__g.useObj(o)});
 st=await step();
 if(!st.d.includes('Lethe'))fail('after the page '+JSON.stringify(st));
-await p.evaluate(()=>{const z=__g.ZONES[9].su,P=__g.P;let e=null;for(let i=0;i<12&&!e;i++){const a=i*0.8;e=__g.spawn(z.k,P.x+Math.cos(a)*(1+i*0.2),P.y+Math.sin(a)*(1+i*0.2),{su:z})}if(!e)throw new Error('no lethe');__g.kill(e)});
+await fell('q8');
 if(await p.evaluate(()=>__g.G.q.q8)!==2)fail('lethe after the page did not finish');
 
 await done(12);
@@ -73,7 +74,7 @@ await p.evaluate(()=>{__g.G.q.q12=1;__g.G.q12down=0;__g.enter(13,{fresh:1})});
 for(let i=0;i<6;i++){await sk();await p.waitForTimeout(30)}
 st=await step();
 if(!st.d.includes('Recording Secretary')&&!st.d.includes('Destroy'))fail('minutes open '+JSON.stringify(st));
-await p.evaluate(()=>{const z=__g.ZONES[13].su,P=__g.P;let e=null;for(let i=0;i<12&&!e;i++){const a=i*0.8;e=__g.spawn(z.k,P.x+Math.cos(a)*(1+i*0.2),P.y+Math.sin(a)*(1+i*0.2),{su:z})}if(!e)throw new Error('no secretary');__g.kill(e)});
+await fell('q12');
 let rec=await p.evaluate(()=>({q:__g.G.q.q12,book:__g.W.objs.some(o=>o.k==='minute'&&!o.used),d:__g.storyStep().d,goal:__g.goalPt()&&__g.goalPt().k}));
 if(rec.q!==1||!rec.book||rec.goal!=='minute'||!rec.d.includes('Strike'))fail('minutes '+JSON.stringify(rec));
 await p.evaluate(()=>{const o=__g.W.objs.find(o=>o.k==='minute'&&!o.used);__g.useObj(o)});
@@ -84,7 +85,7 @@ await p.evaluate(()=>{__g.G.q.q13=1;__g.G.qt={};__g.enter(14,{fresh:1})});
 for(let i=0;i<6;i++){await sk();await p.waitForTimeout(30)}
 st=await step();
 if(!st.d.includes('0/4'))fail('motion open '+JSON.stringify(st));
-await p.evaluate(()=>{const z=__g.ZONES[14].su,P=__g.P;let e=null;for(let i=0;i<12&&!e;i++){const a=i*0.8;e=__g.spawn(z.k,P.x+Math.cos(a)*(1+i*0.2),P.y+Math.sin(a)*(1+i*0.2),{su:z})}if(!e)throw new Error('no chair');__g.kill(e)});
+await fell('q13');
 let mot=await p.evaluate(()=>({q:__g.G.q.q13,d:__g.storyStep().d,down:__g.G.qt&&__g.G.qt.motionDown}));
 if(mot.q!==1||!mot.down||!mot.d.includes('Chair is down'))fail('chair early '+JSON.stringify(mot));
 for(let n=0;n<4;n++){await near('director');await pop()}
