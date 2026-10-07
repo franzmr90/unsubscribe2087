@@ -475,7 +475,7 @@ const HANDLERS = {
     if (party && party.members.has(q.uid)) leaveParty(p, true);
     inGame(gameOf(p), 'hostile', { from: p.name, fromUid: p.uid, to: q.name, toUid: q.uid });
     sys(q, p.name + ' has declared hostility against you.');
-    sys(p, 'You have declared against ' + q.name + '. That stands until one of you leaves the game.');
+    sys(p, 'You have declared against ' + q.name + '. Standing down in town stops only your own swings.');
     pushRoster(gameOf(p));
   },
 

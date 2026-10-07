@@ -676,7 +676,7 @@ function mpGamePanel() {
           : '<button class="ghost" data-mph="' + r.uid + '">Hostile</button>') + '</div>';
     }
     h += '</div>';
-    h += '<p style="font-size:13px">Muting somebody silences their voice and their messages both. Declaring hostility takes them out of your party and lets the two of you fight anywhere that is not a town \u2014 and it cannot be taken back while you are both in this game, which is the only thing that makes it mean anything.</p>';
+    h += '<p style="font-size:13px">Muting somebody silences their voice and their messages both. Declaring hostility takes them out of your party and lets the two of you fight anywhere that is not a town. Standing down in town stops only your own swings; theirs remain, and the party does not come back while either flag is still up.</p>';
   }
 
   h += '<h3>What has been said</h3><div class="list">';

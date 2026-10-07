@@ -206,6 +206,7 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   A.send({ t: 'hostile', uid: uidOf(B) });
   await wait(200);
   ok('a declaration in town is accepted', A.seen.some(m => m.t === 'hostile') && B.seen.some(m => m.t === 'hostile'));
+  ok('the declaration says standing down stops only your swings', /Standing down in town stops only your own swings/.test(lastSys(A)), lastSys(A));
 
   const who = name => [...live.live.values()].find(p => p.name === name);
   const pa = who('Ines'), pb = who('Vale');
