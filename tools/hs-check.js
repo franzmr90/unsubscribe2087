@@ -201,13 +201,13 @@ await p.waitForTimeout(80);
 const became=await p.evaluate(()=>__g.G.form||null);
 if(became!=='hull')fail('hound click hull '+became+' en '+swapped);
 const stayed=await p.evaluate(()=>{
-  const g=__g;g.G.form='hull';g.G.en=0;g.P.cd[1]=9;g.P.castWait=0;g.P.silence=2;g.P.dash={t:4,spd:8,m:0,hit:[],end:null,trail:'',lx:g.P.x,ly:g.P.y,tr:0};g.calc();return g.G.form;
+  const g=__g;g.G.slots=[1,0,4];g.G.form='hull';g.G.en=40;g.P.cd[1]=0;g.P.castWait=0;g.P.silence=0;g.P.dash=null;g.calc();g.setSkillButtons();return g.G.form;
 });
 await p.click('.sk[data-i="0"]');
 await p.waitForTimeout(80);
 const still=await p.evaluate(()=>({form:__g.G.form,log:document.getElementById('log').textContent}));
 if(still.form!=='hull'||!/does not become a hound/.test(still.log))fail('hull refuses hound '+JSON.stringify(still)+' was '+stayed);
-const paid=await p.evaluate(()=>{const g=__g;g.G.form='hound';g.G.en=10;g.P.cd[7]=0;g.P.castWait=0;g.P.dash=null;g.P.silence=0;g.calc();return g.G.en});
+const paid=await p.evaluate(()=>{const g=__g;g.G.slots=[0,2,7];g.G.form='hound';g.G.en=10;g.P.cd[7]=0;g.P.castWait=0;g.P.dash=null;g.P.silence=0;g.calc();g.setSkillButtons();return g.G.en});
 await p.click('.sk[data-i="2"]');
 await p.waitForTimeout(80);
 const paidAfter=await p.evaluate(()=>({form:__g.G.form||null,en:__g.G.en,wait:__g.P.castWait}));
