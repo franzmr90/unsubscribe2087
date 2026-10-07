@@ -118,15 +118,18 @@ measurement: **45–48 fps against a 46–52 fps baseline** across zones 1, 3, 1
 
 ## Not done, and why
 
-- **Acts III–V balance is still unmeasured.** The pre-existing known gap, untouched. I did
-  not write a balance bot; `tools/smoke.js` proves the game runs, not that it is tuned.
-  The eleven new uniques are first-guess numbers in the same sense boss4/boss5 already
-  were — they are strong, and nothing has measured whether they are *too* strong.
+- **Acts III–V balance was measured in #35.** Seven glass normals got more life. Bosses,
+  uniques, and the multiplayer experience curve were left as they were. The numbers are in
+  `notes/balance-acts-3-5.md`.
 - **Cloud/account save paths are still untested.** Unchanged from before; they need a
   signed-in browser, which this environment does not have. The save-shaped changes I made
   (`G.sdx`, `G.sdxTold`) are additive and absent-safe: `sdxUnseen()` and `sdxSeen()` both
   tolerate a missing object, so an old save loads and simply shows every entry as new.
-- **Companion feel and party-pressure step logic** — untouched. Still first guesses.
+- **Companion leash.** Hireling damage matches the hireling sheet, and the #35 pressure
+  window (under 0.45s up, over 1.8s down) was left alone. On a winding floor a bodyguard
+  or a rendered companion fell about ten tiles behind and never recalled, because recall
+  waited until 13. They now catch up at 8 tiles unless the swing they are on is already in
+  range.
 - **No new art assets.** There are none in the project and none can be made; everything
   above is drawing code.
 - **Acts I–III quest *structure*** is unchanged. I rewrote framing text, not quest design.
