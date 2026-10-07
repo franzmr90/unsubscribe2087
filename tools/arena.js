@@ -182,26 +182,43 @@ async function duel(page, spec) {
       for (let j = -2; j <= 2 && ok; j++) for (let i = -2; i <= 2; i++) if (map[(y + j) * N + x + i] !== 1) ok = false;
       if (ok) { P.x = x + 0.5; P.y = y + 0.5; parked = true; }
     }
-    const e = g.spawn(spec.k, P.x + 1.15, P.y, spec.champ ? {champ: 1} : {});
+    const packN = spec.pack || 1;
+    const made = [];
+    for (let i = 0; i < packN; i++) {
+      const a = packN === 1 ? 0 : i / packN * 6.283;
+      const sx = P.x + Math.cos(a) * (packN === 1 ? 1.15 : 1.35);
+      const sy = P.y + Math.sin(a) * (packN === 1 ? 0 : 1.35);
+      const m = g.spawn(spec.k, sx, sy, spec.champ ? {champ: 1} : {});
+      if (m) made.push(m);
+    }
+    const e = made[0];
     if (!e) { Math.random = rnd0; return {err: 'spawn', name: spec.name}; }
-    e.aggro = true;
-    e.o1 = e.o2 = e.asked = e.p1 = e.p2 = e.said = 1;
+    for (const m of made) {
+      m.aggro = true;
+      m.o1 = m.o2 = m.asked = m.p1 = m.p2 = m.said = 1;
+      if (spec.tag) m.wkT = G.time;
+      if (!spec.boss && !spec.pack) m.spd = 0;
+      if (spec.sponge) m.hp = m.max = m.max * 40;
+    }
     W.bi = 1;
-    if (!spec.boss) e.spd = 0;
     P.inv = 0;
     P.atk = 0;
     P.shr = null;
-    const t0 = G.time, hp0 = G.hp, max = e.max;
+    const t0 = G.time, max = spec.sponge ? e.max / 40 : e.max;
     let minHp = G.hp, result = 'live';
-    const sec = spec.boss ? 12 : 8;
-    const steps = Math.round(sec * 30);
+    const alive = () => made.filter(m => m.hp > 0 && W.ents.indexOf(m) >= 0);
+    const sec = spec.sponge ? 1 / 30 : spec.boss ? 12 : 8;
+    const steps = Math.max(1, Math.round(sec * 30));
     for (let n = 0; n < steps; n++) {
-      if (!e.hp || e.hp <= 0 || W.ents.indexOf(e) < 0) { result = 'kill'; break; }
+      if (!alive().length) { result = 'kill'; break; }
       if (G.hp <= 0 || g.mode === 'dying') { result = 'dead'; break; }
-      const dx = P.x - e.x, dy = P.y - e.y, d = Math.hypot(dx, dy) || 1;
-      P.x = e.x + dx / d * 1.15;
-      P.y = e.y + dy / d * 1.15;
-      P.dir = {x: (e.x - P.x), y: (e.y - P.y)};
+      const focus = alive().slice().sort((a, b) => Math.hypot(a.x - P.x, a.y - P.y) - Math.hypot(b.x - P.x, b.y - P.y))[0];
+      if (!spec.pack) {
+        const dx = P.x - focus.x, dy = P.y - focus.y, d = Math.hypot(dx, dy) || 1;
+        P.x = focus.x + dx / d * 1.15;
+        P.y = focus.y + dy / d * 1.15;
+      }
+      P.dir = {x: focus.x - P.x, y: focus.y - P.y};
       const mag = Math.hypot(P.dir.x, P.dir.y) || 1;
       P.dir.x /= mag; P.dir.y /= mag;
       g.setMode('play');
@@ -220,7 +237,7 @@ async function duel(page, spec) {
     }
     g.keys.Space = false;
     Math.random = rnd0;
-    if (result === 'live' && (!e.hp || e.hp <= 0 || W.ents.indexOf(e) < 0)) result = 'kill';
+    if (result === 'live' && !alive().length) result = 'kill';
     if (G.hp <= 0 || g.mode === 'dying') result = 'dead';
     const sim = G.time - t0;
     const ivl = g.CLS[G.cls].ivl, mult = g.CLS[G.cls].mult;
@@ -231,6 +248,9 @@ async function duel(page, spec) {
       mobLeft: max ? Math.max(0, e.hp || 0) / max : 0,
       mobHp: Math.round(max), mobDmg: Math.round(e.dmg),
       hits: e.hits || 0,
+      dealt: Math.round(spec.sponge ? e.max - Math.max(0, e.hp || 0) : 0),
+      leftN: alive().length,
+      pack: packN,
       dps: Math.round(dps), ehp: Math.round(ehp), armor: s.armor || 0, maxHp: s.maxHp,
       est: Math.round(dps * mult / ivl),
       dynHp: Math.round(dyn.hp * 100) / 100, dynDmg: Math.round(dyn.dmg * 100) / 100,
@@ -333,6 +353,47 @@ async function uniques(page) {
   });
 }
 
+async function extra(page) {
+  const sponge = [];
+  const packs = [];
+  const pressure = [];
+  const rows = ROWS.filter(r => !r.boss && !r.champ);
+  for (const row of rows) {
+    await arm(page, row.zi);
+    const s = await duel(page, Object.assign({seed: 2, dyn: false, tag: false, sponge: 1}, row));
+    sponge.push(s);
+    const ratio = s.mobHp ? Math.round(s.dealt / s.mobHp * 100) / 100 : 0;
+    console.error(['hit', s.name, 'dealt ' + s.dealt, 'hp ' + s.mobHp, 'x' + ratio, s.dt].join('  '));
+    const p = await duel(page, Object.assign({seed: 2, dyn: false, tag: false, pack: 6}, row));
+    packs.push(p);
+    console.error(['pack', p.name, p.result, p.sim + 's', 'life ' + pct(p.life || 0), 'up ' + p.leftN + '/6', p.dt].join('  '));
+  }
+  for (const row of [
+    {zi: 1, k: 'drone', name: 'pressure drone'},
+    {zi: 5, k: 'mech', name: 'pressure mech'},
+    {zi: 24, k: 'ctkr', name: 'pressure caretaker'},
+    {zi: 31, k: 'sniper', name: 'pressure sniper'}
+  ]) {
+    await arm(page, row.zi);
+    await page.evaluate(() => { __g.G.pp = 0; });
+    for (let i = 0; i < 10; i++) {
+      const r = await duel(page, Object.assign({seed: 20 + i, dyn: false, tag: true}, row));
+      pressure.push(r);
+      console.error(['pp', r.name, i, r.result, r.sim + 's', 'pp ' + r.pp].join('  '));
+    }
+  }
+  const out = {sponge, packs, pressure};
+  fs.writeFileSync(path.join(root, 'notes', 'arena-extra.json'), JSON.stringify(out, null, 2));
+  console.log(JSON.stringify({
+    sponge: sponge.map(s => ({name: s.name, dealt: s.dealt, hp: s.mobHp, x: s.mobHp ? Math.round(s.dealt / s.mobHp * 100) / 100 : 0, dt: s.dt})),
+    packs: packs.map(p => ({name: p.name, result: p.result, sim: p.sim, life: Math.round((p.life || 0) * 100), up: p.leftN})),
+    pp: ['pressure drone', 'pressure mech', 'pressure caretaker', 'pressure sniper'].map(name => {
+      const xs = pressure.filter(r => r.name === name);
+      return {name, ttk: median(xs.map(r => r.sim)), pp: xs.length ? xs[xs.length - 1].pp : null, dead: xs.filter(r => r.result === 'dead').length};
+    })
+  }, null, 2));
+}
+
 (async () => {
   const browser = await chromium.launch(launchOpts());
   const page = await browser.newPage({viewport: {width: 390, height: 844}});
@@ -340,6 +401,7 @@ async function uniques(page) {
   const pressure = [];
   try {
     await boot(page);
+    if (process.env.ARENA_EXTRA) { await extra(page); return; }
     let armed = -1;
     for (const row of ROWS) {
       if (armed !== row.zi) { await arm(page, row.zi); armed = row.zi; }
