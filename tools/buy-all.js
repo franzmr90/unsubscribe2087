@@ -44,13 +44,14 @@ const one=await (async()=>{
 check('one sat still prints ₡100', one.line==='₡100'&&one.total===100&&one.ask>100&&one.ask<101, JSON.stringify(one));
 check('the printed purse buys that one sat', one.afford===1&&!one.shut&&!one.buyShut, JSON.stringify(one));
 
-await p.screenshot({path:'/opt/cursor/artifacts/screenshot_buy_all.png'});
-
 const bought=await p.evaluate(()=>{
   const before=__g.G.credits,sats=__g.G.sats;
   document.querySelector('[data-mkt="ball"]').click();
+  __g.closeSheet();
   return {before,credits:__g.G.credits,sats:__g.G.sats,was:sats,log:document.getElementById('log').textContent};
 });
+await p.waitForTimeout(300);
+await p.screenshot({path:'/opt/cursor/artifacts/screenshot_buy_all.png'});
 check('the purse pays the ₡100 on the line', bought.before===100&&bought.credits===0&&bought.sats===bought.was+1&&/Bought 1 sats for ₡100/.test(bought.log)&&!/Not enough credits/.test(bought.log), JSON.stringify(bought));
 
 const under=await p.evaluate(()=>{
