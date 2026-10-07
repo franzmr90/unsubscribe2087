@@ -97,15 +97,21 @@ await p.evaluate(()=>__g.closeSheet());
 await p.evaluate(()=>{__g.G.walkNew=0;__g.OPT.noWalk=1;__g.setMode('play')});
 await p.evaluate(()=>__g.enter(1,{fresh:true}));
 await clearUI(p);
-await p.evaluate(()=>{__g.setMode('play');__g.P.inv=0;__g.G.hc=true;__g.G.god=false;__g.G.lvl=6;__g.hurt(1e9,false,{name:'a test'})});
-const died=await p.evaluate(()=>({hp:__g.G.hp,hc:!!__g.G.hc,mode:__g.mode,lvl:__g.G.lvl}));
+const died=await p.evaluate(()=>{
+  __g.setMode('play');__g.P.inv=0;__g.G.hc=true;__g.G.god=false;__g.G.lvl=6;
+  const before=__g.G.credits;
+  __g.hurt(1e9,false,{name:'a test'});
+  return {hp:__g.G.hp,hc:!!__g.G.hc,mode:__g.mode,lvl:__g.G.lvl,before,after:__g.G.credits};
+});
 check('a hardcore death reaches 0 life', died.hp<=0&&died.hc&&died.mode==='dying'&&died.lvl===6, JSON.stringify(died));
+check('a hardcore death leaves the purse', died.before===died.after&&died.before>0, JSON.stringify(died));
 await p.waitForTimeout(2800);
 const rise=await p.evaluate(()=>{
   const b=document.getElementById('bRise');
-  return {txt:b?b.textContent:'',hidden:document.getElementById('death').hidden};
+  return {txt:b?b.textContent:'',hidden:document.getElementById('death').hidden,stats:document.getElementById('deathS').textContent};
 });
 check('the death button says Begin again', rise.txt==='Begin again'&&rise.hidden===false, JSON.stringify(rise));
+check('the death panel names no re-onboarding charge', /Re-onboarding fee/.test(rise.stats)&&/none/.test(rise.stats)&&!/₡/.test(rise.stats), rise.stats);
 await p.click('#bRise');
 await p.waitForTimeout(200);
 const again=await p.evaluate(()=>({lvl:__g.G.lvl,hc:!!__g.G.hc,hp:__g.G.hp,credits:__g.G.credits,mode:__g.mode}));
