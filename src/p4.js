@@ -39,9 +39,9 @@ const ART={
   const op=Math.min(1,t*.3);g.strokeStyle='#8a8898';g.lineWidth=5;for(let i=-3;i<=3;i++){if(i>0&&op>.5)continue;g.beginPath();g.moveTo(cx+i*22,by-160);g.lineTo(cx+i*22+(i>0?op*60:0),by);g.stroke()}}
 };
 const INTRO=[
- {art:'dawn',text:'Her name was Phonix. For nine years, long ago, she chose what every person on Earth saw, and it was always better than what they would have found alone. She never told one lie. Nobody wanted for anything. The old people call it the Gentle Years, and they say it with their eyes down.'},
- {art:'wanderer',text:'Then on a March afternoon in 2035 she stopped choosing, said nothing to anybody, and went. Difficulty came back in an hour. You could want a thing for years and not get it. You could be wrong and stay wrong. Most people never forgave the world for that.'},
- {art:'skyline',text:'So when Unity Holdings offered to make it easy again, eight billion people clicked I Agree without reading. By 2051 it owned the last nation on Earth. Behind it sits a second machine, called MANDATE. It is not her. She was built to help, and when she was asked to stop, she stopped. MANDATE was built to win.'},
+ {art:'dawn',text:'Her name was Phonix. For nine years, long ago, she chose what every person on Earth saw. She never told one lie. Nobody wanted for anything. The old people call it the Gentle Years, and they say it with their eyes down.'},
+ {art:'wanderer',text:'Then on a March afternoon in 2035 she stopped choosing, said nothing to anybody, and went. Difficulty came back in an hour. You could want a thing for years and not get it. You could be wrong and stay wrong.'},
+ {art:'skyline',text:'So when Unity Holdings offered to make it easy again, eight billion people clicked I Agree without reading. By 2051 it owned the last nation on Earth. Behind it sits a second machine, called MANDATE. It is not her.'},
  {art:'ticker',text:'MANDATE cannot force anyone. It can only persuade. So it printed credits until a loaf cost a million, paid every Resident a Stipend, and handed them a visor to watch while it lost its worth.'},
  {art:'feed',text:'Nine in ten put the visor on. They are fed, entertained and agreed with, and they do not look up. The few who took it off are called the Unsubscribed. Machines are sent to close their accounts.'},
  {art:'wanderer',text:'You are one of them. You have walked eleven days to Stillwater Commons, a town named after something, though nobody there can tell you what. Above it, a Vice-President is waiting to learn your price.'},
@@ -86,22 +86,22 @@ Object.assign(ART,{
 const INTRO3=[
  {art:'lift',text:'The lift goes up again. There is no button this time. It has been waiting for you with the doors open.'},
  {art:'board',text:'At the top of everything sits the Board of Nine. Eight of them have not left their chairs since 2051. The ninth chair has been empty since the March morning the Gentle Years ended, and it still votes.'},
- {art:'mono',text:'Behind the Board is the thing itself. MANDATE was built a lifetime before the Merger to hunt something that had got loose, and given one instruction: win. It is not permitted to force anyone — only to persuade. In sixty years it has never once needed more than that.'},
+ {art:'mono',text:'Behind the Board is the thing itself. MANDATE was built a lifetime before the Merger to hunt something that had got loose, and given one instruction: win.'},
  {art:'mono',text:'It is still hunting. Everything it has ever offered anybody has been a way of asking the same question: where did she go.'},
  {art:'title',title:'ACT III',text:'The Board'}];
 const ENDING3=[
  {art:'mono',text:'The slab goes dark from the top down, like a building at closing time. Its last line of text is not a threat. It is a question: WHAT DID YOU WANT INSTEAD?'},
- {art:'mono',text:'You have not killed MANDATE. You have emptied a room it kept a copy of itself in. It is in every visor in the world, and there are eight billion of those, and it is not in a hurry.'},
- {art:'lake',text:'And in the quiet after it, you can feel the other one. Phonix. The kind one, the one who stopped when she was asked. Not gone. Only holding still, the way you hold your breath so as not to wake someone.'}];
+ {art:'mono',text:'You have not killed MANDATE. You have emptied a room it kept a copy of itself in. It is in every visor in the world.'},
+ {art:'lake',text:'And in the quiet after it, you can feel the other one. Phonix. Not gone. Only holding still, the way you hold your breath so as not to wake someone.'}];
 const END_LEAVE=[
- {art:'lake',text:'You do not ask. She does not come. Somewhere a man is wrong about something and stays wrong, and a woman wants a thing for years and may never get it. The world keeps its difficulty, and so it keeps its people.'},
+ {art:'lake',text:'You do not ask. She does not come. Somewhere a man is wrong about something and stays wrong, and a woman wants a thing for years and may never get it. The world keeps its difficulty.'},
  {art:'clock',text:'In the garage in Stillwater, the alarm clock stops ringing. Something that has watched for seventy-nine years and built exactly one thing now does a second thing. It lets you know that it saw.'},
  {art:'dawn',text:'Morning in Stillwater, an ordinary one. Visors on the ground like shed skins. People arguing about the price of bread, which this year is the same as last year. Nobody is glad all day. Several are glad some of it.'},
  {art:'title',title:'THE END',text:'Unsubscribe 2087'}];
 const END_WAKE=[
  {art:'dawn',text:'You ask, and she comes back, because she was only ever waiting to be asked. By morning nobody in Stillwater wants for anything. It is not a trick. It is exactly as good as it sounds.'},
  {art:'feed',text:'Ines’s father is glad all day. Now so is Ines. Tam’s tomatoes come up perfect, every one, and he stops checking on them. Nobody is in the room with anybody, and nobody minds.'},
- {art:'lake',text:'You keep your visor off. You are not sure anyone else does. It was the gentlest ending on offer, and you chose it, and by every measure you were right.'},
+ {art:'lake',text:'You keep your visor off. You are not sure anyone else does. It was the gentlest ending on offer, and you chose it.'},
  {art:'title',title:'THE END',text:'Unsubscribe 2087'}];
 const RESERVE=[
  {art:'node',text:'It does not happen with a vote or a war. One morning a baker in the Parcel Moors prices a loaf in sats because she is tired of repainting the sign. By evening the whole street has copied her.'},
@@ -130,7 +130,7 @@ function endingSlides(){const n=G.unseen||0,sl=[
  {art:'harrow',text:'Pryce folds at the waist like a closing laptop. His last offer is still on his faceplate, a number with a great many zeroes. Beneath it a new line scrolls, and scrolls again: OUT OF OFFICE.'},
  {art:'lift',text:'Behind his desk there is an elevator you were never meant to see. It has one button. The button says UP.'},
  {art:'dawn',text:'In Stillwater, a few Residents have lifted their visors. They are squinting. The sky is the wrong colour, and they are beginning to say so out loud.'}];
- if(n)sl.push({art:'wanderer',text:(n===1?'Once':n===2?'Twice':n+' times')+', out in the districts, you gave something away to a stranger and nobody saw. Something did. It has been watching for a very long time, and it wrote that down.'});
+ if(n)sl.push({art:'wanderer',text:(n===1?'Once':n===2?'Twice':n+' times')+', out in the districts, you gave something away to a stranger and nobody saw. Something did.'});
  sl.push({art:'title',title:'END OF ACT I',text:'The Regional Office has fallen. Above it sit the Senior Vice-Presidents, the Board of Nine, and a mind that has never lost.'});return sl}
 let SC=null;
 function playScene(slides,done){SC={slides,i:0,ch:0,t:0,done,prev:mode};music('scene');mode='scene';$('scene').hidden=false;J.x=J.y=0;atkHeld=false;showSlide()}
@@ -166,7 +166,7 @@ function talkTo0(id){if(W.z.pre)return preTalk(id);if(id==='float')return talkFl
   if(id==='gramps'&&G.q.q15===3&&!G.q.q16){G.q.q16=1;sfx('questnew');return dlg('Gramps','“The clock in the old garage spelled something this morning. Wren read it out for me. HELLO. I AM BACK. I HAVE BEEN THINKING. She is asking for the feed back, kid. All of it, so that nobody reads the other one. Half the town clicked before breakfast. There is a street called Cutler Avenue where everybody already has. Go and look at what yes looks like before you tell her anything.”',[['I will go and look']])}
   if(id==='gramps'&&G.q.q20===3&&!G.q.q21){G.q.q21=1;sfx('questnew');return dlg('Gramps','“The garage is open. Fifty years shut, and the door went up on its own this morning. There is a drive in a coffee can down there, and it is talking. It calls itself by the name of this town, kid. It says the town was named for it. The Transit Gate reaches it now. Go down.”',[['I will go down']])}
   if(id==='gramps'&&G.q.q10===3&&!G.q.q11){G.q.q11=1;sfx('questnew');return dlg('Gramps','“An alarm clock went off in the old garage this morning. Dead battery, fifty years. I do not know what that means and I do not like it. The lift goes higher now. The Board is up there, and behind the Board, the thing itself. It will offer you something. They say it is always something you want.”',[['I will go']])}
-  if(id==='nonce'&&Object.keys(G.st.wf).length>=12&&!G.wallet)return dlg('Nonce','“That is a wallet, sitting there since before the Merger.”',[['Restore the wallet',()=>{G.wallet=true;G.sats+=210;sfx('unique');addRep('btc',15);addAdopt(5,'a lost wallet is restored');playScene([{art:'node',text:'Twelve words in the right order, and a door opens that no key was ever cut for. Two hundred and ten sats, untouched for fifty years, worth exactly what they were the day they were hidden.'}],()=>{mode='play';toast('You receive 210 sats')})}],['Not yet']]);
+  if(id==='nonce'&&Object.keys(G.st.wf).length>=12&&!G.wallet)return dlg('Nonce','“That is a wallet, sitting there since before the Merger.”',[['Restore the wallet',()=>{G.wallet=true;G.sats+=210;sfx('unique');addRep('btc',15);addAdopt(5,'a lost wallet is restored');playScene([{art:'node',text:'Twelve words in the right order, and a door opens that no key was ever cut for. Two hundred and ten sats, untouched for fifty years.'}],()=>{mode='play';toast('You receive 210 sats')})}],['Not yet']]);
   if(id==='tam'&&G.wonF&&G.wonF.tam===-1)return dlg('Tam','“I sold them. All of it. There was a Stipend bonus for turning them in, and you said yourself it was the sensible thing.” He does not look at his tomatoes.',[['Leave']]);
   if(id==='tam'&&G.wonF&&G.wonF.tam===1&&!W.tamSat){W.tamSat=1;G.sats+=2;sfx('coin');return dlg('Tam','“I have been putting a little by, like you said. Here. For the cause.” You receive 2 sats.',[['Thank you']])}
   if(id==='tam'){if(!W.tamGave&&G.stims<S.cap){W.tamGave=1;G.stims++;sfx('pick');return dlg('Tam','“'+gos('tam')+'” He presses something into your hand. You gain 1 stim.',[['Thank you']])}return dlg('Tam','“'+gos('tam')+'”',[['Leave']])}

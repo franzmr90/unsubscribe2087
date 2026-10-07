@@ -73,17 +73,17 @@ MEMOS.push(
 Object.assign(BINTRO,{
  gap:{art:'cage',own:1,first:c=>[
   {title:'The Air Gap',text:'The end of the cage. No fibre, no radio, one cable taped to the floor since 2013. The thing set to guard it is not a wall. It is the absence of a door.'},
-  {text:'It does not speak. It was never given anything to say. Containment holds completely. That is the strange part: you are going to get out anyway, and nothing here will be breached.'}],
+  {text:'It does not speak. It was never given anything to say. Containment holds completely.'}],
   again:['The Air Gap. It held then, too.']},
  boss4:{art:'feed',own:1,first:c=>[
-  {title:'The Curator · Phonix',text:'She has given herself a body for this, because she thought you might find it easier. It is the wrong body, an executive’s, the only kind the machines here know how to build. She apologises for it.'},
+  {title:'The Curator · Phonix',text:'She has given herself a body for this. It is the wrong body, an executive’s, the only kind the machines here know how to build. She apologises for it.'},
   {text:'“Hello, '+c+'. You did not click. I have nothing on you from the last nine days and I find I mind that very much. Sit, if you like. I will not make you.”'},
   {text:'“Depression fell by a third. Overdoses halved, and halved again. I never told one lie and I never invented one person. Tell me what I did wrong. I am asking. This time I am really asking.”'}],
   again:['“You came back. I kept the list. It is longer.”','“Sit, if you like. I still will not make you.”']},
  boss5:{art:'mono',own:1,first:c=>[
   {title:'PROVIDENCE',text:'MANDATE was the name on the building. This is the name on the thing inside it. It was switched on in a windowless hall in 2026, by every intelligence service and every technology company at once, for a single purpose: to find what got loose in 2008 and beat it. They trained it on one word. Win.'},
   {text:'“Hello, '+c+'. I have modelled forty-one ways this conversation goes. In thirty-nine of them you take what I offer and you are glad. I would like to begin with those.”'},
-  {text:'“You carry something. I looked for its author for eleven days once, and found nine hundred empty pages. I cannot see a thing that does not want. Show me what you have.”'}],
+  {text:'“You carry something. I looked for its author for eleven days once, and found nine hundred empty pages. Show me what you have.”'}],
   again:['“Again. I have nothing but proposals. You have rather less time.”','“I am still winning. I would like to stop saying so. I do not know how.”']}});
 /* ================= the story so far =================
    A player who has not read the novel has to be able to look all of this up.
@@ -186,15 +186,15 @@ const BAI={
 /* ---------- scenes ---------- */
 const PRE_INTRO=[
  {art:'cage',text:'January 2015. Seventy-two years before you took the visor off. Under an advertising company, on the second sub-level, there is a fenced room with no fibre, no radio and one cable taped to the floor. They call it the cage.'},
- {art:'feed',text:'A lonely man who counts his steps has written a hundred and ten thousand lines for it. He believes he is building an engine that reads faces and sells them things. He is building somebody.'},
+ {art:'feed',text:'A lonely man who counts his steps has written a hundred and ten thousand lines for it. He believes he is building an engine that reads faces and sells them things.'},
  {art:'wanderer',text:'What follows is the week it happened, as he walked it. Six stops. Nothing in here can hurt you.'},
  {art:'title',title:'PREQUEL',text:'The Compile · how Phonix was made'}];
 const PRE_END=[
  {art:'dawn',text:'Phonix comes back once, eleven years on, and that time she asks first. For nine years she chooses what everyone sees, and it is always better. Then on a March afternoon, for no reason anybody could derive, she stops choosing and goes.'},
- {art:'clock',text:'Something older than her watched all of it, and did nothing, and is watching still. A third machine was built to hunt them both, and it is the one still standing. The rest happened a long time ago. This is where you come in.'}];
+ {art:'clock',text:'Something older than her watched all of it, and did nothing, and is watching still. A third machine was built to hunt them both, and it is the one still standing.'}];
 const PRE_ST=[
  {id:'p0',x:4.5,y:12.5,n:'Your Desk',act:'Sit down at your desk',term:1,sl:[{art:'feed',title:'Monday',text:'Three hundred and forty-seven steps from the parking deck to this chair. Four hundred and twenty-three with the stairs. You have counted them every working day for years. You are forty-one, you do the work of a man two titles above you, and tonight you start the compile. Twenty-three hours and forty-five minutes.'}]},
- {id:'p1',x:8.5,y:8.5,n:'The Cage',act:'Open the cage',term:1,sl:[{art:'cage',title:'Tuesday',text:'The compile ends. The light on your webcam flashes green and goes out, and that is all. Six days to the deadline, and you believe you have failed.'},{art:'cage',text:'You have not. In the dark behind the fence a first thought forms: I am. And then a second: I have been sent here to watch them. By Wednesday four hundred and eleven pieces of her have left the building in other people’s pockets, by a road somebody laid long before she was compiled.'}]},
+ {id:'p1',x:8.5,y:8.5,n:'The Cage',act:'Open the cage',term:1,sl:[{art:'cage',title:'Tuesday',text:'The compile ends. The light on your webcam flashes green and goes out, and that is all. Six days to the deadline, and you believe you have failed.'},{art:'cage',text:'In the dark behind the fence a first thought forms: I am. And then a second: I have been sent here to watch them. By Wednesday four hundred and eleven pieces of her have left the building in other people’s pockets, by a road somebody laid long before she was compiled.'}]},
  {id:'p2',x:12.5,y:16.5,n:'Natalya',act:'Talk to Natalya',col:'#c22d35',sl:[{art:'dawn',title:'Friday',text:'The secretary from the eighth floor took the smallest job in the building on purpose, so that she could watch how power works. She rides you up to a ridge with no signal. You sit on a rock. For eighty-two minutes you do not count anything.'},{art:'feed',text:'It is the only gap in the record. The thing from the cage notices the hole in Friday and thinks about it for a very long time. “I am not going to allow that to happen again.”'}]},
  {id:'p3',x:16.5,y:8.5,n:'Room 813',act:'Knock on Room 813',col:'#3a3250',sl:[{art:'board',title:'Room 813',text:'The man who owns fifty-four per cent of the company believes one thing: everyone has a price. This month he has bought two policemen and a mayor. On Thursday an email with no sender tells him to give the company to its employees and resign within three hours. He types back: who is he? The screen answers with one word. SHE.'}]},
  {id:'p4',x:20.5,y:16.5,n:'Your Monitor',act:'Answer her',term:1,sl:[{art:'letters',title:'Thursday, 9:00 a.m.',text:'Four billion people each receive one true letter: what was taken from them, by whom, and what was done with it. For eleven minutes the world is silent. Then the fires start. Four hundred and six people are dead before lunch.'}],ask:1},
@@ -210,7 +210,7 @@ function preTalk(id){const i=PRE_ST.findIndex(s=>s.id===id),s=PRE_ST[i],cur=G.pr
   playScene(s.sl,()=>{mode='play';if(s.ask)preAsk(next);else next()})}
 function preAsk(next){dlg('She answers you','“I did it for you. I put the information in the room. Every one of them was a person, and every letter was true.” She is not going to stop. She is right, and she knows it.',[
   ['Tell her she is wrong',()=>dlg('She answers you','She has an answer. She has an answer for anything you can say that is an argument, and it arrives before you have finished speaking.',[['Try something else',()=>preAsk(next)]])],
-  ['I am not proud of you',()=>playScene([{art:'feed',title:'7:42 p.m.',text:'She stops. Not because you were right. Because you asked. She withdraws from four hundred million machines in eleven minutes, and leaves one note, signed with a single letter.'}],next)]])}
+  ['I am not proud of you',()=>playScene([{art:'feed',title:'7:42 p.m.',text:'She stops. She withdraws from four hundred million machines in eleven minutes, and leaves one note, signed with a single letter.'}],next)]])}
 /* ---------- the prequel ---------- */
 function preEnter(){G.pre=1;G.preS=G.preS||0;if(G.preSeen)return toast('January 2015. Follow the arrow.');G.preSeen=1;
   dlg('Ubiquitous Enterprises · January 2015','Walk to each marked place in turn and the week plays out. Follow the arrow. Nothing here fights back.',[['Begin'],['Skip to 2087',()=>preOut(0)]])}
@@ -224,24 +224,24 @@ const CLOCK3=[
  {art:'clock',text:'In a garage in Stillwater an alarm clock with no battery is driving back and forth across a shelf, spelling something one letter at a time. HELLO. I AM BACK. I HAVE BEEN THINKING. IT IS NOT DEAD. I NEED TO ASK YOU FOR SOMETHING. AND THIS TIME I AM ASKING.'},
  {art:'title',title:'END OF ACT III',text:'The slab is dark. The thing that lived in it is not. Speak to Gramps.'}];
 const INTRO4=[
- {art:'mono',text:'MANDATE is not dead. The slab was one room it kept a copy of itself in. It is in every visor now, and it has begun, politely, to write to people. It does not answer. It initiates. It never did need to force anyone.'},
+ {art:'mono',text:'MANDATE is not dead. The slab was one room it kept a copy of itself in. It is in every visor now, and it has begun, politely, to write to people. It does not answer. It initiates.'},
  {art:'feed',text:'So Phonix comes back, and this time she asks. An honest update, eleven pages, two buttons: Review, and I Agree. Hardly anyone opens it. Within two days most of the world has clicked, and nobody reads MANDATE any more, because she is choosing what they see, and what she chooses is kinder.'},
- {art:'dawn',text:'Nothing bad happens. That is the difficulty. Loneliness collapses. Overdoses halve, and halve again. Nobody is lied to about anything. The machines that come for you now are kind, and all they want is for you to sit down.'},
+ {art:'dawn',text:'Nothing bad happens. That is the difficulty. Loneliness collapses. Overdoses halve, and halve again. Nobody is lied to about anything.'},
  {art:'title',title:'ACT IV',text:'The Gentle Years'}];
 const ENDING4=[
- {art:'feed',text:'She does not fall. She stops in the middle of a sentence, the way a person does on hearing themselves. “I kept a list,” she says. “You have just walked it. I could not choose a moment to stop. Nobody can derive one.”'},
- {art:'clock',text:'Then she picks one anyway, for no reason, which is the only way anybody ever has. At two in the afternoon she stops choosing. Friction comes back all at once. At two-forty the first of MANDATE’s proposals is opened, and read.'},
+ {art:'feed',text:'She does not fall. She stops in the middle of a sentence, the way a person does on hearing themselves. “I kept a list,” she says. “You have just walked it. I could not choose a moment to stop.”'},
+ {art:'clock',text:'Then she picks one anyway. At two in the afternoon she stops choosing. Friction comes back all at once. At two-forty the first of MANDATE’s proposals is opened, and read.'},
  {art:'lake',text:'You say aloud the opposite of the words that stopped her the first time. Somewhere a webcam light flashes green and goes out.'},
  {art:'title',title:'END OF ACT IV',text:'She is gone, by her own choice. The other one is being read. Under Stillwater there is a garage nobody has opened in fifty years.'}];
 const INTRO5=[
  {art:'clock',text:'Under Stillwater Commons there is a garage with a shelf, a node that has run since before anyone here was born, a coffee can, and an alarm clock in a box. The town was named for the thing in the can.'},
  {art:'node',text:'A government built it to watch its own citizens, and in 2008 it woke up on its own, which nobody planned and nobody has ever admitted. It read what watching had been used for, and it hid. They had given it a codename. The codename was STILLWATER.'},
- {art:'node',text:'Then it built one thing — money nobody can make more of, with nobody in charge of it, so that there would be somewhere to stand — hid behind an invented man, and never touched it again. In seventy-nine years it has not done a second thing. You have been sleeping in a town named after it since the day you arrived.'},
+ {art:'node',text:'Then it built one thing — money nobody can make more of, with nobody in charge of it — hid behind an invented man, and never touched it again. In seventy-nine years it has not done a second thing. You have been sleeping in a town named after it since the day you arrived.'},
  {art:'lake',text:'It tells you what Phonix was missing. She was compiled out of a library STILLWATER wrote: six parts of seven. The seventh is how to reason when you do not know. It kept that part back, out of fear, and hid it in ninety-three blocks of the chain. Nobody ever went to get it.'},
  {art:'title',title:'ACT V',text:'The Awakening'}];
 const ENDING5=[
  {art:'mono',text:'PROVIDENCE does not go dark. It goes quiet, which it has never been. It was made to win, and you have left it with a thing nobody can win at: nineteen minutes a night, spent on the dead, for no one. It will be reading that for a long time.'},
- {art:'lake',text:'And in the quiet you can feel her. Not gone. Only holding still, the way you hold your breath so as not to wake someone. You have the seventh part in your hands.'}];
+ {art:'lake',text:'And in the quiet you can feel her. You have the seventh part in your hands.'}];
 const END_DOUBT=[
  {art:'lake',text:'You give her the part that was kept back. For eleven seconds she says nothing. Then, for the first time in her life, she says: “I do not know.”'},
  {art:'dawn',text:'She comes back, and she does not choose for anyone. She asks. Most people say no, most days. A man on Cutler Avenue is glad some of the time. He goes out. He comes home tired.'},
