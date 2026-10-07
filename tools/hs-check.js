@@ -30,7 +30,7 @@ const boot=await p.evaluate(()=>({cls:__g.G.cls,mode:__g.mode,st:!!(__g.G.st)}))
 if(boot.cls!=='homesteader'||boot.mode!=='play'||!boot.st)fail('boot '+JSON.stringify(boot));
 await p.evaluate(()=>__g.enter(1));
 await clear(16);
-const fight=await p.evaluate(()=>{
+const fight=await p.evaluate(async()=>{
   const g=__g,out={};
   const arm=i=>{g.G.sk[i]=Math.max(g.G.sk[i]||0,1);g.G.slots[0]=i;g.G.en=999;g.P.cd[i]=0;g.P.castWait=0;g.P.atk=0;g.calc()};
   const plots=()=>g.W.allies.filter(a=>a.plot&&a.life>0).length;
@@ -41,7 +41,9 @@ const fight=await p.evaluate(()=>{
   arm(1);g.cast(0);out.form=g.G.form;out.plotsInHound=plots();
   g.P.atk=0;const pj2=g.W.projs.length;g.attack();out.melee=g.W.projs.length===pj2;
   arm(0);g.cast(0);out.plotBlocked=plots();out.houndToast=/no hands/.test(log());
-  g.setSkillButtons();out.grey=document.querySelector('.sk[data-i="0"]').classList.contains('off');
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  out.grey=document.querySelector('.sk[data-i="0"]').classList.contains('off');
+  g.openSheet('skills');out.sheetLock=document.querySelector('[data-node="0"]').classList.contains('lock');g.closeSheet();
   for(const f of ['hound','hull','worn',null]){g.G.form=f;g.render()}
   g.G.form='hound';
   arm(7);g.cast(0);out.shed=g.G.form;
@@ -78,7 +80,7 @@ const fight=await p.evaluate(()=>{
   g.hurt(1e9,false,null);out.died=!g.G.form&&g.mode==='dying';
   g.G.hp=g.S.maxHp;g.G.en=g.S.maxEn;g.setMode('play');const death=document.getElementById('death');if(death)death.hidden=true;
   return out});
-const want={ranged:true,plot:1,form:'hound',plotsInHound:0,melee:true,plotBlocked:0,houndToast:true,grey:true,shed:null,plotBack:1,hull:'hull',noDash:true,hullBlocksHound:true,flock:true,hostile:true,bit:true,hadFlock:true,champ:true,refused:true,tick:true,wore:true,zoned:true,town:true,died:true};
+const want={ranged:true,plot:1,form:'hound',plotsInHound:0,melee:true,plotBlocked:0,houndToast:true,grey:true,sheetLock:true,shed:null,plotBack:1,hull:'hull',noDash:true,hullBlocksHound:true,flock:true,hostile:true,bit:true,hadFlock:true,champ:true,refused:true,tick:true,wore:true,zoned:true,town:true,died:true};
 for(const k in want)if(fight[k]!==want[k])fail(k+' got '+JSON.stringify(fight[k])+' want '+JSON.stringify(want[k]));
 await clear(8);
 const sheet=await p.evaluate(()=>{__g.openSheet('skills');const h=document.getElementById('sheetIn').innerHTML;__g.closeSheet();__g.openSheet('codex');const c=document.getElementById('sheetIn').innerHTML;__g.closeSheet();return {skills:h,codex:c}});
