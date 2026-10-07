@@ -62,7 +62,8 @@ const DOCS={
  hacker:[['rootkit','Root Kit','All power to the payload.',{dmg:35,hpP:-20}],['firewall','Firewall','Deep buffers, slow hands.',{hpP:15,en:40,dmg:-12}],['throttle','Throttle','Cast early, cast often, never quite hard enough.',{cdr:.2,regen:3,crit:-5}]],
  courier:[['express','Express','Faster than anything that could hurt you. Usually.',{mspd:12,aspd:15,hpP:-15}],['insured','Insured','Padded, strapped down, late.',{hpP:20,armorP:25,aspd:-10}],['cod','Cash on Delivery','You are here for the tips.',{mf:40,gold:60,dmg:-15}]],
  anon:[['nologs','No Logs','Nothing between you and the target, including armour.',{crit:10,dmg:15,taken:15}],['burner','Burner','Gone before it lands. Thin when it does.',{mspd:10,cdr:.15,hpP:-12}],['collective','Collective','We are many. None of us is sharp.',{hpP:15,leech:2,crit:-6}]],
- founder:[['boot','Bootstrapped','Your own hands, your own money, no runway.',{dmg:25,en:-20}],['venture','Venture Backed','Somebody else’s energy, and their terms.',{en:50,regen:4,taken:15}],['lifestyle','Lifestyle Business','Comfortable. Unambitious. Alive.',{hpP:25,regenH:5,dmg:-15}]]};
+ founder:[['boot','Bootstrapped','Your own hands, your own money, no runway.',{dmg:25,en:-20}],['venture','Venture Backed','Somebody else’s energy, and their terms.',{en:50,regen:4,taken:15}],['lifestyle','Lifestyle Business','Comfortable. Unambitious. Alive.',{hpP:25,regenH:5,dmg:-15}]],
+ homesteader:[['tenant','Tenant','More life, slower. You are staying.',{hpP:22,mspd:-12}],['poacher','Poacher','More damage, less life. You are taking something and leaving.',{dmg:28,hpP:-18}],['fallow','Fallow','Plots tick harder. You and the flock deal less. The ground does the work.',{dmg:-15}]]};
 const DOCT={taken:'{v}% damage taken'};
 const docOf=()=>(DOCS[G.cls]||[]).find(d=>d[0]===G.doc);
 const docTxt=m=>Object.keys(m).map(k=>{const v=k==='cdr'?Math.round(m[k]*100):m[k];return(v>0?'+':'')+(DOCT[k]||WEBT[k]||AFK[k].t.replace(/^\+/,'')).replace('{v}',v)}).join(', ');
@@ -77,7 +78,7 @@ function extra2(s,add){let hp=0;const d=docOf();if(d)for(const k in d[3]){if(k==
 const DTY={impact:{n:'Impact',c:'#e6e2d6',d:'Blunt force. Nothing shrugs it off entirely.'},surge:{n:'Surge',c:'#59e0e6',d:'Overvoltage. Briefly locks up what it hits.'},rust:{n:'Rust',c:'#c9803a',d:'Corrosion. Keeps eating for three seconds after the hit.'},heat:{n:'Heat',c:'#ff7a3c',d:'Thermal. A quarter of it splashes onto anything close by.'},noise:{n:'Noise',c:'#d98cff',d:'Jamming. Slows whatever is listening.'}};
 DTY.sound={n:'Sound',c:'#f7931a',d:'Sound money. Nothing resists it, nothing is immune to it, and no shield stops it. That is the entire point.'};
 const DTK=Object.keys(DTY);
-const SKT={maxi:{0:'sound',1:'sound',3:'sound',4:'sound',5:'sound',6:'sound',7:'sound',9:'sound',11:'sound'},scrapper:{1:'rust',5:'noise',7:'heat',12:'noise'},hacker:{0:'surge',1:'surge',3:'noise',4:'surge',6:'rust',7:'noise',9:'heat',10:'noise'},courier:{3:'heat',4:'rust',7:'noise'},anon:{0:'heat',3:'heat',5:'noise',6:'heat',8:'noise'},founder:{1:'noise',3:'surge',8:'heat'}};
+const SKT={maxi:{0:'sound',1:'sound',3:'sound',4:'sound',5:'sound',6:'sound',7:'sound',9:'sound',11:'sound'},scrapper:{1:'rust',5:'noise',7:'heat',12:'noise'},hacker:{0:'surge',1:'surge',3:'noise',4:'surge',6:'rust',7:'noise',9:'heat',10:'noise'},courier:{3:'heat',4:'rust',7:'noise'},anon:{0:'heat',3:'heat',5:'noise',6:'heat',8:'noise'},founder:{1:'noise',3:'surge',8:'heat'},homesteader:{0:'rust',3:'rust',5:'heat',6:'rust',9:'rust',12:'rust',14:'rust'}};
 const skType=(cls,i)=>cls==='hacker'&&i===14?(G.schema||'surge'):((SKT[cls]||{})[i]||'impact');
 /* One shape per skill. Color comes from the damage type, then the class.
    Passives are glyphs only: a mark that stays up is a later pass. */
@@ -178,6 +179,22 @@ const SKV={scrapper:{
   12:{k:'mark'},
   13:{k:'ring',r:.9},
   14:{k:'mark'}
+},homesteader:{
+  0:{k:'patch',r:2.2},
+  1:{k:'mark'},
+  2:{k:'orbit',n:3},
+  3:{k:'patch',r:1.4},
+  4:{k:'mark'},
+  5:{k:'orbit',n:1},
+  6:{k:'patch',r:1.8},
+  7:{k:'mark'},
+  8:{k:'mark'},
+  9:{k:'patch',r:3.4},
+  10:{k:'mark'},
+  11:{k:'mark'},
+  12:{k:'ring',r:2.4},
+  13:{k:'mark'},
+  14:{k:'patch',r:1.8}
 }};
 function skvOf(cls,i){const row=(SKV[cls]||{})[i];if(!row)return null;const sk=CLS[cls]&&CLS[cls].sk[i];let col=row.col;
   if(!col&&sk&&sk.a){const ty=skType(cls,i);if(DTY[ty])col=DTY[ty].c}if(!col)col=(CLS[cls]&&CLS[cls].col)||'#e6e2d6';
@@ -192,7 +209,7 @@ const RES={tick:{surge:1.5},drone:{surge:1.5,noise:.5},bot:{impact:.75,rust:1.5}
 const resTxt=k=>{const r=RES[k]||{},w=[],s=[],im=[];for(const t in r){(r[t]===0?im:r[t]>1?w:s).push(DTY[t].n)}return (w.length?'Weak to '+w.join(', '):'')+(s.length?(w.length?' · ':'')+'Resists '+s.join(', '):'')+(im.length?(w.length||s.length?' · ':'')+'Immune to '+im.join(', '):'')};const dealTxt=k=>DTY[ETY[k]||'impact'].n;;
 let DT=null;
 /* returns the damage after type bonuses, weakness and resistance; applies the type's side effect */
-function typed(e,d){let ty=DT||(P.fm&&P.fm.t>0&&P.fm.dt)||baseType();
+function typed(e,d){let ty=DT||(P.fm&&P.fm.t>0&&P.fm.dt)||(typeof hsForm==='function'&&hsForm()==='worn'?(P&&P.tag?P.formDt:G.formDt):null)||baseType();
   if(G.cls==='maxi'&&sl(12)&&ty!=='sound'){d*=.55+.03*sl(12);ty='sound'}
   if(ty==='sound'){/* no table, no multiplier, no argument */
     e.snd=1;e.lt=ty;return d*(1+(S.t_sound||0)/100)}
@@ -218,7 +235,8 @@ const FAM={sign:{cls:'scrapper',n:'Sign',bases:['Road Sign','Girder','Wrecking B
  deck:{cls:'hacker',n:'Deck',bases:['Cracked Tablet','Soldered Deck','Root Console','Zero-Day Rig'],dm:.8,sp:0,perk:'+20 energy, +15% Surge damage',st:{en:20,t_surge:15}},
  sling:{cls:'courier',n:'Launcher',bases:['Parcel Sling','Courier Tube','Rail Launcher','Last-Mile Cannon'],dm:.9,sp:15,perk:'+10% attack speed, throws pierce more often',st:{aspd:10,pierce:15}},
  shiv:{cls:'anon',n:'Shiv',bases:['Letter Opener','Ceramic Shiv','Burner Blade','Null Edge'],dm:.95,sp:8,perk:'+6% deadly strike, deadlier deadly strikes',st:{crit:6,critM:.25}},
- pager:{cls:'founder',n:'Instrument',bases:['Pager','Term Sheet','Golden Stapler','Cap Table'],dm:.85,sp:0,perk:'+2 energy per second, 8% faster skill recovery',st:{regen:2,cdr:.08}}};
+ pager:{cls:'founder',n:'Instrument',bases:['Pager','Term Sheet','Golden Stapler','Cap Table'],dm:.85,sp:0,perk:'+2 energy per second, 8% faster skill recovery',st:{regen:2,cdr:.08}},
+ graft:{cls:'homesteader',n:'Graft',bases:['Pruner','Irrigation Spike','Fence Post','Combine Blade'],dm:1,sp:0,perk:'plots last longer, and the flock leash is a step more forgiving',st:{}}};
 function famify(it){const mine=Object.keys(FAM).find(k=>FAM[k].cls===G.cls),k=Math.random()<.5&&mine?mine:pick(Object.keys(FAM)),F=FAM[k],nb=F.bases[tierOf(it.il)];
   if(it.name&&it.base&&it.name.includes(it.base))it.name=it.name.replace(it.base,nb);else if(it.q===0)it.name=nb;it.base=nb;it.fam=k;it.dmin=Math.max(1,Math.round(it.dmin*F.dm));it.dmax=Math.max(it.dmin+1,Math.round(it.dmax*F.dm));it.spd=(it.spd||0)+F.sp;return it}
 function famBonus(s){const w=G.eq.weapon;if(!w||!w.fam)return;const F=FAM[w.fam];if(F.cls!==G.cls)return;s.skills+=1;for(const k in F.st)s[k]=(s[k]||0)+F.st[k]}
@@ -237,14 +255,17 @@ UNI.push(
  {id:'orgchart',cls:'founder',n:'Org Chart',slot:'amulet',il:26,base:'Sigil Core',mods:{skills:[1,1],hp:[50,70]},sp:'Founder only. A Chief of Staff stands with you at all times, at no cost',fl:'Every line reports to you. Eventually.'},
  {id:'orangepill',n:'Orange Pill',slot:'ring',il:9,base:'Signet Chip',mods:{mf:[15,25],gold:[20,35]},sp:'Champions drop a sat, and each one you break nudges adoption upward',fl:'You cannot untake it.'},
  {id:'coldwallet',n:'Cold Wallet',slot:'belt',il:16,base:'Tool Belt',mods:{hp:[40,60],armorP:[30,45]},sp:'You pay no fee when you die, and sats you pick up count for a quarter more',fl:'Never been online. Never will be.'},
- {id:'hashrate',n:'Hash Rate',slot:'gloves',il:28,base:'Servo Fists',mods:{aspd:[10,15],dmg:[20,35]},sp:'+1% damage for every kill in your streak, up to 40',fl:'More work, more weight.'});
+ {id:'hashrate',n:'Hash Rate',slot:'gloves',il:28,base:'Servo Fists',mods:{aspd:[10,15],dmg:[20,35]},sp:'+1% damage for every kill in your streak, up to 40',fl:'More work, more weight.'},
+ {id:'soaker',cls:'homesteader',n:'Soaker Hose',slot:'belt',il:12,base:'Tool Belt',mods:{hp:[30,50]},sp:'Homesteader only. Plots you place last half again as long',fl:'It weeps. That is the point.'},
+ {id:'collar',cls:'homesteader',n:'One Collar',slot:'amulet',il:10,base:'Dog Tag',mods:{hp:[20,35]},sp:'Homesteader only. A single stray is already with you',fl:'You did not name it. It did not ask.'});
 const UNIK={};for(const u of UNI)UNIK[u.id]=u;
 const uOk=it=>{const u=UNIK[it.uid];return!u||!u.cls||u.cls===G.cls};
 function uniTick(dt){if(W.z.town)return;const want=(flag,kind,n,o)=>{const have=W.allies.filter(a=>a.item===flag);if(S.sp[flag]){if(have.length<n){P['u_'+flag]=(P['u_'+flag]||0)-dt;if(P['u_'+flag]<=0){P['u_'+flag]=4;W.allies.push(Object.assign({k:'minion',kind,item:flag,per:1,x:P.x+rnd(-.8,.8),y:P.y+rnd(-.8,.8),cd:0,ph:rnd(0,6),off:rnd(0,1),life:1e9,fx:1},o(),{dt:null}))}}}else for(const a of have)W.allies.splice(W.allies.indexOf(a),1)};
   want('armband','intern',2,()=>({m:.55,ivl:.7,hp:S.maxHp*.5,max:S.maxHp*.5,r:.3,taunt:1}));
   want('duck','drone',1,()=>({m:.5,ivl:.7,rng:5.5}));
   want('face','clone',1,()=>({m:.5,ivl:.5,hp:S.maxHp*.7,max:S.maxHp*.7,taunt:1,r:.3}));
-  want('orgchart','golem',1,()=>({m:1.3,ivl:1.1,aoe:1,hp:S.maxHp*1.6,max:S.maxHp*1.6,taunt:1,r:.5,armM:.6,spd:4}))}
+  want('orgchart','golem',1,()=>({m:1.3,ivl:1.1,aoe:1,hp:S.maxHp*1.6,max:S.maxHp*1.6,taunt:1,r:.5,armM:.6,spd:4}))
+  want('collar','stray',1,()=>({per:0,flock:1,m:.35,ivl:.7,rng:1.15,bite:8,r:.28,spd:4.2,dt:'rust'}))}
 
 /* ================= The Bull Run: there is no bull market ================= */
 ET.bull={n:'Market Bull',spr:'hound',hp:70,dmg:13,spd:3.2,r:.5,range:1.3,xp:30,atk:1.1,sight:9,pal:['#e0bd6e','#8a5a1a']};
@@ -281,14 +302,18 @@ const BUILDS={
  founder:[
   {k:'head',n:'Headcount',p:'Hire everyone. They vest while they live, and Org Debt is what the headcount costs you. Term Sheet is the one officer.',doc:'venture',at:[20,0,35,45],pr:[[0,10],[3,10],[6,8],[12,4],[2,8],[11,6],[13,5],[4,4],[1,1]],sl:[0,3,12],pa:[2,11,13],web:[4,1],fk:['lean','refund','echo','surge']},
   {k:'raid',n:'Hostile Takeover',p:'Non-Compete holds one machine on you so the hire can land. Layoffs spends your people. Liquidation spends theirs.',doc:'boot',at:[50,10,25,15],pr:[[10,6],[7,10],[8,6],[14,5],[1,6],[2,5],[11,3],[0,4],[13,3]],sl:[10,7,14],pa:[2,11,13],web:[0,3],fk:['over','stun','burst','mark']},
-  {k:'iron',n:'Iron Founder',p:'Do it yourself, in a Mech Suit. Non-Compete makes the room come to you. Liquidation spends the corpses. There is nobody on the payroll.',doc:'lifestyle',at:[30,20,50,0],pr:[[5,10],[10,6],[14,5],[2,8],[1,6],[0,2]],sl:[5,10,14],main:5,pa:[2],web:[1,2],fk:['ward','siphon','lean','stun']}]};
+  {k:'iron',n:'Iron Founder',p:'Do it yourself, in a Mech Suit. Non-Compete makes the room come to you. Liquidation spends the corpses. There is nobody on the payroll.',doc:'lifestyle',at:[30,20,50,0],pr:[[5,10],[10,6],[14,5],[2,8],[1,6],[0,2]],sl:[5,10,14],main:5,pa:[2],web:[1,2],fk:['ward','siphon','lean','stun']}],
+ homesteader:[
+  {k:'bed',n:'Cold Bed',p:'Cold Frame, then Compost, then the hedge. Kill Frost stays until you climb into a machine, which this plan never does.',doc:'fallow',at:[25,15,45,15],pr:[[0,10],[3,8],[6,6],[9,5],[12,4]],sl:[0,6,9],pa:[],web:[1,2],fk:['chill','lean','ward','echo']},
+  {k:'hull',n:'Inside the Hull',p:'Wear the Hull and stay in it. Shed when you must. Nothing is planted.',doc:'tenant',at:[20,20,50,10],pr:[[1,4],[4,10],[7,4],[10,6],[13,8]],sl:[4,10,7],main:4,pa:[13],web:[1,2],fk:['ward','stun','lean','siphon']},
+  {k:'flock',n:'What Follows',p:'Strays and one bull. Cold Frame is only there so they have somewhere to stand. Slaughter Weight spends them into the ground.',doc:'poacher',at:[40,20,25,15],pr:[[2,10],[5,6],[8,8],[11,5],[14,4],[0,3]],sl:[2,5,14],pa:[8,11],web:[0,3],fk:['over','mark','echo','lean']}]};
 function buildApply(cls,key,sp,ap){const B=BUILDS[cls].find(b=>b.k===key),sk=CLS[cls].sk,ok=i=>{const row=Math.floor(i/3);return G.lvl>=ROWREQ[row]&&(row<3||G.act2)&&(row<4||G.act3)};
   const put=i=>{if(G.sk[i]>=10||!ok(i))return false;if(i>=3&&!G.sk[i-3]&&!put(i-3))return false;const c=G.sk[i]>=5?2:1;if(sp<c)return false;sp-=c;G.sk[i]++;return true};
   for(const[i]of B.pr)if(!G.sk[i])put(i);                                /* one point in everything the plan needs, so it works at once */
   {const mi=B.main===undefined?B.sl[0]:B.main,fl=Math.min(4,1+Math.floor(sp/5));while(G.sk[mi]<fl&&put(mi));} /* the main attack always gets a few ranks before passives and summons are deepened */
   for(const[i,t]of B.pr)while(G.sk[i]<t&&put(i));                         /* then raise each to its target, most important first */
   for(const[i]of B.pr)while(G.sk[i]<10&&put(i));                          /* anything left deepens the core */
-  for(let r=0;r<5&&sp>0;r++)for(let j=0;j<3;j++)if(!G.sk[r*3+j])put(r*3+j);/* and then rounds out rows for their breadth bonuses */
+  for(let r=0;r<5&&sp>0;r++)for(let j=0;j<3;j++){const i=r*3+j;if(cls==='homesteader'&&!B.pr.some(p=>p[0]===i))continue;if(!G.sk[i])put(i)}/* breadth; a homesteader plan does not buy the column it left out */
   const ks=['mgt','ref','vit','bnd'];let left=ap;ks.forEach((k,j)=>{const n=Math.floor(ap*B.at[j]/100);G.at[k]+=n;left-=n});G.at[ks[B.at.indexOf(Math.max(...B.at))]]+=left;ap=0;
   const act=B.sl.filter(i=>G.sk[i]&&sk[i].a);for(let i=0;i<15&&act.length<3;i++)if(G.sk[i]&&sk[i].a&&!act.includes(i))act.push(i);G.slots=[0,1,2].map(i=>act[i]===undefined?-1:act[i]);
   G.pas=B.pa.filter(i=>G.sk[i]&&!sk[i].a).slice(0,PCAP());G.doc=B.doc;G.fork={};for(const i of act)if(G.sk[i]>=3){const set=forkSet(cls,i),f=B.fk.find(k=>set.includes(k));G.fork[i]=f||set[0]}
@@ -345,18 +370,18 @@ var TAGQ=false;
 function tagDo(fn){const m=W.tag,p0=P,c0=G.cls,d0=DT;P=m;G.cls=G.tag.cls;DT=null;TAGQ=true;try{fn();
     if(m.dash){const d=m.dash;m.dash=null;const far=d.spd*d.t;for(let s=0;s<far;s+=.25)if(!mv(m,m.dir.x*.25,m.dir.y*.25))break;W.fx.push({k:'arc',x:m.x,y:m.y,dx:m.dir.x,dy:m.dir.y,t:0,life:.22,w:1.5});if(d.m)burst(m.x,m.y,2.2,d.m,0,'#ff9a3c');if(d.end)d.end()}
   }catch(e){window.__tagErr=(e&&e.message)+' '+((e&&e.stack)||'').split('\n')[1]}finally{P=p0;G.cls=c0;DT=d0;TAGQ=false}}
-function updTag(dt){const m=W.tag,t=G.tag;if(!m||!t||m.hp<=0)return;const c=CLS[t.cls],rng=c.melee?1.5:5.5,base=Math.max(1,(S.dmin+S.dmax)/2*(1+S.dmg/100));
-  m.ph+=dt;m.sayT-=dt;m.atk-=dt;for(const k of['flash','swing','spin','buff','haste','guard','stealth','mech','crunch','oc'])m[k]=Math.max(0,m[k]-dt);m.armM=t.red*.7*(m.mech>0||m.guard>0?.5:1);
+function updTag(dt){const m=W.tag,t=G.tag;if(!m||!t||m.hp<=0)return;const c=CLS[t.cls],formed=t.cls==='homesteader'&&!!m.form,rng=formed?1.5:(c.melee?1.5:5.5),base=Math.max(1,(S.dmin+S.dmax)/2*(1+S.dmg/100));
+  m.ph+=dt;m.sayT-=dt;m.atk-=dt;for(const k of['flash','swing','spin','buff','haste','guard','stealth','mech','crunch','oc'])m[k]=Math.max(0,m[k]-dt);m.armM=t.red*.7*(m.mech>0||m.guard>0?.5:1);if(t.cls==='homesteader'&&m.form==='hull'){m.formT=(m.formT||0)+dt;const rk=(t.sk.find(s=>s[0]===13)||[0,0])[1];if(rk)m.armM/=1+.08*rk*Math.min(8,Math.floor(m.formT/2))}
   const R=clamp(t.dmg/base,.15,6)*(m.buff>0||m.crunch>0?1.4:1)*(m.mech>0?1.5:1);
   let tg=null,bd=8;for(const e of W.ents){if(!e.aggro)continue;const d=dist(e,P);if(d<bd){bd=d;tg=e}}
   const g=tg||P,d=dist(g,m)||1,want=tg?rng*.85:1.9;m.moving=false;
-  if(dist(m,P)>13){m.x=P.x;m.y=P.y}else if(d>want){const sp=4.8*(m.haste>0?1.5:1)*dt;m.dir={x:(g.x-m.x)/d,y:(g.y-m.y)/d};if(!mv(m,m.dir.x*sp,m.dir.y*sp)&&dist(m,P)>5){m.x=P.x;m.y=P.y}m.moving=true;m.walkPh+=dt*11}
+  if(dist(m,P)>13){m.x=P.x;m.y=P.y}else if(d>want){const sp=4.8*(m.form==='hound'?1.28:m.form?.72:1)*(m.haste>0?1.5:1)*dt;m.dir={x:(g.x-m.x)/d,y:(g.y-m.y)/d};if(!mv(m,m.dir.x*sp,m.dir.y*sp)&&dist(m,P)>5){m.x=P.x;m.y=P.y}m.moving=true;m.walkPh+=dt*11}
   if(m.volley){const v=m.volley;v.t-=dt;v.cd-=dt;if(v.cd<=0&&tg){v.cd=.12;tagDo(()=>{face(tg);shoot(P.dir,v.m,0)})}if(v.t<=0)m.volley=null}
   if(tg){m.dir={x:(tg.x-m.x)/d,y:(tg.y-m.y)/d};
     for(let j=0;j<t.sk.length;j++){m.sc[j]-=dt;if(m.sc[j]>0||d>7)continue;const[i,rk]=t.sk[j],s=c.sk[i],f=SKF[t.cls]&&SKF[t.cls][i];if(!f)continue;m.sc[j]=Math.max(4,(s.cd||5)*1.4)+j;m.say=s.n;m.sayT=1.4;m.swing=.18;sfx((SKS[t.cls]||{})[i]||'zap');tagDo(()=>{skvPlay(t.cls,i,P.x,P.y,m.dir);f(rk,R)});return}
-    if(d<=rng+tg.r+.3&&m.atk<=0){m.atk=c.ivl*1.15/toxicSwing(m);m.swing=.18;tagDo(()=>{if(c.melee){sfx('swing');W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:1});for(const e of W.ents.slice()){const dd=dist(e,P);if(dd<1.75+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(dd||1)>.15)hit(e,c.mult*R)}}else{sfx(t.cls==='hacker'?'zap':'throw');shoot(P.dir,c.mult*R,0)}})}}
+    if(d<=rng+tg.r+.3&&m.atk<=0){m.atk=c.ivl*1.15/toxicSwing(m);m.swing=.18;tagDo(()=>{if(c.melee||formed){sfx('swing');W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:1});for(const e of W.ents.slice()){const dd=dist(e,P);if(dd<1.75+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(dd||1)>.15)hit(e,c.mult*R)}}else{sfx(t.cls==='hacker'?'zap':'throw');shoot(P.dir,c.mult*R,0)}})}}
   else m.hp=Math.min(m.max,m.hp+m.max*.04*dt);t.hp=m.hp}
-function tagProxy(){const t=G.tag,g=Object.create(G);g.cls=t.cls;g.eq=t.eq||{};g.hp=W.tag.hp/W.tag.max*S.maxHp;return g}
+function tagProxy(){const t=G.tag,g=Object.create(G);g.cls=t.cls;g.eq=t.eq||{};g.form=W.tag.form||null;g.formDt=W.tag.formDt||null;g.formT=W.tag.formT||0;g.hp=W.tag.hp/W.tag.max*S.maxHp;return g}
 function tagMenu(){const b=[];if(G.tag)b.push(['Send '+G.tag.name+' back',()=>tagDismiss()]);for(let n=0;n<NSLOT;n++){const og=tagG(n);if(og&&CLS[og.cls]&&!(G.tag&&G.tag.slot===n))b.push(['Render level '+og.lvl+' '+CLS[og.cls].n+' · '+tagCost(og.lvl)+' sats',()=>tagRender(n)])}
   b.push(['Not now']);dlg('Render a companion',b.length>1?'The rig can pull one of your other characters into this world to fight beside you. They act on their own and use the skills they had on their buttons when last saved. It costs sats every time one is rendered: if they fall, or you send them back, rendering again is paid again. A hired companion waits with Kestrel while a rendered one is here, and Kestrel will not hire to you until they leave. You hold '+G.sats+' sats.':'The rig can pull one of your other characters into this world to fight beside you, but you have no other characters saved yet. Start one from Options, under Characters.',b)}
 /* ================= party pressure: two of you is easier, so the machines push back while a companion is rendered ================= */

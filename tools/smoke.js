@@ -11,6 +11,8 @@ const root=path.join(__dirname,'..');
 await p.setContent('<!doctype html><html><head><meta charset=utf-8></head><body style="margin:0">'+fs.readFileSync(path.join(root,'dist/unsubscribe.html'),'utf8')+'</body></html>');
 await p.waitForTimeout(600);
 await p.evaluate(()=>__g.skipDisc());await p.waitForTimeout(260);
+const hsBtn=await p.evaluate(()=>!!document.querySelector('[data-cls=homesteader]'));
+if(!hsBtn)errs.push('title has no homesteader');
 await p.click('[data-cls=scrapper]');await p.waitForTimeout(800);
 const sk=async(n=14)=>{for(let i=0;i<n;i++){await p.evaluate(()=>{const s=document.getElementById('scene');if(s&&!s.hidden)document.getElementById('scSkip').click();const d=document.getElementById('dlg');if(d&&!d.hidden){const x=d.querySelector('#dBtns button:not([disabled])');x&&x.click()}});await p.waitForTimeout(130)}};
 await sk(12);
@@ -32,6 +34,10 @@ for(const t of ['char','items','skills','web','quests','story','codex','opts']){
   if(len<200)errs.push('tab '+t+' rendered '+len+' chars');
   await p.evaluate(()=>__g.closeSheet());await p.waitForTimeout(120);
 }
+await p.evaluate(()=>__g.newGame('homesteader'));
+await sk(24);
+const boot=await p.evaluate(()=>({cls:__g.G&&__g.G.cls,mode:__g.mode,n:(__g.CLS.homesteader&&__g.CLS.homesteader.sk||[]).length}));
+if(boot.cls!=='homesteader'||boot.mode!=='play'||boot.n!==15)errs.push('homesteader boot '+JSON.stringify(boot));
 console.log('zones ok:',n+'/34');
 console.log(errs.length?'ERRORS:\n'+errs.slice(0,12).join('\n'):'no errors');
 await b.close();process.exit(errs.length?1:0)})();
