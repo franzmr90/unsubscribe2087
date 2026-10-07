@@ -231,7 +231,7 @@ const CLD={};let CL=null,clBusy=false,clPend=false,clDirty={},clAt=0,clState='lo
 async function cloudSave(){if(!CL||!G)return;if(clBusy){clPend=true;return}clBusy=true;clAt=Date.now();const sn=SLOT;
   try{const o=saveObj(),zk=Object.keys(o.zs);
     for(const k of zk)if(clDirty[k]||(o.cur&&String(o.cur.zi)===k)){await CL.doc(zdoc(sn,k)).set({s:JSON.stringify(o.zs[k])});delete clDirty[k]}
-    await CL.doc(mdoc(sn)).set({s:JSON.stringify({G:o.G,cur:o.cur,opt:o.opt,t:o.t}),zk,t:o.t,lv:o.G.lvl,cl:o.G.cls,ac:o.G.act3?3:o.G.act2?2:1});clState='ok'}catch(e){clState='err'}
+    await CL.doc(mdoc(sn)).set({s:JSON.stringify({G:o.G,cur:o.cur,opt:o.opt,t:o.t}),zk,t:o.t,lv:o.G.lvl,cl:o.G.cls,ac:heroAct(o.G)});clState='ok'}catch(e){clState='err'}
   clBusy=false;if(clPend){clPend=false;cloudSave()}}
 async function cloudInit(){try{if(!window.claude||!window.claude.use){clState='off';cloudNote();return}
     const u=await window.claude.use('user'),db=await window.claude.use('db'),id=u&&await u.id();if(!db||!id){clState='off';cloudNote();return}
