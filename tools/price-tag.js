@@ -36,6 +36,7 @@ await p.evaluate(()=>{__g.G.pre=2;__g.G.walkNew=0;__g.OPT.noWalk=1});
 await clearUI(p);
 await p.evaluate(()=>__g.enter(0));
 await clearUI(p);
+/* Prices climb while the clock runs, and buying strength lowers adoption, so each check pins the index. */
 await p.evaluate(()=>{__g.setMode('play');__g.G.cpi=1.073;__g.G.adopt=100;__g.G.lvl=1;__g.G.disc=null;__g.G.stims=0;__g.G.credits=32});
 await p.evaluate(()=>__g.openSheet('shop',{only:['items','shop']}));
 const stim=await p.evaluate(()=>{
