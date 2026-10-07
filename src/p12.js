@@ -1,13 +1,13 @@
 /* late additions that need the dialogue tables */
 QRW.push(
- ['q16','gramps','“So that is what yes looks like. Everybody glad and nobody home. I clicked a thing like that once, when I was young. I do not remember the nine years after it. I am told I enjoyed them.” You gain 1 skill point.',()=>G.sp++,'Gramps'],
- ['q17','null','“Finished. That is the word. Not dead and not asleep. I have sat with the dying and I have sat with the finished, and I will tell you which of them was easier to love.” You gain 5 attribute points.',()=>G.ap+=5,'Sister Null'],
- ['q18','nonce','“Back on its dock? Good. Do you know how she stopped it the first time? Eleven true pages telling it that winning meant stacking sats. It has been mining with no hope of a block ever since. Honestly, same.” You receive 80 sats.',()=>{G.sats+=80;addRep('btc',20)},'Nonce'],
- ['q19','marrow','“Four thousand two hundred and eleven. She kept the list herself. That is what I cannot get past. She knew, and she wrote every name down, and she could not make herself stop.” You gain 1 skill point.',()=>G.sp++,'Marrow'],
- ['q21','nonce','“You were inside it. Actually inside. Was it… no, do not tell me. I have run a node for forty years and I would like to keep imagining it.” You receive 100 sats.',()=>{G.sats+=100;addRep('btc',25)},'Nonce'],
- ['q22','marrow','“First seen, first served. It sounds like fairness. Most capture does.” You gain 1 skill point.',()=>G.sp++,'Marrow'],
- ['q23','null','“They did not take the coin. They took the paper that stood for the coin, out of relief, because paper is easier to hold. I have watched whole faiths go that way.” You gain 5 attribute points.',()=>G.ap+=5,'Sister Null'],
- ['q24','gramps','“Ninety-three pages. Uncertain knowledge and reasoning. Huh. All that power, and what she never had was the part where you say: I might be wrong. Keep it on you, kid. Something up there is going to ask to see it.” You gain 1 skill point, and you carry the seventh part.',()=>{G.sp++;G.module=1},'Gramps']);
+ ['q16','gramps','“I do not remember the nine years after I clicked.” You gain 1 skill point.',()=>G.sp++,'Gramps'],
+ ['q17','null','“Finished. That is the word.” You gain 5 attribute points.',()=>G.ap+=5,'Sister Null'],
+ ['q18','nonce','“It has been mining with no hope of a block ever since.” You receive 80 sats.',()=>{G.sats+=80;addRep('btc',20)},'Nonce'],
+ ['q19','marrow','“Four thousand two hundred and eleven, and she kept the list herself.” You gain 1 skill point.',()=>G.sp++,'Marrow'],
+ ['q21','nonce','“I have run a node for forty years and I would like to keep imagining it.” You receive 100 sats.',()=>{G.sats+=100;addRep('btc',25)},'Nonce'],
+ ['q22','marrow','“First seen, first served.” You gain 1 skill point.',()=>G.sp++,'Marrow'],
+ ['q23','null','“They took the paper, because it is easier to hold.” You gain 5 attribute points.',()=>G.ap+=5,'Sister Null'],
+ ['q24','gramps','“Keep it on you, kid, something up there is going to ask to see it.” You gain 1 skill point, and you carry the seventh part.',()=>{G.sp++;G.module=1},'Gramps']);
 
 /* ================= the sixth wanderer =================
    The Maximalist is not on the title screen until somebody finishes the story. The flag

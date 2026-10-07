@@ -79,13 +79,13 @@ Object.assign(SQ,{
   steps:[
    {t:'obj',zi:8,look:'person',label:'Speak to Tam',d:'Find Tam the gardener in the Sky Gardens',say:'A man kneeling in a flowerbed with his visor in the dirt beside him. “I grew something they did not ask for. A tomato. One. They are coming to correct it. Will you walk me out?”',esc:'Tam'},
    {t:'esc',zi:8,look:'lift',label:'Send Tam down the lift',d:'Walk Tam to the service lift in the Sky Gardens and keep him alive',say:'He steps into the lift holding the tomato in both hands like something that might go off. “I am going to plant the seeds,” he says. “I do not know what will come up. That is the part I like.”'},
-   {t:'talk',npc:'null',d:'Return to Sister Null',say:'“He is already digging up the square. Nobody told him he could. I think that is the first thing he has done without being told in his life.”',rw(){G.ap+=5;G.tam=true;addRep('anon',10);toast('You gain 5 attribute points')}}]},
+   {t:'talk',npc:'null',d:'Return to Sister Null',say:'“He is already digging up the square.”',rw(){G.ap+=5;G.tam=true;addRep('anon',10);toast('You gain 5 attribute points')}}]},
  letter:{n:'Return to Sender',by:'marrow',who:'Marrow',req:()=>G.q.q8===3,rw:'+1 skill point',
   offer:'“The Lake is safe, but letters in a lake are still unread. The Persuaders and Subsidiaries up there carry copies; they study them, to learn what moves us. Take three back. Then do the only thing a letter is for. Put them in the hands of three people in this square.”',
   steps:[
    {t:'kill',zi:9,kinds:['seer','splitter'],n:3,chance:{seer:.6,splitter:.4},item:'Letter',d:'Recover 3 letters from Persuaders and Subsidiaries in the Data Lake'},
    {t:'res',n:3,label:'Hand them a letter',d:'Hand the letters to three Residents in Stillwater'},
-   {t:'talk',npc:'marrow',d:'Return to Marrow',scene:[{art:'dawn',text:'Three visors come up, slowly, the way you lift a bandage. Three people stand in the square of Stillwater reading the same kind of page, not looking at each other yet.'}],say:'“They will be angry. Then sad. Then, if we are lucky, curious. That last one is the dangerous one, and it is why they made the visor.”',rw(){G.sp++;addRep('anon',10);toast('You gain 1 skill point')}}]}
+   {t:'talk',npc:'marrow',d:'Return to Marrow',scene:[{art:'dawn',text:'Three visors come up, slowly, the way you lift a bandage. Three people stand in the square of Stillwater reading the same kind of page, not looking at each other yet.'}],say:'“They will be angry.”',rw(){G.sp++;addRep('anon',10);toast('You gain 1 skill point')}}]}
 });
 GOSSIP.tam=['Tomatoes. Beans next. Nobody has corrected me yet.','You cannot make a plant grow faster by paying it. I find that restful.','Take one. They are not perfect.'];
 

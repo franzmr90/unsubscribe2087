@@ -44,13 +44,13 @@ ZONES.push(
 const T4=21,T5=27,PREZ=33;
 Object.assign(ZADJ,{22:'Agreeable',23:'Settled',24:'Saving',25:'Listed',26:'Kind',28:'Hashed',29:'Pending',30:'Paper',31:'Bound',32:'Final',33:'Caged'});
 Object.assign(QUESTS,{
- q16:{n:'I Agree',by:'Gramps',zi:22,d:'She asked this time. An honest update, eleven pages, two buttons. On the Agreeable Mile the Update itself walks about making sure nobody reads past the fourth paragraph. Stop it, and see what yes looks like.',rw:'+1 skill point',back:'Gramps'},
- q17:{n:'Seven Years on the Sofa',by:'Sister Null',zi:23,d:'People in the Sofa are finished, and being finished feels exactly like being happy. The Seventh Year keeps them seated. End it.',rw:'+5 attribute points',back:'Sister Null'},
+ q16:{n:'I Agree',by:'Gramps',zi:22,d:'She asked this time. An honest update, eleven pages, two buttons. On the Agreeable Mile the Update itself walks about making sure nobody reads past the fourth paragraph. Stop it.',rw:'+1 skill point',back:'Gramps'},
+ q17:{n:'Seven Years on the Sofa',by:'Sister Null',zi:23,d:'The Seventh Year keeps them seated. End it.',rw:'+5 attribute points',back:'Sister Null'},
  q18:{n:'Do Not Unplug',by:'Nonce',zi:24,d:'TARO-9 walked out of the reactor at Tomari once and was argued back in. It is awake again. It cannot be out-fought for long; put it back on its dock.',rw:'80 sats',back:'Nonce'},
  q19:{n:'Somebody It Went Badly For',by:'Marrow',zi:25,d:'She keeps a list of 4,211 people. Walk it to the end. The thing that guards the last door only ever says two words.',rw:'+1 skill point',back:'Marrow'},
  q20:{n:'The Kitchen Table',by:'Gramps',zi:26,d:'She will not be argued out of it, and she cannot choose a moment to stop. Sit down across from her anyway.',rw:'The end of Act IV',back:null},
  q21:{n:'Gone and Got',by:'Nonce',zi:28,d:'The seventh part is in ninety-three blocks beginning at height 137,209. The way in is guarded by the Orphan Maker. Go through it.',rw:'100 sats',back:'Nonce'},
- q22:{n:'First Seen',by:'Marrow',zi:29,d:'In the Mempool a thing called First Seen decides whose payment waits and whose goes through. Nothing was ever meant to decide that.',rw:'+1 skill point',back:'Marrow'},
+ q22:{n:'First Seen',by:'Marrow',zi:29,d:'In the Mempool a thing called First Seen decides whose payment waits and whose goes through.',rw:'+1 skill point',back:'Marrow'},
  q23:{n:'The Paper Is the Attack',by:'Sister Null',zi:30,d:'Eleven custodians issue paper against coins they do not hold. The Eleventh keeps the ledger of the other ten. Close it.',rw:'+5 attribute points',back:'Sister Null'},
  q24:{n:'Ninety-Three Blocks',by:'Gramps',zi:31,d:'The seventh part, uncertain knowledge and reasoning, is on ninety-three lecterns. Reorg guards them. Bring the pages out.',rw:'+1 skill point, and the seventh part',back:'Gramps'},
  q25:{n:'The Room',by:'Gramps',zi:32,d:'PROVIDENCE was made to win and it cannot be beaten at that. Give it something it cannot win at.',rw:'The end of the story',back:null}});
