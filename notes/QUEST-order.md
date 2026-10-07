@@ -17,3 +17,19 @@ The quest trigger is a different line. `enter` sets a zone’s quest to active w
 - Going Up is the story objective once that handoff is past and it is the first unfinished quest.
 
 Brenda’s turn-in, the Fields objective, Defrag, Nonce’s Smear offer, and the Act II quests are the same fields they were. Only the table order changed.
+
+## How it was checked
+
+`./build.sh`, then `node tools/smoke.js`: 34/34 zones, no errors.
+
+A phone-viewport page, after `skipDisc` and a Scrapper start, set the quest flags and read both `storyStep()` and the corner objective:
+
+| State | Objective |
+|---|---|
+| q1–q4 done, q5 still 0, still in town | Exit Interview. Go to The Glass Cathedral and destroy Pryce. |
+| Walk into the cathedral | q5 becomes 1. Exit Interview. Destroy Pryce. Follow the arrow. |
+| q5 done, Act II not entered | Act I complete. Take the Transit Gate to The Landing. |
+| Act II entered, q6 active | Going Up. Go to The Updraft and destroy Foreman Ratchet. |
+| q2 waiting on Brenda | A Greeting Withdrawn. Return to Brenda. |
+| q1 and q2 done, q3 unspoken | The Last Librarian. Humming Fields / Defrag. |
+| q4 waiting on Sister Null | The Audit. Return to Sister Null. |
