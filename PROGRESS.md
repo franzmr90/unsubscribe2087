@@ -136,6 +136,12 @@ measurement: **45–48 fps against a 46–52 fps baseline** across zones 1, 3, 1
   end of Act I could not be raised until Act IV. Those controls now live on More.
 - **No new art assets.** There are none in the project and none can be made; everything
   above is drawing code.
+- **Founder staff recall.** Interns, contractors, the chief, and the officer are
+  the bodies that follow you. They caught up only past 14 tiles, so a hireling
+  standing 10 away was already back and the intern was still walking. They now
+  use the same 8-tile recall, and a swing that is already in range may stay out
+  to 13. A timed minion (a botnet, a clone, a converted machine) still waits
+  until 14. Notes in `notes/founder-leash.md`.
 - **Original six, class feel.** Act I still deletes a Tick for Scrapper through
   Maximalist, and the sheets were left alone. Three party lines were not landing.
   A hireling in Toxic Maximalism swung faster and did not hit harder. A rendered
