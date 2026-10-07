@@ -630,8 +630,8 @@ function hsTick(dt){
 const WIT={fill:8,still:1.6,book:1.22,carbon:1.3,cap:6,stack:1.15,decay:1,high:4,onRec:8,thread:.7,sentMax:25,pressStack:2};
 const WITMIN={1:1,3:20,4:1,6:1,7:30,9:25,10:20,12:1};
 function recBag(){return (P&&P.tag)?P:G}
-function recGet(){const b=recBag();return Math.max(0,Math.min(100,+b.rec||0))}
-function recSet(v){recBag().rec=Math.max(0,Math.min(100,v))}
+function recGet(){const b=recBag();return Math.max(0,Math.min(100,+b.page||0))}
+function recSet(v){recBag().page=Math.max(0,Math.min(100,v))}
 function witBook(){const w=(P&&P.tag)?(G.tag&&G.tag.eq&&G.tag.eq.weapon):(G.eq&&G.eq.weapon);const cls=(P&&P.tag)?G.cls:(G&&G.cls);return !!(w&&w.fam==='notebook'&&cls==='witness')}
 function witCap(){let n=WIT.cap;if(witBook())n+=1;if(S&&S.sp&&S.sp.press)n+=WIT.pressStack;return n}
 function witNeed(i){const base=WITMIN[i]||0;if(!base)return 0;return Math.max(1,Math.ceil(base*(1+((S&&S.recCost)||0)/100)))}
