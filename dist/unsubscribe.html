@@ -4034,7 +4034,7 @@ function drawSheet(){
     if(m.news.length)h+=`<ul class="news">${m.news.map(x=>`<li><em style="color:${x.n>0?'#3fe06a':'var(--bad)'}">${x.n>0?'+':'\u2212'}</em>${esc(x.w)}</li>`).join('')}</ul>`;
     h+=`<div class="tick"><div>Nonce buys at<b>${fmt(bid)}</b></div><div>Nonce sells at<b>${fmt(ask)}</b></div>
       <div>His spread<b>${(sp*100).toFixed(2)}%</b></div><div>Depth<b>${Math.round(mktDepth())} sats</b></div>
-      <div>Your stack, if sold now<b>${fmt(G.sats*bid)}</b></div><div>Mood of the market<b>${m.sent>.15?'giddy':m.sent>.04?'warm':m.sent<-.15?'grim':m.sent<-.04?'cool':'flat'}</b></div>
+      <div>Your stack, if sold now<b>${fmt(G.sats?mktQuote(G.sats,'sell').total:0)}</b></div><div>Mood of the market<b>${m.sent>.15?'giddy':m.sent>.04?'warm':m.sent<-.15?'grim':m.sent<-.04?'cool':'flat'}</b></div>
       <div>Against its value<b class="${m.r>=1?'up2':'dn2'}">${m.r>=1?'+':'\u2212'}${(Math.abs(m.r-1)*100).toFixed(1)}%</b></div><div>Volatility<b>${(mktVol()*1000).toFixed(1)} · ${mktVol()>.0033?'wild':mktVol()>.0022?'choppy':'settling'}</b></div></div>`;
     if(m.cb.n>0)h+=`<div class="tick"><div>You paid, in credits<b>${fmt(basisCr)}</b></div><div>Worth now<b class="${plCr>=0?'up2':'dn2'}">${plCr>=0?'+':'\u2212'}${Math.abs(pc(valCr,basisCr)).toFixed(0)}%</b></div>
       <div>You paid, in stims<b>${basisSt.toFixed(1)}</b></div><div>Worth now<b class="${plSt>=0?'up2':'dn2'}">${plSt>=0?'+':'\u2212'}${Math.abs(pc(valSt,basisSt)).toFixed(1)}%</b></div></div>
@@ -4047,7 +4047,7 @@ function drawSheet(){
        <div class="tot">Buy ${n} sats<b>${fmt(qb.total)}</b></div><div class="tot">Sell ${n} sats<b>${fmt(qs.total)}</b></div></div>`;
      h+=`<div class="row"><button class="big" data-mkt="b" ${G.credits<qb.total?'disabled':''}>Buy ${n}</button><button class="big" data-mkt="s" ${G.sats<n?'disabled':''}>Sell ${n}</button></div>
        <div class="row"><button class="ghost" data-mkt="ball" ${mktAfford()<1?'disabled':''}>Buy with everything</button><button class="ghost" data-mkt="sall" ${G.sats<1?'disabled':''}>Sell the lot</button></div>`;}
-    h+=`<p style="font-size:13px">Four things happen to every trade, and Nonce lists all four because he says the ones who hide them are the ones to worry about. He makes the spread for being willing to deal at all; the fee is for doing it <em>this second</em>; and a big order eats its way down his book, which is why selling the lot never gets you the number on the screen.</p>`;
+    h+=`<p style="font-size:13px">Four things happen to every trade, and Nonce lists all four because he says the ones who hide them are the ones to worry about. He makes the spread for being willing to deal at all; the fee is for doing it <em>this second</em>; and a big order eats its way down his book, which is why selling the lot never gets you his bid times the stack. Your stack, if sold now, is what the lot pays.</p>`;
     h+=`<h3>Or name your own price</h3><div class="row"><button class="ghost" data-mko="b3">Bid 3% under</button><button class="ghost" data-mko="b7">Bid 7% under</button></div>
       <div class="row"><button class="ghost" data-mko="s3">Ask 3% over</button><button class="ghost" data-mko="s7">Ask 7% over</button></div>
       <p style="font-size:13px">A posted order waits. If the price comes to you it fills, you pay no fee, and Nonce pays you ${(MKT_MAKER*100).toFixed(1)}% for the trouble — because while it sat there you were the one willing to deal, which is his job. If the price never comes, it never fills. That is the trade: a better number, or a certain one.</p>`;
