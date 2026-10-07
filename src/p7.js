@@ -69,7 +69,7 @@ function p7Kill(e){bullKill(e);if(S.sp.pod)P.haste=Math.max(P.haste,2);if(S.sp.o
   if(SEA.k==='bull'&&Math.random()<.06)addDrop({sat:1},e.x,e.y);
   if(sb){if(sb.mods.includes('volatile'))W.fx.push({k:'warn',x:e.x,y:e.y,r:1.9,t:0,life:.8,boom:e.dmg*1.2});if(sb.mods.includes('bounty')&&Math.random()<.12)addDrop({sat:ri(1,2)},e.x,e.y);
     if(e.su&&!sb.done){sb.done=1;const l=sb.lvl,n=5+3*l;G.sats+=n;G.parts=(G.parts||0)+3*l;G.subMax=Math.max(G.subMax||1,l+1);dropFrom('chest',e.x,e.y,W.ml);dropFrom('chest',e.x,e.y,W.ml);W.portals.push({x:e.x,y:e.y,kind:'home'});sfx('quest');
-      setTimeout(()=>dlg('Subpoena served','Level '+l+' is closed. '+n+' sats and '+3*l+' parts. Level '+(l+1)+' is now open at the Transit Gate.',[['Continue']]),900)}}}
+      setTimeout(()=>dlg('Subpoena served','Level '+l+' is closed. '+n+' sats and '+3*l+' parts. Level '+(l+1)+' is now open on More at the Transit Gate.',[['Continue']]),900)}}}
 /* proof of work shrine */
 function ensurePow(){if(W.z.town||W.z.sim||W.z.sub||W.z.secret||W.objs.some(o=>o.k==='pow'))return;const p=freeSpot(14);W.objs.push({k:'pow',x:p.x,y:p.y})}
 function powStart(o){if(W.pow)return;W.pow={o,t:60,w:1};sfx('shrine');toast('Proof of work: hold this ground for 60 seconds. The waves grow, and champions come. It cannot be hurried.')}

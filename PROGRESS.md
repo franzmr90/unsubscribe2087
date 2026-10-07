@@ -130,6 +130,10 @@ measurement: **45–48 fps against a 46–52 fps baseline** across zones 1, 3, 1
   or a rendered companion fell about ten tiles behind and never recalled, because recall
   waited until 13. They now catch up at 8 tiles unless the swing they are on is already in
   range.
+- **Post-clear loop.** Simulator, boss rush, Nonce, magic find, hardcore, difficulty, and
+  the Maximalist were already in place. Tier, respawn, subpoenas, and the servo-leg run
+  were stuck on the Act IV page of the Transit Gate, so the harder tier promised at the
+  end of Act I could not be raised until Act IV. Those controls now live on More.
 - **No new art assets.** There are none in the project and none can be made; everything
   above is drawing code.
 - **Acts I–III quest *structure*** is unchanged. I rewrote framing text, not quest design.
