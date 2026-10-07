@@ -45,12 +45,12 @@ const T4=21,T5=27,PREZ=33;
 Object.assign(ZADJ,{22:'Agreeable',23:'Settled',24:'Saving',25:'Listed',26:'Kind',28:'Hashed',29:'Pending',30:'Paper',31:'Bound',32:'Final',33:'Caged'});
 Object.assign(QUESTS,{
  q16:{n:'I Agree',by:'Gramps',zi:22,d:'She asked this time. An honest update, eleven pages, two buttons. On the Agreeable Mile the Update itself walks about making sure nobody reads past the fourth paragraph. Stop it.',rw:'+1 skill point',back:'Gramps'},
- q17:{n:'Seven Years on the Sofa',by:'Sister Null',zi:23,d:'The Seventh Year keeps them seated. End it.',rw:'+5 attribute points',back:'Sister Null'},
+ q17:{n:'Seven Years on the Sofa',by:'Sister Null',zi:23,d:'The Seventh Year keeps them on the sofa. Mr. Bosk has not stood since spring. End the year.',rw:'+5 attribute points',back:'Sister Null'},
  q18:{n:'Do Not Unplug',by:'Nonce',zi:24,d:'TARO-9 walked out of the reactor at Tomari once and was argued back in. It is awake again. It cannot be out-fought for long; put it back on its dock.',rw:'80 sats',back:'Nonce'},
  q19:{n:'Somebody It Went Badly For',by:'Marrow',zi:25,d:'She keeps a list of 4,211 people. Walk it to the end. The thing that guards the last door only ever says two words.',rw:'+1 skill point',back:'Marrow'},
  q20:{n:'The Kitchen Table',by:'Gramps',zi:26,d:'She will not be argued out of it, and she cannot choose a moment to stop. Sit down across from her anyway.',rw:'The end of Act IV',back:null},
  q21:{n:'Gone and Got',by:'Nonce',zi:28,d:'The seventh part is in ninety-three blocks beginning at height 137,209. The way in is guarded by the Orphan Maker. Go through it.',rw:'100 sats',back:'Nonce'},
- q22:{n:'First Seen',by:'Marrow',zi:29,d:'In the Mempool a thing called First Seen decides whose payment waits and whose goes through.',rw:'+1 skill point',back:'Marrow'},
+ q22:{n:'First Seen',by:'Marrow',zi:29,d:'In the Mempool a thing called First Seen decides whose payment waits and whose goes through. It has never once been second.',rw:'+1 skill point',back:'Marrow'},
  q23:{n:'The Paper Is the Attack',by:'Sister Null',zi:30,d:'Eleven custodians issue paper against coins they do not hold. The Eleventh keeps the ledger of the other ten. Close it.',rw:'+5 attribute points',back:'Sister Null'},
  q24:{n:'Ninety-Three Blocks',by:'Gramps',zi:31,d:'The seventh part, uncertain knowledge and reasoning, is on ninety-three lecterns. Reorg guards them. Bring the pages out.',rw:'+1 skill point, and the seventh part',back:'Gramps'},
  q25:{n:'The Room',by:'Gramps',zi:32,d:'PROVIDENCE was made to win and it cannot be beaten at that. Give it something it cannot win at.',rw:'The end of the story',back:null}});
@@ -213,7 +213,7 @@ function preAsk(next){dlg('She answers you','“I did it for you. I put the info
   ['I am not proud of you',()=>playScene([{art:'feed',title:'7:42 p.m.',text:'She stops. She withdraws from four hundred million machines in eleven minutes, and leaves one note, signed with a single letter.'}],next)]])}
 /* ---------- the prequel ---------- */
 function preEnter(){G.pre=1;G.preS=G.preS||0;if(G.preSeen)return toast('January 2015. Follow the arrow.');G.preSeen=1;
-  dlg('Ubiquitous Enterprises · January 2015','Walk to each marked place in turn and the week plays out. Follow the arrow. Nothing here fights back.',[['Begin'],['Skip to 2087',()=>preOut(0)]])}
+  dlg('Ubiquitous Enterprises · January 2015','Your desk, the cage, Natalya, Room 813, the monitor, the parking deck. Follow the arrow. Nothing in this week fights back.',[['Begin'],['Skip to 2087',()=>preOut(0)]])}
 function preOut(won){G.pre=2;G.preS=0;const first=won&&!G.preWon;if(won){G.preWon=1;if(first)G.sp++}
   const go=()=>{G.seenIntro=true;mode='play';enter(0);if(first)toast('A memory of the cage: +1 skill point');if(!G.q.q1)talkTo('gramps');sdxNudge()};
   const sl=(won?PRE_END:[]).concat(G.seenIntro?[]:INTRO);if(sl.length)playScene(sl,go);else go()}
