@@ -39,7 +39,12 @@ await clearUI(p);
 await p.evaluate(()=>{__g.setMode('play');__g.P.inv=0;__g.G.god=0});
 
 const start=await p.evaluate(()=>({x:__g.W.start.x,y:__g.W.start.y}));
-await p.evaluate(()=>__g.hurt(1e9,0,{name:'a Tick'}));
+const fee1=await p.evaluate(()=>{
+  __g.G.credits=90;__g.G.deaths=0;__g.G.act2=false;
+  const before=__g.G.credits;
+  __g.hurt(1e9,0,{name:'a Tick'});
+  return {before,after:__g.G.credits};
+});
 await p.waitForTimeout(2800);
 const act1=await p.evaluate(()=>({
   btn:document.getElementById('bRise').textContent,
@@ -51,6 +56,7 @@ check('Act I rises in Stillwater Commons', act1.btn==='Rise in Stillwater Common
 check('the portal is the district entrance', /start of the district/.test(act1.note), act1.note);
 check('the slain line names the district', /The Parcel Moors/.test(act1.line), act1.line);
 check('softcore names a re-onboarding charge', /Re-onboarding fee/.test(act1.stats)&&/₡/.test(act1.stats), act1.stats);
+check('Act I fee is the whole credits the purse lost', fee1.before-fee1.after===4&&act1.stats.endsWith('Re-onboarding fee₡4'), JSON.stringify({fee1,stats:act1.stats}));
 const heldPortal=await p.evaluate(()=>__g.G.portal);
 check('the return portal is written before Rise', heldPortal&&heldPortal.zi===1&&heldPortal.x===start.x&&heldPortal.y===start.y, JSON.stringify(heldPortal)+' start '+start.x+','+start.y);
 await p.click('#bRise');
@@ -62,10 +68,16 @@ check('the portal remembers the entrance', back.pz===1&&back.x===start.x&&back.y
 
 await p.evaluate(()=>{__g.G.act2=true;__g.enter(7);__g.setMode('play');__g.P.inv=0;__g.G.hp=__g.S.maxHp});
 await clearUI(p);
-await p.evaluate(()=>__g.hurt(1e9,0,{name:'a Wisp'}));
+const fee2=await p.evaluate(()=>{
+  __g.G.credits=333;__g.G.act2=true;
+  const before=__g.G.credits;
+  __g.hurt(1e9,0,{name:'a Wisp'});
+  return {before,after:__g.G.credits};
+});
 await p.waitForTimeout(2800);
-const act2=await p.evaluate(()=>document.getElementById('bRise').textContent);
-check('Act II rises in The Landing', act2==='Rise in The Landing', act2);
+const act2=await p.evaluate(()=>({btn:document.getElementById('bRise').textContent,stats:document.getElementById('deathS').textContent}));
+check('Act II rises in The Landing', act2.btn==='Rise in The Landing', act2.btn);
+check('Act II fee is the whole credits the purse lost', fee2.before-fee2.after===49&&act2.stats.endsWith('Re-onboarding fee₡49'), JSON.stringify({fee2,stats:act2.stats}));
 await p.click('#bRise');
 await p.waitForTimeout(300);
 const land=await p.evaluate(()=>__g.W.zi);

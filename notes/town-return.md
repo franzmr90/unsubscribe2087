@@ -4,7 +4,7 @@ The death screen, the walkthrough, and the declaration hold were read against `e
 
 ## What already matched
 
-A town portal (the Portal button, or T) saves where you are standing and opens in the square of the act's town, at 12.5, 11.5. It will not open with a machine within four tiles, and it will not open in town. Walking a district door uses the label on the button: home is the act town, back is the previous district or that town, on is the next district. The re-onboarding fee on the death screen is the number already taken.
+A town portal (the Portal button, or T) saves where you are standing and opens in the square of the act's town, at 12.5, 11.5. It will not open with a machine within four tiles, and it will not open in town. Walking a district door uses the label on the button: home is the act town, back is the previous district or that town, on is the next district. The re-onboarding fee on the death screen is the number already taken. The notice prints whole credits, so the charge is the floor of the rate: ninety credits at five percent is ₡4, and three hundred thirty-three at fifteen percent is ₡49.
 
 ## What the screen printed
 
