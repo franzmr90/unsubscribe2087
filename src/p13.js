@@ -383,7 +383,7 @@ function mpSimMsg(m) {
     dlg('The rig is booked', m.sim.mode === 'duel'
       ? m.by + ' has set the Simulator to duelling. Inside, hostility is the point: nothing you lose in there is real, and nothing you win is either. Declare against each other first, or you will both swing at nothing.'
       : m.by + ' has set the Simulator to waves, together. Everyone in the party fights the same wave, and the first to clear it moves everybody on.',
-      [['Go to the rig', () => { enter(MP.simZone); }], ['Later']]);
+      [['Go to the rig', () => { if (!mpPortalBlocked()) enter(MP.simZone); }], ['Later']]);
   } else if (m.action === 'wave') {
     if (W && W.zi === MP.simZone && W.sim) { W.sim.wave = Math.max(W.sim.wave || 0, m.wave); toast('Wave ' + m.wave + '.'); }
   } else if (m.action === 'close') {
@@ -762,7 +762,7 @@ function mpClick(d) {
     else mpSend('sim', { action: 'open', mode: d.mps });
     return true;
   }
-  if (d.mpg) { closeSheet(); enter(MP.simZone); return true; }
+  if (d.mpg) { if (mpPortalBlocked()) return true; closeSheet(); enter(MP.simZone); return true; }
   return false;
 }
 
