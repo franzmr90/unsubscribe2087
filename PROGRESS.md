@@ -159,6 +159,14 @@ measurement: **45–48 fps against a 46–52 fps baseline** across zones 1, 3, 1
   district, not on the corpse. Hardcore does not get that portal. A declaration holds
   you in town: the Transit Gate, the rig, and the town portal now wait with the doors.
   Notes in `notes/town-return.md`.
+- **VR rig, Nonce, and the twelve words.** The rig’s own note already said a lockbox
+  every five waves, and that is when the chest drops. The walkthrough said “a lockbox”
+  and “ten more” at the end of a boss rush, which is ten sats, not ten more fights.
+  The rush roster is districts you have left, or a lieutenant you have already broken,
+  then executives whose acts are done. A phrase is the right words in the right order;
+  any other socket still pays the word. The wallet opens when all twelve have been
+  found, even if the notes are already socketed. Nonce’s table is rare, set, and
+  unique, in sats, and rank 1 is 10% off that price. Notes in `notes/sim-nonce-wallet.md`.
 - **Acts I–III quest structure.** Four story quests no longer end on the lieutenant alone.
   The Audit is talk-first. The Data Lake asks you to read a letter, in either order with
   Lethe. The Hall of Minutes is struck after the secretary falls. Point of Order needs four
