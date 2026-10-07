@@ -154,7 +154,7 @@ function schemaAsk(){dlg('Schema','Which element do you work in? It stays until 
 function unidCount(){return G.bag.filter(i=>!i.id).length}
 function idAll(){let n=0;for(const i of G.bag)if(!i.id){i.id=true;n++}return n}
 const QRW=[['q11','gramps','“The Receptionist is gone? Then for the first time in forty years, somebody is going to be seen.” You gain 1 skill point.',()=>G.sp++,'Gramps'],
- ['q12','marrow','“It wrote the minutes before the meetings.” You gain 1 skill point.',()=>G.sp++,'Marrow'],
+ ['q12','marrow','“It wrote the minutes before the meetings. I kept the ones from after. They are shorter, and nobody voted.” You gain 1 skill point.',()=>G.sp++,'Marrow'],
  ['q13','nonce','“Sixty-one to twenty-eight-seven, and they are furniture.” You receive 60 sats.',()=>{G.sats+=60;addRep('btc',20)},'Nonce'],
  ['q14','null','“Tell it, when it asks.” You gain 5 attribute points.',()=>G.ap+=5,'Sister Null']];
 let curNpc=null;function talkTo(id){curNpc=PERS[id]?id:null;try{return talkTo0(id)}finally{curNpc=null}}
@@ -178,7 +178,7 @@ function talkTo0(id){if(W.z.pre)return preTalk(id);if(id==='float')return talkFl
   if(id==='gramps'){
     if(G.q.q1===0){G.q.q1=1;sfx('questnew');return dlg('Gramps','“You took the visor off. Good. Sit a moment, then get up again. The Regional Office is five districts deep and a man named Pryce sits at the end of it. Start with the Parcel Moors. A machine called HOA-9 turns our people back at the gate. Break it. And spend your credits fast, kid. They rot.”',[['I will break it']])}
     if(G.q.q1===2){G.q.q1=3;G.sp++;sfx('level');return dlg('Gramps','“Ha. Forty years of bylaws, gone.” You gain 1 skill point.',[['Take it']])}
-    if(G.q.q3===2){G.q.q3=3;G.sp++;sfx('level');return dlg('Gramps','“Go and see Marrow.” You gain 1 skill point.',[['Take it']])}
+    if(G.q.q3===2){G.q.q3=3;G.sp++;sfx('level');return dlg('Gramps','“Go and see Marrow. She will name what you cannot, and she will not take a fee. She is the only one left who gives a thing away.” You gain 1 skill point.',[['Take it']])}
     if(G.q.q6===2){G.q.q6=3;G.sp++;sfx('level');return dlg('Gramps','“The Cloud did not fall.” You gain 1 skill point.',[['Take it']])}
     if(G.q.q5===3&&!G.q.q6){G.q.q6=1;sfx('questnew');return dlg('Gramps','“There was a lift behind his desk, was there? Then that is where the Stipend really comes from. The Transit Gate reaches it now. They call it the Cloud. Somebody up there speaks for MANDATE, and I am told she is very, very kind. Be careful of that.”',[['I will go up']])}
     return dlg('Gramps','“'+gos('gramps')+'”',[['Farewell'],['Tell me more',()=>talkTo('gramps')]])}

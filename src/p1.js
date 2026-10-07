@@ -394,7 +394,7 @@ const QUESTS={
  q12:{n:'Strike It From the Record',by:'Marrow',zi:13,d:'The Recording Secretary writes the minutes before the meeting is held. End its shorthand.',rw:'+1 skill point',back:'Marrow'},
  q13:{n:'Point of Order',by:'Nonce',zi:14,d:'Eight directors and the Chair. They voted to end the Bitcoiners in 2061 and the motion is still open. Close it.',rw:'60 sats',back:'Nonce'},
  q14:{n:'Rack Nine',by:'Sister Null',zi:15,d:'Defrag Prime guards the racks that MANDATE thinks with. Go through it.',rw:'+5 attribute points',back:'Sister Null'},
- q15:{n:'Still Water',by:'Gramps',zi:16,d:'MANDATE has never lost. It will make you offers.',rw:'The end of the story',back:null},
+ q15:{n:'Still Water',by:'Gramps',zi:16,d:'MANDATE has never lost. It will offer your life back, then a bigger Stipend for everyone. Decline both. It is counting on the second one.',rw:'The end of the story',back:null},
 };
 const CHATTER=['My fridge upgraded itself. Now it has opinions.','I got a raise. It was gone by lunch.','Have you tried consuming? It helps.','Stipend day. I can almost afford a spoon.','I watched nine hours of ads to unlock my front door.','They say outside is a subscription now.','My landlord is an algorithm. It seems kind.','I rated my own nap four stars.','A sandwich was two million this morning. I should have bought two.','I do not work. I am in a long-term engagement funnel.','The news said everything is fine, in a very loud voice.','You are not wearing a visor. Are you poor, or dangerous?'];
 const GOSSIP={
