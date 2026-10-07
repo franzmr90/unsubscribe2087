@@ -59,17 +59,17 @@ const report=await p.evaluate(()=>{
   G.sk[3]=1;G.sk[4]=0;G.sk[7]=1;G.pas=[10];G.sk[10]=1;__g.calc();
   wipe();
 
-  /* ---- your toxic aura: you keep your swing, the hireling beside you does not ---- */
+  /* ---- your toxic aura: the printed 15+3 per rank line, same as the hireling ---- */
   P.aura={i:3,L:1,t:1};
   W.merc={x:P.x+.4,y:P.y,hp:20,max:20,r:.28,haste:0,cd:0};
   W.tag={x:P.x-.4,y:P.y,hp:20,max:20,r:.3,haste:0,atk:0};
   __g.maxiAura(.02);
-  check('your own toxic aura does not take the ally swing term', !(__g.toxicSwing(P)>1), String(P.toxL));
+  check('your own toxic aura uses the 15+3 per rank line', Math.abs(__g.toxicSwing(P)-1.18)<1e-9, String(P.toxL));
   P.atk=0;__g.attack();
   const withOwn=P.atk;
   P.aura=null;__g.maxiAura(.02);
   P.atk=0;__g.attack();
-  check('your own swing interval is unchanged', Math.abs(withOwn-P.atk)<1e-6, withOwn+' vs '+P.atk);
+  check('your own swing is 18% faster while the aura is on', Math.abs(P.atk/withOwn-1.18)<1e-6, withOwn+' vs '+P.atk);
   P.aura={i:3,L:1,t:1};
   W.merc={x:P.x+.4,y:P.y,hp:20,max:20,r:.28,haste:0,cd:0};
   W.tag={x:P.x-.4,y:P.y,hp:20,max:20,r:.3,haste:0,atk:0};
@@ -123,7 +123,10 @@ const report=await p.evaluate(()=>{
   MP.others.push({uid:'foe',name:'Vale',x:stand.x,y:stand.y,hp:200,hpm:200,au:3,cls:'maxi'});
   __g.maxiAura(.02);
   check('toxic does not haste a hostile', !(stand.haste>0));
-  check('a hostile toxic aura does not haste you', !(P.toxL>0));
+  check('your own aura still speeds you beside a hostile', Math.abs(__g.toxicSwing(P)-1.18)<1e-9);
+  P.aura=null;P.haste=0;
+  __g.maxiAura(.02);
+  check('a hostile toxic aura does not haste you', !(P.toxL>0) && !(P.haste>0));
   P.haste=0;P.aura=null;
   MP.others[0].au=4;MP.others[0].aL=1;
   __g.maxiAura(.02);
