@@ -1738,7 +1738,7 @@ const SQ={
   steps:[
    {t:'obj',zi:2,look:'cab',label:'Take the medicine',d:'Find the pharmacy cabinet in the Hollow Galleria',say:'Behind a shutter that has not moved in decades: one sealed case, still in date, which is its own small miracle.'},
    {t:'talk',npc:'ines',d:'Bring the medicine to Ines in Stillwater',say:'She takes the case in both hands and says nothing for a while. Then she holds out a fold of credits, everything she has. “Please. I pay for things. It is the one rule I have left.”',
-    choices:[['Take the credits',()=>{const c=400*G.cpi;G.credits+=c;G.sqInes='paid';toast('You take '+fmt(c))}],['Refuse them',()=>{G.unseen=(G.unseen||0)+1;G.sqInes='gift';addRep('anon',5)}]]},
+    choices:[['Take the credits',()=>{/* Her line prints whole credits, so the purse gains that floor. */const c=Math.floor(400*G.cpi);G.credits+=c;G.sqInes='paid';toast('You take '+fmt(c))}],['Refuse them',()=>{G.unseen=(G.unseen||0)+1;G.sqInes='gift';addRep('anon',5)}]]},
    {t:'talk',npc:'null',d:'Return to Sister Null',say:()=>G.sqInes==='gift'?'“She told me you would not take it.”':'“She paid you.”',rw(){G.ap+=3;toast('You gain 3 attribute points')}}]},
  oiler:{n:'The Bearing',by:'gramps',who:'Gramps',req:()=>G.q.q6===3,rw:'+1 skill point and a unique item',
   offer:'“Forty thousand shifts, the log said. Somebody up in the Updraft has been oiling the bearings that hold the Cloud up, and nobody above or below has ever asked who. Find him. A man like that will be short of something. Get it for him.”',
