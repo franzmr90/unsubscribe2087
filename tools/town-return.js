@@ -43,7 +43,9 @@ const fee1=await p.evaluate(()=>{
   __g.G.credits=90;__g.G.deaths=0;__g.G.act2=false;
   const before=__g.G.credits;
   __g.hurt(1e9,0,{name:'a Tick'});
-  return {before,after:__g.G.credits};
+  const once=__g.G.credits;
+  __g.hurt(1e9,0,{name:'a rival',pvp:1});
+  return {before,once,after:__g.G.credits,deaths:__g.G.deaths};
 });
 await p.waitForTimeout(2800);
 const act1=await p.evaluate(()=>({
@@ -57,6 +59,7 @@ check('the portal is the district entrance', /start of the district/.test(act1.n
 check('the slain line names the district', /The Parcel Moors/.test(act1.line), act1.line);
 check('softcore names a re-onboarding charge', /Re-onboarding fee/.test(act1.stats)&&/₡/.test(act1.stats), act1.stats);
 check('Act I fee is the whole credits the purse lost', fee1.before-fee1.after===4&&act1.stats.endsWith('Re-onboarding fee₡4'), JSON.stringify({fee1,stats:act1.stats}));
+check('a second blow while falling does not fine you again', fee1.once===fee1.after&&fee1.deaths===1&&/a Tick/.test(act1.line)&&!/rival/.test(act1.line), JSON.stringify({fee1,line:act1.line}));
 const heldPortal=await p.evaluate(()=>__g.G.portal);
 check('the return portal is written before Rise', heldPortal&&heldPortal.zi===1&&heldPortal.x===start.x&&heldPortal.y===start.y, JSON.stringify(heldPortal)+' start '+start.x+','+start.y);
 await p.click('#bRise');
@@ -85,12 +88,13 @@ check('Act II death lands in The Landing', land===17, String(land));
 
 await p.evaluate(()=>{__g.G.hc=true;__g.enter(1);__g.setMode('play');__g.P.inv=0;__g.G.hp=__g.S.maxHp;__g.G.god=0});
 await clearUI(p);
-const purse=await p.evaluate(()=>{const before=__g.G.credits;__g.hurt(1e9,0,{name:'a Tick'});return {before,after:__g.G.credits}});
+const purse=await p.evaluate(()=>{const before=__g.G.credits,deaths=__g.G.deaths;__g.hurt(1e9,0,{name:'a Tick'});__g.hurt(1e9,0,{name:'a rival',pvp:1});return {before,after:__g.G.credits,deaths,now:__g.G.deaths}});
 await p.waitForTimeout(2800);
-const hc=await p.evaluate(()=>({btn:document.getElementById('bRise').textContent,note:document.getElementById('deathNote').textContent,stats:document.getElementById('deathS').textContent}));
+const hc=await p.evaluate(()=>({btn:document.getElementById('bRise').textContent,note:document.getElementById('deathNote').textContent,line:document.getElementById('deathP').textContent,stats:document.getElementById('deathS').textContent}));
 check('hardcore begins again', hc.btn==='Begin again', hc.btn);
 check('hardcore promises no portal', /no portal/i.test(hc.note)&&!/square/.test(hc.note), hc.note);
 check('hardcore does not charge a re-onboarding fee', purse.before===purse.after&&purse.before>0&&/Re-onboarding fee/.test(hc.stats)&&/none/.test(hc.stats)&&!/₡/.test(hc.stats), JSON.stringify({purse,stats:hc.stats}));
+check('a second blow does not begin a hardcore death twice', purse.now===purse.deaths+1&&/a Tick/.test(hc.line)&&!/rival/.test(hc.line), JSON.stringify({purse,line:hc.line}));
 
 await p.evaluate(()=>{
   const death=document.getElementById('death');if(death)death.hidden=true;
