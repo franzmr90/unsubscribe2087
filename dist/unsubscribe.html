@@ -2279,7 +2279,8 @@ function rerollMod(it){const own=it.aff.map((a,i)=>i).filter(i=>!it.aff[i].w&&AF
   for(let t=0;t<12;t++){const a=pool.length?pick(pool):AFK[old.k],n=rollAffix(a,it.il);if(n){n.pre=old.pre;it.aff[i]=n;fixTypes(it);return[old,it.aff[i]]}}return null}
 
 /* subscriptions live in their own rack of twelve, six running at a time */
-const chOn=()=>(G.charms||[]).filter(c=>c.on).length,chBill=()=>12*chOn()*G.cpi;
+/* The billing line prints whole credits, so the minute costs that floor. */
+const chOn=()=>(G.charms||[]).filter(c=>c.on).length,chBill=()=>payTag(12*chOn()*G.cpi);
 function chFix(){G.charms=G.charms||[];for(const arr of[G.bag,G.stash||[]])for(let i=arr.length-1;i>=0;i--)if(arr[i].charm){const c=arr.splice(i,1)[0];if(G.charms.length<12){c.on=chOn()<6;G.charms.push(c)}}}
 function chTake(it){if(G.charms.length>=12)return false;it.on=chOn()<6;it.junk=false;G.charms.push(it);calc();return true}
 const skipPick=it=>!it.charm&&G.eq[it.slot]&&(OPT['pk'+it.q]===false||(OPT.pkBetter&&it.id&&G.lvl>=it.req&&!(itemDelta(it)>.01)));
