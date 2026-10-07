@@ -166,6 +166,25 @@ const same = (a, b) => a.status === b.status && JSON.stringify(a.body) === JSON.
   r = await call('/api/mail/list', {});
   ok('online send wrote nothing', r.body.box && r.body.box.length === 0, JSON.stringify(r.body));
 
+  as(bo);
+  r = await call('/api/friend/quiet', { on: true });
+  ok('not taking messages', r.status === 200 && r.body.closed === true, JSON.stringify(r.body));
+  r = await call('/api/friend/list', {});
+  ok('the flag sits on the friends row', r.body.closed === true && r.body.to[ada.user.id] && r.body.to[ada.user.id].state === 'friend' && Object.keys(r.body.to[ada.user.id]).sort().join(',') === 'at,name,state');
+  ok('the flag survives a new table', new Table('friends').get(bo.user.id) && new Table('friends').get(bo.user.id).closed === true);
+  as(ada);
+  auth.rateClear('ml:' + ada.user.id);
+  live.live.set(bo.user.id, { uid: bo.user.id, name: 'Bo' });
+  const quietOn = await call('/api/mail/send', { name: 'Bo', text: 'are you taking these' });
+  live.live.delete(bo.user.id);
+  const quietOff = await call('/api/mail/send', { name: 'Bo', text: 'are you taking these' });
+  ok('not taking messages hides whether they are on', quietOn.status === 400 && quietOff.status === 400 && quietOn.body.error === social.QUIET && quietOn.body.error === quietOff.body.error, JSON.stringify(quietOn.body) + ' / ' + JSON.stringify(quietOff.body));
+  as(bo);
+  r = await call('/api/mail/list', {});
+  ok('a refused quiet letter was not stored', !(r.body.box || []).some(m => m.text === 'are you taking these'), JSON.stringify(r.body.box));
+  r = await call('/api/friend/quiet', { on: false });
+  ok('taking messages again', r.status === 200 && r.body.closed === false, JSON.stringify(r.body));
+
   as(ada);
   auth.rateClear('ml:' + ada.user.id);
   const ids = [];

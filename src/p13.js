@@ -16,7 +16,8 @@ const MP = {
   game: null, lobby: [], diffs: null, scale: null, view: 'lobby',
   mkName: '', mkDiff: 'normal', mkPass: '',
   voice: false, muted: {}, speaking: {}, peers: {}, stream: null,
-  friends: {}, face: {}, joinUid: '', csrf: ''
+  friends: {}, face: {}, joinUid: '', csrf: '',
+  whispers: [], whisperTo: '', mail: [], closed: false
 };
 
 const mpOn = () => MP.on && !!MP.conn && MP.conn.readyState === 1;
@@ -119,9 +120,12 @@ function mpRecv(m) {
     MP.party = m.id ? m : null; MP.sim = m.sim || null; MP.invite = null;
   } else if (m.t === 'invited') {
     MP.invite = m;
-    dlg(m.from + ' asks you to party', 'Level ' + m.lvl + ' ' + ((CLS[m.cls] || {}).n || 'stranger') +
+    if (m.game) mpGameInvite(m);
+    else dlg(m.from + ' asks you to party', 'Level ' + m.lvl + ' ' + ((CLS[m.cls] || {}).n || 'stranger') +
       ': accept or stay out, experience in the district is split by level, and there is more of it the more of you there are.',
       [['Join them', () => { mpSend('accept', { uid: m.uid }); MP.invite = null; }], ['Not now', () => { mpSend('decline', { uid: m.uid }); MP.invite = null; }]]);
+  } else if (m.t === 'whisper' || m.t === 'whispernote') {
+    mpWhisperLog(m);
   } else if (m.t === 'zone') {
     mpZone(m);
   } else if (m.t === 'chat') {
@@ -375,8 +379,17 @@ function mpFriendsLoad() {
   if (!window.__u2087server || !location.protocol.startsWith('http')) return;
   const gen = ++mpFriendGen;
   mpApi('/api/friend/list', {}).then(j => { if (gen === mpFriendGen) mpApplyFriends(j); }).catch(() => {});
+  mpMailLoad();
+}
+function mpMailLoad() {
+  if (!window.__u2087server || !location.protocol.startsWith('http')) return;
+  mpApi('/api/mail/list', {}).then(j => {
+    MP.mail = (j && j.box) || [];
+    if (mode === 'sheet' && tab === 'party') drawSheet();
+  }).catch(() => {});
 }
 function mpApplyFriends(body) {
+  MP.closed = !!(body && body.closed);
   const to = (body && body.to) || {}, next = {};
   for (const uid in to) {
     const e = to[uid];
@@ -428,6 +441,62 @@ function mpJoinFriend(uid) {
   MP.joinUid = uid;
   mpSend('game.join', { uid: uid });
 }
+function mpGameInvite(m) {
+  const who = (CLS[m.cls] || {}).n || 'stranger';
+  const go = pw => {
+    const msg = { uid: m.uid };
+    if (pw) msg.pass = pw;
+    mpSend('game.join', msg);
+    MP.invite = null;
+  };
+  dlg(m.from + ' asks you into ' + m.game,
+    'Level ' + m.lvl + ' ' + who + '. Joining puts you in that game if there is room. It does not put you in their party.',
+    [['Join the game', () => {
+      if (m.locked) dlgPrompt('“' + m.game + '” is locked', 'It needs a password.', go);
+      else go();
+    }], ['Not now', () => { MP.invite = null; }]]);
+}
+function mpWhisperLog(m) {
+  MP.whispers.push({
+    from: m.from || '', name: m.name || '', text: m.text || '', line: m.line || '',
+    out: m.t === 'whispernote' ? 1 : 0, t: Date.now()
+  });
+  if (MP.whispers.length > 30) MP.whispers.shift();
+  if (m.t === 'whisper') toast((m.from || 'Someone') + ' whispers.');
+  else if (m.text) toast(m.text);
+  if (mode === 'sheet' && tab === 'party') drawSheet();
+}
+function mpWhisperPane() {
+  const row = MP.whisperTo && MP.friends[MP.whisperTo];
+  let h = '';
+  if (row && row.state === 'friend') {
+    h += '<h3>A word to ' + esc(row.name) + '</h3>';
+    h += '<div class="row"><input id="mpWhisper" maxlength="240" placeholder="A private line" style="flex:1;background:#0a0912;border:1px solid #3a3350;color:#e8e2d4;border-radius:6px;padding:10px;font:15px Georgia,serif"><button class="ghost" data-mpfs="1">Send</button></div>';
+  }
+  if (MP.whispers.length) {
+    h += '<h3>Whispers</h3><div class="list">';
+    for (const w of MP.whispers.slice(-30).reverse()) {
+      const who = w.out ? (w.name ? ('To ' + w.name) : '') : (w.from || '');
+      const said = w.line ? (w.text + ' — ' + w.line) : w.text;
+      h += '<div class="li"><div>' + (who ? '<b>' + esc(who) + '</b>' : '') + '<span>' + esc(said) + '</span></div></div>';
+    }
+    h += '</div>';
+  }
+  return h;
+}
+function mpMailPane() {
+  let h = '<h3>Letters</h3>';
+  if (!MP.mail.length) h += '<p>The box is empty.</p>';
+  else {
+    h += '<div class="list">';
+    for (const m of MP.mail.slice().reverse()) {
+      h += '<div class="li"><div><b>' + esc(m.fromName || '') + (m.read ? '' : ' · new') + '</b><span>' + esc(m.text || '') + '</span></div></div>';
+      if (!m.read) h += '<div class="row"><button class="ghost" data-mpmr="' + esc(m.id) + '">Mark read</button></div>';
+    }
+    h += '</div>';
+  }
+  return h;
+}
 function mpFriendNote() {
   return '<h3>Friends</h3><p>Not connected. Playing together needs the account server — on a single copy of the page there is nobody else to ask.</p>';
 }
@@ -448,12 +517,14 @@ function mpFriendBtns(r) {
   if (r.state === 'blocked') return '<button class="ghost" data-mpfr="' + u + '">Unblock</button>';
   let h = '';
   if (r.online && r.gameName) h += '<button class="ghost" data-mpfj="' + u + '">Join</button>';
+  h += '<button class="ghost" data-mpfw="' + u + '">Whisper</button>';
   h += '<button class="ghost" data-mpfr="' + u + '">Remove</button><button class="ghost" data-mpfb="' + u + '">Block</button>';
   return h;
 }
 function mpFriendSection() {
   let h = '<h3>Friends</h3>';
   h += '<p style="font-size:13px">A person you accept can see your class, your level, and the name of the game you are standing in, and they can walk into it. You can see the same of them. The list holds twenty-five.</p>';
+  h += '<button class="tog' + (MP.closed ? ' on' : '') + '" data-mpfq="1"><span>Not taking messages</span><i>' + (MP.closed ? 'ON' : 'OFF') + '</i></button>';
   h += '<div class="row"><input id="mpFriend" maxlength="40" placeholder="Their name" style="flex:1;background:#0a0912;border:1px solid #3a3350;color:#e8e2d4;border-radius:6px;padding:10px;font:15px Georgia,serif"><button class="ghost" data-mpfa="1">Ask</button></div>';
   const rows = [];
   for (const uid in MP.friends) rows.push(Object.assign({ uid }, MP.friends[uid]));
@@ -469,6 +540,8 @@ function mpFriendSection() {
     }
     h += '</div>';
   }
+  h += mpWhisperPane();
+  h += mpMailPane();
   return h;
 }
 
@@ -599,6 +672,21 @@ function mpClick(d) {
   if (d.mpfn) { mpFriendAct('decline', d.mpfn); return true; }
   if (d.mpfr) { mpFriendAct('remove', d.mpfr); return true; }
   if (d.mpfb) { mpFriendAct('block', d.mpfb); return true; }
+  if (d.mpfq) {
+    mpApi('/api/friend/quiet', { on: !MP.closed }).then(() => mpFriendsLoad()).catch(e => { toast(e.message || 'That did not go through.'); sfx('err'); });
+    return true;
+  }
+  if (d.mpfw) { MP.whisperTo = d.mpfw; drawSheet(); return true; }
+  if (d.mpfs) {
+    const n = document.getElementById('mpWhisper'), text = n ? n.value.trim() : '';
+    if (text && MP.whisperTo) mpSend('whisper', { uid: MP.whisperTo, text: text });
+    if (n) n.value = '';
+    return true;
+  }
+  if (d.mpmr) {
+    mpApi('/api/mail/read', { id: d.mpmr }).then(() => mpMailLoad()).catch(e => { toast(e.message || 'That did not go through.'); sfx('err'); });
+    return true;
+  }
   if (d.mpj) {
     const g = MP.lobby.find(x => x.id === d.mpj);
     if (g && g.locked) {
