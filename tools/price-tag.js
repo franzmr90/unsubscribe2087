@@ -37,7 +37,7 @@ await clearUI(p);
 await p.evaluate(()=>__g.enter(0));
 await clearUI(p);
 await p.evaluate(()=>{__g.setMode('play');__g.G.cpi=1.073;__g.G.lvl=1;__g.G.disc=null;__g.G.stims=0;__g.G.credits=32});
-await p.evaluate(()=>__g.openSheet('items',{only:['items','shop']}));
+await p.evaluate(()=>__g.openSheet('shop',{only:['items','shop']}));
 const stim=await p.evaluate(()=>{
   const btn=document.querySelector('[data-buy="stim"]');
   return {text:btn?btn.textContent:'',off:btn?btn.disabled:true};
