@@ -4,10 +4,9 @@
    every hook below returns immediately, which is why none of them are guarded at the
    call sites.
 
-   The rules are Diablo II's. A party is an invitation both sides agree to. Experience is
-   split among the members who are actually in the district with you, weighted by level,
-   with a bonus for the size of the party. Hostility is declared rather than ambient, it
-   throws you out of the party, and it does not come back. Town is safe. */
+   The rules are Diablo II's. A party is an invitation both sides agree to. Experience in
+   the district is one pool, a third again the kill, split by level. Hostility is declared
+   rather than ambient, it throws you out of the party, and it does not come back. Town is safe. */
 
 const MP = {
   on: false, conn: null, me: null, roster: [], party: null, invite: null,
@@ -122,7 +121,7 @@ function mpRecv(m) {
     MP.invite = m;
     if (m.game) mpGameInvite(m);
     else dlg(m.from + ' asks you to party', 'Level ' + m.lvl + ' ' + ((CLS[m.cls] || {}).n || 'stranger') +
-      ': accept or stay out, experience in the district is split by level, and there is more of it the more of you there are.',
+      ': accept or stay out. Experience in the district is one pool, a third again the kill, split by level.',
       [['Join them', () => { mpSend('accept', { uid: m.uid }); MP.invite = null; }], ['Not now', () => { mpSend('decline', { uid: m.uid }); MP.invite = null; }]]);
   } else if (m.t === 'whisper' || m.t === 'whispernote') {
     mpWhisperLog(m);
@@ -147,8 +146,8 @@ function mpRecv(m) {
     mpSay(m.text);
     if (m.text && /asked to be your friend/.test(m.text)) mpFriendsLoad();
   } else if (m.t === 'xp') {
-    /* A party member's kill, already weighted and bonused by the server. */
-    if (G && mode !== 'title') { gainXp(m.amount, 1); if (mode === 'play') float(P.x, P.y, '+' + m.amount + ' party', '#9fd0ff', 1); }
+    /* The server's share. The killer's own share is already final; everyone else's still meets the local multipliers. */
+    if (G && mode !== 'title') { gainXp(m.amount, m.self ? 'share' : 1); if (mode === 'play') float(P.x, P.y, '+' + m.amount + ' party', '#9fd0ff', 1); }
   } else if (m.t === 'quest') {
     if (G && G.q[m.k] !== undefined && G.q[m.k] < m.v) { G.q[m.k] = m.v; toast(m.from + ' finished ' + (QUESTS[m.k] ? QUESTS[m.k].n : m.k) + ' with you.'); }
   } else if (m.t === 'pvp') {
@@ -312,9 +311,12 @@ function mpDraw(o, X, Y) {
 const mpInParty = uid => !!(MP.party && MP.party.members && MP.party.members.some(m => m.uid === uid));
 
 /* ---------- experience and quests shared with the party ---------- */
-function mpShareXp(v) {
-  if (!mpOn() || !MP.party || !(v > 0)) return;
-  mpSend('xp', { amount: Math.round(v) });
+function mpShareXp(v, ml) {
+  if (!mpOn() || !MP.party || !MP.party.members || MP.party.members.length < 2 || !(v > 0)) return false;
+  const pkt = { amount: Math.round(v) };
+  if (ml) pkt.ml = Math.round(ml);
+  mpSend('xp', pkt);
+  return true;
 }
 function mpShareQuest(k, v) {
   if (!mpOn() || !MP.party) return;
@@ -598,8 +600,7 @@ function mpGamePanel() {
 
   if (party) {
     h += '<h3>Your party \u00b7 ' + party.members.length + ' of ' + MP.maxParty + '</h3>';
-    h += '<p style="font-size:13px">Experience is split among the members in the district with you, weighted by level: ' +
-      [1, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3][Math.min(7, party.members.length - 1)] + '\u00d7 at this size. Somebody standing in town is not helping.</p>';
+    h += '<p style="font-size:13px">Experience in the district is one pool, a third again what the kill was worth, split by level. Somebody standing in town is not helping.</p>';
     h += '<div class="list">';
     for (const m of party.members) {
       const you = m.uid === me.uid;

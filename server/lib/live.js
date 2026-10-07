@@ -25,8 +25,10 @@ const MAX_GAME = 8;                /* Diablo II's number, and the reason this sc
 const MAX_PARTY = 8;
 const MAX_GAMES = +(process.env.MAX_GAMES || 200);
 const MAX_PLAYERS = +(process.env.MAX_PLAYERS || 400);
-/* Diablo II's party experience multiplier, by number of members present. */
-const PARTY_BONUS = [1, 1, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3];
+/* One pool for the party, then a level-weighted split. Diablo II 1.08 added a flat
+   35% when another member was in the district. It did not grow with party size.
+   gameScale, which follows the people in the game, is separate and stays. */
+const PARTY_POOL = 1.35;
 const PVP_SCALE = 0.25;            /* players are much tougher to each other than monsters */
 const TOWNS = new Set([0, 17, 18, 21, 27]);
 const SIM_ZONE = 6;
@@ -465,13 +467,16 @@ const HANDLERS = {
     const party = partyOf(p);
     if (!party) return;
     const here = membersOf(party).filter(q => q.zi === p.zi && q.inst === p.inst && q.game === p.game);
-    if (here.length < 2) return;
-    const bonus = PARTY_BONUS[Math.min(here.length, 8)];
+    /* Alone in the district: the killer's client deferred, so hand the whole report back. */
+    if (here.length < 2) {
+      send(p, 'xp', { amount: Math.round(amount), from: p.name, self: 1 });
+      return;
+    }
+    const pool = amount * PARTY_POOL;
     const sum = here.reduce((a, q) => a + Math.max(1, q.lvl), 0);
     for (const q of here) {
-      if (q.uid === p.uid) continue;
-      const share = Math.round(amount * bonus * (Math.max(1, q.lvl) / sum));
-      if (share > 0) send(q, 'xp', { amount: share, from: p.name });
+      const share = Math.round(pool * (Math.max(1, q.lvl) / sum));
+      if (share > 0) send(q, 'xp', { amount: share, from: p.name, self: q.uid === p.uid ? 1 : 0 });
     }
   },
 
@@ -612,6 +617,6 @@ function attach(server, verify) {
 
 module.exports = {
   attach, live, games, parties, MAX_PARTY, MAX_GAME, MAX_PLAYERS, MAX_GAMES,
-  PARTY_BONUS, PVP_SCALE, SIM_ZONE, TOWNS, canFight, mutualHostile, gameScale, DIFFS,
+  PARTY_POOL, PVP_SCALE, SIM_ZONE, TOWNS, canFight, mutualHostile, gameScale, DIFFS,
   poke, pushFriends
 };

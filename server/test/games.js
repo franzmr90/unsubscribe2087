@@ -46,6 +46,28 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
     });
   }
 
+  const uidOf = c => c.last.you && c.last.you.uid;
+  function place(c, lvl, zi) { c.send({ t: 'hello', lvl, zi, cls: 'scrapper', hp: 100, hpm: 100 }); }
+  async function partyUp(leader, rest) {
+    for (const c of rest) {
+      c.forget('invited');
+      leader.send({ t: 'invite', uid: uidOf(c) });
+      const inv = await c.wait('invited');
+      if (!inv) throw new Error('no invite for ' + (c.last.you && c.last.you.name));
+      c.send({ t: 'accept', uid: uidOf(leader) });
+      await wait(40);
+    }
+    await wait(80);
+  }
+  async function xpReport(clients, amount, ml) {
+    for (const c of clients) c.seen.length = 0;
+    clients[0].send({ t: 'xp', amount, ml: ml || 0 });
+    await wait(250);
+    const parts = [];
+    for (const c of clients) for (const m of c.seen) if (m.t === 'xp') parts.push(m.amount);
+    return parts;
+  }
+
   const A = await client(reg('Ines'));
   const B = await client(reg('Vale'));
 
@@ -82,6 +104,16 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   ok('a second player makes monsters tougher again', ros.scale.hp === 7.5, JSON.stringify(ros.scale));
   ok('and worth more again', Math.abs(ros.scale.xp - 4.2) < 1e-9, JSON.stringify(ros.scale));
 
+  /* ---- one pool, killer included. Old totals, for the same reports: two same-level
+     members summed to 2800 (1.75×) and a member ten below still took 450. ---- */
+  await partyUp(A, [B]);
+  place(A, 10, 2); place(B, 10, 2); await wait(80);
+  const two = await xpReport([A, B], 1600);
+  ok('two same-level members share 1.35×, killer included', two.length === 2 && two.reduce((a, b) => a + b, 0) === 2160, JSON.stringify(two));
+  place(A, 20, 2); place(B, 10, 2); await wait(80);
+  const gap = (await xpReport([A, B], 1000, 20)).slice().sort((a, b) => a - b);
+  ok('ten levels below still takes the full share', gap.join() === '450,900', JSON.stringify(gap));
+
   /* ---- text reaches the whole game ---- */
   B.send({ t: 'chat', text: 'credits rot' });
   const ch = await A.wait('chat');
@@ -99,6 +131,13 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   const extra = [];
   for (let i = 0; i < 6; i++) { const c = await client(reg('Filler' + i)); c.send({ t: 'game.join', id: g.game.id }); extra.push(c); await wait(60); }
   await wait(400);
+  /* Eight same-level used to sum to 5800 (3.625×): the killer kept 1600 and seven others took 600. */
+  await partyUp(A, extra);
+  const eight = [A, B].concat(extra);
+  for (const c of eight) place(c, 10, 4);
+  await wait(120);
+  const all = await xpReport(eight, 1600);
+  ok('eight same-level members still share 1.35×', all.length === 8 && all.reduce((a, b) => a + b, 0) === 2160, JSON.stringify(all));
   const C = await client(reg('Latecomer'));
   C.send({ t: 'game.join', id: g.game.id });
   const jf = await C.wait('joinfail');
