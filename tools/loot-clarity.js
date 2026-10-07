@@ -112,6 +112,48 @@ const toast=await p.evaluate(()=>{
 });
 if(!/not worn/.test(toast))fail('charm toast '+toast);
 
+const sold=await p.evaluate(()=>{
+  __g.closeSheet();__g.setMode('play');
+  const belt=__g.makeItem(4,1,'belt');belt.id=true;belt.val=10;belt.name='FRACTION BELT';belt.q=1;
+  __g.G.bag=[belt];__g.G.cpi=1.15;__g.G.credits=100;__g.G.charms=[];
+  __g.openSheet('items',{only:['items','shop']});
+  return true;
+});
+if(!sold)fail('sell sheet');
+await p.click('[data-bag="0"]');
+await p.waitForTimeout(400);
+const oneBtn=await p.evaluate(()=>{const b=document.querySelector('[data-do="sell"]');return b?b.textContent:''});
+await p.click('[data-do="sell"]');
+const one=await p.evaluate(()=>({credits:__g.G.credits,bag:__g.G.bag.length}));
+if(oneBtn!=='Sell ₡4'||one.credits!==104||one.bag!==0)fail('one sale '+JSON.stringify({oneBtn,one}));
+
+const bulk=await p.evaluate(()=>{
+  const a=__g.makeItem(4,1,'belt');a.id=true;a.val=10;a.q=1;
+  const b=__g.makeItem(4,1,'gloves');b.id=true;b.val=10;b.q=1;
+  __g.G.bag=[a,b];__g.G.cpi=1.15;__g.G.credits=200;
+  __g.drawSheet();
+  const btn=[...document.querySelectorAll('[data-sellq="-1"]')].map(x=>x.textContent);
+  return {btn};
+});
+if(!/₡8/.test(bulk.btn[0]||''))fail('bulk label '+JSON.stringify(bulk));
+await p.click('[data-sellq="-1"]');
+await p.click('[data-sellq="-1"]');
+const pair=await p.evaluate(()=>({credits:__g.G.credits,bag:__g.G.bag.length,log:document.getElementById('log').textContent}));
+if(pair.credits!==208||pair.bag!==0||!/₡8/.test(pair.log))fail('bulk sale '+JSON.stringify(pair));
+
+const charm=await p.evaluate(()=>{
+  __g.G.charms=[{slot:'charm',charm:1,q:1,il:1,id:true,req:1,name:'Fraction Sub',base:'Lapsed Subscription',aff:[],val:10,on:false}];
+  __g.G.credits=50;__g.G.cpi=1.15;
+  __g.drawSheet();
+  return true;
+});
+if(!charm)fail('charm sheet');
+await p.click('[data-ch="0"]');
+const chBtn=await p.evaluate(()=>{const b=document.querySelector('[data-chdo="sell"]');return b?b.textContent:''});
+await p.click('[data-chdo="sell"]');
+const ch=await p.evaluate(()=>({credits:__g.G.credits,n:__g.G.charms.length}));
+if(chBtn!=='Sell ₡4'||ch.credits!==54||ch.n!==0)fail('charm sale '+JSON.stringify({chBtn,ch}));
+
 if(errs.length)fail(errs[0]);
 console.log('loot-clarity ok');
 await b.close();
