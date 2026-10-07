@@ -350,6 +350,7 @@ const QUESTS={
  q2:{n:'A Greeting Withdrawn',by:'Brenda',zi:2,d:'Marla the Greeter has welcomed shoppers to the Hollow Galleria for thirty years. None have left. End her shift.',rw:'A rare ring, and Brenda’s prices drop 15%',back:'Brenda'},
  q3:{n:'The Last Librarian',by:'Gramps',zi:3,d:'Marrow, the last librarian, is caged in the Humming Fields under the guard of Defrag. Kill the keeper and open the cage.',rw:'+1 skill point. Marrow identifies items for free.',back:'Gramps'},
  q4:{n:'The Audit',by:'Sister Null',zi:4,d:'Auditor Prime decides who is repossessed. Find it on Tribunal Row and close its books.',rw:'+5 attribute points',back:'Sister Null'},
+ q5:{n:'Exit Interview',by:'Gramps',zi:5,d:'Pryce, the Regional Vice-President, has never met a person he could not buy. He will make you an offer at the top of the Glass Cathedral. Decline it.',rw:'The end of Act I',back:null},
  q6:{n:'Going Up',by:'Gramps',zi:7,d:'The lift behind Pryce’s desk opens on the Updraft, where Foreman Ratchet keeps the Cloud aloft and the rest of us down. Break him.',rw:'+1 skill point',back:'Gramps'},
  q7:{n:'The Gardener’s Shears',by:'Sister Null',zi:8,d:'In the Sky Gardens a machine called Eden prunes whatever grows the wrong way, people included. Stop the pruning.',rw:'+5 attribute points',back:'Sister Null'},
  q8:{n:'What the Lake Remembers',by:'Marrow',zi:9,d:'The Data Lake holds every letter the world deleted. Lethe, its archivist, is drowning them one by one. Destroy it before the last is gone.',rw:'+1 skill point',back:'Marrow'},
@@ -360,7 +361,6 @@ const QUESTS={
  q13:{n:'Point of Order',by:'Nonce',zi:14,d:'Eight directors and the Chair. They voted to end the Bitcoiners in 2061 and the motion is still open. Close it.',rw:'60 sats',back:'Nonce'},
  q14:{n:'Rack Nine',by:'Sister Null',zi:15,d:'Defrag Prime guards the racks that MANDATE thinks with. Go through it.',rw:'+5 attribute points',back:'Sister Null'},
  q15:{n:'Still Water',by:'Gramps',zi:16,d:'MANDATE has never lost. It will make you offers. Whatever you do about them is yours to live with.',rw:'The end of the story',back:null},
- q5:{n:'Exit Interview',by:'Gramps',zi:5,d:'Pryce, the Regional Vice-President, has never met a person he could not buy. He will make you an offer at the top of the Glass Cathedral. Decline it.',rw:'The end of Act I',back:null}
 };
 const CHATTER=['My fridge upgraded itself. Now it has opinions.','I got a raise. It was gone by lunch.','Have you tried consuming? It helps.','Stipend day. I can almost afford a spoon.','I watched nine hours of ads to unlock my front door.','They say outside is a subscription now.','My landlord is an algorithm. It seems kind.','I rated my own nap four stars.','A sandwich was two million this morning. I should have bought two.','I do not work. I am in a long-term engagement funnel.','The news said everything is fine, in a very loud voice.','You are not wearing a visor. Are you poor, or dangerous?'];
 const GOSSIP={
