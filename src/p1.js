@@ -10,7 +10,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 
 /* ================= classes and skill trees =================
    Three columns. Rows open at levels 1, 4, 9, 26 and 51.
-   Each skill needs one point in the skill above it, and gains +6% per point in that skill.
+   Each skill needs one point in the skill above it. Where a skill scales, it gains +6% per point in that skill.
    Rows 4 and 5 are that class's own skills. */
 const ROWREQ=[1,4,9,26,51];
 const CLS={

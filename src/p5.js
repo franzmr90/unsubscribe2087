@@ -15,7 +15,7 @@ const SQ={
    {t:'obj',zi:3,look:'node',label:'Install the boards',d:'Install the boards in the dead node in the Humming Fields',say:'The boards seat with a click. A fan turns over, catches, and the node begins to count. Everything in the Fields turns to look at it.',hold:28,wave:['hound','tick','drone']},
    {t:'hold',zi:3,d:'Guard the node in the Humming Fields while it syncs'},
    {t:'talk',npc:'nonce',d:'Return to Nonce',scene:[{art:'node',text:'Somewhere past the fence a block is found, the way one has been found every ten minutes for seventy-nine years. This time, one more machine in the world agrees that it happened.'}],say:'“It is counting again.”',rw(){G.sats+=30;G.nodeUp=true;addRep('btc',20);addAdopt(10,'Nonce’s node is counting again')}}]},
- carer:{n:'The Caretaker',by:'null',who:'Sister Null',req:()=>G.unlocked>=2,rw:'Whatever you decide it was worth',
+ carer:{n:'The Caretaker',by:'null',who:'Sister Null',req:()=>G.unlocked>=2,rw:'+3 attribute points, and the credits if you take them',
   offer:'“There is a woman here, Ines. Her father never took the visor off. He is happy every hour of the day and has not known she is in the room for six years. He needs medicine she cannot afford, and the last of it is in a cabinet in the Hollow Galleria. I do not ask people for things. I am asking you.”',
   steps:[
    {t:'obj',zi:2,look:'cab',label:'Take the medicine',d:'Find the pharmacy cabinet in the Hollow Galleria',say:'Behind a shutter that has not moved in decades: one sealed case, still in date, which is its own small miracle.'},
@@ -72,12 +72,12 @@ function bounties(){G.bounties=G.bounties||[];while(G.bounties.length<3+(repRank
 /* ---------- shape shifting: same level, new class, points returned ---------- */
 const SHIFT_COST=5;
 function shapeShift(cls,roll){if(G.sats<SHIFT_COST){toast('You need '+SHIFT_COST+' sats');sfx('err');return}G.sats-=SHIFT_COST;G.st.shifts++;
-  let sp=G.sp+G.sk.reduce((a,b)=>a+b,0),ap=G.ap+G.at.mgt+G.at.ref+G.at.vit+G.at.bnd;
+  let sp=G.sp+G.sk.reduce((a,b)=>a+skSpent(b),0),ap=G.ap+G.at.mgt+G.at.ref+G.at.vit+G.at.bnd;
   G.cls=cls;delete G.schema;delete G.pas;delete G.doc;G.fork={};G.sk=G.sk.map(()=>0);boonRefund();G.at={mgt:0,ref:0,vit:0,bnd:0};let BR=null;
   if(typeof roll==='string'){const r=buildApply(cls,roll,sp,ap);sp=r.sp;ap=r.ap;BR=r.B;roll=0}else{G.sk[0]=1;sp--;G.slots=[0,-1,-1]}
-  if(roll){let g=2000;while(sp>0&&g--){const i=ri(0,14),row=Math.floor(i/3);if(G.sk[i]>=10||G.lvl<ROWREQ[row]||(row>0&&!G.sk[i-3])||(row===3&&!G.act2)||(row===4&&!G.act3))continue;G.sk[i]++;sp--}
+  if(roll){let g=20000;while(sp>0&&g--){const i=ri(0,14),row=Math.floor(i/3);if(G.sk[i]>=10||G.lvl<ROWREQ[row]||(row>0&&!G.sk[i-3])||(row===3&&!G.act2)||(row===4&&!G.act3))continue;const c=skCost(i);if(sp<c)continue;G.sk[i]++;sp-=c}
     while(ap>0){const k=Math.random()<.45?(CLS[cls].melee?'vit':'mgt'):pick(['mgt','ref','vit','bnd']),n=Math.min(ap,ri(1,5));G.at[k]+=n;ap-=n}
     const act=G.sk.map((v,i)=>v&&CLS[cls].sk[i].a?i:-1).filter(i=>i>=0).sort((a,b)=>G.sk[b]-G.sk[a]);G.slots=[0,1,2].map(i=>act[i]===undefined?-1:act[i])}
   G.sp=sp;G.ap=ap;G.form=null;G.formDt=null;G.formT=0;G.page=0;W.allies=[];P.buff=P.mech=P.stealth=P.crunch=0;P.castWait=0;calc();G.hp=S.maxHp;G.en=S.maxEn;setSkillButtons();save(true);sfx('unique');
   $('sheet').hidden=true;$('pop').hidden=true;
-  playScene([{art:'feed',text:'The rig hums. For a moment you are nobody at all. Then the simulation agrees with you about who you are.'}],()=>{mode='play';dlg('You are now a '+CLS[cls].n,BR?buildSummary(cls,BR)+' Everything can be changed from the menu.':roll?G.sk.reduce((a,b)=>a+b,0)+' points went into skills and the rest into attributes. Open the menu; Sister Null can return them.':'Spend '+G.sp+' skill points and '+G.ap+' attribute points from the menu.',[['Continue']])})}
+  playScene([{art:'feed',text:'The rig hums. For a moment you are nobody at all. Then the simulation agrees with you about who you are.'}],()=>{mode='play';dlg('You are now a '+CLS[cls].n,BR?buildSummary(cls,BR)+' Everything can be changed from the menu.':roll?G.sk.reduce((a,b)=>a+skSpent(b),0)+' points went into skills and the rest into attributes. Open the menu; Sister Null can return them.':'Spend '+G.sp+' skill points and '+G.ap+' attribute points from the menu.',[['Continue']])})}
