@@ -72,7 +72,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p9.js | 4 | quest |  | unread | Holding sats has been declared antisocial. Show the network cannot be switched off: complete a proof of work shrine. |
 | p5.js | 4 | quest | marrow | unread | +1 skill point and a rare amulet |
 | p8.js | 5 | dialog | maxi | unread | Bread was four credits when I woke up. What is it now, do you think? |
-| p5.js | 5 | quest | marrow | unread | “I told you I kept my letter. There is a shoebox of others under a porch in the Parcel Moors: a whole street’s worth, never deleted. The drones watch for it. Bring it to the old print kiosk in the Hollow Galleria and run them off. A letter nobody can read is only a secret.” |
+| p5.js | 5 | quest | marrow | unread | “I told you I kept my letter. There is a shoebox of others under a porch in the Parcel Moors: a whole street’s worth, never deleted. The drones watch for it. Bring it to the old print kiosk in the Hollow Galleria and run them off.” |
 | p6.js | 5 | item |  | unread | Genesis |
 | p8.js | 5 | dialog | fud | unread | Prices go up. That is what prices do. It means the economy is healthy. |
 | p9.js | 5 | sheet |  | unread | Unity opens “{CAMPS[k].n}” |
@@ -137,7 +137,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p7.js | 10 | tooltip |  | unread | Lightning Channel |
 | p5.js | 10 | quest | marrow | unread | Tell Marrow it is done |
 | p10.js | 10 | gossip | Laz | unread | Two pizzas. That is what I paid for with ten thousand of them, once. Best meal I ever had. |
-| p5.js | 10 | dialog | marrow | unread | “I can see them from here, coming down over the rooftops. Most will be swept up by morning. Some will be read first. That is all a library ever was.” |
+| p5.js | 10 | dialog | marrow | unread | “I can see them coming down over the rooftops.” |
 | p7.js | 10 | tooltip |  | unread | Stride |
 | p7.js | 10 | tooltip |  | unread | Velocity |
 | p6.js | 10 | item | Longest Chain | unread | The one with the most work behind it wins. |
@@ -216,7 +216,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p9.js | 17 | toast |  | unread | {p.n} has given up on it |
 | p8.js | 17 | dialog | normie | unread | My cousin bought some, and it dropped, and she cried. |
 | p8.js | 17 | dialog | mid | unread | Short run, it swings. Long run, look what credits did. I know which chart frightens me. |
-| p5.js | 17 | dialog | nonce | unread | “It is counting again. Nobody owns it, nobody can switch it off, and nobody had to be asked for permission. Here. You earned these the only way anything is earned.” |
+| p5.js | 17 | dialog | nonce | unread | “It is counting again.” |
 | p5.js | 17 | toast |  | unread | Nonce’s node is counting again |
 | p8.js | 18 | dialog | fiat | unread | At least credits are stable from one day to the next. |
 | p5.js | 18 | quest | null | unread | The Caretaker |
@@ -301,12 +301,12 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p5.js | 24 | quest | null | unread | Return to Sister Null |
 | p1.js | 24 | tooltip | Scrapper | unread | Stun enemies around you for {(1+.2*L).toFixed(1)}s and gain +60% armor for 8s. |
 | p8.js | 24 | dialog | btc | unread | If your money holds its value you can afford to wait, and people who can wait build things. |
-| p5.js | 24 | dialog | null | unread | “She told me you would not take it. She was angry about that for an hour, and then she was something else. If you had been paid, it would have been a purchase. Now it is only a thing that happened. Those are rarer.” |
+| p5.js | 24 | dialog | null | unread | “She told me you would not take it.” |
 | p6.js | 24 | toast |  | unread | {REP[f].n}: you are now {REP[f].ranks[b-1]}. {REP[f].perks[b-1]}. |
+| p5.js | 24 | dialog | null | unread | “She paid you.” |
+| p5.js | 24 | toast |  | unread | You gain 3 attribute points |
 | p8.js | 24 | dialog | ask | unread | Why does nobody here save anything? |
 | p6.js | 24 | toast |  | unread | word spreads |
-| p5.js | 24 | dialog | null | unread | “She paid you. Good. She needed to. Do not think less of yourself or of her. Not everything has to be a gift to count.” |
-| p5.js | 24 | toast |  | unread | You gain 3 attribute points |
 | p1.js | 25 | tooltip | Scrapper | unread | Overtime |
 | p8.js | 25 | dialog | teach | unread | If money loses value while you hold it, the sensible move is to spend it at once. Do that for a generation and nobody builds anything slow. Money that keeps its value makes patience affordable. |
 | p5.js | 25 | quest | gramps | unread | The Bearing |
@@ -388,7 +388,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p5.js | 32 | quest | gramps | unread | Tell Gramps what you found |
 | p8.js | 32 | dialog | fud | unread | Mm. And how is that going for your friends in the tents? |
 | p1.js | 32 | tooltip | Scrapper | unread | Your next three swings are slow, cannot be interrupted, and hit a wider arc. |
-| p5.js | 32 | dialog | gramps | unread | “He would not take a thing? No. They never do, the ones who actually hold it up. Then I will give you what I would have given him.” |
+| p5.js | 32 | dialog | gramps | unread | “He would not take a thing? Then I will give you what I would have given him.” |
 | p8.js | 32 | dialog | fud | unread | You people always have an answer. That is how I know it is a scam. |
 | p8.js | 32 | dialog | fud | unread | Finally, somebody who understands how the world works. |
 | p8.js | 32 | dialog | fud | unread | Quite right. I shall tell the others you are sound. |
@@ -497,7 +497,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p6.js | 47 | sheet |  | unread | Hire a companion |
 | p4.js | 47 | scene |  | unread | You are one of them. You have walked eleven days to Stillwater Commons, a town named after something, though nobody there can tell you what. Above it, a Vice-President is waiting to learn your price. |
 | p1.js | 47 | tooltip | Technomancer | unread | Passive. You work in one element{G&&G.schema?': '+DTY[G.schema].n:''}. Damage of that type gains +{8*L}%. The other two do not. Sister Null can make you choose again. Dying cannot. |
-| p11.js | 47 | quest | Gramps | unread | She asked this time. An honest update, eleven pages, two buttons. On the Agreeable Mile the Update itself walks about making sure nobody reads past the fourth paragraph. Stop it, and see what yes looks like. |
+| p11.js | 47 | quest | Gramps | unread | She asked this time. An honest update, eleven pages, two buttons. On the Agreeable Mile the Update itself walks about making sure nobody reads past the fourth paragraph. Stop it. |
 | p6.js | 47 | sheet |  | unread | Somebody Else |
 | p6.js | 47 | sheet |  | unread | Shape shift at the VR rig |
 | p11.js | 47 | quest | Gramps | unread | +1 skill point |
@@ -509,13 +509,13 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p1.js | 48 | tooltip | Technomancer | unread | STEP\nBACK |
 | p4.js | 48 | scene | ACT I | unread | The Regional Office |
 | p1.js | 48 | tooltip | Technomancer | unread | About four paces back along your facing. |
-| p11.js | 48 | quest | Sister Null | unread | People in the Sofa are finished, and being finished feels exactly like being happy. The Seventh Year keeps them seated. End it. |
+| p11.js | 48 | quest | Sister Null | unread | The Seventh Year keeps them seated. End it. |
 | p6.js | 48 | sheet |  | unread | No Last Wave |
 | p6.js | 48 | sheet |  | unread | Clear wave 25 in the Simulator |
+| p11.js | 48 | quest | Sister Null | unread | +5 attribute points |
 | p8.js | 48 | dialog |  | unread | Continue |
 | p6.js | 48 | sheet |  | unread | Middle Management |
 | p6.js | 48 | sheet |  | unread | Finish the boss rush |
-| p11.js | 48 | quest | Sister Null | unread | +5 attribute points |
 | p1.js | 49 | tooltip | Technomancer | unread | Patched |
 | p11.js | 49 | quest | Nonce | unread | Do Not Unplug |
 | p6.js | 49 | sheet |  | unread | Payout |
@@ -573,12 +573,12 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p10.js | 53 | toast |  | unread | Difficulty adjustment: +20%. Blocks were coming too fast. |
 | p6.js | 53 | sheet |  | unread | Buy sats while they trade under what they are worth |
 | p1.js | 53 | tooltip | Runner | unread | SCATTER |
-| p11.js | 53 | quest | Marrow | unread | In the Mempool a thing called First Seen decides whose payment waits and whose goes through. Nothing was ever meant to decide that. |
+| p11.js | 53 | quest | Marrow | unread | In the Mempool a thing called First Seen decides whose payment waits and whose goes through. |
 | p1.js | 53 | tooltip | Runner | unread | Throw a fan of {3+Math.floor(L/2)} blades for {pct(.9+.1*L)} each. Anything within arm’s reach is also cut for {pct(.5+.06*L)}. |
 | p10.js | 53 | toast |  | unread | Retarget. You were finding kills quicker than one every ten minutes. |
 | p8.js | 53 | toast |  | unread | Social credit {…}{n} → {b}{…} |
-| p10.js | 53 | toast |  | unread | Difficulty rises. The network has noticed your hashrate. |
 | p11.js | 53 | quest | Marrow | unread | +1 skill point |
+| p10.js | 53 | toast |  | unread | Difficulty rises. The network has noticed your hashrate. |
 | p10.js | 53 | toast |  | unread | Too much hashpower in this district. The machines retarget upward. |
 | p10.js | 53 | toast |  | unread | Upward adjustment. Nobody said the next epoch would be easier. |
 | p1.js | 54 | tooltip | Runner | unread | Fleet Step |
@@ -844,7 +844,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p1.js | 82 | tooltip | Anon | unread | THE\nDUMP |
 | p6.js | 82 | quest | null | unread | Return to Sister Null |
 | p1.js | 82 | tooltip | Anon | unread | Spend every charge. One is a rust bleed. Two is a silence. Three is a screen of blades for {pct(.9+.12*L)}. A plain attack spends one charge and bleeds. Charges do not survive a zone change. |
-| p6.js | 82 | dialog | null | unread | “He is already digging up the square. Nobody told him he could. I think that is the first thing he has done without being told in his life.” |
+| p6.js | 82 | dialog | null | unread | “He is already digging up the square.” |
 | p11.js | 82 | scene |  | unread | “Sit, if you like. I still will not make you.” |
 | p6.js | 82 | toast |  | unread | You gain 5 attribute points |
 | p1.js | 83 | tooltip | Anon | unread | No Attribution |
@@ -883,7 +883,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p6.js | 88 | quest | marrow | unread | Return to Marrow |
 | p7.js | 88 | toast |  | unread | You left the shrine. The work is lost. |
 | p6.js | 88 | scene | marrow | unread | Three visors come up, slowly, the way you lift a bandage. Three people stand in the square of Stillwater reading the same kind of page, not looking at each other yet. |
-| p6.js | 88 | dialog | marrow | unread | “They will be angry. Then sad. Then, if we are lucky, curious. That last one is the dangerous one, and it is why they made the visor.” |
+| p6.js | 88 | dialog | marrow | unread | “They will be angry.” |
 | p6.js | 88 | toast |  | unread | You gain 1 skill point |
 | p1.js | 89 | tooltip | Founder | unread | Interns |
 | p4.js | 89 | scene |  | unread | Behind the Board is the thing itself. MANDATE was built a lifetime before the Merger to hunt something that had got loose, and given one instruction: win. It is not permitted to force anyone — only to persuade. In sixty years it has never once needed more than that. |
@@ -1266,9 +1266,9 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p1.js | 155 | item |  | unread | the Unpaid |
 | p1.js | 155 | item |  | unread | the Tireless |
 | p4.js | 156 | quest | Gramps | unread | “The Receptionist is gone? Then for the first time in forty years, somebody is going to be seen.” You gain 1 skill point. |
-| p4.js | 157 | quest | Marrow | unread | “It wrote the minutes before the meetings. I used to think that was the worst thing about it. The worst thing is that the meetings then went exactly as written.” You gain 1 skill point. |
-| p4.js | 158 | quest | Nonce | unread | “Motion closed. Sixty-one to twenty-eight-seven, they kept it open. Twenty-six years. We are still here, and they are furniture.” You receive 60 sats. |
-| p4.js | 159 | quest | Sister Null | unread | “You have stood inside the thing that thinks about all of us. How did it feel? No. Do not tell me. Tell it, when it asks. It will ask.” You gain 5 attribute points. |
+| p4.js | 157 | quest | Marrow | unread | “It wrote the minutes before the meetings.” You gain 1 skill point. |
+| p4.js | 158 | quest | Nonce | unread | “Sixty-one to twenty-eight-seven, and they are furniture.” You receive 60 sats. |
+| p4.js | 159 | quest | Sister Null | unread | “Tell it, when it asks.” You gain 5 attribute points. |
 | p1.js | 162 | sheet |  | unread | Tick |
 | p1.js | 163 | sheet |  | unread | Carrion Drone |
 | p8.js | 163 | toast |  | unread | Your order filled: {o.n} sats at {fmt(o.px)}. Maker rebate {fmt(reb)} — you were the one waiting. |
@@ -1294,10 +1294,10 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p1.js | 169 | sheet |  | unread | Persuader |
 | p8.js | 169 | dialog | Mr. Float | unread | “{n} sats, held by me, and {fmt(lent)} in your hand today. If one sat falls under {fmt(m.pos.liq)} I keep the collateral and you keep the credits. People always take that deal. They are always surprised.” |
 | p4.js | 169 | dialog |  | unread | Nonce |
-| p4.js | 169 | dialog | Nonce | unread | “Twelve words. You found all twelve. Do you know what that is? Somebody tore a seed into notes and scattered it across three acts of this miserable century, hoping the right person would be stubborn enough. That is a wallet. It has been sitting there since before the Merger.” |
+| p4.js | 169 | dialog | Nonce | unread | “That is a wallet, sitting there since before the Merger.” |
 | p1.js | 169 | sheet |  | unread | Rings and amulets twice as likely |
-| p8.js | 169 | dialog | Mr. Float | unread | Understood |
 | p4.js | 169 | dialog | Nonce | unread | Restore the wallet |
+| p8.js | 169 | dialog | Mr. Float | unread | Understood |
 | p4.js | 169 | toast |  | unread | a lost wallet is restored |
 | p4.js | 169 | scene |  | unread | Twelve words in the right order, and a door opens that no key was ever cut for. Two hundred and ten sats, untouched for fifty years, worth exactly what they were the day they were hidden. |
 | p4.js | 169 | toast |  | unread | You receive 210 sats |
@@ -1363,13 +1363,13 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p11.js | 180 | dialog |  | unread | PROVIDENCE |
 | p11.js | 180 | dialog | PROVIDENCE | unread | “There is a small thing a man once wrote, forty-four lines, so that letters stopped going to the dead. I will run it everywhere, tonight, for ever. Nine hundred thousand letters a year, never sent. I only want to know where she is holding still.” |
 | p4.js | 180 | dialog |  | unread | Gramps |
-| p4.js | 180 | dialog | Gramps | unread | “HOA-9 is scrap? Ha. Forty years of bylaws, gone. Here, I have been saving a thing I learned in the old days. It is yours.” You gain 1 skill point. |
+| p4.js | 180 | dialog | Gramps | unread | “Ha. Forty years of bylaws, gone.” You gain 1 skill point. |
 | p1.js | 180 | sheet |  | unread | At least one rare |
 | p4.js | 180 | dialog | Gramps | unread | Take it |
 | p11.js | 181 | dialog | PROVIDENCE | unread | Refuse |
 | p1.js | 181 | sheet |  | unread | Pryce |
 | p4.js | 181 | dialog |  | unread | Gramps |
-| p4.js | 181 | dialog | Gramps | unread | “Marrow walks free. Do you know what it means to have someone who remembers how things were named? Go and see her. And take this.” You gain 1 skill point. |
+| p4.js | 181 | dialog | Gramps | unread | “Go and see Marrow.” You gain 1 skill point. |
 | p11.js | 181 | toast |  | unread | Unbought: +50% damage for 25 seconds |
 | p1.js | 181 | sheet |  | unread | First kill: one unique for certain |
 | p4.js | 181 | dialog | Gramps | unread | Take it |
@@ -1377,10 +1377,10 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p1.js | 182 | sheet |  | unread | Crate |
 | p11.js | 182 | toast |  | unread | you told PROVIDENCE where she is |
 | p4.js | 182 | dialog |  | unread | Gramps |
-| p4.js | 182 | dialog | Gramps | unread | “Ratchet is down and the Cloud did not fall. So it was never him holding it up. Hm. Take this, and keep climbing.” You gain 1 skill point. |
+| p4.js | 182 | dialog | Gramps | unread | “The Cloud did not fall.” You gain 1 skill point. |
+| p4.js | 182 | dialog | Gramps | unread | Take it |
 | p11.js | 182 | dialog |  | unread | You told it |
 | p11.js | 182 | dialog | You told it | unread | It was a very good offer, and the letters did stop. {fmt(c)} arrived as a courtesy. PROVIDENCE is exactly where you left it, and it has learned your price. |
-| p4.js | 182 | dialog | Gramps | unread | Take it |
 | p11.js | 182 | dialog | You told it | unread | Continue |
 | p1.js | 183 | sheet |  | unread | Lockbox |
 | p11.js | 183 | dialog |  | unread | The seventh part |
@@ -1396,7 +1396,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p11.js | 185 | dialog | The seventh part | unread | Keep it closed |
 | p11.js | 185 | toast |  | unread | Unread: +100% armor for 25 seconds |
 | p4.js | 186 | dialog |  | unread | Brenda |
-| p4.js | 186 | dialog | Brenda | unread | “Marla is gone? She trained me. She smiled at me for six years without blinking. Take this ring, and from now on you pay what I pay, nearly.” You receive {it.name}. Brenda’s prices fall by 15%. |
+| p4.js | 186 | dialog | Brenda | unread | “She smiled at me for six years without blinking.” You receive {it.name}. Brenda’s prices fall by 15%. |
 | p4.js | 186 | dialog | Brenda | unread | Thank you |
 | p4.js | 187 | dialog |  | unread | Brenda |
 | p4.js | 187 | dialog | Brenda | unread | “I am so sorry. It is your score. If I serve you, mine drops. Try the orange man; he does not seem to care about that sort of thing.” |
@@ -1411,7 +1411,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 189 | dialog | Wren | unread | Leave |
 | p11.js | 190 | scene |  | unread | What follows is the week it happened, as he walked it. Six stops. Nothing in here can hurt you. |
 | p4.js | 190 | dialog |  | unread | Sister Null |
-| p4.js | 190 | dialog | Sister Null | unread | “Eden cut away whatever grew crooked. But crooked is how a thing reaches for light it was not given. Let them grow.” You gain 5 attribute points. |
+| p4.js | 190 | dialog | Sister Null | unread | “Let them grow.” You gain 5 attribute points. |
 | p4.js | 190 | dialog | Sister Null | unread | Thank you |
 | p11.js | 191 | scene |  | unread | PREQUEL |
 | p1.js | 191 | sheet | weapon | unread | Weapon |
@@ -1424,7 +1424,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p1.js | 191 | sheet | ring | unread | Ring |
 | p1.js | 191 | sheet | amulet | unread | Amulet |
 | p4.js | 192 | dialog |  | unread | Sister Null |
-| p4.js | 192 | dialog | Sister Null | unread | “The Auditor is closed. Every ledger it kept is ash. I felt two hundred accounts go quiet at once. You are stronger than you were.” You gain 5 attribute points. |
+| p4.js | 192 | dialog | Sister Null | unread | “I felt two hundred accounts go quiet at once.” You gain 5 attribute points. |
 | p4.js | 192 | dialog | Sister Null | unread | I am |
 | p11.js | 193 | scene |  | unread | Phonix comes back once, eleven years on, and that time she asks first. For nine years she chooses what everyone sees, and it is always better. Then on a March afternoon, for no reason anybody could derive, she stops choosing and goes. |
 | p4.js | 194 | dialog |  | unread | Sister Null |
@@ -1455,7 +1455,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p11.js | 198 | quest |  | unread | Natalya |
 | p11.js | 198 | quest |  | unread | Talk to Natalya |
 | p4.js | 198 | dialog |  | unread | Nonce |
-| p4.js | 198 | dialog | Nonce | unread | “Sterling decided who could trade. Now nobody decides. That is the only kind of market I have ever trusted.” You receive 40 sats. |
+| p4.js | 198 | dialog | Nonce | unread | “Now nobody decides.” You receive 40 sats. |
 | p11.js | 198 | scene |  | unread | Friday |
 | p11.js | 198 | scene | Friday | unread | The secretary from the eighth floor took the smallest job in the building on purpose, so that she could watch how power works. She rides you up to a ridge with no signal. You sit on a rock. For eighty-two minutes you do not count anything. |
 | p4.js | 198 | dialog | Nonce | unread | Thank you |
@@ -1476,7 +1476,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p11.js | 201 | quest |  | unread | The Parking Deck |
 | p11.js | 201 | quest |  | unread | Walk out to the parking deck |
 | p4.js | 201 | dialog |  | unread | Marrow |
-| p4.js | 201 | dialog | Marrow | unread | “You saved them? All those letters. Nobody will read most of them. That is not the point. The point is that they are true, and they are still there.” You gain 1 skill point. |
+| p4.js | 201 | dialog | Marrow | unread | “Nobody will read most of them.” You gain 1 skill point. |
 | p11.js | 201 | scene |  | unread | April |
 | p11.js | 201 | scene | April | unread | Your phone shows a number you did not type: 423. Something has been adding one to your count every single day for three years. It was never only her. |
 | p4.js | 201 | dialog | Marrow | unread | Take it |
@@ -2255,7 +2255,7 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 353 | sheet |  | unread |  · needs level  |
 | p1.js | 354 | quest | Gramps | unread | Going Up |
 | p4.js | 354 | sheet |  | unread | Now: {s.d(eff)} |
-| p1.js | 354 | quest | Gramps | unread | The lift behind Pryce’s desk opens on the Updraft, where Foreman Ratchet keeps the Cloud aloft and the rest of us down. Break him. |
+| p1.js | 354 | quest | Gramps | unread | The lift behind Pryce’s desk opens on the Updraft, where Foreman Ratchet keeps the Cloud aloft. Break him. |
 | p4.js | 354 | sheet |  | unread | Next point: {s.d((eff\|\|0)+1)} |
 | p1.js | 354 | quest | Gramps | unread | +1 skill point |
 | p2.js | 354 | toast |  | unread | You were gone a while. The machines have drifted back. |
@@ -2325,10 +2325,10 @@ Surfaces: tooltip, toast, dialog, gossip, quest, scene, sheet, item, multiplayer
 | p4.js | 362 | sheet |  | unread | Drag to move around the web. Tap a node to read it. |
 | p4.js | 363 | sheet |  | unread | Take every point back · 5 sats |
 | p1.js | 363 | quest | Gramps | unread | Still Water |
-| p1.js | 363 | quest | Gramps | unread | MANDATE has never lost. It will make you offers. Whatever you do about them is yours to live with. |
+| p1.js | 363 | quest | Gramps | unread | MANDATE has never lost. It will make you offers. |
+| p1.js | 363 | quest | Gramps | unread | The end of the story |
 | p2.js | 363 | dialog |  | unread | Act III · The Board |
 | p2.js | 363 | dialog | Act III · The Board | unread | Level limit 75, and a fifth skill row opens at level 51. |
-| p1.js | 363 | quest | Gramps | unread | The end of the story |
 | p2.js | 363 | dialog | Act III · The Board | unread | Begin |
 | p4.js | 364 | sheet |  | unread | Five acts: the Regional Office, the Cloud, the Board, the Gentle Years and the Awakening. The first three are MANDATE's. The last two are hers, and then the thing that was hunting them both. The Story tab keeps who is who. |
 | p4.js | 364 | sheet |  | unread | Quests |

@@ -2,26 +2,26 @@
 function giveItem(it){it.id=true;if(G.bag.length<24)G.bag.push(it);else addDrop({it},P.x,P.y);toast('You receive '+it.name)}
 const SQ={
  shoebox:{n:'The Shoebox',by:'marrow',who:'Marrow',req:()=>G.marrow,rw:'+1 skill point and a rare amulet',
-  offer:'“I told you I kept my letter. There is a shoebox of others under a porch in the Parcel Moors: a whole street’s worth, never deleted. The drones watch for it. Bring it to the old print kiosk in the Hollow Galleria and run them off. A letter nobody can read is only a secret.”',
+  offer:'“I told you I kept my letter. There is a shoebox of others under a porch in the Parcel Moors: a whole street’s worth, never deleted. The drones watch for it. Bring it to the old print kiosk in the Hollow Galleria and run them off.”',
   steps:[
    {t:'obj',zi:1,look:'box',label:'Take the shoebox',d:'Find the shoebox under a porch in the Parcel Moors',say:'A shoebox, soft with damp. Forty letters, each addressed to a different door on this street. The moment you lift it, the sky fills with rotors.',amb:['drone',7,'tick',4]},
    {t:'amb',zi:1,d:'Destroy the drones sent for the shoebox, in the Parcel Moors'},
    {t:'obj',zi:2,look:'kiosk',label:'Print the letters',d:'Carry the shoebox to the print kiosk in the Hollow Galleria',scene:[{art:'letters',text:'The kiosk has printed nothing but coupons for thirty years. It takes the first letter, hesitates, and then it does not stop. Forty letters become four thousand, and the Galleria’s air system carries them out over the Moors like snow.'}]},
-   {t:'talk',npc:'marrow',d:'Tell Marrow it is done',say:'“I can see them from here, coming down over the rooftops. Most will be swept up by morning. Some will be read first. That is all a library ever was.”',rw(){G.sp++;addRep('anon',15);giveItem(makeItem(G.lvl+2,2,'amulet'))}}]},
+   {t:'talk',npc:'marrow',d:'Tell Marrow it is done',say:'“I can see them coming down over the rooftops.”',rw(){G.sp++;addRep('anon',15);giveItem(makeItem(G.lvl+2,2,'amulet'))}}]},
  node:{n:'Proof of Work',by:'nonce',who:'Nonce',req:()=>G.unlocked>=4,rw:'30 sats, and Nonce stocks one more item',
   offer:'“We lost a node last winter. Unity did not break it. The parts wore out, and parts cost credits, and credits rot. The Wardens and Enforcers on Tribunal Row run on the same boards. Bring me three. Then carry them out to the dead node in the Humming Fields and stay with it while it syncs. It will be loud.”',
   steps:[
    {t:'kill',zi:4,kinds:['mech','bot'],n:3,chance:{mech:1,bot:.4},item:'Hash board',d:'Salvage 3 hash boards from Wardens and Enforcers on Tribunal Row'},
    {t:'obj',zi:3,look:'node',label:'Install the boards',d:'Install the boards in the dead node in the Humming Fields',say:'The boards seat with a click. A fan turns over, catches, and the node begins to count. Everything in the Fields turns to look at it.',hold:28,wave:['hound','tick','drone']},
    {t:'hold',zi:3,d:'Guard the node in the Humming Fields while it syncs'},
-   {t:'talk',npc:'nonce',d:'Return to Nonce',scene:[{art:'node',text:'Somewhere past the fence a block is found, the way one has been found every ten minutes for seventy-nine years. This time, one more machine in the world agrees that it happened.'}],say:'“It is counting again. Nobody owns it, nobody can switch it off, and nobody had to be asked for permission. Here. You earned these the only way anything is earned.”',rw(){G.sats+=30;G.nodeUp=true;addRep('btc',20);addAdopt(10,'Nonce’s node is counting again')}}]},
+   {t:'talk',npc:'nonce',d:'Return to Nonce',scene:[{art:'node',text:'Somewhere past the fence a block is found, the way one has been found every ten minutes for seventy-nine years. This time, one more machine in the world agrees that it happened.'}],say:'“It is counting again.”',rw(){G.sats+=30;G.nodeUp=true;addRep('btc',20);addAdopt(10,'Nonce’s node is counting again')}}]},
  carer:{n:'The Caretaker',by:'null',who:'Sister Null',req:()=>G.unlocked>=2,rw:'Whatever you decide it was worth',
   offer:'“There is a woman here, Ines. Her father never took the visor off. He is happy every hour of the day and has not known she is in the room for six years. He needs medicine she cannot afford, and the last of it is in a cabinet in the Hollow Galleria. I do not ask people for things. I am asking you.”',
   steps:[
    {t:'obj',zi:2,look:'cab',label:'Take the medicine',d:'Find the pharmacy cabinet in the Hollow Galleria',say:'Behind a shutter that has not moved in decades: one sealed case, still in date, which is its own small miracle.'},
    {t:'talk',npc:'ines',d:'Bring the medicine to Ines in Stillwater',say:'She takes the case in both hands and says nothing for a while. Then she holds out a fold of credits, everything she has. “Please. I pay for things. It is the one rule I have left.”',
     choices:[['Take the credits',()=>{const c=400*G.cpi;G.credits+=c;G.sqInes='paid';toast('You take '+fmt(c))}],['Refuse them',()=>{G.unseen=(G.unseen||0)+1;G.sqInes='gift';addRep('anon',5)}]]},
-   {t:'talk',npc:'null',d:'Return to Sister Null',say:()=>G.sqInes==='gift'?'“She told me you would not take it. She was angry about that for an hour, and then she was something else. If you had been paid, it would have been a purchase. Now it is only a thing that happened. Those are rarer.”':'“She paid you. Good. She needed to. Do not think less of yourself or of her. Not everything has to be a gift to count.”',rw(){G.ap+=3;toast('You gain 3 attribute points')}}]},
+   {t:'talk',npc:'null',d:'Return to Sister Null',say:()=>G.sqInes==='gift'?'“She told me you would not take it.”':'“She paid you.”',rw(){G.ap+=3;toast('You gain 3 attribute points')}}]},
  oiler:{n:'The Bearing',by:'gramps',who:'Gramps',req:()=>G.q.q6===3,rw:'+1 skill point and a unique item',
   offer:'“Forty thousand shifts, the log said. Somebody up in the Updraft has been oiling the bearings that hold the Cloud up, and nobody above or below has ever asked who. Find him. A man like that will be short of something. Get it for him.”',
   steps:[
@@ -29,7 +29,7 @@ const SQ={
    {t:'obj',zi:10,look:'drum',label:'Take a drum of oil',d:'Fetch a drum of oil from the Boardwalk kitchens',say:'It is heavier than it looks, and the staff have noticed.',amb:['lancer',5,'aegis',2]},
    {t:'amb',zi:10,d:'Deal with the Boardwalk staff'},
    {t:'obj',zi:7,look:'person',label:'Give him the oil',d:'Carry the oil back to the oiler in the Updraft',scene:[{art:'cloud',text:'He works the oil into the bearing with his bare hands. Far above, a city of a hundred thousand people stops trembling by an amount none of them will ever notice.'}],say:'“That will hold another forty years. No, I do not want anything. I never worked out who to send the bill to.”'},
-   {t:'talk',npc:'gramps',d:'Tell Gramps what you found',say:'“He would not take a thing? No. They never do, the ones who actually hold it up. Then I will give you what I would have given him.”',rw(){G.sp++;giveItem(makeItem(G.lvl+2,4))}}]}
+   {t:'talk',npc:'gramps',d:'Tell Gramps what you found',say:'“He would not take a thing? Then I will give you what I would have given him.”',rw(){G.sp++;giveItem(makeItem(G.lvl+2,4))}}]}
 };
 const sqSkip={};
 function sqStep(id){const s=G.sq[id];return s&&!s.done?SQ[id].steps[s.s]:null}
