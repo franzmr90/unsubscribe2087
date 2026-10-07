@@ -164,8 +164,13 @@ const mfNow=()=>S.mf+(P&&P.shr&&P.shr.k==='luck'?100:0)+(P&&P.hazMf||0);
 function rollQ(tc,minQ){const c=qChance(tc,mfNow());const q=Math.random()<c.u?4:Math.random()<c.s?3:Math.random()<c.r?2:Math.random()<c.m?1:0;return Math.max(q,minQ||0)}
 function addDrop(d,x,y){let dx=x+rnd(-.9,.9),dy=y+rnd(-.9,.9);if(!walk(dx,dy)){dx=x;dy=y}d.x=dx;d.y=dy;d.t=0;W.drops.push(d);
   if(d.it){sfx(d.it.q>=3?'unique':d.it.q===2?'rare':'drop');if(d.it.q>=3)W.fx.push({k:'beam',x:dx,y:dy,t:0,life:1.2,col:d.it.q===4?'#d0aa62':'#3fe06a'})}}
-function dropFrom(tc,x,y,ml,minQ,forceU){const T=TC[tc];
-  for(let i=0;i<T.picks;i++){let r=wpick([['no',T.no],['gold',T.gold],['item',T.item],['stim',T.stim]]);if((minQ||forceU)&&i===0)r='item';
+/* Party members in this district count whole. Everyone else in the game counts as half,
+   added in pairs. Only the no weight moves, so quality stays on qChance. An honest
+   client does this; the server never sees the roll. */
+function partyNoWeight(no,rest,n){n=Math.max(1,n|0);if(n===1||!(no>0)||!(rest>0))return no;const stay=no/(no+rest),want=Math.pow(stay,n);if(!(want<1))return no;return rest*want/(1-want)}
+function dropWeights(tc,n){const T=TC[tc],rest=T.gold+T.item+T.stim;return{no:partyNoWeight(T.no,rest,n),gold:T.gold,item:T.item,stim:T.stim,q:qChance(tc,0)}}
+function dropFrom(tc,x,y,ml,minQ,forceU){const T=TC[tc],rest=T.gold+T.item+T.stim,no=partyNoWeight(T.no,rest,partyDropN());
+  for(let i=0;i<T.picks;i++){let r=wpick([['no',no],['gold',T.gold],['item',T.item],['stim',T.stim]]);if((minQ||forceU)&&i===0)r='item';
     if(r==='gold')addDrop({cr:(3+ml*2)*rnd(.6,1.4)*Math.pow(G.cpi,.9)*(T.goldMul||1)*(EV&&EV.k==='stipend'?3:1)*GOLDM()},x,y);
     else if(r==='stim')addDrop({pot:1},x,y);
     else if(r==='item'){let q=rollQ(tc,i===0?minQ:0);if(forceU&&i===0)q=4;addDrop({it:makeItem(ml+ri(0,2),q,T.jewel&&Math.random()<.45?pick(JEW):null)},x,y)}}}

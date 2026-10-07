@@ -309,6 +309,21 @@ function mpDraw(o, X, Y) {
 }
 
 const mpInParty = uid => !!(MP.party && MP.party.members && MP.party.members.some(m => m.uid === uid));
+/* How many rolls a kill is worth. Party members here count as one. People in the game
+   but not this district count as half, and only in pairs. */
+function partyDropN() {
+  if (!mpIn() || !MP.party || !MP.party.members || !W) return 1;
+  const zi = W.zi, inParty = {}, me = MP.me && MP.me.uid;
+  for (const m of MP.party.members) inParty[m.uid] = 1;
+  let close = 0, away = 0;
+  for (const r of MP.roster || []) {
+    if (r.uid === me) { close++; continue; }
+    if (r.zi === zi && inParty[r.uid]) close++;
+    else if (r.zi !== zi) away++;
+  }
+  if (!close) close = 1;
+  return close + Math.floor(away / 2);
+}
 
 /* ---------- experience and quests shared with the party ---------- */
 function mpShareXp(v, ml) {

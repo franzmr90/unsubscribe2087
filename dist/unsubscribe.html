@@ -910,8 +910,13 @@ const mfNow=()=>S.mf+(P&&P.shr&&P.shr.k==='luck'?100:0)+(P&&P.hazMf||0);
 function rollQ(tc,minQ){const c=qChance(tc,mfNow());const q=Math.random()<c.u?4:Math.random()<c.s?3:Math.random()<c.r?2:Math.random()<c.m?1:0;return Math.max(q,minQ||0)}
 function addDrop(d,x,y){let dx=x+rnd(-.9,.9),dy=y+rnd(-.9,.9);if(!walk(dx,dy)){dx=x;dy=y}d.x=dx;d.y=dy;d.t=0;W.drops.push(d);
   if(d.it){sfx(d.it.q>=3?'unique':d.it.q===2?'rare':'drop');if(d.it.q>=3)W.fx.push({k:'beam',x:dx,y:dy,t:0,life:1.2,col:d.it.q===4?'#d0aa62':'#3fe06a'})}}
-function dropFrom(tc,x,y,ml,minQ,forceU){const T=TC[tc];
-  for(let i=0;i<T.picks;i++){let r=wpick([['no',T.no],['gold',T.gold],['item',T.item],['stim',T.stim]]);if((minQ||forceU)&&i===0)r='item';
+/* Party members in this district count whole. Everyone else in the game counts as half,
+   added in pairs. Only the no weight moves, so quality stays on qChance. An honest
+   client does this; the server never sees the roll. */
+function partyNoWeight(no,rest,n){n=Math.max(1,n|0);if(n===1||!(no>0)||!(rest>0))return no;const stay=no/(no+rest),want=Math.pow(stay,n);if(!(want<1))return no;return rest*want/(1-want)}
+function dropWeights(tc,n){const T=TC[tc],rest=T.gold+T.item+T.stim;return{no:partyNoWeight(T.no,rest,n),gold:T.gold,item:T.item,stim:T.stim,q:qChance(tc,0)}}
+function dropFrom(tc,x,y,ml,minQ,forceU){const T=TC[tc],rest=T.gold+T.item+T.stim,no=partyNoWeight(T.no,rest,partyDropN());
+  for(let i=0;i<T.picks;i++){let r=wpick([['no',no],['gold',T.gold],['item',T.item],['stim',T.stim]]);if((minQ||forceU)&&i===0)r='item';
     if(r==='gold')addDrop({cr:(3+ml*2)*rnd(.6,1.4)*Math.pow(G.cpi,.9)*(T.goldMul||1)*(EV&&EV.k==='stipend'?3:1)*GOLDM()},x,y);
     else if(r==='stim')addDrop({pot:1},x,y);
     else if(r==='item'){let q=rollQ(tc,i===0?minQ:0);if(forceU&&i===0)q=4;addDrop({it:makeItem(ml+ri(0,2),q,T.jewel&&Math.random()<.45?pick(JEW):null)},x,y)}}}
@@ -4160,7 +4165,7 @@ function showDisc(){const d=$('disc');if(!d)return;
   addEventListener('pointerdown',go,true);addEventListener('keydown',go,true)}
 showDisc();
 cloudInit();
-window.__g={skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv};
+window.__g={skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN};
 /* late additions that need the dialogue tables */
 QRW.push(
  ['q16','gramps','“I do not remember the nine years after I clicked.” You gain 1 skill point.',()=>G.sp++,'Gramps'],
@@ -4606,6 +4611,21 @@ function mpDraw(o, X, Y) {
 }
 
 const mpInParty = uid => !!(MP.party && MP.party.members && MP.party.members.some(m => m.uid === uid));
+/* How many rolls a kill is worth. Party members here count as one. People in the game
+   but not this district count as half, and only in pairs. */
+function partyDropN() {
+  if (!mpIn() || !MP.party || !MP.party.members || !W) return 1;
+  const zi = W.zi, inParty = {}, me = MP.me && MP.me.uid;
+  for (const m of MP.party.members) inParty[m.uid] = 1;
+  let close = 0, away = 0;
+  for (const r of MP.roster || []) {
+    if (r.uid === me) { close++; continue; }
+    if (r.zi === zi && inParty[r.uid]) close++;
+    else if (r.zi !== zi) away++;
+  }
+  if (!close) close = 1;
+  return close + Math.floor(away / 2);
+}
 
 /* ---------- experience and quests shared with the party ---------- */
 function mpShareXp(v, ml) {

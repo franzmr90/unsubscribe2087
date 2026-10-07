@@ -77,6 +77,39 @@ async function until(page, fn, arg, ms) {
   const connected = await until(A, () => __mp.roster.length >= 2 ? __mp.roster.length : 0);
   ok('both players appear in the roster', connected >= 2, 'roster=' + connected);
 
+  /* Same seed, same qChance. Party size moves the no weight and nothing else.
+     The count is party members in this district, plus half the people elsewhere, in pairs. */
+  const dw = await A.evaluate(() => {
+    const a = __g.dropWeights('tick', 1), b = __g.dropWeights('tick', 8);
+    function quals(n) {
+      const w = __g.dropWeights('tick', n);
+      let s = 3941;
+      const rnd = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+      const out = [];
+      for (let i = 0; i < 30; i++) {
+        const c = w.q, r1 = rnd();
+        out.push(r1 < c.u ? 4 : rnd() < c.s ? 3 : rnd() < c.r ? 2 : rnd() < c.m ? 1 : 0);
+      }
+      return out.join(',');
+    }
+    const me = __mp.me.uid, zi = __g.W.zi;
+    const savedP = __mp.MP.party, savedR = __mp.MP.roster.slice();
+    function set(members, roster) { __mp.MP.party = { members }; __mp.MP.roster = roster; return __g.partyDropN(); }
+    const one = set([{ uid: me, zi }], [{ uid: me, zi }]);
+    const members = [{ uid: me, zi }], roster = [{ uid: me, zi }];
+    for (let i = 0; i < 7; i++) { members.push({ uid: 'p' + i, zi }); roster.push({ uid: 'p' + i, zi }); }
+    const eight = set(members, roster);
+    const awayM = [{ uid: me, zi }], awayR = [{ uid: me, zi }];
+    for (let i = 0; i < 7; i++) { awayM.push({ uid: 'p' + i, zi: zi + 1 }); awayR.push({ uid: 'p' + i, zi: zi + 1 }); }
+    const away = set(awayM, awayR);
+    __mp.MP.party = savedP; __mp.MP.roster = savedR;
+    return { a, b, q1: quals(1), q8: quals(8), one, eight, away };
+  });
+  ok('party size leaves quality odds alone', JSON.stringify(dw.a.q) === JSON.stringify(dw.b.q) && dw.q1 === dw.q8 && dw.a.gold === dw.b.gold && dw.a.item === dw.b.item && dw.a.stim === dw.b.stim, dw.q1 + ' / ' + dw.q8);
+  ok('party size lowers the no weight', dw.b.no < dw.a.no && dw.a.no > 0, dw.a.no + ' -> ' + dw.b.no);
+  ok('eight in the district count as eight', dw.one === 1 && dw.eight === 8, JSON.stringify(dw));
+  ok('seven elsewhere count as three', dw.away === 4, 'n=' + dw.away);
+
   const scaled = await until(A, () => __mp.scale && __mp.scale.players === 2 ? __mp.scale.hp : 0);
   ok('two players make monsters tougher', scaled === 1.5, 'hp x' + scaled);
   const hpMul = await A.evaluate(() => __mp.mpHp());
