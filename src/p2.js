@@ -119,7 +119,7 @@ function hurtAlly(a,d,src){d*=(a.armM||1)*partyD();if(a.hp!==undefined&&(a.k==='
   if(a===W.merc){G.merc.dead=true;G.merc.hp=0;toast(G.merc.name+' has fallen. Kestrel can bring them back.');sfx('bigkill');parts(a.x,a.y,14,['#b3261e','#888'],2.5)}
   else{const i=W.allies.indexOf(a);if(i>=0)W.allies.splice(i,1);parts(a.x,a.y,10,['#888','#ffb84a'],2.5);sfx('kill')}}
 function summon(o,cap){const same=W.allies.filter(a=>a.kind===o.kind);if(same.length>=cap)W.allies.splice(W.allies.indexOf(same[0]),1);W.allies.push(Object.assign({k:'minion',x:P.x+rnd(-.8,.8),y:P.y+rnd(-.8,.8),cd:0,ph:rnd(0,6),off:rnd(0,1),life:1e9,fx:1},o));parts(P.x,P.y,6,['#e0bd6e','#fff'],1.5,1.3)}
-Object.assign(SKS,{maxi:{0:'swing2',1:'crit',3:'buff',4:'buff',5:'dash',6:'throw',7:'buff',9:'nova',11:'throw',13:'buff'},anon:{0:'deploy',1:'dash',3:'deploy',4:'whiff',5:'mark',6:'throw',7:'summon',8:'horn',9:'swing',10:'horn',12:'dash',14:'whiff'},founder:{0:'summon',1:'mark',3:'summon',4:'buff',5:'horn',6:'summon',7:'mend',8:'boom',9:'mark',10:'mark',12:'summon',14:'boom'}});
+Object.assign(SKS,{maxi:{0:'swing2',1:'crit',3:'buff',4:'buff',5:'dash',6:'throw',7:'buff',9:'nova',11:'throw',13:'buff'},anon:{0:'deploy',1:'dash',3:'deploy',4:'whiff',5:'mark',6:'throw',7:'summon',8:'horn',9:'swing',10:'horn',12:'dash',14:'whiff'},founder:{0:'summon',1:'mark',3:'summon',4:'buff',5:'horn',6:'summon',7:'mend',8:'boom',9:'mark',10:'mark',12:'summon',14:'boom'},homesteader:{0:'deploy',1:'horn',2:'summon',3:'deploy',4:'horn',5:'summon',6:'deploy',7:'whiff',9:'thunder',10:'horn',12:'boom',14:'boom'}});
 function bloodSplat(n){sfx('blood');for(let i=0;i<n;i++){const edge=Math.random()<.7;let x=Math.random(),y=Math.random();if(edge){if(Math.random()<.5)x=Math.random()<.5?rnd(0,.16):rnd(.84,1);else y=Math.random()<.5?rnd(.08,.22):rnd(.7,.95)}BLOOD.push({x,y,r:rnd(5,17),b:tNow+rnd(0,.25),life:rnd(2.2,3.4),d:rnd(20,70),k:Math.random()})}}
 function tickFx(dt){for(const f of W.fx.slice()){if(f.stay)continue;f.t+=dt;if(f.t>=f.life)W.fx.splice(W.fx.indexOf(f),1)}
   for(const t of W.texts.slice()){t.t+=dt;if(t.t>.9)W.texts.splice(W.texts.indexOf(t),1)}
@@ -190,6 +190,10 @@ function calc(){
   if(G.cls==='anon'){s.dodge=Math.min(35,2.5*L(2));s.crit+=2*L(2)}
   if(G.cls==='founder')hpM+=.03*L(2);
   if(G.cls==='courier'){s.mspd+=2*L(2);s.dodge=Math.min(35,2.5*L(2));s.gold+=10*L(5);s.mf+=5*L(5);s.pierce=8*L(8);s.crit+=2*L(8)}
+  if(G.cls==='homesteader'){s.shed=HS.shed;if(L(8))s.feral=1.4+.05*L(8);if(L(11))s.root=1;const f=G.form;
+    if(f==='hound'){armM*=HS.houndArm;s.mspd+=HS.houndSpd}
+    else if(f==='hull'){armM*=HS.hullArm;s.mspd+=HS.hullSpd;if(L(13))s.armor+=Math.min(HS.bigMax,Math.floor((G.formT||0)/HS.bigStep))*HS.bigArm*L(13)}
+    else if(f==='worn'){armM*=HS.wornArm;s.mspd+=HS.hullSpd}}
   if(s.sp.nda)s.dodge+=15;if(s.sp.cloud9)s.dodge+=10;if(s.sp.fineprint)s.cdr+=.2;if(s.sp.repair)s.cap+=4;
   hpM+=extra(s);
   s.dmg+=G.at.mgt*1.5;s.crit=Math.round((s.crit+5+G.at.ref*.3)*10)/10;
@@ -239,7 +243,7 @@ function startPlay(){ensureG();mpConnect();mode='play';$('title').hidden=true;$(
 const walk=(x,y)=>W.map[(y|0)*W.N+(x|0)]===1;
 const open=(x,y)=>W.map[(y|0)*W.N+(x|0)]!==0;
 const free=(x,y,r)=>walk(x-r,y-r)&&walk(x+r,y-r)&&walk(x-r,y+r)&&walk(x+r,y+r);
-function mv(e,dx,dy){let m=false;if(free(e.x+dx,e.y,e.r)){e.x+=dx;m=true}if(free(e.x,e.y+dy,e.r)){e.y+=dy;m=true}return m}
+function mv(e,dx,dy){let m=false;if(free(e.x+dx,e.y,e.r)&&!hedgeAt(e.x+dx,e.y,e)){e.x+=dx;m=true}if(free(e.x,e.y+dy,e.r)&&!hedgeAt(e.x,e.y+dy,e)){e.y+=dy;m=true}return m}
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 function blankW(zi,N){return{zi,z:ZONES[zi],N,ml:0,tier:G.tier,map:new Uint8Array(N*N),wh:new Uint8Array(N*N),seen:new Uint8Array(N*N),ents:[],objs:[],drops:[],decals:[],portals:[],goal:null,start:null,npcs:[]}}
 function initRuntime(){W.z=ZONES[W.zi];W.allies=[];W.projs=[];W.fx=[];W.texts=[];W.parts=[];W.npcs=W.npcs||[];W.boss=W.ents.find(e=>isBoss(e.k))||null;fxBind();
@@ -352,7 +356,7 @@ function enter(zi,o){setTimeout(mpBeat,0);
   if(z.town)buildTown(zi);else if(z.sim)buildSim(o.wave||1,o.rush);else if(ZS[zi]&&ZS[zi].tier===G.tier&&!o.fresh){W=ZS[zi];old=1;ensureCage();initRuntime()}else genZone(zi);
   let at=o.at||W.start;if(o.from==='next'){const p=W.portals.find(p=>p.kind==='next');at=nearFree(p||W.goal||W.start)}else if(o.from==='exit'&&W.exit)at={x:W.exit.ix,y:W.exit.iy};
   P={x:at.x,y:at.y,r:.32,dir:{x:1,y:0},atk:0,cd:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],silence:0,oc:0,swing:0,flash:0,inv:.5,slow:0,buff:0,haste:0,guard:0,dash:null,volley:null,moving:false,warn:0,movedT:0,spin:0,walkPh:0,shr:null,band:10,hb:0,stealth:0,ambT:0,ambM:1,mech:0,crunch:0,streak:0,streakT:0};BLOOD=[];for(const a of carry){a.x=P.x+rnd(-1,1);a.y=P.y+rnd(-1,1);W.allies.push(a)}spawnMerc();evEnd(1);if(old&&W.leftT!==undefined&&G.time-W.leftT>150&&repop())setTimeout(()=>toast('You were gone a while. The machines have drifted back.'),900);if(!z.town&&!z.sim){placeQuestObjs();ensureNode();}p7Enter();if(!z.town&&!z.sim){for(const k in SQ){const st=sqStep(k);if(st&&st.t==='esc'&&st.zi===zi)escStart(k,SQ[k].steps[G.sq[k].s-1].esc)}}if(z.town)for(const k in sqSkip)delete sqSkip[k];
-  if(z.town){G.hp=S.maxHp;G.en=S.maxEn}
+  if(z.town){if(G.form){G.form=null;G.formDt=null;G.formT=0;calc()}G.hp=S.maxHp;G.en=S.maxEn}
   else if(!z.sim){const q=z.su?z.su.q:z.bq;if(G.q[q]===0){G.q[q]=1;toast('New quest: '+QUESTS[q].n);sfx('questnew')}
   }
   $('zone').textContent=z.n+(G.tier?' · Tier '+G.tier:'');$('boss').hidden=true;hudC={};
@@ -445,7 +449,7 @@ function chain(from,n,m){const done=new Set();let f={x:from.x,y:from.y};for(let 
 function boomFx(e){const low=!G.act2;return {k:'warn',x:e.x,y:e.y,r:low?1.35:2.2,t:0,life:low?1.35:.7,boom:e.dmg*(low?.85:1.5)}}
 function kill(e){
   if(e.mp)return;
-  if(G.cls==='founder'&&!e.minion){P.corpses=P.corpses||[];P.corpses.push({x:e.x,y:e.y,t:6});if(P.corpses.length>16)P.corpses.shift()}
+  if((G.cls==='founder'||G.cls==='homesteader')&&!e.minion){P.corpses=P.corpses||[];P.corpses.push({x:e.x,y:e.y,t:6});if(P.corpses.length>16)P.corpses.shift()}
   const pay=!!(P.fromThrow&&G.cls==='courier'&&sl(13)&&!boonOn(13)&&!(W.z&&W.z.sim));
   if(pay){P.hazMf=6*sl(13);G.credits+=(3+sl(13))*(G.cpi||1)}else P.hazMf=0;
   if(e.mc>0&&G.cls==='courier'&&sl(14)&&!boonOn(14)){let x=e.x,y=e.y;if(!free(x,y,P.r)){for(let k=1;k<=8&&!free(x,y,P.r);k++){x=e.x+Math.cos(k)*k*.35;y=e.y+Math.sin(k)*k*.35}}if(free(x,y,P.r)){parts(P.x,P.y,8,['#3fbf8f','#fff'],2);P.x=x;P.y=y;parts(P.x,P.y,8,['#3fbf8f','#fff'],2)}P.inv=Math.max(P.inv,.25);P.freeThrow=1;float(P.x,P.y,'Missed connection','#3fbf8f',0)}
@@ -494,15 +498,16 @@ function hurt(d,slow,src){const pv=src&&src.pvp;if((P.inv>0&&!pv)||(mode!=='play
   if(G.hp<=0&&G.cls==='maxi'&&sl(14)&&!(G.keyT>0)){const sac=(W.merc&&W.merc.hp>0)?W.merc:(W.tag&&W.tag.hp>0)?W.tag:null;if(sac){G.keyT=60;G.hp+=d;hurtAlly(sac,1e9);float(P.x,P.y,'Not your keys','#f7931a',1);toast('Not your keys.');return}}
   if(G.hp<=0){if(S.sp.parachute&&G.chuteT<=0){G.chuteT=120;G.hp=S.maxHp*.5;P.inv=1.5;toast('The Golden Parachute opens.');return}
     if(W.z.sim){const n=W.sim.wave;if(W.sim.rush){G.hp=1;P.inv=9;sfx('death');dlg('Boss rush ended','You fell to number '+(W.sim.i+1)+' of '+W.sim.list.length+'. Nothing in here was real, so nothing was lost.',[['Unplug',()=>{G.hp=S.maxHp;enter(HT())}]]);return}G.simBest=Math.max(G.simBest||0,n-1);G.hp=1;P.inv=9;sfx('death');dlg('Simulation ended','You fell on wave '+n+'. Waves cleared: '+(n-1)+'. Your best: '+G.simBest+'. Nothing in here was real, so nothing was lost.',[['Unplug',()=>{G.hp=S.maxHp;enter(HT())}]]);return}
-    adaptDeath();G.hp=0;const fee=deathFee();G.credits-=fee;G.deaths=(G.deaths||0)+1;mode='dying';DY={t:0,fee,by:src&&src.name?src.name:'the machines',zi:W.zi,st:W.start,shown:0};sfx('death');music(null);parts(P.x,P.y,30,['#b3261e','#7a0f0c','#e2473a'],3,1.4);bloodSplat(14);shake=10;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;return}
+    adaptDeath();G.form=null;G.formDt=null;G.formT=0;G.hp=0;const fee=deathFee();G.credits-=fee;G.deaths=(G.deaths||0)+1;mode='dying';DY={t:0,fee,by:src&&src.name?src.name:'the machines',zi:W.zi,st:W.start,shown:0};sfx('death');music(null);parts(P.x,P.y,30,['#b3261e','#7a0f0c','#e2473a'],3,1.4);bloodSplat(14);shake=10;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;return}
   const band=Math.ceil(G.hp/S.maxHp*10);if(band<P.band&&band<=4){bloodSplat((5-band)*3)}P.band=band}
 function attack(){
   if(P.atk>0||P.dash)return;const c=CLS[G.cls];unstealth();
   if(P.mech>0){P.atk=.7;P.swing=.18;const t=nearest(2.6);if(t)face(t);burst(P.x+P.dir.x,P.y+P.dir.y,2,1.6+.25*sl(5),0,'#e0bd6e');return}
-  const two=c.melee&&P.two&&P.two.n>0;
-  P.atk=(two?c.ivl*1.75:c.ivl/(1+(S.aspd+(P.buff>0?40:0))/100))/toxicSwing(P);P.swing=.18;sfx(c.melee?'swing':G.cls==='hacker'?'zap':'throw');
-  const t=nearest(two?3.1:(c.melee?2.4:6.5));if(t)face(t);
-  if(c.melee){mpNoteSwing();const reach=two?2.45:1.75,arc=two?-.35:.15;W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:two?2.1:1});
+  const mel=c.melee||hsMelee();
+  const two=mel&&P.two&&P.two.n>0;
+  P.atk=(two?c.ivl*1.75:c.ivl/(1+(S.aspd+(P.buff>0?40:0))/100))/toxicSwing(P);P.swing=.18;sfx(mel?'swing':G.cls==='hacker'?'zap':'throw');
+  const t=nearest(two?3.1:(mel?2.4:6.5));if(t)face(t);
+  if(mel){mpNoteSwing();const reach=two?2.45:1.75,arc=two?-.35:.15;W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:two?2.1:1});
     const dump1=G.cls==='anon'&&P.reh>0&&sl(10)&&!boonOn(10);if(dump1){P.reh--;if(P.reh<=0){P.reh=0;P.rehT=0}DT='rust';dumpSpent('rust')}
     P.swinging=1;for(const e of W.ents.slice()){const d=dist(e,P);if(d<reach+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(d||1)>arc)hit(e,c.mult)}if(dump1)DT=null;P.swinging=0;
     if(two){P.two.n--;if(P.two.n<=0)P.two=null}smash(two?2.3:1.7)}
@@ -514,7 +519,7 @@ function shoot(d,m,pierce,o){o=o||{};const col=o.col||(G.cls==='hacker'?'#59e0e6
   if(G.cls==='courier'&&!o.from)P.lastThrow={dx:d.x,dy:d.y,m,pierce:pierce||0,dt,col,life,spd,ret:o.ret?1:0,split:o.split?1:0}}
 function burst(x,y,r,m,stun,col){W.fx.push({k:'ring',x,y,r,t:0,life:.35,col},{k:'ring',x,y,r:r*.6,t:0,life:.5,col:'#ffffff'});if(m){parts(x,y,10,[col,'#fff'],3,1.2);if(r>=2.4)W.decals.push({x,y,r:r*.3,a:rnd(0,3)})}if(OPT.shake)shake=Math.max(shake,3);if(m)sfx('boom');for(const e of W.ents.slice())if(Math.hypot(e.x-x,e.y-y)<r+e.r){if(stun)e.stun=Math.max(e.stun,stun);if(m)hit(e,m)}
   for(const o of W.objs)if(o.k==='crate'&&!o.used&&Math.hypot(o.x-x,o.y-y)<r)breakCrate(o)}
-function dash(spd,t,m,end){P.dash={t,spd,m,hit:[],end};P.inv=Math.max(P.inv,t+.12)}
+function dash(spd,t,m,end){if(hsNoDash()){toast('The hull does not dash');sfx('err');return}P.dash={t,spd,m,hit:[],end};P.inv=Math.max(P.inv,t+.12)}
 function boonOn(i){const s=CLS[G.cls]&&CLS[G.cls].sk[i];return !!(s&&s.boon)}
 /* Once per class, when that class no longer carries boons in indices 9–14.
    A single flag would swallow the refund for classes migrated in a later commit. */
@@ -564,7 +569,64 @@ function nodeMul(self){if(G.cls!=='maxi'||!sl(10)||!P.aura)return 1;const b=.06+
 function maxiTick(dt){if(G.keyT>0)G.keyT=Math.max(0,G.keyT-dt);const c=P.cite;if(!c)return;c.cd-=dt;if(c.cd>0)return;c.cd=c.gap;c.n--;const t=nearest(7);if(t)face(t);DT='sound';shoot(P.dir,c.m,0,{dt:'sound',col:'#f7931a'});DT=null;if(c.n<=0)P.cite=null}
 function openTarget(range,from){let b=null,bd=range;from=from||P;for(const e of W.ents){if(e.nc>0)continue;const d=dist(e,from);if(d<bd){bd=d;b=e}}return b}
 function founderLiq(L,m){const cs=(P.corpses||[]).filter(c=>c.t>0&&Math.hypot(c.x-P.x,c.y-P.y)<5);if(!cs.length){toast('No corpses to liquidate');return}for(const c of cs){c.t=0;burst(c.x,c.y,2.2,(1.1+.15*L)*m,0,'#e0bd6e')}P.corpses=P.corpses.filter(c=>c.t>0)}
-function skillTick(dt){if(P.dump&&P.dump.t>0){P.dump.t-=dt;if(P.dump.t<=0)P.dump=null}if(P.castWait>0)P.castWait=Math.max(0,P.castWait-dt);if(G.cls==='scrapper')scrTick(dt);else if(G.cls==='hacker')hackTick(dt);else if(G.cls==='courier')runTick(dt);else if(G.cls==='anon')anonTick(dt);else if(G.cls==='founder')founderTick(dt);else if(G.cls==='maxi')maxiTick(dt)}
+function skillTick(dt){if(P.dump&&P.dump.t>0){P.dump.t-=dt;if(P.dump.t<=0)P.dump=null}if(P.castWait>0)P.castWait=Math.max(0,P.castWait-dt);if(G.cls==='scrapper')scrTick(dt);else if(G.cls==='hacker')hackTick(dt);else if(G.cls==='courier')runTick(dt);else if(G.cls==='anon')anonTick(dt);else if(G.cls==='founder')founderTick(dt);else if(G.cls==='maxi')maxiTick(dt);else if(G.cls==='homesteader')hsTick(dt)}
+/* Draft magnitudes for the Homesteader. The plan fixed the body; these are the row-3-sized coefficients. */
+const HS={leash:4.5,leashBull:7,graftLeash:1,graftDur:1.4,soakerDur:1.5,shed:.7,houndSpd:28,houndArm:.7,hullSpd:-28,hullArm:1.55,wornArm:1.35,plotR:2.2,plotLife:6,frostR:3.4,frostLife:8,hedgeLife:4,strayCap:4,bigStep:2,bigMax:8,bigArm:3,fallowPlot:1.6};
+function hsForm(){return P&&P.tag?(P.form||null):(G.form||null)}
+function hsSetForm(f,dt){
+  if(P&&P.tag){P.form=f||null;P.formDt=f?(dt||null):null;if(f!=='hull')P.formT=0;return}
+  const was=G.form;G.form=f||null;G.formDt=f?(dt||null):null;if(f!=='hull')G.formT=0;if(was!==G.form)calc()}
+function hsMelee(){return G.cls==='homesteader'&&!!hsForm()}
+function hsNoDash(){return G.cls==='homesteader'&&hsForm()==='hull'}
+function hsGraft(){const w=P&&P.tag?(G.tag&&G.tag.eq&&G.tag.eq.weapon):(G.eq&&G.eq.weapon);return !!(w&&w.fam==='graft'&&G.cls==='homesteader')}
+function hsLeash(){return HS.leash+(hsGraft()?HS.graftLeash:0)}
+function hsDur(sec){return sec*(hsGraft()?HS.graftDur:1)*((S.sp&&S.sp.soaker)?HS.soakerDur:1)}
+function hsBlocked(i){
+  if(!G||G.cls!=='homesteader')return null;const sk=CLS.homesteader.sk[i];if(!sk||!sk.a)return null;const f=hsForm();
+  if(!f&&i===7)return 'You are not wearing a chassis';
+  if(f==='hull'&&i===1)return 'The hull does not become a hound';
+  if(f&&(i%3===0||i%3===2))return f==='hound'?'The hound has no hands for that':f==='hull'?'The hull has no hands for that':'You are wearing a machine. Shed it first.';
+  return null}
+function hsHands(){const f=hsForm();if(!f)return false;toast(f==='hound'?'The hound has no hands for that':f==='hull'?'The hull has no hands for that':'You are wearing a machine. Shed it first.');return true}
+function hsDropPlots(){if(!W||!W.allies)return;for(let i=W.allies.length-1;i>=0;i--)if(W.allies[i].plot)W.allies.splice(i,1)}
+function hsDropFlock(){if(!W||!W.allies)return;for(let i=W.allies.length-1;i>=0;i--)if(W.allies[i].flock)W.allies.splice(i,1)}
+function hsPlacePlot(x,y,o){
+  const mul=(P.compost||1)*(G.doc==='fallow'?HS.fallowPlot:1);P.compost=0;
+  let px=x,py=y;if(typeof free==='function'&&!free(px,py,.2)){px=P.x;py=P.y}
+  W.allies.push({k:'plot',plot:1,x:px,y:py,life:hsDur(o.life),r:o.r,cd:.2,m:(o.m||.2)*mul,dt:'rust'})}
+function hsInPlot(a){if(!S.root)return false;for(const p of W.allies)if(p.plot&&p.k==='plot'&&p.life>0&&dist(a,p)<(p.r||2)+.25)return true;return false}
+function hsFlockStep(a,dt){
+  a.ph=(a.ph||0)+dt;a.flash=Math.max(0,(a.flash||0)-dt);
+  const leash=a.kind==='bull'?HS.leashBull:hsLeash(),home=dist(a,P),rooted=hsInPlot(a);
+  if(rooted&&!a.feral)a.foe=0;else if(!rooted&&home>leash)a.foe=1;
+  if(a.foe&&S.feral)a.feral=1;if(a.feral)a.foe=1;
+  const spd=(a.spd||4.2)*dt,fer=(a.feral&&S.feral)?S.feral:1,biteF=G.doc==='fallow'?.85:1;
+  if(a.foe){
+    let foe=P,bd=home;for(const e of W.ents){if(e.hp<=0||e.mp)continue;const d=dist(e,a);if(d<bd){bd=d;foe=e}}
+    const d=dist(foe,a)||1;
+    if(d>1.05){a.x+=(foe.x-a.x)/d*spd;a.y+=(foe.y-a.y)/d*spd;a.mov=true;a.fx=(foe.x-a.x)>0?1:-1}
+    const reach=foe===P?1.2:(a.rng||1.2)+(foe.r||.3);
+    if(d<reach&&a.cd<=0){a.cd=a.ivl||.65;
+      if(foe===P){a.bit=(a.bit||0)+1;hurt((a.bite||8)*fer*biteF,false,null)}
+      else{P.allySwing=1;DT=a.dt||'rust';hit(foe,(a.m||.4)*fer,true);P.allySwing=0;DT=null}}
+    if(!a.feral&&home<1.15&&(a.bit||0)>0)a.foe=0;
+    return}
+  let t=null;if(a.kind==='bull')t=nearest(8,a);else t=nearest(5.5,P);
+  const g=t||P,d=dist(g,a)||1,rg=a.rng||1.15,want=t?rg*.85:1.35;
+  if(d>want){a.x+=(g.x-a.x)/d*spd;a.y+=(g.y-a.y)/d*spd;a.mov=true;a.fx=(g.x-a.x)>0?1:-1}
+  if(t&&d<rg+t.r&&a.cd<=0){a.cd=a.ivl||.65;P.allySwing=1;DT=a.dt||(a.kind==='bull'?'heat':'rust');hit(t,a.m||.4,true);P.allySwing=0;DT=null}}
+function hedgeAt(x,y,who){
+  if(!W||!W.allies)return false;
+  for(const a of W.allies){if(a.k!=='hedge'||!(a.life>0))continue;const rr=(a.r||.42)+(who&&who.r?Math.min(who.r,.32):.2);
+    if(Math.hypot(a.x-x,a.y-y)>=rr)continue;if(who&&Math.hypot(a.x-who.x,a.y-who.y)<rr)continue;return true}
+  return false}
+function hsTick(dt){
+  if(P.corpses){for(const c of P.corpses)c.t-=dt;P.corpses=P.corpses.filter(c=>c.t>0)}
+  if(G.form==='hull'){const prev=Math.floor((G.formT||0)/HS.bigStep);G.formT=(G.formT||0)+dt;if(Math.floor(G.formT/HS.bigStep)!==prev)calc()}}
+function hsSumFlock(o,cap){
+  const same=W.allies.filter(a=>a.flock&&a.kind===o.kind&&!a.item);
+  if(same.length>=cap)W.allies.splice(W.allies.indexOf(same[0]),1);
+  W.allies.push(Object.assign({k:'minion',flock:1,x:P.x+rnd(-.55,.55),y:P.y+rnd(-.55,.55),cd:.2,ph:rnd(0,6),life:1e9,fx:1,r:.28,spd:4.2,foe:0},o))}
 const SKF={
  scrapper:{
   0:(L,m)=>{W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.22,w:1.5});for(const e of W.ents.slice()){const d=dist(e,P);if(d<2.4+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(d||1)>-.15){hit(e,(1.3+.15*L)*m);if(Math.random()*100<15+2*L)e.stun=Math.max(e.stun,.5)}}smash(2.2)},
@@ -655,9 +717,30 @@ Object.assign(SKF,{
   9:(L,m)=>{const g=P.grave;if(!g||g.t<=0||!g.src||g.src.hp<=0||W.ents.indexOf(g.src)<0){toast('You have nobody to put on leave');return}const e=g.src;e.noheal=4+.3*L;e.leave={dps:(.4+.06*L)*m,t:4+.3*L,c:0};P.grave=null;W.fx.push({k:'ring',x:e.x,y:e.y,r:1.4,t:0,life:.4,col:'#c9a868'})},
   10:(L)=>{const t=nearest(7);if(!t){toast('Nobody to bind');return}face(t);for(const e of W.ents)e.nc=0;t.nc=5+.3*L},
   12:(L,m)=>{const bag=G.bag||[],ix=bag.findIndex(it=>it&&it.slot==='weapon');let dt='impact',weak=.55,fed=null;if(ix>=0){fed=bag.splice(ix,1)[0];dt=fed.dt||'impact';weak=1}summon({kind:'officer',per:1,m:(.9+.12*L)*m*weak,ivl:.7,hp:S.maxHp*(1.1+.1*L),max:S.maxHp*(1.1+.1*L),taunt:1,r:.42,holdDt:1,dt},1);toast(fed?'The officer takes '+(fed.name||fed.base||'the weapon'):'The officer is empty-handed')},
-  14:(L,m)=>founderLiq(L,m)}
+  14:(L,m)=>founderLiq(L,m)},
+ homesteader:{
+  0:(L,m)=>{if(hsHands())return;hsPlacePlot(P.x+P.dir.x*1.2,P.y+P.dir.y*1.2,{life:HS.plotLife,r:HS.plotR,m:(.22+.04*L)*m})},
+  1:()=>{if(hsForm()==='hull'){toast('The hull does not become a hound');return}hsDropPlots();hsSetForm('hound',null);parts(P.x,P.y,10,['#6a8f62','#3d5438'],2,1.2)},
+  2:(L,m)=>{if(hsHands())return;hsSumFlock({kind:'stray',m:(.32+.05*L)*m,ivl:.65,rng:1.15,bite:6+L,dt:'rust'},Math.min(HS.strayCap,2+Math.floor(L/3)))},
+  3:(L)=>{if(hsHands())return;const cs=(P.corpses||[]).filter(c=>c.t>0&&Math.hypot(c.x-P.x,c.y-P.y)<3);if(!cs.length){toast('Nothing here to compost');return}
+    let b=cs[0],bd=99;for(const c of cs){const d=Math.hypot(c.x-P.x,c.y-P.y);if(d<bd){bd=d;b=c}}b.t=0;P.corpses=P.corpses.filter(c=>c.t>0);P.compost=1.35+.05*L;toast('The next plot takes the body')},
+  4:()=>{hsDropPlots();hsSetForm('hull',null);parts(P.x,P.y,12,['#4e6a48','#2a2418'],2,1.3)},
+  5:(L,m)=>{if(hsHands())return;hsSumFlock({kind:'bull',m:(.9+.12*L)*m,ivl:.9,rng:1.35,bite:10+2*L,r:.46,spd:3.4,dt:'heat'},1)},
+  6:()=>{if(hsHands())return;const mul=P.compost||1;P.compost=0;const life=hsDur(HS.hedgeLife)*(mul>1?mul:1);const dx=P.dir.x,dy=P.dir.y,len=Math.hypot(dx,dy)||1,ux=dx/len,uy=dy/len,px=-uy,py=ux;
+    for(let i=-2;i<=2;i++)W.allies.push({k:'hedge',plot:1,x:P.x+ux*1.2+px*i*.72,y:P.y+uy*1.2+py*i*.72,life,r:.42})},
+  7:()=>{if(!hsForm()){toast('You are not wearing a chassis');return}hsSetForm(null,null);P.castWait=(S.shed||HS.shed)},
+  9:(L,m)=>{if(hsHands())return;hsPlacePlot(P.x,P.y,{life:HS.frostLife,r:HS.frostR,m:(.35+.06*L)*m})},
+  10:()=>{let t=null,bd=3.2;for(const e of W.ents){if(e.mp||e.hp<=0)continue;const d=dist(e,P);if(d<bd){bd=d;t=e}}
+    if(!t){toast('No machine in reach');return}if(t.champ||t.su||isBoss(t.k)){toast('That one is too much machine to wear');return}
+    const dt=foeType(t);W.ents.splice(W.ents.indexOf(t),1);parts(t.x,t.y,12,['#6a8f62','#5a6078'],2.2,1.3);hsDropPlots();hsDropFlock();hsSetForm('worn',dt);if(P.fm)P.fm.dt=dt},
+  12:(L,m)=>{if(hsHands())return;const ps=W.allies.filter(a=>a.plot&&a.life>0);if(!ps.length){toast('You have no plots to salt');return}
+    const mul=(P.compost||1)*(G.doc==='fallow'?HS.fallowPlot:1);P.compost=0;DT='rust';
+    for(const a of ps)burst(a.x,a.y,Math.max(1.6,a.r||1.6),(.8+.12*L)*m*mul,0,'#c9803a');DT=null;hsDropPlots()},
+  14:(L,m)=>{if(hsForm()){toast('You cannot spend the flock from inside a chassis');return}const fs=W.allies.filter(a=>a.flock);if(!fs.length){toast('You have no flock to spend');return}
+    for(const a of fs){hsPlacePlot(a.x,a.y,{life:HS.plotLife*.8,r:1.8,m:(.28+.05*L)*m});const i=W.allies.indexOf(a);if(i>=0)W.allies.splice(i,1)}}}
 });
 function cast(slot){const i=G.slots[slot];if(mode!=='play'||i<0||i===undefined)return;if(P.castWait>0){toast('Still casting');sfx('err');return}const s=CLS[G.cls].sk[i],L=sl(i);if(!L||!s.a||P.cd[i]>0||P.dash)return;if(P.silence>0){toast('Silenced');sfx('err');return}
+  if(G.cls==='homesteader'){const why=hsBlocked(i);if(why){toast(why);sfx('err');return}}
   const fk=forkOf(i);let cost=s.cost*(S.sp.hoodie?.75:1)*(fk.cost||1);if(P.freeThrow&&G.cls==='courier'&&(i===0||i===6||i===9||i===12)){cost=0;P.freeThrow=0}if(G.en<cost){toast('Not enough energy');sfx('err');return}
   const t=nearest(6.5);if(t)face(t);G.en-=cost;P.cd[i]=s.cd*(1-Math.min(.6,S.cdr))*(fk.cd||1)*(G.sk[i]>=10?.8:1);skvPlay(G.cls,i,P.x,P.y,P.dir);mpNoteCast(i);if(!(G.cls==='anon'&&i===3&&P.stealth>0&&sl(11)&&!boonOn(11)))unstealth();sfx(SKS[G.cls][i]||'cast');P.fm={m:fk.dm||1,t:(G.fork||{})[i]==='refund'?2:1.2,k:(G.fork||{})[i],dt:skType(G.cls,i)};forkCast((G.fork||{})[i]);const na=W.allies.length;SKF[G.cls][i](L,syn(i));for(let k=na;k<W.allies.length;k++)if(!W.allies[k].holdDt)W.allies[k].dt=skType(G.cls,i);for(const a of W.allies)if(a.per&&!a.dt)a.dt=skType(G.cls,i);forkAfter(i,L)}
 function stim(){if(mode!=='play')return;if(W.sub&&W.sub.mods.includes('dry')){toast('Stims do not work in these proceedings');sfx('err');return}if(G.stims<1){toast('No stims. Brenda sells them.');return}if(G.hp>=S.maxHp&&!(S.sp.repair&&G.en<S.maxEn))return;G.stims--;heal(S.maxHp*.45);if(S.sp.repair)G.en=S.maxEn;sfx('stim');float(P.x,P.y,'+stim','#7be495');parts(P.x,P.y,10,['#7be495','#fff'],1.5,1.5)}
@@ -712,7 +795,7 @@ function update(dt){
     if(d.t<=0){P.dash=null;if(G.cls==='courier'&&sl(10)&&!boonOn(10))P.route=2+.2*sl(10);if(d.end)d.end()}}
   else if(mag>.15){wx/=wl;wy/=wl;P.dir={x:wx,y:wy};const sp=c.spd*(1+S.mspd/100)*(P.slow>0?.55:1)*(P.haste>0?1.5:1)*mag*dt;mv(P,wx*sp,wy*sp);P.moving=true;P.movedT=.4;P.walkPh+=dt*11}
   if(P.volley){const v=P.volley;v.t-=dt;v.cd-=dt;if(v.cd<=0){v.cd=.09;sfx('throw');const t=nearest(7);if(t)face(t);const a=Math.atan2(P.dir.y,P.dir.x)+rnd(-.1,.1);shoot({x:Math.cos(a),y:Math.sin(a)},v.m,Math.random()*100<S.pierce?99:0);P.swing=.1}if(v.t<=0)P.volley=null}
-  else if(atkHeld||keys.Space||keys.KeyJ||(OPT.auto&&P.atk<=0&&nearest(CLS[G.cls].melee?1.9:6)))attack();
+  else if(atkHeld||keys.Space||keys.KeyJ||(OPT.auto&&P.atk<=0&&nearest((CLS[G.cls].melee||hsMelee())?1.9:6)))attack();
   // enemies
   for(const e of W.ents.slice()){
     if(e.mp){e.flash=Math.max(0,e.flash-dt);continue}
@@ -743,7 +826,8 @@ function update(dt){
     if(a.k==='turret'&&a.cd<=0){const t=nearest(6,a);if(t){a.cd=.45;sfx('zap');const d=dist(t,a)||1;shoot({x:(t.x-a.x)/d,y:(t.y-a.y)/d},a.m,0,{from:a,life:.6,col:'#59e0e6'})}}
     if(a.k==='storm'&&a.cd<=0){a.cd=.25;const c2=W.ents.filter(e=>dist(e,a)<3.5);sfx('thunder');if(c2.length){const t=pick(c2);W.fx.push({k:'strike',x:t.x,y:t.y,t:0,life:.2});hit(t,a.m)}else W.fx.push({k:'strike',x:a.x+rnd(-3,3),y:a.y+rnd(-3,3),t:0,life:.2})}
     if(a.k==='trops'&&a.cd<=0){a.cd=.5;for(const e of W.ents.slice())if(dist(e,a)<2.6){e.slow=1;hit(e,a.m)}}
-    if(a.k==='minion'){a.ph+=dt;a.flash=Math.max(0,(a.flash||0)-dt);const cr=P.crunch>0&&a.per,t=(G.cls==='founder'?openTarget(8,a):nearest(8,a))||null,g=t||P,d=dist(g,a)||1,rg=a.rng||1,sp=(a.spd||5)*dt;a.mov=false;
+    if(a.k==='plot'&&a.cd<=0){a.cd=.5;DT='rust';for(const e of W.ents.slice())if(dist(e,a)<(a.r||2)+(e.r||0)){e.slow=Math.max(e.slow||0,1);hit(e,a.m,true)}DT=null}
+    if(a.k==='minion'&&a.flock)hsFlockStep(a,dt);else if(a.k==='minion'){a.ph+=dt;a.flash=Math.max(0,(a.flash||0)-dt);const cr=P.crunch>0&&a.per,t=(G.cls==='founder'?openTarget(8,a):nearest(8,a))||null,g=t||P,d=dist(g,a)||1,rg=a.rng||1,sp=(a.spd||5)*dt;a.mov=false;
       if(dist(a,P)>14){a.x=P.x;a.y=P.y}else if(d>(t?rg*.8:1.5+(a.off||0))){a.x+=(g.x-a.x)/d*sp;a.y+=(g.y-a.y)/d*sp;a.fx=(g.x-a.x)-(g.y-a.y)>0?1:-1;a.mov=true}
       if(a.e){a.e.x=a.x;a.e.y=a.y;a.e.ph+=dt;a.e.fx=a.fx;a.e.hp=a.hp}
       if(t&&d<rg+t.r&&a.cd<=0){a.cd=(a.ivl||.6)*(cr?.6:1);const m=a.m*(a.per&&G.cls==='founder'?1+.08*sl(2):1)*(cr?1.3:1)*vestMul(a);

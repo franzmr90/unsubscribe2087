@@ -101,6 +101,23 @@ Object.assign(CLS,{
    {n:'Term Sheet',ab:'TERM\nSHEET',a:1,cost:28,cd:14,d:L=>`One officer. You may feed it a weapon from your pack. The weapon is consumed, and the officer strikes with that damage type for ${pct(.9+.12*L)}. Empty-handed, it is weaker and it is Impact.`},
    {n:'Org Debt',ab:'',a:0,d:L=>`Passive. Each worker on the field cuts the damage you deal by ${4+L}% and raises theirs by ${8+L}%. It stacks. Swing it yourself with a full headcount and you are playing this class wrong.`},
    {n:'Liquidation',ab:'LIQUID-\nATION',a:1,cost:18,cd:9,d:L=>`Enemy corpses within 5 paces explode for ${pct(1.1+.15*L)}. Your staff does not. Layoffs is the button that spends them.`}]},
+ homesteader:{n:'Homesteader',tag:'Lives on the verge the Office says does not exist. Tends a plot, wears a dead machine, or keeps a flock that does not love them.',hp:110,hpL:15,melee:false,mult:1,ivl:.55,spd:4.3,col:'#6a8f62',
+  sk:[
+   {n:'Cold Frame',ab:'COLD\nFRAME',a:1,cost:12,cd:6,d:L=>`A rust patch 2.2 paces across for 6 seconds. It slows, and deals ${pct(.22+.04*L)} every half second. It ends if you enter a chassis.`},
+   {n:'Wear the Hound',ab:'HOUND',a:1,cost:8,cd:1,d:()=>`Become the hound: faster, melee, less armour. Plot and flock skills grey out. A ranged weapon keeps its damage and loses its reach. Shed to leave.`},
+   {n:'Strays',ab:'STRAYS',a:1,cost:10,cd:1,d:L=>`A feral drone, up to ${Math.min(4,2+Math.floor(L/3))}, biting for ${pct(.32+.05*L)}. Past 4.5 paces they stop obeying and will hit you if you are closest.`},
+   {n:'Compost',ab:'COMPOST',a:1,cost:8,cd:2,d:L=>`A corpse within 3 paces sinks. Your next plot skill deals ${Math.round((1.35+.05*L)*100)}% damage. With no body, nothing happens.`},
+   {n:'Wear the Hull',ab:'HULL',a:1,cost:12,cd:1,d:()=>`Climb into the hull: slower, more armour, no dash. Hound skills grey out. The same reach collapse. Drops the hound if you were wearing it.`},
+   {n:'The Bull',ab:'BULL',a:1,cost:18,cd:8,d:L=>`One bull. It chooses its own target and hits for ${pct(.9+.12*L)}. You cannot ride it.`},
+   {n:'Hedgerow',ab:'HEDGE',a:1,cost:14,cd:8,d:()=>`A line that blocks movement for 4 seconds. Machines and you.`},
+   {n:'Shed',ab:'SHED',a:1,cost:4,cd:1.2,d:()=>`Leave the form. Your hands are busy for 0.7s. Plot and flock work again.`},
+   {n:'Go Feral',ab:'',a:0,d:L=>`Passive. Drones past the leash deal +${Math.round((.4+.05*L)*100)}% damage and will not come back when you do.`},
+   {n:'Kill Frost',ab:'KILL\nFROST',a:1,cost:22,cd:14,d:L=>`Rust weather, 3.4 paces, for 8 seconds, ${pct(.35+.06*L)} every half second. It ends the moment you enter a chassis.`},
+   {n:'Wear What You Killed',ab:'WEAR\nKILL',a:1,cost:16,cd:8,d:()=>`Consume a machine that is not elite and wear it until you shed. You deal its damage type. Your flock despawns. Your weapons lose their range.`},
+   {n:'Rootbound',ab:'',a:0,d:()=>`Passive. Drones standing in your plots do not leash. Step out and the rule returns.`},
+   {n:'Salt the Earth',ab:'SALT',a:1,cost:18,cd:12,d:L=>`Every plot you have placed bursts for ${pct(.8+.12*L)} rust and is gone.`},
+   {n:'Too Big for the Door',ab:'',a:0,d:L=>`Passive. The hull cannot dash. Armour in the hull rises the longer you have worn it: +${3*L} every 2 seconds, up to 8 times.`},
+   {n:'Slaughter Weight',ab:'SLAUGH-\nTER',a:1,cost:20,cd:12,d:L=>`Each drone and the bull become a rust plot where they stand, ${pct(.28+.05*L)} every half second. The flock is spent. You cannot do this from a chassis.`}]},
  /* Unlocked by finishing the story. Deals Sound damage, which nothing resists, because
     that is the joke and also the build. */
  maxi:{n:'The Maximalist',tag:'A paladin, essentially. He has not had a new thought since 2017 and has never needed one. His auras are always on, and everything he does is Sound damage, which nothing in this world resists.',hp:104,hpL:14,melee:true,mult:1.2,ivl:.5,spd:4.2,col:'#f7931a',locked:'story',
