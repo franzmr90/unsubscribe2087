@@ -163,6 +163,50 @@ const pressShed=async(form)=>{
 };
 await pressShed('hound');
 await pressShed('hull');
+/* The same Hound or Hull button leaves that form. Empty energy, a dash, a cooldown and a silence used to keep the chassis on. */
+const pressOff=async(form)=>{
+  const idx=form==='hound'?0:2;
+  const skill=form==='hound'?1:4;
+  await p.evaluate(({form,skill})=>{
+    const g=__g;g.closeSheet();g.setMode('play');const death=document.getElementById('death');if(death)death.hidden=true;
+    g.G.god=true;g.G.hp=g.S.maxHp;
+    for(const i of [0,1,4])g.G.sk[i]=Math.max(g.G.sk[i]||0,1);
+    g.G.slots=[1,0,4];g.G.form=form;g.G.formDt=null;g.G.formT=form==='hull'?3:0;g.G.en=0;
+    g.P.castWait=0;g.P.silence=2;g.P.cd[skill]=9;g.P.dash={t:4,spd:8,m:0,hit:[],end:null,trail:'',lx:g.P.x,ly:g.P.y,tr:0};
+    g.P.tag=0;g.calc();g.setSkillButtons();
+  },{form,skill});
+  await p.waitForTimeout(280);
+  const before=await p.evaluate(idx=>{
+    const b=document.querySelector('.sk[data-i="'+idx+'"]');
+    const r=b.getBoundingClientRect(),top=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);
+    return {form:__g.G.form,off:b.classList.contains('off'),low:b.classList.contains('low'),hit:b.contains(top),label:b.querySelector('b').textContent};
+  },idx);
+  if(before.form!==form||before.off||before.low||!before.hit)fail(form+' toggle before '+JSON.stringify(before));
+  await p.click('.sk[data-i="'+idx+'"]');
+  await p.waitForTimeout(280);
+  const after=await p.evaluate(()=>{
+    const plot=document.querySelector('.sk[data-i="1"]');
+    return {form:__g.G.form||null,wait:__g.P.castWait,dash:!!__g.P.dash,plot:plot.classList.contains('off'),en:__g.G.en};
+  });
+  if(after.form||!(after.wait>0.3)||after.dash||after.plot)fail(form+' toggle '+JSON.stringify(after));
+};
+await pressOff('hound');
+await pressOff('hull');
+const swapped=await p.evaluate(()=>{
+  const g=__g;g.G.form='hound';g.G.en=40;g.P.cd[4]=0;g.P.castWait=0;g.P.dash=null;g.P.silence=0;g.calc();g.setSkillButtons();return g.G.en;
+});
+await p.waitForTimeout(80);
+await p.click('.sk[data-i="2"]');
+await p.waitForTimeout(80);
+const became=await p.evaluate(()=>__g.G.form||null);
+if(became!=='hull')fail('hound click hull '+became+' en '+swapped);
+const stayed=await p.evaluate(()=>{
+  const g=__g;g.G.form='hull';g.G.en=0;g.P.cd[1]=9;g.P.castWait=0;g.P.silence=2;g.P.dash={t:4,spd:8,m:0,hit:[],end:null,trail:'',lx:g.P.x,ly:g.P.y,tr:0};g.calc();return g.G.form;
+});
+await p.click('.sk[data-i="0"]');
+await p.waitForTimeout(80);
+const still=await p.evaluate(()=>({form:__g.G.form,log:document.getElementById('log').textContent}));
+if(still.form!=='hull'||!/does not become a hound/.test(still.log))fail('hull refuses hound '+JSON.stringify(still)+' was '+stayed);
 const paid=await p.evaluate(()=>{const g=__g;g.G.form='hound';g.G.en=10;g.P.cd[7]=0;g.P.castWait=0;g.P.dash=null;g.P.silence=0;g.calc();return g.G.en});
 await p.click('.sk[data-i="2"]');
 await p.waitForTimeout(80);
