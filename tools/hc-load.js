@@ -42,7 +42,7 @@ check('a 0-life hardcore cloud body is fallen', list.dead===true, JSON.stringify
 check('a living hardcore cloud body is not fallen', list.liveDead===false, JSON.stringify(list));
 check('the fallen row names Act III', list.act===3, String(list.act));
 check('the title says fallen, not Continue, for the corpse', /Hardcore · fallen/.test(list.title)&&/begins again/.test(list.title), list.title);
-check('the living hardcore row still says Continue', /Continue · level 9 Courier/.test(list.title), list.title);
+check('the living hardcore row still says Continue', /Continue · level 9 Runner/.test(list.title), list.title);
 
 await p.click('[data-cls=scrapper]');
 await p.waitForTimeout(250);
@@ -97,7 +97,7 @@ await p.evaluate(()=>__g.closeSheet());
 await p.evaluate(()=>{__g.G.walkNew=0;__g.OPT.noWalk=1;__g.setMode('play')});
 await p.evaluate(()=>__g.enter(1,{fresh:true}));
 await clearUI(p);
-await p.evaluate(()=>{__g.setMode('play');__g.G.hc=true;__g.G.god=false;__g.G.lvl=6;__g.hurt(1e9,false,{name:'a test'})});
+await p.evaluate(()=>{__g.setMode('play');__g.P.inv=0;__g.G.hc=true;__g.G.god=false;__g.G.lvl=6;__g.hurt(1e9,false,{name:'a test'})});
 const died=await p.evaluate(()=>({hp:__g.G.hp,hc:!!__g.G.hc,mode:__g.mode,lvl:__g.G.lvl}));
 check('a hardcore death reaches 0 life', died.hp<=0&&died.hc&&died.mode==='dying'&&died.lvl===6, JSON.stringify(died));
 await p.waitForTimeout(2800);
