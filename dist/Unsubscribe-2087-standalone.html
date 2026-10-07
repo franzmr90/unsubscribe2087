@@ -853,14 +853,23 @@ let BLOOD=[],DY=null,SWAP=null,satShop=[];
 function unstealth(){if(P.stealth>0){P.ambM=2.5+.3*sl(4);P.ambT=.15;P.stealth=0;P.haste=0}}
 /* ---------- mercenaries and anything else the machines may attack instead of you ---------- */
 function mercStats(){const m=G.merc,t=MERCS[m.k],l=G.lvl,w=m.weapon?(m.weapon.dmin+m.weapon.dmax)/2*.5:0,arm=(m.armor?m.armor.arm:0)+(m.helm?m.helm.arm||0:0);return{max:Math.round(((60+22*l)*t.hpM+arm*3)*(m.ab1==='guard'?1.4:1)),dmg:((4+2.2*l)*t.dM+w)*(m.ab1==='fury'?1.3:1),red:100/(100+arm*2+l*2)}}
-function spawnMerc(){W.merc=null;spawnTag();if(G.tag||!G.merc||G.merc.dead)return;const s=mercStats();if(W.z.town)G.merc.hp=s.max;W.merc={x:P.x+.8,y:P.y+.6,r:.28,hp:Math.min(G.merc.hp||s.max,s.max),max:s.max,cd:0,hc:3,ph:0,flash:0,taunt:MERCS[G.merc.k].taunt||0,armM:s.red,fx:1,swing:0}}
-function updMerc(dt){const m=W.merc;if(!m||m.hp<=0)return;const t=MERCS[G.merc.k],s=mercStats();m.max=s.max;m.armM=s.red;m.cd-=dt;m.ph+=dt;m.flash=Math.max(0,m.flash-dt);m.swing=Math.max(0,m.swing-dt);m.haste=Math.max(0,(m.haste||0)-dt);
-  let tg=null,bd=7.5;for(const e of W.ents){if(!e.aggro)continue;const d=dist(e,P);if(d<bd){bd=d;tg=e}}
-  const g=tg||P,d=dist(g,m)||1,want=tg?t.range*.85:1.8;m.mov=false;
-  /* Catch up at 8 tiles. The old 13-tile recall stays only while a swing is already in range. */
-  if(dist(m,P)>(tg&&d<=t.range+tg.r?13:8)){m.x=P.x;m.y=P.y}else if(d>want){const sp=t.spd*dt;if(!mv(m,(g.x-m.x)/d*sp,(g.y-m.y)/d*sp)&&dist(m,P)>5){m.x=P.x;m.y=P.y}m.mov=true;m.fx=(g.x-m.x)-(g.y-m.y)>0?1:-1}
-  if(tg&&d<=t.range+tg.r&&m.cd<=0){m.cd=t.ivl/toxicSwing(m);m.swing=.15;const md=s.dmg*nodeMul(false)*toxicDmg(m.toxL),snd=m.soundSwing;if(snd||t.range<=2){witMercHit(m,tg,md);sfx(snd?'swing':'hit')}else{W.projs.push({x:m.x,y:m.y,vx:(tg.x-m.x)/d*12,vy:(tg.y-m.y)/d*12,life:.7,raw:md,done:[],pierce:0,col:t.col,kind:'merc',party:1});sfx('throw')}}
-  if(G.merc.k==='sys'){m.hc-=dt;if(m.hc<=0){m.hc=4;if(G.hp<S.maxHp*.9){heal(S.maxHp*.07);G.en=Math.min(S.maxEn,G.en+6);W.fx.push({k:'bolt',x:m.x,y:m.y,x2:P.x,y2:P.y,t:0,life:.4,col:'#7be495'});sfx('mend')}}}
+function mercSpot(){const o=[[.8,.6],[-.8,.6],[.6,-.8],[-.6,-.8],[1.1,0],[-1.1,0],[0,1.1],[0,-1.1]];for(const a of o){const x=P.x+a[0],y=P.y+a[1];if(free(x,y,.28))return{x,y}}return{x:P.x,y:P.y}}
+function mercStep(m,dx,dy){if(mv(m,dx,dy))return true;if(Math.abs(dx)>=Math.abs(dy)){if(mv(m,dx,0)||mv(m,0,dy))return true}else if(mv(m,0,dy)||mv(m,dx,0))return true;return mv(m,dy,-dx)||mv(m,-dy,dx)}
+/* Prefer a machine already in reach, asleep or not. The old pick was the angry one nearest you, so a bodyguard on the far side of a pack never swung. */
+function mercTarget(m,t){let best=null,score=1e9;for(const e of W.ents){if(!e||e.hp<=0||e.mp||e.nc>0)continue;const dp=dist(e,P),dm=dist(e,m),reach=t.range+(e.r||0);if(dp>8.5&&dm>Math.max(reach+.4,3.2))continue;const s=(dm<=reach+.05?0:100)+dm+(e.aggro?0:1.25);if(s<score){score=s;best=e}}return best}
+function spawnMerc(){const prev=W.merc;W.merc=null;spawnTag();if(G.tag||!G.merc||G.merc.dead)return;const s=mercStats();let hp=Math.min(G.merc.hp||s.max,s.max);if(prev&&prev.max>0&&prev.hp>0&&s.max!==prev.max)hp=Math.min(s.max,prev.hp*s.max/prev.max);if(W.z.town)hp=s.max;G.merc.hp=hp;const spot=mercSpot();W.merc={x:spot.x,y:spot.y,r:.28,hp,max:s.max,cd:0,hc:3,ph:0,flash:0,taunt:MERCS[G.merc.k].taunt||0,armM:s.red,fx:1,swing:0,stuck:0}}
+function updMerc(dt){const m=W.merc;if(!m||m.hp<=0)return;const t=MERCS[G.merc.k],s=mercStats();if(m.max>0&&s.max!==m.max)m.hp=Math.min(s.max,m.hp*s.max/m.max);m.max=s.max;m.armM=s.red;m.cd-=dt;m.ph+=dt;m.flash=Math.max(0,m.flash-dt);m.swing=Math.max(0,m.swing-dt);m.haste=Math.max(0,(m.haste||0)-dt);
+  if(!walk(m.x,m.y)){const sp=mercSpot();m.x=sp.x;m.y=sp.y}
+  const tg=mercTarget(m,t),g=tg||P,d0=dist(g,m)||1,want=tg?Math.max(.42,t.range*.85):1.8;m.mov=false;
+  const home=dist(m,P),inSwing=!!(tg&&d0<=t.range+(tg.r||0));
+  /* Catch up at 8 tiles. A swing already in range may stay out to 13. A blocked step slides, then comes home. */
+  if(home>(inSwing?13:8)){const sp=mercSpot();m.x=sp.x;m.y=sp.y;m.stuck=0}
+  else if(d0>want){const sp=t.spd*dt;if(!mercStep(m,(g.x-m.x)/d0*sp,(g.y-m.y)/d0*sp)){m.stuck=(m.stuck||0)+dt;if(m.stuck>.4&&home>1.15&&!inSwing){const q=mercSpot();m.x=q.x;m.y=q.y;m.stuck=0}}else m.stuck=0;m.mov=true;m.fx=(g.x-m.x)-(g.y-m.y)>0?1:-1}
+  else m.stuck=0;
+  const d=tg?(dist(tg,m)||1):d0;
+  if(tg&&d<=t.range+tg.r&&m.cd<=0){if(!tg.aggro)wake(tg);m.cd=t.ivl/toxicSwing(m);m.swing=.15;const md=s.dmg*nodeMul(false)*toxicDmg(m.toxL),snd=m.soundSwing;if(snd||t.range<=2){witMercHit(m,tg,md);sfx(snd?'swing':'hit')}else{let sx=m.x,sy=m.y;if(!open(sx,sy)){sx=P.x;sy=P.y}W.projs.push({x:sx,y:sy,vx:(tg.x-m.x)/d*12,vy:(tg.y-m.y)/d*12,life:.7,raw:md,done:[],pierce:0,col:t.col,kind:'merc',party:1});sfx('throw')}}
+  else if(tg&&!tg.aggro&&d<t.range+1.6)wake(tg);
+  if(G.merc.k==='sys'){m.hc-=dt;if(m.hc<=0){m.hc=4;let did=false;if(G.hp<S.maxHp*.9){heal(S.maxHp*.07);did=true}if(G.en<S.maxEn){G.en=Math.min(S.maxEn,G.en+6);did=true}if(did){W.fx.push({k:'bolt',x:m.x,y:m.y,x2:P.x,y2:P.y,t:0,life:.4,col:'#7be495'});sfx('mend')}}}
   if(!tg)m.hp=Math.min(m.max,m.hp+m.max*.04*dt);G.merc.hp=m.hp}
 function tanks(){const c=[];if(W.merc&&W.merc.hp>0)c.push(W.merc);if(W.tag&&W.tag.hp>0)c.push(W.tag);if(W.esc)c.push(W.esc);for(const a of W.allies)if(a.hp>0)c.push(a);return c}
 function tank(e){let T=null,bd=1e9;const dp=P.stealth>0?1e9:dist(P,e);for(const a of tanks()){const d=dist(a,e);if((a.taunt?d<6:d<dp)&&d<bd){bd=d;T=a}}return T}
@@ -1133,7 +1142,7 @@ function enter(zi,o){setTimeout(mpBeat,0);
   else toast(z.town?z.n:'Entering '+z.n);
   if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}seenT=0;music(zoneMusic());save(true)}
 function openPortal(){if(mode!=='play'||W.z.town)return;if(mpPortalBlocked())return;if(W.z.sim){sfx('portal');enter(HT());return}if(nearest(4)){toast('Machines are too close to open a portal');return}
-  G.portal={zi:W.zi,x:P.x,y:P.y};sfx('portal');enter(HT());toast('A portal back stands open in the square')}
+  W.portals=W.portals.filter(p=>!p.cast);G.portal={zi:W.zi,x:P.x,y:P.y};W.portals.push({x:P.x,y:P.y,kind:'home',cast:1});const si=(P.y|0)*W.N+(P.x|0);if(W.seen&&si>=0&&si<W.seen.length)W.seen[si]=1;sfx('portal');toast('A portal opens at your feet')}
 function resetZones(){ZS={};G.portal=null}
 
 /* ================= combat ================= */
@@ -1578,7 +1587,7 @@ function portalLabel(p){const zi=W.zi;return p.kind==='home'?'Return to '+ZONES[
 function usePortal(p){if(mpPortalBlocked())return;const zi=W.zi;sfx(p.kind==='home'||p.kind==='back'?'portal':'ui');
   if(p.kind==='exit'){const f=FIRST[W.z.act||1];G.unlocked=Math.max(G.unlocked,f);enter(f)}
   else if(p.kind==='town'||p.kind==='prev'){if(zi===FIRST[actOf(zi)])enter(townOf(zi),{from:'exit'});else enter(zi-1,{from:'next'})}
-  else if(p.kind==='home')enter(HT());
+  else if(p.kind==='home'){if(p.cast)G.portal={zi:W.zi,x:p.x,y:p.y};enter(HT());}
   else if(p.kind==='next'){G.unlocked=Math.max(G.unlocked,zi+1);enter(zi+1)}
   else if(p.kind==='back'){const t=G.portal;G.portal=null;enter(t.zi,{at:t})}}
 function findAct(){for(const o of W.objs)if(o.k==='qobj'&&!o.used&&Math.hypot(o.x-P.x,o.y-P.y)<1.9){const st=sqStep(o.q);if(st)return{label:st.label,fn:()=>sqUse(o)}}
@@ -1685,6 +1694,7 @@ function update(dt){
   for(const p of W.parts.slice()){p.t+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;p.vz-=320*dt;if(p.z<0){p.z=0;p.vz*=-.4;p.vx*=.5;p.vy*=.5}if(p.t>=p.life)W.parts.splice(W.parts.indexOf(p),1)}
   seenT-=dt;if(seenT<=0&&!W.z.town){seenT=.2;const N=W.N,px=P.x|0,py=P.y|0;for(let y=py-8;y<=py+8;y++)for(let x=px-8;x<=px+8;x++)if(x>=0&&y>=0&&x<N&&y<N&&!W.seen[y*N+x]&&(x-px)*(x-px)+(y-py)*(y-py)<52){W.seen[y*N+x]=1;mmDot(x,y)}}
   if(G.hp<S.maxHp*.25&&!W.z.town){P.hb-=dt;if(P.hb<=0){P.hb=G.hp<S.maxHp*.12?.55:.9;sfx('heart')}}
+  for(const tp of W.portals.slice())if(tp.cast){const inside=Math.hypot(tp.x-P.x,tp.y-P.y)<.7;if(inside&&tp.wasOut){usePortal(tp);return}tp.wasOut=!inside}
   actTarget=findAct();
   saveT+=dt;if(saveT>5){saveT=0;save()}
   stateMarks();
