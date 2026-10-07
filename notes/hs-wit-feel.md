@@ -55,3 +55,9 @@ Owner playtest: switching characters left you where the previous one was standin
 A slot remembered a place only out in a district. Town and the simulator stored no coordinates, so a switch from the square (where the sheet lives) reloaded the other hero at that town’s fixed start, which is the same square you were already in. Loading a hero also copied the live district into their zone list, so two heroes in one zone shared one map.
 
 Each save now keeps `{zone, x, y}` for the square, a district, and the simulator. Switching loads that hero’s own place. The district you just left stays on the hero who left it. A shared save code still carries no place.
+
+## Shitcoiner
+
+Owner playtest: answering “No. There is bitcoin, and there is everything else.” sent the salesman away. He used to turn and fight on that line.
+
+That reply, and “No.” after he explains that the coin goes up, call the fight again. He stays, aggro on, and the toast is “Maxi! Dinosaur! Get him!” Below level 8 he comes alone. At 8 and above, two Bagholders still join. Walking away, letting the pitch time out, and having no sats still send him off without a fight.
