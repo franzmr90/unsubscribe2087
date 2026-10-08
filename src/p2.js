@@ -218,7 +218,7 @@ function calc(){
     if(f==='hound'){armM*=HS.houndArm;s.mspd+=HS.houndSpd}
     else if(f==='hull'){armM*=HS.hullArm;s.mspd+=HS.hullSpd;if(L(13))s.armor+=Math.min(HS.bigMax,Math.floor((G.formT||0)/HS.bigStep))*HS.bigArm*L(13)}
     else if(f==='worn'){armM*=HS.wornArm;s.mspd+=HS.hullSpd}}
-  if(G.cls==='witness'){if(L(2))s.margin=1+.2*L(2);if(L(5))s.filed=2+.4*L(5);if(L(8)){s.footnote=1+.08*L(8);hpM=Math.max(.4,hpM-.04*L(8))}if(L(11)){s.pdr=(s.pdr||0)+10+3*L(11);s.coloHi=1-Math.min(.45,.04*L(11));s.coloLo=1+.03*L(11)}if(L(13))s.named=.05*L(13)}
+  if(G.cls==='witness'){if(L(2))s.margin=1+.2*L(2);if(L(5))s.filed=2+.4*L(5);if(L(8)){s.footnote=1+.08*L(8);hpM=Math.max(.4,hpM-.04*L(8))}if(L(11)){s.pdr=(s.pdr||0)+14+3*L(11);s.coloHi=1-Math.min(.45,.04*L(11));s.coloLo=1+.03*L(11)}if(L(13))s.named=.05*L(13)}
   /* Twenty-One Million prints +8% armour per rank, the same multiplier Iron Hide uses, and 8% + 2% damage reduction per rank. */
   if(G.cls==='maxi'&&L(8)){armM+=.08*L(8);s.pdr=(s.pdr||0)+8+2*L(8)}
   if(s.sp.nda)s.dodge+=15;if(s.sp.cloud9)s.dodge+=10;if(s.sp.fineprint)s.cdr+=.2;if(s.sp.repair)s.cap+=4;
@@ -545,7 +545,7 @@ function hurt(d,slow,src){const pv=src&&src.pvp,wasStun=P.hitStun>0;if(mode==='d
   if(S.enc){const a=Math.min(G.en,d*S.enc);G.en-=a;d-=a}
   if(P.barrier>0&&d>0){const a=Math.min(P.barrier,d);P.barrier-=a;d-=a;if(a>0)float(P.x,P.y,'patched','#59e0e6',1);if(d<=0)return}
   if(G.cls==='witness'&&!(P&&P.tag)&&!(P.paper>0)){const r=recGet();if(r>80&&S.coloHi)d*=S.coloHi;else if(r<20&&S.coloLo)d*=S.coloLo}
-  if(P.paper>0)d*=.64;if(P.maxiBlock>0)d*=.78;
+  if(P.paper>0)d*=.52;if(P.maxiBlock>0)d*=.78;
   if(G.cls==='scrapper'&&sl(11)&&!boonOn(11))d*=1-Math.min(12,Math.floor(P.lineT||0))*2/100;
   if(G.cls==='maxi'&&sl(2)&&W){let c=0;for(const o of W.ents)if(o.hp>0&&!o.mp&&dist(o,P)<6&&++c>=5)break;if(c)d*=1-Math.min(.3,.06*c)}
   if(G.cls==='founder'&&W&&W.allies){const n=W.allies.filter(a=>a.per&&a.hp>0).length;if(n)d*=1-Math.min(.2,.05*n)}
@@ -1263,9 +1263,9 @@ function arcHits(reach,arc){const hits=[];for(const e of W.ents.slice()){if(e.hp
 function scrapWeight(hits,e){if(G.cls!=='scrapper'||hits.length<2)return 1;let p=hits[0],bd=dist(p,P);for(const o of hits){const d=dist(o,P);if(d<bd){bd=d;p=o}}return e===p?1:.22}
 function boss3AI(e,dt,d){const f=e.hp/e.max;if(!e.pat){e.pat=1;e.b1=2.8;e.b2=7.5;e.b3=4}e.b1-=dt;e.b2-=dt;e.b3-=dt;e.spin=(e.spin||0)+dt*(f<.5?1.15:.75);
   if(!e.intro){e.intro=1;toast('MANDATE: “You came a long way to refuse me. Let us see whether you can.”')}
-  if(e.b1<=0){e.b1=f<.33?.9:f<.5?1.15:1.4;for(const o of(f<.5?[0,3.14159]:[0])){const a=e.spin+o;W.projs.push({x:e.x+Math.cos(a)*.55,y:e.y+Math.sin(a)*.55,vx:Math.cos(a)*4.2,vy:Math.sin(a)*4.2,life:2.4,foe:true,dmg:e.dmg*.3,src:e,col:'#ffffff'})}}
+  if(e.b1<=0){e.b1=f<.33?.9:f<.5?1.15:1.4;for(const o of(f<.5?[0,3.14159]:[0])){const a=e.spin+o;W.projs.push({x:e.x+Math.cos(a)*.55,y:e.y+Math.sin(a)*.55,vx:Math.cos(a)*4.2,vy:Math.sin(a)*4.2,life:2.4,foe:true,dmg:e.dmg*.22,src:e,col:'#ffffff'})}}
   if(e.b2<=0){e.b2=f<.5?9:11;let room=3-W.ents.filter(o=>o.minion&&o.hp>0).length;if(room>0){sfx('summon');const s=spawn(pick(['proxy','censor','lancer']),e.x+rnd(-4,4),e.y+rnd(-4,4),{minion:1});if(s)s.aggro=true}}
-  if(e.b3<=0){e.b3=f<.5?6.4:8;sfx('warn');W.fx.push({k:'warn',x:P.x,y:P.y,r:1.65,t:0,life:1.35,boom:e.dmg*.45,dty:'surge'})}
+  if(e.b3<=0){e.b3=f<.5?6.4:8;sfx('warn');W.fx.push({k:'warn',x:P.x,y:P.y,r:1.65,t:0,life:1.35,boom:e.dmg*.32,dty:'surge'})}
   if(f<.66&&!e.o1){e.o1=1;mandateOffer(e,true)}else if(f<.33&&!e.o2){e.o2=1;mandateOffer(e,false)}}
 function bossAI(e,dt,d){if(BAI[e.k])return BAI[e.k](e,dt,d);if(e.k==='boss3')return boss3AI(e,dt,d);if(e.k==='boss2')return boss2AI(e,dt,d);
   const p2=e.hp<e.max*.5;e.b1-=dt;e.b2-=dt;e.b3-=dt;

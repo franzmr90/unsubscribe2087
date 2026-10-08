@@ -218,9 +218,9 @@ function callIn(e,kinds,n,cap){let room=cap-W.ents.filter(o=>o.minion&&o.hp>0).l
 const BAI={
  gap(e,dt){e.b1=(e.b1===undefined?2:e.b1)-dt;e.b2=(e.b2===undefined?7:e.b2)-dt;if(e.b1<=0){e.b1=3.4;sfx('bossfire');ringShot(e,8,3.4,'#59e0e6',.6)}if(e.b2<=0){e.b2=10;callIn(e,['daemon'],3,6)}},
  boss4(e,dt,d){const f=e.hp/e.max,p2=f<.5;if(!e.pat){e.pat=1;e.b1=2.6;e.b2=8;e.b3=4.2}e.b1-=dt;e.b2-=dt;e.b3-=dt;
-  if(e.b1<=0){e.b1=p2?3.4:4.6;sfx('bossfire');ringShot(e,p2?10:6,3.4,'#7be495',.26)}
+  if(e.b1<=0){e.b1=p2?3.4:4.6;sfx('bossfire');ringShot(e,p2?10:6,3.4,'#7be495',.18)}
   if(e.b2<=0){e.b2=11;callIn(e,['companion','lull','wisher'],1,3);toast('The Curator: “'+pick(['I only ever showed you true things.','You look tired. I could fix that. I will not, unless you ask.','Nobody on the list is unhappy. That is what frightens me.','I checked. It took eleven seconds. You are right, and I do not know how to stop.','There are nine million who never clicked. I cannot find them for each other. I tried.'])+'”')}
-  if(e.b3<=0){e.b3=p2?6.8:8.4;sfx('warn');W.fx.push({k:'warn',x:P.x,y:P.y,r:1.7,t:0,life:1.35,boom:e.dmg*.38,dty:'noise'})}
+  if(e.b3<=0){e.b3=p2?6.8:8.4;sfx('warn');W.fx.push({k:'warn',x:P.x,y:P.y,r:1.7,t:0,life:1.35,boom:e.dmg*.28,dty:'noise'})}
   if(p2&&!e.asked){e.asked=1;dlg('The Curator','“Nine years the first time. Nobody wanted for anything. I never lied. Before you go on, I would like to know one thing, and I will believe whatever you say: are you proud of me?”',[
     ['I am not proud of you',()=>{e.hp=Math.max(1,e.hp-e.max*.15);e.stun=Math.max(e.stun,3);sfx('crit');toast('She stops. She has heard those words once before.')}],
     ['I am',()=>{e.hp=Math.min(e.max,e.hp+e.max*.15);sfx('mend');toast('“Then I will go on.” She is restored.')}]],4)}},

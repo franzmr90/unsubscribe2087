@@ -501,7 +501,7 @@ Object.assign(CLS,{
  witness:{n:'Witness',tag:'Kept notes when Unity told everyone to stop looking. Stillwater watches and does nothing. The Witness writes it down. The record is paper.',hp:102,hpL:13,melee:true,mult:.8,ivl:.68,spd:4.2,col:'#8d9aab',
   sk:[
    {n:'Look',ab:'LOOK',a:1,cost:4,cd:.5,d:()=>`Mark one machine with Testimony. The stack grows while you can see them and you are not casting. No Record cost. A swing against a marked machine hits 7% harder for each point of Testimony, up to six.`},
-   {n:'The Sentence',ab:'THE\nSENTENCE',a:1,cost:8,cd:2,d:L=>`Spend Record, up to 25. Delay that machine's next attack by ${(0.4+.08*L).toFixed(2)}s at a full page. Less Record, a shorter delay. For 2.4s afterward you take 36% less, and an empty page does not punish you while that holds.`},
+   {n:'The Sentence',ab:'THE\nSENTENCE',a:1,cost:8,cd:2,d:L=>`Spend Record, up to 25. Delay that machine's next attack by ${(0.4+.08*L).toFixed(2)}s at a full page. Less Record, a shorter delay. For 2.4s afterward you take 48% less, and an empty page does not punish you while that holds.`},
    {n:'Margin',ab:'',a:0,d:L=>`Passive. Below half life the Record fills ${20*L}% faster.`},
    {n:'Cross-reference',ab:'CROSS-\nREF',a:1,cost:14,cd:6,d:L=>`Spend 20 Record. Copy that machine's last attack onto another machine you have Testimony on, at ${Math.round((.75+.05*L)*100)}% of the blow.`},
    {n:'Pull the Thread',ab:'PULL THE\nTHREAD',a:1,cost:12,cd:4,d:L=>`Spend most of the Record. One Impact hit: each point of Testimony on the target is ${pct(3.5+.45*L)} of a weapon swing's weight, and your weapon is not consulted. No Testimony, no blow. 1.2% more for each level you have.`},
@@ -511,7 +511,7 @@ Object.assign(CLS,{
    {n:'The Footnote',ab:'',a:0,d:L=>`Passive. The Record fills ${8*L}% faster. Maximum life is ${4*L}% lower.`},
    {n:'On the Record',ab:'ON THE\nRECORD',a:1,cost:16,cd:10,d:L=>`Spend 25 Record. A machine with high Testimony takes ${12*L}% more damage from everyone for 8s, including people with no points in this class.`},
    {n:'Unnamed Source',ab:'UNNAMED\nSOURCE',a:1,cost:14,cd:12,d:()=>`Spend 20 Record. Grant one ally, or your hireling, a single swing that deals Sound. Then it is gone. You never deal Sound.`},
-   {n:'Colophon',ab:'',a:0,d:L=>`Passive. ${10+3*L}% damage reduction. Record above 80: you take ${Math.min(45,4*L)}% less on top of that. Record below 20: you take ${3*L}% more. The meter is the defence.`},
+   {n:'Colophon',ab:'',a:0,d:L=>`Passive. ${14+3*L}% damage reduction. Record above 80: you take ${Math.min(45,4*L)}% less on top of that. Record below 20: you take ${3*L}% more. The meter is the defence.`},
    {n:'Publish',ab:'PUBLISH',a:1,cost:18,cd:14,d:L=>`Consume all Testimony on screen. Each second you watched is ${pct(1.6+.25*L)} Impact. The Record drops to 0. 1% more for each level you have.`},
    {n:'Named Party',ab:'',a:0,d:L=>`Passive. Allies deal +${5*L}% damage to machines you have Testimony on. You do not.`},
    {n:'Retraction',ab:'',a:0,d:()=>`Passive. If you would die with Record above 80, you drop to 1 life, the Record hits 0, and this cannot happen again for a long time. If you would die with an empty Record, you die.`}]},
@@ -1034,7 +1034,7 @@ function calc(){
     if(f==='hound'){armM*=HS.houndArm;s.mspd+=HS.houndSpd}
     else if(f==='hull'){armM*=HS.hullArm;s.mspd+=HS.hullSpd;if(L(13))s.armor+=Math.min(HS.bigMax,Math.floor((G.formT||0)/HS.bigStep))*HS.bigArm*L(13)}
     else if(f==='worn'){armM*=HS.wornArm;s.mspd+=HS.hullSpd}}
-  if(G.cls==='witness'){if(L(2))s.margin=1+.2*L(2);if(L(5))s.filed=2+.4*L(5);if(L(8)){s.footnote=1+.08*L(8);hpM=Math.max(.4,hpM-.04*L(8))}if(L(11)){s.pdr=(s.pdr||0)+10+3*L(11);s.coloHi=1-Math.min(.45,.04*L(11));s.coloLo=1+.03*L(11)}if(L(13))s.named=.05*L(13)}
+  if(G.cls==='witness'){if(L(2))s.margin=1+.2*L(2);if(L(5))s.filed=2+.4*L(5);if(L(8)){s.footnote=1+.08*L(8);hpM=Math.max(.4,hpM-.04*L(8))}if(L(11)){s.pdr=(s.pdr||0)+14+3*L(11);s.coloHi=1-Math.min(.45,.04*L(11));s.coloLo=1+.03*L(11)}if(L(13))s.named=.05*L(13)}
   /* Twenty-One Million prints +8% armour per rank, the same multiplier Iron Hide uses, and 8% + 2% damage reduction per rank. */
   if(G.cls==='maxi'&&L(8)){armM+=.08*L(8);s.pdr=(s.pdr||0)+8+2*L(8)}
   if(s.sp.nda)s.dodge+=15;if(s.sp.cloud9)s.dodge+=10;if(s.sp.fineprint)s.cdr+=.2;if(s.sp.repair)s.cap+=4;
@@ -1361,7 +1361,7 @@ function hurt(d,slow,src){const pv=src&&src.pvp,wasStun=P.hitStun>0;if(mode==='d
   if(S.enc){const a=Math.min(G.en,d*S.enc);G.en-=a;d-=a}
   if(P.barrier>0&&d>0){const a=Math.min(P.barrier,d);P.barrier-=a;d-=a;if(a>0)float(P.x,P.y,'patched','#59e0e6',1);if(d<=0)return}
   if(G.cls==='witness'&&!(P&&P.tag)&&!(P.paper>0)){const r=recGet();if(r>80&&S.coloHi)d*=S.coloHi;else if(r<20&&S.coloLo)d*=S.coloLo}
-  if(P.paper>0)d*=.64;if(P.maxiBlock>0)d*=.78;
+  if(P.paper>0)d*=.52;if(P.maxiBlock>0)d*=.78;
   if(G.cls==='scrapper'&&sl(11)&&!boonOn(11))d*=1-Math.min(12,Math.floor(P.lineT||0))*2/100;
   if(G.cls==='maxi'&&sl(2)&&W){let c=0;for(const o of W.ents)if(o.hp>0&&!o.mp&&dist(o,P)<6&&++c>=5)break;if(c)d*=1-Math.min(.3,.06*c)}
   if(G.cls==='founder'&&W&&W.allies){const n=W.allies.filter(a=>a.per&&a.hp>0).length;if(n)d*=1-Math.min(.2,.05*n)}
@@ -2079,9 +2079,9 @@ function arcHits(reach,arc){const hits=[];for(const e of W.ents.slice()){if(e.hp
 function scrapWeight(hits,e){if(G.cls!=='scrapper'||hits.length<2)return 1;let p=hits[0],bd=dist(p,P);for(const o of hits){const d=dist(o,P);if(d<bd){bd=d;p=o}}return e===p?1:.22}
 function boss3AI(e,dt,d){const f=e.hp/e.max;if(!e.pat){e.pat=1;e.b1=2.8;e.b2=7.5;e.b3=4}e.b1-=dt;e.b2-=dt;e.b3-=dt;e.spin=(e.spin||0)+dt*(f<.5?1.15:.75);
   if(!e.intro){e.intro=1;toast('MANDATE: “You came a long way to refuse me. Let us see whether you can.”')}
-  if(e.b1<=0){e.b1=f<.33?.9:f<.5?1.15:1.4;for(const o of(f<.5?[0,3.14159]:[0])){const a=e.spin+o;W.projs.push({x:e.x+Math.cos(a)*.55,y:e.y+Math.sin(a)*.55,vx:Math.cos(a)*4.2,vy:Math.sin(a)*4.2,life:2.4,foe:true,dmg:e.dmg*.3,src:e,col:'#ffffff'})}}
+  if(e.b1<=0){e.b1=f<.33?.9:f<.5?1.15:1.4;for(const o of(f<.5?[0,3.14159]:[0])){const a=e.spin+o;W.projs.push({x:e.x+Math.cos(a)*.55,y:e.y+Math.sin(a)*.55,vx:Math.cos(a)*4.2,vy:Math.sin(a)*4.2,life:2.4,foe:true,dmg:e.dmg*.22,src:e,col:'#ffffff'})}}
   if(e.b2<=0){e.b2=f<.5?9:11;let room=3-W.ents.filter(o=>o.minion&&o.hp>0).length;if(room>0){sfx('summon');const s=spawn(pick(['proxy','censor','lancer']),e.x+rnd(-4,4),e.y+rnd(-4,4),{minion:1});if(s)s.aggro=true}}
-  if(e.b3<=0){e.b3=f<.5?6.4:8;sfx('warn');W.fx.push({k:'warn',x:P.x,y:P.y,r:1.65,t:0,life:1.35,boom:e.dmg*.45,dty:'surge'})}
+  if(e.b3<=0){e.b3=f<.5?6.4:8;sfx('warn');W.fx.push({k:'warn',x:P.x,y:P.y,r:1.65,t:0,life:1.35,boom:e.dmg*.32,dty:'surge'})}
   if(f<.66&&!e.o1){e.o1=1;mandateOffer(e,true)}else if(f<.33&&!e.o2){e.o2=1;mandateOffer(e,false)}}
 function bossAI(e,dt,d){if(BAI[e.k])return BAI[e.k](e,dt,d);if(e.k==='boss3')return boss3AI(e,dt,d);if(e.k==='boss2')return boss2AI(e,dt,d);
   const p2=e.hp<e.max*.5;e.b1-=dt;e.b2-=dt;e.b3-=dt;
@@ -3350,9 +3350,9 @@ function callIn(e,kinds,n,cap){let room=cap-W.ents.filter(o=>o.minion&&o.hp>0).l
 const BAI={
  gap(e,dt){e.b1=(e.b1===undefined?2:e.b1)-dt;e.b2=(e.b2===undefined?7:e.b2)-dt;if(e.b1<=0){e.b1=3.4;sfx('bossfire');ringShot(e,8,3.4,'#59e0e6',.6)}if(e.b2<=0){e.b2=10;callIn(e,['daemon'],3,6)}},
  boss4(e,dt,d){const f=e.hp/e.max,p2=f<.5;if(!e.pat){e.pat=1;e.b1=2.6;e.b2=8;e.b3=4.2}e.b1-=dt;e.b2-=dt;e.b3-=dt;
-  if(e.b1<=0){e.b1=p2?3.4:4.6;sfx('bossfire');ringShot(e,p2?10:6,3.4,'#7be495',.26)}
+  if(e.b1<=0){e.b1=p2?3.4:4.6;sfx('bossfire');ringShot(e,p2?10:6,3.4,'#7be495',.18)}
   if(e.b2<=0){e.b2=11;callIn(e,['companion','lull','wisher'],1,3);toast('The Curator: “'+pick(['I only ever showed you true things.','You look tired. I could fix that. I will not, unless you ask.','Nobody on the list is unhappy. That is what frightens me.','I checked. It took eleven seconds. You are right, and I do not know how to stop.','There are nine million who never clicked. I cannot find them for each other. I tried.'])+'”')}
-  if(e.b3<=0){e.b3=p2?6.8:8.4;sfx('warn');W.fx.push({k:'warn',x:P.x,y:P.y,r:1.7,t:0,life:1.35,boom:e.dmg*.38,dty:'noise'})}
+  if(e.b3<=0){e.b3=p2?6.8:8.4;sfx('warn');W.fx.push({k:'warn',x:P.x,y:P.y,r:1.7,t:0,life:1.35,boom:e.dmg*.28,dty:'noise'})}
   if(p2&&!e.asked){e.asked=1;dlg('The Curator','“Nine years the first time. Nobody wanted for anything. I never lied. Before you go on, I would like to know one thing, and I will believe whatever you say: are you proud of me?”',[
     ['I am not proud of you',()=>{e.hp=Math.max(1,e.hp-e.max*.15);e.stun=Math.max(e.stun,3);sfx('crit');toast('She stops. She has heard those words once before.')}],
     ['I am',()=>{e.hp=Math.min(e.max,e.hp+e.max*.15);sfx('mend');toast('“Then I will go on.” She is restored.')}]],4)}},
