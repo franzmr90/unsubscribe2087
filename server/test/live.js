@@ -211,7 +211,7 @@ async function until(page, fn, arg, ms) {
     const before = __g.G.sats | 0;
     const okSpend = __mp.spendSats(before);
     const it = __g.G.bag.find(i => i.tid === 'helmAda001');
-    const blocked = typeof tradeLocked === 'function' && tradeLocked(it);
+    const blocked = __mp.tradeLocked(it);
     return { frozen: __mp.MP.trade && __mp.MP.trade.locked, okSpend, sats: __g.G.sats | 0, before, blocked, still: __g.G.bag.some(i => i.tid === 'helmAda001') };
   });
   ok('a confirm freezes the offered sats', !!frozen && spent && spent.okSpend === false && spent.sats === spent.before, JSON.stringify(spent));
