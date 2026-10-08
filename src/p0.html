@@ -60,6 +60,9 @@ button:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
 .sk.off{opacity:.3}.sk.low{border-color:var(--mana)!important;color:#7f9be0!important}
 #bDodge{right:166px;bottom:70px;width:46px;height:46px;border-color:var(--volt)!important;color:var(--volt)!important;font-size:8px!important}
 #bPot{right:154px;bottom:140px;width:52px;height:52px;border-color:var(--blood)!important;color:#ff8d82!important}
+#pad .sk::after,#bAtk::after,#bDodge::after,#bPot::after{position:absolute;left:4px;top:2px;z-index:2;font:700 8px var(--display);color:var(--gold);text-shadow:0 1px 2px #000;pointer-events:none;letter-spacing:0}
+.sk[data-i="0"]::after{content:"1"}.sk[data-i="1"]::after{content:"2"}.sk[data-i="2"]::after{content:"3"}
+#bAtk::after{content:"Space"}#bDodge::after{content:"Shift"}#bPot::after{content:"Q"}
 .mslot{pointer-events:auto;width:42px;height:42px;flex:none;margin-top:10px;position:relative;border:2px solid var(--edge);background:radial-gradient(circle at 35% 28%,#3a3044,#120e17 70%);color:var(--gold);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1px #000}
 .mslot canvas{width:26px;height:26px;pointer-events:none}
 .mslot b{position:absolute;left:0;right:0;bottom:0;font:700 7px var(--display);line-height:1;text-align:center;pointer-events:none;text-shadow:0 1px 2px #000;white-space:pre-line}
@@ -317,7 +320,7 @@ textarea{width:100%;height:70px;background:#050409;color:var(--ink);border:1px s
         <div id="zone"></div>
         <div id="xpw"><i id="xpb"></i></div>
         <div id="wal"><span id="cr"></span><small id="cpi"></small></div>
-        <div id="tbs"><button class="tb" id="bMap">Map</button><button class="tb" id="bRecall">Portal</button><button class="tb" id="bBug" title="Report a problem">Report</button></div>
+        <div id="tbs"><button class="tb" id="bMap" title="Tab">Map</button><button class="tb" id="bRecall" title="T">Portal</button><button class="tb" id="bBug" title="Report a problem">Report</button></div>
       </div>
       <div id="enCol"><div class="orb en"><i id="enF"></i><span id="enT"></span></div><div id="rec" hidden><i id="recF"></i></div></div>
       <button id="mR" class="mslot" type="button" title="Right skill"><i>R</i><canvas width="28" height="28"></canvas><em></em><b></b></button>
@@ -331,12 +334,12 @@ textarea{width:100%;height:70px;background:#050409;color:var(--ink);border:1px s
     <button id="bSwap" hidden></button>
     <button id="bAct" hidden></button>
     <div id="pad">
-      <button id="bDodge">DODGE<br><span id="dgn">2</span></button>
-      <button id="bPot">STIM<br><span id="potn">3</span></button>
+      <button id="bDodge" title="Shift">DODGE<br><span id="dgn">2</span></button>
+      <button id="bPot" title="Q">STIM<br><span id="potn">3</span></button>
       <button class="sk" data-i="2"><em></em><b></b></button>
       <button class="sk" data-i="1"><em></em><b></b></button>
       <button class="sk" data-i="0"><em></em><b></b></button>
-      <button id="bAtk">ATTACK</button>
+      <button id="bAtk" title="Space, or hold left click on a machine">ATTACK</button>
     </div>
   </div>
   <div id="mPick" hidden></div>
@@ -355,7 +358,7 @@ textarea{width:100%;height:70px;background:#050409;color:var(--ink);border:1px s
       <div class="list" id="clsList"></div>
       <button class="ghost" id="bWalk">Walkthrough</button>
       <button class="ghost" id="bLoadCode">Load from a save code</button>
-      <p style="font-size:13px;text-align:center">On a desk the mouse leads: left click walks and strikes, right click casts. The slots beside the orbs pick those skills. F1–F8 bind them. WASD still walks. Space, 1 2 3, Q stim, E interact, T portal, Tab map, I pack, C hero, H help.</p>
+      <p style="font-size:13px;text-align:center">On a desk the mouse leads: left click walks and strikes, right click casts. The slots beside the orbs pick those skills. F1–F8 bind them. WASD still walks. Space, 1 2 3, Q stim, E interact, T portal, Tab map, I pack, C hero, H help. On a phone the stick walks, and Attack, three skills, Stim and Dodge sit under the right thumb.</p>
     </div>
   </div>
 
@@ -369,6 +372,6 @@ textarea{width:100%;height:70px;background:#050409;color:var(--ink);border:1px s
     <p>Any resemblance to a certain isometric game about clicking on demons is admiration, not affiliation.</p>
     <p class="pun">The economics are accurate.</p>
     <p class="warn">If you do not agree with any of the above, please stop playing immediately.</p>
-    <small id="discSkip">Tap anywhere to continue</small>
+    <small id="discSkip">Tap or click anywhere to continue</small>
   </div></div>
 </div>
