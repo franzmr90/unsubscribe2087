@@ -523,7 +523,7 @@ function kill(e){
     for(const o of W.ents.slice())if(o.minion)kill(o);W.projs=W.projs.filter(p=>!p.foe);if(e.k==='gap'||e.k==='boss4'||e.k==='boss5'){bossKill2(e);return}
     if(b3){G.boss3Kills=(G.boss3Kills||0)+1;G.q.q15=3;G.unlocked=Math.max(G.unlocked,22);if(G.boss3Kills===1){addDrop({it:mkFixed(UNI.find(u=>u.id==='still'),W.ml,4)},e.x,e.y);addAdopt(5,'MANDATE is silent')}}
     else if(b2){G.boss2Kills=(G.boss2Kills||0)+1;G.q.q10=3;G.unlocked=Math.max(G.unlocked,12);if(G.boss2Kills===1){addAdopt(5,'the Cloud is quiet')}if(G.boss2Kills===1||Math.random()<.25)addDrop({it:mkFixed(UNI.find(u=>u.id==='offer'),W.ml,4)},e.x,e.y)}
-    else{G.bossKills++;G.q.q5=3;G.unlocked=Math.max(G.unlocked,7);G.maxTier=Math.max(G.maxTier,G.tier+1);if(G.bossKills===1)addAdopt(5,'the Regional Office falls');
+    else{G.bossKills++;G.q.q5=3;G.unlocked=Math.max(G.unlocked,7);G.maxTier=Math.max(G.maxTier||0,(G.tier||0)+1);if(G.bossKills===1)addAdopt(5,'the Regional Office falls');
       if(G.bossKills===1||Math.random()<.25)addDrop({it:mkFixed(UNI.find(u=>u.id==='exit'),W.ml,4)},e.x,e.y);if((G.unseen||0)>=3&&!G.got44){G.got44=true;addDrop({it:mkFixed(UNI.find(u=>u.id==='lines'),W.ml,4)},e.x,e.y)}}
     save(true);P.inv=4;
     const rep=(b3?G.boss3Kills:b2?G.boss2Kills:G.bossKills)>1;
