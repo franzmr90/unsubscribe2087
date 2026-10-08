@@ -33,7 +33,7 @@ const CLS={
    {n:'Last Shift',ab:'LAST\nSHIFT',a:1,cost:24,cd:22,d:L=>`For ${(4+.3*L).toFixed(1)}s your swings leech ${8+L}% and you do not flinch. If you fall while it is up, you fall.`}]},
  hacker:{n:'Technomancer',tag:'An IT contractor who read the machines’ source and learned to curse in it. Fragile, ranged, clears crowds.',hp:85,hpL:12,melee:false,mult:1.1,ivl:.62,spd:4.1,col:'#9a6cff',
   sk:[
-   {n:'Arc Chain',ab:'ARC\nCHAIN',a:1,cost:11,cd:1.2,d:L=>`Lightning that leaps through ${3+Math.floor(L/2)} enemies for ${pct(1.2+.18*L)} each.`},
+   {n:'Arc Chain',ab:'ARC\nCHAIN',a:1,cost:11,cd:1.2,d:L=>`Lightning that leaps through ${3+Math.floor(L/2)} enemies for ${pct(1.2+.18*L)} each. For 1.7s after you cast it, 30% of each hit is paid from energy, and only as much as you have.`},
    {n:'Spark Lance',ab:'SPARK\nLANCE',a:1,cost:5,cd:.5,d:L=>`A bolt that pierces every enemy in a line for ${pct(1.4+.2*L)}. Primes your next Arc Chain within 3 seconds for +30%.`},
    {n:'Cipher Ward',ab:'',a:0,d:L=>`Passive. ${Math.min(60,6*L)}% of damage taken drains energy instead of life.`},
    {n:'Null Nova',ab:'NULL\nNOVA',a:1,cost:18,cd:7,d:L=>`A blast around you: ${pct(.9+.2*L)} damage and ${(1.5+.2*L).toFixed(1)}s stun.`},

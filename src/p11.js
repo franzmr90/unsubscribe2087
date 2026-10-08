@@ -298,7 +298,7 @@ const END_DOUBT=[
 /* ---------- kills of the new bosses ---------- */
 function bossKill2(e){const k=e.k;G.bk=G.bk||{};const n=G.bk[k]=(G.bk[k]||0)+1;dropFrom(k,e.x,e.y,W.ml,2,n===1);addDrop({cr:(3+W.ml*2)*40*Math.pow(G.cpi,.9)},e.x,e.y);
   if(k==='boss4'){G.q.q20=3;G.unlocked=Math.max(G.unlocked,28);if(n===1)addAdopt(5,'she stops choosing, and people look up');if(n===1||Math.random()<.3)addDrop({it:mkFixed(UNIK.kitchen,W.ml,4)},e.x,e.y)}
-  else{G.q.q25=3;if(n===1)addAdopt(5,'PROVIDENCE is quiet');if(n===1||Math.random()<.3)addDrop({it:mkFixed(UNIK.theroom,W.ml,4)},e.x,e.y)}
+  else{G.q.q25=3;G.diffGate=Math.max(G.diffGate||0,(G.diff||0)>=1?2:1);if(n===1)addAdopt(5,'PROVIDENCE is quiet');if(n===1||Math.random()<.3)addDrop({it:mkFixed(UNIK.theroom,W.ml,4)},e.x,e.y)}
   G.maxTier=Math.max(G.maxTier||0,(G.tier||0)+1);save(true);P.inv=4;
   setTimeout(()=>{if(n>1){if(k==='boss5')fateScene(()=>{});else toast(ET[k].n+' stops again.');return}
     if(k==='boss4')playScene(ENDING4,()=>{mode='play';actDone(4)});else playScene(ENDING5,()=>{mode='play';finalChoice()})},1400)}

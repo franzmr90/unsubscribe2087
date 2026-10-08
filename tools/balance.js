@@ -282,20 +282,22 @@ async function arm(page, cls, build, zi) {
   }, {cls, build, zi});
   const mode = await dismiss(page);
   if (mode !== 'play') return mode;
-  await page.evaluate(zi => {
+  await page.evaluate(({zi, resist}) => {
     const g = __g, G = g.G, L = g.ZONES[zi].lvl;
     for (const slot of ['weapon', 'armor', 'helm', 'gloves', 'boots', 'belt']) {
       const it = g.makeItem(L, 2, slot);
       it.id = true;
       G.eq[slot] = it;
     }
+    /* Capped resists: 125 raw all-resist on the armor. Brutal cuts 50, and the result clamps at 75. */
+    if (resist && G.eq.armor) G.eq.armor.aff.push({k: 'r_all', v: 125});
     G.eq.ring = null;
     G.eq.amulet = null;
     g.calc();
     G.hp = g.S.maxHp;
     G.en = g.S.maxEn;
     G.stims = 6;
-  }, zi);
+  }, {zi, resist: process.env.BAL_RES === 'cap'});
   return 'play';
 }
 
@@ -508,7 +510,7 @@ async function runPack() {
   const body = [
     '# Acts III–V measurement',
     '',
-    'Pack fights. One sample each. This run is after the Act III–V balance pass.',
+    'Pack fights. One sample each. This run is after the client pass (difficulty gate, banked experience, Technomancer ward, simulator difficulty, clean unique bands).' + (process.env.BAL_RES === 'cap' ? ' This sample equips +125 all resist on the armor, so Brutal resists sit at the 75 cap.' : ''),
     '',
     'Protocol: level matched to the district, the class build named below, identified rare weapon, armor, helm, gloves, boots and belt rolled at that level, no uniques, no hire. Adaptive scaling left on, then reset before each fight so an earlier death does not ease the next one. Trash districts spawn 5 ordinary machines of that district\'s first non-tick kind, on top of the hero. Boss districts spawn the act boss alone. The hero stims under half life (6 stims), casts the first skill button, and steps toward the pack. Sim time is `G.time`. Cap 16s on a pack and 25s on a boss. Damage taken is life lost plus 45% of max life per stim. Died is 1 if the hero fell. Unique pool is how many non-boss uniques `uniqEligible` allows at that machine level (the new bands).',
     '',
