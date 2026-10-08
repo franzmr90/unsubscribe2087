@@ -1,4 +1,5 @@
-/* Twenty headless players in a few games: movement, chat, party, and a ping.
+/* Twenty headless players in a few games: movement, chat, party, a ping, and a
+   thin combat loop (the game host reports eight machines, the others hit them).
    Prints latency, CPU, memory and messages per second for the server process.
 
    node tools/soak.js [--bots 20] [--seconds 20] [--check]
@@ -75,7 +76,7 @@ function percentile(sorted, p) {
   const hz = 100;
 
   const rtts = [];
-  let sent = 0, recv = 0, connectFail = 0;
+  let sent = 0, recv = 0, connectFail = 0, mhp = 0;
   const bots = [];
   for (let i = 0; i < BOTS; i++) {
     try {
@@ -93,6 +94,7 @@ function percentile(sorted, p) {
             rtts.push(Date.now() - bot.pingAt.get(m.n));
             bot.pingAt.delete(m.n);
           }
+          if (m.t === 'mhp' || m.t === 'mkill') mhp++;
           if (m.t === 'you') { bot.uid = m.uid; res(bot); }
           if (m.t === 'game' && m.game) bot.gameId = m.game.id;
         };
@@ -149,6 +151,14 @@ function percentile(sorted, p) {
         b.send({ t: 'ping', n: b.n, at: t });
       }
       if (tick % 20 === b.i % 20) b.send({ t: 'chat', text: 'soak ' + b.i + ' ' + tick });
+      const pack = 1 + ((tick / 40) | 0);
+      if (tick % 5 === 0 && b.i % 5 === 0) {
+        const list = [];
+        for (let k = 1; k <= 8; k++) list.push({ id: pack * 10 + k, k: 'tick', x: +b.x.toFixed(2), y: +b.y.toFixed(2), hp: 30, max: 30, ml: 5 });
+        b.send({ t: 'mobs', zi: 1, tier: 0, list });
+      } else if (tick % 5 === 1) {
+        b.send({ t: 'mhit', zi: 1, tier: 0, id: pack * 10 + 1 + (b.i % 4), d: 12 });
+      }
     }
     if (tick % 10 === 0) {
       try { rss.push(procSample(child.pid).rssKB); } catch (e) {}
@@ -182,6 +192,7 @@ function percentile(sorted, p) {
     p99: percentile(sorted, 0.99),
     cpuSec: +cpuSec.toFixed(2),
     cpuPct: +cpuPct.toFixed(1),
+    combat: mhp,
     rssStartMB: Math.round(cpu0.rssKB / 1024),
     rssEndMB: Math.round(cpu1.rssKB / 1024),
     rssMaxMB: Math.round(Math.max.apply(null, rss) / 1024)
@@ -190,7 +201,7 @@ function percentile(sorted, p) {
   fs.rmSync(tmp, { recursive: true, force: true });
 
   if (CHECK) {
-    const bad = connectFail > 0 || !alive || bots.length < BOTS || sorted.length < bots || summary.p95 > 500;
+    const bad = connectFail > 0 || !alive || bots.length < BOTS || sorted.length < bots || summary.p95 > 500 || mhp < 1;
     process.exit(bad ? 1 : 0);
   }
 })().catch(e => { console.error(e); process.exit(1); });

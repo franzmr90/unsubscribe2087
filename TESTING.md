@@ -140,7 +140,7 @@ hard-codes a machine path.
 A push runs the build, the smoke test and `test:saves` in GitHub Actions
 (`.github/workflows/smoke.yml`). The same workflow runs the server suites
 (`sh server/test/ci.sh`: accounts, games, social, invites, the cheap bounds, reconnect,
-admin, shared district seeds, the two-browser live test, and an 8-second 20-bot soak). The balance report is
+admin, shared district seeds, shared monster hit points, the two-browser live test, and an 8-second 20-bot soak). The balance report is
 not part of that run: it is a measurement, and it takes longer.
 
 ```sh
