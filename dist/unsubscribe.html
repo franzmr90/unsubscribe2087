@@ -3995,7 +3995,7 @@ function drawSheet(){
     for(const i of G.memos)h+=`<div class="memo"><b>${esc(MEMOS[i][0])}</b><p>${esc(MEMOS[i][1])}</p></div>`}
   if(tab==='opts'){h+=`<h2>Options</h2><button class="ghost" data-walk="1">Walkthrough</button><h3>Characters</h3><div class="list">${[0,1,2].slice(0,NSLOT).map(n=>{const i=n===SLOT?{lvl:G.lvl,cls:G.cls,act:heroAct(G),dead:heroDead(G)}:slotInfo(n);return i&&CLS[i.cls]?`<button class="li${n===SLOT?' on':''}" ${n===SLOT?'':`data-swslot="${n}"`}><i style="background:${CLS[i.cls].col}"></i><div><b>${i.dead?'Hardcore · fallen':'Level '+i.lvl+' '+CLS[i.cls].n}${n===SLOT?' · playing now':''}</b><span>Slot ${n+1} · Act ${actRoman(i.act)}${i.dead?' · begins again':n===SLOT?'':' · tap to switch'}</span></div></button>${n===SLOT?'':`<button class="ghost" data-delslot="${n}" style="margin:-4px 0 8px auto;display:block;font-size:10px;padding:5px 10px;min-height:0">Delete slot ${n+1}</button>`}`:`<button class="li" data-newslot="${n}"><div><b>Slot ${n+1} · empty</b><span>Tap to create a new character here</span></div></button>`}).join('')}</div><p class="hint" style="font-size:13.5px">Your current character is saved before you switch. The town lockbox is shared between them.</p>`;h+=`<h3>Difficulty</h3><div class="row">${DIFFS.map((f,i)=>`<button class="${(G.diff||0)===i?'big':'ghost'}" data-diff="${i}">${f.n}</button>`).join('')}</div><p class="hint" style="font-size:13.5px">Hard and Brutal machines have more life and hit harder, and pay more experience to match: every machine’s experience scales with how tough it is. A change applies to machines that spawn from now on.</p><button class="tog${G.hc?' on':''}" data-hc="1"><span>Hardcore: one life. If this hero dies, they are gone and a new wanderer starts from nothing. +25% experience and magic find.</span><i>${G.hc?'ON':'OFF'}</i></button>${pkRow()}<div class="list optg">`;for(const k in OPT_LBL)h+=`<button class="tog${OPT[k]?' on':''}" data-opt="${k}"><span>${OPT_LBL[k]}</span><i>${OPT[k]?'ON':'OFF'}</i></button>`;h+=`<button class="tog${OPT.fx==='thin'?'':' on'}" data-opt="fx"><span>Combat effects. Thin keeps your own telegraphs and marks, and drops particles, extra lights, and other players' casts.</span><i>${OPT.fx==='full'?'Full':OPT.fx==='thin'?'Thin':'Normal'}</i></button>`;
     h+=`</div><h3>Saving</h3><p>${CL?(clState==='err'?'The last save to your account failed and will be retried. A copy is kept in this browser.':'Saved to your account every ten seconds, on every zone change and when you close this menu. Closing the page mid-zone brings you back to the same spot.'):'Account saving is not available in this view. The game saves in this browser every few seconds.'}</p><div class="row"><button class="big" data-save="1">Save now</button><button class="ghost" data-code="1">Copy save code</button></div><textarea id="codeOut" hidden readonly></textarea><button class="ghost" data-title="1">Save and return to title</button>`;
-    h+=`<h3>Testing tools</h3><div class="row"><button class="ghost" data-dev="lvl">+1 level</button><button class="ghost" data-dev="cr">+credits</button><button class="ghost" data-dev="loot">Loot pile</button></div><div class="row"><button class="ghost" data-dev="zones">Unlock zones</button><button class="ghost" data-dev="god">Untouchable ${G.god?'ON':'OFF'}</button><button class="ghost" data-dev="reset">Respawn machines</button></div>`}
+    if(devOn())h+=`<h3>Testing tools</h3><div class="row"><button class="ghost" data-dev="lvl">+1 level</button><button class="ghost" data-dev="cr">+credits</button><button class="ghost" data-dev="loot">Loot pile</button></div><div class="row"><button class="ghost" data-dev="zones">Unlock zones</button><button class="ghost" data-dev="god">Untouchable ${G.god?'ON':'OFF'}</button><button class="ghost" data-dev="reset">Respawn machines</button></div>`}
   if(tab==='shop'){h+=`<h2>${shopVia?'Nonce · Brenda’s goods':'Brenda’s'}</h2><p>“Prices are up ${G.cpi<100?((G.cpi-1)*100).toFixed(0)+'%':'beyond counting'} since you arrived.” You carry <strong>${fmt(G.credits)}</strong>. Sell from the Items tab.</p>${shopVia?'<p>Thirty percent off her price.</p>':''}<div class="list">`;
     const pp=payTag(stimPrice()),n=unidCount(),ic=payTag(40*G.cpi*n*(G.disc?.85:1));
     h+=`<button class="li" data-buy="stim" ${G.credits<pp||G.stims>=S.cap?'disabled':''}><div><b>Stim</b><span>Restores 45% of your life. You carry ${G.stims} of ${S.cap}.</span></div><span class="pr">${fmt(pp)}</span></button>`;
@@ -4087,7 +4087,7 @@ function drawSheet(){
       if(G.leg)h+=`<button class="li" data-bull="1" ${G.sats<10?'disabled':''}><div><b style="color:#ffe36b">Jam the servo leg into the gate</b><span>The gate shudders and shows a field it is not supposed to know about. 10 sats to look the other way.</span></div></button>`;
       if(G.q.q5===3){const mx=G.subMax||1;h+=`<h3>Subpoenas</h3><p style="font-size:13.5px">A sealed district with two or three rules of its own, at your level and above. Break The Respondent to open the next level. 3 sats to serve.</p>`;for(let l=Math.max(1,mx-2);l<=mx;l++)h+=`<button class="li" data-sub="${l}" ${G.sats<3?'disabled':''}><div><b>Subpoena · Level ${l}</b><span>Machines +${15*l}% life, +${10*l}% damage. Pays ${5+3*l} sats and ${3*l} parts.</span></div></button>`}
     }
-    h+=`</div>`;if(gateAct===6)h+=`<button class="ghost" data-dev="reset">Respawn all machines</button>`;
+    h+=`</div>`;if(gateAct===6&&devOn())h+=`<button class="ghost" data-dev="reset">Respawn all machines</button>`;
     if(G.maxTier>0&&gateAct===6)h+=`<h3>Tier</h3><div class="row"><button class="ghost" data-tier="-1" ${G.tier<=0?'disabled':''}>Easier</button><button class="ghost" disabled>Tier ${G.tier}</button><button class="ghost" data-tier="1" ${G.tier>=G.maxTier?'disabled':''}>Harder</button></div><p>Each tier adds 12 machine levels and raises item levels to match. Changing tier respawns every district.</p>`}
   h+=`</div>`;$('sheetIn').innerHTML=h;paintGlyphs($('sheetIn'));{const wb=$('webBox');if(wb){wb.scrollLeft=webSc[0];wb.scrollTop=webSc[1];wb.onscroll=()=>{webSc=[wb.scrollLeft,wb.scrollTop]}}}if(pop){$('popIn').innerHTML=pop;paintGlyphs($('popIn'));$('pop').hidden=false;$('pop').scrollTop=0}}
 let sellArm=false;
@@ -4187,7 +4187,7 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.swslot!==undefined){const n=+d.swslot,i=slotInfo(n);if(!i)return;save(true);const fin=sv=>{if(applySave(sv)){SLOT=n;clDirty={};W=null;$('sheet').hidden=true;$('pop').hidden=true;startPlay()}else{toast('That save could not be loaded');drawSheet()}};if(i.cloud){b.disabled=true;cloudLoad(i.cloud,n).then(fin)}else fin(i.loc);return}
   if(d.newslot!==undefined){save(true);$('sheet').hidden=true;$('pop').hidden=true;$('hud').hidden=true;$('title').hidden=false;mode='title';music('scene');W=null;SLOT=+d.newslot;showContinue();const nh=$('newH');nh&&nh.scrollIntoView&&nh.scrollIntoView({block:'start'});return}
   if(d.walk){const fromTitle=sheetCtx.from==='title';closeSheet();walkChoose(!!fromTitle);return}if(d.title){save(true);$('sheet').hidden=true;$('hud').hidden=true;$('title').hidden=false;mode='title';music('scene');showContinue();W=null;return}
-  if(d.dev){const k=d.dev;if(k==='lvl')gainXp(xpNext(G.lvl)-G.xp);if(k==='cr')G.credits+=5000*G.cpi*G.lvl;if(k==='zones')G.unlocked=5;if(k==='god')G.god=!G.god;if(k==='reset'){resetZones();toast('Every district is restocked')}
+  if(d.dev&&devOn()){const k=d.dev;if(k==='lvl')gainXp(xpNext(G.lvl)-G.xp);if(k==='cr')G.credits+=5000*G.cpi*G.lvl;if(k==='zones')G.unlocked=5;if(k==='god')G.god=!G.god;if(k==='reset'){resetZones();toast('Every district is restocked')}
     if(k==='loot'){for(let q=1;q<=4;q++)for(let i=0;i<2;i++)W.drops.push({x:P.x+rnd(-2,2),y:P.y+rnd(-2,2),it:makeItem(G.lvl+1,q),t:1});toast('Loot scattered at your feet')}}
   if(d.buy==='stim'){G.credits-=payTag(stimPrice());G.stims++;sfx('coin')}
   if(d.buy==='id'){G.credits-=payTag(40*G.cpi*unidCount()*(G.disc?.85:1));idAll();sfx('rare')}
@@ -4279,7 +4279,8 @@ function showDisc(){const d=$('disc');if(!d)return;
   addEventListener('pointerdown',go,true);addEventListener('keydown',go,true)}
 showDisc();
 cloudInit();
-window.__g={heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},get shop(){return shop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,fillSlide};
+function devOn(){try{if(window.__DEBUG)return true;var h=location.hostname;if(h==='localhost'||h==='127.0.0.1'||h==='::1')return true;if(location.protocol==='file:'||location.protocol==='about:')return true}catch(e){}return false}
+if(devOn())window.__g={heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},get shop(){return shop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,fillSlide};
 /* late additions that need the dialogue tables */
 QRW.push(
  ['q16','gramps','“I do not remember the nine years after I clicked.” You gain 1 skill point.',()=>G.sp++,'Gramps'],
@@ -4449,7 +4450,8 @@ const MP = {
   mkName: '', mkDiff: 'normal', mkPass: '',
   voice: false, muted: {}, speaking: {}, peers: {}, stream: null,
   friends: {}, face: {}, joinUid: '', csrf: '',
-  whispers: [], whisperTo: '', mail: [], closed: false, portalUntil: 0
+  whispers: [], whisperTo: '', mail: [], closed: false, portalUntil: 0,
+  resume: null, gamePass: '', buildAsked: false
 };
 
 const mpOn = () => MP.on && !!MP.conn && MP.conn.readyState === 1;
@@ -4480,13 +4482,23 @@ function mpConnect() {
   c.onopen = () => {
     MP.on = true; MP.retry = 0;
     mpHello();
+    /* The server holds a dropped place for a short while. If that window has closed
+       and the game is still up, ask to be let back in. A password we already typed
+       rides along; a wrong one comes back as a normal join failure. */
+    if (MP.resume && MP.resume.id) mpSend('game.join', { id: MP.resume.id, pass: MP.resume.pass || '' });
     if (!MP.beat) MP.beat = setInterval(mpBeat, 100);
   };
   c.onmessage = ev => { let m; try { m = JSON.parse(ev.data); } catch (e) { return; } mpRecv(m); };
   c.onclose = () => {
-    MP.on = false; MP.conn = null; MP.others = []; MP.party = null;
-    /* Back off rather than hammering a server that is down or a session that expired. */
-    if (MP.retry < 6) setTimeout(mpConnect, 2000 * Math.pow(2, MP.retry++));
+    MP.on = false; MP.conn = null; MP.others = [];
+    if (MP.beat) { clearInterval(MP.beat); MP.beat = null; }
+    if (MP.game && MP.game.id) MP.resume = { id: MP.game.id, pass: MP.gamePass || '' };
+    /* Keep trying, with the wait capped, until the tab is closed or the server says
+       the world is full. Six tries used to stop for good and never rejoin the game. */
+    if (MP.retry >= 12) { mpSay('Could not reconnect.'); return; }
+    const waitMs = Math.min(15000, 1000 * Math.pow(2, MP.retry++));
+    if (MP.retry === 1) mpSay('Connection lost. Reconnecting…');
+    setTimeout(mpConnect, waitMs);
   };
   c.onerror = () => {};
 }
@@ -4495,7 +4507,7 @@ let mpAnnounced = '';
 function mpHello() {
   if (!G) return;
   mpAnnounced = G.cls || '';
-  mpSend('hello', { lvl: G.lvl, cls: G.cls, zi: W ? W.zi : 0, hp: G.hp, hpm: S.maxHp, act: actOf ? actOf(W ? W.zi : 0) : 1 });
+  mpSend('hello', { lvl: G.lvl, cls: G.cls, zi: W ? W.zi : 0, hp: G.hp, hpm: S.maxHp, act: actOf ? actOf(W ? W.zi : 0) : 1, resume: 1 });
 }
 
 function mpSay(text) {
@@ -4510,6 +4522,14 @@ function mpRecv(m) {
   if (m.t === 'you') {
     MP.me = { uid: m.uid, name: m.name };
     MP.maxParty = m.maxParty; MP.pvpScale = m.pvpScale; MP.simZone = m.simZone;
+    if (m.turn && m.turn.urls) {
+      RTC_CFG.iceServers = RTC_CFG.iceServers.filter(s => !s.turn);
+      RTC_CFG.iceServers.push(Object.assign({ turn: 1 }, m.turn));
+    }
+    if (m.build && window.__BUILD && m.build !== window.__BUILD && !MP.buildAsked) {
+      MP.buildAsked = true;
+      dlg('This page is out of date', 'The server is running a newer build. Reload to pick it up. Your character is saved.', [['Reload', () => location.reload()], ['Not now']]);
+    }
     mpHello();
     mpFriendsLoad();
   } else if (m.t === 'roster') {
@@ -4526,15 +4546,20 @@ function mpRecv(m) {
     MP.game = m.game; MP.scale = m.scale || null;
     MP.view = m.game ? 'game' : 'lobby';
     if (!m.game) {
+      MP.resume = null; MP.gamePass = '';
       MP.roster = []; MP.others = []; MP.party = null; MP.hostile = {}; MP.sim = null;
       MP.speaking = {}; MP.chat = [];
       mpVoiceStop();
       if (W && W.ents) for (let i = W.ents.length - 1; i >= 0; i--) if (W.ents[i].mp) W.ents.splice(i, 1);
       toast('You have left the game. Your character is saved.');
     }
-    else toast('In "' + m.game.name + '" \u00b7 ' + m.game.diffName + ' \u00b7 ' + m.game.n + ' of ' + m.game.max);
+    else {
+      MP.resume = { id: m.game.id, pass: MP.gamePass || '' };
+      toast((m.resumed ? 'Back in "' : 'In "') + m.game.name + '" \u00b7 ' + m.game.diffName + ' \u00b7 ' + m.game.n + ' of ' + m.game.max);
+    }
     if (mode === 'sheet' && tab === 'party') drawSheet();
   } else if (m.t === 'joinfail') {
+    if (MP.resume && m.id === MP.resume.id) MP.resume = null;
     toast(m.reason); sfx('err');
     if (MP.joinUid && /password/i.test(m.reason || '')) {
       const uid = MP.joinUid;
@@ -4581,9 +4606,20 @@ function mpRecv(m) {
     MP.note = m.text;
     MP.retry = 99;                 /* a full world is not a dropped connection; do not hammer it */
     dlg('The world is full', m.text + '\n\nYou can keep playing on your own — your character is saved either way — and the Party tab will say when there is room.', [['Carry on alone']]);
+  } else if (m.t === 'wipe') {
+    MP.resume = null; MP.retry = 99;
+    try {
+      const slots = m.slot === 'all' || m.slot == null ? [0, 1, 2] : [+m.slot];
+      for (const n of slots) localStorage.removeItem(skey(n));
+    } catch (e) {}
+    G = null;
+    dlg('Character reset', 'The server cleared this character. Reloading.', [['Reload', () => location.reload()]]);
+    setTimeout(() => location.reload(), 800);
   } else if (m.t === 'sys') {
     mpSay(m.text);
+    if (m.notice) dlg('From the server', m.text, [['OK']]);
     if (m.text && /asked to be your friend/.test(m.text)) mpFriendsLoad();
+    if (MP.resume && /that game is over/i.test(m.text || '')) MP.resume = null;
   } else if (m.t === 'xp') {
     /* The server's share. The killer's own share is already final; everyone else's still meets the local multipliers. */
     if (G && mode !== 'title') { gainXp(m.amount, m.self ? 'share' : 1); if (mode === 'play') float(P.x, P.y, '+' + m.amount + ' party', '#9fd0ff', 1); }
@@ -5122,7 +5158,7 @@ function mpGamePanel() {
   return h;
 }
 
-window.__mp={MP,send:mpSend,get on(){return mpOn()},get inGame(){return mpIn()},get roster(){return MP.roster},get me(){return MP.me},get scale(){return MP.scale},mpHp,mpXp,mpDmg,mute:mpMute,loadFriends:mpFriendsLoad};
+if (typeof devOn === 'function' && devOn()) window.__mp={MP,send:mpSend,get on(){return mpOn()},get inGame(){return mpIn()},get roster(){return MP.roster},get me(){return MP.me},get scale(){return MP.scale},mpHp,mpXp,mpDmg,mute:mpMute,loadFriends:mpFriendsLoad};
 
 function mpWhere(zi) {
   if (zi === undefined || zi === null) return 'somewhere';
@@ -5161,20 +5197,21 @@ function mpClick(d) {
   if (d.mpj) {
     const g = MP.lobby.find(x => x.id === d.mpj);
     if (g && g.locked) {
-      dlgPrompt('“' + g.name + '” is locked', 'It needs a password.', pw => mpSend('game.join', { id: d.mpj, pass: pw }));
-    } else mpSend('game.join', { id: d.mpj });
+      dlgPrompt('“' + g.name + '” is locked', 'It needs a password.', pw => { MP.gamePass = pw || ''; mpSend('game.join', { id: d.mpj, pass: pw }); });
+    } else { MP.gamePass = ''; mpSend('game.join', { id: d.mpj }); }
     return true;
   }
   if (d.mpd) { MP.mkDiff = d.mpd; drawSheet(); return true; }
   if (d.mpk) {
     const n = document.getElementById('mpName'), pw = document.getElementById('mpPass');
     MP.mkName = n ? n.value.trim() : '';
-    mpSend('game.create', { name: MP.mkName, diff: MP.mkDiff, pass: pw ? pw.value : '' });
+    MP.gamePass = pw ? pw.value : '';
+    mpSend('game.create', { name: MP.mkName, diff: MP.mkDiff, pass: MP.gamePass });
     return true;
   }
   if (d.mpq) {
     dlg('Leave this game?', 'Your character and everything on it are saved. You lose the party, anybody you declared against stops being hostile, and the game carries on without you.',
-      [['Leave', () => { mpSend('game.leave', {}); drawSheet(); }], ['Stay']]);
+      [['Leave', () => { MP.resume = null; MP.gamePass = ''; mpSend('game.leave', {}); drawSheet(); }], ['Stay']]);
     return true;
   }
   if (d.mpv) { mpMicToggle(); setTimeout(drawSheet, 300); return true; }

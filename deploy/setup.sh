@@ -62,8 +62,11 @@ echo "built $(wc -c < "$APP/dist/unsubscribe.html") bytes"
 say "configuration"
 if [ ! -f "$ENVF" ]; then
   sed "s|yourdomain.com|$DOMAIN|g" "$APP/deploy/unsubscribe2087.env.example" > "$ENVF"
+  token=$(openssl rand -hex 24)
+  sed -i "s|^ADMIN_TOKEN=.*|ADMIN_TOKEN=$token|" "$ENVF"
   chmod 600 "$ENVF"
   echo "wrote $ENVF — add your SMTP details to it"
+  echo "ADMIN_TOKEN is in that file. online/kick/broadcast need it."
 else
   echo "$ENVF already exists, left alone"
 fi
@@ -97,6 +100,16 @@ code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8087/ || echo 000
 echo "local http: $code"
 [ "$code" = 200 ] || { echo "the app is not answering — journalctl -u unsubscribe2087 -n 50" >&2; exit 1; }
 
+say "invite"
+existing=$(sudo -u unsub env DATA_DIR="$DATA" "$NODE_BIN" "$APP/server/admin.js" invite list || true)
+if printf '%s\n' "$existing" | grep -q '^       '; then
+  bootstrap='(already minted — node server/admin.js invite list)'
+  echo "invite codes already exist"
+else
+  bootstrap=$(sudo -u unsub env DATA_DIR="$DATA" "$NODE_BIN" "$APP/server/admin.js" invite mint --uses 25 --note bootstrap)
+  echo "bootstrap invite (25 uses): $bootstrap"
+fi
+
 cat <<DONE
 
 Done.
@@ -106,8 +119,10 @@ Done.
   systemctl restart unsubscribe2087   after a change
 
 Still to do by hand:
-  1. Point an A record for $DOMAIN at this machine.
-  2. Put your SMTP details in $ENVF, then restart. Without them, password
+  1. Point an A record for $DOMAIN at this machine, then open https://$DOMAIN once.
+  2. Hand the bootstrap invite to your testers: $bootstrap
+     More codes: sudo -u unsub env DATA_DIR=$DATA node $APP/server/admin.js invite mint
+  3. Put SMTP details in $ENVF, then restart. Without them, password
      recovery mail goes to $DATA/outbox instead of anybody's inbox.
-  3. Copy the backups off this machine — they are in $DATA/../unsubscribe2087-backups.
+  4. Set BACKUP_HOOK in $ENVF so the nightly archive leaves this machine.
 DONE
