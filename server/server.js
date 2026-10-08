@@ -23,11 +23,12 @@ const bans = require('./lib/bans');
 const guard = require('./lib/guard');
 const { buildId } = require('./lib/buildid');
 const admin = require('./lib/admin');
+const lan = require('./lib/lan');
 
 const PORT = +(process.env.PORT || 8087);
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = process.env.PUBLIC_ORIGIN || ('http://localhost:' + PORT);
-const SECURE = /^https:/.test(ORIGIN);
+const SECURE = /^https:/.test(ORIGIN) && !lan.skipTls();
 const MAX_BODY = 4 * 1024 * 1024;      /* a zone document with its maps is the big one */
 const MAX_DOCS_BYTES = 40 * 1024 * 1024;
 
@@ -109,6 +110,7 @@ const routes = {};
 const route = (method, p, fn) => { routes[method + ' ' + p] = fn; };
 
 route('POST', '/api/register', async (req, res) => {
+  if (lan.on() && !lan.privateIP(ipOf(req))) return bad(res, 403, 'New accounts on a home game are only for people on this network.');
   if (!A.rateLimit('reg:' + ipOf(req), 5, 3600e3)) return bad(res, 429, 'Too many accounts from here. Try again later.');
   const b = await readBody(req);
   const e1 = A.validateName(b.name) || A.validatePass(b.pass) || A.validateEmail(b.email);
@@ -556,7 +558,7 @@ const handler = async (req, res) => {
   }
 };
 
-const TLS = tlsOpts();
+const TLS = lan.skipTls() ? null : tlsOpts();
 const server = TLS ? https.createServer(TLS, handler) : http.createServer(handler);
 
 /* The realtime side shares the http server and the same session cookie; a socket that
@@ -564,12 +566,30 @@ const server = TLS ? https.createServer(TLS, handler) : http.createServer(handle
 live.attach(server, req => auth(req));
 
 if (require.main === module) {
-  server.listen(PORT, () => {
-    console.log('Unsubscribe 2087 server on ' + ORIGIN);
-    if (TLS) console.log('TLS on. A self-signed certificate warns once per device; accept it and voice will work.');
-    else if (!SECURE) console.log('No TLS: voice works on localhost, but not from another device over the network. See TESTING.md.');
-    if (!mail.enabled()) console.log('No SMTP configured: mail goes to server/data/outbox and the console.');
+  let lanCode = '';
+  if (lan.inviteOn()) {
+    const row = invites.list().find(r => r && r.note === 'lan' && !r.revoked) || invites.mint({ uses: 0, note: 'lan' });
+    if (row) lanCode = row.code;
+  }
+  server.on('error', e => {
+    if (e.code === 'EADDRINUSE') console.error('Port ' + PORT + ' is already in use. Close the other game window, or set PORT to a free number and start again.');
+    else console.error(e.message);
+    process.exit(1);
   });
+  const started = () => {
+    if (lan.on()) {
+      console.log(lan.banner(PORT, lanCode));
+      if (process.env.TLS_KEY || process.env.TLS_CERT) console.log('LAN mode ignored the TLS certificate and is speaking plain http.');
+    } else {
+      console.log('Unsubscribe 2087 server on ' + ORIGIN);
+      if (TLS) console.log('TLS on. A self-signed certificate warns once per device; accept it and voice will work.');
+      else if (!SECURE) console.log('No TLS: voice works on localhost, but not from another device over the network. See TESTING.md.');
+    }
+    if (!mail.enabled()) console.log('No SMTP configured: mail goes to server/data/outbox and the console.');
+    if (!process.env.GITHUB_TOKEN) console.log('[bug] no GitHub token: a report is saved on this computer and is not filed online.');
+  };
+  if (lan.on()) server.listen(PORT, '0.0.0.0', started);
+  else server.listen(PORT, started);
 }
 
 module.exports = { server, gamePage, live };

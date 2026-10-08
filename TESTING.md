@@ -27,6 +27,11 @@ session cookie and will sign you in as the same person) and make a second accoun
 
 One makes a game from the Party tab, the other joins it from the lobby.
 
+### Playing on a home network
+
+The double-click package is `LAN-PLAY.md`. One computer runs the launcher. Everyone else
+opens the address it prints. That path does not need a domain or a certificate.
+
 ### Testing from your phone, on the same network
 
 Find your machine's address on the network (`ipconfig getifaddr en0` on macOS,
