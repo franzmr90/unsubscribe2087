@@ -726,7 +726,11 @@ async function click(p, sel) {
     const cost = 3 + Math.floor(15 / 15);
     const tag = !!(g.W.tag && g.W.tag.hp > 0) || !!G.tag;
     /* pressure: the same blow deals less while they are rendered */
-    /* A deadly strike doubles one swing and hides the party divisor. These swings cannot crit. */
+    /* A deadly strike doubles one swing and hides the party divisor. These swings cannot crit.
+       The damage roll is uniform on a bare fist. Eight of those versus eight more miss a
+       0.8 line about one run in five even when the machines really have the 1.35. Pin the roll. */
+    const rnd0 = Math.random;
+    Math.random = () => 0.5;
     g.S.crit = 0; g.S.critM = 1;
     const swings = () => {
       g.W.ents = [];
@@ -745,8 +749,10 @@ async function click(p, sel) {
     const dealt = swings();
     g.tagDismiss(1);
     g.setMode('play');
+    g.S.crit = 0; g.S.critM = 1;
     const gone = !G.tag && !(g.W && g.W.tag);
     const dealtAlone = swings();
+    Math.random = rnd0;
     g.save(true);
     const blob = JSON.parse(localStorage.getItem('unsub2087v3'));
     return {tag, gone, dealt, dealtAlone, savedTag: !!(blob.G && blob.G.tag), sats: G.sats, cost};
