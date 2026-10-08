@@ -726,21 +726,27 @@ async function click(p, sel) {
     const cost = 3 + Math.floor(15 / 15);
     const tag = !!(g.W.tag && g.W.tag.hp > 0) || !!G.tag;
     /* pressure: the same blow deals less while they are rendered */
-    g.W.ents = [];
-    const e = g.spawn('bot', P.x + 0.8, P.y, {});
-    if (e) { e.hp = e.max = 100000; e.stun = 99; }
-    const hp0 = e ? e.hp : 0;
-    if (e) g.hit(e, 1, true);
-    const dealt = hp0 - (e ? e.hp : hp0);
+    /* A deadly strike doubles one swing and hides the party divisor. These swings cannot crit. */
+    g.S.crit = 0; g.S.critM = 1;
+    const swings = () => {
+      g.W.ents = [];
+      const e = g.spawn('bot', P.x + 0.8, P.y, {});
+      if (!e) return 0;
+      e.hp = e.max = 100000; e.stun = 99;
+      let sum = 0;
+      for (let i = 0; i < 8; i++) {
+        const hp0 = e.hp;
+        g.hit(e, 1, true);
+        sum += hp0 - e.hp;
+        e.hp = 100000;
+      }
+      return sum;
+    };
+    const dealt = swings();
     g.tagDismiss(1);
     g.setMode('play');
     const gone = !G.tag && !(g.W && g.W.tag);
-    g.W.ents = [];
-    const e2 = g.spawn('bot', P.x + 0.8, P.y, {});
-    if (e2) { e2.hp = e2.max = 100000; e2.stun = 99; }
-    const hp1 = e2 ? e2.hp : 0;
-    if (e2) g.hit(e2, 1, true);
-    const dealtAlone = hp1 - (e2 ? e2.hp : hp1);
+    const dealtAlone = swings();
     g.save(true);
     const blob = JSON.parse(localStorage.getItem('unsub2087v3'));
     return {tag, gone, dealt, dealtAlone, savedTag: !!(blob.G && blob.G.tag), sats: G.sats, cost};
