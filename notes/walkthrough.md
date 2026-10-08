@@ -4,7 +4,7 @@ Two short decks on the scene player the acts already use. Opening one pauses the
 
 ## Where it opens
 
-- Title, under the class list: Walkthrough. Basics, Advanced, or Close.
+- Title, first row of the wanderer list: Walkthrough, in gold, above the saved heroes and the empty slots. The same button stays under the class list. Basics, Advanced, or Close.
 - Options, the first button under the heading: the same chooser. The sheet closes first, and Done puts you back in the district.
 - Once, after a new wanderer first reaches a town that is not the prequel. The line is Before you go. Basics, Advanced, or Not now. A checkbox, Don’t show this again, is stored on the options (`OPT.noWalk`) and applies to later heroes too.
 

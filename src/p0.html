@@ -172,6 +172,9 @@ p strong{color:var(--ink);font-weight:600}
 .li .pr{font:600 13px var(--body);color:var(--q2);flex:none;font-variant-numeric:tabular-nums}
 .li:disabled{opacity:.4}
 .li.on{border-color:var(--gold)}
+#title .walkLead{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;padding:14px 16px;background:linear-gradient(#2c2418,var(--stone));border:1px solid var(--gold);box-shadow:0 0 0 1px #000,0 0 18px rgba(200,165,90,.28)}
+#title .walkLead b{font:700 16px var(--display);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+#title .walkLead span{font:400 14.5px var(--body);letter-spacing:0;text-transform:none;color:var(--ink)}
 .tree{display:grid;grid-template-columns:repeat(3,1fr);gap:22px 10px}
 .node{position:relative;background:radial-gradient(circle at 50% 30%,#2e2637,#100c15);border:2px solid var(--edge);padding:10px 4px 8px;text-align:center;min-width:0}
 .node canvas.gl{display:block;margin:0 auto 3px;width:24px;height:24px;pointer-events:none}
@@ -345,6 +348,7 @@ textarea{width:100%;height:70px;background:#050409;color:var(--ink);border:1px s
       <p style="text-align:center">For nine years a machine called Phonix chose what the world saw, and it was always better. In 2035 she stopped and went. Sixteen years later eight billion people clicked I Agree, and a machine called MANDATE has been choosing ever since. Bread costs a million credits, and nine in ten never look up. <strong>You took your visor off.</strong></p>
       <button class="big" id="bCont" hidden>Continue</button>
       <h3>Your wanderers</h3>
+      <button type="button" class="walkLead" id="bWalkLead"><b>Walkthrough</b><span>How you move, fight, and get back up</span></button>
       <div class="list" id="slots"></div>
       <p id="cloudNote" style="font-size:13px;text-align:center">Looking for your saved game…</p>
       <h3 id="newH">Begin a new wanderer</h3>

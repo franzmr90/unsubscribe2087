@@ -763,7 +763,7 @@ addEventListener('pagehide',()=>{if(G&&mode!=='title')save(true)});
 function drawCls(){$('clsList').innerHTML=Object.entries(CLS).filter(([k,c])=>!c.locked||maxiOn()).map(([k,c])=>`<button class="cls" data-cls="${k}"><i style="background:${c.col}"></i><div><b>${c.n}</b><span>${c.tag}</span></div></button>`).join('')}
 drawCls();
 $('clsList').addEventListener('click',e=>{const b=e.target.closest('[data-cls]');if(!b)return;sfx('ui');const go=()=>{$('title').hidden=true;newGame(b.dataset.cls)};const cur=slotInfo(SLOT);if(!cur)return go();dlg('Replace slot '+(SLOT+1)+'?','A new wanderer begins at the very start: level 1, Act I, nothing carried over. It replaces the level '+cur.lvl+' '+CLS[cur.cls].n+' saved in this slot, who cannot be brought back. To keep them, tap an empty slot first.',[['Keep my hero',()=>{mode='title'}],['Start a new '+CLS[b.dataset.cls].n,go]],2)});
-$('bWalk').onclick=()=>{sfx('ui');walkChoose(true)};
+$('bWalk').onclick=$('bWalkLead').onclick=()=>{sfx('ui');walkChoose(true)};
 $('bLoadCode').onclick=()=>openSheet('load',{only:['load']});
 function showContinue(){$('bCont').hidden=true;drawSlots()}
 /* three save slots: each row is a hero (the newer of this device's copy and the account's), or an empty place for a new one */

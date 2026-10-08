@@ -17,8 +17,14 @@ await p.evaluate(()=>__g.skipDisc());
 await p.waitForTimeout(200);
 const lens=await p.evaluate(()=>({b:__g.WALK.basics.length,a:__g.WALK.advanced.length,arts:[...new Set(__g.WALK.basics.concat(__g.WALK.advanced).map(s=>s.art))]}));
 if(lens.b<8||lens.a<8)fail('short deck '+JSON.stringify(lens));
-const has=await p.evaluate(()=>!!document.getElementById('bWalk'));
-if(!has)fail('no title button');
+const has=await p.evaluate(()=>{
+  const lead=document.getElementById('bWalkLead'),menu=document.getElementById('bWalk'),slots=document.getElementById('slots'),cls=document.getElementById('clsList');
+  if(!lead||!menu||!slots||!cls)return false;
+  const order=lead.compareDocumentPosition(slots);
+  const under=cls.compareDocumentPosition(menu);
+  return !!(order&Node.DOCUMENT_POSITION_FOLLOWING)&&!!(under&Node.DOCUMENT_POSITION_FOLLOWING);
+});
+if(!has)fail('walkthrough is not above the wanderer list, or the title button is gone');
 await p.evaluate(()=>document.getElementById('bWalk').scrollIntoView({block:'center'}));
 await p.waitForTimeout(100);
 if(OUT)await p.screenshot({path:path.join(OUT,'walk-title.png')});
