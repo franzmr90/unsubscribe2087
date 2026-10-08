@@ -8,6 +8,7 @@ node server/test/social.js
 node server/test/games.js
 node server/test/capacity.js
 node server/test/bug.js
+node server/test/intake.js
 node server/test/disclaimer.js
 node server/test/maxi.js
 node server/test/invite.js

@@ -13,6 +13,7 @@
    node server/admin.js unban NAME
    node server/admin.js reset NAME [--slot 0|1|2|all]
    node server/admin.js broadcast TEXT
+   node server/admin.js bugs [--n 20]
 */
 'use strict';
 const fs = require('fs');
@@ -178,7 +179,18 @@ async function main() {
     console.log('reset ' + row.name + ' slot ' + row.slot + ' (' + row.deleted.length + ' documents)');
     return;
   }
-  die('Commands: invite mint|list|revoke, online, kick, ban, unban, reset, broadcast');
+  if (cmd === 'bugs') {
+    const bugs = require('./lib/bugs');
+    const rows = bugs.list(+(flag('n', '20')) || 20);
+    if (!rows.length) { console.log('(no reports)'); return; }
+    for (const r of rows) {
+      const link = r.issueUrl || (r.issue ? ('#' + r.issue) : '-');
+      const happened = String(r.happened || '').replace(/\s+/g, ' ').slice(0, 60);
+      console.log(r.at + '\t' + r.from + '\t' + (r.intake || 'local') + '\t' + link + '\t' + happened);
+    }
+    return;
+  }
+  die('Commands: invite mint|list|revoke, online, kick, ban, unban, reset, broadcast, bugs');
 }
 
 main().catch(e => die(e.message || String(e)));
