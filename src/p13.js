@@ -19,7 +19,7 @@ const MP = {
   whispers: [], whisperTo: '', mail: [], closed: false, portalUntil: 0,
   resume: null, gamePass: '', buildAsked: false,
   maps: {}, mapAsked: null, wantEnter: null, freshFor: null, freshBase: -1,
-  mobHost: '', mobAt: 0, mobSeqSent: 0, mobSnap: null
+  mobHost: '', mobNext: '', mobAt: 0, mobSeqSent: 0, mobSnap: null
 };
 
 const mpOn = () => MP.on && !!MP.conn && MP.conn.readyState === 1;
@@ -203,7 +203,7 @@ function mpRecv(m) {
   } else if (m.t === 'game') {
     const prevId = MP.game && MP.game.id;
     const nextId = m.game && m.game.id;
-    if (prevId !== nextId) { MP.maps = {}; MP.mapAsked = null; MP.freshFor = null; MP.freshBase = -1; MP.wantEnter = null; MP.mobHost = ''; MP.mobSnap = null; }
+    if (prevId !== nextId) { MP.maps = {}; MP.mapAsked = null; MP.freshFor = null; MP.freshBase = -1; MP.wantEnter = null; MP.mobHost = ''; MP.mobNext = ''; MP.mobSnap = null; }
     MP.game = m.game; MP.scale = m.scale || null;
     MP.view = m.game ? 'game' : 'lobby';
     if (m.maps) mpStoreMaps(m.maps);
@@ -211,7 +211,7 @@ function mpRecv(m) {
       MP.resume = null; MP.gamePass = '';
       MP.maps = {};
       MP.roster = []; MP.others = []; MP.party = null; MP.hostile = {}; MP.sim = null;
-      MP.speaking = {}; MP.chat = []; MP.mobHost = ''; MP.mobSnap = null;
+      MP.speaking = {}; MP.chat = []; MP.mobHost = ''; MP.mobNext = ''; MP.mobSnap = null;
       mpVoiceStop();
       if (W && W.ents) for (let i = W.ents.length - 1; i >= 0; i--) if (W.ents[i].mp) W.ents.splice(i, 1);
       toast('You have left the game. Your character is saved.');
@@ -296,7 +296,17 @@ function mpRecv(m) {
   } else if (m.t === 'sim') {
     mpSimMsg(m);
   } else if (m.t === 'mhost') {
+    const was = MP.mobHost;
     MP.mobHost = m.uid || '';
+    MP.mobNext = m.next || '';
+    /* Take over from the positions already streaming in, instead of waiting for a snap. */
+    if (m.hand && MP.me && MP.mobHost === MP.me.uid && was !== MP.mobHost && W && W.ents) {
+      for (let i = 0; i < W.ents.length; i++) {
+        const e = W.ents[i];
+        if (!e || !e.mid || e.tx == null) continue;
+        e.x = e.tx; e.y = e.ty;
+      }
+    }
   } else if (m.t === 'mobs') {
     if (!mpApplyMobs(m)) MP.mobSnap = m;
   } else if (m.t === 'mhp') {
@@ -426,10 +436,12 @@ function mpTick(dt) {
 function mpMobShared() { return mpIn() && !!W && W.z && !W.z.town; }
 function mpMobHost() { return mpMobShared() && !!MP.me && MP.mobHost === MP.me.uid; }
 function mpMobWatch() { return mpMobShared() && !mpMobHost(); }
-function mpMobHit(e, d) {
+function mpMobHit(e, d, opt) {
   if (!mpOn() || !e || !e.mid || !(d > 0) || !W || !G) return;
   mpMobPush(true);
-  mpSend('mhit', { zi: W.zi, tier: G.tier | 0, id: e.mid, d: Math.round(d) });
+  const mob = opt && opt.mob;
+  const sk = mob ? -2 : ((typeof P !== 'undefined' && P && P.hitSk >= 0) ? (P.hitSk | 0) : -1);
+  mpSend('mhit', { zi: W.zi, tier: G.tier | 0, id: e.mid, d: Math.round(d), sk: sk });
 }
 function mpMobGone(e) {
   if (!mpMobHost() || !e || !e.mid || !W || !G) return;
@@ -494,10 +506,11 @@ function mpApplyMobs(m) {
       e.tx = +row.x; e.ty = +row.y;
       if (m.snap || e.x == null) { e.x = e.tx; e.y = e.ty; }
       e.hp = +row.hp; e.max = +row.max || e.max;
-    } else if (m.snap) {
+    } else {
       e.hp = +row.hp; e.max = +row.max || e.max;
     }
   }
+  if (m.next) MP.mobNext = m.next;
   if (m.you || host) {
     let n = W.mobSeq || 0;
     for (let i = 0; i < W.ents.length; i++) if (W.ents[i].mid > n) n = W.ents[i].mid;
