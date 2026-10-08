@@ -129,8 +129,16 @@ const r=await p.evaluate(()=>{
     boot('scrapper');cast(14);check('Last Shift lasts 4.3s at rank 1', Math.abs(g.P.lastShift-4.3)<0.05, String(g.P.lastShift));
     boot('founder');cast(4);check('Crunch lasts 9s at rank 1', Math.abs(g.P.crunch-9)<0.05, String(g.P.crunch));
     boot('founder');const hp=g.G.hp=g.S.maxHp*0.5;cast(5);
+    const mechCard=g.CLS.founder.sk[5].d(1);
     check('Mech Suit lasts 11s', Math.abs(g.P.mech-11)<0.05, String(g.P.mech));
-    note.push('NOTE Mech Suit heals '+Math.round(g.G.hp-hp)+' which the card does not mention');
+    check('Mech Suit heals 30% and the card says so', Math.abs(g.G.hp-(hp+g.S.maxHp*.3))<1.5 && /Heals you 30% of your life/.test(mechCard), 'got '+(g.G.hp-hp).toFixed(1)+' card '+mechCard);
+    const cold=g.CLS.homesteader.sk[0].d(1);
+    check('Cold Frame card is a 2.2-pace radius', /2\.2-pace radius/.test(cold)&&!/across/.test(cold), cold);
+    const thread=g.CLS.witness.sk[4].d(1), pub=g.CLS.witness.sk[12].d(1);
+    check('Pull the Thread names 1.2% per level', /1\.2% more for each level you have/.test(thread), thread);
+    check('Publish names 1% per level', /1% more for each level you have/.test(pub), pub);
+    const tox=g.CLS.maxi.sk[3].d(1);
+    check('Toxic Maximalism card says you run 50% faster', /You run 50% faster/.test(tox), tox);
     boot('maxi');cast(13);const before=g.G.hp;g.P.inv=0;g.G.god=false;g.hurt(80,false,{name:'a test',pvp:1});
     check('The Dip ignores the next hit', g.G.hp===before && !g.P.dip, 'hp '+g.G.hp);
     boot('courier');const e=foe(1.2);cast(14);check('Missed Connection marks the machine', e.mc>4, String(e.mc));
@@ -139,8 +147,21 @@ const r=await p.evaluate(()=>{
     check('Schema adds 8% Surge at rank 1', (g.S.t_surge||0)===8, String(g.S.t_surge));
     boot('maxi');
     g.G.sk=Array(15).fill(0);g.G.sk[6]=1;g.G.slots=[6,-1,-1];g.calc();g.G.en=999;g.P.cd[6]=0;
-    const e3=foe(1.1);g.W.projs.length=0;g.setMode('play');g.cast(0);g.setMode('shot');
-    check('Blessed Hashrate fires projectiles', g.W.projs.length>=5, String(g.W.projs.length)+' dmg pending');
+    g.P.dir={x:1,y:0};g.P.ph=Math.PI/5;g.OPT.auto=0;
+    g.W.ents.length=0;
+    let e3=g.spawn('tick',g.P.x+0.9,g.P.y,{});
+    if(!e3)e3=g.spawn('tick',g.P.x+1.1,g.P.y,{});
+    if(e3){e3.hp=e3.max=100000;e3.stun=99;e3.aggro=true;e3.mods={}}
+    const hp0=e3?e3.hp:0;
+    g.W.projs.length=0;g.setMode('play');g.cast(0);
+    const snap=g.W.projs.map(p=>({vx:p.vx,vy:p.vy,m:p.m,life:p.life,pierce:p.pierce}));
+    const fwd=snap.some(p=>p.vx>6&&Math.abs(p.vy)<0.2);
+    const spdOk=snap.length===5&&snap.every(p=>Math.abs(Math.hypot(p.vx,p.vy)-7)<0.05&&p.pierce===99&&Math.abs(p.life-1.1)<0.02&&Math.abs(p.m-1.32)<0.001);
+    const angs=snap.map(p=>Math.atan2(p.vy,p.vx)).sort((a,b)=>a-b);
+    const even=angs.length===5&&angs.every((a,i)=>{let d=angs[(i+1)%5]-a;if(i===4)d+=Math.PI*2;return Math.abs(d-Math.PI*2/5)<0.02});
+    for(let k=0;k<40&&e3;k++)g.update(1/60);
+    g.setMode('shot');
+    check('Blessed Hashrate hits the foe in front', !!e3&&e3.x>g.P.x&&fwd&&spdOk&&even&&e3.hp<hp0, 'n '+snap.length+' fwd '+fwd+' spd '+spdOk+' ring '+even+' dmg '+(e3?hp0-e3.hp:0).toFixed(1));
   }
   /* passives that need a worn piece to show */
   {

@@ -747,8 +747,8 @@ Object.assign(SKF,{
   5:(L,m)=>{const t=nearest(8),mm=(1.6+.3*L)*m;
     const end=()=>{for(const e of W.ents)if(dist(e,P)<2.2+e.r)e.mark=Math.max(e.mark,6+.3*L)};
     if(t){face(t);dash(24,Math.max(.08,(dist(t,P)-1)/24),mm,end,skvOf(G.cls,5).col)}else dash(24,.22,mm,end,skvOf(G.cls,5).col)},
-  /* Blessed Hashrate, spiralling out, stopping for nobody. */
-  6:(L,m)=>{const n=5;for(let i=0;i<n;i++){const a=(i/n)*6.283+P.ph*2;
+  /* Five hammers, a full turn, the first along your facing. P.ph was never set, so the old angle was NaN and no hammer moved. */
+  6:(L,m)=>{const n=5,a0=Math.atan2(P.dir.y,P.dir.x);for(let i=0;i<n;i++){const a=a0+(i/n)*6.283;
     shoot({x:Math.cos(a),y:Math.sin(a)},(1.1+.22*L)*m,99,{spd:7,life:1.1,col:'#ffe36b',big:1})}},
   /* The three auras set the one that is on; the tick does the rest. */
   3:L=>maxiSet(3,L),

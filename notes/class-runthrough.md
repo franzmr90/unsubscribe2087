@@ -40,7 +40,7 @@ Fleet Step’s haste reads 2.3s at rank 1 before the clock (1.5s after 0.8s of t
 
 Dox, fixed above. Nothing else filed.
 
-Proxy Hop’s stab multiplies by the deadly-strike factor, so the damage matches “always a deadly strike.” The float does not add the crit mark. That is listed under decisions, not changed. Incognito is 3.3s of stealth at rank 1. Logic Bomb and Zip Bomb land. The Dump and We Were Never Here toast their empty-handed lines and do not spend.
+Proxy Hop’s stab multiplies by the deadly-strike factor, so the damage matches “always a deadly strike.” The float does not add the crit mark. That stays open for the playtest. The crit was not changed. Incognito is 3.3s of stealth at rank 1. Logic Bomb and Zip Bomb land. The Dump and We Were Never Here toast their empty-handed lines and do not spend.
 
 ## Founder
 
@@ -48,7 +48,7 @@ Acqui-hire copy, fixed above. Nothing else filed.
 
 Crunch lasts 9s at rank 1. Mech Suit lasts 11s. A champion stays an enemy at rank 1 and joins at rank 5. Non-Compete binds one machine for 5.3s. Layoffs, Garden Leave, and Liquidation toast when there is nobody to spend, and they do not spend energy. Term Sheet still summons an empty-handed officer and says so. Interns, Cease & Desist, Contractors, and Chief of Staff summon.
 
-Mech Suit also heals 30% of maximum life (67 in the measurement). The card does not say that. Left for a decision.
+Mech Suit also heals 30% of maximum life. The card now says so. The heal is unchanged.
 
 ## Homesteader
 
@@ -56,7 +56,7 @@ No defect filed.
 
 Cold Frame, Strays, the Bull, the hedge, and Kill Frost place what the cards name. Wear the Hound, Wear the Hull, and Wear What You Killed set the form. Shed, Compost, Salt the Earth, and Slaughter Weight refuse, with the toast, when there is nothing to spend. Go Feral at rank 1 is +45% (`feral` 1.45). A −28% move-speed reading on Rootbound was the hull form left on from Wear What You Killed, not the passive.
 
-Cold Frame’s card says “2.2 paces across” and the patch radius is 2.2. If “across” means the width, the patch is twice the sentence. Left for a decision.
+Cold Frame’s card now says a 2.2-pace radius. The patch radius is still 2.2.
 
 ## Witness
 
@@ -64,7 +64,7 @@ No defect filed.
 
 With a full page, Look adds Testimony, The Sentence’s delay at rank 1 is 0.48s, and Correction restores the last loss once and remembers the district. An empty Record toasts “The page is blank” and does not spend. The same toast is not reprinted inside one scripted burst, because identical toasts are swallowed for 1.5s of frame time. Margin, Filed, The Footnote, Colophon, and Named Party show on the sheet at rank 1. The Footnote also cuts maximum life 4% (399 to 383).
 
-Pull the Thread multiplies by `1 + level × 0.012`. Publish multiplies by `1 + level × 0.01`. Neither factor is on the card. Left for a decision.
+Pull the Thread multiplies by `1 + level × 0.012`. Publish multiplies by `1 + level × 0.01`. The cards now say 1.2% more and 1% more for each level. The factors are unchanged.
 
 ## The Maximalist
 
@@ -72,7 +72,7 @@ No defect filed. Hidden on the title until `ACC.maxi` is set, then the tree open
 
 The Halving at rank 1 removes 9.2% of current life and will not pass the 35% floor (1000 life to 908). The Dip ignores the next hit, including a hostile one. Blessed Hashrate fires five projectiles. Cite Your Sources toasts “No aura is on” and does not spend when no aura is up. Toxic Maximalism, Marked to Market, and Proof of Work are the auras and cost 0. Twenty-One Million is +8% armour at rank 1, the same rule as Iron Hide. Tick Tock Next Block needs play mode for about 900ms; its nine swings and the block use `setTimeout`, so a test that leaves play mode early sees no damage. In play it lands.
 
-Toxic Maximalism also sets a haste timer. Any haste above zero is +50% move speed, and the card only prints attack speed and damage. Left for a decision. Blessed Hashrate spirals, so one machine standing directly ahead can be missed. Left for a decision.
+Toxic Maximalism also sets a haste timer. Any haste above zero is +50% move speed. The card now says you run 50% faster. The haste is unchanged. Blessed Hashrate’s five hammers used `P.ph * 2`, and the player never has `ph`, so every velocity was NaN and a machine standing in front was never hit. One hammer now leaves along the facing. Damage, count, speed, life, pierce, and the full turn of hammers are unchanged.
 
 ## Cross-class
 
@@ -88,15 +88,22 @@ Checked on every class, and not filed:
 - Death names the town on the button (“Rise in Stillwater Commons”) and the district in the note.
 - Shitcoiner refuse, after the three-second lock: “No. There is bitcoin, and there is everything else.” The shill aggros and the toast is “Maxi! Dinosaur! Get him!”
 
-## Decisions, not changed
+## Resolved
 
-| Topic | What the run saw | Why it was left |
+| Topic | Decision |
+|---|---|
+| Mech Suit heal | Kept. The card says it heals you 30% of your life. |
+| Toxic Maximalism move speed | Kept. The card says you run 50% faster. |
+| Pull the Thread and Publish | Kept. The cards say 1.2% more and 1% more for each level you have. |
+| Cold Frame “across” | The card says a 2.2-pace radius. The radius is still 2.2. |
+| Blessed Hashrate | Fixed. The spiral angle added `P.ph * 2`, and `ph` is never set on the player, so each hammer’s velocity was NaN and the hit test never landed. One of the same five hammers now travels along the facing. |
+
+The Codex tab is drop rates, damage types, class weapons, money, seed words, feats, and memos. It does not describe these skills, so nothing there changed.
+
+## Still open
+
+| Topic | What the run saw | Why it stays open |
 |---|---|---|
-| Mech Suit heal | +30% maximum life on cast, not on the card | Could be intentional sustain. Removing it is a balance change. |
-| Toxic Maximalism move speed | Aura sets haste, and any haste is +50% run speed | The card prints attack speed and damage only. Adding the sentence, or dropping the haste, is a design call. |
-| Pull the Thread and Publish | Extra `1 + level × 0.012` and `1 + level × 0.01` | Not printed. Changing either number retunes Witness. |
-| Cold Frame “across” | Radius 2.2, card says 2.2 paces across | Diameter versus radius. Needs a wording or a radius decision. |
-| Blessed Hashrate | Five shots, spiral, a foe in front can be missed | The card says they spiral and do not stop. A guaranteed forward shot would be new behavior. |
-| Proxy Hop crit mark | Damage uses the deadly-strike multiplier; the float may omit “!” | The number matches the card. The bang is presentation. |
+| Proxy Hop crit mark | Damage uses the deadly-strike multiplier; the float may omit “!” | Left for the playtest. The number matches the card. The bang was not changed. |
 | Acts III–V balance | Entered and fought. Not measured for time-to-kill | Known gap. No number was retuned. |
 | Party tab offline | Absent without the account server | Expected. Cloud save, lockbox, and character switching were not part of this pass. |

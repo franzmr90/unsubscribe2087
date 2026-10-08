@@ -91,7 +91,8 @@ function auraFoes(h) {
 }
 /* Toxic Maximalism's attack-speed line is the one printed on the skill:
    15+3*L percent. The owner, a hireling, and anyone standing in the aura all
-   take it. toxicSwing reads toxL. */
+   take it. toxicSwing reads toxL. Any haste above zero is +50% run speed,
+   which the card also prints. */
 function toxicSwing(body) {
   const L = body && body.toxL;
   if (!(L > 0)) return 1;

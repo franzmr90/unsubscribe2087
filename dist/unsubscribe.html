@@ -428,7 +428,7 @@ Object.assign(CLS,{
    {n:'Equity',ab:'',a:0,d:L=>`Passive. Your workforce deals +${8*L}% damage and you gain +${3*L}% life.`},
    {n:'Contractors',ab:'CONTR-\nACTOR',a:1,cost:14,cd:1,d:L=>`Summon a drone that shoots for ${pct(.45+.07*L)}. You keep up to ${1+Math.floor(L/3)}.`},
    {n:'Crunch',ab:'CRUNCH',a:1,cost:20,cd:16,d:L=>`For ${8+L}s your workforce attacks 60% faster and hits 30% harder.`},
-   {n:'Mech Suit',ab:'MECH\nSUIT',a:1,cost:25,cd:22,d:L=>`For ${10+L}s: double armor, and your attacks become slams of ${pct(1.6+.25*L)}.`},
+   {n:'Mech Suit',ab:'MECH\nSUIT',a:1,cost:25,cd:22,d:L=>`For ${10+L}s: double armor, and your attacks become slams of ${pct(1.6+.25*L)}. Heals you 30% of your life.`},
    {n:'Chief of Staff',ab:'CHIEF',a:1,cost:30,cd:10,d:L=>`Summon one hulking enforcer that machines attack first. It hits for ${pct(1.2+.2*L)} in an arc.`},
    {n:'Acqui-hire',ab:'ACQUI-\nHIRE',a:1,cost:28,cd:18,d:L=>`Turn the nearest machine to your side for ${12+2*L}s.${L>=5?' Champions too.':' Champions resist until rank 5.'}`},
    {n:'Layoffs',ab:'LAY-\nOFFS',a:1,cost:10,cd:12,d:L=>`Every summoned worker explodes for ${pct(2+.4*L)}. Each one heals you 5%.`},
@@ -440,7 +440,7 @@ Object.assign(CLS,{
    {n:'Liquidation',ab:'LIQUID-\nATION',a:1,cost:18,cd:9,d:L=>`Enemy corpses within 5 paces explode for ${pct(1.1+.15*L)}. Your staff does not. Layoffs is the button that spends them.`}]},
  homesteader:{n:'Homesteader',tag:'Lives on the verge the Office says does not exist. Tends a plot, wears a dead machine, or keeps a flock that does not love them.',hp:110,hpL:15,melee:false,mult:1,ivl:.55,spd:4.3,col:'#6a8f62',
   sk:[
-   {n:'Cold Frame',ab:'COLD\nFRAME',a:1,cost:12,cd:6,d:L=>`A rust patch 2.2 paces across for 6 seconds. It slows, and deals ${pct(.22+.04*L)} every half second. It ends if you enter a chassis.`},
+   {n:'Cold Frame',ab:'COLD\nFRAME',a:1,cost:12,cd:6,d:L=>`A rust patch with a 2.2-pace radius for 6 seconds. It slows, and deals ${pct(.22+.04*L)} every half second. It ends if you enter a chassis.`},
    {n:'Wear the Hound',ab:'HOUND',a:1,cost:8,cd:1,d:()=>`Become the hound: faster, melee, less armour. Plot and flock skills grey out. A ranged weapon keeps its damage and loses its reach. Click Hound again to step out, or Shed. Your hands are busy for 0.7s either way.`},
    {n:'Strays',ab:'STRAYS',a:1,cost:10,cd:1,d:L=>`A feral drone, up to ${Math.min(4,2+Math.floor(L/3))}, biting for ${pct(.32+.05*L)}. Past 4.5 paces they stop obeying and will hit you if you are closest.`},
    {n:'Compost',ab:'COMPOST',a:1,cost:8,cd:2,d:L=>`A corpse within 3 paces sinks. Your next plot skill deals ${Math.round((1.35+.05*L)*100)}% damage. With no body, nothing happens.`},
@@ -461,7 +461,7 @@ Object.assign(CLS,{
    {n:'The Sentence',ab:'THE\nSENTENCE',a:1,cost:8,cd:2,d:L=>`Spend Record, up to 25. Delay that machine's next attack by ${(0.4+.08*L).toFixed(2)}s at a full page. Less Record, a shorter delay.`},
    {n:'Margin',ab:'',a:0,d:L=>`Passive. Below half life the Record fills ${20*L}% faster.`},
    {n:'Cross-reference',ab:'CROSS-\nREF',a:1,cost:14,cd:6,d:L=>`Spend 20 Record. Copy that machine's last attack onto another machine you have Testimony on, at ${Math.round((.75+.05*L)*100)}% of the blow.`},
-   {n:'Pull the Thread',ab:'PULL THE\nTHREAD',a:1,cost:12,cd:4,d:L=>`Spend most of the Record. One Impact hit: each point of Testimony on the target is ${pct(3.5+.45*L)} of a weapon swing's weight, and your weapon is not consulted. No Testimony, no blow.`},
+   {n:'Pull the Thread',ab:'PULL THE\nTHREAD',a:1,cost:12,cd:4,d:L=>`Spend most of the Record. One Impact hit: each point of Testimony on the target is ${pct(3.5+.45*L)} of a weapon swing's weight, and your weapon is not consulted. No Testimony, no blow. 1.2% more for each level you have.`},
    {n:'Filed',ab:'',a:0,d:L=>`Passive. Testimony does not decay for ${(2+.4*L).toFixed(1)}s after the machine leaves the screen.`},
    {n:'Correction',ab:'CORRECT',a:1,cost:10,cd:8,d:()=>`Once per district. Spend the whole Record to restore the life you lost on the last hit, not a share of your maximum. An empty Record corrects nothing.`},
    {n:'Redaction',ab:'REDACT',a:1,cost:12,cd:8,d:()=>`Spend 30 Record. For 2s machines can see you and cannot land a blow. They still path toward you. This is not stealth.`},
@@ -469,7 +469,7 @@ Object.assign(CLS,{
    {n:'On the Record',ab:'ON THE\nRECORD',a:1,cost:16,cd:10,d:L=>`Spend 25 Record. A machine with high Testimony takes ${12*L}% more damage from everyone for 8s, including people with no points in this class.`},
    {n:'Unnamed Source',ab:'UNNAMED\nSOURCE',a:1,cost:14,cd:12,d:()=>`Spend 20 Record. Grant one ally, or your hireling, a single swing that deals Sound. Then it is gone. You never deal Sound.`},
    {n:'Colophon',ab:'',a:0,d:L=>`Passive. Record above 80: you take ${Math.min(45,4*L)}% less damage. Record below 20: you take ${6*L}% more. The meter is the defence.`},
-   {n:'Publish',ab:'PUBLISH',a:1,cost:18,cd:14,d:L=>`Consume all Testimony on screen. Each second you watched is ${pct(1.6+.25*L)} Impact. The Record drops to 0.`},
+   {n:'Publish',ab:'PUBLISH',a:1,cost:18,cd:14,d:L=>`Consume all Testimony on screen. Each second you watched is ${pct(1.6+.25*L)} Impact. The Record drops to 0. 1% more for each level you have.`},
    {n:'Named Party',ab:'',a:0,d:L=>`Passive. Allies deal +${5*L}% damage to machines you have Testimony on. You do not.`},
    {n:'Retraction',ab:'',a:0,d:()=>`Passive. If you would die with Record above 80, you drop to 1 life, the Record hits 0, and this cannot happen again for a long time. If you would die with an empty Record, you die.`}]},
  /* Unlocked by finishing the story. Deals Sound damage, which nothing resists, because
@@ -479,7 +479,7 @@ Object.assign(CLS,{
    {n:'Tick Tock Next Block',ab:'TICK\nTOCK',a:1,cost:9,cd:2.4,d:L=>`Nine quick strikes of ${pct(.5+.08*L)}. The tenth is a block and lands for ${pct(4+.8*L)}.`},
    {n:'Have Fun Staying Poor',ab:'HAVE FUN\nSTAYING\nPOOR',a:1,cost:12,cd:4,d:L=>`Close range, ${pct(1.4+.25*L)}. It cannot miss, and it stuns for ${(1.2+.15*L).toFixed(1)}s.`},
    {n:'Few Understand This',ab:'',a:0,d:L=>`Passive. +${3*L}% damage for every machine still standing on screen, up to eight.`},
-   {n:'Toxic Maximalism',ab:'TOXIC\nMAXI',a:1,aura:1,cost:0,cd:1.5,d:L=>`Aura. Stays on until you put on another. You attack ${15+3*L}% faster and hit ${pct(.2+.05*L)} harder, and so does anybody fighting beside you.`},
+   {n:'Toxic Maximalism',ab:'TOXIC\nMAXI',a:1,aura:1,cost:0,cd:1.5,d:L=>`Aura. Stays on until you put on another. You attack ${15+3*L}% faster and hit ${pct(.2+.05*L)} harder, and so does anybody fighting beside you. You run 50% faster.`},
    {n:'Marked to Market',ab:'MARKED\nMKT',a:1,aura:1,cost:0,cd:1.5,d:L=>{const bonus=Math.max(30,20+4*L);return `Aura. Everything within ${(3.5+.15*L).toFixed(1)} paces of you takes +${bonus}% damage from every source.`}},
    {n:'Orange Pill',ab:'ORANGE\nPILL',a:1,cost:11,cd:5,d:L=>{const sec=Math.round((6+.3*L)*10)/10;return `Charge through the line, untouchable, for ${pct(1.6+.3*L)} to everything you pass. Whatever survives takes +30% damage for ${sec}s.`}},
    {n:'Blessed Hashrate',ab:'BLESSED\nHASHRATE',a:1,cost:16,cd:1.1,d:L=>`Hammers spiral out from you, ${pct(1.1+.22*L)} each, and they do not stop at the first thing they meet.`},
@@ -1496,8 +1496,8 @@ Object.assign(SKF,{
   5:(L,m)=>{const t=nearest(8),mm=(1.6+.3*L)*m;
     const end=()=>{for(const e of W.ents)if(dist(e,P)<2.2+e.r)e.mark=Math.max(e.mark,6+.3*L)};
     if(t){face(t);dash(24,Math.max(.08,(dist(t,P)-1)/24),mm,end,skvOf(G.cls,5).col)}else dash(24,.22,mm,end,skvOf(G.cls,5).col)},
-  /* Blessed Hashrate, spiralling out, stopping for nobody. */
-  6:(L,m)=>{const n=5;for(let i=0;i<n;i++){const a=(i/n)*6.283+P.ph*2;
+  /* Five hammers, a full turn, the first along your facing. P.ph was never set, so the old angle was NaN and no hammer moved. */
+  6:(L,m)=>{const n=5,a0=Math.atan2(P.dir.y,P.dir.x);for(let i=0;i<n;i++){const a=a0+(i/n)*6.283;
     shoot({x:Math.cos(a),y:Math.sin(a)},(1.1+.22*L)*m,99,{spd:7,life:1.1,col:'#ffe36b',big:1})}},
   /* The three auras set the one that is on; the tick does the rest. */
   3:L=>maxiSet(3,L),
@@ -4386,7 +4386,8 @@ function auraFoes(h) {
 }
 /* Toxic Maximalism's attack-speed line is the one printed on the skill:
    15+3*L percent. The owner, a hireling, and anyone standing in the aura all
-   take it. toxicSwing reads toxL. */
+   take it. toxicSwing reads toxL. Any haste above zero is +50% run speed,
+   which the card also prints. */
 function toxicSwing(body) {
   const L = body && body.toxL;
   if (!(L > 0)) return 1;
