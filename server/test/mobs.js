@@ -39,6 +39,8 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 
   const A = await client(reg('Nia'));
   const B = await client(reg('Vale'));
+  const nia = (A.seen.find(m => m.t === 'you') || {}).uid;
+  const vale = (B.seen.find(m => m.t === 'you') || {}).uid;
   A.send({ t: 'hello', lvl: 10, cls: 'scrapper', zi: 1, hp: 100, hpm: 120 });
   B.send({ t: 'hello', lvl: 10, cls: 'scrapper', zi: 1, hp: 100, hpm: 120 });
   A.send({ t: 'game.create', name: 'Pit', diff: 'normal' });
@@ -53,7 +55,7 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   await wait(80);
   const hostA = of(A, 'mhost').pop();
   const hostB = of(B, 'mhost').pop();
-  ok('the first player in the district hosts the machines', !!(hostA && hostB && hostA.uid === hostB.uid && hostA.uid === (A.seen.find(m => m.t === 'you') || {}).uid), JSON.stringify(hostA));
+  ok('the first player in the district hosts the machines', !!(hostA && hostB && hostA.uid === hostB.uid && hostA.uid === nia), JSON.stringify(hostA));
 
   A.send({ t: 'mobs', zi: 1, tier: 0, list: [{ id: 1, k: 'tick', x: 10, y: 11, hp: 999999, max: 999999, ml: 5 }] });
   await wait(60);
@@ -87,9 +89,9 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 
   A.send({ t: 'mobs', zi: 1, tier: 0, list: [{ id: 2, k: 'tick', x: 8, y: 8, hp: 30, max: 30, ml: 5 }] });
   await wait(40);
-  A.send({ t: 'invite', uid: (B.seen.find(m => m.t === 'you') || {}).uid });
+  A.send({ t: 'invite', uid: vale });
   await wait(40);
-  B.send({ t: 'accept', uid: hostA.uid });
+  B.send({ t: 'accept', uid: nia });
   await wait(60);
   A.seen.length = 0; B.seen.length = 0;
   A.send({ t: 'mhit', zi: 1, tier: 0, id: 2, d: 1e9 });
@@ -99,9 +101,12 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   ok('a party splits the server kill', ax.length === 1 && bx.length === 1 && sum === Math.round((ax[0].amount + bx[0].amount)) && sum > ax[0].amount, JSON.stringify({ a: ax[0], b: bx[0] }));
 
   A.send({ t: 'move', x: 12, y: 12, zi: 0, tier: 0, hp: 100, hpm: 120, lvl: 10 });
-  await wait(80);
-  const next = of(B, 'mhost').pop();
-  ok('the host leaving the district hands the machines over', !!(next && next.uid === (B.seen.find(m => m.t === 'you') || {}).uid), JSON.stringify(next));
+  let next = null;
+  for (let i = 0; i < 20 && !(next && next.uid === vale); i++) {
+    await wait(40);
+    next = of(B, 'mhost').pop();
+  }
+  ok('the host leaving the district hands the machines over', !!(next && next.uid === vale), JSON.stringify({ next, vale, hosts: of(B, 'mhost').map(m => m.uid) }));
 
   /* ---- two browsers ---- */
   const browser = await chromium.launch();
