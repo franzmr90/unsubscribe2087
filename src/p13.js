@@ -17,7 +17,7 @@ const MP = {
   voice: false, muted: {}, speaking: {}, peers: {}, stream: null,
   friends: {}, face: {}, joinUid: '', csrf: '',
   whispers: [], whisperTo: '', mail: [], closed: false, portalUntil: 0,
-  resume: null, gamePass: '', buildAsked: false,
+  resume: null, gamePass: '', buildAsked: false, trade: null, tradeLock: null,
   maps: {}, mapAsked: null, wantEnter: null, freshFor: null, freshBase: -1,
   mobHost: '', mobNext: '', mobAt: 0, mobSeqSent: 0, mobSnap: null
 };
@@ -291,6 +291,14 @@ function mpRecv(m) {
     if (G && G.q[m.k] !== undefined && G.q[m.k] < m.v) { G.q[m.k] = m.v; toast(m.from + ' finished ' + (QUESTS[m.k] ? QUESTS[m.k].n : m.k) + ' with you.'); }
   } else if (m.t === 'pvp') {
     mpTakeHit(m);
+  } else if (m.t === 'pail') {
+    mpPailMsg(m);
+  } else if (m.t === 'lend') {
+    if (P) { P.soundSwing = 1; if (typeof float === 'function') float(P.x, P.y, 'Unnamed', '#f7931a', 0); }
+  } else if (m.t === 'mcurse') {
+    mpMcurse(m);
+  } else if (m.t === 'trade') {
+    mpTradeMsg(m);
   } else if (m.t === 'kill') {
     mpSay(m.duel ? m.killer + ' took the duel against ' + m.dead + '.' : m.killer + ' has slain ' + m.dead + '.');
   } else if (m.t === 'sim') {
@@ -328,9 +336,30 @@ function mpRecv(m) {
    not changed, and the next quiet beat clears sk and sw so the same skill can be seen
    again. The server keeps the last value and does not treat any of this as a hit. */
 let mpSk = null, mpSkNew = 0, mpSkClear = 0, mpSw = 0, mpSwClear = 0;
-const mpSent = { sk: null, au: null, sw: 0 };
-function mpNoteCast(i) { const n = i | 0; if (n >= 0 && n <= 14) { mpSk = n; mpSkNew = 1; } }
+const mpSent = { sk: null, au: null, aL: 0, sw: 0, fx: '' };
+function mpSkillOk(n) { return (n >= 0 && n <= 14) || (n >= 100 && n <= 105); }
+function mpNoteCast(i) { const n = i | 0; if (mpSkillOk(n)) { mpSk = n; mpSkNew = 1; } }
 function mpNoteSwing() { mpSw = 1; }
+function mpFxSnap() {
+  const au = (P.aura && (P.aura.i === 3 || P.aura.i === 4 || P.aura.i === 7)) ? P.aura.i : null;
+  const aL = au ? Math.max(1, Math.min(20, (P.aura.L || (typeof sl === 'function' ? sl(au) : 1) || 1) | 0)) : 0;
+  const bf = {};
+  if (P.orders > 0.05) bf.call = Math.round(P.orders * 10) / 10;
+  if (P.book > 0.05) bf.book = Math.round(P.book * 10) / 10;
+  if (P.ledger > 0.05) bf.ledger = Math.round(P.ledger * 10) / 10;
+  const node = (au && G.cls === 'maxi' && typeof sl === 'function' && sl(10) > 0) ? Math.min(20, sl(10) | 0) : 0;
+  const nm = (G.cls === 'witness' && typeof sl === 'function' && sl(13) > 0) ? Math.min(20, sl(13) | 0) : 0;
+  const tes = {};
+  if (nm && W && W.ents) {
+    let n = 0;
+    for (const e of W.ents) {
+      if (!e || !e.mid || !(e.tes > 0) || n >= 8) continue;
+      tes[e.mid | 0] = Math.min(6, e.tes | 0);
+      n++;
+    }
+  }
+  return { au, aL, bf, node, nm, tes };
+}
 function mpMovePkt() {
   if (!P || !W || !G) return null;
   const pkt = {
@@ -339,8 +368,13 @@ function mpMovePkt() {
     hp: Math.round(G.hp), hpm: Math.round(S.maxHp), inst: W.inst || null,
     lvl: G.lvl | 0, tier: G.tier | 0
   };
-  const au = (P.aura && (P.aura.i === 3 || P.aura.i === 4 || P.aura.i === 7)) ? P.aura.i : null;
-  if (au !== mpSent.au) { pkt.au = au; mpSent.au = au; }
+  pkt.pail = mpPailSnap();
+  const fx = mpFxSnap();
+  const fxKey = JSON.stringify(fx);
+  if (fxKey !== mpSent.fx) {
+    pkt.au = fx.au; pkt.aL = fx.aL; pkt.bf = fx.bf; pkt.node = fx.node; pkt.nm = fx.nm; pkt.tes = fx.tes;
+    mpSent.au = fx.au; mpSent.aL = fx.aL; mpSent.fx = fxKey;
+  }
   /* A repeat of the same index has to go out as empty first, or the other client
      cannot tell it from the cast it already drew. */
   if (mpSkClear && !mpSkNew) { pkt.sk = null; mpSent.sk = null; mpSkClear = 0; }
@@ -351,8 +385,24 @@ function mpMovePkt() {
   else if (mpSw) { pkt.sw = 1; mpSent.sw = 1; mpSw = 0; mpSwClear = 1; }
   return pkt;
 }
+function mpPailSnap() {
+  if (!W || !W.allies) return null;
+  for (let i = 0; i < W.allies.length; i++) {
+    const a = W.allies[i];
+    if (!a || a.k !== 'pail' || a.remote || !(a.hp > 0)) continue;
+    const L = Math.max(1, Math.min(20, a.L | 0 || 1));
+    return { x: +a.x.toFixed(2), y: +a.y.toFixed(2), L: L, hp: Math.round(a.hp), max: Math.round(a.max || a.hp) };
+  }
+  return null;
+}
 function mpRemoteCast(o) {
   if (!o || o.sk == null || !o.cls || !W || !W.fx) return;
+  if (o.sk >= 100 && o.sk <= 105) {
+    const col = o.sk === 101 ? '#e6e2d6' : o.sk === 102 ? '#9a6cff' : o.sk === 103 ? '#7be495' : '#c9a868';
+    W.fx.push({ k: 'ring', x: o.x, y: o.y, r: o.sk >= 101 && o.sk <= 103 ? 6 : 1.4, t: 0, life: .35, col: col, remote: 1 });
+    MP.lastCast = { k: 'ring', col: col, n: ((MP.lastCast && MP.lastCast.n) || 0) + 1 };
+    return;
+  }
   const v = skvOf(o.cls, o.sk);
   if (!v || OPT.fx === 'thin') return;
   MP.lastCast = { k: v.k, col: v.col, n: ((MP.lastCast && MP.lastCast.n) || 0) + 1 };
@@ -375,8 +425,14 @@ function mpZone(m) {
        second do not look like ten updates a second. */
     o.px = o.x; o.py = o.y; o.tx = r.x; o.ty = r.y; o.lerp = 0;
     o.name = r.name; o.lvl = r.lvl; o.cls = r.cls; o.dir = r.dir; o.hp = r.hp; o.hpm = r.hpm;
-    if ('sk' in r) o.sk = (typeof r.sk === 'number' && r.sk >= 0 && r.sk <= 14 && (r.sk | 0) === r.sk) ? r.sk : null;
+    if ('sk' in r) o.sk = (typeof r.sk === 'number' && mpSkillOk(r.sk) && (r.sk | 0) === r.sk) ? r.sk : null;
     if ('au' in r) o.au = (r.au === 3 || r.au === 4 || r.au === 7) ? r.au : null;
+    if ('aL' in r) o.aL = (o.au && r.aL >= 1 && r.aL <= 20) ? (r.aL | 0) : (o.au ? (o.aL || 1) : 0);
+    if ('node' in r) o.node = (o.au && r.node >= 1 && r.node <= 20) ? (r.node | 0) : 0;
+    if ('nm' in r) o.nm = (r.nm >= 1 && r.nm <= 20) ? (r.nm | 0) : 0;
+    if ('bf' in r) o.bf = (r.bf && typeof r.bf === 'object') ? r.bf : null;
+    if ('tes' in r) o.tes = (r.tes && typeof r.tes === 'object') ? r.tes : null;
+    if ('pail' in r) o.pail = (r.pail && r.pail.hp > 0) ? { x: +r.pail.x || 0, y: +r.pail.y || 0, L: r.pail.L | 0 || 1, hp: Math.round(+r.pail.hp || 0), max: Math.round(+r.pail.max || +r.pail.hp || 0) } : null;
     if ('sw' in r) o.sw = r.sw === 1 ? 1 : 0;
     o.wired = 1;
     if (!first) {
@@ -416,12 +472,74 @@ function mpHurt(e, d, crit) {
   e.hp = Math.max(0, e.hp - d * MP.pvpScale);
   float(e.x, e.y, Math.round(d * MP.pvpScale) + (crit ? '!' : ''), '#ffb4ae', 0);
   parts(e.x, e.y, crit ? 5 : 2, ['#ffd27a', '#fff', '#ff9a3c'], 2.2);
-  mpSend('pvp', { uid: e.mp, dmg: d, kind: crit ? 'crit' : '' });
+  const ty = e && (e.lt === 'sound' || e.lt === 'impact' || e.lt === 'surge' || e.lt === 'rust' || e.lt === 'heat' || e.lt === 'noise') ? e.lt : 'impact';
+  const cm = (S && +S.critM > 0) ? Math.round(Math.min(8, Math.max(1, +S.critM)) * 100) / 100 : 2;
+  mpSend('pvp', { uid: e.mp, dmg: d, kind: crit ? 'crit' : '', dty: ty, critM: crit ? cm : 0 });
 }
 
 /* Smoothing runs at frame rate, from update(). */
+function mpLend(uid) { if (uid && mpOn()) mpSend('lend', { uid: uid }); }
+function mpPailAsk(a, dt) {
+  if (!a || !mpOn() || !MP.party) return;
+  a.ask = (a.ask || 0) - dt;
+  if (a.ask > 0) return;
+  a.ask = 0.25;
+  const draw = [];
+  if (P && dist(P, a) < 2.6 && G && S && G.hp < S.maxHp) draw.push({ k: 'self' });
+  if (W && W.merc && W.merc.hp > 0 && W.merc.max > W.merc.hp && dist(W.merc, a) < 2.6) draw.push({ k: 'merc', n: Math.ceil(W.merc.max - W.merc.hp) });
+  if (W && W.tag && W.tag.hp > 0 && (W.tag.max || 0) > W.tag.hp && dist(W.tag, a) < 2.6) draw.push({ k: 'tag', n: Math.ceil(W.tag.max - W.tag.hp) });
+  if (MP.others) for (let i = 0; i < MP.others.length; i++) {
+    const o = MP.others[i];
+    if (!o || !mpInParty(o.uid)) continue;
+    if (typeof mpHostileTo === 'function' && mpHostileTo(o.uid)) continue;
+    if (!(o.hpm > 0) || o.hp >= o.hpm) continue;
+    if (Math.hypot(o.x - a.x, o.y - a.y) >= 2.6) continue;
+    draw.push({ k: o.uid });
+  }
+  if (draw.length) mpSend('pail', { draw: draw });
+}
+function mpPailMsg(m) {
+  if (!m || !P || !W) return;
+  if (m.grants) {
+    let mine = null;
+    if (W.allies) for (let i = 0; i < W.allies.length; i++) if (W.allies[i] && W.allies[i].k === 'pail' && !W.allies[i].remote) { mine = W.allies[i]; break; }
+    if (mine && m.hp != null) mine.hp = Math.min(mine.hp, +m.hp || 0);
+    for (let i = 0; i < m.grants.length; i++) {
+      const g = m.grants[i];
+      if (!g || !(g.n > 0)) continue;
+      if (g.k === 'self') heal(g.n);
+      else if (g.k === 'merc' && W.merc && W.merc.hp > 0) W.merc.hp = Math.min(W.merc.max, W.merc.hp + g.n);
+      else if (g.k === 'tag' && W.tag && W.tag.hp > 0) W.tag.hp = Math.min(W.tag.max || W.tag.hp, W.tag.hp + g.n);
+    }
+    if (mine && !(mine.hp > 0)) mine.life = 0;
+    return;
+  }
+  if (m.n > 0) heal(m.n);
+}
+function mpSyncPails() {
+  if (!W || !W.allies || !MP || !MP.others) return;
+  const seen = {};
+  for (let i = 0; i < MP.others.length; i++) {
+    const o = MP.others[i];
+    if (!o || !o.pail || !(o.pail.hp > 0) || typeof mpInParty !== 'function' || !mpInParty(o.uid)) continue;
+    if (typeof mpHostileTo === 'function' && mpHostileTo(o.uid)) continue;
+    seen[o.uid] = 1;
+    let a = null;
+    for (let j = 0; j < W.allies.length; j++) if (W.allies[j] && W.allies[j].remote && W.allies[j].k === 'pail' && W.allies[j].owner === o.uid) { a = W.allies[j]; break; }
+    if (!a) {
+      a = { k: 'pail', remote: 1, owner: o.uid, life: 1e9, r: .3, hp: o.pail.hp, max: o.pail.max || o.pail.hp, x: o.pail.x, y: o.pail.y, L: o.pail.L || 1, rate: 0 };
+      W.allies.push(a);
+    }
+    a.x = o.pail.x; a.y = o.pail.y; a.hp = o.pail.hp; a.max = o.pail.max || a.max; a.L = o.pail.L || 1; a.life = 1e9;
+  }
+  for (let i = W.allies.length - 1; i >= 0; i--) {
+    const a = W.allies[i];
+    if (a && a.remote && a.k === 'pail' && !seen[a.owner]) W.allies.splice(i, 1);
+  }
+}
 function mpTick(dt) {
   if (!mpOn() || !G) return;
+  mpSyncPails();
   for (const o of MP.others) {
     if (o.lerp === undefined) continue;
     o.lerp = Math.min(1, o.lerp + dt * 9);
@@ -440,8 +558,9 @@ function mpMobHit(e, d, opt) {
   if (!mpOn() || !e || !e.mid || !(d > 0) || !W || !G) return;
   mpMobPush(true);
   const mob = opt && opt.mob;
-  const sk = mob ? -2 : ((typeof P !== 'undefined' && P && P.hitSk >= 0) ? (P.hitSk | 0) : -1);
-  mpSend('mhit', { zi: W.zi, tier: G.tier | 0, id: e.mid, d: Math.round(d), sk: sk });
+  const area = (opt && opt.area) || (typeof P !== 'undefined' && P && P.areaTick) ? 1 : 0;
+  const sk = mob ? -2 : (area ? ((typeof P !== 'undefined' && P && P.hitSk >= 0) ? (P.hitSk | 0) : -3) : ((typeof P !== 'undefined' && P && P.hitSk >= 0) ? (P.hitSk | 0) : -1));
+  mpSend('mhit', { zi: W.zi, tier: G.tier | 0, id: e.mid, d: Math.round(d), sk: sk, area: area ? 1 : 0 });
 }
 function mpMobGone(e) {
   if (!mpMobHost() || !e || !e.mid || !W || !G) return;
@@ -509,6 +628,8 @@ function mpApplyMobs(m) {
     } else {
       e.hp = +row.hp; e.max = +row.max || e.max;
     }
+    if (row.curse) mpPaintCurse(e, row.curse);
+    if (row.tes) e.partyTes = Math.max(e.partyTes || 0, row.tes | 0);
   }
   if (m.next) MP.mobNext = m.next;
   if (m.you || host) {
@@ -525,10 +646,33 @@ function mpMhp(m) {
     W.ents[i].hp = +m.hp; W.ents[i].max = +m.max || W.ents[i].max; W.ents[i].flash = .12; return;
   }
 }
+function mpPaintCurse(e, c) {
+  if (!e || !c || !c.k) return;
+  const sec = Math.max(0, +c.sec || 0);
+  if (!(sec > 0)) return;
+  if (c.k === 'rec') { e.onRecT = Math.max(e.onRecT || 0, sec); e.onRecM = Math.max(e.onRecM || 1, +c.m || 1); }
+  else if (c.k === 'leave') e.noheal = Math.max(e.noheal || 0, sec);
+}
+function mpMcurse(m) {
+  if (!m) return;
+  MP.curses = MP.curses || {};
+  MP.curses[m.id | 0] = m;
+  if (!W || !W.ents) return;
+  for (let i = 0; i < W.ents.length; i++) if (W.ents[i].mid === (m.id | 0)) mpPaintCurse(W.ents[i], m);
+}
+function mpNoteCurse(e, k, mul, sec) {
+  if (!e || !e.mid || !mpOn()) return;
+  mpSend('curse', { id: e.mid | 0, k: k, m: mul, sec: sec });
+}
 function mpMkill(m) {
   if (!W || !m) return;
   let e = null;
   for (let i = 0; i < W.ents.length; i++) if (W.ents[i].mid === m.id) { e = W.ents[i]; break; }
+  /* The kill can arrive before this client has the body. A party member still rolls. */
+  if (!e && m.loot && !m.silent && m.k && typeof ET !== 'undefined' && ET[m.k]) {
+    e = { mid: m.id, k: m.k, x: +m.x || 0, y: +m.y || 0, r: .4, sz: 1, hp: 0, max: 1, champ: m.champ ? 1 : 0, su: m.su ? 1 : 0, mods: {}, minion: 0 };
+    W.ents.push(e);
+  }
   if (!e) return;
   if (m.silent) {
     const i = W.ents.indexOf(e);
@@ -643,7 +787,7 @@ function mpTakeHit(m) {
   /* Through the game's own damage path, so armour and resistances apply to a person the
      same way they apply to a machine, and death — including the rig's painless kind —
      is the code that already exists rather than a second copy of it. */
-  hurt(m.dmg, 0, { name: m.from, pvp: 1, crit: m.kind === 'crit' ? 1 : 0 });
+  hurt(m.dmg, 0, { name: m.from, pvp: 1, crit: m.kind === 'crit' ? 1 : 0, critM: m.kind === 'crit' ? (+m.critM || 2) : 0, dty: m.dty || 'impact' });
   if (G.hp <= 0 && was > 0) mpSend('died', { uid: m.fromUid });
 }
 
@@ -895,9 +1039,200 @@ function mpLobbyPanel() {
   return h;
 }
 
+/* Party auras and the buffs that already name a radius. Witness Named Party is the
+   whole district, which is what that card says. Founder effects stay on the founder. */
+function mpApplyParty() {
+  if (!P || !G) return;
+  let call = 0, book = 0, ledger = 0, named = 0, node = 0;
+  const marks = {};
+  if (typeof MP !== 'undefined' && MP.others && typeof mpInParty === 'function') {
+    for (const o of MP.others) {
+      if (!o || !mpInParty(o.uid)) continue;
+      if (typeof mpHostileTo === 'function' && mpHostileTo(o.uid)) continue;
+      const d = dist(P, o);
+      const bf = o.bf || {};
+      if (bf.call > 0 && d < FORMULAS.aura.call.r) call = Math.max(call, bf.call);
+      if (bf.book > 0 && d < FORMULAS.aura.book.r) book = Math.max(book, bf.book);
+      if (bf.ledger > 0 && d < FORMULAS.aura.ledger.r) ledger = Math.max(ledger, bf.ledger);
+      if (o.nm > 0) named = Math.max(named, o.nm | 0);
+      if (o.tes) for (const id in o.tes) marks[id] = Math.max(marks[id] || 0, o.tes[id] | 0);
+      if (o.node > 0 && (o.au === 3 || o.au === 4 || o.au === 7) && d < auraVisR(o.au, o.aL || 1)) node = Math.max(node, o.node | 0);
+    }
+  }
+  const was = P.rCall > 0;
+  P.rCall = call; P.rBook = book; P.rLedger = ledger; P.allyNamed = named;
+  if (node > 0) P.nodeM = Math.max(P.nodeM || 0, 1 + 0.06 + 0.02 * node);
+  if ((was ? 1 : 0) !== (call > 0 ? 1 : 0) && typeof calc === 'function') calc();
+  if (W && W.ents) for (const e of W.ents) if (e && e.mid) e.partyTes = marks[e.mid] || 0;
+}
+function tradeHeld(it) {
+  return !!(it && it.tid && MP.tradeLock && MP.tradeLock[it.tid]);
+}
+function tradeLocked(it) {
+  if (!tradeHeld(it)) return false;
+  toast('That is on the table.'); sfx('err'); return true;
+}
+/* Offered sats leave the purse when either side confirms, and come back if the
+   trade is cancelled or the offer changes. Spending, selling, stashing, and
+   every other debit has to go through spendSats. */
+function tradeReserved() {
+  const t = (typeof MP !== 'undefined') && MP && MP.trade;
+  if (!t || !t.you) return 0;
+  if (t.phase === 'check' || t.locked || t.you.ok || (t.them && t.them.ok)) return Math.max(0, t.you.sats | 0);
+  return 0;
+}
+function satsFree() {
+  if (typeof G === 'undefined' || !G) return 0;
+  return Math.max(0, (G.sats | 0) - tradeReserved());
+}
+function spendSats(n, why) {
+  n = Math.floor(+n || 0);
+  if (!(n > 0) || typeof G === 'undefined' || !G) return false;
+  if (satsFree() < n) {
+    const reserved = tradeReserved();
+    toast(reserved > 0 && (G.sats | 0) >= n ? 'Those sats are on the table.' : (why || 'Not enough sats'));
+    if (typeof sfx === 'function') sfx('err');
+    return false;
+  }
+  G.sats -= n;
+  return true;
+}
+function mpTradeFrozen() {
+  const t = MP.trade;
+  if (!t) return false;
+  return t.phase === 'check' || !!t.locked || !!(t.you && t.you.ok) || !!(t.them && t.them.ok);
+}
+function mpTradePurse() {
+  const tids = [];
+  for (const it of (G && G.bag) || []) if (it && it.tid && !it.test) tids.push(it.tid);
+  return { sats: G ? (G.sats | 0) : 0, tids: tids };
+}
+function tradeSeen(id) {
+  if (G && G.trades && G.trades[id]) return true;
+  try {
+    const raw = localStorage.getItem('u2087-trade');
+    const cur = raw ? JSON.parse(raw) : {};
+    return !!cur[id];
+  } catch (e) { return false; }
+}
+function tradeRemember(id) {
+  G.trades = G.trades || {};
+  G.trades[id] = 1;
+  try {
+    const raw = localStorage.getItem('u2087-trade');
+    const cur = raw ? JSON.parse(raw) : {};
+    cur[id] = 1;
+    const keys = Object.keys(cur);
+    if (keys.length > 40) delete cur[keys[0]];
+    localStorage.setItem('u2087-trade', JSON.stringify(cur));
+  } catch (e) {}
+}
+function mpTradeApply(m) {
+  if (!G || !m || !m.id || !m.give || !m.take) return;
+  MP.lastDone = m;
+  if (tradeSeen(m.id)) { mpSend('trade.ack', { id: m.id }); return; }
+  const give = m.give, take = m.take;
+  const ids = {};
+  for (const id of give.ids || []) if (id) ids[id] = 1;
+  const have = {};
+  for (const it of G.bag || []) if (it && it.tid) have[it.tid] = 1;
+  let short = (G.sats | 0) < (give.sats | 0);
+  for (const id in ids) if (!have[id]) short = true;
+  if (short) {
+    mpSend('trade.cancel', {});
+    toast('The trade is off. The goods were not still in hand.');
+    MP.trade = null; MP.tradeLock = null; MP.heldFor = null;
+    return;
+  }
+  const bag = [];
+  for (const it of G.bag || []) {
+    if (it && it.tid && ids[it.tid]) { delete ids[it.tid]; continue; }
+    bag.push(it);
+  }
+  const seen = {};
+  for (const it of bag) if (it && it.tid) seen[it.tid] = 1;
+  G.sats = (G.sats | 0) - (give.sats | 0) + (take.sats | 0);
+  for (const it of take.items || []) {
+    if (!it || !it.tid || seen[it.tid]) continue;
+    if (bag.length >= 24) { toast('Your pack is full. The rest of the trade did not fit.'); break; }
+    bag.push(it); seen[it.tid] = 1;
+  }
+  G.bag = bag;
+  tradeRemember(m.id);
+  MP.tradeLock = null;
+  MP.heldFor = null;
+  if (typeof save === 'function') save(true);
+  if (typeof calc === 'function') calc();
+  mpSend('trade.ack', { id: m.id });
+  toast('The trade is done.');
+}
+function mpTradeMsg(m) {
+  if (!m) return;
+  if (m.phase === 'ask') {
+    MP.tradeAsk = { uid: m.with, from: m.from || 'Someone' };
+    toast((m.from || 'Someone') + ' wants to trade.');
+    if (mode === 'sheet') drawSheet();
+    return;
+  }
+  if (m.phase === 'dead') {
+    MP.trade = null; MP.tradeLock = null; MP.tradeAsk = null; MP.heldFor = null;
+    toast(m.why === 'dropped' ? 'They dropped. The trade is off.' : m.why === 'short' ? 'The trade is off. Somebody no longer holds what they offered.' : 'The trade is off.');
+    if (mode === 'sheet') drawSheet();
+    return;
+  }
+  if (m.phase === 'done') { mpTradeApply(m); MP.trade = null; MP.tradeLock = null; MP.heldFor = null; if (mode === 'sheet') drawSheet(); return; }
+  MP.trade = m;
+  MP.tradeLock = {};
+  if (m.you && m.you.items) for (const it of m.you.items) if (it && it.tid) MP.tradeLock[it.tid] = 1;
+  if (m.phase === 'check' && MP.heldFor !== m.id) {
+    MP.heldFor = m.id;
+    mpSend('trade.hold', mpTradePurse());
+  }
+  if (m.phase !== 'check') MP.heldFor = null;
+  if (mode === 'sheet') drawSheet();
+}
+function mpTradePanel() {
+  const t = MP.trade;
+  if (!t || (t.phase !== 'open' && t.phase !== 'check')) {
+    if (!MP.tradeAsk) return '';
+    return '<h3>A trade</h3><p>' + esc(MP.tradeAsk.from) + ' wants to trade, in town.</p><div class="row"><button class="big" data-mpta="' + MP.tradeAsk.uid + '">Accept</button><button class="ghost" data-mptx="1">Not now</button></div>';
+  }
+  const you = t.you || { sats: 0, items: [] }, them = t.them || { sats: 0, items: [] };
+  const frozen = mpTradeFrozen();
+  let h = '<h3>Trade</h3><p style="font-size:13px">Both of you confirm. Once either does, the sats and the items on the table stay put until the swap or a cancel. Changing an offer clears both confirms. Nothing moves until both purses still cover the offer.</p>';
+  if (t.phase === 'check') h += '<p>Both confirmed. Checking that the sats and the items are still in hand.</p>';
+  else if (frozen) h += '<p>The table is locked. Change the offer if you need to unlock it. That clears both confirms.</p>';
+  h += '<p>You offer ' + (you.sats | 0) + ' sats' + (you.ok ? ' · confirmed' : '') + '. They offer ' + (them.sats | 0) + ' sats' + (them.ok ? ' · confirmed' : '') + '.</p>';
+  h += '<div class="ln off">Theirs</div>';
+  if (!(them.items || []).length && !(them.sats > 0)) h += '<p>Nothing yet.</p>';
+  else for (const it of them.items || []) h += '<div class="ln">' + esc(it.name || it.base || 'An item') + '</div>';
+  h += '<div class="row"><input id="mpSats" inputmode="numeric" maxlength="9" value="' + (you.sats | 0) + '"' + (frozen ? ' readonly' : '') + ' style="width:8em;background:#0a0912;border:1px solid #3a3350;color:#e8e2d4;border-radius:6px;padding:10px;font:15px Georgia,serif"></div>';
+  h += '<div class="list">';
+  const offered = {};
+  for (const it of you.items || []) if (it && it.tid) offered[it.tid] = 1;
+  for (const it of (G && G.bag) || []) {
+    if (!it || it.test) continue;
+    if (!it.tid) it.tid = Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 6);
+    h += '<button class="li' + (offered[it.tid] ? ' on' : '') + '" data-mpti="' + esc(it.tid) + '"><div><b>' + esc(it.name || it.base || 'Item') + '</b><span>' + (offered[it.tid] ? 'On the table' : 'In your pack') + '</span></div></button>';
+  }
+  h += '</div><div class="row"><button class="ghost" data-mpto="1">' + (frozen ? 'Change the offer' : 'Set the offer') + '</button><button class="big" data-mptc="1"' + (you.ok || t.phase === 'check' ? ' disabled' : '') + '>Confirm</button><button class="ghost" data-mptx="1">Cancel</button></div>';
+  return h;
+}
+function mpTradeSendOffer() {
+  if (!G) return;
+  const box = document.getElementById('mpSats');
+  let sats = box ? Math.max(0, Math.floor(+box.value || 0)) : 0;
+  if (sats > (G.sats | 0)) sats = G.sats | 0;
+  const items = [];
+  const lock = MP.tradePick || {};
+  for (const it of G.bag || []) if (it && it.tid && lock[it.tid] && !it.test) items.push(it);
+  mpSend('trade.offer', { sats, items });
+}
+
 function mpGamePanel() {
   const me = MP.me || {}, g = MP.game, party = MP.party, sc = MP.scale || {};
-  let h = '<h3>' + esc(g.name) + '</h3>';
+  let h = mpTradePanel();
+  h += '<h3>' + esc(g.name) + '</h3>';
   h += '<div class="tick"><div>Difficulty<b>' + esc(g.diffName) + '</b></div><div>In the game<b>' + g.n + ' of ' + g.max + '</b></div>' +
     '<div>Monster health<b>' + (sc.hp || 1).toFixed(1) + '\u00d7</b></div><div>Experience<b>' + (sc.xp || 1).toFixed(1) + '\u00d7</b></div></div>';
   h += '<div class="row"><button class="ghost" data-mpq="1">Leave the game</button>' +
@@ -906,7 +1241,7 @@ function mpGamePanel() {
 
   if (party) {
     h += '<h3>Your party \u00b7 ' + party.members.length + ' of ' + MP.maxParty + '</h3>';
-    h += '<p style="font-size:13px">Experience in the district is one pool, a third again what the kill was worth, split by level. Somebody standing in town is not helping.</p>';
+    h += '<p style="font-size:13px">Experience in the district is one pool, a third again what the kill was worth, split by level. Somebody standing in town is not helping. Each of you rolls your own drops from a shared kill.</p>';
     h += '<div class="list">';
     for (const m of party.members) {
       const you = m.uid === me.uid;
@@ -943,6 +1278,7 @@ function mpGamePanel() {
         '<div class="row">' +
         '<button class="ghost' + (MP.muted[r.uid] ? ' on' : '') + '" data-mpm="' + r.uid + '">' + (MP.muted[r.uid] ? 'Unmute' : 'Mute') + '</button>' +
         (mate || hos ? '' : '<button class="ghost" data-mpi="' + r.uid + '">Invite</button>') +
+        (hos ? '' : '<button class="ghost" data-mpt="' + r.uid + '">Trade</button>') +
         (mpHostileTo(r.uid)
           ? '<button class="ghost" data-mpn="' + r.uid + '">Stand down</button>'
           : '<button class="ghost" data-mph="' + r.uid + '">Hostile</button>') + '</div>';
@@ -960,7 +1296,7 @@ function mpGamePanel() {
   return h;
 }
 
-if (typeof devOn === 'function' && devOn()) window.__mp={MP,send:mpSend,get on(){return mpOn()},get inGame(){return mpIn()},get roster(){return MP.roster},get me(){return MP.me},get scale(){return MP.scale},get mobHost(){return MP.mobHost},mpHp,mpXp,mpDmg,mute:mpMute,loadFriends:mpFriendsLoad};
+if (typeof devOn === 'function' && devOn()) window.__mp={MP,send:mpSend,get on(){return mpOn()},get inGame(){return mpIn()},get roster(){return MP.roster},get me(){return MP.me},get scale(){return MP.scale},get mobHost(){return MP.mobHost},mpHp,mpXp,mpDmg,mute:mpMute,loadFriends:mpFriendsLoad,spendSats,satsFree,tradeLocked,tradeApply:mpTradeApply,takeHit:mpTakeHit,applyMobs:mpApplyMobs};
 
 function mpWhere(zi) {
   if (zi === undefined || zi === null) return 'somewhere';
@@ -1019,11 +1355,25 @@ function mpClick(d) {
   if (d.mpv) { mpMicToggle(); setTimeout(drawSheet, 300); return true; }
   if (d.mpm) { mpMute(d.mpm); drawSheet(); return true; }
   if (d.mpi) { mpSend('invite', { uid: d.mpi }); return true; }
+  if (d.mpt) { mpSend('trade.ask', { uid: d.mpt }); return true; }
+  if (d.mpta) { mpSend('trade.accept', { uid: d.mpta }); MP.tradeAsk = null; return true; }
+  if (d.mptx) {
+    if (MP.trade) mpSend('trade.cancel', {});
+    MP.trade = null; MP.tradeAsk = null; MP.tradeLock = null; MP.tradePick = null; drawSheet(); return true;
+  }
+  if (d.mpti) {
+    if (mpTradeFrozen()) { toast('The table is locked. Change the offer to unlock it.'); sfx('err'); return true; }
+    MP.tradePick = MP.tradePick || {};
+    if (MP.tradePick[d.mpti]) delete MP.tradePick[d.mpti]; else MP.tradePick[d.mpti] = 1;
+    drawSheet(); return true;
+  }
+  if (d.mpto) { mpTradeSendOffer(); return true; }
+  if (d.mptc) { if (!(MP.trade && MP.trade.you && MP.trade.you.ok)) mpSend('trade.confirm', {}); return true; }
   if (d.mpn) { mpSend('stand', { uid: d.mpn }); return true; }
   if (d.mph) {
     const r = MP.roster.find(x => x.uid === d.mph);
     dlg('Declare against ' + ((r && r.name) || 'them') + '?',
-      'Do it in town. Both of you need to be level 9, and you can name the same person once a minute. They leave your party. Outside a town you can fight, and standing down later only stops your own swings. Damage between players lands at ' +
+      'Do it in town, and stand there a few seconds first. Both of you need to be level 9, and you can name the same person once a minute. They leave your party. Outside a town you can fight, and standing down later only stops your own swings. Damage between players lands at ' +
       Math.round(MP.pvpScale * 100) + '%.',
       [['Declare', () => { mpSend('hostile', { uid: d.mph }); }], ['Leave it']]);
     return true;

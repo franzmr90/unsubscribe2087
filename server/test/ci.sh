@@ -20,5 +20,6 @@ node server/test/plaus.js
 node deploy/dry-run.js
 node server/test/lan.js
 node server/test/mobs.js
+node server/test/coop.js
 node server/test/live.js
 node tools/soak.js --bots 20 --seconds 8 --check

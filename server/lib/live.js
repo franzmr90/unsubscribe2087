@@ -28,6 +28,7 @@ const { buildId } = require('./buildid');
 const intake = require('./intake');
 const plaus = require('./plaus');
 const { turnCfg } = require('./turn');
+const { FORMULAS, auraRadius, auraRank, pailMax, pailRate } = require('../../src/formulas');
 
 const MAX_GAME = 8;                /* Diablo II's number, and the reason this scales */
 const MAX_PARTY = 8;
@@ -38,6 +39,9 @@ const MAX_PLAYERS = +(process.env.MAX_PLAYERS || 400);
    gameScale, which follows the people in the game, is separate and stays. */
 const PARTY_POOL = 1.35;
 const PVP_SCALE = 0.25;            /* players are much tougher to each other than monsters */
+/* Stand in town this long before the first declaration. The minute between
+   naming the same person again, and the ten-second portal lock, stay. */
+const HOSTILE_ARM = 3000;
 const TOWNS = new Set([0, 17, 18, 21, 27]);
 const SIM_ZONE = 6;
 /* Three difficulties, chosen when the game is made and fixed for its life, the way
@@ -68,7 +72,7 @@ function notice(p, text) { send(p, 'sys', { text, notice: 1 }); }
 /* Reported max life is what player-damage is capped against. A tiny report would make
    somebody unkillable; a huge one would let one packet delete them. The floor tracks
    level. The ceiling is far above any honest character. */
-function takeVitals(p, m) { plaus.clampVitals(p, m); }
+function takeVitals(p, m) { plaus.clampVitals(p, m, Date.now(), partyCover(p)); }
 
 /* Loaded inside the call. social.js requires this module at the top, so a
    top-level require here would hand it the exports object before it is filled. */
@@ -160,15 +164,172 @@ function pub(p) {
 function skillIx(v) {
   if (typeof v !== 'number' || !Number.isFinite(v)) return null;
   const n = v | 0;
-  if (n !== v || n < 0 || n > 14) return null;
-  return n;
+  if (n !== v || n < 0) return null;
+  if (n <= 14) return n;
+  /* Item skills. Standing Call, Open Book, and Quiet Ledger sit at 101–103. */
+  if (n >= 100 && n <= 105) return n;
+  return null;
 }
 function auraIx(v) { return v === 3 || v === 4 || v === 7 ? v : null; }
 function loc(p) {
+  const bf = bfLiveMap(p);
   return {
     uid: p.uid, name: p.name, lvl: p.lvl, cls: p.cls, x: p.x, y: p.y, hp: p.hp, hpm: p.hpm, dir: p.dir,
-    sk: p.sk == null ? null : p.sk, au: p.au == null ? null : p.au, sw: p.sw ? 1 : 0
+    sk: p.sk == null ? null : p.sk, au: p.au == null ? null : p.au, aL: p.au ? (p.aL || 1) : 0,
+    node: p.au ? (p.node || 0) : 0, nm: p.nm || 0, bf: bf, tes: p.tes || null, sw: p.sw ? 1 : 0,
+    pail: pailLoc(p)
   };
+}
+
+function cleanBf(v) {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return null;
+  const out = {};
+  for (const k of ['call', 'book', 'ledger']) {
+    const n = +v[k];
+    if (n > 0 && n <= 30) out[k] = Math.round(n * 10) / 10;
+  }
+  return (out.call || out.book || out.ledger) ? out : null;
+}
+function cleanTes(v) {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return null;
+  const out = {};
+  let n = 0;
+  for (const k of Object.keys(v)) {
+    if (n >= 8) break;
+    const id = +k;
+    if (!Number.isFinite(id) || (id | 0) !== id || id < 1) continue;
+    const stacks = v[k] | 0;
+    if (stacks < 1) continue;
+    out[id] = Math.min(6, stacks);
+    n++;
+  }
+  return n ? out : null;
+}
+function mobStacks(r) {
+  if (!r || !r.tesBy) return 0;
+  let n = 0;
+  for (const u in r.tesBy) n = Math.max(n, r.tesBy[u] | 0);
+  return n;
+}
+/* The witness's testimony map is stamped onto the machines, so a guest reads it
+   from the mob snapshot and not only from the witness's own position packet. */
+function stampTes(p) {
+  const g = gameOf(p);
+  if (!g || TOWNS.has(p.zi | 0)) return 0;
+  const sample = mobSample(p);
+  const z = g.zones && g.zones[mobKey(sample.zi, sample.tier, sample.inst)];
+  if (!z) return 0;
+  const map = p.tes || {};
+  let changed = 0;
+  for (const id in z.mobs) {
+    const rec = z.mobs[id];
+    if (!rec || !rec.tesBy || !(p.uid in rec.tesBy)) continue;
+    if (!map[id]) { delete rec.tesBy[p.uid]; changed = 1; }
+  }
+  for (const id in map) {
+    const rec = z.mobs[id];
+    if (!rec || rec.dead) continue;
+    rec.tesBy = rec.tesBy || {};
+    if (rec.tesBy[p.uid] !== map[id]) { rec.tesBy[p.uid] = map[id]; changed = 1; }
+  }
+  return changed;
+}
+function pushMobSnap(g, sample) {
+  const z = g.zones && g.zones[mobKey(sample.zi, sample.tier, sample.inst)];
+  if (!z) return;
+  const list = mobList(z);
+  for (const q of mobHere(g, sample)) send(q, 'mobs', { zi: sample.zi | 0, tier: sample.tier | 0, list });
+}
+function clearPail(p) { p.pail = null; p.pailStore = 0; p.pailAt = null; }
+function pailLoc(p) {
+  if (!p || !p.pail || !(p.pailStore > 0)) return null;
+  return {
+    x: p.pail.x, y: p.pail.y, L: p.pail.L,
+    hp: Math.round(p.pailStore), max: p.pail.max
+  };
+}
+function cleanPail(p, raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const L = auraRank(raw.L) || 1;
+  const x = +raw.x, y = +raw.y;
+  if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+  const cap = pailMax(p.hpm || 1, L);
+  let max = Math.round(+raw.max || 0);
+  let hp = Math.round(+raw.hp || 0);
+  if (!(max > 0)) max = cap;
+  if (max > cap) max = cap;
+  if (hp > max) hp = max;
+  if (!(hp > 0)) return null;
+  return { x: Math.round(x * 100) / 100, y: Math.round(y * 100) / 100, L, hp, max };
+}
+/* A new pail sets the one store. A later report does not refill it: heals leave
+   through pail draws, so two clients cannot each spend a full copy. */
+function notePail(p, raw) {
+  if (raw == null) { if (p.pail) clearPail(p); return; }
+  const row = cleanPail(p, raw);
+  if (!row) { if (p.pail) clearPail(p); return; }
+  const prev = p.pail;
+  const moved = !prev || Math.hypot(prev.x - row.x, prev.y - row.y) > 0.8;
+  const now = Date.now();
+  if (!prev || !(p.pailStore > 0) || (moved && now - (p.pailPlaced || 0) >= 8000)) {
+    p.pail = row;
+    p.pailStore = row.hp;
+    p.pailAt = {};
+    p.pailPlaced = now;
+    return;
+  }
+  p.pail.x = prev.x; p.pail.y = prev.y; p.pail.L = prev.L; p.pail.max = prev.max;
+  p.pail.hp = p.pailStore;
+}
+/* A reported buff is a remaining duration, not a permanent flag. */
+function noteBf(p, raw) {
+  const bf = cleanBf(raw);
+  p.bf = bf;
+  p.bfUntil = {};
+  if (!bf) return;
+  const now = Date.now();
+  for (const k in bf) p.bfUntil[k] = now + bf[k] * 1000;
+}
+function bfOn(p, k) {
+  return !!(p && p.bfUntil && p.bfUntil[k] > Date.now());
+}
+function bfLiveMap(p) {
+  if (!p || !p.bf) return null;
+  const out = {};
+  const now = Date.now();
+  for (const k in p.bf) {
+    if (!(p.bfUntil && p.bfUntil[k] > now)) continue;
+    out[k] = Math.max(0.1, Math.round((p.bfUntil[k] - now) / 100) / 10);
+  }
+  return (out.call || out.book || out.ledger) ? out : null;
+}
+function sameRoom(a, b) {
+  if (!a || !b || !a.game || a.game !== b.game) return false;
+  return (a.zi | 0) === (b.zi | 0) && (a.inst || '') === (b.inst || '') && (a.tier | 0) === (b.tier | 0);
+}
+/* What a party member's aura or Standing Call is doing to this player, right now. */
+function partyCover(p) {
+  const out = { tox: 0, call: 0 };
+  if (!p) return out;
+  const consider = q => {
+    if (!q) return;
+    if (q !== p) {
+      if (!p.party || q.party !== p.party || !sameRoom(p, q)) return;
+      if ((p.hostile && p.hostile.has(q.uid)) || (q.hostile && q.hostile.has(p.uid))) return;
+      const d = Math.hypot((+p.x || 0) - (+q.x || 0), (+p.y || 0) - (+q.y || 0));
+      if (q.au === 3 && d < auraRadius(3, q.aL || 1)) out.tox = Math.max(out.tox, q.aL || 1);
+      if (bfOn(q, 'call') && d < FORMULAS.aura.call.r) out.call = 1;
+      return;
+    }
+    if (q.au === 3) out.tox = Math.max(out.tox, q.aL || 1);
+    if (bfOn(q, 'call')) out.call = 1;
+  };
+  consider(p);
+  if (p.party) {
+    const party = parties.get(p.party);
+    if (party) for (const uid of party.members) if (uid !== p.uid) consider(live.get(uid));
+  }
+  return out;
 }
 
 function inGame(g, t, d) { for (const q of gamePlayers(g)) send(q, t, d); }
@@ -286,6 +447,7 @@ function leaveGame(p, opt) {
   p.hostile.clear();
   p.declaredAt.clear();
   p.portalLock = 0;
+  tradeDrop(p, 'left');
   p.invites.clear();
   /* Straight back to the lobby, with the list already in hand rather than a blank panel
      waiting on the next coalesced push. */
@@ -395,10 +557,16 @@ function mobList(z) {
   for (const id in z.mobs) {
     const r = z.mobs[id];
     if (!r || r.dead) continue;
-    out.push({
+    const row = {
       id: +id, k: r.k, x: Math.round(r.x * 100) / 100, y: Math.round(r.y * 100) / 100,
       hp: Math.round(r.hp), max: r.max, ml: r.ml, champ: r.champ, su: r.su, min: r.min
-    });
+    };
+    if (r.curse && r.curse.until > Date.now()) {
+      row.curse = { k: r.curse.k, m: r.curse.m, sec: Math.max(0.1, Math.round((r.curse.until - Date.now()) / 100) / 10) };
+    }
+    const stacks = mobStacks(r);
+    if (stacks > 0) row.tes = stacks;
+    out.push(row);
   }
   return out;
 }
@@ -481,9 +649,7 @@ function grantMobXp(p, amount, ml) {
   amount = Math.round(Math.max(0, +amount || 0));
   if (!amount || !p) return;
   const party = partyOf(p);
-  const here = party
-    ? membersOf(party).filter(q => q.game === p.game && q.zi === p.zi && (q.inst || '') === (p.inst || '') && (q.tier | 0) === (p.tier | 0))
-    : [p];
+  const here = party ? membersOf(party).filter(q => sameRoom(q, p)) : [p];
   if (here.length < 2) {
     send(p, 'mxp', { amount, self: 1 });
     return;
@@ -526,10 +692,169 @@ function diffHpOf(g) {
    heartbeat, or the other client can sample the beat after it has already been cleared. */
 function pushPeers(p) { for (const q of zonePeers(p)) pushZone(q); }
 
+/* ---------- trades ----------
+   The server does not keep the purse between sessions. It does keep this trade.
+   Once either side confirms, the offer is frozen. The swap runs only after both
+   have reported a balance that still covers what they offered. A short report,
+   or a disconnect before that, cancels it. A finished trade replays the same id. */
+const trades = new Map();
+const tradeByPlayer = new Map();
+const TRADE_MAX_ITEMS = 8;
+const TRADE_MAX_SATS = 1e9;
+
+function tradeItem(it) {
+  if (!it || typeof it !== 'object' || Array.isArray(it)) return null;
+  let s = '';
+  try { s = JSON.stringify(it); } catch (e) { return null; }
+  if (!s || s.length > 800) return null;
+  const copy = JSON.parse(s);
+  const tid = typeof copy.tid === 'string' ? copy.tid : '';
+  if (!/^[A-Za-z0-9]{8,40}$/.test(tid)) return null;
+  if (copy.test) return null;
+  copy.tid = tid;
+  return copy;
+}
+function tradeOffer(m) {
+  const sats = Math.max(0, Math.min(TRADE_MAX_SATS, Math.floor(+((m && m.sats) || 0))));
+  const raw = m && Array.isArray(m.items) ? m.items.slice(0, TRADE_MAX_ITEMS) : [];
+  const items = [];
+  const seen = {};
+  for (const it of raw) {
+    const c = tradeItem(it);
+    if (!c || seen[c.tid]) continue;
+    seen[c.tid] = 1;
+    items.push(c);
+  }
+  return { sats, items };
+}
+function tradeHash(o) {
+  return o.sats + ':' + o.items.map(i => i.tid).join(',');
+}
+function tradeOf(p) { return p ? trades.get(tradeByPlayer.get(p.uid)) : null; }
+function tradeLive(s) { return !!(s && (s.phase === 'open' || s.phase === 'check')); }
+function tradeBetween(a, b) {
+  const s = tradeOf(a);
+  if (!tradeLive(s) || !b) return null;
+  if (s.a !== b.uid && s.b !== b.uid) return null;
+  return s;
+}
+function tradePlace(p, q) {
+  if (!p || !q || p.uid === q.uid) return 'Nobody to trade with.';
+  if (!p.game || p.game !== q.game) return 'They are not in this game.';
+  if ((p.zi | 0) !== (q.zi | 0) || !TOWNS.has(p.zi | 0)) return 'Trade in town.';
+  if (mutualHostile(p, q)) return 'Not while you are hostile.';
+  if (!q.conn) return 'They are not on.';
+  return '';
+}
+function tradeView(s, uid) {
+  const you = s.offer[uid] || { sats: 0, items: [] };
+  const themId = s.a === uid ? s.b : s.a;
+  const them = s.offer[themId] || { sats: 0, items: [] };
+  const o = {
+    t: 'trade', phase: s.phase, id: s.id, with: themId,
+    locked: (s.phase === 'check' || s.ok[s.a] || s.ok[s.b]) ? 1 : 0,
+    you: { sats: you.sats, items: you.items, ok: s.ok[uid] ? 1 : 0 },
+    them: { sats: them.sats, items: them.items, ok: s.ok[themId] ? 1 : 0 }
+  };
+  if (s.phase === 'done') { o.give = s.give[uid]; o.take = s.take[uid]; }
+  return o;
+}
+function tradeHold(m) {
+  const sats = Math.max(0, Math.min(TRADE_MAX_SATS, Math.floor(+((m && m.sats) || 0))));
+  const raw = m && Array.isArray(m.tids) ? m.tids.slice(0, 24) : [];
+  const tids = [];
+  const seen = {};
+  for (const id of raw) {
+    if (typeof id !== 'string' || !/^[A-Za-z0-9]{8,40}$/.test(id) || seen[id]) continue;
+    seen[id] = 1;
+    tids.push(id);
+  }
+  return { sats, tids };
+}
+function tradeCovers(offer, hold) {
+  if (!offer || !hold) return false;
+  if ((hold.sats | 0) < (offer.sats | 0)) return false;
+  const have = {};
+  for (const id of hold.tids || []) have[id] = 1;
+  for (const it of offer.items || []) if (!it || !have[it.tid]) return false;
+  return true;
+}
+function tradePush(s) {
+  for (const uid of [s.a, s.b]) {
+    const p = live.get(uid);
+    if (p && p.conn) send(p, 'trade', tradeView(s, uid));
+  }
+}
+function tradeForget(s) {
+  if (!s) return;
+  if (s.timer) { clearTimeout(s.timer); s.timer = null; }
+  trades.delete(s.id);
+  if (tradeByPlayer.get(s.a) === s.id) tradeByPlayer.delete(s.a);
+  if (tradeByPlayer.get(s.b) === s.id) tradeByPlayer.delete(s.b);
+}
+function tradeDrop(p, why) {
+  const s = tradeOf(p);
+  if (!tradeLive(s)) return;
+  s.phase = 'dead';
+  for (const uid of [s.a, s.b]) {
+    const q = live.get(uid);
+    if (q && q.conn) send(q, 'trade', { phase: 'dead', id: s.id, why: why || 'cancel' });
+  }
+  tradeForget(s);
+}
+function tradeSide(s, uid) {
+  const o = s.offer[uid] || { sats: 0, items: [] };
+  return { sats: o.sats, ids: o.items.map(i => i.tid), items: o.items };
+}
+function tradeSettle(s) {
+  if (!s || s.phase !== 'check') return;
+  const ha = tradeHash(s.offer[s.a] || { sats: 0, items: [] });
+  const hb = tradeHash(s.offer[s.b] || { sats: 0, items: [] });
+  if (s.ok[s.a] !== ha || s.ok[s.b] !== hb) return;
+  if (!tradeCovers(s.offer[s.a], s.hold && s.hold[s.a]) || !tradeCovers(s.offer[s.b], s.hold && s.hold[s.b])) return;
+  s.phase = 'done';
+  s.at = Date.now();
+  s.acked = {};
+  const A = tradeSide(s, s.a), B = tradeSide(s, s.b);
+  s.give = {};
+  s.take = {};
+  s.give[s.a] = { sats: A.sats, ids: A.ids };
+  s.give[s.b] = { sats: B.sats, ids: B.ids };
+  s.take[s.a] = { sats: B.sats, items: B.items };
+  s.take[s.b] = { sats: A.sats, items: A.items };
+  s.timer = setTimeout(() => { if (trades.get(s.id) === s) tradeForget(s); }, 600000);
+  if (s.timer.unref) s.timer.unref();
+  tradePush(s);
+}
+function tradeReplay(p) {
+  const s = tradeOf(p);
+  if (!s) return;
+  if (s.phase === 'done' && s.at && Date.now() - s.at > 600000) { tradeForget(s); return; }
+  if (s.phase === 'done' && s.acked && s.acked[p.uid]) return;
+  if (p.conn) send(p, 'trade', tradeView(s, p.uid));
+}
+function tradeOpen(a, b) {
+  const s = {
+    id: 't' + crypto.randomBytes(6).toString('hex'),
+    a: a.uid, b: b.uid, phase: 'open',
+    offer: {}, ok: {}, hold: {}, at: Date.now()
+  };
+  s.offer[a.uid] = { sats: 0, items: [] };
+  s.offer[b.uid] = { sats: 0, items: [] };
+  trades.set(s.id, s);
+  tradeByPlayer.set(a.uid, s.id);
+  tradeByPlayer.set(b.uid, s.id);
+  tradePush(s);
+  return s;
+}
+
 const HANDLERS = {
   hello(p, m) {
+    const prevTown = TOWNS.has(p.zi | 0);
     p.cls = clean(m.cls, 16);
     p.zi = +m.zi || 0;
+    if (TOWNS.has(p.zi | 0)) { if (!prevTown || !p.townSince) p.townSince = Date.now(); }
+    else p.townSince = 0;
     takeVitals(p, m);
     /* The real client asks to be held in its game across a dropped socket. Test
        clients do not, so a closed socket there still ends the session at once. */
@@ -603,9 +928,23 @@ const HANDLERS = {
   move(p, m) {
     p.x = +m.x || 0; p.y = +m.y || 0; p.dir = +m.dir || 0;
     takeVitals(p, m);
-    const cosmetic = ('sk' in m) || ('au' in m) || ('sw' in m);
+    let cosmetic = ('sk' in m) || ('au' in m) || ('sw' in m) || ('bf' in m) || ('aL' in m) || ('nm' in m) || ('tes' in m) || ('node' in m);
     if ('sk' in m) p.sk = m.sk === null ? null : skillIx(m.sk);
-    if ('au' in m) p.au = auraIx(m.au);
+    if ('au' in m) {
+      p.au = auraIx(m.au);
+      if (!p.au) { p.aL = 0; p.node = 0; }
+      else p.aL = auraRank(m.aL) || p.aL || 1;
+    } else if ('aL' in m && p.au) p.aL = auraRank(m.aL) || 1;
+    if ('node' in m) p.node = p.au ? (auraRank(m.node) || 0) : 0;
+    if ('nm' in m) p.nm = auraRank(m.nm) || 0;
+    if ('tes' in m) p.tes = p.nm ? cleanTes(m.tes) : null;
+    if ('pail' in m) {
+      const before = pailLoc(p);
+      notePail(p, m.pail);
+      const after = pailLoc(p);
+      if (JSON.stringify(before) !== JSON.stringify(after)) cosmetic = true;
+    }
+    if ('bf' in m) noteBf(p, m.bf);
     if ('sw' in m) p.sw = m.sw === 1 ? 1 : 0;
     if (!p.game) return;
     const zi = +m.zi, inst = m.inst || null;
@@ -615,7 +954,10 @@ const HANDLERS = {
          seconds. A modified client can ignore the local half and walk anyway. This is
          the server's half: it does not follow them, so they are not a combatant there. */
       if (!(p.portalLock > Date.now())) {
+        const prevTown = TOWNS.has(p.zi | 0);
         p.zi = zi; p.inst = inst; p.tier = nextTier;
+        if (TOWNS.has(p.zi | 0)) { if (!prevTown) p.townSince = Date.now(); }
+        else p.townSince = 0;
         zoneIndex(p);
         pushRoster(gameOf(p));
         /* Walking in buys five seconds, so a hostile cannot camp the doorway. */
@@ -623,6 +965,7 @@ const HANDLERS = {
       }
     }
     if (p.game) mobNote(p);
+    if ('tes' in m && p.game && stampTes(p)) pushMobSnap(gameOf(p), mobSample(p));
     pushZone(p);
     if (cosmetic) pushPeers(p);
   },
@@ -723,6 +1066,7 @@ const HANDLERS = {
     if (!q || q.game !== p.game || !p.game) return;
     if (!TOWNS.has(p.zi)) return sys(p, 'Declare in town.');
     if ((+p.lvl || 1) < 9 || (+q.lvl || 1) < 9) return sys(p, 'Hostility starts at level 9.');
+    if (!(p.townSince > 0) || Date.now() - p.townSince < HOSTILE_ARM) return sys(p, 'Stand in town a moment before you declare.');
     if (p.hostile.has(q.uid)) return sys(p, 'Already declared.');
     const last = p.declaredAt.get(q.uid) || 0;
     if (Date.now() - last < 60000) return sys(p, 'Once a minute, against the same person.');
@@ -733,6 +1077,7 @@ const HANDLERS = {
     p.portalLock = Date.now() + 10000;
     const party = partyOf(p);
     if (party && party.members.has(q.uid)) leaveParty(p, true);
+    if (tradeBetween(p, q)) tradeDrop(p, 'hostile');
     inGame(gameOf(p), 'hostile', { from: p.name, fromUid: p.uid, to: q.name, toUid: q.uid });
     sys(q, p.name + ' has declared hostility against you.');
     sys(p, 'You have declared against ' + q.name + '. Standing down in town stops only your own swings.');
@@ -766,7 +1111,7 @@ const HANDLERS = {
     if (!amount) return;
     const party = partyOf(p);
     if (!party) return;
-    const here = membersOf(party).filter(q => q.zi === p.zi && q.inst === p.inst && q.game === p.game);
+    const here = membersOf(party).filter(q => sameRoom(q, p));
     /* Alone in the district: the killer's client deferred, so hand the whole report back. */
     if (here.length < 2) {
       send(p, 'xp', { amount: Math.round(amount), from: p.name, self: 1 });
@@ -792,6 +1137,103 @@ const HANDLERS = {
     for (const q of membersOf(party)) if (q.uid !== p.uid && q.zi === p.zi) send(q, 'quest', { k, v: step, from: p.name });
   },
 
+  /* A curse on a shared machine. On the Record raises the damage everyone deals.
+     Garden Leave stops heals. The caster's own client already ticks the damage. */
+  curse(p, m) {
+    const g = gameOf(p);
+    if (!g || TOWNS.has(p.zi | 0)) return;
+    if (!rate(p, 'curse', 8, 10000)) return;
+    const k = m.k === 'rec' || m.k === 'leave' ? m.k : '';
+    if (!k) return;
+    const sample = mobSample(p);
+    if ((m.zi | 0) && (m.zi | 0) !== sample.zi) return;
+    const z = g.zones && g.zones[mobKey(sample.zi, sample.tier, sample.inst)];
+    if (!z) return;
+    const id = m.id | 0;
+    const rec = z.mobs[id];
+    if (!rec || rec.dead) return;
+    let mul = +m.m || 1;
+    if (!(mul >= 1)) mul = 1;
+    if (mul > 4) mul = 4;
+    let sec = +m.sec || 0;
+    if (!(sec >= 0.5)) return;
+    if (sec > 20) sec = 20;
+    rec.curse = { k, m: Math.round(mul * 100) / 100, until: Date.now() + sec * 1000 };
+    const row = { id, k, m: rec.curse.m, sec };
+    for (const q of mobHere(g, sample)) send(q, 'mcurse', row);
+  },
+
+  /* One lunch pail, one store. The owner asks; the server spends it once. */
+  pail(p, m) {
+    if (!p.pail || !(p.pailStore > 0) || !p.party) return;
+    if (!rate(p, 'pail', 12, 1000)) return;
+    const list = Array.isArray(m.draw) ? m.draw.slice(0, 8) : [];
+    if (!list.length) return;
+    const now = Date.now();
+    p.pailAt = p.pailAt || {};
+    const grants = [];
+    let spent = 0;
+    const rateN = pailRate(p.pail.L);
+    const reach = FORMULAS.pail.r + 1.5;
+    for (let i = 0; i < list.length; i++) {
+      const row = list[i];
+      if (!row || spent >= p.pailStore) break;
+      const raw = row.k === 'self' || row.k === 'merc' || row.k === 'tag' ? row.k : clean(row.k, 64);
+      if (!raw) continue;
+      let hpm = p.hpm || 1, hp = p.hp || 0, key = raw, who = null;
+      if (raw === 'self' || raw === 'merc' || raw === 'tag') {
+        const d = Math.hypot((+p.x || 0) - p.pail.x, (+p.y || 0) - p.pail.y);
+        if (d > reach) continue;
+        key = raw === 'self' ? p.uid : raw;
+        if (raw === 'self') hp = p.hp || 0;
+        else {
+          const want = Math.max(0, Math.round(+row.n || 0));
+          hp = want > 0 ? Math.max(0, hpm - want) : 0;
+        }
+      } else {
+        who = live.get(raw);
+        if (!who || who.uid === p.uid || who.party !== p.party || !sameRoom(who, p)) continue;
+        if ((p.hostile && p.hostile.has(who.uid)) || (who.hostile && who.hostile.has(p.uid))) continue;
+        const d = Math.hypot((+who.x || 0) - p.pail.x, (+who.y || 0) - p.pail.y);
+        if (d > reach) continue;
+        hpm = who.hpm || 1;
+        hp = who.hp || 0;
+        key = who.uid;
+      }
+      const last = p.pailAt[key] || 0;
+      const dt = last ? Math.min(1.2, (now - last) / 1000) : 0.25;
+      if (last && dt < 0.05) continue;
+      const room = Math.max(0, hpm - hp);
+      let n = Math.min(p.pailStore - spent, room, hpm * rateN * dt);
+      n = Math.round(n);
+      if (!(n >= 1)) continue;
+      p.pailAt[key] = now;
+      spent += n;
+      grants.push({ k: raw === 'self' ? 'self' : (who ? who.uid : raw), n });
+      if (who) {
+        who.pailCredit = (who.pailCredit || 0) + n;
+        send(who, 'pail', { n, hp: Math.round(p.pailStore - spent), x: p.pail.x, y: p.pail.y, L: p.pail.L, max: p.pail.max });
+      } else if (raw === 'self') p.pailCredit = (p.pailCredit || 0) + n;
+    }
+    if (!spent) return;
+    p.pailStore = Math.max(0, p.pailStore - spent);
+    if (p.pail) p.pail.hp = Math.round(p.pailStore);
+    send(p, 'pail', { hp: Math.round(p.pailStore), x: p.pail.x, y: p.pail.y, L: p.pail.L, max: p.pail && p.pail.max, grants });
+    if (!(p.pailStore > 0)) clearPail(p);
+    if (p.game) pushPeers(p);
+  },
+
+  /* Unnamed Source, when the nearest ally is the other player and not a local body. */
+  lend(p, m) {
+    if (!rate(p, 'lend', 4, 10000)) return;
+    const q = live.get(clean(m.uid, 64));
+    if (!q || !p.party || q.party !== p.party || !sameRoom(p, q)) return;
+    if ((p.hostile && p.hostile.has(q.uid)) || (q.hostile && q.hostile.has(p.uid))) return;
+    const d = Math.hypot((+p.x || 0) - (+q.x || 0), (+p.y || 0) - (+q.y || 0));
+    if (d > 14) return;
+    send(q, 'lend', { from: p.name, uid: p.uid });
+  },
+
   pvp(p, m) {
     const q = live.get(m.uid);
     if (!canFight(p, q)) return;
@@ -806,7 +1248,15 @@ const HANDLERS = {
     }
     if (!landed) return;
     plaus.notePvp(q, landed);
-    send(q, 'pvp', { from: p.name, fromUid: p.uid, dmg: Math.round(landed), kind: clean(m.kind, 12) });
+    const TYPES = { impact: 1, surge: 1, rust: 1, heat: 1, noise: 1, sound: 1 };
+    const dty = TYPES[m.dty] ? m.dty : 'impact';
+    const kind = clean(m.kind, 12);
+    let critM = 0;
+    if (kind === 'crit') {
+      const n = +m.critM;
+      critM = (n >= 1 && n <= 8) ? Math.round(n * 100) / 100 : 2;
+    }
+    send(q, 'pvp', { from: p.name, fromUid: p.uid, dmg: Math.round(landed), kind, dty, critM });
   },
 
   /* The host's picture of where the machines are. Hit points in the packet are ignored
@@ -843,7 +1293,10 @@ const HANDLERS = {
   mhit(p, m) {
     const g = gameOf(p);
     if (!g || TOWNS.has(p.zi | 0)) return;
-    if (!rate(p, 'mhit', 100, 10000)) return;
+    const area = m.area ? 1 : 0;
+    /* A pulse has its own flood cap. It does not spend the swing packet budget. */
+    if (area) { if (!rate(p, 'mtick', 120, 1000)) return; }
+    else if (!rate(p, 'mhit', 100, 10000)) return;
     const sample = mobSample(p);
     if ((m.zi | 0) !== sample.zi || (m.tier | 0) !== sample.tier) return;
     const z = g.zones && g.zones[mobKey(sample.zi, sample.tier, sample.inst)];
@@ -854,7 +1307,9 @@ const HANDLERS = {
     const sk = m.sk == null ? -1 : (m.sk | 0);
     if (sk === -2) {
       if (z.host !== p.uid) return;
-    } else if (!plaus.hitOk(p, rec, sk)) return;
+    } else if (area) {
+      if (!plaus.areaOk(p, rec, sk)) return;
+    } else if (!plaus.hitOk(p, rec, sk, partyCover(p))) return;
     let d = Math.max(0, +m.d || 0);
     if (!(d > 0)) return;
     if (d > rec.max) {
@@ -957,6 +1412,84 @@ const HANDLERS = {
   voice(p, m) {
     p.voice = !!m.on;
     if (p.game) inGame(gameOf(p), 'voice', { uid: p.uid, on: p.voice });
+  },
+
+  'trade.ask'(p, m) {
+    const q = live.get(m.uid);
+    const why = tradePlace(p, q);
+    if (why) return sys(p, why);
+    if (tradeOf(p) || tradeOf(q)) return sys(p, 'Somebody is already at a table.');
+    if (!rate(p, 'trade', 8, 10000)) return sys(p, 'Slow down.');
+    q.tradeAsk = { uid: p.uid, until: Date.now() + 30000 };
+    send(q, 'trade', { phase: 'ask', id: '', with: p.uid, from: p.name });
+    sys(p, 'Asked ' + q.name + ' to trade.');
+  },
+
+  'trade.accept'(p, m) {
+    const q = live.get(m.uid);
+    const ask = p.tradeAsk;
+    if (!q || !ask || ask.uid !== q.uid || ask.until < Date.now()) return sys(p, 'That offer has lapsed.');
+    p.tradeAsk = null;
+    const why = tradePlace(p, q);
+    if (why) return sys(p, why);
+    if (tradeOf(p) || tradeOf(q)) return sys(p, 'Somebody is already at a table.');
+    tradeOpen(q, p);
+  },
+
+  'trade.offer'(p, m) {
+    const s = tradeOf(p);
+    if (!tradeLive(s)) return;
+    const q = live.get(s.a === p.uid ? s.b : s.a);
+    const why = tradePlace(p, q);
+    if (why) { tradeDrop(p, 'moved'); return; }
+    s.phase = 'open';
+    s.offer[p.uid] = tradeOffer(m);
+    s.ok = {};
+    s.hold = {};
+    tradePush(s);
+  },
+
+  'trade.confirm'(p, m) {
+    const s = tradeOf(p);
+    if (!s) return;
+    if (s.phase === 'done') { tradeReplay(p); return; }
+    if (s.phase !== 'open') return;
+    const q = live.get(s.a === p.uid ? s.b : s.a);
+    const why = tradePlace(p, q);
+    if (why) { tradeDrop(p, 'moved'); return; }
+    const mine = s.offer[p.uid] || { sats: 0, items: [] };
+    s.ok[p.uid] = tradeHash(mine);
+    s.hold = {};
+    if (s.ok[s.a] && s.ok[s.b]) s.phase = 'check';
+    tradePush(s);
+  },
+
+  /* Both confirms only open the check. The swap waits until each side reports
+     the sats and the item ids still in hand. A short report cancels both. */
+  'trade.hold'(p, m) {
+    const s = tradeOf(p);
+    if (!s || s.phase !== 'check') return;
+    const q = live.get(s.a === p.uid ? s.b : s.a);
+    const why = tradePlace(p, q);
+    if (why) { tradeDrop(p, 'moved'); return; }
+    s.hold = s.hold || {};
+    s.hold[p.uid] = tradeHold(m);
+    if (!s.hold[s.a] || !s.hold[s.b]) return;
+    if (!tradeCovers(s.offer[s.a], s.hold[s.a]) || !tradeCovers(s.offer[s.b], s.hold[s.b])) {
+      tradeDrop(p, 'short');
+      return;
+    }
+    tradeSettle(s);
+  },
+
+  'trade.cancel'(p) { tradeDrop(p, 'cancel'); },
+
+  'trade.ack'(p, m) {
+    const s = tradeOf(p);
+    if (!s || s.phase !== 'done' || !m || m.id !== s.id) return;
+    s.acked = s.acked || {};
+    s.acked[p.uid] = 1;
+    if (s.acked[s.a] && s.acked[s.b]) tradeForget(s);
   }
 };
 
@@ -989,6 +1522,7 @@ function greet(p, opt) {
     pvpScale: PVP_SCALE, simZone: SIM_ZONE, build: buildId(), grace: GRACE_MS,
     turn: turn || undefined, resumed: opt && opt.resumed ? 1 : 0
   });
+  tradeReplay(p);
 }
 
 function wire(p, conn) {
@@ -1010,6 +1544,8 @@ function wire(p, conn) {
 /* A client that asked to be resumed keeps its game and party for GRACE_MS. Anything
    else — a test socket, an explicit leave, a kick — is gone immediately. */
 function park(p) {
+  const openTrade = tradeOf(p);
+  if (tradeLive(openTrade)) tradeDrop(p, 'dropped');
   if (!p.wantsResume || !p.game) {
     leaveGame(p, { silent: true });
     pushOffline(p);
@@ -1097,8 +1633,8 @@ function attach(server, verify) {
     const p = {
       uid: ctx.user.id, name: ctx.user.name, conn,
       lvl: 1, cls: '', zi: 0, inst: null, zoneKey: undefined, x: 0, y: 0, dir: 0, hp: 1, hpm: 1,
-      sk: null, au: null, sw: 0,
-      game: null, party: null, quest: {}, hostile: new Set(), declaredAt: new Map(), portalLock: 0, invites: new Map(), safeUntil: 0, voice: false, joined: Date.now(),
+      sk: null, au: null, aL: 0, node: 0, nm: 0, bf: null, bfUntil: null, tes: null, sw: 0, pail: null, pailStore: 0,
+      game: null, party: null, quest: {}, hostile: new Set(), declaredAt: new Map(), portalLock: 0, invites: new Map(), safeUntil: 0, townSince: 0, voice: false, joined: Date.now(),
       wantsResume: false, awayUntil: 0, awayTimer: null
     };
     live.set(p.uid, p);

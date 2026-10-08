@@ -61,6 +61,12 @@ const near = { cls: 'scrapper', name: 'Near', x: 12, y: 10 };
 const mob = { id: 1, x: 10, y: 10 };
 ok('a swing from across the district is refused', plaus.hitOk(far, mob, -1) === false);
 ok('a swing in reach is kept', plaus.hitOk(near, mob, -1) === true);
+const slowGap = plaus.minGapMs('courier');
+const fastGap = plaus.minGapMs('courier', 20);
+ok('toxic maximalism shortens the swing floor', fastGap < slowGap && fastGap > slowGap / 2, slowGap + ' -> ' + fastGap);
+const plainCap = plaus.lifeCap('courier', 10);
+const callCap = plaus.lifeCap('courier', 10, { call: 1 });
+ok('standing call raises the life ceiling', callCap > plainCap && callCap < plainCap * 1.2, plainCap + ' -> ' + callCap);
 
 const cap10 = plaus.lifeCap('scrapper', 10);
 const fat = { cls: 'scrapper', name: 'Fat', lvl: 10 };
@@ -83,6 +89,20 @@ const stim = { cls: 'scrapper', name: 'Stim', lvl: 20, hp: 100, hpm: 400, vitAt:
 plaus.notePvp(stim, 160);
 plaus.clampVitals(stim, { hp: 280, hpm: 400 }, 4200);
 ok('a stim-sized jump is not called an ignored hit', stim.hp >= 250, String(stim.hp));
+
+const lie = { cls: 'courier', name: 'Lie', lvl: 20, hp: 400, hpm: 400, vitAt: 5000 };
+plaus.notePvp(lie, 400);
+plaus.clampVitals(lie, { hp: 400, hpm: 400 }, 5100);
+const docked = lie.hp;
+plaus.clampVitals(lie, { hp: 400, hpm: 400 }, 5300);
+ok('a second full report stays docked', lie.hp === docked && docked < 400 && lie.pvpDebt > 0, docked + ' then ' + lie.hp);
+
+const shown = { cls: 'courier', name: 'Shown', lvl: 20, hp: 400, hpm: 400, vitAt: 6000 };
+const shownOwed = plaus.pvpOwed(shown, 400);
+plaus.notePvp(shown, 400);
+plaus.clampVitals(shown, { hp: 400 - shownOwed - 5, hpm: 400 }, 6100);
+plaus.clampVitals(shown, { hp: 400, hpm: 400 }, 6400);
+ok('an honest chip can still be healed', shown.pvpDebt === 0 && shown.hp > 400 - shownOwed, String(shown.hp));
 
 const { FORMULAS } = require('../../src/formulas');
 ok('founder life is the balance pass', FORMULAS.cls.founder.hp === 102 && FORMULAS.cls.founder.hpL === 13);

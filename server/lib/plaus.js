@@ -8,7 +8,7 @@
 /* Same towns as live.js. Inlined so this file does not require live.js. */
 const TOWNS = new Set([0, 17, 18, 21, 27]);
 
-const { FORMULAS, braceKeep } = require('../../src/formulas');
+const { FORMULAS, braceKeep, toxicSwingMul, auraRadius } = require('../../src/formulas');
 const CLS = FORMULAS.cls;
 const LIFE = FORMULAS.life;
 const PVP = FORMULAS.pvp;
@@ -35,6 +35,10 @@ const SWING_MS = 80;
 const SWING_MAX = 24;
 const RATE_WINDOW = 1000;
 const RATE_SLACK = 2;
+/* Holder pulses (Proof of Work, a fault, a storm, a plot) are not swings.
+   Two pulses a second across a crowded screen, with a little slack. */
+const AREA_WINDOW = 1000;
+const AREA_CAP = 96;
 
 /* Life ceiling, heal clamps, and the PvP chip live in src/formulas.js. */
 
@@ -51,13 +55,14 @@ function reachOf(cls, sk) {
   return c.melee ? REACH.skillMelee : REACH.skillRanged;
 }
 
-function minGapMs(cls) {
+function minGapMs(cls, tox) {
   const c = classOf(cls);
   const atk = c.ivl / ASPD_DIV;
-  return Math.min(atk, CAST_FLOOR) * 1000;
+  const mul = toxicSwingMul(tox | 0);
+  return Math.min(atk, CAST_FLOOR) * 1000 / mul;
 }
 
-function allowBurst(p, cls, mobId, now) {
+function allowBurst(p, cls, mobId, now, tox) {
   now = now || Date.now();
   const id = mobId | 0;
   if (!p.swing) p.swing = { t: 0, n: 0, ids: Object.create(null) };
@@ -72,7 +77,7 @@ function allowBurst(p, cls, mobId, now) {
   let i = 0;
   while (i < win.length && now - win[i] >= RATE_WINDOW) i++;
   if (i) win.splice(0, i);
-  const cap = Math.ceil(RATE_WINDOW / minGapMs(cls)) + RATE_SLACK;
+  const cap = Math.ceil(RATE_WINDOW / minGapMs(cls, tox)) + RATE_SLACK;
   if (win.length >= cap) return false;
   win.push(now);
   if (!(now - sw.t < SWING_MS)) {
@@ -87,7 +92,7 @@ function allowBurst(p, cls, mobId, now) {
 
 /* sk -2 is a machine acting on itself (a tick blowing up), and only the host may say so.
    The caller checks the host. This function is the player-swing check. */
-function hitOk(p, rec, sk) {
+function hitOk(p, rec, sk, cover) {
   const n = sk == null ? -1 : (sk | 0);
   if (n === -2) return true;
   const reach = reachOf(p.cls, n) + SLACK;
@@ -99,7 +104,8 @@ function hitOk(p, rec, sk) {
     console.log('[hit] range ' + (p.name || '?') + ' ' + dist.toFixed(1) + ' > ' + reach.toFixed(1));
     return false;
   }
-  if (!allowBurst(p, p.cls, rec.id || 0)) {
+  const tox = cover && cover.tox;
+  if (!allowBurst(p, p.cls, rec.id || 0, null, tox)) {
     hitRej++;
     console.log('[hit] rate ' + (p.name || '?'));
     return false;
@@ -107,12 +113,49 @@ function hitOk(p, rec, sk) {
   return true;
 }
 
-function lifeCap(cls, lvl) {
+/* An area tick is a pulse the holder already owns. It must not spend the swing
+   window, and it has its own cap so a modified client cannot turn it into a stream. */
+function areaOk(p, rec, sk) {
+  const n = sk == null ? -1 : (sk | 0);
+  let reach = 0;
+  if (n === 7) reach = auraRadius(7, (p && p.aL) || 1) + 2.2;
+  else if (n === 9) reach = 14;
+  else if (n === 10) reach = 10;
+  else if (n === -3) reach = 8;
+  else {
+    hitRej++;
+    return false;
+  }
+  const dx = (+p.x || 0) - (+rec.x || 0);
+  const dy = (+p.y || 0) - (+rec.y || 0);
+  if (Math.hypot(dx, dy) > reach + SLACK) {
+    hitRej++;
+    console.log('[hit] area ' + (p.name || '?'));
+    return false;
+  }
+  const now = Date.now();
+  if (!p.areaWin) p.areaWin = [];
+  const win = p.areaWin;
+  let i = 0;
+  while (i < win.length && now - win[i] >= AREA_WINDOW) i++;
+  if (i) win.splice(0, i);
+  if (win.length >= AREA_CAP) {
+    hitRej++;
+    console.log('[hit] area rate ' + (p.name || '?'));
+    return false;
+  }
+  win.push(now);
+  return true;
+}
+
+function lifeCap(cls, lvl, cover) {
   const c = classOf(cls);
   const L = Math.max(1, Math.min(100, +lvl || 1));
   const vit = 5 * (L - 1) + LIFE.vitGear;
   const raw = c.hp + (L - 1) * c.hpL + vit * 4 + LIFE.hpFlat + LIFE.hpPer * L;
-  return Math.round(raw * LIFE.hpMult);
+  /* Standing Call, yours or a party member's, is +12% life. One of them. */
+  const party = cover && cover.call ? (1 + FORMULAS.aura.call.life) : 1;
+  return Math.round(raw * LIFE.hpMult * party);
 }
 
 function healPerSec(p) {
@@ -151,17 +194,21 @@ function pvpOwed(q, landed) {
 function notePvp(q, landed) {
   const owed = pvpOwed(q, landed);
   if (owed < 1) {
-    if (q) q.pvpDebt = 0;
+    if (q) { q.pvpDebt = 0; q.pvpPinned = 0; }
     return;
   }
+  /* The floor is measured from the bar before the dock. A second hit while the
+     bar is already pinned lowers that same base, and does not chip twice. */
+  if (!q.pvpPinned) q.pvpBase = q.hp || 0;
   q.pvpDebt = Math.max(q.pvpDebt || 0, owed);
   q.pvpDebtAt = Date.now();
+  q.pvpFloor = Math.max(0, (q.pvpBase || 0) - q.pvpDebt);
 }
 
-function clampVitals(p, m, now) {
+function clampVitals(p, m, now, cover) {
   now = now || Date.now();
   if (m && 'lvl' in m) p.lvl = Math.max(1, Math.min(100, +m.lvl || 1));
-  const cap = lifeCap(p.cls, p.lvl);
+  const cap = lifeCap(p.cls, p.lvl, cover);
   const floor = 80 + 12 * Math.max(1, p.lvl || 1);
   let hpm = p.hpm || floor;
   if (m && 'hpm' in m && m.hpm != null && m.hpm !== '') {
@@ -182,21 +229,28 @@ function clampVitals(p, m, now) {
     /* A stim is about 45% of life and cannot be told from a packet. An unchanged
        bar after a real hit is not a stim. A jump of that size, once a second and
        a half, is. */
+    let held = false;
     if (p.pvpDebt > 0 && now - (p.pvpDebtAt || 0) < PVP.window && !(p.safeUntil > now)) {
-      const debt = p.pvpDebt;
-      p.pvpDebt = 0;
-      if (hp >= p.hp - 1) {
-        const stim = hp >= p.hp + hpm * LIFE.stimJump && now - (p.stimAt || 0) > 1400;
-        if (stim) p.stimAt = now;
-        else {
-          hpFlag++;
-          console.log('[hp] pvp ' + (p.name || '?'));
-          hp = Math.max(0, p.hp - debt);
-        }
+      const floorHp = p.pvpFloor != null ? p.pvpFloor : Math.max(0, p.hp - p.pvpDebt);
+      if (hp < p.hp - 1) {
+        p.pvpDebt = 0;
+        p.pvpPinned = 0;
+      } else if (!p.pvpPinned && hp >= p.hp + hpm * LIFE.stimJump && now - (p.stimAt || 0) > 1400) {
+        p.stimAt = now;
+        p.pvpDebt = 0;
+        p.pvpPinned = 0;
+      } else {
+        hpFlag++;
+        console.log('[hp] pvp ' + (p.name || '?'));
+        hp = Math.max(0, floorHp);
+        p.pvpPinned = 1;
+        held = true;
       }
     }
-    if (hp > p.hp + 1) {
-      const allowed = allowGain(p, hp - p.hp, dt);
+    const pail = p.pailCredit || 0;
+    p.pailCredit = 0;
+    if (!held && hp > p.hp + 1) {
+      const allowed = allowGain(p, hp - p.hp, dt) + pail;
       if (hp > p.hp + allowed + 1) {
         hpFlag++;
         console.log('[hp] heal ' + (p.name || '?'));
@@ -212,7 +266,7 @@ function takeHitRej() { const n = hitRej; hitRej = 0; return n; }
 function takeHpFlag() { const n = hpFlag; hpFlag = 0; return n; }
 
 module.exports = {
-  CLS, REACH, SLACK, CAST_FLOOR, ASPD_DIV, SWING_MS, RATE_SLACK,
-  reachOf, minGapMs, allowBurst, hitOk, lifeCap, healPerSec, clampVitals, notePvp, pvpOwed,
+  CLS, REACH, SLACK, CAST_FLOOR, ASPD_DIV, SWING_MS, RATE_SLACK, AREA_CAP,
+  reachOf, minGapMs, allowBurst, hitOk, areaOk, lifeCap, healPerSec, clampVitals, notePvp, pvpOwed,
   braceKeep, takeHitRej, takeHpFlag
 };

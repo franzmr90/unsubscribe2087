@@ -109,7 +109,7 @@ function toxicDmg(L) {
 function maxiAura(dt) {
   if (!G || !P) return;
   dt = dt || 0;
-  P.toxL = 0; P.mkAura = 0; P.mkP = 0;
+  P.toxL = 0; P.mkAura = 0; P.mkP = 0; P.nodeM = 0;
   if (W && W.merc) W.merc.toxL = 0;
   if (W && W.tag) { W.tag.toxL = 0; W.tag.nodeM = 0; }
   if (W && W.allies) for (const a of W.allies) if (a) a.toxL = 0;
@@ -147,14 +147,16 @@ function maxiAura(dt) {
       const m = (.3 + .07 * h.L) * syn(7);
       const prevSk = P.hitSk;
       P.hitSk = 7;
+      P.areaTick = 1;
       try { for (const e of auraFoes(h)) hit(e, m, true); }
-      finally { P.hitSk = prevSk; }
+      finally { P.hitSk = prevSk; P.areaTick = 0; }
       W.fx.push({ k: 'ring', x: P.x, y: P.y, r: auraVisR(7, h.L), t: 0, life: .25, col: '#f7931a' });
     }
   }
   /* Running a Node. The hireling's shot already multiplies nodeMul. A companion
      swing borrows the companion's class, so the same check never sees the Maximalist. */
   if (G.cls === 'maxi' && sl(10) && P.aura && W.tag && W.tag.hp > 0) W.tag.nodeM = nodeMul(false);
+  if (typeof mpApplyParty === 'function') mpApplyParty();
 }
 
 /* The heads-up display already lists what is running; the aura belongs there. */
@@ -231,6 +233,7 @@ function castItem(i){
   let ok=false;
   if(i===100)ok=blinkCast();else if(i===101)ok=callCast();else if(i===102)ok=bookCast();else if(i===103)ok=ledgerCast();else if(i===104)ok=bearCast();else if(i===105)ok=chairCast();
   if(!ok)return;
+  if(typeof mpNoteCast==='function')mpNoteCast(i);
   G.en-=pay;P.cd[i]=sk.cd*(1-Math.min(.6,S.cdr||0));sfx('cast')}
 function itemSkillTick(dt){
   if(!P)return;
@@ -239,6 +242,7 @@ function itemSkillTick(dt){
   if(P.orders>0){P.orders-=dt;if(P.orders<=0){P.orders=0;if(G)calc()}}
   if(P.book>0)P.book=Math.max(0,P.book-dt);
   if(P.bear>0){P.bear-=dt;if(P.bear<=0){P.bear=0;if(G)calc()}}
+  if(P.rLedger>0&&G&&S)heal(3*dt);
   if(P.ledger>0){P.ledger=Math.max(0,P.ledger-dt);if(G&&S)G.en=Math.min(S.maxEn,G.en+8*dt);
     if(W){const mend=a=>{if(a&&a.hp>0&&dist(a,P)<6){if(a.max)a.hp=Math.min(a.max,a.hp+3*dt)}};mend(W.merc);mend(W.tag);for(const a of W.allies)mend(a)}}
   if(P.cd)for(const id of [100,101,102,103,104,105])if(P.cd[id]>0)P.cd[id]=Math.max(0,P.cd[id]-dt);

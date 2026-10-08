@@ -354,6 +354,7 @@ textarea{width:100%;height:70px;background:#050409;color:var(--ink);border:1px s
       <button type="button" class="walkLead" id="bWalkLead"><b>Walkthrough</b><span>How you move, fight, and get back up</span></button>
       <div class="list" id="slots"></div>
       <p id="cloudNote" style="font-size:13px;text-align:center">Looking for your saved game…</p>
+      <p id="lanNote" hidden style="font-size:13px;text-align:center">This computer is hosting the game. Everyone else on your Wi-Fi opens the address in the launcher window. Leave that window open.</p>
       <h3 id="newH">Begin a new wanderer</h3>
       <div class="list" id="clsList"></div>
       <button class="ghost" id="bWalk">Walkthrough</button>
@@ -425,7 +426,22 @@ const FORMULAS = {
   /* One level of experience, the same curve the client uses. */
   xp: { base: 60, pow: 1.75 },
   /* Experience past the act cap, paid in one write on entering Act III. */
-  bank: { levels: 1 }
+  bank: { levels: 1 },
+  /* Maximalist auras, and the item skills that already name a radius.
+     Witness Named Party is not in here: the card says allies, not a circle.
+     Founder Interns and Equity stay on the founder's own body and workforce. */
+  aura: {
+    toxic: { aspd: 15, aspdL: 3, r: 2.2 },
+    mark: { base: 3.5, per: 0.15 },
+    work: { base: 3.2, per: 0.1 },
+    call: { r: 6, life: 0.12, en: 0.08 },
+    book: { r: 6 },
+    ledger: { r: 6 },
+    named: { per: 0.05 }
+  },
+  /* Lunch Pail. One placed store. life/lifeL are the fraction of max life it holds.
+     rate/rateL are the fraction of max life it pays each second, inside r tiles. */
+  pail: { life: 0.28, lifeL: 0.06, rate: 0.02, rateL: 0.004, r: 2.6 }
 };
 
 /* Fraction of a hit still taken when that class's braces are fully up.
@@ -447,7 +463,46 @@ function xpNext(lvl) {
   return Math.round(FORMULAS.xp.base * Math.pow(l, FORMULAS.xp.pow));
 }
 
-if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep, xpNext };
+/* 1..20, or 0 when the packet is not a rank. */
+function auraRank(v) {
+  const n = +v;
+  const i = n | 0;
+  if (i !== n || i < 1 || i > 20) return 0;
+  return i;
+}
+
+/* The same radii the client draws. Rank 1 is not rank 10. */
+function auraRadius(i, L) {
+  const a = FORMULAS.aura;
+  const r = Math.max(1, Math.min(20, +L || 1));
+  if (i === 4) return a.mark.base + a.mark.per * r;
+  if (i === 7) return a.work.base + a.work.per * r;
+  if (i === 3) return a.toxic.r;
+  return 0;
+}
+
+/* Toxic Maximalism's attack-speed line: 15+3*L percent. */
+function toxicSwingMul(L) {
+  const n = auraRank(L);
+  if (!n) return 1;
+  const t = FORMULAS.aura.toxic;
+  return 1 + (t.aspd + t.aspdL * n) / 100;
+}
+
+/* The printed pool: (28+6*L)% of max life. */
+function pailMax(hpm, L) {
+  const n = auraRank(L) || 1;
+  const f = FORMULAS.pail;
+  return Math.max(1, Math.round((+hpm || 1) * (f.life + f.lifeL * n)));
+}
+/* (2+0.4*L)% of max life each second. */
+function pailRate(L) {
+  const n = auraRank(L) || 1;
+  const f = FORMULAS.pail;
+  return f.rate + f.rateL * n;
+}
+
+if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep, xpNext, auraRank, auraRadius, toxicSwingMul, pailMax, pailRate };
 /* ================= util ================= */
 const $=id=>document.getElementById(id);
 const rnd=(a,b)=>a+Math.random()*(b-a), ri=(a,b)=>Math.floor(rnd(a,b+1)), pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1008,7 +1063,7 @@ function updMerc(dt){const m=W.merc;if(!m||m.hp<=0)return;const t=MERCS[G.merc.k
   else if(d0>want){const sp=t.spd*dt*(m.slow>0?.55:1);if(!mercStep(m,(g.x-m.x)/d0*sp,(g.y-m.y)/d0*sp)){m.stuck=(m.stuck||0)+dt;if(m.stuck>.4&&home>1.15&&!inSwing){const q=mercSpot();m.x=q.x;m.y=q.y;m.stuck=0}}else m.stuck=0;m.mov=true;m.fx=(g.x-m.x)-(g.y-m.y)>0?1:-1}
   else m.stuck=0;
   const d=tg?(dist(tg,m)||1):d0;
-  if(tg&&d<=t.range+tg.r&&m.cd<=0){if(!tg.aggro)wake(tg);m.cd=t.ivl/toxicSwing(m);m.swing=.15;const md=s.dmg*nodeMul(false)*toxicDmg(m.toxL)*(P&&P.book>0&&dist(m,P)<6&&!(tg&&tg.mp)?1.08:1),snd=m.soundSwing;if(snd||t.range<=2){witMercHit(m,tg,md);sfx(snd?'swing':'hit')}else{let sx=m.x,sy=m.y;if(!open(sx,sy)){sx=P.x;sy=P.y}W.projs.push({x:sx,y:sy,vx:(tg.x-m.x)/d*12,vy:(tg.y-m.y)/d*12,life:.7,raw:md,dty:t.dt,done:[],pierce:0,col:t.col,kind:'merc',party:1});sfx('throw')}}
+  if(tg&&d<=t.range+tg.r&&m.cd<=0){if(!tg.aggro)wake(tg);m.cd=t.ivl/toxicSwing(m);m.swing=.15;const md=s.dmg*nodeMul(false)*toxicDmg(m.toxL)*(P&&(P.book>0||P.rBook>0)&&dist(m,P)<6&&!(tg&&tg.mp)?1.08:1),snd=m.soundSwing;if(snd||t.range<=2){witMercHit(m,tg,md);sfx(snd?'swing':'hit')}else{let sx=m.x,sy=m.y;if(!open(sx,sy)){sx=P.x;sy=P.y}W.projs.push({x:sx,y:sy,vx:(tg.x-m.x)/d*12,vy:(tg.y-m.y)/d*12,life:.7,raw:md,dty:t.dt,done:[],pierce:0,col:t.col,kind:'merc',party:1});sfx('throw')}}
   else if(tg&&!tg.aggro&&d<t.range+1.6)wake(tg);
   if(G.merc.k==='sys'){m.hc-=dt;if(m.hc<=0){m.hc=4;let did=false;if(G.hp<S.maxHp*.9){heal(S.maxHp*.07);did=true}if(G.en<S.maxEn){G.en=Math.min(S.maxEn,G.en+6);did=true}if(did){W.fx.push({k:'bolt',x:m.x,y:m.y,x2:P.x,y2:P.y,t:0,life:.4,col:'#7be495'});sfx('mend')}}}
   if(m.slow>0)m.slow=Math.max(0,m.slow-dt);const rd=m.rustD;if(rd){rd.t-=dt;if(m.hp>1)m.hp=Math.max(1,m.hp-rd.dps*dt);if(rd.t<=0)m.rustD=null}
@@ -1118,7 +1173,7 @@ function calc(){
   if(P&&P.bear>0)s.armor=Math.round(s.armor*1.25);
   s.maxHp=Math.round((c.hp+(G.lvl-1)*c.hpL+(G.at.vit+(s.vit||0))*4+s.hp+(s.hpL||0)*(G.lvl||1))*hpM);
   s.maxEn=Math.max(1,Math.round((50+G.lvl*2+(G.at.bnd+(s.bnd||0))*3+s.en+(s.enL||0)*(G.lvl||1))*(1+Math.min(80,s.enPct||0)/100)));
-  if(P&&P.orders>0){s.maxHp=Math.round(s.maxHp*1.12);s.maxEn=Math.round(s.maxEn*1.08)}
+  if(P&&(P.orders>0||P.rCall>0)){s.maxHp=Math.round(s.maxHp*(1+FORMULAS.aura.call.life));s.maxEn=Math.round(s.maxEn*(1+FORMULAS.aura.call.en))}
   if(s.pdr)s.pdr=Math.min(FORMULAS.brace.pdrCap,s.pdr);
   s.aspd+=s.wspd;s.mspd=Math.min(s.mspd,50);
   if(s.r_all)for(const k of RTK)s['r_'+k]=(s['r_'+k]||0)+s.r_all;
@@ -1354,7 +1409,7 @@ function fxMark(x,y,col,n,life){if(!W)return;W.fx.push({k:'mark',x,y,col:col||'#
 function fxOrbit(x,y,col,life){if(!W)return;W.fx.push({k:'orbit',x,y,col:col||'#59e0e6',n:3,t:0,life:life||.7})}
 function fxAim(k,x,y,r){if(!W||!W.fx)return;for(let i=W.fx.length-1;i>=0;i--){const f=W.fx[i];if(f.stay||f.k!==k)continue;f.x=x;f.y=y;if(r)f.r=r;if(k==='patch')f.tel=1;return}}
 /* Lasting states. One stay record each, refreshed in place, so they do not toast and do not fill the effect list. Radii match the ticks. Toxic has no radius there, so the patch is 2.2. A party member or the hireling wears the same disc while they stand inside it. Testimony, On the Record, and a missed connection keep a mark, twelve at most. Two-Handed, Redaction, and a chassis keep one on you. Paint only. */
-function auraVisR(i,L){L=L||1;if(i===4)return 3.5+.15*L;if(i===7)return 3.2+.1*L;if(i===3)return 2.2;return 0}
+function auraVisR(i,L){return auraRadius(i,L)}
 function dumpSpent(k){if(P)P.dump={k:k,t:1.4}}
 function fxStay(id,rec){let f=null;for(const x of W.fx)if(x.sid===id){f=x;break}
   if(!f){f={sid:id,stay:1,t:0,life:1,k:rec.k};W.fx.push(f)}
@@ -1395,9 +1450,9 @@ function pdmg(m,e){
   if(S.sp.deadline&&P.movedT>0)d*=1.25;if(S.sp.tenmin&&e&&!e.hits)d*=1.6;if(G.cls==='founder'&&sl(13)&&!boonOn(13))d*=orgMul(!!P.allySwing);if(G.cls==='maxi'&&sl(10)&&P.aura)d*=nodeMul(!P.allySwing);else if(P.nodeM)d*=P.nodeM;if(P.fm&&P.fm.t>0)d*=P.fm.m;if(S.sp.hashrate)d*=1+.01*Math.min(40,P.streak);if(S.sp.quorum)d*=1+.05*Math.min(6,tanks().length+W.allies.filter(a=>a.k==='turret').length);
   let c=P.e82>0||Math.random()*100<S.crit;if(c)d*=S.critM;
   if(S.sp.severance&&Math.random()<.15){d*=3;c=true}
-  if(P.bear>0)d*=1.28;if(P.book>0&&!(e&&e.mp)){const who=P.allySwing?P.swingBody:P;if(who&&dist(who,P)<6)d*=1.08}
+  if(P.bear>0)d*=1.28;if(!(e&&e.mp)&&(P.book>0||P.rBook>0)){let ok=P.rBook>0&&!(P.book>0);if(P.book>0){const who=P.allySwing?P.swingBody:P;ok=!!(who&&dist(who,P)<6)}if(ok)d*=1.08}
   return[d,c]}
-function dmgEnemy(e,d,crit){if(e.hp<=0)return;{let mk=e.mark>0?1.3:1;if(e.mkP>0)mk=Math.max(mk,1+e.mkP);if(mk>1)d*=mk}if(e.mp){mpHurt(e,d,crit);return}e.hits=(e.hits||0)+1;d/=partyH();if(e.onRecT>0&&e.onRecM)d*=e.onRecM;if(P&&P.partyHit&&S.named&&(e.tes||0)>0){const base=d,up=d*(1+S.named),shown=Math.round(base);d=Math.round(up)===shown?shown+.5:up}
+function dmgEnemy(e,d,crit){if(e.hp<=0)return;{let mk=e.mark>0?1.3:1;if(e.mkP>0)mk=Math.max(mk,1+e.mkP);if(mk>1)d*=mk}if(e.mp){mpHurt(e,d,crit);return}e.hits=(e.hits||0)+1;d/=partyH();if(e.onRecT>0&&e.onRecM)d*=e.onRecM;if(P&&P.partyHit&&S.named&&(e.tes||0)>0){const base=d,up=d*(1+S.named),shown=Math.round(base);d=Math.round(up)===shown?shown+.5:up}if(P&&P.allyNamed&&(e.partyTes||0)>0)d*=1+FORMULAS.aura.named.per*P.allyNamed
   const snd=e.snd;e.snd=0;if(!snd){if(e.mods.shield)d*=.5;if(e.ward>0)d*=.6}e.flash=.12;wake(e);if(crit){sfx('crit');hitStop=.04}
   float(e.x,e.y,Math.round(d)+(crit?'!':''),crit?'#ffe36b':'#ffffff',0);parts(e.x,e.y,crit?5:2,['#ffd27a','#fff','#ff9a3c'],2.2);
   if(e.mods.arc&&e.arcCd<=0){const soft=defragAct1(e);e.arcCd=soft?2.1:1.3;const n=soft?4:6,sp=soft?3.2:5,dm=soft?.38:.5;for(let i=0;i<n;i++){const a=i*(6.283/n)+e.ph;const pr={x:e.x,y:e.y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:1.3,foe:true,dmg:e.dmg*dm,col:'#59e0e6'};if(soft)pr.src={dty:'surge',name:e.name};W.projs.push(pr)}}
@@ -1483,7 +1538,8 @@ function hurt(d,slow,src){const pv=src&&src.pvp,wasStun=P.hitStun>0;if(mode==='d
   const band=Math.ceil(G.hp/S.maxHp*10);if(band<P.band&&band<=4){bloodSplat((5-band)*3)}P.band=band}
 function attack(){
   if(P.atk>0||P.dash)return;const c=CLS[G.cls];unstealth();if(G.cls==='witness')P.witHold=1;
-  if(P.mech>0){P.atk=.7;P.swing=.18;const t=nearest(2.6);if(t)face(t);burst(P.x+P.dir.x,P.y+P.dir.y,2,1.6+.25*sl(5),0,'#e0bd6e');return}
+  const snd=P.soundSwing?1:0;if(snd){P.soundSwing=0;DT='sound'}
+  if(P.mech>0){P.atk=.7;P.swing=.18;const t=nearest(2.6);if(t)face(t);burst(P.x+P.dir.x,P.y+P.dir.y,2,1.6+.25*sl(5),0,'#e0bd6e');if(snd)DT=null;return}
   const mel=c.melee||hsMelee();
   const two=mel&&P.two&&P.two.n>0;
   P.atk=(two?c.ivl*1.75:c.ivl/(1+(S.aspd+(P.buff>0?40:0))/100))/toxicSwing(P);P.swing=.18;sfx(mel?'swing':G.cls==='hacker'?'zap':'throw');
@@ -1492,7 +1548,7 @@ function attack(){
     const dump1=G.cls==='anon'&&P.reh>0&&sl(10)&&!boonOn(10);if(dump1){P.reh--;if(P.reh<=0){P.reh=0;P.rehT=0}DT='rust';dumpSpent('rust')}
     P.swinging=1;{const hits=arcHits(reach,arc);for(const e of hits)hit(e,c.mult*scrapWeight(hits,e))}if(dump1)DT=null;P.swinging=0;
     if(two){P.two.n--;if(P.two.n<=0)P.two=null}smash(two?2.3:1.7)}
-  else shoot(P.dir,c.mult,S.sp.deadletter||Math.random()*100<S.pierce?99:0)}
+  else shoot(P.dir,c.mult,S.sp.deadletter||Math.random()*100<S.pierce?99:0);if(snd)DT=null}
 function smash(r){for(const o of W.objs)if(o.k==='crate'&&!o.used&&dist(o,P)<r)breakCrate(o)}
 function breakCrate(o){o.used=1;W.map[(o.y|0)*W.N+(o.x|0)]=1;sfx('crate');parts(o.x,o.y,10,['#9a7a4a','#6a5030','#c9a868'],2.5);dropFrom('crate',o.x,o.y,W.ml)}
 function shoot(d,m,pierce,o){o=o||{};const col=o.col||(G.cls==='hacker'?'#59e0e6':G.cls==='courier'||G.cls==='founder'?'#e6e2d6':'#c9a868'),dt=o.dt||DT||(P.fm&&P.fm.t>0&&P.fm.dt)||null,life=o.life||.7,spd=o.spd||11;
@@ -1527,17 +1583,21 @@ function remoteStep(){if(!P||!W)return;let ux=(P.dir&&P.dir.x)||1,uy=(P.dir&&P.d
 function scrTick(dt){
   if(P.dash)P.lineT=0;else P.lineT=Math.min(6,(P.lineT||0)+dt);
   if(P.lastShift>0)P.lastShift=Math.max(0,P.lastShift-dt);
-  for(const a of W.allies){if(a.k!=='pail'||a.hp<=0)continue;
+  let asked=0;
+  for(const a of W.allies){if(a.k!=='pail'||a.hp<=0||a.remote)continue;
+    /* In a party the server spends the one store. A copied pail on the other client does not. */
+    const shared=typeof mpOn==='function'&&mpOn()&&typeof MP!=='undefined'&&MP&&MP.party;
+    if(shared){if(!asked&&typeof mpPailAsk==='function'){asked=1;mpPailAsk(a,dt)}continue}
     const take=(who,max,cur,add)=>{if(a.hp<=0||!(max>0)||cur>=max||dist(who,a)>=2.6)return;const got=Math.min(a.hp,max*a.rate*dt,max-cur);if(got<=0)return;add(got);a.hp-=got};
     take(P,S.maxHp,G.hp,heal);
     if(W.merc&&W.merc.hp>0)take(W.merc,W.merc.max,W.merc.hp,v=>{W.merc.hp=Math.min(W.merc.max,W.merc.hp+v)});
     if(W.tag&&W.tag.hp>0)take(W.tag,W.tag.max,W.tag.hp,v=>{W.tag.hp=Math.min(W.tag.max,W.tag.hp+v)});
-    for(const o of W.allies)if(o!==a&&o.hp>0&&o.max)take(o,o.max,o.hp,v=>{o.hp=Math.min(o.max,o.hp+v)});
+    for(const o of W.allies)if(o!==a&&o.hp>0&&o.max&&!o.remote)take(o,o.max,o.hp,v=>{o.hp=Math.min(o.max,o.hp+v)});
     if(a.hp<=0)a.life=0}}
 function hackTick(dt){
   for(const a of W.allies.slice()){
-    if(a.k==='fault'){a.pulse-=dt;if(a.pulse>0)continue;a.pulse=.5;DT='heat';P.hitSk=9;for(const e of W.ents.slice())if((a.pts||[]).some(pt=>Math.hypot(e.x-pt.x,e.y-pt.y)<a.r+e.r))hit(e,a.m,true);P.hitSk=-1;DT=null}
-    if(a.k==='pstorm'){if(a.arm>0){a.arm-=dt;continue}a.pulse-=dt;if(a.pulse>0)continue;a.pulse=.5;DT='noise';P.hitSk=10;for(const e of W.ents.slice())if(dist(e,a)<a.r+e.r)hit(e,a.m,true);P.hitSk=-1;DT=null;W.fx.push({k:'strike',x:a.x,y:a.y,t:0,life:.15})}}}
+    if(a.k==='fault'){a.pulse-=dt;if(a.pulse>0)continue;a.pulse=.5;DT='heat';P.hitSk=9;P.areaTick=1;for(const e of W.ents.slice())if((a.pts||[]).some(pt=>Math.hypot(e.x-pt.x,e.y-pt.y)<a.r+e.r))hit(e,a.m,true);P.hitSk=-1;P.areaTick=0;DT=null}
+    if(a.k==='pstorm'){if(a.arm>0){a.arm-=dt;continue}a.pulse-=dt;if(a.pulse>0)continue;a.pulse=.5;DT='noise';P.hitSk=10;P.areaTick=1;for(const e of W.ents.slice())if(dist(e,a)<a.r+e.r)hit(e,a.m,true);P.hitSk=-1;P.areaTick=0;DT=null;W.fx.push({k:'strike',x:a.x,y:a.y,t:0,life:.15})}}}
 function runTick(dt){
   if(P.route>0)P.route=Math.max(0,P.route-dt);
   /* The parcel stays where it was set down. The leash is how far you may walk before it pops. It does not follow. */
@@ -1651,7 +1711,7 @@ const SKF={
   5:(L,m)=>{burst(P.x,P.y,4,0,1+.2*L,'#ffe36b');P.guard=8},
   6:(L,m)=>{P.buff=6+L;P.buffL=6+L},
   7:(L,m)=>{const t=nearest(7),mm=(2.2+.35*L)*m,end=()=>{burst(P.x,P.y,3,0,.6,'#ff5d4d');sfx('boom');const hits=arcHits(3,-1);for(const e of hits)hit(e,mm*scrapWeight(hits,e))};if(t){face(t);dash(26,Math.max(.06,(dist(t,P)-1)/26),0,end)}else end()},
-  9:(L)=>{let x=P.x+P.dir.x*.7,y=P.y+P.dir.y*.7;if(!free(x,y,.2)){x=P.x;y=P.y}const pool=S.maxHp*(.28+.06*L);W.allies.push({k:'pail',x,y,life:1e9,hp:pool,max:pool,rate:.02+.004*L,r:.3})},
+  9:(L)=>{let x=P.x+P.dir.x*.7,y=P.y+P.dir.y*.7;if(!free(x,y,.2)){x=P.x;y=P.y}const pool=S.maxHp*(.28+.06*L);W.allies.push({k:'pail',x,y,life:1e9,hp:pool,max:pool,rate:.02+.004*L,r:.3,L:L||1})},
   12:(L,m)=>{for(const e of W.ents.slice()){if(dist(e,P)>4.2+e.r)continue;shove(e,(e.champ||e.su||isBoss(e.k))?-1.2:2.2);hit(e,(.55+.08*L)*m)}},
   13:()=>{P.two={n:3};float(P.x,P.y,'Two-handed','#d9822b',0)},
   14:(L)=>{P.lastShift=4+.3*L;float(P.x,P.y,'Last shift','#ffb238',0)}},
@@ -1729,7 +1789,7 @@ Object.assign(SKF,{
   7:(L,m)=>{let t=null,bd=7;for(const e of W.ents){if(isBoss(e.k)||e.su||(e.champ&&L<5))continue;const d=dist(e,P);if(d<bd){bd=d;t=e}}if(!t){toast('Nothing here will take the offer');return}
     W.ents.splice(W.ents.indexOf(t),1);t.stun=0;t.flash=0;fxAim('mark',t.x,t.y);W.allies.push({k:'minion',kind:'conv',e:t,x:t.x,y:t.y,life:12+2*L,raw:t.dmg*2*(1+.1*L),ivl:.8,rng:ET[t.k].ranged?4.5:1.1,cd:0,ph:0,hp:t.hp,max:t.max,r:t.r,taunt:1,fx:1})},
   8:(L,m)=>{const ws=W.allies.filter(a=>a.per);if(!ws.length){toast('You have no workforce to lay off');return}for(const a of ws){W.allies.splice(W.allies.indexOf(a),1);burst(a.x,a.y,2.4,(2+.4*L)*m,0,'#ff5d4d');heal(S.maxHp*.05)}},
-  9:(L,m)=>{const g=P.grave;if(!g||g.t<=0||!g.src||g.src.hp<=0||W.ents.indexOf(g.src)<0){toast('You have nobody to put on leave');return}const e=g.src;e.noheal=4+.3*L;e.leave={dps:(.4+.06*L)*m,t:4+.3*L,c:0};P.grave=null;fxAim('mark',e.x,e.y)},
+  9:(L,m)=>{const g=P.grave;if(!g||g.t<=0||!g.src||g.src.hp<=0||W.ents.indexOf(g.src)<0){toast('You have nobody to put on leave');return}const e=g.src;e.noheal=4+.3*L;e.leave={dps:(.4+.06*L)*m,t:4+.3*L,c:0};if(typeof mpNoteCurse==='function')mpNoteCurse(e,'leave',1,e.noheal);P.grave=null;fxAim('mark',e.x,e.y)},
   10:(L)=>{const t=nearest(7);if(!t){toast('Nobody to bind');return}face(t);for(const e of W.ents)e.nc=0;t.nc=5+.3*L},
   12:(L,m)=>{const bag=G.bag||[],ix=bag.findIndex(it=>it&&it.slot==='weapon');let dt='impact',weak=.55,fed=null;if(ix>=0){fed=bag.splice(ix,1)[0];dt=fed.dt||'impact';weak=1}summon({kind:'officer',per:1,m:(.9+.12*L)*m*weak,ivl:.7,hp:S.maxHp*(1.1+.1*L),max:S.maxHp*(1.1+.1*L),taunt:1,r:.42,holdDt:1,dt},1);toast(fed?'The officer takes '+(fed.name||fed.base||'the weapon'):'The officer is empty-handed')},
   14:(L,m)=>founderLiq(L,m)},
@@ -1760,8 +1820,8 @@ Object.assign(SKF,{
   4:(L)=>{if(recGet()<witNeed(4)){witBlank();return}const t=nearest(6);if(!t){toast('Nothing in view');return}const spend=Math.max(1,Math.ceil(recGet()*WIT.thread));if(!witPay(spend)){witBlank();return}const d=(t.tes||0)*(3.5+.45*L)*(1+(G.lvl||1)*.012);face(t);if(!(d>0)){float(t.x,t.y,'the page is blank','#e6dcc8',0);return}witImpact(t,d)},
   6:()=>{if(!(P&&P.tag)&&G.corrZi===W.zi){toast('Already corrected in this district');return}if(recGet()<1){witBlank();return}const loss=P.lastLoss||0;if(!(loss>0)){toast('Nothing to correct');return}recSet(0);let h=loss;if(S.retr)h*=1+S.retr/100;if(P&&P.tag)P.hp=Math.min(P.max||P.hp,(P.hp||0)+h);else{heal(h);G.corrZi=W.zi}float(P.x,P.y,'Corrected','#7be495',0)},
   7:()=>{if(recGet()<witNeed(7)){witBlank();return}if(!witPay(witNeed(7))){witBlank();return}P.redact=2;float(P.x,P.y,'Redacted','#e6dcc8',0)},
-  9:(L)=>{if(recGet()<witNeed(9)){witBlank();return}let best=null,bt=-1;for(const e of W.ents){if(e.hp<=0||e.mp)continue;if((e.tes||0)>bt){bt=e.tes||0;best=e}}if(!best||bt<WIT.high){toast('The testimony is too thin');return}if(!witPay(witNeed(9))){witBlank();return}best.onRecT=WIT.onRec;best.onRecM=1+.12*L;float(best.x,best.y,'On the record','#e6dcc8',0);fxAim('mark',best.x,best.y)},
-  10:()=>{if(recGet()<witNeed(10)){witBlank();return}const cands=[];if(W.merc&&W.merc.hp>0)cands.push(W.merc);if(W.tag&&W.tag.hp>0&&!(P&&P.tag))cands.push(W.tag);for(const a of W.allies)if(witLends(a))cands.push(a);let who=null,bd=12;for(const a of cands){const d=dist(a,P);if(d<bd){bd=d;who=a}}if(!who){toast('Nobody to attribute');return}if(!witPay(witNeed(10))){witBlank();return}who.soundSwing=1;float(who.x,who.y,'Unnamed','#f7931a',0)},
+  9:(L)=>{if(recGet()<witNeed(9)){witBlank();return}let best=null,bt=-1;for(const e of W.ents){if(e.hp<=0||e.mp)continue;if((e.tes||0)>bt){bt=e.tes||0;best=e}}if(!best||bt<WIT.high){toast('The testimony is too thin');return}if(!witPay(witNeed(9))){witBlank();return}best.onRecT=WIT.onRec;best.onRecM=1+.12*L;if(typeof mpNoteCurse==='function')mpNoteCurse(best,'rec',best.onRecM,WIT.onRec);float(best.x,best.y,'On the record','#e6dcc8',0);fxAim('mark',best.x,best.y)},
+  10:()=>{if(recGet()<witNeed(10)){witBlank();return}const cands=[];if(W.merc&&W.merc.hp>0)cands.push(W.merc);if(W.tag&&W.tag.hp>0&&!(P&&P.tag))cands.push(W.tag);for(const a of W.allies)if(witLends(a))cands.push(a);if(typeof MP!=='undefined'&&MP.others&&typeof mpInParty==='function'){for(const o of MP.others){if(!o||!mpInParty(o.uid))continue;if(typeof mpHostileTo==='function'&&mpHostileTo(o.uid))continue;cands.push(o)}}let who=null,bd=12;for(const a of cands){const d=dist(a,P);if(d<bd){bd=d;who=a}}if(!who){toast('Nobody to attribute');return}if(!witPay(witNeed(10))){witBlank();return}if(who.uid){if(typeof mpLend==='function')mpLend(who.uid);float(who.x,who.y,'Unnamed','#f7931a',0);return}who.soundSwing=1;float(who.x,who.y,'Unnamed','#f7931a',0)},
   12:(L)=>{if(recGet()<1){witBlank();return}const ons=W.ents.filter(e=>e.hp>0&&!e.mp&&witSeen(e)&&(e.tes||0)>0);if(!ons.length){toast('Nothing on the page');return}recSet(0);for(const e of ons){witImpact(e,(e.watch||0)*(1.6+.25*L)*(1+(G.lvl||1)*.01));e.tes=0;e.watch=0;e.acc=0}}}
 });
 function cast(slot){if(!G||!G.slots)return;castIndex(G.slots[slot])}
@@ -2123,7 +2183,7 @@ function update(dt){
     if(a.k==='turret'&&a.cd<=0){const t=nearest(6,a);if(t){a.cd=.45;sfx('zap');const d=dist(t,a)||1;shoot({x:(t.x-a.x)/d,y:(t.y-a.y)/d},a.m,0,{from:a,life:.6,col:'#59e0e6'})}}
     if(a.k==='storm'&&a.cd<=0){a.cd=.25;const c2=W.ents.filter(e=>dist(e,a)<3.5);sfx('thunder');if(c2.length){const t=pick(c2);W.fx.push({k:'strike',x:t.x,y:t.y,t:0,life:.2});hit(t,a.m)}else W.fx.push({k:'strike',x:a.x+rnd(-3,3),y:a.y+rnd(-3,3),t:0,life:.2})}
     if(a.k==='trops'&&a.cd<=0){a.cd=.5;for(const e of W.ents.slice())if(dist(e,a)<2.6){e.slow=1;hit(e,a.m)}}
-    if(a.k==='plot'&&a.cd<=0){a.cd=.5;DT='rust';for(const e of W.ents.slice())if(dist(e,a)<(a.r||2)+(e.r||0)){e.slow=Math.max(e.slow||0,1);hit(e,a.m,true)}DT=null}
+    if(a.k==='plot'&&a.cd<=0){a.cd=.5;DT='rust';P.areaTick=1;for(const e of W.ents.slice())if(dist(e,a)<(a.r||2)+(e.r||0)){e.slow=Math.max(e.slow||0,1);hit(e,a.m,true)}P.areaTick=0;DT=null}
     if(a.k==='minion'&&a.flock)hsFlockStep(a,dt);else if(a.k==='minion'){a.ph+=dt;a.flash=Math.max(0,(a.flash||0)-dt);const cr=P.crunch>0&&a.per,t=(G.cls==='founder'?openTarget(8,a):nearest(8,a))||null,g=t||P,d=dist(g,a)||1,rg=a.rng||1,sp=(a.spd||5)*dt,home=dist(a,P);a.mov=false;
       /* Permanent staff catch up at 8, unless this swing is already in range. Timed minions keep 14. */
       if(a.per?home>(t&&d<=rg+(t.r||0)?13:8):home>14){a.x=P.x;a.y=P.y}else if(d>(t?rg*.8:1.5+(a.off||0))){a.x+=(g.x-a.x)/d*sp;a.y+=(g.y-a.y)/d*sp;a.fx=(g.x-a.x)-(g.y-a.y)>0?1:-1;a.mov=true}
@@ -2273,7 +2333,7 @@ function bounties(){G.bounties=G.bounties||[];while(G.bounties.length<3+(repRank
 
 /* ---------- shape shifting: same level, new class, points returned ---------- */
 const SHIFT_COST=5;
-function shapeShift(cls,roll){if(G.sats<SHIFT_COST){toast('You need '+SHIFT_COST+' sats');sfx('err');return}G.sats-=SHIFT_COST;G.st.shifts++;
+function shapeShift(cls,roll){if(!spendSats(SHIFT_COST,'You need '+SHIFT_COST+' sats'))return;G.st.shifts++;
   let sp=G.sp+G.sk.reduce((a,b)=>a+skSpent(b),0),ap=G.ap+G.at.mgt+G.at.ref+G.at.vit+G.at.bnd;
   G.cls=cls;delete G.schema;delete G.pas;delete G.doc;G.fork={};G.sk=G.sk.map(()=>0);boonRefund();G.at={mgt:0,ref:0,vit:0,bnd:0};let BR=null;
   if(typeof roll==='string'){const r=buildApply(cls,roll,sp,ap);sp=r.sp;ap=r.ap;BR=r.B;roll=0}else{G.sk[0]=1;sp--;G.slots=[0,-1,-1]}
@@ -2317,7 +2377,7 @@ function addAdopt(n,why){if(n>0&&G.adopt>=100)return;mktNews(clamp(n*.02,-.2,.2)
   if(G.adopt>=50&&!G.ad50){G.ad50=1;setTimeout(()=>toast('Half the world now saves in sats. The Stipend terminal pays one, too.'),1800)}
   if(G.adopt>=100&&!G.resSeen)setTimeout(()=>{if(mode==='play'){G.resSeen=1;playScene(RESERVE,()=>{mode='play';dlg('The reserve','The baker’s loaf is priced in sats, and the street copied her. Unity can still create credits. Nothing you eat is priced in them, so prices have stopped rising.',[['Continue']])})}},2500)}
 function ensureNode(){if(W.z.town||W.z.sim||W.z.sub||W.objs.some(o=>o.k==='dnode'))return;const p=freeSpot(12);W.objs.push({k:'dnode',x:p.x,y:p.y})}
-function lightNode(o){if(cause()){G.sats+=5;toast('Sister Null’s people cover the cost. For the cause.')}if(G.sats<5){toast('Lighting a node costs 5 sats');sfx('err');return}G.sats-=5;o.used=1;G.nodes[W.zi]=1;sfx('shrine');parts(o.x,o.y,24,['#f7931a','#fff'],2.5,1.6);addRep('btc',5);mktNews(.12,'a node came online in '+W.z.n);addAdopt(5,'a node comes online in '+W.z.n)}
+function lightNode(o){if(cause()){G.sats+=5;toast('Sister Null’s people cover the cost. For the cause.')}if(!spendSats(5,'Lighting a node costs 5 sats'))return;o.used=1;G.nodes[W.zi]=1;sfx('shrine');parts(o.x,o.y,24,['#f7931a','#fff'],2.5,1.6);addRep('btc',5);mktNews(.12,'a node came online in '+W.z.n);addAdopt(5,'a node comes online in '+W.z.n)}
 
 /* ================= world events ================= */
 const EVS={stipend:{n:'Stipend Day',d:'Residents wander the district and credit drops are tripled.',t:45},audit:{n:'Surprise Audit',d:'A hunting party has your scent. Its leader carries a lockbox.',t:70},outage:{n:'Outage',d:'The lights fail and the machines stall. +50% experience while it lasts.',t:40},block:{n:'Block Found',d:'For a short while, any machine may drop a satoshi.',t:35}};
@@ -2547,7 +2607,7 @@ function paraXp(v){if((G.para||0)>=100){G.xp=0;return}if(!G.act3){const cap=xpNe
 const SUBM={volatile:'Machines explode when they break',dry:'Stims do not work',bounty:'Machines drop extra sats',swift:'Machines move 30% faster',thick:'Machines have 50% more life'};
 ZONES.push({n:'Sealed Proceedings',sub:true,lvl:1,style:'trib',amb:.6,mix:[['bot',3]],su:{k:'hr',n:'The Respondent',mods:['strong','shield'],q:null}});
 const SUBZ=ZONES.length-1;
-function subStart(l){if(G.sats<3){toast('Serving a subpoena costs 3 sats');sfx('err');return}G.sats-=3;const z=ZONES[SUBZ],src=ZONES[pick([2,4,5,7,9,11,12,13,14,15])],ks=Object.keys(SUBM).sort(()=>Math.random()-.5);
+function subStart(l){if(!spendSats(3,'Serving a subpoena costs 3 sats'))return;const z=ZONES[SUBZ],src=ZONES[pick([2,4,5,7,9,11,12,13,14,15])],ks=Object.keys(SUBM).sort(()=>Math.random()-.5);
   SUBP={lvl:l,mods:ks.slice(0,l>=5?3:2)};z.n='Subpoena · Level '+l;z.lvl=G.lvl+2*l-G.tier*12;z.style=src.style;z.amb=src.amb;z.mix=src.mix;z.su.k=pick(['hr','mech','seer','lancer']);z.su.mods=['strong','shield','fast','arc','leech'].sort(()=>Math.random()-.5).slice(0,2);
   delete ZS[SUBZ];enter(SUBZ,{fresh:true,after(){W.sub=SUBP;W.portals=W.portals.filter(p=>p.kind!=='next');for(const p of W.portals)if(p.kind==='prev')p.kind='home';
     dlg(z.n,'Sealed proceedings. Find and break The Respondent. Rules in force: '+SUBP.mods.map(m=>SUBM[m]).join('; ')+'.',[['Enter']])}})}
@@ -2584,11 +2644,11 @@ const loanAmt=()=>400*G.lvl*G.cpi,nowCost=()=>payTag(150*G.lvl*G.cpi*((G.lean||0
 function talkFloat(){const d=G.debt||0,real=d?Math.round(d/G.cpi/(G.debt0/G.debtCpi)*100):0;
   dlg('Mr. Float',d?'“You owe me '+fmt(d)+'. I charge interest, naturally.” He does not mention that prices have been rising faster than his interest. In real terms you now owe about '+real+'% of what you borrowed.':'“Everybody wants it now. I sell now. The orange fellow across the square sells later. And if you are short, I lend, at a very reasonable rate.”',[
    ['Now: +40% damage for 5 minutes · '+fmt(nowCost()),()=>{if(G.credits<nowCost()){toast('Not enough credits');sfx('err');return}G.credits-=nowCost();addAdopt(-1,'you chose now');G.tpT=300;calc();sfx('buff');toast('Strength on credit: +40% damage for 5 minutes')}],
-   ['Later: +1% damage for good · 15 sats ('+(G.tpP||0)+'/25)',()=>{if(G.sats<15||(G.tpP||0)>=25){toast((G.tpP||0)>=25?'You have saved all you can here':'Not enough sats');sfx('err');return}G.sats-=15;G.tpP=(G.tpP||0)+1;calc();sfx('learn');toast('Saved. +1% damage, permanently.')}],
+   ['Later: +1% damage for good · 15 sats ('+(G.tpP||0)+'/25)',()=>{if((G.tpP||0)>=25){toast('You have saved all you can here');sfx('err');return}if(!spendSats(15,'Not enough sats'))return;G.tpP=(G.tpP||0)+1;calc();sfx('learn');toast('Saved. +1% damage, permanently.')}],
    d?['Repay '+fmt(d),()=>{/* The line prints whole credits, so the purse pays that floor. */const pay=Math.floor(G.debt);if(G.credits<pay){toast('Not enough credits');sfx('err');return}G.credits-=pay;G.debt=0;sfx('coin');toast('Debt cleared')}]:['Borrow '+fmt(loanAmt())+(scs()<350?' · refused':scs()<500?' · 35% fee':' · 10% fee'),()=>{if(scs()<350){toast('“Not with that score. I have a licence to think of.”');sfx('err');return}/* His line prints whole credits, so the purse gains that floor. */const l=Math.floor(loanAmt());addAdopt(-2,'you borrowed credits');G.credits+=l;G.debt=l*loanFee();G.debt0=l;G.debtCpi=G.cpi;sfx('coin');toast('Borrowed '+fmt(l)+'. You owe '+fmt(l*loanFee())+' and rising.')}],
    ['Leave']])}
 function craft(it,k){if(it&&it.test){toast('Test gear stays out of the economy');return false}const P_=G.parts||0;
-  if(k==='scrap'){const n=[1,2,4,8,15][it.q]||1;G.parts=P_+n;G.bag.splice(G.bag.indexOf(it),1);sfx('equip');toast('Scrapped for '+n+' part'+(n>1?'s':''));return true}
+  if(k==='scrap'){if(typeof tradeLocked==='function'&&tradeLocked(it))return false;const n=[1,2,4,8,15][it.q]||1;G.parts=P_+n;G.bag.splice(G.bag.indexOf(it),1);sfx('equip');toast('Scrapped for '+n+' part'+(n>1?'s':''));return true}
   if(k==='reroll'){const c=rerollCost(it);if(P_<c)return false;const r=rerollMod(it);if(!r)return false;G.parts=P_-c;sfx('learn');toast(AFK[r[0].k].t.replace('{v}',r[0].v)+' → '+AFK[r[1].k].t.replace('{v}',r[1].v));calc();return false}
   if(k==='addsoc'){if(P_<12)return false;G.parts=P_-12;it.soc=(it.soc||0)+1;it.words=it.words||[];sfx('learn');toast('A socket is cut into '+it.name);return false}}
 const rerollCost=it=>5+Math.floor(it.il/4);
@@ -2665,10 +2725,10 @@ function shillLeave(s,line){if(!s||s.left)return;s.left=1;s.pitch=0;s.aggro=fals
 function shillTough(){return (G.lvl||1)>=8}
 function shillRare(){return (G.lvl||1)<6&&Math.random()<.65}
 function shillTurn(s,line){s.pitch=0;s.aggro=true;sfx('growl');toast(line);const n=shillTough()?2:0;for(let i=0;i<n;i++){const m=spawn('bot',s.x+rnd(-1.2,1.2),s.y+rnd(-1.2,1.2),{minion:1});if(m){m.name='Bagholder';m.aggro=true}}}
-function shillTalk(s){const c=s.coin,price=Math.min(10,G.sats);
+function shillTalk(s){const c=s.coin,price=Math.min(10,satsFree());
   dlg(s.name,'“Friend! Have you heard about '+c+'? '+pick(SHILLQ)+' Ten sats gets you ten thousand '+c+'. What do you say?”',[
    ['“No. There is bitcoin, and there is everything else.”',()=>{G.lean=clamp((G.lean||0)+6,-100,100);if(G.rep)addRep('btc',1);shillTurn(s,'“Maxi! Dinosaur! Get him!”')}],
-   ['Trade '+price+' sats for 10,000 '+c,()=>{if(price<1){shillLeave(s,'“No sats? Then I am wasting the pitch.” He leaves.');return}G.sats-=price;addAdopt(-3,'sats sold for '+c);G.bagsHeld=(G.bagsHeld||0)+1;G.lean=clamp((G.lean||0)-15,-100,100);repAdj('btc',-3);W.ents.splice(W.ents.indexOf(s),1);sfx('coin');toast('You hold 10,000 '+c+'. He is already gone.');
+   ['Trade '+price+' sats for 10,000 '+c,()=>{if(price<1||!spendSats(price,'Not enough sats')){if(price<1)shillLeave(s,'“No sats? Then I am wasting the pitch.” He leaves.');return}addAdopt(-3,'sats sold for '+c);G.bagsHeld=(G.bagsHeld||0)+1;G.lean=clamp((G.lean||0)-15,-100,100);repAdj('btc',-3);W.ents.splice(W.ents.indexOf(s),1);sfx('coin');toast('You hold 10,000 '+c+'. He is already gone.');
      setTimeout(()=>{if(G)dlg(c,'The '+c+' chart goes straight down and then stops being a chart. The website is gone. Your ten thousand '+c+' are worth nothing, and the '+price+' sats you paid are in somebody else’s wallet. Nonce will hear about this.',[['Lesson learned']])},25000)}],
    ['“What does it actually do?”',()=>dlg(s.name,'“Do? It goes up. That is what it does. Community. Utility. Ecosystem.” He is sweating.',[['“No.”',()=>shillTurn(s,'“You just hate innovation!”')],['Walk away',()=>shillLeave(s,'He lets you walk. The pamphlet stays in his hand.')]])]],3)}
 function shillDie(e){campHit('coin');const coins=ri(6,14),n=ri(4,9)+Math.floor(W.ml/8);G.sats+=n;G.st.shills=(G.st.shills||0)+1;sfx('quest');float(e.x,e.y,'+'+n+' sats','#f7931a');addRep('btc',2);
@@ -2733,10 +2793,10 @@ function mktBasisAdd(n,cr){const c=G.mkt.cb;c.n+=n;c.cr+=cr;c.st+=cr/Math.max(1,
 function mktBasisTake(n){const c=G.mkt.cb;if(c.n<=0)return;const f=Math.min(1,n/c.n);c.cr-=c.cr*f;c.st-=c.st*f;c.n=Math.max(0,c.n-n)}
 /* ---------- taking his quote ---------- */
 function mktTrade(n,side){const m=mktInit();n=Math.floor(n);if(n<1)return null;
-  if(side==='sell'&&G.sats<n)return null;
+  if(side==='sell'&&satsFree()<n)return null;
   const q=mktQuote(n,side);
   if(side==='buy'){if(G.credits<q.total)return null;G.credits-=q.total;G.sats+=n;mktBasisAdd(n,q.total);addRep('btc',Math.ceil(n/6));addAdopt(Math.min(2,n*.02),'');if(m.r<.97)G.st.dip=(G.st.dip||0)+1}
-  else{G.sats-=n;G.credits+=q.total;mktBasisTake(n);addAdopt(-Math.min(3,n*.08),n>=10?'sats sold for credits':'')}
+  else{if(!spendSats(n))return null;G.credits+=q.total;mktBasisTake(n);addAdopt(-Math.min(3,n*.08),n>=10?'sats sold for credits':'')}
   mktImpact(n,side);mktNews(side==='buy'?.05:-.05,null);sfx('coin');
   if(q.k>.12)toast('Your order walked the book: you paid '+Math.round(q.k*9)+'% away from the quote. Size moves price.');
   return q}
@@ -2751,7 +2811,7 @@ function mktPost(n,px,side){const m=mktInit();n=Math.floor(n);if(n<1||!(px>0))re
   if(m.ord.length>=4){toast('Nonce will hold four orders at a time');sfx('err');return false}
   /* The held line prints whole credits, so a bid escrows that floor. The limit stays the price you named. */
   const held=side==='buy'?Math.floor(n*px):n;
-  if(side==='sell'){if(G.sats<n)return false;G.sats-=n}
+  if(side==='sell'){if(!spendSats(n))return false}
   else{if(held<1||G.credits<held)return false;G.credits-=held}
   m.ord.push({s:side,n,px,esc:held});sfx('ui');
   toast(side==='sell'?'Posted: '+n+' sats for sale at '+fmt(px)+' each':'Posted: a bid for '+n+' sats at '+fmt(px)+' each');return true}
@@ -2768,9 +2828,9 @@ function mktFills(){const m=G.mkt,mid=m.p;
     toast('Your order filled: '+o.n+' sats at '+fmt(o.px)+'. Maker rebate '+fmt(rebate)+' — you were the one waiting.')}}
 /* ---------- Mr. Float lends against them, and is delighted either way ---------- */
 const MKT_LTV=.5, MKT_LIQ=.72;
-function mktBorrow(n){const m=mktInit();if(m.pos)return false;n=Math.floor(n);if(n<1||G.sats<n)return false;
+function mktBorrow(n){const m=mktInit();if(m.pos)return false;n=Math.floor(n);if(n<1||satsFree()<n)return false;
   /* The sheet prints whole credits, so the purse gains that floor. */
-  const px=mktBid(),lent=Math.floor(n*px*MKT_LTV);G.sats-=n;G.credits+=lent;
+  const px=mktBid(),lent=Math.floor(n*px*MKT_LTV);if(!spendSats(n))return false;G.credits+=lent;
   m.pos={n,px,lent,liq:px*MKT_LIQ};mktNews(-.06,'collateral posted with Mr. Float');sfx('coin');
   dlg('Mr. Float','“'+n+' sats, held by me, and '+fmt(lent)+' in your hand today. If one sat falls under '+fmt(m.pos.liq)+' I keep the collateral and you keep the credits. People always take that deal. They are always surprised.”',[['Understood']]);return true}
 function mktRepay(){const m=G.mkt,p=m&&m.pos;if(!p)return false;/* The owe line prints whole credits, so the purse pays that floor. */const owed=Math.floor(p.lent*1.08);if(G.credits<owed)return false;
@@ -2819,7 +2879,7 @@ const LOCALS={
  zabo:{n:'Zabo',col:'#a8997e',town:18,say:['Long before any of it, I wrote down how you might make gold out of arithmetic. I was nearly right, which in my trade is the same as wrong.','A contract that keeps itself. That was the idea.']},
  usher:{n:'The Usher',col:'#6a5a4a',town:18,say:['The Board will see you presently. It has been saying so since 2051.','Please do not touch the chairs. One of them is still warm.']}};
 Object.assign(PERS,{laz:{n:'Laz',g:'mid',know:2,o:2},finn:{n:'Finn',g:'maxi',know:3,o:4},vane:{n:'Ms. Vane',g:'fud',know:0,o:1},zabo:{n:'Zabo',g:'mid',know:3,o:7},usher:{n:'The Usher',g:'fud',know:0,o:3}});
-function talkLocal(id){const L=LOCALS[id],b=[];if(L.buy)b.push(['A slice · 2 sats (refills your stims)',()=>{if(G.sats<2){toast('Not enough sats');sfx('err');return}G.sats-=2;G.stims=S.cap;sfx('stim');addAdopt(.5,'');toast('Hot, and paid for in the only thing he takes.')}]);b.push(['Leave']);dlg(L.n,'“'+pick(L.say)+'”',b)}
+function talkLocal(id){const L=LOCALS[id],b=[];if(L.buy)b.push(['A slice · 2 sats (refills your stims)',()=>{if(!spendSats(2,'Not enough sats'))return;G.stims=S.cap;sfx('stim');addAdopt(.5,'');toast('Hot, and paid for in the only thing he takes.')}]);b.push(['Leave']);dlg(L.n,'“'+pick(L.say)+'”',b)}
 function addLocals(zi){const at=[[9.5,16.5],[15.5,9.5]];let i=0;for(const id in LOCALS)if(LOCALS[id].town===zi){const p=at[i++%2];W.npcs.push({id,x:p[0],y:p[1],name:LOCALS[id].n,col:LOCALS[id].col})}}
 /* a lit node can be raided; leave it to them and it goes dark */
 function raidCheck(){W.raid=0;if(W.z.town||W.z.sim||W.z.sub||!G.nodes[W.zi])return;const o=W.objs.find(o=>o.k==='dnode');if(!o||Math.random()>.25)return;
@@ -3118,7 +3178,7 @@ const BULLZ=ZONES.length-1;
 MEMOS.push(['Notice from the Office of Price Stability','There is no bull market. There has never been a bull market. Reports of a “bull run” beyond the Transit Gate are false, and Residents are reminded not to bring machine parts to the gate, in particular legs.']);
 function legCheck(){if(W.zi!==1||G.leg||G.q.q15!==3)return;const p=nearFree({x:W.start.x+1.6,y:W.start.y+1.2},.3);let o=W.objs.find(o=>o.k==='leg');if(!o){o={k:'leg'};W.objs.push(o)}o.x=p.x;o.y=p.y;setTimeout(()=>toast('Something is twitching on the ground near the gate.'),1500)}
 function legTake(o){W.objs.splice(W.objs.indexOf(o),1);G.leg=1;sfx('unique');dlg('A servo leg','All that is left of Gatewarden HOA-9: one leg, still twitching, stamped PROPERTY OF UNITY HOLDINGS. It is no use to anyone. You take it anyway. Somebody once said the Transit Gate does odd things when you jam the wrong part into it.',[['Keep it']])}
-function bullStart(){if(!G.leg)return;if(G.sats<10){toast('The gate wants 10 sats to look the other way');sfx('err');return}G.sats-=10;const z=ZONES[BULLZ];z.lvl=G.lvl+2-G.tier*12;delete ZS[BULLZ];enter(BULLZ,{fresh:true,after(){W.portals=W.portals.filter(p=>p.kind!=='next');for(const p of W.portals)if(p.kind==='prev')p.kind='home';for(const e of W.ents)if(e.k==='bull'&&!e.su&&Math.random()<.5)e.say=1}})}
+function bullStart(){if(!G.leg)return;if(!spendSats(10,'The gate wants 10 sats to look the other way'))return;const z=ZONES[BULLZ];z.lvl=G.lvl+2-G.tier*12;delete ZS[BULLZ];enter(BULLZ,{fresh:true,after(){W.portals=W.portals.filter(p=>p.kind!=='next');for(const p of W.portals)if(p.kind==='prev')p.kind='home';for(const e of W.ents)if(e.k==='bull'&&!e.su&&Math.random()<.5)e.say=1}})}
 function bullKill(e){if(e.k!=='bull'||!W.z.secret)return;if(Math.random()<.22)addDrop({sat:ri(1,3)},e.x,e.y);
   if(e.su){G.st.bullKing=(G.st.bullKing||0)+1;mktNews(.3,'the Golden Bull is down');for(let i=0;i<6;i++)addDrop({sat:ri(6,12)},e.x,e.y);addDrop({it:makeItem(W.ml+2,4)},e.x,e.y);W.portals.push({x:e.x,y:e.y,kind:'home'});sfx('quest');setTimeout(()=>dlg('The Golden Bull is down','The field goes quiet. Somewhere a chart stops going up, just for a moment. The Office of Price Stability will deny that any of this happened, and for once you are inclined to let them.',[['Moo']]),900)}}
 /* ================= builds: when the rig rolls for you, it offers plans that hang together ================= */
@@ -3203,8 +3263,8 @@ const TAGK={whirl:'aoe',nova:'aoe',horn:'aoe',boom:'aoe',thunder:'aoe',swing2:'a
 function tagCost(l){return 3+Math.floor(l/15)}
 function tagG(n){if(n===SLOT)return null;const i=slotInfo(n);if(!i)return null;try{return i.loc?i.loc.G:JSON.parse(i.cloud.s).G}catch(e){return null}}
 function tagStats(og){const g0=G,keep=S;let r=null;try{G=JSON.parse(JSON.stringify(og));ensureG();calc();r={dmg:(S.dmin+S.dmax)/2*(1+S.dmg/100),max:S.maxHp,arm:S.armor||0}}catch(e){}G=g0;S=keep;calc();return r}
-function tagRender(n){const og=tagG(n);if(!og||!CLS[og.cls])return;const c=tagCost(og.lvl);if(G.sats<c){toast('You need '+c+' sats');sfx('err');return}const st=tagStats(og);if(!st){toast('The rig could not read that character');sfx('err');return}
-  G.sats-=c;const k=Math.min(1,(G.lvl+5)/og.lvl),sk=CLS[og.cls].sk,act=(og.slots||[]).filter(i=>i>=0&&sk[i]&&sk[i].a&&og.sk[i]);
+function tagRender(n){const og=tagG(n);if(!og||!CLS[og.cls])return;const c=tagCost(og.lvl);if(satsFree()<c){toast(tradeReserved()?'Those sats are on the table.':'You need '+c+' sats');sfx('err');return}const st=tagStats(og);if(!st){toast('The rig could not read that character');sfx('err');return}
+  if(!spendSats(c))return;const k=Math.min(1,(G.lvl+5)/og.lvl),sk=CLS[og.cls].sk,act=(og.slots||[]).filter(i=>i>=0&&sk[i]&&sk[i].a&&og.sk[i]);
   G.tag={slot:n,cls:og.cls,lvl:og.lvl,name:'Level '+og.lvl+' '+CLS[og.cls].n,dmg:Math.max(st.dmg*k,(4+2.2*G.lvl)*.9),max:Math.round(Math.max(st.max*k,60+22*G.lvl)),red:100/(100+st.arm*k),sk:act.map(i=>[i,og.sk[i]]),down:k<1,eq:og.eq||{}};
   spawnMerc();sfx('unique');save(true);
   playScene([{art:'feed',title:'Rendered',text:'The rig hums, and a second outline fills in beside you, one scan line at a time: somebody you have been. '+G.tag.name+' looks at their hands, then at you, and nods.'+(k<1?' The rig has to down-sample them to fit this world; they fight a little above your level, not at their own.':'')+(G.merc&&!G.merc.dead?' '+G.merc.name+' steps back to wait with Kestrel until they are gone.':'')}],()=>{mode='play'})}
@@ -4496,7 +4556,7 @@ const dPct=d=>(d>0?'+':'−')+Math.min(999,Math.round(Math.abs(d)*100))+'%';
 function cell(it,attr,isSel,slot,d){if(!it)return `<button class="cell empty" ${attr} disabled>${slot?svgIcon(slot):''}</button>`;
   const can=it.id&&G.lvl>=it.req,v=d==null||d===undefined?'':d>.01?(can?' better':' locked'):d<-.01?' worse':'';
   return `<button class="cell q${it.q}${isSel?' sel':''}${it.id?'':' unid'}${v}${it.junk?' junk':''}" ${attr}>${svgIcon(it.slot)}<small>${it.il}</small>${v&&d!=null?`<em>${dPct(d)}</em>`:''}${it.junk?'<u>JUNK</u>':''}</button>`}
-function equipFromBag(i){const it=G.bag[i];if(!it)return false;if(it.charm){toast('Subscriptions run on their own. They are not worn.');return false}if(!it.id){toast('Identify it first');sfx('err');return false}if(G.lvl<it.req){toast('Needs level '+it.req);sfx('err');return false}
+function equipFromBag(i){const it=G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.charm){toast('Subscriptions run on their own. They are not worn.');return false}if(!it.id){toast('Identify it first');sfx('err');return false}if(G.lvl<it.req){toast('Needs level '+it.req);sfx('err');return false}
   const old=G.eq[it.slot];G.eq[it.slot]=it;it.junk=false;G.bag.splice(i,1);if(old)G.bag.push(old);calc();sfx('equip');return true}
 function equipBest(){let n=0;for(const slot of SLOTS){let best=-1,bd=.01;G.bag.forEach((it,i)=>{if(it.slot!==slot||!it.id||G.lvl<it.req)return;const d=itemDelta(it);if(d>bd){bd=d;best=i}});if(best>=0&&equipFromBag(best))n++}return n}
 function gearNow(s){return{lo:Math.round(s.dmin*(1+s.dmg/100)+s.shock),hi:Math.round(s.dmax*(1+s.dmg/100)+s.shock),arm:s.armor}}
@@ -4531,7 +4591,7 @@ function itemCard(it,btns,worn,nocmp){const eq=G.eq[it.slot];let cmp='';
   if(it.id&&!nocmp){if(worn)cmp=deltaHTML(it.slot,null,'If you take this off');else cmp=deltaHTML(it.slot,it,eq?'If you swap this for <span class="q'+eq.q+'">'+esc(eq.name)+'</span>':'If you equip this')}
   return `<div class="card"><div class="nm q${it.q}">${esc(it.id?it.name:it.base)}</div><div class="ln off">${QN[it.q]} ${it.id&&it.name!==it.base?esc(it.base):SNAME[it.slot]} · item level ${it.il}</div>${itemLines(it)}${cmp}<div class="row" style="margin-top:6px">${btns}</div><div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`}
 const MSL=['weapon','helm','armor'];const mScore=it=>it?(it.dmin?(it.dmin+it.dmax)/2:it.arm||0):0;
-function mercBest(){let n=0;const m=G.merc;for(const sl of MSL){let b=-1,bs=mScore(m[sl]);G.bag.forEach((it,i)=>{if(it.slot===sl&&it.id&&!it.junk&&mScore(it)>bs&&!(itemDelta(it)>.01)){bs=mScore(it);b=i}});if(b>=0){const it=G.bag[b],old=m[sl];m[sl]=it;G.bag.splice(b,1);if(old)G.bag.push(old);n++}}return n}
+function mercBest(){let n=0;const m=G.merc;for(const sl of MSL){let b=-1,bs=mScore(m[sl]);G.bag.forEach((it,i)=>{if(typeof tradeHeld==='function'&&tradeHeld(it))return;if(it.slot===sl&&it.id&&!it.junk&&mScore(it)>bs&&!(itemDelta(it)>.01)){bs=mScore(it);b=i}});if(b>=0){const it=G.bag[b],old=m[sl];m[sl]=it;G.bag.splice(b,1);if(old)G.bag.push(old);n++}}return n}
 const pkRow=()=>`<h3>Pick up on your own</h3><div class="row">${['Normal','Magic','Rare','Set','Unique'].map((n,q)=>`<button class="ghost q${q}" data-opt="pk${q}" style="padding:10px 2px;font-size:10px;${OPT['pk'+q]===false?'opacity:.35;text-decoration:line-through':''}">${n}</button>`).join('')}</div><button class="tog${OPT.pkBetter?' on':''}" data-opt="pkBetter"><span>Only pick up gear better than what I am wearing</span><i>${OPT.pkBetter?'ON':'OFF'}</i></button><p class="hint" style="font-size:13px">Struck-out tiers stay on the ground, named or not. Better-only leaves identified gear that is not an upgrade, and still picks up unidentified gear, which it cannot judge. Subscriptions are picked up anyway. On a desk, left click a piece you left. On a phone, stand on it and use the button that appears. E does the same. A piece for an empty slot is always picked up.</p>`;
 const selling=()=>sheetCtx.only&&(sheetCtx.only.includes('shop')||sheetCtx.only.includes('gamble'))&&!sheetCtx.only.includes('sats');
 function drawSheet(){
@@ -4632,7 +4692,7 @@ function drawSheet(){
   if(tab==='bounty'){const rows=bounties(),bump=repRank('anon')>=1?1.25:1;h+=`<h2>Bounty board</h2><p>Posted by anons, paid on proof. ${rows.length} contract${rows.length===1?'':'s'} at a time; a new one is pinned up when you claim one. You hold <strong style="color:#f7931a">${G.sats} sats</strong>.</p><div class="list">`;
     rows.forEach((b,i)=>{const dn=b.c>=b.n,sats=Math.ceil(b.sats*bump),pay=Math.floor(b.cr*bump*G.cpi);h+=`<button class="li${dn?' on':''}" data-claim="${i}" ${dn?'':'disabled'}><div><b>${b.n} × ${ET[b.k].n}</b><span>${ZONES[b.zi].n} · ${b.c}/${b.n}${dn?' · tap to claim':''}</span></div><span class="pr" style="color:#f7931a">${sats} sats<br>${fmt(pay)}</span></button>`});h+=`</div>`}
   if(tab==='stash'){const real=Math.floor(ACC.cr*G.cpi);h+=`<h2>Your lockbox</h2><p>One lockbox for every wanderer you play. Leave gear, credits or sats here and any of your heroes can take them out, in any slot.</p>
-    <h3>Sats · ${ACC.sats} in the box · ${G.sats} on you</h3><div class="row"><button class="ghost" data-acc="si10" ${G.sats<10?'disabled':''}>Deposit 10</button><button class="ghost" data-acc="siall" ${G.sats<1?'disabled':''}>Deposit all</button><button class="ghost" data-acc="so10" ${ACC.sats<10?'disabled':''}>Take 10</button><button class="ghost" data-acc="soall" ${ACC.sats<1?'disabled':''}>Take all</button></div>
+    <h3>Sats · ${ACC.sats} in the box · ${G.sats} on you</h3><div class="row"><button class="ghost" data-acc="si10" ${satsFree()<10?'disabled':''}>Deposit 10</button><button class="ghost" data-acc="siall" ${satsFree()<1?'disabled':''}>Deposit all</button><button class="ghost" data-acc="so10" ${ACC.sats<10?'disabled':''}>Take 10</button><button class="ghost" data-acc="soall" ${ACC.sats<1?'disabled':''}>Take all</button></div>
     <h3>Credits · ${fmt(real)} in the box · ${fmt(G.credits)} on you</h3><div class="row"><button class="ghost" data-acc="cihalf" ${G.credits<1?'disabled':''}>Deposit half</button><button class="ghost" data-acc="ciall" ${G.credits<1?'disabled':''}>Deposit all</button><button class="ghost" data-acc="coall" ${real<1?'disabled':''}>Take all</button></div>
     <p style="font-size:13px">Sats are kept exactly as you leave them. Credits are held by what they could buy on the day, less Unity’s 10% custody fee, so a fortune from a late act is not a fortune to a hero just starting out.</p>
     <h3>Gear ${ACC.stash.length}/36</h3><div class="grid">${Array.from({length:36},(_,i)=>cell(ACC.stash[i],`data-st="${i}"`)).join('')}</div><h3>Pack ${G.bag.length}/24</h3><div class="grid">${Array.from({length:24},(_,i)=>cell(G.bag[i],`data-sb="${i}"`)).join('')}</div><p style="font-size:13px">Tap an item to move it across. Wearing it still needs the level printed on it.</p>`}
@@ -4723,7 +4783,7 @@ function copyText(s,ta){const fb=()=>{ta.hidden=false;ta.value=s;ta.focus();ta.s
 function loadCode(s){try{const o=JSON.parse(decodeURIComponent(escape(atob(s.trim()))));if(!applySave(o))throw 0;$('sheet').hidden=true;startPlay();save();toast('Save loaded');return true}catch(e){toast('That code could not be read');return false}}
 let tapT=null,tapI=-1,lpT=null,lpFired=false,lpXY=null;
 function longPress(i){const it=G.bag[i];if(!it)return;lpFired=true;clearTimeout(tapT);tapT=null;try{navigator.vibrate&&navigator.vibrate(25)}catch(e){}
-  if(selling()){const v=sellValue(it);G.credits+=v;G.bag.splice(i,1);sfx('coin');toast('Sold '+(it.id?it.name:it.base)+' for '+fmt(v))}else{it.junk=!it.junk;sfx('ui');toast(it.junk?'Marked as junk':'No longer junk')}
+  if(selling()){if(typeof tradeLocked==='function'&&tradeLocked(it))return;const v=sellValue(it);G.credits+=v;G.bag.splice(i,1);sfx('coin');toast('Sold '+(it.id?it.name:it.base)+' for '+fmt(v))}else{it.junk=!it.junk;sfx('ui');toast(it.junk?'Marked as junk':'No longer junk')}
   sel=null;drawSheet()}
 $('sheetIn').addEventListener('pointerdown',e=>{const c=e.target.closest('[data-bag]');lpFired=false;clearTimeout(lpT);if(!c||c.disabled)return;const i=+c.dataset.bag;lpXY=[e.clientX,e.clientY];lpT=setTimeout(()=>longPress(i),480)});
 $('sheetIn').addEventListener('pointermove',e=>{if(lpXY&&Math.hypot(e.clientX-lpXY[0],e.clientY-lpXY[1])>10)clearTimeout(lpT)});
@@ -4734,7 +4794,7 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.iskkey!==undefined){const k=+d.iskkey,i=sel&&sel.isk;if(i>=100&&itemSkillOn(i)){const o=G.slots.indexOf(i);if(o>=0)G.slots[o]=-1;G.slots[k]=i;setSkillButtons()}drawSheet();return}
   if(d.iskside){const i=sel&&sel.isk;if(i>=100)assignMouse(d.iskside,i);drawSheet();return}
   if(d.popx)sel=null;
-  if(d.sellq!==undefined){const q=+d.sellq;if(q<0&&!sellArm){sellArm=true;drawSheet();return}let t=0;G.bag=G.bag.filter(i=>{if(q===9?i.junk:!i.charm&&(q<0||i.q===q)){t+=sellValue(i);return false}return true});G.credits+=t;sel=null;sfx('coin');toast('Sold for '+fmt(t))}
+  if(d.sellq!==undefined){const q=+d.sellq;if(q<0&&!sellArm){sellArm=true;drawSheet();return}let t=0,held=false;G.bag=G.bag.filter(i=>{if(typeof tradeHeld==='function'&&tradeHeld(i)){held=true;return true}if(q===9?i.junk:!i.charm&&(q<0||i.q===q)){t+=sellValue(i);return false}return true});G.credits+=t;sel=null;sfx('coin');toast((held?'What is on the table stays. ':'')+'Sold for '+fmt(t))}
   sellArm=false;
   if(d.close)return closeSheet();
   if(d.loadcode){const v=$('codeIn').value;if(!loadCode(v)){const p=document.createElement('p');p.className='red';p.textContent='That code could not be read. Check that all of it was pasted.';$('sheetIn').appendChild(p)}return}
@@ -4747,16 +4807,16 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
     else{clearTimeout(tapT);tapI=i;tapT=setTimeout(()=>{tapT=null;sel={bag:i};drawSheet()},260);return}}
   if(d.best){bestAsk();return}if(d.bestok){const n=equipBest();toast(n?'Equipped '+n+' upgrade'+(n>1?'s':''):'Nothing better in your pack')}
   if(d.markjunk){let n=0;G.bag.forEach(it=>{const x=itemDelta(it);if(x!==null&&x<-.01&&!it.junk){it.junk=true;n++}});toast(n+' item'+(n===1?'':'s')+' marked as junk')}
-  if(d.dropjunk){G.bag=G.bag.filter(it=>{if(it.junk){W.drops.push({x:P.x+rnd(-1.2,1.2),y:P.y+rnd(-1.2,1.2),it,t:1});return false}return true});sel=null}
+  if(d.dropjunk){let held=false;G.bag=G.bag.filter(it=>{if(typeof tradeHeld==='function'&&tradeHeld(it)){held=true;return true}if(it.junk){W.drops.push({x:P.x+rnd(-1.2,1.2),y:P.y+rnd(-1.2,1.2),it,t:1});return false}return true});if(held)toast('What is on the table stays.');sel=null}
   if(d.do){const it=sel.eq?G.eq[sel.eq]:G.bag[sel.bag];
     if(d.do==='equip'){equipFromBag(sel.bag);sel=null}
     if(d.do==='junk'){it.junk=!it.junk;sel=null}
     if(d.do==='scrap'||d.do==='reroll'||d.do==='addsoc'){if(craft(it,d.do))sel=null;drawSheet();return}
     if(d.do==='sock'){sel.sock=true;drawSheet();return}
-    if(d.do==='mgive'){const old=G.merc[it.slot];G.merc[it.slot]=it;it.junk=false;G.bag.splice(sel.bag,1);if(old)G.bag.push(old);sel=null;sfx('equip');toast(G.merc.name+' takes the '+it.base)}
+    if(d.do==='mgive'){if(typeof tradeLocked==='function'&&tradeLocked(it))return;const old=G.merc[it.slot];G.merc[it.slot]=it;it.junk=false;G.bag.splice(sel.bag,1);if(old)G.bag.push(old);sel=null;sfx('equip');toast(G.merc.name+' takes the '+it.base)}
     if(d.do==='unequip'){if(G.bag.length>=24)toast('Your pack is full');else{G.bag.push(it);G.eq[sel.eq]=null;sel=null;sfx('equip')}}
-    if(d.do==='sell'){if(it.test){toast('Test gear has no price');return}G.credits+=sellValue(it);G.bag.splice(sel.bag,1);sel=null;sfx('coin')}
-    if(d.do==='drop'){G.bag.splice(sel.bag,1);W.drops.push({x:P.x+1.1,y:P.y+1.1,it,t:1});sel=null}
+    if(d.do==='sell'){if(it.test){toast('Test gear has no price');return}if(typeof tradeLocked==='function'&&tradeLocked(it))return;G.credits+=sellValue(it);G.bag.splice(sel.bag,1);sel=null;sfx('coin')}
+    if(d.do==='drop'){if(typeof tradeLocked==='function'&&tradeLocked(it))return;G.bag.splice(sel.bag,1);W.drops.push({x:P.x+1.1,y:P.y+1.1,it,t:1});sel=null}
     calc()}
   if(d.word){const it=sel.eq?G.eq[sel.eq]:G.bag[sel.bag];socketWord(it,d.word);sel.sock=it.words.length<it.soc&&!it.pw}
   if(d.at){G.at[d.at]++;G.ap--}
@@ -4765,8 +4825,8 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.mbest){const n=mercBest();toast(n?G.merc.name+' takes '+n+' piece'+(n>1?'s':''):'Nothing spare is better for them. Pieces that would improve you are left alone.');sfx(n?'equip':'ui')}
   if(d.claim!==undefined){const b=G.bounties[+d.claim];if(b&&b.c>=b.n){const m=repRank('anon')>=1?1.25:1;b.sats=Math.ceil(b.sats*m);b.cr*=m;addRep('anon',6);if(repRank('anon')>=3){const w=pick(WK);gotWord(w);toast('A note is pinned to the payment: '+w)}G.sats+=b.sats;/* The board and the paid line print whole credits, so the purse gains that floor. */const pay=Math.floor(b.cr*G.cpi);G.credits+=pay;G.bounties.splice(+d.claim,1);sfx('quest');toast('Paid: '+b.sats+' sats and '+fmt(pay))}}
   if(d.st!==undefined){const it=ACC.stash[+d.st];if(it){if(G.bag.length>=24)toast('Your pack is full');else{ACC.stash.splice(+d.st,1);G.bag.push(it);sfx('equip');accSave();save(true)}}}
-  if(d.sb!==undefined){const it=G.bag[+d.sb];if(it){if(it.test)toast('Test gear does not go in the lockbox');else if(ACC.stash.length>=36)toast('The lockbox is full');else{G.bag.splice(+d.sb,1);it.junk=false;ACC.stash.push(it);sfx('equip');accSave();save(true)}}}
-  if(d.acc){const k=d.acc;if(k[0]==='s'){const n=k==='si10'?10:k==='siall'?G.sats:k==='so10'?-10:-ACC.sats;G.sats-=n;ACC.sats+=n}else if(k==='coall'){/* The box line prints whole credits, so take-all pays that floor. */const pay=Math.floor(ACC.cr*G.cpi);G.credits+=pay;ACC.cr=0}else{/* Half and all move whole credits. The fee is still a tenth of that. */const a=k==='cihalf'?Math.floor(G.credits/2):Math.floor(G.credits);if(a>0){G.credits-=a;ACC.cr+=a/G.cpi*.9}}sfx('coin');accSave();save(true)}
+  if(d.sb!==undefined){const it=G.bag[+d.sb];if(it){if(typeof tradeLocked==='function'&&tradeLocked(it))return;if(it.test)toast('Test gear does not go in the lockbox');else if(ACC.stash.length>=36)toast('The lockbox is full');else{G.bag.splice(+d.sb,1);it.junk=false;ACC.stash.push(it);sfx('equip');accSave();save(true)}}}
+  if(d.acc){const k=d.acc;if(k[0]==='s'){if(k==='si10'||k==='siall'){const n=k==='si10'?10:satsFree();if(n>0&&spendSats(n))ACC.sats+=n}else{const n=k==='so10'?Math.min(10,ACC.sats|0):(ACC.sats|0);if(n>0){G.sats=(G.sats|0)+n;ACC.sats-=n}}}else if(k==='coall'){/* The box line prints whole credits, so take-all pays that floor. */const pay=Math.floor(ACC.cr*G.cpi);G.credits+=pay;ACC.cr=0}else{/* Half and all move whole credits. The fee is still a tenth of that. */const a=k==='cihalf'?Math.floor(G.credits/2):Math.floor(G.credits);if(a>0){G.credits-=a;ACC.cr+=a/G.cpi*.9}}sfx('coin');accSave();save(true)}
   if(d.bull){closeSheet();bullStart();return}
   if(d.shiftp){sel={shp:d.shiftp};drawSheet();return}
   if(d.shift){const[k,r]=d.shift.split('|');shapeShift(k,r==='0'?false:r==='1'?true:r==='?'?pick(BUILDS[k]).k:r);return}
@@ -4780,7 +4840,7 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
     if(k==='b'||k==='s'){const n=Math.max(1,mktQty),q=mktTrade(n,k==='b'?'buy':'sell');
       if(q)toast(k==='b'?'Bought '+n+' sats for '+fmt(q.total):'Sold '+n+' sats for '+fmt(q.total));else{toast(k==='b'?'Not enough credits':'Not that many sats');sfx('err')}}
     else if(k==='ball'){const n=mktAfford();if(n<1){toast('Not enough credits');sfx('err')}else{const q=mktTrade(n,'buy');if(q)toast('Bought '+n+' sats for '+fmt(q.total))}}
-    else if(k==='sall'){const n=G.sats;if(n<1){toast('No sats');sfx('err')}else{const q=mktTrade(n,'sell');if(q)toast('Sold '+n+' sats for '+fmt(q.total)+(q.k>.12?' — and the last of them for rather less than the first':''))}}}
+    else if(k==='sall'){const n=satsFree();if(n<1){toast(tradeReserved()?'Those sats are on the table.':'No sats');sfx('err')}else{const q=mktTrade(n,'sell');if(q)toast('Sold '+n+' sats for '+fmt(q.total)+(q.k>.12?' — and the last of them for rather less than the first':''))}}}
   if(d.mko){const n=Math.max(1,mktQty),off=+d.mko.slice(1)/100,buy=d.mko[0]==='b',px=mktMid()*(buy?1-off:1+off);
     if(!mktPost(n,px,buy?'buy':'sell')){toast(buy?'Not enough credits to hold that bid':'Not that many sats to post');sfx('err')}}
   if(d.mkx!==undefined)mktCancel(+d.mkx);
@@ -4788,7 +4848,7 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.mkr)if(!mktRepay()){toast('Not enough credits to repay him');sfx('err')}
   /* The pledge is the one printed on the sheet, and it never goes under ten sats. */
   if(d.mkb){const n=Math.max(10,Math.min(G.sats,mktQty));if(!mktBorrow(n)){toast(G.mkt.pos?'He will only hold one position':'Not enough sats');sfx('err')}}
-  if(d.satbuy){const o=satShop[sel.sat];if(o&&G.sats>=satPrice(o)&&G.bag.length<24){G.sats-=satPrice(o);addRep('btc',Math.ceil(o.price/4));addAdopt(1,'you paid in sats');G.bag.push(o.it);satShop.splice(sel.sat,1);sel=null;sfx('coin');toast('Paid in sats')}}
+  if(d.satbuy){const o=satShop[sel.sat];if(o&&satsFree()>=satPrice(o)&&G.bag.length<24&&spendSats(satPrice(o))){addRep('btc',Math.ceil(o.price/4));addAdopt(1,'you paid in sats');G.bag.push(o.it);satShop.splice(sel.sat,1);sel=null;sfx('coin');toast('Paid in sats')}}
   if(d.node!==undefined)sel={sk:+d.node};
   if(d.learn!==undefined){const i=+d.learn;G.sp-=skCost(i);G.sk[i]++;if(G.sk[i]===10)toast(CLS[G.cls].sk[i].n+' is mastered: two extra ranks’ worth of power'+(CLS[G.cls].sk[i].a?' and 20% faster recovery':'')+'.');if(CLS[G.cls].sk[i].a&&!G.slots.includes(i)){const e=G.slots.indexOf(-1);if(e>=0)G.slots[e]=i}if(!CLS[G.cls].sk[i].a&&G.pas&&!G.pas.includes(i)&&G.pas.length<PCAP())G.pas.push(i);calc();sfx('learn');if(G.cls==='hacker'&&i===11&&G.sk[11]===1&&!G.schema)schemaAsk()}
   if(d.assign!==undefined){const k=+d.assign,i=sel.sk,o=G.slots.indexOf(i);if(o>=0)G.slots[o]=G.slots[k];G.slots[k]=i}
@@ -4808,12 +4868,12 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.webadd!==undefined){const nx=webNext(+d.webadd);
     if(nx&&webPts()>0){G.web[nx]=1;sel={web:nx};calc();sfx('learn')}}
   if(d.weball){G.web[sel.web]=1;calc();sfx('learn')}
-  if(d.webreset){if(G.sats>=5){G.sats-=5;G.web={};sel=null;calc();sfx('ui')}}
+  if(d.webreset){if(spendSats(5,'A refund costs 5 sats')){G.web={};sel=null;calc();sfx('ui')}}
   if(d.sub){closeSheet();subStart(+d.sub);return}
   if(d.hc){G.hc=!G.hc;calc()}
   if(d.mab){G.merc[d.mab[0]==='g'||d.mab[0]==='f'?'ab1':'ab2']={g:'guard',f:'fury',m:'medic',c:'coll'}[d.mab[0]];calc();spawnMerc()}
   if(d.gact){gateAct=+d.gact}
-  if(d.doc){if(!W.z.town)toast('Doctrines can only be changed in town');else if(G.doc===d.doc){}else if(G.doc&&G.sats<3)toast('Changing doctrine costs 3 sats');else{if(G.doc)G.sats-=3;G.doc=d.doc;calc();G.hp=Math.min(G.hp,S.maxHp);sfx('learn')}}
+  if(d.doc){if(!W.z.town)toast('Doctrines can only be changed in town');else if(G.doc===d.doc){}else if(!G.doc||spendSats(3,'Changing doctrine costs 3 sats')){G.doc=d.doc;calc();G.hp=Math.min(G.hp,S.maxHp);sfx('learn')}}
   if(d.track){G.track=d.track;sfx('ui')}
   if(d.diff!==undefined){const i=+d.diff;if(!diffUnlocked(i)){toast(i>=2?'Brutal opens after you clear Act V on Hard.':'Hard opens after you clear Act V on Normal.');sfx('err')}else{G.diff=i;sfx('ui');toast(pick(DIFFSET))}}
   if(d.opt==='fx'){const o=['full','normal','thin'];const i=o.indexOf(OPT.fx);OPT.fx=o[(i<0?1:i+1)%3]}
@@ -4829,7 +4889,7 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.buy==='stim'){G.credits-=payTag(stimPrice());G.stims++;sfx('coin')}
   if(d.buy==='id'){G.credits-=payTag(40*G.cpi*unidCount()*(G.disc?.85:1));idAll();sfx('rare')}
   if(d.shop!==undefined)sel={shop:+d.shop};
-  if(d.buy==='itemsat'){const it=shop[sel.shop];G.sats-=satCost(it);addAdopt(.5,'');G.bag.push(it);shop.splice(sel.shop,1);sel=null;sfx('coin')}
+  if(d.buy==='itemsat'){const it=shop[sel.shop];if(it&&spendSats(satCost(it))){addAdopt(.5,'');G.bag.push(it);shop.splice(sel.shop,1);sel=null;sfx('coin')}}
   if(d.buy==='item'){const it=shop[sel.shop];G.credits-=buyPrice(it);G.bag.push(it);shop.splice(sel.shop,1);sel=null;sfx('coin')}
   if(d.box){G.credits-=boxPrice();const r=Math.random(),q=r<.015?4:r<.035?3:r<.185?2:1;const it=makeItem(G.lvl+ri(-1,2)+G.tier*12,q,d.box);it.id=true;G.bag.push(it);lastBox=it;sfx(q===4?'unique':q>=2?'rare':'drop')}
   if(d.go){if(mpPortalBlocked())return;if(actBriefHold(+d.go)){actBriefDeny();return}closeSheet();enter(+d.go);return}
@@ -4962,6 +5022,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden&&G&&mode!==
 addEventListener('pagehide',()=>{if(G&&mode!=='title')save(true)});
 
 /* ================= boot ================= */
+{const ln=$('lanNote');if(ln)ln.hidden=!window.__LAN}
 function drawCls(){$('clsList').innerHTML=Object.entries(CLS).filter(([k,c])=>!c.locked||maxiOn()).map(([k,c])=>`<button class="cls" data-cls="${k}"><i style="background:${c.col}"></i><div><b>${c.n}</b><span>${c.tag}</span></div></button>`).join('')}
 drawCls();
 $('clsList').addEventListener('click',e=>{const b=e.target.closest('[data-cls]');if(!b)return;sfx('ui');const go=()=>{$('title').hidden=true;newGame(b.dataset.cls)};const cur=slotInfo(SLOT);if(!cur)return go();dlg('Replace slot '+(SLOT+1)+'?','A new wanderer begins at the very start: level 1, Act I, nothing carried over. It replaces the level '+cur.lvl+' '+CLS[cur.cls].n+' saved in this slot, who cannot be brought back. To keep them, tap an empty slot first.',[['Keep my hero',()=>{mode='title'}],['Start a new '+CLS[b.dataset.cls].n,go]],2)});
@@ -5125,7 +5186,7 @@ function toxicDmg(L) {
 function maxiAura(dt) {
   if (!G || !P) return;
   dt = dt || 0;
-  P.toxL = 0; P.mkAura = 0; P.mkP = 0;
+  P.toxL = 0; P.mkAura = 0; P.mkP = 0; P.nodeM = 0;
   if (W && W.merc) W.merc.toxL = 0;
   if (W && W.tag) { W.tag.toxL = 0; W.tag.nodeM = 0; }
   if (W && W.allies) for (const a of W.allies) if (a) a.toxL = 0;
@@ -5163,14 +5224,16 @@ function maxiAura(dt) {
       const m = (.3 + .07 * h.L) * syn(7);
       const prevSk = P.hitSk;
       P.hitSk = 7;
+      P.areaTick = 1;
       try { for (const e of auraFoes(h)) hit(e, m, true); }
-      finally { P.hitSk = prevSk; }
+      finally { P.hitSk = prevSk; P.areaTick = 0; }
       W.fx.push({ k: 'ring', x: P.x, y: P.y, r: auraVisR(7, h.L), t: 0, life: .25, col: '#f7931a' });
     }
   }
   /* Running a Node. The hireling's shot already multiplies nodeMul. A companion
      swing borrows the companion's class, so the same check never sees the Maximalist. */
   if (G.cls === 'maxi' && sl(10) && P.aura && W.tag && W.tag.hp > 0) W.tag.nodeM = nodeMul(false);
+  if (typeof mpApplyParty === 'function') mpApplyParty();
 }
 
 /* The heads-up display already lists what is running; the aura belongs there. */
@@ -5247,6 +5310,7 @@ function castItem(i){
   let ok=false;
   if(i===100)ok=blinkCast();else if(i===101)ok=callCast();else if(i===102)ok=bookCast();else if(i===103)ok=ledgerCast();else if(i===104)ok=bearCast();else if(i===105)ok=chairCast();
   if(!ok)return;
+  if(typeof mpNoteCast==='function')mpNoteCast(i);
   G.en-=pay;P.cd[i]=sk.cd*(1-Math.min(.6,S.cdr||0));sfx('cast')}
 function itemSkillTick(dt){
   if(!P)return;
@@ -5255,6 +5319,7 @@ function itemSkillTick(dt){
   if(P.orders>0){P.orders-=dt;if(P.orders<=0){P.orders=0;if(G)calc()}}
   if(P.book>0)P.book=Math.max(0,P.book-dt);
   if(P.bear>0){P.bear-=dt;if(P.bear<=0){P.bear=0;if(G)calc()}}
+  if(P.rLedger>0&&G&&S)heal(3*dt);
   if(P.ledger>0){P.ledger=Math.max(0,P.ledger-dt);if(G&&S)G.en=Math.min(S.maxEn,G.en+8*dt);
     if(W){const mend=a=>{if(a&&a.hp>0&&dist(a,P)<6){if(a.max)a.hp=Math.min(a.max,a.hp+3*dt)}};mend(W.merc);mend(W.tag);for(const a of W.allies)mend(a)}}
   if(P.cd)for(const id of [100,101,102,103,104,105])if(P.cd[id]>0)P.cd[id]=Math.max(0,P.cd[id]-dt);
@@ -5298,7 +5363,7 @@ const MP = {
   voice: false, muted: {}, speaking: {}, peers: {}, stream: null,
   friends: {}, face: {}, joinUid: '', csrf: '',
   whispers: [], whisperTo: '', mail: [], closed: false, portalUntil: 0,
-  resume: null, gamePass: '', buildAsked: false,
+  resume: null, gamePass: '', buildAsked: false, trade: null, tradeLock: null,
   maps: {}, mapAsked: null, wantEnter: null, freshFor: null, freshBase: -1,
   mobHost: '', mobNext: '', mobAt: 0, mobSeqSent: 0, mobSnap: null
 };
@@ -5572,6 +5637,14 @@ function mpRecv(m) {
     if (G && G.q[m.k] !== undefined && G.q[m.k] < m.v) { G.q[m.k] = m.v; toast(m.from + ' finished ' + (QUESTS[m.k] ? QUESTS[m.k].n : m.k) + ' with you.'); }
   } else if (m.t === 'pvp') {
     mpTakeHit(m);
+  } else if (m.t === 'pail') {
+    mpPailMsg(m);
+  } else if (m.t === 'lend') {
+    if (P) { P.soundSwing = 1; if (typeof float === 'function') float(P.x, P.y, 'Unnamed', '#f7931a', 0); }
+  } else if (m.t === 'mcurse') {
+    mpMcurse(m);
+  } else if (m.t === 'trade') {
+    mpTradeMsg(m);
   } else if (m.t === 'kill') {
     mpSay(m.duel ? m.killer + ' took the duel against ' + m.dead + '.' : m.killer + ' has slain ' + m.dead + '.');
   } else if (m.t === 'sim') {
@@ -5609,9 +5682,30 @@ function mpRecv(m) {
    not changed, and the next quiet beat clears sk and sw so the same skill can be seen
    again. The server keeps the last value and does not treat any of this as a hit. */
 let mpSk = null, mpSkNew = 0, mpSkClear = 0, mpSw = 0, mpSwClear = 0;
-const mpSent = { sk: null, au: null, sw: 0 };
-function mpNoteCast(i) { const n = i | 0; if (n >= 0 && n <= 14) { mpSk = n; mpSkNew = 1; } }
+const mpSent = { sk: null, au: null, aL: 0, sw: 0, fx: '' };
+function mpSkillOk(n) { return (n >= 0 && n <= 14) || (n >= 100 && n <= 105); }
+function mpNoteCast(i) { const n = i | 0; if (mpSkillOk(n)) { mpSk = n; mpSkNew = 1; } }
 function mpNoteSwing() { mpSw = 1; }
+function mpFxSnap() {
+  const au = (P.aura && (P.aura.i === 3 || P.aura.i === 4 || P.aura.i === 7)) ? P.aura.i : null;
+  const aL = au ? Math.max(1, Math.min(20, (P.aura.L || (typeof sl === 'function' ? sl(au) : 1) || 1) | 0)) : 0;
+  const bf = {};
+  if (P.orders > 0.05) bf.call = Math.round(P.orders * 10) / 10;
+  if (P.book > 0.05) bf.book = Math.round(P.book * 10) / 10;
+  if (P.ledger > 0.05) bf.ledger = Math.round(P.ledger * 10) / 10;
+  const node = (au && G.cls === 'maxi' && typeof sl === 'function' && sl(10) > 0) ? Math.min(20, sl(10) | 0) : 0;
+  const nm = (G.cls === 'witness' && typeof sl === 'function' && sl(13) > 0) ? Math.min(20, sl(13) | 0) : 0;
+  const tes = {};
+  if (nm && W && W.ents) {
+    let n = 0;
+    for (const e of W.ents) {
+      if (!e || !e.mid || !(e.tes > 0) || n >= 8) continue;
+      tes[e.mid | 0] = Math.min(6, e.tes | 0);
+      n++;
+    }
+  }
+  return { au, aL, bf, node, nm, tes };
+}
 function mpMovePkt() {
   if (!P || !W || !G) return null;
   const pkt = {
@@ -5620,8 +5714,13 @@ function mpMovePkt() {
     hp: Math.round(G.hp), hpm: Math.round(S.maxHp), inst: W.inst || null,
     lvl: G.lvl | 0, tier: G.tier | 0
   };
-  const au = (P.aura && (P.aura.i === 3 || P.aura.i === 4 || P.aura.i === 7)) ? P.aura.i : null;
-  if (au !== mpSent.au) { pkt.au = au; mpSent.au = au; }
+  pkt.pail = mpPailSnap();
+  const fx = mpFxSnap();
+  const fxKey = JSON.stringify(fx);
+  if (fxKey !== mpSent.fx) {
+    pkt.au = fx.au; pkt.aL = fx.aL; pkt.bf = fx.bf; pkt.node = fx.node; pkt.nm = fx.nm; pkt.tes = fx.tes;
+    mpSent.au = fx.au; mpSent.aL = fx.aL; mpSent.fx = fxKey;
+  }
   /* A repeat of the same index has to go out as empty first, or the other client
      cannot tell it from the cast it already drew. */
   if (mpSkClear && !mpSkNew) { pkt.sk = null; mpSent.sk = null; mpSkClear = 0; }
@@ -5632,8 +5731,24 @@ function mpMovePkt() {
   else if (mpSw) { pkt.sw = 1; mpSent.sw = 1; mpSw = 0; mpSwClear = 1; }
   return pkt;
 }
+function mpPailSnap() {
+  if (!W || !W.allies) return null;
+  for (let i = 0; i < W.allies.length; i++) {
+    const a = W.allies[i];
+    if (!a || a.k !== 'pail' || a.remote || !(a.hp > 0)) continue;
+    const L = Math.max(1, Math.min(20, a.L | 0 || 1));
+    return { x: +a.x.toFixed(2), y: +a.y.toFixed(2), L: L, hp: Math.round(a.hp), max: Math.round(a.max || a.hp) };
+  }
+  return null;
+}
 function mpRemoteCast(o) {
   if (!o || o.sk == null || !o.cls || !W || !W.fx) return;
+  if (o.sk >= 100 && o.sk <= 105) {
+    const col = o.sk === 101 ? '#e6e2d6' : o.sk === 102 ? '#9a6cff' : o.sk === 103 ? '#7be495' : '#c9a868';
+    W.fx.push({ k: 'ring', x: o.x, y: o.y, r: o.sk >= 101 && o.sk <= 103 ? 6 : 1.4, t: 0, life: .35, col: col, remote: 1 });
+    MP.lastCast = { k: 'ring', col: col, n: ((MP.lastCast && MP.lastCast.n) || 0) + 1 };
+    return;
+  }
   const v = skvOf(o.cls, o.sk);
   if (!v || OPT.fx === 'thin') return;
   MP.lastCast = { k: v.k, col: v.col, n: ((MP.lastCast && MP.lastCast.n) || 0) + 1 };
@@ -5656,8 +5771,14 @@ function mpZone(m) {
        second do not look like ten updates a second. */
     o.px = o.x; o.py = o.y; o.tx = r.x; o.ty = r.y; o.lerp = 0;
     o.name = r.name; o.lvl = r.lvl; o.cls = r.cls; o.dir = r.dir; o.hp = r.hp; o.hpm = r.hpm;
-    if ('sk' in r) o.sk = (typeof r.sk === 'number' && r.sk >= 0 && r.sk <= 14 && (r.sk | 0) === r.sk) ? r.sk : null;
+    if ('sk' in r) o.sk = (typeof r.sk === 'number' && mpSkillOk(r.sk) && (r.sk | 0) === r.sk) ? r.sk : null;
     if ('au' in r) o.au = (r.au === 3 || r.au === 4 || r.au === 7) ? r.au : null;
+    if ('aL' in r) o.aL = (o.au && r.aL >= 1 && r.aL <= 20) ? (r.aL | 0) : (o.au ? (o.aL || 1) : 0);
+    if ('node' in r) o.node = (o.au && r.node >= 1 && r.node <= 20) ? (r.node | 0) : 0;
+    if ('nm' in r) o.nm = (r.nm >= 1 && r.nm <= 20) ? (r.nm | 0) : 0;
+    if ('bf' in r) o.bf = (r.bf && typeof r.bf === 'object') ? r.bf : null;
+    if ('tes' in r) o.tes = (r.tes && typeof r.tes === 'object') ? r.tes : null;
+    if ('pail' in r) o.pail = (r.pail && r.pail.hp > 0) ? { x: +r.pail.x || 0, y: +r.pail.y || 0, L: r.pail.L | 0 || 1, hp: Math.round(+r.pail.hp || 0), max: Math.round(+r.pail.max || +r.pail.hp || 0) } : null;
     if ('sw' in r) o.sw = r.sw === 1 ? 1 : 0;
     o.wired = 1;
     if (!first) {
@@ -5697,12 +5818,74 @@ function mpHurt(e, d, crit) {
   e.hp = Math.max(0, e.hp - d * MP.pvpScale);
   float(e.x, e.y, Math.round(d * MP.pvpScale) + (crit ? '!' : ''), '#ffb4ae', 0);
   parts(e.x, e.y, crit ? 5 : 2, ['#ffd27a', '#fff', '#ff9a3c'], 2.2);
-  mpSend('pvp', { uid: e.mp, dmg: d, kind: crit ? 'crit' : '' });
+  const ty = e && (e.lt === 'sound' || e.lt === 'impact' || e.lt === 'surge' || e.lt === 'rust' || e.lt === 'heat' || e.lt === 'noise') ? e.lt : 'impact';
+  const cm = (S && +S.critM > 0) ? Math.round(Math.min(8, Math.max(1, +S.critM)) * 100) / 100 : 2;
+  mpSend('pvp', { uid: e.mp, dmg: d, kind: crit ? 'crit' : '', dty: ty, critM: crit ? cm : 0 });
 }
 
 /* Smoothing runs at frame rate, from update(). */
+function mpLend(uid) { if (uid && mpOn()) mpSend('lend', { uid: uid }); }
+function mpPailAsk(a, dt) {
+  if (!a || !mpOn() || !MP.party) return;
+  a.ask = (a.ask || 0) - dt;
+  if (a.ask > 0) return;
+  a.ask = 0.25;
+  const draw = [];
+  if (P && dist(P, a) < 2.6 && G && S && G.hp < S.maxHp) draw.push({ k: 'self' });
+  if (W && W.merc && W.merc.hp > 0 && W.merc.max > W.merc.hp && dist(W.merc, a) < 2.6) draw.push({ k: 'merc', n: Math.ceil(W.merc.max - W.merc.hp) });
+  if (W && W.tag && W.tag.hp > 0 && (W.tag.max || 0) > W.tag.hp && dist(W.tag, a) < 2.6) draw.push({ k: 'tag', n: Math.ceil(W.tag.max - W.tag.hp) });
+  if (MP.others) for (let i = 0; i < MP.others.length; i++) {
+    const o = MP.others[i];
+    if (!o || !mpInParty(o.uid)) continue;
+    if (typeof mpHostileTo === 'function' && mpHostileTo(o.uid)) continue;
+    if (!(o.hpm > 0) || o.hp >= o.hpm) continue;
+    if (Math.hypot(o.x - a.x, o.y - a.y) >= 2.6) continue;
+    draw.push({ k: o.uid });
+  }
+  if (draw.length) mpSend('pail', { draw: draw });
+}
+function mpPailMsg(m) {
+  if (!m || !P || !W) return;
+  if (m.grants) {
+    let mine = null;
+    if (W.allies) for (let i = 0; i < W.allies.length; i++) if (W.allies[i] && W.allies[i].k === 'pail' && !W.allies[i].remote) { mine = W.allies[i]; break; }
+    if (mine && m.hp != null) mine.hp = Math.min(mine.hp, +m.hp || 0);
+    for (let i = 0; i < m.grants.length; i++) {
+      const g = m.grants[i];
+      if (!g || !(g.n > 0)) continue;
+      if (g.k === 'self') heal(g.n);
+      else if (g.k === 'merc' && W.merc && W.merc.hp > 0) W.merc.hp = Math.min(W.merc.max, W.merc.hp + g.n);
+      else if (g.k === 'tag' && W.tag && W.tag.hp > 0) W.tag.hp = Math.min(W.tag.max || W.tag.hp, W.tag.hp + g.n);
+    }
+    if (mine && !(mine.hp > 0)) mine.life = 0;
+    return;
+  }
+  if (m.n > 0) heal(m.n);
+}
+function mpSyncPails() {
+  if (!W || !W.allies || !MP || !MP.others) return;
+  const seen = {};
+  for (let i = 0; i < MP.others.length; i++) {
+    const o = MP.others[i];
+    if (!o || !o.pail || !(o.pail.hp > 0) || typeof mpInParty !== 'function' || !mpInParty(o.uid)) continue;
+    if (typeof mpHostileTo === 'function' && mpHostileTo(o.uid)) continue;
+    seen[o.uid] = 1;
+    let a = null;
+    for (let j = 0; j < W.allies.length; j++) if (W.allies[j] && W.allies[j].remote && W.allies[j].k === 'pail' && W.allies[j].owner === o.uid) { a = W.allies[j]; break; }
+    if (!a) {
+      a = { k: 'pail', remote: 1, owner: o.uid, life: 1e9, r: .3, hp: o.pail.hp, max: o.pail.max || o.pail.hp, x: o.pail.x, y: o.pail.y, L: o.pail.L || 1, rate: 0 };
+      W.allies.push(a);
+    }
+    a.x = o.pail.x; a.y = o.pail.y; a.hp = o.pail.hp; a.max = o.pail.max || a.max; a.L = o.pail.L || 1; a.life = 1e9;
+  }
+  for (let i = W.allies.length - 1; i >= 0; i--) {
+    const a = W.allies[i];
+    if (a && a.remote && a.k === 'pail' && !seen[a.owner]) W.allies.splice(i, 1);
+  }
+}
 function mpTick(dt) {
   if (!mpOn() || !G) return;
+  mpSyncPails();
   for (const o of MP.others) {
     if (o.lerp === undefined) continue;
     o.lerp = Math.min(1, o.lerp + dt * 9);
@@ -5721,8 +5904,9 @@ function mpMobHit(e, d, opt) {
   if (!mpOn() || !e || !e.mid || !(d > 0) || !W || !G) return;
   mpMobPush(true);
   const mob = opt && opt.mob;
-  const sk = mob ? -2 : ((typeof P !== 'undefined' && P && P.hitSk >= 0) ? (P.hitSk | 0) : -1);
-  mpSend('mhit', { zi: W.zi, tier: G.tier | 0, id: e.mid, d: Math.round(d), sk: sk });
+  const area = (opt && opt.area) || (typeof P !== 'undefined' && P && P.areaTick) ? 1 : 0;
+  const sk = mob ? -2 : (area ? ((typeof P !== 'undefined' && P && P.hitSk >= 0) ? (P.hitSk | 0) : -3) : ((typeof P !== 'undefined' && P && P.hitSk >= 0) ? (P.hitSk | 0) : -1));
+  mpSend('mhit', { zi: W.zi, tier: G.tier | 0, id: e.mid, d: Math.round(d), sk: sk, area: area ? 1 : 0 });
 }
 function mpMobGone(e) {
   if (!mpMobHost() || !e || !e.mid || !W || !G) return;
@@ -5790,6 +5974,8 @@ function mpApplyMobs(m) {
     } else {
       e.hp = +row.hp; e.max = +row.max || e.max;
     }
+    if (row.curse) mpPaintCurse(e, row.curse);
+    if (row.tes) e.partyTes = Math.max(e.partyTes || 0, row.tes | 0);
   }
   if (m.next) MP.mobNext = m.next;
   if (m.you || host) {
@@ -5806,10 +5992,33 @@ function mpMhp(m) {
     W.ents[i].hp = +m.hp; W.ents[i].max = +m.max || W.ents[i].max; W.ents[i].flash = .12; return;
   }
 }
+function mpPaintCurse(e, c) {
+  if (!e || !c || !c.k) return;
+  const sec = Math.max(0, +c.sec || 0);
+  if (!(sec > 0)) return;
+  if (c.k === 'rec') { e.onRecT = Math.max(e.onRecT || 0, sec); e.onRecM = Math.max(e.onRecM || 1, +c.m || 1); }
+  else if (c.k === 'leave') e.noheal = Math.max(e.noheal || 0, sec);
+}
+function mpMcurse(m) {
+  if (!m) return;
+  MP.curses = MP.curses || {};
+  MP.curses[m.id | 0] = m;
+  if (!W || !W.ents) return;
+  for (let i = 0; i < W.ents.length; i++) if (W.ents[i].mid === (m.id | 0)) mpPaintCurse(W.ents[i], m);
+}
+function mpNoteCurse(e, k, mul, sec) {
+  if (!e || !e.mid || !mpOn()) return;
+  mpSend('curse', { id: e.mid | 0, k: k, m: mul, sec: sec });
+}
 function mpMkill(m) {
   if (!W || !m) return;
   let e = null;
   for (let i = 0; i < W.ents.length; i++) if (W.ents[i].mid === m.id) { e = W.ents[i]; break; }
+  /* The kill can arrive before this client has the body. A party member still rolls. */
+  if (!e && m.loot && !m.silent && m.k && typeof ET !== 'undefined' && ET[m.k]) {
+    e = { mid: m.id, k: m.k, x: +m.x || 0, y: +m.y || 0, r: .4, sz: 1, hp: 0, max: 1, champ: m.champ ? 1 : 0, su: m.su ? 1 : 0, mods: {}, minion: 0 };
+    W.ents.push(e);
+  }
   if (!e) return;
   if (m.silent) {
     const i = W.ents.indexOf(e);
@@ -5924,7 +6133,7 @@ function mpTakeHit(m) {
   /* Through the game's own damage path, so armour and resistances apply to a person the
      same way they apply to a machine, and death — including the rig's painless kind —
      is the code that already exists rather than a second copy of it. */
-  hurt(m.dmg, 0, { name: m.from, pvp: 1, crit: m.kind === 'crit' ? 1 : 0 });
+  hurt(m.dmg, 0, { name: m.from, pvp: 1, crit: m.kind === 'crit' ? 1 : 0, critM: m.kind === 'crit' ? (+m.critM || 2) : 0, dty: m.dty || 'impact' });
   if (G.hp <= 0 && was > 0) mpSend('died', { uid: m.fromUid });
 }
 
@@ -6176,9 +6385,200 @@ function mpLobbyPanel() {
   return h;
 }
 
+/* Party auras and the buffs that already name a radius. Witness Named Party is the
+   whole district, which is what that card says. Founder effects stay on the founder. */
+function mpApplyParty() {
+  if (!P || !G) return;
+  let call = 0, book = 0, ledger = 0, named = 0, node = 0;
+  const marks = {};
+  if (typeof MP !== 'undefined' && MP.others && typeof mpInParty === 'function') {
+    for (const o of MP.others) {
+      if (!o || !mpInParty(o.uid)) continue;
+      if (typeof mpHostileTo === 'function' && mpHostileTo(o.uid)) continue;
+      const d = dist(P, o);
+      const bf = o.bf || {};
+      if (bf.call > 0 && d < FORMULAS.aura.call.r) call = Math.max(call, bf.call);
+      if (bf.book > 0 && d < FORMULAS.aura.book.r) book = Math.max(book, bf.book);
+      if (bf.ledger > 0 && d < FORMULAS.aura.ledger.r) ledger = Math.max(ledger, bf.ledger);
+      if (o.nm > 0) named = Math.max(named, o.nm | 0);
+      if (o.tes) for (const id in o.tes) marks[id] = Math.max(marks[id] || 0, o.tes[id] | 0);
+      if (o.node > 0 && (o.au === 3 || o.au === 4 || o.au === 7) && d < auraVisR(o.au, o.aL || 1)) node = Math.max(node, o.node | 0);
+    }
+  }
+  const was = P.rCall > 0;
+  P.rCall = call; P.rBook = book; P.rLedger = ledger; P.allyNamed = named;
+  if (node > 0) P.nodeM = Math.max(P.nodeM || 0, 1 + 0.06 + 0.02 * node);
+  if ((was ? 1 : 0) !== (call > 0 ? 1 : 0) && typeof calc === 'function') calc();
+  if (W && W.ents) for (const e of W.ents) if (e && e.mid) e.partyTes = marks[e.mid] || 0;
+}
+function tradeHeld(it) {
+  return !!(it && it.tid && MP.tradeLock && MP.tradeLock[it.tid]);
+}
+function tradeLocked(it) {
+  if (!tradeHeld(it)) return false;
+  toast('That is on the table.'); sfx('err'); return true;
+}
+/* Offered sats leave the purse when either side confirms, and come back if the
+   trade is cancelled or the offer changes. Spending, selling, stashing, and
+   every other debit has to go through spendSats. */
+function tradeReserved() {
+  const t = (typeof MP !== 'undefined') && MP && MP.trade;
+  if (!t || !t.you) return 0;
+  if (t.phase === 'check' || t.locked || t.you.ok || (t.them && t.them.ok)) return Math.max(0, t.you.sats | 0);
+  return 0;
+}
+function satsFree() {
+  if (typeof G === 'undefined' || !G) return 0;
+  return Math.max(0, (G.sats | 0) - tradeReserved());
+}
+function spendSats(n, why) {
+  n = Math.floor(+n || 0);
+  if (!(n > 0) || typeof G === 'undefined' || !G) return false;
+  if (satsFree() < n) {
+    const reserved = tradeReserved();
+    toast(reserved > 0 && (G.sats | 0) >= n ? 'Those sats are on the table.' : (why || 'Not enough sats'));
+    if (typeof sfx === 'function') sfx('err');
+    return false;
+  }
+  G.sats -= n;
+  return true;
+}
+function mpTradeFrozen() {
+  const t = MP.trade;
+  if (!t) return false;
+  return t.phase === 'check' || !!t.locked || !!(t.you && t.you.ok) || !!(t.them && t.them.ok);
+}
+function mpTradePurse() {
+  const tids = [];
+  for (const it of (G && G.bag) || []) if (it && it.tid && !it.test) tids.push(it.tid);
+  return { sats: G ? (G.sats | 0) : 0, tids: tids };
+}
+function tradeSeen(id) {
+  if (G && G.trades && G.trades[id]) return true;
+  try {
+    const raw = localStorage.getItem('u2087-trade');
+    const cur = raw ? JSON.parse(raw) : {};
+    return !!cur[id];
+  } catch (e) { return false; }
+}
+function tradeRemember(id) {
+  G.trades = G.trades || {};
+  G.trades[id] = 1;
+  try {
+    const raw = localStorage.getItem('u2087-trade');
+    const cur = raw ? JSON.parse(raw) : {};
+    cur[id] = 1;
+    const keys = Object.keys(cur);
+    if (keys.length > 40) delete cur[keys[0]];
+    localStorage.setItem('u2087-trade', JSON.stringify(cur));
+  } catch (e) {}
+}
+function mpTradeApply(m) {
+  if (!G || !m || !m.id || !m.give || !m.take) return;
+  MP.lastDone = m;
+  if (tradeSeen(m.id)) { mpSend('trade.ack', { id: m.id }); return; }
+  const give = m.give, take = m.take;
+  const ids = {};
+  for (const id of give.ids || []) if (id) ids[id] = 1;
+  const have = {};
+  for (const it of G.bag || []) if (it && it.tid) have[it.tid] = 1;
+  let short = (G.sats | 0) < (give.sats | 0);
+  for (const id in ids) if (!have[id]) short = true;
+  if (short) {
+    mpSend('trade.cancel', {});
+    toast('The trade is off. The goods were not still in hand.');
+    MP.trade = null; MP.tradeLock = null; MP.heldFor = null;
+    return;
+  }
+  const bag = [];
+  for (const it of G.bag || []) {
+    if (it && it.tid && ids[it.tid]) { delete ids[it.tid]; continue; }
+    bag.push(it);
+  }
+  const seen = {};
+  for (const it of bag) if (it && it.tid) seen[it.tid] = 1;
+  G.sats = (G.sats | 0) - (give.sats | 0) + (take.sats | 0);
+  for (const it of take.items || []) {
+    if (!it || !it.tid || seen[it.tid]) continue;
+    if (bag.length >= 24) { toast('Your pack is full. The rest of the trade did not fit.'); break; }
+    bag.push(it); seen[it.tid] = 1;
+  }
+  G.bag = bag;
+  tradeRemember(m.id);
+  MP.tradeLock = null;
+  MP.heldFor = null;
+  if (typeof save === 'function') save(true);
+  if (typeof calc === 'function') calc();
+  mpSend('trade.ack', { id: m.id });
+  toast('The trade is done.');
+}
+function mpTradeMsg(m) {
+  if (!m) return;
+  if (m.phase === 'ask') {
+    MP.tradeAsk = { uid: m.with, from: m.from || 'Someone' };
+    toast((m.from || 'Someone') + ' wants to trade.');
+    if (mode === 'sheet') drawSheet();
+    return;
+  }
+  if (m.phase === 'dead') {
+    MP.trade = null; MP.tradeLock = null; MP.tradeAsk = null; MP.heldFor = null;
+    toast(m.why === 'dropped' ? 'They dropped. The trade is off.' : m.why === 'short' ? 'The trade is off. Somebody no longer holds what they offered.' : 'The trade is off.');
+    if (mode === 'sheet') drawSheet();
+    return;
+  }
+  if (m.phase === 'done') { mpTradeApply(m); MP.trade = null; MP.tradeLock = null; MP.heldFor = null; if (mode === 'sheet') drawSheet(); return; }
+  MP.trade = m;
+  MP.tradeLock = {};
+  if (m.you && m.you.items) for (const it of m.you.items) if (it && it.tid) MP.tradeLock[it.tid] = 1;
+  if (m.phase === 'check' && MP.heldFor !== m.id) {
+    MP.heldFor = m.id;
+    mpSend('trade.hold', mpTradePurse());
+  }
+  if (m.phase !== 'check') MP.heldFor = null;
+  if (mode === 'sheet') drawSheet();
+}
+function mpTradePanel() {
+  const t = MP.trade;
+  if (!t || (t.phase !== 'open' && t.phase !== 'check')) {
+    if (!MP.tradeAsk) return '';
+    return '<h3>A trade</h3><p>' + esc(MP.tradeAsk.from) + ' wants to trade, in town.</p><div class="row"><button class="big" data-mpta="' + MP.tradeAsk.uid + '">Accept</button><button class="ghost" data-mptx="1">Not now</button></div>';
+  }
+  const you = t.you || { sats: 0, items: [] }, them = t.them || { sats: 0, items: [] };
+  const frozen = mpTradeFrozen();
+  let h = '<h3>Trade</h3><p style="font-size:13px">Both of you confirm. Once either does, the sats and the items on the table stay put until the swap or a cancel. Changing an offer clears both confirms. Nothing moves until both purses still cover the offer.</p>';
+  if (t.phase === 'check') h += '<p>Both confirmed. Checking that the sats and the items are still in hand.</p>';
+  else if (frozen) h += '<p>The table is locked. Change the offer if you need to unlock it. That clears both confirms.</p>';
+  h += '<p>You offer ' + (you.sats | 0) + ' sats' + (you.ok ? ' · confirmed' : '') + '. They offer ' + (them.sats | 0) + ' sats' + (them.ok ? ' · confirmed' : '') + '.</p>';
+  h += '<div class="ln off">Theirs</div>';
+  if (!(them.items || []).length && !(them.sats > 0)) h += '<p>Nothing yet.</p>';
+  else for (const it of them.items || []) h += '<div class="ln">' + esc(it.name || it.base || 'An item') + '</div>';
+  h += '<div class="row"><input id="mpSats" inputmode="numeric" maxlength="9" value="' + (you.sats | 0) + '"' + (frozen ? ' readonly' : '') + ' style="width:8em;background:#0a0912;border:1px solid #3a3350;color:#e8e2d4;border-radius:6px;padding:10px;font:15px Georgia,serif"></div>';
+  h += '<div class="list">';
+  const offered = {};
+  for (const it of you.items || []) if (it && it.tid) offered[it.tid] = 1;
+  for (const it of (G && G.bag) || []) {
+    if (!it || it.test) continue;
+    if (!it.tid) it.tid = Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 6);
+    h += '<button class="li' + (offered[it.tid] ? ' on' : '') + '" data-mpti="' + esc(it.tid) + '"><div><b>' + esc(it.name || it.base || 'Item') + '</b><span>' + (offered[it.tid] ? 'On the table' : 'In your pack') + '</span></div></button>';
+  }
+  h += '</div><div class="row"><button class="ghost" data-mpto="1">' + (frozen ? 'Change the offer' : 'Set the offer') + '</button><button class="big" data-mptc="1"' + (you.ok || t.phase === 'check' ? ' disabled' : '') + '>Confirm</button><button class="ghost" data-mptx="1">Cancel</button></div>';
+  return h;
+}
+function mpTradeSendOffer() {
+  if (!G) return;
+  const box = document.getElementById('mpSats');
+  let sats = box ? Math.max(0, Math.floor(+box.value || 0)) : 0;
+  if (sats > (G.sats | 0)) sats = G.sats | 0;
+  const items = [];
+  const lock = MP.tradePick || {};
+  for (const it of G.bag || []) if (it && it.tid && lock[it.tid] && !it.test) items.push(it);
+  mpSend('trade.offer', { sats, items });
+}
+
 function mpGamePanel() {
   const me = MP.me || {}, g = MP.game, party = MP.party, sc = MP.scale || {};
-  let h = '<h3>' + esc(g.name) + '</h3>';
+  let h = mpTradePanel();
+  h += '<h3>' + esc(g.name) + '</h3>';
   h += '<div class="tick"><div>Difficulty<b>' + esc(g.diffName) + '</b></div><div>In the game<b>' + g.n + ' of ' + g.max + '</b></div>' +
     '<div>Monster health<b>' + (sc.hp || 1).toFixed(1) + '\u00d7</b></div><div>Experience<b>' + (sc.xp || 1).toFixed(1) + '\u00d7</b></div></div>';
   h += '<div class="row"><button class="ghost" data-mpq="1">Leave the game</button>' +
@@ -6187,7 +6587,7 @@ function mpGamePanel() {
 
   if (party) {
     h += '<h3>Your party \u00b7 ' + party.members.length + ' of ' + MP.maxParty + '</h3>';
-    h += '<p style="font-size:13px">Experience in the district is one pool, a third again what the kill was worth, split by level. Somebody standing in town is not helping.</p>';
+    h += '<p style="font-size:13px">Experience in the district is one pool, a third again what the kill was worth, split by level. Somebody standing in town is not helping. Each of you rolls your own drops from a shared kill.</p>';
     h += '<div class="list">';
     for (const m of party.members) {
       const you = m.uid === me.uid;
@@ -6224,6 +6624,7 @@ function mpGamePanel() {
         '<div class="row">' +
         '<button class="ghost' + (MP.muted[r.uid] ? ' on' : '') + '" data-mpm="' + r.uid + '">' + (MP.muted[r.uid] ? 'Unmute' : 'Mute') + '</button>' +
         (mate || hos ? '' : '<button class="ghost" data-mpi="' + r.uid + '">Invite</button>') +
+        (hos ? '' : '<button class="ghost" data-mpt="' + r.uid + '">Trade</button>') +
         (mpHostileTo(r.uid)
           ? '<button class="ghost" data-mpn="' + r.uid + '">Stand down</button>'
           : '<button class="ghost" data-mph="' + r.uid + '">Hostile</button>') + '</div>';
@@ -6241,7 +6642,7 @@ function mpGamePanel() {
   return h;
 }
 
-if (typeof devOn === 'function' && devOn()) window.__mp={MP,send:mpSend,get on(){return mpOn()},get inGame(){return mpIn()},get roster(){return MP.roster},get me(){return MP.me},get scale(){return MP.scale},get mobHost(){return MP.mobHost},mpHp,mpXp,mpDmg,mute:mpMute,loadFriends:mpFriendsLoad};
+if (typeof devOn === 'function' && devOn()) window.__mp={MP,send:mpSend,get on(){return mpOn()},get inGame(){return mpIn()},get roster(){return MP.roster},get me(){return MP.me},get scale(){return MP.scale},get mobHost(){return MP.mobHost},mpHp,mpXp,mpDmg,mute:mpMute,loadFriends:mpFriendsLoad,spendSats,satsFree,tradeLocked,tradeApply:mpTradeApply,takeHit:mpTakeHit,applyMobs:mpApplyMobs};
 
 function mpWhere(zi) {
   if (zi === undefined || zi === null) return 'somewhere';
@@ -6300,11 +6701,25 @@ function mpClick(d) {
   if (d.mpv) { mpMicToggle(); setTimeout(drawSheet, 300); return true; }
   if (d.mpm) { mpMute(d.mpm); drawSheet(); return true; }
   if (d.mpi) { mpSend('invite', { uid: d.mpi }); return true; }
+  if (d.mpt) { mpSend('trade.ask', { uid: d.mpt }); return true; }
+  if (d.mpta) { mpSend('trade.accept', { uid: d.mpta }); MP.tradeAsk = null; return true; }
+  if (d.mptx) {
+    if (MP.trade) mpSend('trade.cancel', {});
+    MP.trade = null; MP.tradeAsk = null; MP.tradeLock = null; MP.tradePick = null; drawSheet(); return true;
+  }
+  if (d.mpti) {
+    if (mpTradeFrozen()) { toast('The table is locked. Change the offer to unlock it.'); sfx('err'); return true; }
+    MP.tradePick = MP.tradePick || {};
+    if (MP.tradePick[d.mpti]) delete MP.tradePick[d.mpti]; else MP.tradePick[d.mpti] = 1;
+    drawSheet(); return true;
+  }
+  if (d.mpto) { mpTradeSendOffer(); return true; }
+  if (d.mptc) { if (!(MP.trade && MP.trade.you && MP.trade.you.ok)) mpSend('trade.confirm', {}); return true; }
   if (d.mpn) { mpSend('stand', { uid: d.mpn }); return true; }
   if (d.mph) {
     const r = MP.roster.find(x => x.uid === d.mph);
     dlg('Declare against ' + ((r && r.name) || 'them') + '?',
-      'Do it in town. Both of you need to be level 9, and you can name the same person once a minute. They leave your party. Outside a town you can fight, and standing down later only stops your own swings. Damage between players lands at ' +
+      'Do it in town, and stand there a few seconds first. Both of you need to be level 9, and you can name the same person once a minute. They leave your party. Outside a town you can fight, and standing down later only stops your own swings. Damage between players lands at ' +
       Math.round(MP.pvpScale * 100) + '%.',
       [['Declare', () => { mpSend('hostile', { uid: d.mph }); }], ['Leave it']]);
     return true;

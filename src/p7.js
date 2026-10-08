@@ -104,7 +104,7 @@ function paraXp(v){if((G.para||0)>=100){G.xp=0;return}if(!G.act3){const cap=xpNe
 const SUBM={volatile:'Machines explode when they break',dry:'Stims do not work',bounty:'Machines drop extra sats',swift:'Machines move 30% faster',thick:'Machines have 50% more life'};
 ZONES.push({n:'Sealed Proceedings',sub:true,lvl:1,style:'trib',amb:.6,mix:[['bot',3]],su:{k:'hr',n:'The Respondent',mods:['strong','shield'],q:null}});
 const SUBZ=ZONES.length-1;
-function subStart(l){if(G.sats<3){toast('Serving a subpoena costs 3 sats');sfx('err');return}G.sats-=3;const z=ZONES[SUBZ],src=ZONES[pick([2,4,5,7,9,11,12,13,14,15])],ks=Object.keys(SUBM).sort(()=>Math.random()-.5);
+function subStart(l){if(!spendSats(3,'Serving a subpoena costs 3 sats'))return;const z=ZONES[SUBZ],src=ZONES[pick([2,4,5,7,9,11,12,13,14,15])],ks=Object.keys(SUBM).sort(()=>Math.random()-.5);
   SUBP={lvl:l,mods:ks.slice(0,l>=5?3:2)};z.n='Subpoena · Level '+l;z.lvl=G.lvl+2*l-G.tier*12;z.style=src.style;z.amb=src.amb;z.mix=src.mix;z.su.k=pick(['hr','mech','seer','lancer']);z.su.mods=['strong','shield','fast','arc','leech'].sort(()=>Math.random()-.5).slice(0,2);
   delete ZS[SUBZ];enter(SUBZ,{fresh:true,after(){W.sub=SUBP;W.portals=W.portals.filter(p=>p.kind!=='next');for(const p of W.portals)if(p.kind==='prev')p.kind='home';
     dlg(z.n,'Sealed proceedings. Find and break The Respondent. Rules in force: '+SUBP.mods.map(m=>SUBM[m]).join('; ')+'.',[['Enter']])}})}
@@ -141,11 +141,11 @@ const loanAmt=()=>400*G.lvl*G.cpi,nowCost=()=>payTag(150*G.lvl*G.cpi*((G.lean||0
 function talkFloat(){const d=G.debt||0,real=d?Math.round(d/G.cpi/(G.debt0/G.debtCpi)*100):0;
   dlg('Mr. Float',d?'“You owe me '+fmt(d)+'. I charge interest, naturally.” He does not mention that prices have been rising faster than his interest. In real terms you now owe about '+real+'% of what you borrowed.':'“Everybody wants it now. I sell now. The orange fellow across the square sells later. And if you are short, I lend, at a very reasonable rate.”',[
    ['Now: +40% damage for 5 minutes · '+fmt(nowCost()),()=>{if(G.credits<nowCost()){toast('Not enough credits');sfx('err');return}G.credits-=nowCost();addAdopt(-1,'you chose now');G.tpT=300;calc();sfx('buff');toast('Strength on credit: +40% damage for 5 minutes')}],
-   ['Later: +1% damage for good · 15 sats ('+(G.tpP||0)+'/25)',()=>{if(G.sats<15||(G.tpP||0)>=25){toast((G.tpP||0)>=25?'You have saved all you can here':'Not enough sats');sfx('err');return}G.sats-=15;G.tpP=(G.tpP||0)+1;calc();sfx('learn');toast('Saved. +1% damage, permanently.')}],
+   ['Later: +1% damage for good · 15 sats ('+(G.tpP||0)+'/25)',()=>{if((G.tpP||0)>=25){toast('You have saved all you can here');sfx('err');return}if(!spendSats(15,'Not enough sats'))return;G.tpP=(G.tpP||0)+1;calc();sfx('learn');toast('Saved. +1% damage, permanently.')}],
    d?['Repay '+fmt(d),()=>{/* The line prints whole credits, so the purse pays that floor. */const pay=Math.floor(G.debt);if(G.credits<pay){toast('Not enough credits');sfx('err');return}G.credits-=pay;G.debt=0;sfx('coin');toast('Debt cleared')}]:['Borrow '+fmt(loanAmt())+(scs()<350?' · refused':scs()<500?' · 35% fee':' · 10% fee'),()=>{if(scs()<350){toast('“Not with that score. I have a licence to think of.”');sfx('err');return}/* His line prints whole credits, so the purse gains that floor. */const l=Math.floor(loanAmt());addAdopt(-2,'you borrowed credits');G.credits+=l;G.debt=l*loanFee();G.debt0=l;G.debtCpi=G.cpi;sfx('coin');toast('Borrowed '+fmt(l)+'. You owe '+fmt(l*loanFee())+' and rising.')}],
    ['Leave']])}
 function craft(it,k){if(it&&it.test){toast('Test gear stays out of the economy');return false}const P_=G.parts||0;
-  if(k==='scrap'){const n=[1,2,4,8,15][it.q]||1;G.parts=P_+n;G.bag.splice(G.bag.indexOf(it),1);sfx('equip');toast('Scrapped for '+n+' part'+(n>1?'s':''));return true}
+  if(k==='scrap'){if(typeof tradeLocked==='function'&&tradeLocked(it))return false;const n=[1,2,4,8,15][it.q]||1;G.parts=P_+n;G.bag.splice(G.bag.indexOf(it),1);sfx('equip');toast('Scrapped for '+n+' part'+(n>1?'s':''));return true}
   if(k==='reroll'){const c=rerollCost(it);if(P_<c)return false;const r=rerollMod(it);if(!r)return false;G.parts=P_-c;sfx('learn');toast(AFK[r[0].k].t.replace('{v}',r[0].v)+' → '+AFK[r[1].k].t.replace('{v}',r[1].v));calc();return false}
   if(k==='addsoc'){if(P_<12)return false;G.parts=P_-12;it.soc=(it.soc||0)+1;it.words=it.words||[];sfx('learn');toast('A socket is cut into '+it.name);return false}}
 const rerollCost=it=>5+Math.floor(it.il/4);
