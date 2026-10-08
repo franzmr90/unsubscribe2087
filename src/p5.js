@@ -71,7 +71,7 @@ function bounties(){G.bounties=G.bounties||[];while(G.bounties.length<3+(repRank
 
 /* ---------- shape shifting: same level, new class, points returned ---------- */
 const SHIFT_COST=5;
-function shapeShift(cls,roll){if(G.sats<SHIFT_COST){toast('You need '+SHIFT_COST+' sats');sfx('err');return}G.sats-=SHIFT_COST;G.st.shifts++;
+function shapeShift(cls,roll){if(!spendSats(SHIFT_COST,'You need '+SHIFT_COST+' sats'))return;G.st.shifts++;
   let sp=G.sp+G.sk.reduce((a,b)=>a+skSpent(b),0),ap=G.ap+G.at.mgt+G.at.ref+G.at.vit+G.at.bnd;
   G.cls=cls;delete G.schema;delete G.pas;delete G.doc;G.fork={};G.sk=G.sk.map(()=>0);boonRefund();G.at={mgt:0,ref:0,vit:0,bnd:0};let BR=null;
   if(typeof roll==='string'){const r=buildApply(cls,roll,sp,ap);sp=r.sp;ap=r.ap;BR=r.B;roll=0}else{G.sk[0]=1;sp--;G.slots=[0,-1,-1]}

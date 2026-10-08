@@ -70,10 +70,10 @@ function shillLeave(s,line){if(!s||s.left)return;s.left=1;s.pitch=0;s.aggro=fals
 function shillTough(){return (G.lvl||1)>=8}
 function shillRare(){return (G.lvl||1)<6&&Math.random()<.65}
 function shillTurn(s,line){s.pitch=0;s.aggro=true;sfx('growl');toast(line);const n=shillTough()?2:0;for(let i=0;i<n;i++){const m=spawn('bot',s.x+rnd(-1.2,1.2),s.y+rnd(-1.2,1.2),{minion:1});if(m){m.name='Bagholder';m.aggro=true}}}
-function shillTalk(s){const c=s.coin,price=Math.min(10,G.sats);
+function shillTalk(s){const c=s.coin,price=Math.min(10,satsFree());
   dlg(s.name,'“Friend! Have you heard about '+c+'? '+pick(SHILLQ)+' Ten sats gets you ten thousand '+c+'. What do you say?”',[
    ['“No. There is bitcoin, and there is everything else.”',()=>{G.lean=clamp((G.lean||0)+6,-100,100);if(G.rep)addRep('btc',1);shillTurn(s,'“Maxi! Dinosaur! Get him!”')}],
-   ['Trade '+price+' sats for 10,000 '+c,()=>{if(price<1){shillLeave(s,'“No sats? Then I am wasting the pitch.” He leaves.');return}G.sats-=price;addAdopt(-3,'sats sold for '+c);G.bagsHeld=(G.bagsHeld||0)+1;G.lean=clamp((G.lean||0)-15,-100,100);repAdj('btc',-3);W.ents.splice(W.ents.indexOf(s),1);sfx('coin');toast('You hold 10,000 '+c+'. He is already gone.');
+   ['Trade '+price+' sats for 10,000 '+c,()=>{if(price<1||!spendSats(price,'Not enough sats')){if(price<1)shillLeave(s,'“No sats? Then I am wasting the pitch.” He leaves.');return}addAdopt(-3,'sats sold for '+c);G.bagsHeld=(G.bagsHeld||0)+1;G.lean=clamp((G.lean||0)-15,-100,100);repAdj('btc',-3);W.ents.splice(W.ents.indexOf(s),1);sfx('coin');toast('You hold 10,000 '+c+'. He is already gone.');
      setTimeout(()=>{if(G)dlg(c,'The '+c+' chart goes straight down and then stops being a chart. The website is gone. Your ten thousand '+c+' are worth nothing, and the '+price+' sats you paid are in somebody else’s wallet. Nonce will hear about this.',[['Lesson learned']])},25000)}],
    ['“What does it actually do?”',()=>dlg(s.name,'“Do? It goes up. That is what it does. Community. Utility. Ecosystem.” He is sweating.',[['“No.”',()=>shillTurn(s,'“You just hate innovation!”')],['Walk away',()=>shillLeave(s,'He lets you walk. The pamphlet stays in his hand.')]])]],3)}
 function shillDie(e){campHit('coin');const coins=ri(6,14),n=ri(4,9)+Math.floor(W.ml/8);G.sats+=n;G.st.shills=(G.st.shills||0)+1;sfx('quest');float(e.x,e.y,'+'+n+' sats','#f7931a');addRep('btc',2);
@@ -138,10 +138,10 @@ function mktBasisAdd(n,cr){const c=G.mkt.cb;c.n+=n;c.cr+=cr;c.st+=cr/Math.max(1,
 function mktBasisTake(n){const c=G.mkt.cb;if(c.n<=0)return;const f=Math.min(1,n/c.n);c.cr-=c.cr*f;c.st-=c.st*f;c.n=Math.max(0,c.n-n)}
 /* ---------- taking his quote ---------- */
 function mktTrade(n,side){const m=mktInit();n=Math.floor(n);if(n<1)return null;
-  if(side==='sell'&&G.sats<n)return null;
+  if(side==='sell'&&satsFree()<n)return null;
   const q=mktQuote(n,side);
   if(side==='buy'){if(G.credits<q.total)return null;G.credits-=q.total;G.sats+=n;mktBasisAdd(n,q.total);addRep('btc',Math.ceil(n/6));addAdopt(Math.min(2,n*.02),'');if(m.r<.97)G.st.dip=(G.st.dip||0)+1}
-  else{G.sats-=n;G.credits+=q.total;mktBasisTake(n);addAdopt(-Math.min(3,n*.08),n>=10?'sats sold for credits':'')}
+  else{if(!spendSats(n))return null;G.credits+=q.total;mktBasisTake(n);addAdopt(-Math.min(3,n*.08),n>=10?'sats sold for credits':'')}
   mktImpact(n,side);mktNews(side==='buy'?.05:-.05,null);sfx('coin');
   if(q.k>.12)toast('Your order walked the book: you paid '+Math.round(q.k*9)+'% away from the quote. Size moves price.');
   return q}
@@ -156,7 +156,7 @@ function mktPost(n,px,side){const m=mktInit();n=Math.floor(n);if(n<1||!(px>0))re
   if(m.ord.length>=4){toast('Nonce will hold four orders at a time');sfx('err');return false}
   /* The held line prints whole credits, so a bid escrows that floor. The limit stays the price you named. */
   const held=side==='buy'?Math.floor(n*px):n;
-  if(side==='sell'){if(G.sats<n)return false;G.sats-=n}
+  if(side==='sell'){if(!spendSats(n))return false}
   else{if(held<1||G.credits<held)return false;G.credits-=held}
   m.ord.push({s:side,n,px,esc:held});sfx('ui');
   toast(side==='sell'?'Posted: '+n+' sats for sale at '+fmt(px)+' each':'Posted: a bid for '+n+' sats at '+fmt(px)+' each');return true}
@@ -173,9 +173,9 @@ function mktFills(){const m=G.mkt,mid=m.p;
     toast('Your order filled: '+o.n+' sats at '+fmt(o.px)+'. Maker rebate '+fmt(rebate)+' — you were the one waiting.')}}
 /* ---------- Mr. Float lends against them, and is delighted either way ---------- */
 const MKT_LTV=.5, MKT_LIQ=.72;
-function mktBorrow(n){const m=mktInit();if(m.pos)return false;n=Math.floor(n);if(n<1||G.sats<n)return false;
+function mktBorrow(n){const m=mktInit();if(m.pos)return false;n=Math.floor(n);if(n<1||satsFree()<n)return false;
   /* The sheet prints whole credits, so the purse gains that floor. */
-  const px=mktBid(),lent=Math.floor(n*px*MKT_LTV);G.sats-=n;G.credits+=lent;
+  const px=mktBid(),lent=Math.floor(n*px*MKT_LTV);if(!spendSats(n))return false;G.credits+=lent;
   m.pos={n,px,lent,liq:px*MKT_LIQ};mktNews(-.06,'collateral posted with Mr. Float');sfx('coin');
   dlg('Mr. Float','“'+n+' sats, held by me, and '+fmt(lent)+' in your hand today. If one sat falls under '+fmt(m.pos.liq)+' I keep the collateral and you keep the credits. People always take that deal. They are always surprised.”',[['Understood']]);return true}
 function mktRepay(){const m=G.mkt,p=m&&m.pos;if(!p)return false;/* The owe line prints whole credits, so the purse pays that floor. */const owed=Math.floor(p.lent*1.08);if(G.credits<owed)return false;

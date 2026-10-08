@@ -206,6 +206,16 @@ async function until(page, fn, arg, ms) {
   await B.evaluate(() => __mp.send('trade.offer', { sats: 3, items: [__g.G.bag.find(i => i.tid === 'ringVale01')] }));
   await wait(200);
   await A.evaluate(() => __mp.send('trade.confirm', {}));
+  const frozen = await until(A, () => __mp.MP.trade && __mp.MP.trade.you && __mp.MP.trade.you.ok ? 1 : 0);
+  const spent = await A.evaluate(() => {
+    const before = __g.G.sats | 0;
+    const okSpend = __mp.spendSats(before);
+    const it = __g.G.bag.find(i => i.tid === 'helmAda001');
+    const blocked = typeof tradeLocked === 'function' && tradeLocked(it);
+    return { frozen: __mp.MP.trade && __mp.MP.trade.locked, okSpend, sats: __g.G.sats | 0, before, blocked, still: __g.G.bag.some(i => i.tid === 'helmAda001') };
+  });
+  ok('a confirm freezes the offered sats', !!frozen && spent && spent.okSpend === false && spent.sats === spent.before, JSON.stringify(spent));
+  ok('a confirm keeps an offered item from being dropped', !!spent && spent.blocked === true && spent.still === true, JSON.stringify(spent));
   await B.evaluate(() => __mp.send('trade.confirm', {}));
   const swapped = await until(A, () => {
     const bag = __g.G.bag.map(i => i.tid);
@@ -216,6 +226,13 @@ async function until(page, fn, arg, ms) {
     return bag.indexOf('helmAda001') >= 0 && bag.indexOf('ringVale01') < 0 && __g.G.sats === 14 ? 1 : 0;
   });
   ok('both confirms swap sats and items once', !!swapped && !!swappedB);
+  const twice = await A.evaluate(() => {
+    const before = { sats: __g.G.sats | 0, bag: __g.G.bag.map(i => i.tid).join(',') };
+    if (__mp.MP.lastDone) __mp.tradeApply(__mp.MP.lastDone);
+    const after = { sats: __g.G.sats | 0, bag: __g.G.bag.map(i => i.tid).join(',') };
+    return { before, after, same: before.sats === after.sats && before.bag === after.bag };
+  });
+  ok('applying the same trade twice does not mint', !!twice && twice.same, JSON.stringify(twice));
 
   /* ---- hostility. Declaring is a town act, and it holds the declarer there for ten seconds. ---- */
   await A.evaluate(() => { __g.enter(1); __mp.send('hello', { lvl: __g.G.lvl, cls: __g.G.cls, zi: 1, hp: __g.G.hp, hpm: __g.S.maxHp }); });

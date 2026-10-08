@@ -611,11 +611,10 @@ function diffHpOf(g) {
 function pushPeers(p) { for (const q of zonePeers(p)) pushZone(q); }
 
 /* ---------- trades ----------
-   The server does not hold the bag. It holds one trade id and the two offers.
-   Both confirms settle it once. A disconnect before that cancels it. A reconnect
-   after that replays the same result, and a second apply is the client's job to
-   ignore. Items are named by tid, which the client stamps, not by the identified
-   flag (that flag is a boolean). */
+   The server does not keep the purse between sessions. It does keep this trade.
+   Once either side confirms, the offer is frozen. The swap runs only after both
+   have reported a balance that still covers what they offered. A short report,
+   or a disconnect before that, cancels it. A finished trade replays the same id. */
 const trades = new Map();
 const tradeByPlayer = new Map();
 const TRADE_MAX_ITEMS = 8;
@@ -650,9 +649,10 @@ function tradeHash(o) {
   return o.sats + ':' + o.items.map(i => i.tid).join(',');
 }
 function tradeOf(p) { return p ? trades.get(tradeByPlayer.get(p.uid)) : null; }
+function tradeLive(s) { return !!(s && (s.phase === 'open' || s.phase === 'check')); }
 function tradeBetween(a, b) {
   const s = tradeOf(a);
-  if (!s || s.phase !== 'open' || !b) return null;
+  if (!tradeLive(s) || !b) return null;
   if (s.a !== b.uid && s.b !== b.uid) return null;
   return s;
 }
@@ -670,11 +670,32 @@ function tradeView(s, uid) {
   const them = s.offer[themId] || { sats: 0, items: [] };
   const o = {
     t: 'trade', phase: s.phase, id: s.id, with: themId,
+    locked: (s.phase === 'check' || s.ok[s.a] || s.ok[s.b]) ? 1 : 0,
     you: { sats: you.sats, items: you.items, ok: s.ok[uid] ? 1 : 0 },
     them: { sats: them.sats, items: them.items, ok: s.ok[themId] ? 1 : 0 }
   };
   if (s.phase === 'done') { o.give = s.give[uid]; o.take = s.take[uid]; }
   return o;
+}
+function tradeHold(m) {
+  const sats = Math.max(0, Math.min(TRADE_MAX_SATS, Math.floor(+((m && m.sats) || 0))));
+  const raw = m && Array.isArray(m.tids) ? m.tids.slice(0, 24) : [];
+  const tids = [];
+  const seen = {};
+  for (const id of raw) {
+    if (typeof id !== 'string' || !/^[A-Za-z0-9]{8,40}$/.test(id) || seen[id]) continue;
+    seen[id] = 1;
+    tids.push(id);
+  }
+  return { sats, tids };
+}
+function tradeCovers(offer, hold) {
+  if (!offer || !hold) return false;
+  if ((hold.sats | 0) < (offer.sats | 0)) return false;
+  const have = {};
+  for (const id of hold.tids || []) have[id] = 1;
+  for (const it of offer.items || []) if (!it || !have[it.tid]) return false;
+  return true;
 }
 function tradePush(s) {
   for (const uid of [s.a, s.b]) {
@@ -691,7 +712,7 @@ function tradeForget(s) {
 }
 function tradeDrop(p, why) {
   const s = tradeOf(p);
-  if (!s || s.phase !== 'open') return;
+  if (!tradeLive(s)) return;
   s.phase = 'dead';
   for (const uid of [s.a, s.b]) {
     const q = live.get(uid);
@@ -704,10 +725,11 @@ function tradeSide(s, uid) {
   return { sats: o.sats, ids: o.items.map(i => i.tid), items: o.items };
 }
 function tradeSettle(s) {
-  if (s.phase !== 'open') return;
+  if (!s || s.phase !== 'check') return;
   const ha = tradeHash(s.offer[s.a] || { sats: 0, items: [] });
   const hb = tradeHash(s.offer[s.b] || { sats: 0, items: [] });
   if (s.ok[s.a] !== ha || s.ok[s.b] !== hb) return;
+  if (!tradeCovers(s.offer[s.a], s.hold && s.hold[s.a]) || !tradeCovers(s.offer[s.b], s.hold && s.hold[s.b])) return;
   s.phase = 'done';
   s.at = Date.now();
   s.acked = {};
@@ -733,7 +755,7 @@ function tradeOpen(a, b) {
   const s = {
     id: 't' + crypto.randomBytes(6).toString('hex'),
     a: a.uid, b: b.uid, phase: 'open',
-    offer: {}, ok: {}, at: Date.now()
+    offer: {}, ok: {}, hold: {}, at: Date.now()
   };
   s.offer[a.uid] = { sats: 0, items: [] };
   s.offer[b.uid] = { sats: 0, items: [] };
@@ -1243,12 +1265,14 @@ const HANDLERS = {
 
   'trade.offer'(p, m) {
     const s = tradeOf(p);
-    if (!s || s.phase !== 'open') return;
+    if (!tradeLive(s)) return;
     const q = live.get(s.a === p.uid ? s.b : s.a);
     const why = tradePlace(p, q);
     if (why) { tradeDrop(p, 'moved'); return; }
+    s.phase = 'open';
     s.offer[p.uid] = tradeOffer(m);
     s.ok = {};
+    s.hold = {};
     tradePush(s);
   },
 
@@ -1262,8 +1286,27 @@ const HANDLERS = {
     if (why) { tradeDrop(p, 'moved'); return; }
     const mine = s.offer[p.uid] || { sats: 0, items: [] };
     s.ok[p.uid] = tradeHash(mine);
-    if (s.ok[s.a] && s.ok[s.b]) tradeSettle(s);
-    else tradePush(s);
+    s.hold = {};
+    if (s.ok[s.a] && s.ok[s.b]) s.phase = 'check';
+    tradePush(s);
+  },
+
+  /* Both confirms only open the check. The swap waits until each side reports
+     the sats and the item ids still in hand. A short report cancels both. */
+  'trade.hold'(p, m) {
+    const s = tradeOf(p);
+    if (!s || s.phase !== 'check') return;
+    const q = live.get(s.a === p.uid ? s.b : s.a);
+    const why = tradePlace(p, q);
+    if (why) { tradeDrop(p, 'moved'); return; }
+    s.hold = s.hold || {};
+    s.hold[p.uid] = tradeHold(m);
+    if (!s.hold[s.a] || !s.hold[s.b]) return;
+    if (!tradeCovers(s.offer[s.a], s.hold[s.a]) || !tradeCovers(s.offer[s.b], s.hold[s.b])) {
+      tradeDrop(p, 'short');
+      return;
+    }
+    tradeSettle(s);
   },
 
   'trade.cancel'(p) { tradeDrop(p, 'cancel'); },
@@ -1329,7 +1372,7 @@ function wire(p, conn) {
    else — a test socket, an explicit leave, a kick — is gone immediately. */
 function park(p) {
   const openTrade = tradeOf(p);
-  if (openTrade && openTrade.phase === 'open') tradeDrop(p, 'dropped');
+  if (tradeLive(openTrade)) tradeDrop(p, 'dropped');
   if (!p.wantsResume || !p.game) {
     leaveGame(p, { silent: true });
     pushOffline(p);

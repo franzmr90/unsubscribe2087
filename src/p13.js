@@ -978,9 +978,47 @@ function mpApplyParty() {
   if ((was ? 1 : 0) !== (call > 0 ? 1 : 0) && typeof calc === 'function') calc();
   if (W && W.ents) for (const e of W.ents) if (e && e.mid) e.partyTes = marks[e.mid] || 0;
 }
+function tradeHeld(it) {
+  return !!(it && it.tid && MP.tradeLock && MP.tradeLock[it.tid]);
+}
 function tradeLocked(it) {
-  if (!it || !it.tid || !MP.tradeLock || !MP.tradeLock[it.tid]) return false;
+  if (!tradeHeld(it)) return false;
   toast('That is on the table.'); sfx('err'); return true;
+}
+/* Offered sats leave the purse when either side confirms, and come back if the
+   trade is cancelled or the offer changes. Spending, selling, stashing, and
+   every other debit has to go through spendSats. */
+function tradeReserved() {
+  const t = (typeof MP !== 'undefined') && MP && MP.trade;
+  if (!t || !t.you) return 0;
+  if (t.phase === 'check' || t.locked || t.you.ok || (t.them && t.them.ok)) return Math.max(0, t.you.sats | 0);
+  return 0;
+}
+function satsFree() {
+  if (typeof G === 'undefined' || !G) return 0;
+  return Math.max(0, (G.sats | 0) - tradeReserved());
+}
+function spendSats(n, why) {
+  n = Math.floor(+n || 0);
+  if (!(n > 0) || typeof G === 'undefined' || !G) return false;
+  if (satsFree() < n) {
+    const reserved = tradeReserved();
+    toast(reserved > 0 && (G.sats | 0) >= n ? 'Those sats are on the table.' : (why || 'Not enough sats'));
+    if (typeof sfx === 'function') sfx('err');
+    return false;
+  }
+  G.sats -= n;
+  return true;
+}
+function mpTradeFrozen() {
+  const t = MP.trade;
+  if (!t) return false;
+  return t.phase === 'check' || !!t.locked || !!(t.you && t.you.ok) || !!(t.them && t.them.ok);
+}
+function mpTradePurse() {
+  const tids = [];
+  for (const it of (G && G.bag) || []) if (it && it.tid && !it.test) tids.push(it.tid);
+  return { sats: G ? (G.sats | 0) : 0, tids: tids };
 }
 function tradeSeen(id) {
   if (G && G.trades && G.trades[id]) return true;
@@ -1004,21 +1042,38 @@ function tradeRemember(id) {
 }
 function mpTradeApply(m) {
   if (!G || !m || !m.id || !m.give || !m.take) return;
+  MP.lastDone = m;
   if (tradeSeen(m.id)) { mpSend('trade.ack', { id: m.id }); return; }
   const give = m.give, take = m.take;
   const ids = {};
-  for (const id of give.ids || []) ids[id] = 1;
-  G.sats = Math.max(0, (G.sats | 0) - (give.sats | 0)) + (take.sats | 0);
-  if (G.bag) G.bag = G.bag.filter(it => !(it && it.tid && ids[it.tid]));
+  for (const id of give.ids || []) if (id) ids[id] = 1;
   const have = {};
   for (const it of G.bag || []) if (it && it.tid) have[it.tid] = 1;
-  for (const it of take.items || []) {
-    if (!it || !it.tid || have[it.tid]) continue;
-    if (G.bag.length >= 24) { toast('Your pack is full. The rest of the trade did not fit.'); break; }
-    G.bag.push(it); have[it.tid] = 1;
+  let short = (G.sats | 0) < (give.sats | 0);
+  for (const id in ids) if (!have[id]) short = true;
+  if (short) {
+    mpSend('trade.cancel', {});
+    toast('The trade is off. The goods were not still in hand.');
+    MP.trade = null; MP.tradeLock = null; MP.heldFor = null;
+    return;
   }
+  const bag = [];
+  for (const it of G.bag || []) {
+    if (it && it.tid && ids[it.tid]) { delete ids[it.tid]; continue; }
+    bag.push(it);
+  }
+  const seen = {};
+  for (const it of bag) if (it && it.tid) seen[it.tid] = 1;
+  G.sats = (G.sats | 0) - (give.sats | 0) + (take.sats | 0);
+  for (const it of take.items || []) {
+    if (!it || !it.tid || seen[it.tid]) continue;
+    if (bag.length >= 24) { toast('Your pack is full. The rest of the trade did not fit.'); break; }
+    bag.push(it); seen[it.tid] = 1;
+  }
+  G.bag = bag;
   tradeRemember(m.id);
   MP.tradeLock = null;
+  MP.heldFor = null;
   if (typeof save === 'function') save(true);
   if (typeof calc === 'function') calc();
   mpSend('trade.ack', { id: m.id });
@@ -1033,30 +1088,38 @@ function mpTradeMsg(m) {
     return;
   }
   if (m.phase === 'dead') {
-    MP.trade = null; MP.tradeLock = null; MP.tradeAsk = null;
-    toast(m.why === 'dropped' ? 'They dropped. The trade is off.' : 'The trade is off.');
+    MP.trade = null; MP.tradeLock = null; MP.tradeAsk = null; MP.heldFor = null;
+    toast(m.why === 'dropped' ? 'They dropped. The trade is off.' : m.why === 'short' ? 'The trade is off. Somebody no longer holds what they offered.' : 'The trade is off.');
     if (mode === 'sheet') drawSheet();
     return;
   }
-  if (m.phase === 'done') { mpTradeApply(m); MP.trade = null; MP.tradeLock = null; if (mode === 'sheet') drawSheet(); return; }
+  if (m.phase === 'done') { mpTradeApply(m); MP.trade = null; MP.tradeLock = null; MP.heldFor = null; if (mode === 'sheet') drawSheet(); return; }
   MP.trade = m;
   MP.tradeLock = {};
   if (m.you && m.you.items) for (const it of m.you.items) if (it && it.tid) MP.tradeLock[it.tid] = 1;
+  if (m.phase === 'check' && MP.heldFor !== m.id) {
+    MP.heldFor = m.id;
+    mpSend('trade.hold', mpTradePurse());
+  }
+  if (m.phase !== 'check') MP.heldFor = null;
   if (mode === 'sheet') drawSheet();
 }
 function mpTradePanel() {
   const t = MP.trade;
-  if (!t || t.phase !== 'open') {
+  if (!t || (t.phase !== 'open' && t.phase !== 'check')) {
     if (!MP.tradeAsk) return '';
     return '<h3>A trade</h3><p>' + esc(MP.tradeAsk.from) + ' wants to trade, in town.</p><div class="row"><button class="big" data-mpta="' + MP.tradeAsk.uid + '">Accept</button><button class="ghost" data-mptx="1">Not now</button></div>';
   }
   const you = t.you || { sats: 0, items: [] }, them = t.them || { sats: 0, items: [] };
-  let h = '<h3>Trade</h3><p style="font-size:13px">Both of you confirm. Changing an offer clears both confirms. Leaving, or dropping, cancels it. Nothing moves until then.</p>';
+  const frozen = mpTradeFrozen();
+  let h = '<h3>Trade</h3><p style="font-size:13px">Both of you confirm. Once either does, the sats and the items on the table stay put until the swap or a cancel. Changing an offer clears both confirms. Nothing moves until both purses still cover the offer.</p>';
+  if (t.phase === 'check') h += '<p>Both confirmed. Checking that the sats and the items are still in hand.</p>';
+  else if (frozen) h += '<p>The table is locked. Change the offer if you need to unlock it. That clears both confirms.</p>';
   h += '<p>You offer ' + (you.sats | 0) + ' sats' + (you.ok ? ' · confirmed' : '') + '. They offer ' + (them.sats | 0) + ' sats' + (them.ok ? ' · confirmed' : '') + '.</p>';
   h += '<div class="ln off">Theirs</div>';
   if (!(them.items || []).length && !(them.sats > 0)) h += '<p>Nothing yet.</p>';
   else for (const it of them.items || []) h += '<div class="ln">' + esc(it.name || it.base || 'An item') + '</div>';
-  h += '<div class="row"><input id="mpSats" inputmode="numeric" maxlength="9" value="' + (you.sats | 0) + '" style="width:8em;background:#0a0912;border:1px solid #3a3350;color:#e8e2d4;border-radius:6px;padding:10px;font:15px Georgia,serif"></div>';
+  h += '<div class="row"><input id="mpSats" inputmode="numeric" maxlength="9" value="' + (you.sats | 0) + '"' + (frozen ? ' readonly' : '') + ' style="width:8em;background:#0a0912;border:1px solid #3a3350;color:#e8e2d4;border-radius:6px;padding:10px;font:15px Georgia,serif"></div>';
   h += '<div class="list">';
   const offered = {};
   for (const it of you.items || []) if (it && it.tid) offered[it.tid] = 1;
@@ -1065,7 +1128,7 @@ function mpTradePanel() {
     if (!it.tid) it.tid = Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 6);
     h += '<button class="li' + (offered[it.tid] ? ' on' : '') + '" data-mpti="' + esc(it.tid) + '"><div><b>' + esc(it.name || it.base || 'Item') + '</b><span>' + (offered[it.tid] ? 'On the table' : 'In your pack') + '</span></div></button>';
   }
-  h += '</div><div class="row"><button class="ghost" data-mpto="1">Set the offer</button><button class="big" data-mptc="1">Confirm</button><button class="ghost" data-mptx="1">Cancel</button></div>';
+  h += '</div><div class="row"><button class="ghost" data-mpto="1">' + (frozen ? 'Change the offer' : 'Set the offer') + '</button><button class="big" data-mptc="1"' + (you.ok || t.phase === 'check' ? ' disabled' : '') + '>Confirm</button><button class="ghost" data-mptx="1">Cancel</button></div>';
   return h;
 }
 function mpTradeSendOffer() {
@@ -1146,7 +1209,7 @@ function mpGamePanel() {
   return h;
 }
 
-if (typeof devOn === 'function' && devOn()) window.__mp={MP,send:mpSend,get on(){return mpOn()},get inGame(){return mpIn()},get roster(){return MP.roster},get me(){return MP.me},get scale(){return MP.scale},get mobHost(){return MP.mobHost},mpHp,mpXp,mpDmg,mute:mpMute,loadFriends:mpFriendsLoad};
+if (typeof devOn === 'function' && devOn()) window.__mp={MP,send:mpSend,get on(){return mpOn()},get inGame(){return mpIn()},get roster(){return MP.roster},get me(){return MP.me},get scale(){return MP.scale},get mobHost(){return MP.mobHost},mpHp,mpXp,mpDmg,mute:mpMute,loadFriends:mpFriendsLoad,spendSats,satsFree,tradeApply:mpTradeApply};
 
 function mpWhere(zi) {
   if (zi === undefined || zi === null) return 'somewhere';
@@ -1212,12 +1275,13 @@ function mpClick(d) {
     MP.trade = null; MP.tradeAsk = null; MP.tradeLock = null; MP.tradePick = null; drawSheet(); return true;
   }
   if (d.mpti) {
+    if (mpTradeFrozen()) { toast('The table is locked. Change the offer to unlock it.'); sfx('err'); return true; }
     MP.tradePick = MP.tradePick || {};
     if (MP.tradePick[d.mpti]) delete MP.tradePick[d.mpti]; else MP.tradePick[d.mpti] = 1;
     drawSheet(); return true;
   }
   if (d.mpto) { mpTradeSendOffer(); return true; }
-  if (d.mptc) { mpSend('trade.confirm', {}); return true; }
+  if (d.mptc) { if (!(MP.trade && MP.trade.you && MP.trade.you.ok)) mpSend('trade.confirm', {}); return true; }
   if (d.mpn) { mpSend('stand', { uid: d.mpn }); return true; }
   if (d.mph) {
     const r = MP.roster.find(x => x.uid === d.mph);
