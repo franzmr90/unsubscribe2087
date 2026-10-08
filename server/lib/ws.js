@@ -5,6 +5,7 @@
 'use strict';
 const crypto = require('crypto');
 const { EventEmitter } = require('events');
+const { originOK } = require('./origin');
 
 const GUID = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
 const MAX_FRAME = 512 * 1024;
@@ -93,6 +94,11 @@ function attach(server, pathname, verify, onConn) {
     if (url.pathname !== pathname) { socket.destroy(); return; }
     const key = req.headers['sec-websocket-key'];
     if (!key || (req.headers.upgrade || '').toLowerCase() !== 'websocket') { socket.destroy(); return; }
+    if (!originOK(req)) {
+      socket.write('HTTP/1.1 403 Forbidden\r\nConnection: close\r\n\r\n');
+      socket.destroy();
+      return;
+    }
     let ctx = null;
     try { ctx = verify(req); } catch (e) { ctx = null; }
     if (!ctx) {
