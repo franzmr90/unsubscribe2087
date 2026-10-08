@@ -26,6 +26,8 @@ copyDir(path.join(root, 'server', 'lib'), 'server/lib');
 copyDir(path.join(root, 'server', 'public'), 'server/public');
 copyFile(path.join(root, 'server', 'server.js'), 'server/server.js');
 copyFile(path.join(root, 'server', 'admin.js'), 'server/admin.js');
+/* The life checks require this. The path is the same one server/lib/plaus.js uses. */
+copyFile(path.join(root, 'src', 'formulas.js'), 'src/formulas.js');
 copyFile(path.join(root, 'dist', 'unsubscribe.html'), 'dist/unsubscribe.html');
 copyFile(path.join(root, 'dist', 'BUILD'), 'dist/BUILD');
 copyFile(path.join(root, 'LAN-PLAY.md'), 'LAN-PLAY.md');
@@ -33,6 +35,8 @@ copyFile(path.join(root, 'LAN-PLAY.md'), 'README.md');
 copyFile(path.join(root, 'lan', 'Play-Unsubscribe-2087.sh'), 'Play-Unsubscribe-2087.sh', 0o755);
 copyFile(path.join(root, 'lan', 'Play-Unsubscribe-2087.sh'), 'Play-Unsubscribe-2087.command', 0o755);
 copyFile(path.join(root, 'lan', 'Play-Unsubscribe-2087.bat'), 'Play-Unsubscribe-2087.bat');
+
+require(path.join(dest, 'server/lib/plaus.js'));
 
 fs.mkdirSync(path.dirname(out), { recursive: true });
 if (fs.existsSync(out)) fs.rmSync(out);
