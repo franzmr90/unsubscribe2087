@@ -245,16 +245,18 @@ function setSkillButtons(){sbtn.forEach((b,i)=>{const k=G.slots[i];const face=k>
 function paintGlyphs(root){if(!root||!root.querySelectorAll)return;root.querySelectorAll('canvas[data-gl]').forEach(function(c){const sz=+c.width||24;glyph(c.getContext('2d'),c.dataset.cls||G.cls,+c.dataset.gl,sz)})}
 let hudC={};
 function setT(id,v){if(hudC[id]!==v){hudC[id]=v;$(id).textContent=v}}
+let hudPx={};
+function hudSet(el,prop,val){if(!el)return;const k=el.id+'|'+prop;if(hudPx[k]===val)return;hudPx[k]=val;el.style[prop]=val}
 function hud(){objHud();if(P&&P.dg)setT('dgn',P.dg.n);
-  $('hpF').style.height=clamp(G.hp/S.maxHp*100,0,100)+'%';$('enF').style.height=clamp(G.en/S.maxEn*100,0,100)+'%';const rec=$('rec');if(rec){if(G.cls==='witness'){rec.hidden=false;const rf=$('recF');if(rf)rf.style.width=clamp(G.page||0,0,100)+'%'}else rec.hidden=true}const nx=xpNext(G.lvl),banked=!G.act3&&(G.bankXp||0)>0&&G.lvl>=lvlCap();$('xpb').style.width=(banked?Math.min(100,G.bankXp/nx*100):(G.lvl>=lvlCap()?100:G.xp/nx*100))+'%';const xpw=$('xpw');if(xpw)xpw.title=banked?'Banked '+Math.floor(G.bankXp)+' / '+nx+' until Act III':'';
+  hudSet($('hpF'),'height',clamp(G.hp/S.maxHp*100,0,100)+'%');hudSet($('enF'),'height',clamp(G.en/S.maxEn*100,0,100)+'%');const rec=$('rec');if(rec){if(G.cls==='witness'){rec.hidden=false;hudSet($('recF'),'width',clamp(G.page||0,0,100)+'%')}else rec.hidden=true}const nx=xpNext(G.lvl),banked=!G.act3&&(G.bankXp||0)>0&&G.lvl>=lvlCap();hudSet($('xpb'),'width',(banked?Math.min(100,G.bankXp/nx*100):(G.lvl>=lvlCap()?100:G.xp/nx*100))+'%');const xpw=$('xpw');if(xpw)xpw.title=banked?'Banked '+Math.floor(G.bankXp)+' / '+nx+' until Act III':'';
   setT('hpT',OPT.orbNums?Math.ceil(G.hp):'');setT('enT',OPT.orbNums?Math.floor(G.en):'');setT('cr',fmt(G.credits)+(G.sats?' · '+G.sats+' sats':''));setT('cpi','prices ×'+(G.cpi<100?G.cpi.toFixed(2):fmt(G.cpi).slice(1)));setT('potn',G.stims);
-  sbtn.forEach((b,i)=>{const k=G.slots[i];if(k<0||k===undefined||(k>=100?!itemSkillOn(k):!G.sk[k])){b.classList.add('off');return}const s=k>=100?ISK[k]:CLS[G.cls].sk[k];const blank=k>=100?false:!!witBlock(k);b.classList.toggle('off',(k<100&&!!hsBlocked(k))||blank);b.classList.toggle('low',!blank&&!(k<100&&G.cls==='homesteader'&&G.form&&(k===7||(k===1&&G.form==='hound')||(k===4&&G.form==='hull')))&&G.en<s.cost*(S.sp.hoodie?.75:1));b.querySelector('em').style.transform='scaleY('+clamp((P.cd[k]||0)/(s.cd*(1-Math.min(.6,S.cdr||0))),0,1)+')'});
+  sbtn.forEach((b,i)=>{const k=G.slots[i];if(k<0||k===undefined||(k>=100?!itemSkillOn(k):!G.sk[k])){b.classList.add('off');return}const s=k>=100?ISK[k]:CLS[G.cls].sk[k];const blank=k>=100?false:!!witBlock(k);b.classList.toggle('off',(k<100&&!!hsBlocked(k))||blank);b.classList.toggle('low',!blank&&!(k<100&&G.cls==='homesteader'&&G.form&&(k===7||(k===1&&G.form==='hound')||(k===4&&G.form==='hull')))&&G.en<s.cost*(S.sp.hoodie?.75:1));const em=b.querySelector('em'),sc='scaleY('+clamp((P.cd[k]||0)/(s.cd*(1-Math.min(.6,S.cdr||0))),0,1)+')';if(em&&em._sc!==sc){em._sc=sc;em.style.transform=sc}});
   $('bMenu').classList.toggle('pip',G.sp>0||G.ap>0);$('bRecall').hidden=W.z.town;$('bMap').hidden=W.z.town;
   const sw=$('bSwap');if(SWAP&&(SWAP.t-=1/60)>0&&G.bag.includes(SWAP.it)){sw.hidden=false;setT('bSwap','▲ '+SWAP.it.name+'\n'+dPct(SWAP.d)+' · tap or click')}else{sw.hidden=true;SWAP=null}
   const a=$('bAct');if(actTarget){a.hidden=false;setT('bAct',actTarget.label)}else a.hidden=true;
-  if(W.boss&&W.boss.aggro){$('boss').hidden=false;setT('bossn',ET[W.boss.k].n+' · deals '+dealTxt(W.boss.k)+(resTxt(W.boss.k)?' · '+resTxt(W.boss.k):''));$('bossb').style.width=Math.max(0,W.boss.hp/W.boss.max*100)+'%'}
+  if(W.boss&&W.boss.aggro){$('boss').hidden=false;setT('bossn',ET[W.boss.k].n+' · deals '+dealTxt(W.boss.k)+(resTxt(W.boss.k)?' · '+resTxt(W.boss.k):''));hudSet($('bossb'),'width',Math.max(0,W.boss.hp/W.boss.max*100)+'%')}
   const bf=[];if(!G.act3&&(G.bankXp||0)>0)bf.push('Banked experience '+Math.floor(G.bankXp));if(P.ward>0)bf.push('Ward '+Math.ceil(P.ward)+'s');const au=maxiBuff();if(au)bf.push('\u25c6 '+au);if(P.shr)bf.push(P.shr.n+' '+Math.ceil(P.shr.t)+'s');if(P.buff>0)bf.push('Frenzy '+Math.ceil(P.buff)+'s');if(P.guard>0)bf.push('War Horn '+Math.ceil(P.guard)+'s');if(P.slow>0)bf.push('Slowed');if(G.cls==='homesteader'&&G.form)bf.push(G.form==='hound'?'Hound':G.form==='hull'?'Hull':'Wearing a machine');if(G.god)bf.push('Untouchable (testing)');if(EV)bf.push(EVS[EV.k].n+' '+Math.ceil(EV.t)+'s');if(P.silence>0)bf.push('Silenced');if(W.pow)bf.push('Proof of work '+Math.ceil(W.pow.t)+'s');if(G.tpT>0)bf.push('On credit '+Math.ceil(G.tpT)+'s');if(W.sub)bf.push(W.sub.mods.map(m=>SUBM[m]).join(' · '));if(W.esc)bf.push(W.esc.name+' is with you');if(W.hold)bf.push('Node syncing '+Math.ceil(W.hold.t)+'s');if(P.streakT>0&&P.streak>=3)bf.push('Streak ×'+P.streak+' · +'+Math.round(Math.min(.5,.02*P.streak)*100)+'% experience');
-  setT('buffs',bf.join('\n'));$('buffs').style.whiteSpace='pre';paintMouseSlots()}
+  setT('buffs',bf.join('\n'));const bu=$('buffs');if(bu&&!bu._ws){bu._ws=1;bu.style.whiteSpace='pre'}paintMouseSlots()}
 
 /* ================= sheets ================= */
 let tab='items',sel=null,sheetCtx={},lastBox=null;
@@ -656,24 +658,28 @@ function showDeath(){const town=ZONES[HT()]||{n:'town'};$('deathP').textContent=
 $('bRise').onclick=()=>{if(!DY)return;if(G.hc){hcBegin();return}const d=DY;DY=null;$('death').hidden=true;G.hp=S.maxHp;G.en=S.maxEn;mode='play';G.portal={zi:d.zi,x:d.st.x,y:d.st.y};sfx('portal');enter(HT());toast('A portal back stands open in the square')};
 
 let pickSide='R',pickHov=null;
+let mouseKey='';
 function paintMouseSlots(){
   if(!G||!CLS[G.cls])return;
   ensureMouse();
-    const paint=(id,i,tag)=>{
+  const key=(G.mouse.L|0)+':'+(G.mouse.R|0)+':'+G.cls;
+  const fresh=key!==mouseKey;if(fresh)mouseKey=key;
+  const paint=(id,i,tag)=>{
     const b=$(id);if(!b)return;
     const sk=i>=100&&itemSkillsReady?ISK[i]:(i>=0?CLS[G.cls].sk[i]:null);
-    const name=i<0?'ATK':(sk?sk.ab:'');
-    b.querySelector('b').textContent=name;
-    b.querySelector('i').textContent=tag;
-    b.title=(i<0?'Attack':(sk?sk.n:''))+' ('+(tag==='L'?'left click':'right click')+')';
-    const c=b.querySelector('canvas'),g=c.getContext('2d');
-    g.clearRect(0,0,28,28);
-    if(i>=100&&sk){g.fillStyle='#d0aa62';g.font='9px Cinzel,serif';g.textAlign='center';g.fillText(sk.ab,14,17)}
-    else if(i>=0)glyph(g,G.cls,i,28);
-    else{g.strokeStyle='#e0bd6e';g.lineWidth=2;g.lineCap='round';g.beginPath();g.moveTo(8,21);g.lineTo(20,8);g.moveTo(8,14);g.lineTo(14,8);g.stroke()}
+    if(fresh){
+      const name=i<0?'ATK':(sk?sk.ab:'');
+      b.querySelector('b').textContent=name;
+      b.querySelector('i').textContent=tag;
+      b.title=(i<0?'Attack':(sk?sk.n:''))+' ('+(tag==='L'?'left click':'right click')+')';
+      const c=b.querySelector('canvas'),g=c.getContext('2d');
+      g.clearRect(0,0,28,28);
+      if(i>=100&&sk){g.fillStyle='#d0aa62';g.font='9px Cinzel,serif';g.textAlign='center';g.fillText(sk.ab,14,17)}
+      else if(i>=0)glyph(g,G.cls,i,28);
+      else{g.strokeStyle='#e0bd6e';g.lineWidth=2;g.lineCap='round';g.beginPath();g.moveTo(8,21);g.lineTo(20,8);g.moveTo(8,14);g.lineTo(14,8);g.stroke()}}
     const em=b.querySelector('em');
-    if(i>=0&&P&&P.cd&&sk)em.style.transform='scaleY('+clamp((P.cd[i]||0)/(sk.cd||1),0,1)+')';
-    else em.style.transform='scaleY(0)'};
+    const sc=(i>=0&&P&&P.cd&&sk)?'scaleY('+clamp((P.cd[i]||0)/(sk.cd||1),0,1)+')':'scaleY(0)';
+    if(em&&em._sc!==sc){em._sc=sc;em.style.transform=sc}};
   paint('mL',G.mouse.L|0,'L');
   paint('mR',G.mouse.R|0,'R')}
 function paintPick(){
@@ -820,4 +826,4 @@ function showDisc(){const d=$('disc');if(!d)return;
 showDisc();
 cloudInit();
 function devOn(){try{if(window.__DEBUG)return true;var h=location.hostname;if(h==='localhost'||h==='127.0.0.1'||h==='::1')return true;if(location.protocol==='file:'||location.protocol==='about:')return true}catch(e){}return false}
-if(devOn())window.__g={migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},get shop(){return shop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng};
+if(devOn())window.__g={migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},get shop(){return shop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng};

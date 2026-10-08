@@ -72,6 +72,7 @@ function nearbyAllies(h) {
   if (!h.self && inAura(P, h)) out.push(P);
   if (inAura(W && W.merc, h)) out.push(W.merc);
   if (inAura(W && W.tag, h)) out.push(W.tag);
+  if (W && W.allies) for (const a of W.allies) if (inAura(a, h)) out.push(a);
   return out;
 }
 function auraFoes(h) {
@@ -91,8 +92,9 @@ function auraFoes(h) {
 }
 /* Toxic Maximalism's attack-speed line is the one printed on the skill:
    15+3*L percent. The owner, a hireling, and anyone standing in the aura all
-   take it. toxicSwing reads toxL. Any haste above zero is +50% run speed,
-   which the card also prints. */
+   take it. toxicSwing reads toxL. The run line is separate: only you run 50%
+   faster, which is haste on you. A hireling and a rendered companion already
+   matched that step; a summon does not. */
 function toxicSwing(body) {
   const L = body && body.toxL;
   if (!(L > 0)) return 1;
@@ -110,6 +112,7 @@ function maxiAura(dt) {
   P.toxL = 0; P.mkAura = 0; P.mkP = 0;
   if (W && W.merc) W.merc.toxL = 0;
   if (W && W.tag) { W.tag.toxL = 0; W.tag.nodeM = 0; }
+  if (W && W.allies) for (const a of W.allies) if (a) a.toxL = 0;
   if (W && W.ents) for (const e of W.ents) if (e) e.mkP = 0;
   if (mode !== 'play' || !W) return;
   if (G.cls === 'maxi' && P.aura) P.aura.t -= dt;
@@ -118,7 +121,10 @@ function maxiAura(dt) {
       if (h.self) { P.haste = Math.max(P.haste, .3); P.toxL = Math.max(P.toxL, h.L); }
       for (const a of nearbyAllies(h)) {
         if (a === P) { P.haste = Math.max(P.haste, .3); P.toxL = Math.max(P.toxL, h.L); }
-        else { a.haste = Math.max(a.haste || 0, .3); a.toxL = Math.max(a.toxL || 0, h.L); }
+        else {
+          a.toxL = Math.max(a.toxL || 0, h.L);
+          if (a === W.merc || a === W.tag) a.haste = Math.max(a.haste || 0, .3);
+        }
       }
     } else if (h.i === 4) {
       /* The card prints max(30, 20+4*L). Orange Pill, Signed For, and Dox already
@@ -131,13 +137,19 @@ function maxiAura(dt) {
       }
       if (h.hostile && inAura(P, h)) { P.mkAura = .4; P.mkP = Math.max(P.mkP || 0, bonus); }
     } else if (h.i === 7) {
+      /* The holder is the only client that deals the pulse. Everyone else already
+         draws the disc from the au field, and a second pulse would hit the same
+         machines again. */
+      if (!h.self) continue;
       let ready = false;
-      if (h.self) { if (P.aura.t <= 0) { P.aura.t = .5; ready = true; } }
-      else { h.src.powT = (h.src.powT || 0) - dt; if (h.src.powT <= 0) { h.src.powT = .5; ready = true; } }
+      if (P.aura.t <= 0) { P.aura.t = .5; ready = true; }
       if (!ready) continue;
-      const m = (.3 + .07 * h.L) * (h.self ? syn(7) : 1);
-      for (const e of auraFoes(h)) hit(e, m, true);
-      if (h.self) W.fx.push({ k: 'ring', x: P.x, y: P.y, r: auraVisR(7, h.L), t: 0, life: .25, col: '#f7931a' });
+      const m = (.3 + .07 * h.L) * syn(7);
+      const prevSk = P.hitSk;
+      P.hitSk = 7;
+      try { for (const e of auraFoes(h)) hit(e, m, true); }
+      finally { P.hitSk = prevSk; }
+      W.fx.push({ k: 'ring', x: P.x, y: P.y, r: auraVisR(7, h.L), t: 0, life: .25, col: '#f7931a' });
     }
   }
   /* Running a Node. The hireling's shot already multiplies nodeMul. A companion

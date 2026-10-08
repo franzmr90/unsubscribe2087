@@ -643,7 +643,7 @@ function mpTakeHit(m) {
   /* Through the game's own damage path, so armour and resistances apply to a person the
      same way they apply to a machine, and death — including the rig's painless kind —
      is the code that already exists rather than a second copy of it. */
-  hurt(m.dmg, 0, { name: m.from, pvp: 1 });
+  hurt(m.dmg, 0, { name: m.from, pvp: 1, crit: m.kind === 'crit' ? 1 : 0 });
   if (G.hp <= 0 && was > 0) mpSend('died', { uid: m.fromUid });
 }
 

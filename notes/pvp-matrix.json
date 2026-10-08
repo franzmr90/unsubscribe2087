@@ -1,0 +1,2400 @@
+{
+  "sheets": [
+    {
+      "cls": "maxi",
+      "build": "orange",
+      "name": "Orange Pilled",
+      "lvl": 30,
+      "ivl": 0.625,
+      "maxHp": 898,
+      "armor": 351,
+      "avgRaw": 1253,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "scrapper",
+      "build": "crew",
+      "name": "Wrecking Crew",
+      "lvl": 30,
+      "ivl": 0.667,
+      "maxHp": 1061,
+      "armor": 343,
+      "avgRaw": 688,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "hacker",
+      "build": "chain",
+      "name": "Chain Reaction",
+      "lvl": 30,
+      "ivl": 0.775,
+      "maxHp": 513,
+      "armor": 296,
+      "avgRaw": 543,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "courier",
+      "build": "rush",
+      "name": "Rush Hour",
+      "lvl": 30,
+      "ivl": 0.421,
+      "maxHp": 606,
+      "armor": 339,
+      "avgRaw": 382,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "anon",
+      "build": "demo",
+      "name": "Demolition",
+      "lvl": 30,
+      "ivl": 0.525,
+      "maxHp": 685,
+      "armor": 325,
+      "avgRaw": 528,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "founder",
+      "build": "head",
+      "name": "Headcount",
+      "lvl": 30,
+      "ivl": 0.75,
+      "maxHp": 1018,
+      "armor": 296,
+      "avgRaw": 210,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "homesteader",
+      "build": "bed",
+      "name": "Cold Bed",
+      "lvl": 30,
+      "ivl": 0.688,
+      "maxHp": 1359,
+      "armor": 392,
+      "avgRaw": 252,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "witness",
+      "build": "page",
+      "name": "The Page",
+      "lvl": 30,
+      "ivl": 0.85,
+      "maxHp": 1342,
+      "armor": 392,
+      "avgRaw": 227,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "maxi",
+      "build": "orange",
+      "name": "Orange Pilled",
+      "lvl": 60,
+      "ivl": 0.303,
+      "maxHp": 1462,
+      "armor": 472,
+      "avgRaw": 1113,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "scrapper",
+      "build": "crew",
+      "name": "Wrecking Crew",
+      "lvl": 60,
+      "ivl": 0.343,
+      "maxHp": 1773,
+      "armor": 456,
+      "avgRaw": 1115,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "hacker",
+      "build": "chain",
+      "name": "Chain Reaction",
+      "lvl": 60,
+      "ivl": 0.376,
+      "maxHp": 870,
+      "armor": 378,
+      "avgRaw": 1009,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "courier",
+      "build": "rush",
+      "name": "Rush Hour",
+      "lvl": 60,
+      "ivl": 0.222,
+      "maxHp": 1035,
+      "armor": 466,
+      "avgRaw": 605,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "anon",
+      "build": "demo",
+      "name": "Demolition",
+      "lvl": 60,
+      "ivl": 0.255,
+      "maxHp": 1165,
+      "armor": 437,
+      "avgRaw": 833,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "founder",
+      "build": "head",
+      "name": "Headcount",
+      "lvl": 60,
+      "ivl": 0.364,
+      "maxHp": 1856,
+      "armor": 378,
+      "avgRaw": 240,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "homesteader",
+      "build": "bed",
+      "name": "Cold Bed",
+      "lvl": 60,
+      "ivl": 0.333,
+      "maxHp": 2259,
+      "armor": 568,
+      "avgRaw": 349,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "witness",
+      "build": "page",
+      "name": "The Page",
+      "lvl": 60,
+      "ivl": 0.412,
+      "maxHp": 2234,
+      "armor": 568,
+      "avgRaw": 293,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "maxi",
+      "build": "orange",
+      "name": "Orange Pilled",
+      "lvl": 90,
+      "ivl": 0.5,
+      "maxHp": 2345,
+      "armor": 2742,
+      "avgRaw": 3670,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "scrapper",
+      "build": "crew",
+      "name": "Wrecking Crew",
+      "lvl": 90,
+      "ivl": 0.545,
+      "maxHp": 3146,
+      "armor": 2711,
+      "avgRaw": 3339,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "hacker",
+      "build": "chain",
+      "name": "Chain Reaction",
+      "lvl": 90,
+      "ivl": 0.62,
+      "maxHp": 1477,
+      "armor": 1988,
+      "avgRaw": 3543,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "courier",
+      "build": "rush",
+      "name": "Rush Hour",
+      "lvl": 90,
+      "ivl": 0.348,
+      "maxHp": 1730,
+      "armor": 2121,
+      "avgRaw": 1648,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "anon",
+      "build": "demo",
+      "name": "Demolition",
+      "lvl": 90,
+      "ivl": 0.42,
+      "maxHp": 1960,
+      "armor": 2077,
+      "avgRaw": 2043,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "founder",
+      "build": "head",
+      "name": "Headcount",
+      "lvl": 90,
+      "ivl": 0.6,
+      "maxHp": 3201,
+      "armor": 1988,
+      "avgRaw": 446,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "homesteader",
+      "build": "bed",
+      "name": "Cold Bed",
+      "lvl": 90,
+      "ivl": 0.55,
+      "maxHp": 3565,
+      "armor": 2270,
+      "avgRaw": 655,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    },
+    {
+      "cls": "witness",
+      "build": "page",
+      "name": "The Page",
+      "lvl": 90,
+      "ivl": 0.68,
+      "maxHp": 2982,
+      "armor": 2270,
+      "avgRaw": 513,
+      "resists": {
+        "impact": 75,
+        "surge": 75,
+        "rust": 75,
+        "heat": 75,
+        "noise": 75
+      }
+    }
+  ],
+  "fights": [
+    {
+      "lvl": 30,
+      "a": "maxi",
+      "b": "scrapper",
+      "win": 0.875,
+      "ttk": 49.32,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "maxi",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 22.76,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "maxi",
+      "b": "courier",
+      "win": 1,
+      "ttk": 27.42,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "maxi",
+      "b": "anon",
+      "win": 1,
+      "ttk": 25.22,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "maxi",
+      "b": "founder",
+      "win": 1,
+      "ttk": 28.87,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "maxi",
+      "b": "homesteader",
+      "win": 1,
+      "ttk": 54.21,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "maxi",
+      "b": "witness",
+      "win": 1,
+      "ttk": 62.62,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "scrapper",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 55.46,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "scrapper",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 32.86,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "scrapper",
+      "b": "courier",
+      "win": 1,
+      "ttk": 41.35,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "scrapper",
+      "b": "anon",
+      "win": 1,
+      "ttk": 40.27,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "scrapper",
+      "b": "founder",
+      "win": 1,
+      "ttk": 54.01,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "scrapper",
+      "b": "homesteader",
+      "win": 1,
+      "ttk": 103.01,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "scrapper",
+      "b": "witness",
+      "win": 1,
+      "ttk": 118.99,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "hacker",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 73.7,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "hacker",
+      "b": "scrapper",
+      "win": 0,
+      "ttk": 80.19,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "hacker",
+      "b": "courier",
+      "win": 0,
+      "ttk": 56.5,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "hacker",
+      "b": "anon",
+      "win": 0,
+      "ttk": 53.16,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "hacker",
+      "b": "founder",
+      "win": 1,
+      "ttk": 71.77,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "hacker",
+      "b": "homesteader",
+      "win": 0,
+      "ttk": 136.88,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "hacker",
+      "b": "witness",
+      "win": 0.125,
+      "ttk": 158.11,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "courier",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 63.82,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "courier",
+      "b": "scrapper",
+      "win": 0,
+      "ttk": 69.44,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "courier",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 36.01,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "courier",
+      "b": "anon",
+      "win": 0.5,
+      "ttk": 47.99,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "courier",
+      "b": "founder",
+      "win": 1,
+      "ttk": 62.15,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "courier",
+      "b": "homesteader",
+      "win": 0.625,
+      "ttk": 118.54,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "courier",
+      "b": "witness",
+      "win": 1,
+      "ttk": 136.92,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "anon",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 58.98,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "anon",
+      "b": "scrapper",
+      "win": 0,
+      "ttk": 64.17,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "anon",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 33.28,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "anon",
+      "b": "courier",
+      "win": 0.625,
+      "ttk": 44.76,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "anon",
+      "b": "founder",
+      "win": 1,
+      "ttk": 57.43,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "anon",
+      "b": "homesteader",
+      "win": 0.625,
+      "ttk": 109.54,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "anon",
+      "b": "witness",
+      "win": 1,
+      "ttk": 126.53,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "founder",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 226.95,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "founder",
+      "b": "scrapper",
+      "win": 0,
+      "ttk": 246.93,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "founder",
+      "b": "hacker",
+      "win": 0,
+      "ttk": 128.07,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "founder",
+      "b": "courier",
+      "win": 0,
+      "ttk": 171.95,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "founder",
+      "b": "anon",
+      "win": 0,
+      "ttk": 163.53,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "founder",
+      "b": "homesteader",
+      "win": 0,
+      "ttk": 421.52,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "founder",
+      "b": "witness",
+      "win": 0,
+      "ttk": 486.9,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "homesteader",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 155.47,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "homesteader",
+      "b": "scrapper",
+      "win": 0,
+      "ttk": 169.15,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "homesteader",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 87.73,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "homesteader",
+      "b": "courier",
+      "win": 0.5,
+      "ttk": 115.99,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "homesteader",
+      "b": "anon",
+      "win": 0.375,
+      "ttk": 109.82,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "homesteader",
+      "b": "founder",
+      "win": 1,
+      "ttk": 151.39,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "homesteader",
+      "b": "witness",
+      "win": 1,
+      "ttk": 333.54,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "witness",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 233.03,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "witness",
+      "b": "scrapper",
+      "win": 0,
+      "ttk": 253.54,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "witness",
+      "b": "hacker",
+      "win": 0.875,
+      "ttk": 131.5,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "witness",
+      "b": "courier",
+      "win": 0,
+      "ttk": 179.12,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "witness",
+      "b": "anon",
+      "win": 0,
+      "ttk": 172.3,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "witness",
+      "b": "founder",
+      "win": 1,
+      "ttk": 226.91,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "witness",
+      "b": "homesteader",
+      "win": 0,
+      "ttk": 432.8,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "maxi",
+      "b": "scrapper",
+      "win": 0.875,
+      "ttk": 36.87,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "maxi",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 18.67,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "maxi",
+      "b": "courier",
+      "win": 1,
+      "ttk": 27.1,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "maxi",
+      "b": "anon",
+      "win": 1,
+      "ttk": 27.39,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "maxi",
+      "b": "founder",
+      "win": 1,
+      "ttk": 34.63,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "maxi",
+      "b": "homesteader",
+      "win": 1,
+      "ttk": 67.74,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "maxi",
+      "b": "witness",
+      "win": 1,
+      "ttk": 78.36,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "scrapper",
+      "b": "maxi",
+      "win": 0.125,
+      "ttk": 39.79,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "scrapper",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 22.26,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "scrapper",
+      "b": "courier",
+      "win": 1,
+      "ttk": 31.67,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "scrapper",
+      "b": "anon",
+      "win": 0.875,
+      "ttk": 31.83,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "scrapper",
+      "b": "founder",
+      "win": 1,
+      "ttk": 41.3,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "scrapper",
+      "b": "homesteader",
+      "win": 1,
+      "ttk": 80.78,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "scrapper",
+      "b": "witness",
+      "win": 1,
+      "ttk": 93.45,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "hacker",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 41.94,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "hacker",
+      "b": "scrapper",
+      "win": 0,
+      "ttk": 46.35,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "hacker",
+      "b": "courier",
+      "win": 0,
+      "ttk": 34.09,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "hacker",
+      "b": "anon",
+      "win": 0,
+      "ttk": 36.65,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "hacker",
+      "b": "founder",
+      "win": 1,
+      "ttk": 43.53,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "hacker",
+      "b": "homesteader",
+      "win": 0,
+      "ttk": 85.15,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "hacker",
+      "b": "witness",
+      "win": 0.375,
+      "ttk": 98.5,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "courier",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 41.22,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "courier",
+      "b": "scrapper",
+      "win": 0,
+      "ttk": 45.56,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "courier",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 23.06,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "courier",
+      "b": "anon",
+      "win": 0.125,
+      "ttk": 33.92,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "courier",
+      "b": "founder",
+      "win": 1,
+      "ttk": 42.78,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "courier",
+      "b": "homesteader",
+      "win": 0.875,
+      "ttk": 83.68,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "courier",
+      "b": "witness",
+      "win": 1,
+      "ttk": 96.8,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "anon",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 36.4,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "anon",
+      "b": "scrapper",
+      "win": 0.125,
+      "ttk": 40.22,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "anon",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 20.36,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "anon",
+      "b": "courier",
+      "win": 0.875,
+      "ttk": 29.88,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "anon",
+      "b": "founder",
+      "win": 1,
+      "ttk": 37.77,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "anon",
+      "b": "homesteader",
+      "win": 0.875,
+      "ttk": 73.89,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "anon",
+      "b": "witness",
+      "win": 1,
+      "ttk": 85.47,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "founder",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 180.95,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "founder",
+      "b": "scrapper",
+      "win": 0,
+      "ttk": 199.97,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "founder",
+      "b": "hacker",
+      "win": 0,
+      "ttk": 101.23,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "founder",
+      "b": "courier",
+      "win": 0,
+      "ttk": 143.86,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "founder",
+      "b": "anon",
+      "win": 0,
+      "ttk": 157.32,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "founder",
+      "b": "homesteader",
+      "win": 0,
+      "ttk": 367.34,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "founder",
+      "b": "witness",
+      "win": 0,
+      "ttk": 424.93,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "homesteader",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 109.82,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "homesteader",
+      "b": "scrapper",
+      "win": 0,
+      "ttk": 121.36,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "homesteader",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 61.44,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "homesteader",
+      "b": "courier",
+      "win": 0,
+      "ttk": 90.43,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "homesteader",
+      "b": "anon",
+      "win": 0.125,
+      "ttk": 90.74,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "homesteader",
+      "b": "founder",
+      "win": 1,
+      "ttk": 113.97,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "homesteader",
+      "b": "witness",
+      "win": 1,
+      "ttk": 257.88,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "witness",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 173.43,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "witness",
+      "b": "scrapper",
+      "win": 0,
+      "ttk": 191.66,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "witness",
+      "b": "hacker",
+      "win": 0.625,
+      "ttk": 97.02,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "witness",
+      "b": "courier",
+      "win": 0,
+      "ttk": 138.02,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "witness",
+      "b": "anon",
+      "win": 0,
+      "ttk": 142.89,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "witness",
+      "b": "founder",
+      "win": 1,
+      "ttk": 179.99,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "witness",
+      "b": "homesteader",
+      "win": 0,
+      "ttk": 352.07,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "maxi",
+      "b": "scrapper",
+      "win": 1,
+      "ttk": 153.48,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "maxi",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 65.59,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "maxi",
+      "b": "courier",
+      "win": 1,
+      "ttk": 83.97,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "maxi",
+      "b": "anon",
+      "win": 1,
+      "ttk": 112.4,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "maxi",
+      "b": "founder",
+      "win": 1,
+      "ttk": 121.04,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "maxi",
+      "b": "homesteader",
+      "win": 1,
+      "ttk": 175.97,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "maxi",
+      "b": "witness",
+      "win": 1,
+      "ttk": 177.59,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "scrapper",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 175.54,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "scrapper",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 85.44,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "scrapper",
+      "b": "courier",
+      "win": 1,
+      "ttk": 114.27,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "scrapper",
+      "b": "anon",
+      "win": 1,
+      "ttk": 159.67,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "scrapper",
+      "b": "founder",
+      "win": 1,
+      "ttk": 160.74,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "scrapper",
+      "b": "homesteader",
+      "win": 1,
+      "ttk": 233.67,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "scrapper",
+      "b": "witness",
+      "win": 1,
+      "ttk": 235.84,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "hacker",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 181.09,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "hacker",
+      "b": "scrapper",
+      "win": 0,
+      "ttk": 210.25,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "hacker",
+      "b": "courier",
+      "win": 0.375,
+      "ttk": 117.94,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "hacker",
+      "b": "anon",
+      "win": 0,
+      "ttk": 156.62,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "hacker",
+      "b": "founder",
+      "win": 1,
+      "ttk": 165.82,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "hacker",
+      "b": "homesteader",
+      "win": 1,
+      "ttk": 241.05,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "hacker",
+      "b": "witness",
+      "win": 1,
+      "ttk": 243.28,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "courier",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 228.02,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "courier",
+      "b": "scrapper",
+      "win": 0,
+      "ttk": 264.75,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "courier",
+      "b": "hacker",
+      "win": 0.875,
+      "ttk": 110.79,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "courier",
+      "b": "anon",
+      "win": 0,
+      "ttk": 180.2,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "courier",
+      "b": "founder",
+      "win": 1,
+      "ttk": 208.8,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "courier",
+      "b": "homesteader",
+      "win": 1,
+      "ttk": 303.54,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "courier",
+      "b": "witness",
+      "win": 1,
+      "ttk": 306.34,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "anon",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 205.07,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "anon",
+      "b": "scrapper",
+      "win": 0,
+      "ttk": 238.1,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "anon",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 99.64,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "anon",
+      "b": "courier",
+      "win": 1,
+      "ttk": 137.31,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "anon",
+      "b": "founder",
+      "win": 1,
+      "ttk": 187.78,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "anon",
+      "b": "homesteader",
+      "win": 1,
+      "ttk": 272.98,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "anon",
+      "b": "witness",
+      "win": 1,
+      "ttk": 275.5,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "founder",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 1367.92,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "founder",
+      "b": "scrapper",
+      "win": 0,
+      "ttk": 1588.26,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "founder",
+      "b": "hacker",
+      "win": 0,
+      "ttk": 664.65,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "founder",
+      "b": "courier",
+      "win": 0,
+      "ttk": 940.98,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "founder",
+      "b": "anon",
+      "win": 0,
+      "ttk": 1127.53,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "founder",
+      "b": "homesteader",
+      "win": 0,
+      "ttk": 1820.93,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "founder",
+      "b": "witness",
+      "win": 0,
+      "ttk": 1837.77,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "homesteader",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 754.48,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "homesteader",
+      "b": "scrapper",
+      "win": 0,
+      "ttk": 876.01,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "homesteader",
+      "b": "hacker",
+      "win": 0,
+      "ttk": 366.59,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "homesteader",
+      "b": "courier",
+      "win": 0,
+      "ttk": 501.16,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "homesteader",
+      "b": "anon",
+      "win": 0,
+      "ttk": 590.49,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "homesteader",
+      "b": "founder",
+      "win": 1,
+      "ttk": 690.86,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "homesteader",
+      "b": "witness",
+      "win": 1,
+      "ttk": 1013.62,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "witness",
+      "b": "maxi",
+      "win": 0,
+      "ttk": 1298.75,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "witness",
+      "b": "scrapper",
+      "win": 0,
+      "ttk": 1507.94,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "witness",
+      "b": "hacker",
+      "win": 0,
+      "ttk": 631.04,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "witness",
+      "b": "courier",
+      "win": 0,
+      "ttk": 877.65,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "witness",
+      "b": "anon",
+      "win": 0,
+      "ttk": 1069.64,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "witness",
+      "b": "founder",
+      "win": 1,
+      "ttk": 1189.23,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "witness",
+      "b": "homesteader",
+      "win": 0,
+      "ttk": 1728.84,
+      "fast": 0
+    }
+  ],
+  "flags": [
+    {
+      "lvl": 30,
+      "a": "maxi",
+      "b": "scrapper",
+      "win": 0.875,
+      "ttk": 49.32,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "maxi",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 22.76,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "maxi",
+      "b": "courier",
+      "win": 1,
+      "ttk": 27.42,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "maxi",
+      "b": "anon",
+      "win": 1,
+      "ttk": 25.22,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "maxi",
+      "b": "founder",
+      "win": 1,
+      "ttk": 28.87,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "maxi",
+      "b": "homesteader",
+      "win": 1,
+      "ttk": 54.21,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "maxi",
+      "b": "witness",
+      "win": 1,
+      "ttk": 62.62,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "scrapper",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 32.86,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "scrapper",
+      "b": "courier",
+      "win": 1,
+      "ttk": 41.35,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "scrapper",
+      "b": "anon",
+      "win": 1,
+      "ttk": 40.27,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "scrapper",
+      "b": "founder",
+      "win": 1,
+      "ttk": 54.01,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "scrapper",
+      "b": "homesteader",
+      "win": 1,
+      "ttk": 103.01,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "scrapper",
+      "b": "witness",
+      "win": 1,
+      "ttk": 118.99,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "hacker",
+      "b": "founder",
+      "win": 1,
+      "ttk": 71.77,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "courier",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 36.01,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "courier",
+      "b": "founder",
+      "win": 1,
+      "ttk": 62.15,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "courier",
+      "b": "witness",
+      "win": 1,
+      "ttk": 136.92,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "anon",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 33.28,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "anon",
+      "b": "founder",
+      "win": 1,
+      "ttk": 57.43,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "anon",
+      "b": "witness",
+      "win": 1,
+      "ttk": 126.53,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "homesteader",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 87.73,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "homesteader",
+      "b": "founder",
+      "win": 1,
+      "ttk": 151.39,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "homesteader",
+      "b": "witness",
+      "win": 1,
+      "ttk": 333.54,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "witness",
+      "b": "hacker",
+      "win": 0.875,
+      "ttk": 131.5,
+      "fast": 0
+    },
+    {
+      "lvl": 30,
+      "a": "witness",
+      "b": "founder",
+      "win": 1,
+      "ttk": 226.91,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "maxi",
+      "b": "scrapper",
+      "win": 0.875,
+      "ttk": 36.87,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "maxi",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 18.67,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "maxi",
+      "b": "courier",
+      "win": 1,
+      "ttk": 27.1,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "maxi",
+      "b": "anon",
+      "win": 1,
+      "ttk": 27.39,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "maxi",
+      "b": "founder",
+      "win": 1,
+      "ttk": 34.63,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "maxi",
+      "b": "homesteader",
+      "win": 1,
+      "ttk": 67.74,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "maxi",
+      "b": "witness",
+      "win": 1,
+      "ttk": 78.36,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "scrapper",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 22.26,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "scrapper",
+      "b": "courier",
+      "win": 1,
+      "ttk": 31.67,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "scrapper",
+      "b": "anon",
+      "win": 0.875,
+      "ttk": 31.83,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "scrapper",
+      "b": "founder",
+      "win": 1,
+      "ttk": 41.3,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "scrapper",
+      "b": "homesteader",
+      "win": 1,
+      "ttk": 80.78,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "scrapper",
+      "b": "witness",
+      "win": 1,
+      "ttk": 93.45,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "hacker",
+      "b": "founder",
+      "win": 1,
+      "ttk": 43.53,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "courier",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 23.06,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "courier",
+      "b": "founder",
+      "win": 1,
+      "ttk": 42.78,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "courier",
+      "b": "homesteader",
+      "win": 0.875,
+      "ttk": 83.68,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "courier",
+      "b": "witness",
+      "win": 1,
+      "ttk": 96.8,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "anon",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 20.36,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "anon",
+      "b": "courier",
+      "win": 0.875,
+      "ttk": 29.88,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "anon",
+      "b": "founder",
+      "win": 1,
+      "ttk": 37.77,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "anon",
+      "b": "homesteader",
+      "win": 0.875,
+      "ttk": 73.89,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "anon",
+      "b": "witness",
+      "win": 1,
+      "ttk": 85.47,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "homesteader",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 61.44,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "homesteader",
+      "b": "founder",
+      "win": 1,
+      "ttk": 113.97,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "homesteader",
+      "b": "witness",
+      "win": 1,
+      "ttk": 257.88,
+      "fast": 0
+    },
+    {
+      "lvl": 60,
+      "a": "witness",
+      "b": "founder",
+      "win": 1,
+      "ttk": 179.99,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "maxi",
+      "b": "scrapper",
+      "win": 1,
+      "ttk": 153.48,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "maxi",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 65.59,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "maxi",
+      "b": "courier",
+      "win": 1,
+      "ttk": 83.97,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "maxi",
+      "b": "anon",
+      "win": 1,
+      "ttk": 112.4,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "maxi",
+      "b": "founder",
+      "win": 1,
+      "ttk": 121.04,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "maxi",
+      "b": "homesteader",
+      "win": 1,
+      "ttk": 175.97,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "maxi",
+      "b": "witness",
+      "win": 1,
+      "ttk": 177.59,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "scrapper",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 85.44,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "scrapper",
+      "b": "courier",
+      "win": 1,
+      "ttk": 114.27,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "scrapper",
+      "b": "anon",
+      "win": 1,
+      "ttk": 159.67,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "scrapper",
+      "b": "founder",
+      "win": 1,
+      "ttk": 160.74,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "scrapper",
+      "b": "homesteader",
+      "win": 1,
+      "ttk": 233.67,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "scrapper",
+      "b": "witness",
+      "win": 1,
+      "ttk": 235.84,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "hacker",
+      "b": "founder",
+      "win": 1,
+      "ttk": 165.82,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "hacker",
+      "b": "homesteader",
+      "win": 1,
+      "ttk": 241.05,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "hacker",
+      "b": "witness",
+      "win": 1,
+      "ttk": 243.28,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "courier",
+      "b": "hacker",
+      "win": 0.875,
+      "ttk": 110.79,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "courier",
+      "b": "founder",
+      "win": 1,
+      "ttk": 208.8,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "courier",
+      "b": "homesteader",
+      "win": 1,
+      "ttk": 303.54,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "courier",
+      "b": "witness",
+      "win": 1,
+      "ttk": 306.34,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "anon",
+      "b": "hacker",
+      "win": 1,
+      "ttk": 99.64,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "anon",
+      "b": "courier",
+      "win": 1,
+      "ttk": 137.31,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "anon",
+      "b": "founder",
+      "win": 1,
+      "ttk": 187.78,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "anon",
+      "b": "homesteader",
+      "win": 1,
+      "ttk": 272.98,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "anon",
+      "b": "witness",
+      "win": 1,
+      "ttk": 275.5,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "homesteader",
+      "b": "founder",
+      "win": 1,
+      "ttk": 690.86,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "homesteader",
+      "b": "witness",
+      "win": 1,
+      "ttk": 1013.62,
+      "fast": 0
+    },
+    {
+      "lvl": 90,
+      "a": "witness",
+      "b": "founder",
+      "win": 1,
+      "ttk": 1189.23,
+      "fast": 0
+    }
+  ]
+}
