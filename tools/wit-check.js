@@ -2,6 +2,7 @@
    Loads dist/unsubscribe.html under setContent. The Record fills only while a
    machine is on screen and the Witness is not attacking or casting. */
 const {chromium}=require('playwright');const fs=require('fs');const path=require('path');
+const {FORMULAS}=require(path.join(__dirname,'../src/formulas'));
 (async()=>{
 const b=await chromium.launch();
 const p=await b.newPage({viewport:{width:390,height:844}});
@@ -16,7 +17,9 @@ const clear=async(n=18)=>{for(let i=0;i<n;i++){await p.evaluate(()=>{const s=doc
 await p.evaluate(()=>__g.skipDisc());await p.waitForTimeout(200);
 const title=await p.evaluate(()=>{const b=document.querySelector('[data-cls=witness]');if(b)b.scrollIntoView({block:'center'});const c=__g.CLS.witness;return {btn:!!(b&&b.textContent.includes('Witness')),hp:c&&c.hp,hpL:c&&c.hpL,melee:c&&c.melee,mult:c&&c.mult,ivl:c&&c.ivl,spd:c&&c.spd,col:c&&c.col,locked:c&&c.locked,boon:c&&c.boon,aura:(c&&c.sk||[]).some(s=>s.aura),names:(c&&c.sk||[]).map(s=>s.n),act:(c&&c.sk||[]).map(s=>s.a)}})
 if(!title.btn)fail('title button missing');
-if(title.hp!==80||title.hpL!==11||title.melee!==true||title.mult!==.72||title.ivl!==.68||title.spd!==4.2||title.col!=='#8d9aab')fail('stats '+JSON.stringify(title));
+/* Life, swing interval, and melee come from the shared formulas. The weapon factor is the class mult, which the balance pass set to 0.8. */
+const life=FORMULAS.cls.witness;
+if(title.hp!==life.hp||title.hpL!==life.hpL||title.melee!==!!life.melee||title.mult!==.8||title.ivl!==life.ivl||title.spd!==4.2||title.col!=='#8d9aab')fail('stats '+JSON.stringify(title));
 if(title.locked||title.boon||title.aura)fail('locked, boon, or aura');
 const names=['Look','The Sentence','Margin','Cross-reference','Pull the Thread','Filed','Correction','Redaction','The Footnote','On the Record','Unnamed Source','Colophon','Publish','Named Party','Retraction'];
 if(title.names.join('|')!==names.join('|'))fail('skill names '+title.names.join('|'));
@@ -53,8 +56,13 @@ const fight=await p.evaluate(()=>{
   const a=near(),c=near();
   if(a&&c){a.tes=6;c.tes=0;a.hp=c.hp=a.max=c.max=5000;arm(9);g.G.page=40;g.cast(0);out.onRec=a.onRecT>0&&a.onRecM>1;
     g.S.crit=0;g.S.dmin=g.S.dmax=20;g.S.shock=0;const ha=a.hp,hc=c.hp;g.hit(a,1);g.hit(c,1);out.markLoss=ha-a.hp;out.plainLoss=hc-c.hp;out.second=out.markLoss>out.plainLoss&&out.plainLoss>0}
-  g.G.pas=[13];g.G.sk[13]=1;g.calc();g.S.crit=0;g.S.dmin=g.S.dmax=20;g.S.shock=0;
-  if(a&&c){a.onRecT=0;a.onRecM=0;c.onRecT=0;a.tes=5;c.tes=0;a.hp=c.hp=5000;const ha=a.hp,hc=c.hp;g.hit(a,1);g.hit(c,1);out.namedSelf=Math.abs((ha-a.hp)-(hc-c.hp))<0.01;
+  /* Named Party buffs a party hit, not the Witness's own swing. Look still
+     adds damage per Testimony, so the own swing has to match one taken with the passive off. */
+  g.G.pas=[];g.G.sk[13]=0;g.calc();g.S.crit=0;g.S.dmin=g.S.dmax=20;g.S.shock=0;
+  if(a&&c){a.onRecT=0;a.onRecM=0;c.onRecT=0;a.tes=5;c.tes=0;a.hp=c.hp=5000;const ha0=a.hp,hc0=c.hp;g.hit(a,1);g.hit(c,1);const lookMark=ha0-a.hp,lookPlain=hc0-c.hp;
+    g.G.pas=[13];g.G.sk[13]=1;g.calc();g.S.crit=0;g.S.dmin=g.S.dmax=20;g.S.shock=0;
+    a.onRecT=0;a.onRecM=0;c.onRecT=0;a.tes=5;c.tes=0;a.hp=c.hp=5000;const ha=a.hp,hc=c.hp;g.hit(a,1);g.hit(c,1);
+    out.namedSelf=lookMark>lookPlain&&Math.abs((ha-a.hp)-lookMark)<0.05&&Math.abs((hc-c.hp)-lookPlain)<0.05;
     g.S.dmin=g.S.dmax=5;g.S.shock=0;g.S.crit=0;g.S.dmg=0;a.hp=c.hp=500;a.tes=4;c.tes=0;g.P.partyHit=1;const nha=a.hp,nhc=c.hp;g.hit(a,1);g.hit(c,1);g.P.partyHit=0;out.namedShow=Math.round(nha-a.hp)>Math.round(nhc-c.hp)}
   g.G.pas=[14];g.G.sk[14]=1;g.G.sk[13]=0;g.calc();g.G.god=false;g.P.inv=0;g.setMode('play');g.G.page=90;g.G.hp=30;g.hurt(1e9,false,null);
   out.saved=g.G.hp===1&&g.G.page===0&&g.mode!=='dying';
