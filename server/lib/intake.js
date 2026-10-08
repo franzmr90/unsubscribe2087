@@ -398,13 +398,13 @@ function schedule(rec, opts) {
     return;
   }
   const run = tail.catch(() => {}).then(() => forward(rec, build));
-  tail = run.then(() => {}, () => {});
-  pending.add(run);
-  run.finally(() => pending.delete(run));
-  run.then(() => {}, e => {
+  const settled = run.then(() => {}, e => {
     noteFail(e && e.message ? e.message : String(e));
     try { bugs.update(rec.id, { intake: 'failed' }); } catch (err) {}
   });
+  tail = settled;
+  pending.add(settled);
+  settled.finally(() => pending.delete(settled));
 }
 
 function idle() {
