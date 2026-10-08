@@ -33,11 +33,24 @@ function file(rep) {
   return rec;
 }
 
+function update(id, patch) {
+  if (!id || !/^[\w.-]+$/.test(id) || !patch) return null;
+  const file = path.join(DIR, id + '.json');
+  let rec;
+  try { rec = JSON.parse(fs.readFileSync(file, 'utf8')); } catch (e) { return null; }
+  if (patch.intake != null) rec.intake = clean(patch.intake, 20);
+  if (patch.issue != null) rec.issue = +patch.issue || 0;
+  if (patch.issueUrl != null) rec.issueUrl = clean(patch.issueUrl, 300);
+  if (patch.fingerprint != null) rec.fingerprint = clean(patch.fingerprint, 64);
+  fs.writeFileSync(file, JSON.stringify(rec, null, 2));
+  return rec;
+}
+
 function list(n) {
   try {
-    return fs.readdirSync(DIR).filter(f => f.endsWith('.json')).sort().slice(-(n || 50)).reverse()
+    return fs.readdirSync(DIR).filter(f => f.endsWith('.json') && f !== 'intake-index.json').sort().slice(-(n || 50)).reverse()
       .map(f => JSON.parse(fs.readFileSync(path.join(DIR, f), 'utf8')));
   } catch (e) { return []; }
 }
 
-module.exports = { file, list, DIR };
+module.exports = { file, list, update, DIR };
