@@ -10,7 +10,12 @@
     "arena": "node tools/arena.js",
     "test:saves": "node tools/save-paths.js",
     "test:server": "sh server/test/ci.sh",
-    "soak": "node tools/soak.js"
+    "soak": "node tools/soak.js",
+    "text:export": "node tools/text/export.js",
+    "text:import": "node tools/text/import.js",
+    "text:coverage": "node tools/text/coverage.js",
+    "text:roundtrip": "node tools/text/roundtrip.js",
+    "text:mode": "node tools/text-mode.js"
   },
   "devDependencies": {
     "playwright": "^1.55.0"

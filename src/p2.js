@@ -282,7 +282,7 @@ function startPlay(){ensureG();if(G.hc&&G.hp<=0){hcBegin();return}mpConnect();mo
   const c=G._cur;delete G._cur;const cz=c&&ZONES[c.zi];
   if(cz&&(cz.town||cz.sim||ZS[c.zi])){const o={at:c,swap:1};if(cz.sim){o.wave=(c.sim&&c.sim.wave)||1;if(c.sim&&c.sim.rush)o.rush=1}enter(c.zi,o);if(cz.pre)return}else if(G.pre===1){enter(PREZ);return}else enter(HT());
   if(!G.q.q1&&W.z.town&&G.seenIntro!==false){talkTo('gramps')}
-  if(G.rbNote){delete G.rbNote;setTimeout(()=>dlg('The deal is undone','Your acceptance of MANDATE’s offer has been struck from the record: its credits are gone, adoption is back where it was, and MANDATE is waiting at full strength in Still Water. This time the fight will pause and count down before you can answer.',[['Good']]),800)}}
+  if(G.rbNote){delete G.rbNote;setTimeout(()=>dlg('The deal is undone','Your acceptance of MANDATE’s offer has been struck from the record: its credits are gone, adoption is back where it was, and MANDATE is waiting at full strength in Still Water. This time the fight will pause and count down before you can answer.',[['Good']]),800)}if(typeof uiBoot==='function')uiBoot()}
 
 /* ================= world ================= */
 const walk=(x,y)=>W.map[(y|0)*W.N+(x|0)]===1;

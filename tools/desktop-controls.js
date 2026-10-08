@@ -161,7 +161,8 @@ const ui=await p.evaluate(()=>{
   cv.dispatchEvent(new PointerEvent('pointerdown',{button:0,clientX:r.left+r.width*0.82,clientY:r.top+r.height*0.72,pointerType:'mouse',bubbles:true,pointerId:4}));
   cv.dispatchEvent(new PointerEvent('pointerup',{button:0,clientX:r.left+r.width*0.82,clientY:r.top+r.height*0.72,pointerType:'mouse',bubbles:true,pointerId:4}));
   const world=__g.MO;
-  const hands=__g.WALK.basics[0].text;
+  const slide=__g.WALK.basics[0];
+  const hands=__g.slideLine?__g.slideLine(slide):(slide.mouse||slide.text||'');
   __g.openSheet('codex');
   const codex=document.getElementById('sheetIn').innerText;
   __g.closeSheet();

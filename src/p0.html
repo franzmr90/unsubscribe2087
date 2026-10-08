@@ -1,4 +1,8 @@
 <title>Unsubscribe 2087</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<script>
+(function(){var t=false;try{var c=matchMedia('(pointer: coarse)').matches,h=matchMedia('(hover: none)').matches,p=navigator.maxTouchPoints||0,small=Math.min(innerWidth,innerHeight)<820;t=!!(c||(h&&p>0)||(p>0&&small));var s=localStorage.getItem('u2087-ui');if(s==='touch')t=true;if(s==='mouse')t=false}catch(e){}document.documentElement.dataset.ui=t?'touch':'mouse'})();
+</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
 <style>
 /* Layout: full-bleed isometric canvas lit by a light radius; life and energy orbs in the top corners, thumbs own the bottom third; menus are carved stone sheets. One dark world by choice. */
@@ -11,10 +15,10 @@
   color-scheme:dark;
 }
 [hidden]{display:none!important}
-html,body{height:100%;overflow:hidden;background:var(--void);color:var(--ink);font-family:var(--body);font-size:15px}
+html,body{height:100%;height:100dvh;overflow:hidden;background:var(--void);color:var(--ink);font-family:var(--body);font-size:15px;touch-action:none;-webkit-text-size-adjust:100%}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 #app{position:relative;height:100%;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
-canvas#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
+canvas#cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;-webkit-touch-callout:none}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 button:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
 
@@ -309,10 +313,49 @@ textarea{width:100%;height:70px;background:#050409;color:var(--ink);border:1px s
 #sheet .sheetBody.fit .optg .tog i{padding:1px 4px;font-size:9px}
 #sheet .sheetBody.fit .optg .tog span{font-size:10px;line-height:1.15;-webkit-line-clamp:1}
 #sheet .sheetBody.fit .row .big,#sheet .sheetBody.fit .row .ghost{white-space:nowrap;padding:5px 3px;font-size:10px}
+
+html:not([data-ui]) [data-ui-copy="touch"],
+html[data-ui="mouse"] [data-ui-copy="touch"],
+html[data-ui="touch"] [data-ui-copy="mouse"]{display:none!important}
+html[data-ui="mouse"] #pad,
+html[data-ui="mouse"] #stickzone,
+html[data-ui="mouse"] #stick,
+html[data-ui="mouse"] #bbs{display:none!important}
+html[data-ui="touch"] #mL,
+html[data-ui="touch"] #mR{display:none!important}
+html[data-ui="touch"] #pad .sk::after,
+html[data-ui="touch"] #bAtk::after,
+html[data-ui="touch"] #bDodge::after,
+html[data-ui="touch"] #bPot::after{content:none!important}
+html[data-ui="mouse"] #log{bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+html[data-ui="mouse"] #bAct{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+html[data-ui="touch"] #bbs .tb,
+html[data-ui="touch"] #tbs .tb,
+html[data-ui="touch"] #dBtns button,
+html[data-ui="touch"] .cls{min-height:44px}
+#top{top:calc(6px + env(safe-area-inset-top,0px));left:calc(8px + env(safe-area-inset-left,0px));right:calc(8px + env(safe-area-inset-right,0px))}
+#obj{left:calc(6px + env(safe-area-inset-left,0px));top:calc(96px + env(safe-area-inset-top,0px))}
+#boss{top:calc(106px + env(safe-area-inset-top,0px));left:calc(40px + env(safe-area-inset-left,0px));right:calc(40px + env(safe-area-inset-right,0px))}
+#pad{right:calc(10px + env(safe-area-inset-right,0px))}
+#bbs{left:calc(8px + env(safe-area-inset-left,0px))}
+#stickzone{left:env(safe-area-inset-left,0px)}
+#uiPort{position:absolute;z-index:8;left:calc(12px + env(safe-area-inset-left,0px));right:calc(12px + env(safe-area-inset-right,0px));top:calc(8px + env(safe-area-inset-top,0px));padding:10px 12px;background:rgba(23,19,28,.94);border:1px solid var(--gold);color:var(--ink);font:600 14px/1.35 var(--body);text-align:center;pointer-events:auto}
+#uiPort button{margin-left:8px;min-height:44px;padding:8px 12px;border:1px solid var(--gold);color:var(--gold);font:700 12px var(--display)}
+#sheet{padding-top:calc(6px + env(safe-area-inset-top,0px));padding-left:calc(8px + env(safe-area-inset-left,0px));padding-right:calc(8px + env(safe-area-inset-right,0px));max-height:100dvh;overflow:hidden}
+#title,#death,#scene,#pop,#bugw,#pmw,#disc{padding-top:calc(16px + env(safe-area-inset-top,0px));padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));padding-left:calc(12px + env(safe-area-inset-left,0px));padding-right:calc(12px + env(safe-area-inset-right,0px));max-height:100dvh;overflow-x:hidden;overflow-y:auto}
+#dlg{padding-top:calc(12px + env(safe-area-inset-top,0px));padding-bottom:calc(9vh + env(safe-area-inset-bottom,0px));padding-left:calc(16px + env(safe-area-inset-left,0px));padding-right:calc(16px + env(safe-area-inset-right,0px));max-height:100dvh;overflow:auto}
+#popIn,#dlg .card,.bugp,#discIn,#title .wrap{max-width:min(520px,100%);max-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 28px);overflow:auto}
+#mPick{width:min(440px,calc(100vw - 24px));max-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 96px);top:calc(78px + env(safe-area-inset-top,0px))}
+#clsList,#slots{flex:0 0 auto}
+@media (orientation:portrait) and (max-width:700px){
+  html[data-ui="touch"] #pad{transform:scale(.82);transform-origin:bottom right}
+  html[data-ui="touch"] #log{bottom:calc(188px + env(safe-area-inset-bottom,0px))}
+}
 </style>
 
 <div id="app">
   <canvas id="cv"></canvas>
+  <div id="uiPort" hidden>Portrait is tight. Turn sideways for the fight. <button type="button" id="uiPortX">Stay</button></div>
   <div id="hud" hidden>
     <div id="top">
       <button id="mL" class="mslot" type="button" title="Left skill"><i>L</i><canvas width="28" height="28"></canvas><em></em><b>ATK</b></button>
@@ -362,7 +405,8 @@ textarea{width:100%;height:70px;background:#050409;color:var(--ink);border:1px s
       <button class="ghost" id="bWalk">Walkthrough</button>
       <button class="ghost" id="bTryGear">Test gear</button>
       <button class="ghost" id="bLoadCode">Load from a save code</button>
-      <p style="font-size:13px;text-align:center">On a desk the mouse leads: left click walks and strikes, right click casts. The slots beside the orbs pick those skills. F1–F8 bind them. WASD still walks. Space, 1 2 3, Q stim, E interact, T portal, Tab map, I pack, C hero, H help. On a phone the stick walks, and Attack, three skills, Stim and Dodge sit under the right thumb. Hold a ground skill and drag its area, then let go.</p>
+      <p data-ui-copy="mouse" style="font-size:13px;text-align:center">On a desk the mouse leads: left click walks and strikes, right click casts. The slots beside the orbs pick those skills. F1–F8 bind them. WASD still walks. Space swings. Q is the stim. E uses what you stand on. T is the portal. Tab is the map. I opens the pack. C opens the hero. H opens help.</p>
+      <p data-ui-copy="touch" style="font-size:13px;text-align:center">On a phone, the stick walks, and Attack, three skills, Stim and Dodge sit under the right thumb. Hold a ground skill and drag its area, then let go. Tap Menu for the pack, the hero, and help.</p>
     </div>
   </div>
 
@@ -376,6 +420,6 @@ textarea{width:100%;height:70px;background:#050409;color:var(--ink);border:1px s
     <p>Any resemblance to a certain isometric game about clicking on demons is admiration, not affiliation.</p>
     <p class="pun">The economics are accurate.</p>
     <p class="warn">If you do not agree with any of the above, please stop playing immediately.</p>
-    <small id="discSkip">Tap or click anywhere to continue</small>
+    <small id="discSkip"><span data-ui-copy="mouse">Click anywhere to continue</span><span data-ui-copy="touch">Tap anywhere to continue</span></small>
   </div></div>
 </div>
