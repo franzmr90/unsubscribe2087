@@ -757,10 +757,13 @@ const HANDLERS = {
     const cap = guard.xpCap(m.ml, scale);
     let amount = Math.max(0, +m.amount || 0);
     if (!amount) return;
-    if (amount > cap) {
-      console.log('[xp] clamped ' + p.name + ' ' + amount + ' to ' + cap + ' ml=' + (+m.ml || 0));
-      amount = cap;
+    const decided = guard.xpAccept(amount, p.lvl, cap, p.bankPaid);
+    if (decided.clamped) {
+      console.log('[xp] clamped ' + p.name + ' ' + amount + ' to ' + decided.amount + ' ml=' + (+m.ml || 0));
     }
+    amount = decided.amount;
+    p.bankPaid = decided.paid;
+    if (!amount) return;
     const party = partyOf(p);
     if (!party) return;
     const here = membersOf(party).filter(q => q.zi === p.zi && q.inst === p.inst && q.game === p.game);

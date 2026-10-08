@@ -6,6 +6,11 @@
    Rejections are logged by the caller. Experience and player damage are clamped; a save
    that fails is refused whole. */
 'use strict';
+const { FORMULAS, xpNext } = require('../../src/formulas');
+
+/* A later save may climb this many levels. The Act III bank is smaller, and
+   it is allowed on its own even when it is the whole jump. */
+const LEVEL_LEAP = 15;
 
 /* Highest experience figure on a monster card (PROVIDENCE). The rest of the ceiling is
    the same multipliers the client already applies: monster level, lieutenant, streak,
@@ -93,7 +98,9 @@ function checkSave(prev, data, id) {
   const pg = prev ? parseG(prev) : null;
   if (pg && !pg.bad && pg.lvl) {
     const dl = lvl - (+pg.lvl || 1);
-    if (dl > 15) return { ok: false, reason: 'level jump ' + pg.lvl + ' to ' + lvl };
+    /* Entering Act III pays at most one banked level in that write. */
+    const bank = payingBank(pg, g) && dl >= 0 && dl <= FORMULAS.bank.levels;
+    if (dl > LEVEL_LEAP && !bank) return { ok: false, reason: 'level jump ' + pg.lvl + ' to ' + lvl };
     const ds = sats - (pg.sats == null ? 0 : +pg.sats || 0);
     const dt = (+data.t || 0) - (+prev.t || 0);
     const recent = dt > 0 && dt < 120000;
@@ -103,6 +110,29 @@ function checkSave(prev, data, id) {
     if (di > 36) return { ok: false, reason: 'item jump +' + di };
   }
   return { ok: true };
+}
+
+/* The previous save was holding a bank, and this one spends it on entering Act III. */
+function payingBank(prev, next) {
+  if (!next || !next.act3 || !prev || prev.act3) return false;
+  const had = +prev.bankXp || 0;
+  if (!(had > 0) || (+next.bankXp || 0) > 0) return false;
+  return had <= xpNext(prev.lvl) * FORMULAS.bank.levels + 1;
+}
+
+/* A reported experience packet. One unpaid bank, no bigger than a level, is
+   kept whole. Anything past that uses the kill cap. */
+function xpAccept(amount, lvl, cap, paid) {
+  amount = Math.max(0, +amount || 0);
+  cap = Math.max(0, +cap || 0);
+  const one = xpNext(lvl) * FORMULAS.bank.levels;
+  const room = !paid && amount <= one + 1e-6;
+  const limit = room ? Math.max(cap, one) : cap;
+  return {
+    amount: amount > limit ? limit : amount,
+    paid: !!paid || (room && amount > cap),
+    clamped: amount > limit
+  };
 }
 
 function checkAcct(prev, data) {
@@ -140,4 +170,4 @@ function savesHeld(uid) {
   return true;
 }
 
-module.exports = { xpCap, pvpLandedCap, questStep, checkSave, holdSaves, savesHeld, XP_BASE };
+module.exports = { xpCap, pvpLandedCap, questStep, checkSave, holdSaves, savesHeld, xpAccept, payingBank, xpNext, XP_BASE, LEVEL_LEAP };

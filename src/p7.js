@@ -99,7 +99,7 @@ const SEAS=[{k:'stim',n:'Stimulus Quarter',d:'Credit drops are doubled and price
 const SEA=SEAS[Math.floor(Date.now()/6048e5)%3];
 const GOLDM=()=>SEA.k==='stim'?2:1;
 const paraNeed=()=>xpNext(G.lvl)*.5*(1+.07*(G.para||0));
-function paraXp(v){if((G.para||0)>=100){G.xp=0;return}if(!G.act3){const cap=xpNext(G.lvl);G.bankXp=Math.min(cap,(G.bankXp||0)+Math.max(0,v));G.xp=0;return}G.px=(G.px||0)+v;while(G.px>=paraNeed()&&(G.para||0)<100){G.px-=paraNeed();G.para=(G.para||0)+1;acctPara();calc();sfx('level');toast('Tenure '+G.para+': +1% damage and life, and a point for the web')}G.xp=G.px/paraNeed()*xpNext(G.lvl)}
+function paraXp(v){if((G.para||0)>=100){G.xp=0;return}if(!G.act3){const cap=xpNext(G.lvl)*FORMULAS.bank.levels;G.bankXp=Math.min(cap,(G.bankXp||0)+Math.max(0,v));G.xp=0;return}G.px=(G.px||0)+v;while(G.px>=paraNeed()&&(G.para||0)<100){G.px-=paraNeed();G.para=(G.para||0)+1;acctPara();calc();sfx('level');toast('Tenure '+G.para+': +1% damage and life, and a point for the web')}G.xp=G.px/paraNeed()*xpNext(G.lvl)}
 /* subpoenas: sealed districts with rules of their own */
 const SUBM={volatile:'Machines explode when they break',dry:'Stims do not work',bounty:'Machines drop extra sats',swift:'Machines move 30% faster',thick:'Machines have 50% more life'};
 ZONES.push({n:'Sealed Proceedings',sub:true,lvl:1,style:'trib',amb:.6,mix:[['bot',3]],su:{k:'hr',n:'The Respondent',mods:['strong','shield'],q:null}});

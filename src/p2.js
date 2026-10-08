@@ -198,7 +198,6 @@ const pon=i=>CLS[G.cls].sk[i].a||(G.pas||[]).includes(i);
 function fixPas(){const sk=CLS[G.cls].sk,ok=i=>sk[i]&&!sk[i].a&&G.sk[i]>0;if(!G.pas)G.pas=G.sk.map((v,i)=>i).filter(ok).sort((a,b)=>G.sk[b]-G.sk[a]);G.pas=G.pas.filter(ok).slice(0,PCAP())}
 const sl=i=>{const b=G.sk[i]&&pon(i)?G.sk[i]+(S.skills||0)+mast(i):0,g=(S.grant||{})[i]||0;return g?Math.max(b,g+(G.sk[i]||0)):b};
 const syn=i=>i>=3?1+.06*G.sk[i-3]:1;const mast=i=>G.sk[i]>=10?2:0;
-const xpNext=l=>Math.round(60*Math.pow(l,1.75));
 /* A price tag prints whole credits, so the purse pays that floor. The market still samples the raw stim price. */
 function payTag(n){return Math.floor(n)}
 const stimPrice=()=>25*G.cpi*(1+G.lvl*.2)*(G.disc?.85:1);
@@ -210,7 +209,7 @@ function calc(){
   if(G.cls==='hacker')s.skills+=(s.sk_hacker||0);if(G.cls==='courier')s.skills+=(s.sk_courier||0);gearPerLevel(s);famBonus(s);if(s.set.striker>=2)s.dmg+=20;if(s.set.striker>=3){s.skills+=1;s.sp.vigil=1}s.skills=Math.min(4,s.skills||0)
   fixPas();const L=i=>{const b=G.sk[i]&&pon(i)?G.sk[i]+s.skills+mast(i):0,g=s.grant[i]||0;return g?Math.max(b,g+(G.sk[i]||0)):b};let hpM=1,armM=1;
   if(G.cls==='scrapper'){armM+=.08*L(2);hpM+=.04*L(2);if(L(10)&&!boonOn(10)){const w=G.eq.weapon,ty=(w&&w.dt)||'impact';s['t_'+ty]=(s['t_'+ty]||0)+6*L(10)}}
-  if(G.cls==='hacker'){s.enc=Math.min(.6,.06*L(2));s.regen+=L(5);s.cdr+=.03*L(5);s.crit+=3*L(8);s.critM=2+.1*L(8);if(L(11)&&!boonOn(11)&&G.schema)s['t_'+G.schema]=(s['t_'+G.schema]||0)+8*L(11)}
+  if(G.cls==='hacker'){s.enc=Math.min(FORMULAS.brace.cipher.cap,FORMULAS.brace.cipher.per*L(2));s.regen+=L(5);s.cdr+=.03*L(5);s.crit+=3*L(8);s.critM=2+.1*L(8);if(L(11)&&!boonOn(11)&&G.schema)s['t_'+G.schema]=(s['t_'+G.schema]||0)+8*L(11)}
   if(G.cls==='anon'){s.dodge=Math.min(35,2.5*L(2));s.crit+=2*L(2)}
   if(G.cls==='founder')hpM+=.03*L(2);
   if(G.cls==='courier'){s.mspd+=2*L(2);s.dodge=Math.min(35,2.5*L(2));s.gold+=10*L(5);s.mf+=5*L(5);s.pierce=8*L(8);s.crit+=2*L(8)}
@@ -562,7 +561,7 @@ function hurt(d,slow,src){const pv=src&&src.pvp,wasStun=P.hitStun>0;if(mode==='d
   if(S.dodge&&Math.random()*100<S.dodge){float(P.x,P.y,'Dodge','#9fe0d0',1);sfx('whiff');return}
   if(P.route>0&&G.cls==='courier'&&sl(10)&&!boonOn(10)&&Math.random()*100<6+2*sl(10)){float(P.x,P.y,'Route','#3fbf8f',1);sfx('whiff');return}
   d=typedIn(d,src);if(S.pdr)d*=1-Math.min(FORMULAS.brace.pdrCap,S.pdr)/100;if(S.sp.indemnity&&src&&src.crit){d/=(src.critM||2);src.crit=0}d*=S.taken||1;d*=100/(100+(S.armor+(G.cls==='scrapper'&&sl(11)&&!boonOn(11)?Math.floor(Math.min(6,P.lineT||0))*4*sl(11):0))*(P.mech>0?2:1)*(P.guard>0?1.6:1)*(P.shr&&P.shr.k==='guard'?2:1));if(P.lastTy==='rust')P.rustD={dps:d*.25/3,t:3};
-  const preEn=d;let fromEn=0;if(S.enc){const a=Math.min(G.en,preEn*S.enc);G.en-=a;d-=a;fromEn=a}if(P.ward>0&&d>0&&G.en>0){const want=Math.min(preEn*.3,Math.max(0,preEn*.7-fromEn));const a=Math.min(G.en,d,want);if(a>0){G.en-=a;d-=a;float(P.x,P.y,'Ward','#59e0e6',1)}}
+  const preEn=d;let fromEn=0;if(S.enc){const a=Math.min(G.en,preEn*S.enc);G.en-=a;d-=a;fromEn=a}if(P.ward>0&&d>0&&G.en>0){const want=Math.min(preEn*FORMULAS.brace.ward.pct,Math.max(0,preEn*FORMULAS.brace.ward.cap-fromEn));const a=Math.min(G.en,d,want);if(a>0){G.en-=a;d-=a;float(P.x,P.y,'Ward','#59e0e6',1)}}
   if(P.barrier>0&&d>0){const a=Math.min(P.barrier,d);P.barrier-=a;d-=a;if(a>0)float(P.x,P.y,'patched','#59e0e6',1);if(d<=0)return}
   if(G.cls==='witness'&&!(P&&P.tag)&&!(P.paper>0)){const r=recGet();if(r>80&&S.coloHi)d*=S.coloHi;else if(r<20&&S.coloLo)d*=S.coloLo}
   if(P.paper>0)d*=FORMULAS.brace.sentence;if(P.maxiBlock>0)d*=FORMULAS.brace.tick;
@@ -754,7 +753,7 @@ const SKF={
   13:()=>{P.two={n:3};float(P.x,P.y,'Two-handed','#d9822b',0)},
   14:(L)=>{P.lastShift=4+.3*L;float(P.x,P.y,'Last shift','#ffb238',0)}},
  hacker:{
-  0:(L,m)=>{if(P.oc>0){m*=1.3;P.oc=0;float(P.x,P.y,'Primed','#59e0e6',0)}P.ward=1.7;if(!chain(P,3+Math.floor(L/2),(1.2+.18*L)*m))W.fx.push({k:'bolt',x:P.x,y:P.y,x2:P.x+P.dir.x*3,y2:P.y+P.dir.y*3,t:0,life:.2})},
+  0:(L,m)=>{if(P.oc>0){m*=1.3;P.oc=0;float(P.x,P.y,'Primed','#59e0e6',0)}P.ward=FORMULAS.brace.ward.sec;if(!chain(P,3+Math.floor(L/2),(1.2+.18*L)*m))W.fx.push({k:'bolt',x:P.x,y:P.y,x2:P.x+P.dir.x*3,y2:P.y+P.dir.y*3,t:0,life:.2})},
   1:(L,m)=>{P.oc=3;shoot(P.dir,(1.4+.2*L)*m,99,{spd:15,big:1})},
   3:(L,m)=>burst(P.x,P.y,3.4,(.9+.2*L)*m,1.5+.2*L,'#59e0e6'),
   4:(L,m)=>W.allies.push({k:'turret',x:P.x+P.dir.x*.8,y:P.y+P.dir.y*.8,life:10+2*L,m:(.5+.08*L)*m,cd:0}),

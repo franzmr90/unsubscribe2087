@@ -110,7 +110,8 @@ const braces = [
   ['founder', 'Interns'],
   ['homesteader', 'Cold Frame'],
   ['witness', 'the Sentence and Colophon'],
-  ['maxi', 'Tick Tock, Few Understand, and Twenty-One Million']
+  ['maxi', 'Tick Tock, Few Understand, and Twenty-One Million'],
+  ['hacker', 'the Arc Chain ward and Cipher Ward']
 ];
 for (const [cls, name] of braces) {
   const keep = plaus.braceKeep(cls);
@@ -122,12 +123,11 @@ for (const [cls, name] of braces) {
 }
 const eaten = braceCase('witness', 20, 100, 0);
 ok('a witness brace can eat a small hit', eaten.owed === 0 && eaten.quiet === 100, 'owed ' + eaten.owed + ' hp ' + eaten.quiet);
-const bare = FORMULAS.brace.hacker;
-FORMULAS.brace.hacker = 0.5;
-const withBrace = braceCase('hacker', big, bar, 2);
-FORMULAS.brace.hacker = bare;
-ok('a Technomancer brace is one number', withBrace.owed === Math.floor(Math.max(1, Math.round(big * 0.08)) * 0.5) && withBrace.quiet === bar - withBrace.owed, String(withBrace.owed));
-ok('the Technomancer brace is empty until it exists', plaus.braceKeep('hacker') === 1);
+ok('the ward and Cipher Ward together leave 30% on life', Math.abs(plaus.braceKeep('hacker') - (1 - FORMULAS.brace.ward.cap)) < 1e-9);
+const savedCap = FORMULAS.brace.ward.cap;
+FORMULAS.brace.ward.cap = 0.5;
+ok('the ward cap is the Technomancer number', Math.abs(plaus.braceKeep('hacker') - 0.5) < 1e-9);
+FORMULAS.brace.ward.cap = savedCap;
 
 (async () => {
   await new Promise(r => server.listen(0, r));

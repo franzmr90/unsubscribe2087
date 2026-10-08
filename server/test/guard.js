@@ -113,6 +113,24 @@ ok('quest flags are the real ones, and only move forward', guard.questStep({}, '
   const kept = JSON.parse(r.body.data.s).G;
   ok('the refused saves left the honest one', kept.lvl === 10 && kept.sats === 20, JSON.stringify(kept));
 
+  const sheet = (g, t) => ({ s: JSON.stringify({ G: Object.assign({ sats: 0, cls: 'hacker', bag: [], eq: {}, stash: [] }, g) }), t: t || Date.now() });
+  const one = guard.xpNext(40);
+  const held = sheet({ lvl: 40, act3: false, bankXp: one }, 1000);
+  const paid = sheet({ lvl: 41, act3: true, bankXp: 0, xp: 0 }, 2000);
+  ok('paying the Act III bank is kept', guard.checkSave(held, paid, 'main').ok === true, JSON.stringify(guard.checkSave(held, paid, 'main')));
+  const leap = sheet({ lvl: 40 + guard.LEVEL_LEAP + 1, act3: true, bankXp: 0 }, 3000);
+  ok('the bank does not cover a larger leap', guard.checkSave(held, leap, 'main').ok === false);
+
+  const under = guard.xpAccept(one, 40, 50, false);
+  ok('one banked level is not clamped', under.amount === one && under.paid === true && under.clamped === false, JSON.stringify(under));
+  const second = guard.xpAccept(one, 40, 50, true);
+  ok('a second bank-sized packet uses the kill cap', second.amount === 50 && second.clamped === true, JSON.stringify(second));
+  const killCap = guard.xpCap(1, 1);
+  const huge = guard.xpAccept(1e12, 40, killCap, false);
+  ok('a packet past one level is still clamped', huge.amount === killCap && huge.paid === false, JSON.stringify(huge));
+  const ordinary = guard.xpAccept(one, 40, killCap, false);
+  ok('a level of experience under the kill cap is unchanged', ordinary.amount === one && ordinary.clamped === false && ordinary.paid === false, JSON.stringify(ordinary));
+
   console.log(out.join('\n'));
   console.log('\n' + pass + ' passed, ' + fail + ' failed');
   server.close();

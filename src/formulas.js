@@ -1,7 +1,5 @@
-/* Class life and the damage-reduction braces.
-   The game build concatenates this first. The server requires it.
-   A future Technomancer brace is FORMULAS.brace.hacker: null until it
-   exists, then the fraction of damage still taken (0.8 means 20% off). */
+/* Class life, the damage-reduction braces, and the Act III experience bank.
+   The game build concatenates this first. The server requires it. */
 const FORMULAS = {
   cls: {
     scrapper: { hp: 130, hpL: 17, ivl: 0.6, melee: 1 },
@@ -39,8 +37,15 @@ const FORMULAS = {
     tick: 0.78,
     few: { per: 0.06, cap: 0.30 },
     million: { pdr: 8, pdrL: 2 },
-    hacker: null
-  }
+    /* Cipher Ward pays this much of a hit from energy. Arc Chain's ward
+       pays pct more, and the two together stop at cap. What remains is life. */
+    cipher: { per: 0.06, cap: 0.60 },
+    ward: { sec: 1.7, pct: 0.30, cap: 0.70 }
+  },
+  /* One level of experience, the same curve the client uses. */
+  xp: { base: 60, pow: 1.75 },
+  /* Experience past the act cap, paid in one write on entering Act III. */
+  bank: { levels: 1 }
 };
 
 /* Fraction of a hit still taken when that class's braces are fully up.
@@ -53,8 +58,13 @@ function braceKeep(cls) {
   if (cls === 'homesteader') return 1 - b.cold.cap;
   if (cls === 'witness') return pdr * (1 - b.colophon.hi) * b.sentence;
   if (cls === 'maxi') return pdr * b.tick * (1 - b.few.cap);
-  if (cls === 'hacker') return b.hacker == null ? 1 : b.hacker;
+  if (cls === 'hacker') return 1 - b.ward.cap;
   return 1;
 }
 
-if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep };
+function xpNext(lvl) {
+  const l = Math.max(1, +lvl || 1);
+  return Math.round(FORMULAS.xp.base * Math.pow(l, FORMULAS.xp.pow));
+}
+
+if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep, xpNext };
