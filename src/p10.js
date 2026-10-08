@@ -28,7 +28,7 @@ const ACCT='unsub2087acct';
 function acctGet(){try{return JSON.parse(localStorage.getItem(ACCT)||'{}')}catch(e){return{}}}
 let ACC={stash:[],cr:0,sats:0,para:0,maxi:0,t:0};const accNorm=a=>Object.assign({stash:[],cr:0,sats:0,para:0,maxi:0,t:0},a||{});
 function accLoad(){ACC=accNorm(acctGet())}
-function accSave(){ACC.t=Date.now();try{localStorage.setItem(ACCT,JSON.stringify(ACC))}catch(e){}if(CL)try{CL.doc('acct').set({s:JSON.stringify(ACC),t:ACC.t}).catch(()=>{})}catch(e){}}
+function accSave(){if(ACC&&ACC.stash)ACC.stash=ACC.stash.filter(it=>!(it&&it.test));ACC.t=Date.now();try{localStorage.setItem(ACCT,JSON.stringify(ACC))}catch(e){}if(CL)try{CL.doc('acct').set({s:JSON.stringify(ACC),t:ACC.t}).catch(()=>{})}catch(e){}}
 async function accCloud(){try{const d=await CL.doc('acct').get();if(d.exists){const c=d.data();if(c.t>(ACC.t||0)){ACC=accNorm(JSON.parse(c.s));if(typeof drawCls==='function')drawCls();try{localStorage.setItem(ACCT,JSON.stringify(ACC))}catch(e){}}}}catch(e){}}
 function accMigrate(){if(G.stash&&G.stash.length){let n=0;while(G.stash.length&&ACC.stash.length<36){ACC.stash.push(G.stash.shift());n++}if(n)accSave()}}
 function acctPara(){if((G.para||0)>(ACC.para||0)){ACC.para=G.para;accSave()}else if(G.act3&&(ACC.para||0)>(G.para||0))G.para=ACC.para}

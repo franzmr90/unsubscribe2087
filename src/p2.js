@@ -117,14 +117,14 @@ function updMerc(dt){const m=W.merc;if(!m||m.hp<=0)return;const t=MERCS[G.merc.k
   else if(d0>want){const sp=t.spd*dt*(m.slow>0?.55:1);if(!mercStep(m,(g.x-m.x)/d0*sp,(g.y-m.y)/d0*sp)){m.stuck=(m.stuck||0)+dt;if(m.stuck>.4&&home>1.15&&!inSwing){const q=mercSpot();m.x=q.x;m.y=q.y;m.stuck=0}}else m.stuck=0;m.mov=true;m.fx=(g.x-m.x)-(g.y-m.y)>0?1:-1}
   else m.stuck=0;
   const d=tg?(dist(tg,m)||1):d0;
-  if(tg&&d<=t.range+tg.r&&m.cd<=0){if(!tg.aggro)wake(tg);m.cd=t.ivl/toxicSwing(m);m.swing=.15;const md=s.dmg*nodeMul(false)*toxicDmg(m.toxL),snd=m.soundSwing;if(snd||t.range<=2){witMercHit(m,tg,md);sfx(snd?'swing':'hit')}else{let sx=m.x,sy=m.y;if(!open(sx,sy)){sx=P.x;sy=P.y}W.projs.push({x:sx,y:sy,vx:(tg.x-m.x)/d*12,vy:(tg.y-m.y)/d*12,life:.7,raw:md,dty:t.dt,done:[],pierce:0,col:t.col,kind:'merc',party:1});sfx('throw')}}
+  if(tg&&d<=t.range+tg.r&&m.cd<=0){if(!tg.aggro)wake(tg);m.cd=t.ivl/toxicSwing(m);m.swing=.15;const md=s.dmg*nodeMul(false)*toxicDmg(m.toxL)*(P&&P.book>0&&dist(m,P)<6&&!(tg&&tg.mp)?1.08:1),snd=m.soundSwing;if(snd||t.range<=2){witMercHit(m,tg,md);sfx(snd?'swing':'hit')}else{let sx=m.x,sy=m.y;if(!open(sx,sy)){sx=P.x;sy=P.y}W.projs.push({x:sx,y:sy,vx:(tg.x-m.x)/d*12,vy:(tg.y-m.y)/d*12,life:.7,raw:md,dty:t.dt,done:[],pierce:0,col:t.col,kind:'merc',party:1});sfx('throw')}}
   else if(tg&&!tg.aggro&&d<t.range+1.6)wake(tg);
   if(G.merc.k==='sys'){m.hc-=dt;if(m.hc<=0){m.hc=4;let did=false;if(G.hp<S.maxHp*.9){heal(S.maxHp*.07);did=true}if(G.en<S.maxEn){G.en=Math.min(S.maxEn,G.en+6);did=true}if(did){W.fx.push({k:'bolt',x:m.x,y:m.y,x2:P.x,y2:P.y,t:0,life:.4,col:'#7be495'});sfx('mend')}}}
   if(m.slow>0)m.slow=Math.max(0,m.slow-dt);const rd=m.rustD;if(rd){rd.t-=dt;if(m.hp>1)m.hp=Math.max(1,m.hp-rd.dps*dt);if(rd.t<=0)m.rustD=null}
   if(!tg)m.hp=Math.min(m.max,m.hp+m.max*.04*dt);G.merc.hp=m.hp}
 function tanks(){const c=[];if(W.merc&&W.merc.hp>0)c.push(W.merc);if(W.tag&&W.tag.hp>0)c.push(W.tag);if(W.esc)c.push(W.esc);for(const a of W.allies)if(a.hp>0)c.push(a);return c}
 function tank(e){let T=null,bd=1e9;const dp=P.stealth>0?1e9:dist(P,e);for(const a of tanks()){const d=dist(a,e);if((a.taunt?d<6:d<dp)&&d<bd){bd=d;T=a}}return T}
-function hurtAlly(a,d,src){d*=partyD();if(a===W.merc){d=mercTypedIn(d,src);d*=(a.armM||1);if(a.lastTy==='rust')a.rustD={dps:d*.25/3,t:3}}else d*=(a.armM||1);if(a.hp!==undefined&&(a.k==='mine'||(a.k==='minion'&&a.kind==='clone'))&&G.cls==='anon'&&sl(13)&&!boonOn(13)&&!a.cut&&a.hp-d<=0){a.cut=1;float(a.x,a.y,'Cutout','#e6e2d6',0);return}if(src&&a.hp!==undefined&&a.hp-d<=0&&G.cls==='founder'&&(a.per||a.kind==='conv'))P.grave={src,t:4,x:a.x,y:a.y};a.hp-=d;a.flash=.12;if(a.hp>0)return;
+function hurtAlly(a,d,src){d*=partyD();if(a&&a.orders>0)d*=.92;if(a===W.merc){d=mercTypedIn(d,src);d*=(a.armM||1);if(a.lastTy==='rust')a.rustD={dps:d*.25/3,t:3}}else d*=(a.armM||1);if(a.hp!==undefined&&(a.k==='mine'||(a.k==='minion'&&a.kind==='clone'))&&G.cls==='anon'&&sl(13)&&!boonOn(13)&&!a.cut&&a.hp-d<=0){a.cut=1;float(a.x,a.y,'Cutout','#e6e2d6',0);return}if(src&&a.hp!==undefined&&a.hp-d<=0&&G.cls==='founder'&&(a.per||a.kind==='conv'))P.grave={src,t:4,x:a.x,y:a.y};a.hp-=d;a.flash=.12;if(a.hp>0)return;
   if(a===W.esc){const k=a.q;W.esc=null;toast(a.name+' is down. He crawls back to where you found him.');sfx('bigkill');G.sq[k].s--;placeQuestObjs();return}
   if(a===W.tag){G.pp=Math.max(0,(G.pp||0)-1);toast(G.tag.name+' de-renders. The rig can bring them back, for sats.');sfx('bigkill');parts(a.x,a.y,14,[CLS[G.tag.cls].col,'#fff'],2.5);tagDismiss(1);return}
   if(a===W.merc){G.merc.dead=true;G.merc.hp=0;toast(G.merc.name+' has fallen. Kestrel can bring them back.');sfx('bigkill');parts(a.x,a.y,14,['#b3261e','#888'],2.5)}
@@ -200,8 +200,8 @@ function calc(){
   const c=CLS[G.cls],s={dmin:2,dmax:4,wspd:0,barm:0,sp:{},set:{},cap:4,cdr:0,dodge:0,pierce:0,critM:2,enc:0,grant:{}};
   for(const k of STATK)s[k]=0;
   for(const slot of SLOTS){const it=G.eq[slot];if(!it)continue;if(it.dmin){s.dmin=it.dmin;s.dmax=it.dmax;s.wspd=it.spd||0}if(it.arm)s.barm+=it.arm;if(it.cap)s.cap=it.cap;
-    for(const a of it.aff)s[a.k]+=a.v;if(it.sp&&uOk(it))s.sp[it.sp]=1;if(it.uid&&UNIK[it.uid]&&UNIK[it.uid].grant&&uOk(it))s.grant[UNIK[it.uid].grant[0]]=UNIK[it.uid].grant[1];if(it.set)s.set[it.set]=(s.set[it.set]||0)+1}
-  famBonus(s);if(s.set.striker>=2)s.dmg+=20;if(s.set.striker>=3){s.skills+=1;s.sp.vigil=1}
+    for(const a of it.aff)s[a.k]=(s[a.k]||0)+a.v;if(it.sp&&uOk(it))s.sp[it.sp]=1;if(it.uid&&UNIK[it.uid]&&UNIK[it.uid].grant&&uOk(it))s.grant[UNIK[it.uid].grant[0]]=UNIK[it.uid].grant[1];if(it.set)s.set[it.set]=(s.set[it.set]||0)+1}
+  gearPerLevel(s);famBonus(s);if(s.set.striker>=2)s.dmg+=20;if(s.set.striker>=3){s.skills+=1;s.sp.vigil=1}
   fixPas();const L=i=>{const b=G.sk[i]&&pon(i)?G.sk[i]+s.skills+mast(i):0,g=s.grant[i]||0;return g?Math.max(b,g+(G.sk[i]||0)):b};let hpM=1,armM=1;
   if(G.cls==='scrapper'){armM+=.08*L(2);hpM+=.04*L(2);if(L(10)&&!boonOn(10)){const w=G.eq.weapon,ty=(w&&w.dt)||'impact';s['t_'+ty]=(s['t_'+ty]||0)+6*L(10)}}
   if(G.cls==='hacker'){s.enc=Math.min(.6,.06*L(2));s.regen+=L(5);s.cdr=.03*L(5);s.crit+=3*L(8);s.critM=2+.1*L(8);if(L(11)&&!boonOn(11)&&G.schema)s['t_'+G.schema]=(s['t_'+G.schema]||0)+8*L(11)}
@@ -217,13 +217,16 @@ function calc(){
   if(G.cls==='maxi'&&L(8))armM+=.08*L(8);
   if(s.sp.nda)s.dodge+=15;if(s.sp.cloud9)s.dodge+=10;if(s.sp.fineprint)s.cdr+=.2;if(s.sp.repair)s.cap+=4;
   hpM+=extra(s);
-  s.dmg+=G.at.mgt*1.5;s.crit=Math.round((s.crit+5+G.at.ref*.3)*10)/10;
-  s.armor=Math.round((s.barm*(1+s.armorP/100)+s.armor+G.at.ref)*armM);
-  s.maxHp=Math.round((c.hp+(G.lvl-1)*c.hpL+G.at.vit*4+s.hp)*hpM);
-  s.maxEn=Math.round(50+G.lvl*2+G.at.bnd*3+s.en);
+  s.dmg+=(G.at.mgt+(s.mgt||0))*1.5;s.crit=Math.round((s.crit+5+(G.at.ref+(s.ref||0))*.3)*10)/10;
+  s.armor=Math.round((s.barm*(1+s.armorP/100)+s.armor+(G.at.ref+(s.ref||0)))*armM);
+  if(P&&P.bear>0)s.armor=Math.round(s.armor*1.25);
+  s.maxHp=Math.round((c.hp+(G.lvl-1)*c.hpL+(G.at.vit+(s.vit||0))*4+s.hp)*hpM);
+  s.maxEn=Math.round(50+G.lvl*2+(G.at.bnd+(s.bnd||0))*3+s.en);
+  if(P&&P.orders>0){s.maxHp=Math.round(s.maxHp*1.12);s.maxEn=Math.round(s.maxEn*1.08)}
+  if(s.pdr)s.pdr=Math.min(50,s.pdr);
   s.aspd+=s.wspd;s.mspd=Math.min(s.mspd,50);
   if(s.r_all)for(const k of RTK)s['r_'+k]=(s['r_'+k]||0)+s.r_all;
-  S=s;G.hp=Math.min(G.hp,S.maxHp);G.en=Math.min(G.en,S.maxEn);G.stims=Math.min(G.stims,S.cap)}
+  S=s;G.hp=Math.min(G.hp,S.maxHp);G.en=Math.min(G.en,S.maxEn);G.stims=Math.min(G.stims,S.cap);scrubItemBinds()}
 function newGame(cls){
   G={v:2,cls,lvl:1,xp:0,sp:0,ap:0,sk:[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],slots:[0,-1,-1],at:{mgt:0,ref:0,vit:0,bnd:0},hp:9999,en:9999,credits:120,cpi:1,stims:3,bag:[],
     eq:{weapon:null,helm:null,armor:null,gloves:null,boots:null,belt:null,ring:null,amulet:null},unlocked:1,tier:0,maxTier:0,kills:0,deaths:0,ubiT:0,time:0,zone:0,
@@ -234,9 +237,10 @@ function newGame(cls){
 /* ================= save ================= */
 const b64=u=>{let s='';for(let i=0;i<u.length;i+=4096)s+=String.fromCharCode.apply(null,u.subarray(i,i+4096));return btoa(s)};
 const unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
-function encW(w){return{zi:w.zi,N:w.N,ml:w.ml,tier:w.tier,map:b64(w.map),wh:b64(w.wh),seen:b64(w.seen),leftT:w.leftT,sub:w.sub,suAt:w.suAt,ents:w.ents.filter(e=>!e.mp),objs:w.objs,drops:w.drops,decals:w.decals.slice(-40),portals:w.portals,goal:w.goal,start:w.start}}
+function encW(w){return{zi:w.zi,N:w.N,ml:w.ml,tier:w.tier,map:b64(w.map),wh:b64(w.wh),seen:b64(w.seen),leftT:w.leftT,sub:w.sub,suAt:w.suAt,ents:w.ents.filter(e=>!e.mp),objs:w.objs,drops:(w.drops||[]).filter(d=>!(d.it&&d.it.test)),decals:w.decals.slice(-40),portals:w.portals,goal:w.goal,start:w.start}}
 function decW(o){const w=Object.assign({},o);w.map=unb64(o.map);w.wh=unb64(o.wh);w.seen=unb64(o.seen);return w}
-function saveObj(){const zs={};for(const k in ZS)zs[k]=encW(ZS[k]);let cur=null;if(W&&P){if(!W.z.town&&!W.z.sim)zs[W.zi]=encW(W);cur={zi:W.zi,x:P.x,y:P.y};if(W.z.sim&&W.sim)cur.sim=W.sim.rush?{rush:1}:{wave:Math.max(1,W.sim.wave|0)}}return{G,zs,cur,opt:OPT,t:Date.now()}}
+function packSave(G0,zs,cur){const G2=Object.assign({},G0);G2.eq=Object.assign({},G0.eq||{});for(const sl of SLOTS)if(G2.eq[sl]&&G2.eq[sl].test)G2.eq[sl]=null;G2.bag=(G0.bag||[]).filter(it=>!(it&&it.test));G2.stash=(G0.stash||[]).filter(it=>!(it&&it.test));if(G0.merc){G2.merc=Object.assign({},G0.merc);for(const sl of ['weapon','helm','armor'])if(G2.merc[sl]&&G2.merc[sl].test)G2.merc[sl]=null}return{G:G2,zs,cur,opt:OPT,t:Date.now()}}
+function saveObj(){const zs={};for(const k in ZS)zs[k]=encW(ZS[k]);let cur=null;if(W&&P){if(!W.z.town&&!W.z.sim)zs[W.zi]=encW(W);cur={zi:W.zi,x:P.x,y:P.y};if(W.z.sim&&W.sim)cur.sim=W.sim.rush?{rush:1}:{wave:Math.max(1,W.sim.wave|0)}}return packSave(G,zs,cur)}
 function save(force){if(!G)return false;let ok=false;try{localStorage.setItem(skey(SLOT),JSON.stringify(saveObj()));localStorage.setItem(SAVEKEY+'_slot',SLOT);ok=true}catch(e){}
   if(CL&&(force||Date.now()-clAt>10000))cloudSave();return ok||!!CL}
 /* account save: the viewer's own private documents in this page's database, one for the hero and one per district */
@@ -464,6 +468,7 @@ function pdmg(m,e){
   if(S.sp.deadline&&P.movedT>0)d*=1.25;if(S.sp.tenmin&&e&&!e.hits)d*=1.6;if(G.cls==='founder'&&sl(13)&&!boonOn(13))d*=orgMul(!!P.allySwing);if(G.cls==='maxi'&&sl(10)&&P.aura)d*=nodeMul(!P.allySwing);else if(P.nodeM)d*=P.nodeM;if(P.fm&&P.fm.t>0)d*=P.fm.m;if(S.sp.hashrate)d*=1+.01*Math.min(40,P.streak);if(S.sp.quorum)d*=1+.05*Math.min(6,tanks().length+W.allies.filter(a=>a.k==='turret').length);
   let c=P.e82>0||Math.random()*100<S.crit;if(c)d*=S.critM;
   if(S.sp.severance&&Math.random()<.15){d*=3;c=true}
+  if(P.bear>0)d*=1.28;if(P.book>0&&!(e&&e.mp))d*=1.08;
   return[d,c]}
 function dmgEnemy(e,d,crit){if(e.hp<=0)return;if(e.mp){mpHurt(e,d,crit);return}e.hits=(e.hits||0)+1;d/=partyH();{let mk=e.mark>0?1.3:1;if(e.mkP>0)mk=Math.max(mk,1+e.mkP);if(mk>1)d*=mk}if(e.onRecT>0&&e.onRecM)d*=e.onRecM;if(P&&P.partyHit&&S.named&&(e.tes||0)>0){const base=d,up=d*(1+S.named),shown=Math.round(base);d=Math.round(up)===shown?shown+.5:up}
   const snd=e.snd;e.snd=0;if(!snd){if(e.mods.shield)d*=.5;if(e.ward>0)d*=.6}e.hp-=d;e.flash=.12;wake(e);if(crit){sfx('crit');hitStop=.04}
@@ -527,11 +532,11 @@ function defragAct1(e){return !!(e&&e.q==='q3'&&!G.act2)}
 function hurt(d,slow,src){const pv=src&&src.pvp;if(mode==='dying'||(P.inv>0&&!pv)||(mode!=='play'&&!pv)||G.god)return;if(P.redact>0){float(P.x,P.y,'Redacted','#e6dcc8',1);return}if(src&&W&&W.ents&&W.ents.indexOf(src)>=0)src.lastAtk=d;if(P.dip){P.dip=0;float(P.x,P.y,'The dip','#f7931a',1);sfx('whiff');return}if(!pv)d*=partyD();if(!pv){let mk=P.mkAura>0?1.3:1;if(P.mkP>0)mk=Math.max(mk,1+P.mkP);if(mk>1)d*=mk}
   if(S.dodge&&Math.random()*100<S.dodge){float(P.x,P.y,'Dodge','#9fe0d0',1);sfx('whiff');return}
   if(P.route>0&&G.cls==='courier'&&sl(10)&&!boonOn(10)&&Math.random()*100<6+2*sl(10)){float(P.x,P.y,'Route','#3fbf8f',1);sfx('whiff');return}
-  d=typedIn(d,src);d*=S.taken||1;d*=100/(100+(S.armor+(G.cls==='scrapper'&&sl(11)&&!boonOn(11)?Math.floor(Math.min(6,P.lineT||0))*4*sl(11):0))*(P.mech>0?2:1)*(P.guard>0?1.6:1)*(P.shr&&P.shr.k==='guard'?2:1));if(P.lastTy==='rust')P.rustD={dps:d*.25/3,t:3};
+  d=typedIn(d,src);if(S.pdr)d*=1-Math.min(50,S.pdr)/100;if(S.sp.indemnity&&src&&src.crit){d/=(src.critM||2);src.crit=0}d*=S.taken||1;d*=100/(100+(S.armor+(G.cls==='scrapper'&&sl(11)&&!boonOn(11)?Math.floor(Math.min(6,P.lineT||0))*4*sl(11):0))*(P.mech>0?2:1)*(P.guard>0?1.6:1)*(P.shr&&P.shr.k==='guard'?2:1));if(P.lastTy==='rust')P.rustD={dps:d*.25/3,t:3};
   if(S.enc){const a=Math.min(G.en,d*S.enc);G.en-=a;d-=a}
   if(P.barrier>0&&d>0){const a=Math.min(P.barrier,d);P.barrier-=a;d-=a;if(a>0)float(P.x,P.y,'patched','#59e0e6',1);if(d<=0)return}
   if(G.cls==='witness'&&!(P&&P.tag)){const r=recGet();if(r>80&&S.coloHi)d*=S.coloHi;else if(r<20&&S.coloLo)d*=S.coloLo}
-  G.hp-=d;if(d>0)P.lastLoss=d;P.flash=.15;sfx('hurt');float(P.x,P.y,'-'+Math.max(1,Math.round(d)),'#ff5a4d',1);if(slow&&!S.sp.offer&&!(P.lastShift>0)&&!(P.two&&P.two.n>0))P.slow=1.6;if(S.sp.clock&&G.hp>0&&G.hp<S.maxHp*.3&&!(G.clockT>0)){G.clockT=60;for(const o of W.ents)if(dist(o,P)<9){o.slow=4;o.stun=Math.max(o.stun,.6)}sfx('warn');toast('The dead alarm rings. Time drags for the machines.')}if(OPT.shake)shake=Math.max(shake,3);
+  if(d>0)P.hitStun=.45;G.hp-=d;if(d>0)P.lastLoss=d;P.flash=.15;sfx('hurt');float(P.x,P.y,'-'+Math.max(1,Math.round(d)),'#ff5a4d',1);if(slow&&!S.sp.offer&&!(P.lastShift>0)&&!(P.two&&P.two.n>0))P.slow=1.6;if(S.sp.clock&&G.hp>0&&G.hp<S.maxHp*.3&&!(G.clockT>0)){G.clockT=60;for(const o of W.ents)if(dist(o,P)<9){o.slow=4;o.stun=Math.max(o.stun,.6)}sfx('warn');toast('The dead alarm rings. Time drags for the machines.')}if(OPT.shake)shake=Math.max(shake,3);
   if(src&&src.hp>0){if(src.mods&&src.mods.leech&&!(src.noheal>0))src.hp=Math.min(src.max,src.hp+src.max*(defragAct1(src)?.05:.15));if(S.sp.terms)src.stun=Math.max(src.stun,1);if(S.thorns){const prev=DT;DT='impact';P.holdTy=1;const out=typed(src,S.thorns);P.holdTy=0;DT=prev;dmgEnemy(src,out,false)}}
   if(G.hp<=0&&S.sp.still&&!(G.stillT>0)){G.stillT=90;G.hp=S.maxHp;P.inv=2;for(const o of W.ents)o.stun=Math.max(o.stun,2.5);sfx('shrine');toast('Still Water: the room holds its breath.');return}
   if(G.hp<=0&&G.cls==='maxi'&&sl(14)&&!(G.keyT>0)){const sac=(W.merc&&W.merc.hp>0)?W.merc:(W.tag&&W.tag.hp>0)?W.tag:null;if(sac){G.keyT=60;G.hp+=d;hurtAlly(sac,1e9);float(P.x,P.y,'Not your keys','#f7931a',1);toast('Not your keys.');return}}
@@ -820,7 +825,7 @@ Object.assign(SKF,{
   12:(L)=>{if(recGet()<1){witBlank();return}const ons=W.ents.filter(e=>e.hp>0&&!e.mp&&witSeen(e)&&(e.tes||0)>0);if(!ons.length){toast('Nothing on the page');return}recSet(0);for(const e of ons){witImpact(e,(e.watch||0)*(1.6+.25*L)*(1+(G.lvl||1)*.01));e.tes=0;e.watch=0;e.acc=0}}}
 });
 function cast(slot){if(!G||!G.slots)return;castIndex(G.slots[slot])}
-function castIndex(i){if(mode!=='play'||!(i>=0))return;const s=CLS[G.cls].sk[i],L=sl(i);const worn=G.cls==='homesteader'?hsWearing():null;const leaving=!!worn&&(i===7||(i===1&&worn==='hound')||(i===4&&worn==='hull'));if(!leaving&&P.castWait>0){toast('Still casting');sfx('err');return}if(!L||!s.a||(!leaving&&(P.cd[i]>0||P.dash)))return;if(!leaving&&P.silence>0){toast('Silenced');sfx('err');return}
+function castIndex(i){if(mode!=='play'||!(i>=0))return;if(i>=100){castItem(i);return}const s=CLS[G.cls].sk[i],L=sl(i);const worn=G.cls==='homesteader'?hsWearing():null;const leaving=!!worn&&(i===7||(i===1&&worn==='hound')||(i===4&&worn==='hull'));if(!leaving&&P.castWait>0){toast('Still casting');sfx('err');return}if(!L||!s.a||(!leaving&&(P.cd[i]>0||P.dash)))return;if(!leaving&&P.silence>0){toast('Silenced');sfx('err');return}
   if(G.cls==='homesteader'&&!leaving){const why=hsBlocked(i);if(why){toast(why);sfx('err');return}}
   if(G.cls==='witness'){const why=witBlock(i);if(why){toast(why);if(why==='The page is blank')float(P.x,P.y,'the page is blank','#e6dcc8',0);sfx('err');return}}
   const fk=forkOf(i);let cost=s.cost*(S.sp.hoodie?.75:1)*(fk.cost||1);if(P.freeThrow&&G.cls==='courier'&&(i===0||i===6||i===9||i===12)){cost=0;P.freeThrow=0}if(G.en<cost){if(leaving)cost=0;else{toast('Not enough energy');sfx('err');return}}
@@ -890,10 +895,11 @@ function learnedAct(i){
   if(!G||!CLS[G.cls])return false;
   if(i===-1)return true;
   if(!(i>=0))return false;
+  if(i>=100)return itemSkillOn(i);
   const s=CLS[G.cls].sk[i];
   return !!(s&&s.a&&G.sk[i]);
 }
-function leftOk(i){if(i===-1)return true;const a=LEFTSK[G.cls];return !!(a&&a.indexOf(i)>=0)}
+function leftOk(i){if(i===-1)return true;if(i>=100)return i===100;const a=LEFTSK[G.cls];return !!(a&&a.indexOf(i)>=0)}
 function leftReach(){
   const i=G.mouse?G.mouse.L:-1;
   if(!(i>=0))return (CLS[G.cls].melee||(typeof hsMelee==='function'&&hsMelee()))?1.65:5.6;
@@ -999,6 +1005,7 @@ function pickScreen(vx,vy){
 function setMouseOrder(which,wx,wy,shift,h,holding){
   ensureMouse();
   h=h||null;
+  if(which!=='right'&&G.mouse&&G.mouse.L>=100&&itemSkillOn(G.mouse.L)&&!(h&&(h.kind==='npc'||h.kind==='use'||h.kind==='item'))){MO={k:'isk',i:G.mouse.L,x:wx,y:wy};return}
   if(which==='right'){
     const e=h&&h.kind==='foe'?h.o:null;
     if(MO&&MO.k==='cast'&&MO.hold&&MO.e===e){MO.x=wx;MO.y=wy;return}
@@ -1031,6 +1038,7 @@ function mouseUp(which){
   MO.hold=0;
   if(MO.k!=='move'&&MO.did)MO=null}
 function mouseFire(i,e,x,y){
+  if(i>=100){P.blinkAt=(x!=null)?{x:x,y:y}:null;castIndex(i);P.blinkAt=null;return}
   if(e&&e.hp>0){P.aim=e;face(e)}
   else if(x!=null){const d=Math.hypot(x-P.x,y-P.y)||.001;P.dir={x:(x-P.x)/d,y:(y-P.y)/d};P.aim=null}
   if(!(i>=0))attack();
@@ -1062,6 +1070,7 @@ function cycleRight(dir){
   if(typeof paintPick==='function')paintPick()}
 function mouseStep(dt){
   if(!MO||!P||!G||P.dash||mode!=='play')return;
+  if(MO.k==='isk'){const i=MO.i,x=MO.x,y=MO.y;MO=null;P.blinkAt={x,y};castIndex(i);P.blinkAt=null;return}
   ensureMouse();
   const c=CLS[G.cls];
   const step=(tx,ty)=>{
@@ -1130,7 +1139,7 @@ function update(dt){
   if(P.shr){P.shr.t-=dt;if(P.shr.t<=0)P.shr=null}
   G.en=Math.min(S.maxEn,G.en+(4+S.regen+G.at.bnd*.05)*dt);heal((S.regenH+(S.sp.pension?S.maxHp*.02:0)+(W.z.town?S.maxHp*.3:0))*dt);
   shake=Math.max(0,shake-dt*20);if(G.clockT>0)G.clockT-=dt;if(G.stillT>0)G.stillT-=dt;if(G.guardT>0)G.guardT-=dt;if(G.retractT>0)G.retractT-=dt;if(P.redact>0)P.redact=Math.max(0,P.redact-dt);
-  skillTick(dt);
+  skillTick(dt);itemSkillTick(dt);
   let sx=J.x,sy=J.y;
   if(keys.KeyA||keys.ArrowLeft)sx-=1;if(keys.KeyD||keys.ArrowRight)sx+=1;if(keys.KeyW||keys.ArrowUp)sy-=1;if(keys.KeyS||keys.ArrowDown)sy+=1;
   const mag=Math.min(1,Math.hypot(sx,sy));let wx=sx+2*sy,wy=2*sy-sx;const wl=Math.hypot(wx,wy);

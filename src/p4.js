@@ -239,16 +239,16 @@ function talkTo0(id){if(W.z.pre)return preTalk(id);if(id==='float')return talkFl
 
 /* ================= HUD ================= */
 const sbtn=[...document.querySelectorAll('.sk')].sort((a,b)=>a.dataset.i-b.dataset.i);
-function setSkillButtons(){sbtn.forEach((b,i)=>{const k=G.slots[i];b.querySelector('b').textContent=k>=0?CLS[G.cls].sk[k].ab:'';
+function setSkillButtons(){sbtn.forEach((b,i)=>{const k=G.slots[i];const face=k>=100&&itemSkillsReady?ISK[k]:(k>=0?CLS[G.cls].sk[k]:null);b.querySelector('b').textContent=face?face.ab:'';
   let c=b.querySelector('canvas.gl');if(!c){c=document.createElement('canvas');c.className='gl';c.width=24;c.height=24;b.insertBefore(c,b.querySelector('b'))}
-  const g=c.getContext('2d');g.clearRect(0,0,24,24);if(k>=0)glyph(g,G.cls,k,24)})}
+  const g=c.getContext('2d');g.clearRect(0,0,24,24);if(k>=100&&face){g.fillStyle='#d0aa62';g.font='8px Cinzel,serif';g.textAlign='center';g.fillText(face.ab,12,15)}else if(k>=0)glyph(g,G.cls,k,24)})}
 function paintGlyphs(root){if(!root||!root.querySelectorAll)return;root.querySelectorAll('canvas[data-gl]').forEach(function(c){const sz=+c.width||24;glyph(c.getContext('2d'),c.dataset.cls||G.cls,+c.dataset.gl,sz)})}
 let hudC={};
 function setT(id,v){if(hudC[id]!==v){hudC[id]=v;$(id).textContent=v}}
 function hud(){objHud();if(P&&P.dg)setT('dgn',P.dg.n);
   $('hpF').style.height=clamp(G.hp/S.maxHp*100,0,100)+'%';$('enF').style.height=clamp(G.en/S.maxEn*100,0,100)+'%';const rec=$('rec');if(rec){if(G.cls==='witness'){rec.hidden=false;const rf=$('recF');if(rf)rf.style.width=clamp(G.page||0,0,100)+'%'}else rec.hidden=true}$('xpb').style.width=(G.lvl>=lvlCap()?100:G.xp/xpNext(G.lvl)*100)+'%';
   setT('hpT',OPT.orbNums?Math.ceil(G.hp):'');setT('enT',OPT.orbNums?Math.floor(G.en):'');setT('cr',fmt(G.credits)+(G.sats?' · '+G.sats+' sats':''));setT('cpi','prices ×'+(G.cpi<100?G.cpi.toFixed(2):fmt(G.cpi).slice(1)));setT('potn',G.stims);
-  sbtn.forEach((b,i)=>{const k=G.slots[i];if(k<0||k===undefined||!G.sk[k]){b.classList.add('off');return}const s=CLS[G.cls].sk[k];const blank=!!witBlock(k);b.classList.toggle('off',!!hsBlocked(k)||blank);b.classList.toggle('low',!hsBlocked(k)&&!blank&&!(G.cls==='homesteader'&&G.form&&(k===7||(k===1&&G.form==='hound')||(k===4&&G.form==='hull')))&&G.en<s.cost*(S.sp.hoodie?.75:1));b.querySelector('em').style.transform='scaleY('+clamp(P.cd[k]/(s.cd*(1-S.cdr)),0,1)+')'});
+  sbtn.forEach((b,i)=>{const k=G.slots[i];if(k<0||k===undefined||(k>=100?!itemSkillOn(k):!G.sk[k])){b.classList.add('off');return}const s=k>=100?ISK[k]:CLS[G.cls].sk[k];const blank=k>=100?false:!!witBlock(k);b.classList.toggle('off',(k<100&&!!hsBlocked(k))||blank);b.classList.toggle('low',!blank&&!(k<100&&G.cls==='homesteader'&&G.form&&(k===7||(k===1&&G.form==='hound')||(k===4&&G.form==='hull')))&&G.en<s.cost*(S.sp.hoodie?.75:1));b.querySelector('em').style.transform='scaleY('+clamp((P.cd[k]||0)/(s.cd*(1-Math.min(.6,S.cdr||0))),0,1)+')'});
   $('bMenu').classList.toggle('pip',G.sp>0||G.ap>0);$('bRecall').hidden=W.z.town;$('bMap').hidden=W.z.town;
   const sw=$('bSwap');if(SWAP&&(SWAP.t-=1/60)>0&&G.bag.includes(SWAP.it)){sw.hidden=false;setT('bSwap','▲ '+SWAP.it.name+'\n'+dPct(SWAP.d)+' · tap or click')}else{sw.hidden=true;SWAP=null}
   const a=$('bAct');if(actTarget){a.hidden=false;setT('bAct',actTarget.label)}else a.hidden=true;
@@ -328,6 +328,7 @@ function itemLines(it){let h='';
   if(it.soc)h+=`<div class="ln" style="color:#f7931a">Sockets: ${Array.from({length:it.soc},(_,i)=>it.words[i]?'['+it.words[i]+']':'[ empty ]').join(' ')}</div>`;
   if(!it.id)return h+`<div class="ln red">Unidentified</div><div class="ln off">Its magic properties are hidden. ${G.marrow?'Marrow identifies items for free.':'Brenda appraises items for a fee, under Trade.'}</div>`;
   for(const a of it.aff)h+=`<div class="ln mod"${a.w?' style="color:#f7931a"':''}>${affText(a)}${a.w?' · '+a.w:''}</div>`;
+  if(it.uid&&UNIK[it.uid]&&UNIK[it.uid].per){const per=UNIK[it.uid].per;for(const k in per)h+=`<div class="ln mod">+${per[k]} ${k==='mgt'?'Might':k==='mf'?'% magic find':k} per level</div>`}
   if(it.spT)h+=`<div class="ln spc"${uOk(it)?'':' style="opacity:.5"'}>${esc(it.spT)}${uOk(it)?'':' (dormant: not your class)'}</div>`;
   if(it.set){const s=SETS[it.set],n=S.set&&S.set[it.set]||0;h+=`<div class="ln setl" style="margin-top:4px">${esc(s.n)}</div>`+s.items.map(x=>`<div class="ln ${Object.values(G.eq).some(e=>e&&e.uid===x.id)?'setl':'off'}">${esc(x.n)}</div>`).join('')+`<div class="ln ${n>=2?'setl':'off'}">${s.b2}</div><div class="ln ${n>=3?'setl':'off'}">${s.b3}</div>`}
   if(it.fl)h+=`<div class="fl">${esc(it.fl)}</div>`;return h}
@@ -358,7 +359,7 @@ function drawSheet(){
     h+=`<h3>Allegiances</h3><div class="list essay"><div class="li${scs()<500?' on':''}"><div><b>Social credit · ${scs()} · ${scsWord()}</b><span>Unity scores what you say. Fiat answers and collecting the Stipend raise it; bitcoiner answers lower it a little, and insults lower it a lot. Below 500 Brenda will not serve you, the Stipend is halved and Mr. Float charges 35%. Below 350 he will not lend at all, and below 300 the Stipend stops. Bitcoiners answer in kind: below 500 Nonce sells at a quarter off and stocks Brenda’s goods at 30% off, Kestrel revives for nothing, and nodes are lit for free.</span></div></div><div class="li"><div><b>How people read you · ${leanWord()}</b><span>What you say about money in conversation moves this. People greet you by it. Mr. Float overcharges plain bitcoiners, and Nonce overcharges the plainly fiat-minded.</span></div></div>`;for(const f in REP){const r=repRank(f),R=REP[f],nx=REPT[r];h+=`<div class="li"><div><b>${R.n} · ${r?R.ranks[r-1]:'Unknown to them'}</b><span>${R.how} ${G.rep[f]} standing${nx?', '+nx+' for '+R.ranks[r]+' — '+R.perks[r]:''}.</span></div></div>`}
     h+=`<div class="li on"><div><b>Bitcoin adoption · ${Math.floor(G.adopt)}%</b><span>${fateWord()}. ${G.camp?'Unity’s campaign “'+CAMPS[G.camp.k].n+'” is draining it: '+CAMPS[G.camp.k].d+' ':''}${G.adopt>=100?'Bitcoin is the world’s reserve currency. Prices have stopped rising.':'It rises when you light nodes, pay in sats, prove work, win people over in conversation and bring down executives. It falls when you sell sats, borrow, buy shitcoins, insult people or take MANDATE’s offers. Where it stands when MANDATE falls decides how the money story ends: 60% or more and bitcoin becomes the reserve, under 25% and it fails.'}</span></div></div></div>`;
     h+=`<h3>Resistances · difficulty cut ${resPen()}</h3><div class="stats">${RTK.map(k=>`<div style="color:${DTY[k].c}">${DTY[k].n}<b>${resOf(k)}%</b></div>`).join('')}</div><p style="font-size:13px">These are the numbers after the difficulty cut, and each one applies before armor. Normal cuts 0, Hard cuts 20, Brutal cuts 50. They cannot rise above 75% or fall below -100%, and a negative number means that type hurts more. Of Proofing rolls one type on armor, helms, boots, belts, rings and amulets. Of Coverage rolls all five on armor, helms, belts, rings and amulets, and it will not share an item with Of Proofing.</p>`;
-    h+=`<h3>Standing</h3><div class="stats"><div>Damage<b>${Math.round(S.dmin*(1+S.dmg/100))}–${Math.round(S.dmax*(1+S.dmg/100))}</b></div><div>Armor<b>${S.armor}</b></div><div>Life<b>${S.maxHp}</b></div><div>Energy<b>${S.maxEn}</b></div><div>Deadly strike<b>${S.crit}%</b></div><div>Attack speed<b>${S.aspd>=0?'+':''}${S.aspd}%</b></div><div>Run speed<b>+${S.mspd}%</b></div><div>Life steal<b>${S.leech}%</b></div><div>Magic find<b>${S.mf}%</b></div><div>Extra credits<b>${S.gold}%</b></div><div>Shock damage<b>${S.shock}</b></div><div>Damage blocked<b>${Math.round(100-10000/(100+S.armor))}%</b></div></div>`}
+    h+=`<h3>Standing</h3><div class="stats"><div>Damage<b>${Math.round(S.dmin*(1+S.dmg/100))}–${Math.round(S.dmax*(1+S.dmg/100))}</b></div><div>Armor<b>${S.armor}</b></div><div>Life<b>${S.maxHp}</b></div><div>Energy<b>${S.maxEn}</b></div><div>Deadly strike<b>${S.crit}%</b></div><div>Attack speed<b>${S.aspd>=0?'+':''}${S.aspd}%</b></div><div>Run speed<b>+${S.mspd}%</b></div><div>Life steal<b>${S.leech}%</b></div><div>Magic find<b>${S.mf}%</b></div><div>Extra credits<b>${S.gold}%</b></div><div>Shock damage<b>${S.shock}</b></div><div>Damage blocked<b>${Math.round(100-10000/(100+S.armor))}%</b></div></div>`;h+=itemTryRow()}
   if(tab==='items'){
     const ds=G.bag.map(itemDelta),ups=new Set(G.bag.filter((it,i)=>ds[i]>.01&&G.lvl>=it.req).map(it=>it.slot)).size,downs=ds.filter((d,i)=>d!==null&&d<-.01&&!G.bag[i].junk).length;
     h+=`<div class="dollw" style="${selling()?'order:50':''}"><div class="doll"><svg class="fig" viewBox="0 0 60 120"><circle cx="30" cy="14" r="10"/><path d="M14 30h32l8 40h-9l-3-22v26l4 44H34l-4-36-4 36H14l4-44V48l-3 22H6z"/></svg>${SLOTS.map(sl=>`<div style="grid-area:${DOLL[sl].split('/')[1]}/${DOLL[sl].split('/')[0]}">${cell(G.eq[sl],`data-eq="${sl}"`,sel&&sel.eq===sl,sl)}</div>`).join('')}</div>
@@ -395,7 +396,7 @@ function drawSheet(){
       if(!s.a&&L){const on=G.pas.includes(i),tw=W.z.town;h+=`<div class="row"><button class="ghost" data-pas="${i}" ${!tw||(!on&&G.pas.length>=PCAP())?'disabled':''}>${on?'Switch off':'Switch on'}</button></div>`+(!tw?`<div class="ln off">Passives can only be swapped in town.</div>`:!on&&G.pas.length>=PCAP()?`<div class="ln off">All ${PCAP()} passive slots are in use. Switch one off first.</div>`:'')}
       if(s.a&&L){const cur=(G.fork||{})[i];h+=`<div class="ln off" style="margin-top:6px">Fork${L<3?' · opens at 3 points':': one at a time, free to change in town'}</div>`;if(L>=3)h+=`<div class="list">${forkSet(G.cls,i).map(k=>`<button class="li${cur===k?' on':''}" data-fork="${k}" ${W.z.town?'':'disabled'}><div><b>${cur===k?'◆ ':''}${FORKS[k].n} ${s.n}</b><span>${FORKS[k].d}</span></div></button>`).join('')}</div>`}
       if(s.a&&L)h+=`<div class="row">${[0,1,2].map(k=>`<button class="ghost" data-assign="${k}">Key ${k+1}${G.slots[k]===i?' ✓':''}</button>`).join('')}</div><p class="hint">Keys 1, 2 and 3 are the thumb buttons. Left and right click are the slots beside the orbs.</p>`;
-      h+=`<div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`;pop=h.slice(h0);h=h.slice(0,h0)}h+=`<p>Tap or click a skill to read it. Blue names are passive; ◆ marks the ones switched on. The gold badge is its thumb key, 1, 2 or 3. Left and right click are the slots beside the orbs.</p>`}
+      h+=`<div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`;pop=h.slice(h0);h=h.slice(0,h0)}h+=itemSkillPane();h+=`<p>Tap or click a skill to read it. Blue names are passive; ◆ marks the ones switched on. The gold badge is its thumb key, 1, 2 or 3. Left and right click are the slots beside the orbs.</p>`}
   if(tab==='web'){G.web=G.web||{};h+=webPane()}
   if(tab==='quests'){h+=`<h2>Quests</h2><p>Five acts: the Regional Office, the Cloud, the Board, the Gentle Years and the Awakening. The first three are MANDATE's. The last two are hers, and then the thing that was hunting them both. The Story tab keeps who is who.</p><div class="list">`;
     const sy=storyStep();h+=`<p>Next in the story: <strong>${esc(sy.d)}</strong>. This always stays on screen, with one errand beside it. Tap an errand below to choose which.</p>`;const tk=(id,live)=>live?` data-track="${id}"`:'',tm=id=>G.track===id?'◆ ':'';
@@ -528,7 +529,7 @@ let sellArm=false;
 const satsOk=()=>G.adopt>=60||(G.wonF&&G.wonF.brenda===1)||shopVia,satCost=it=>Math.max(1,Math.ceil(buyPrice(it)/satRate()));let shopVia=0;const buyPrice=it=>{const her=payTag(it.val*2.5*G.cpi*(G.disc?.85:1)*(repRank('norm')>=3?.8:repRank('norm')>=1?.9:1));return shopVia?payTag(her*.7):her};
 const boxPrice=()=>payTag((8+G.lvl*5)*9*G.cpi);
 /* The sell line prints whole credits, so the purse gains the floor of two fifths. */
-function sellValue(it){return Math.floor((it.val||0)*.4*G.cpi)}
+function sellValue(it){if(it&&it.test)return 0;return Math.floor((it.val||0)*.4*G.cpi)}
 function copyText(s,ta){const fb=()=>{ta.hidden=false;ta.value=s;ta.focus();ta.select();toast('Select all and copy the code below')};try{navigator.clipboard.writeText(s).then(()=>toast('Save code copied'),fb)}catch(e){fb()}}
 function loadCode(s){try{const o=JSON.parse(decodeURIComponent(escape(atob(s.trim()))));if(!applySave(o))throw 0;$('sheet').hidden=true;startPlay();save();toast('Save loaded');return true}catch(e){toast('That code could not be read');return false}}
 let tapT=null,tapI=-1,lpT=null,lpFired=false,lpXY=null;
@@ -539,6 +540,10 @@ $('sheetIn').addEventListener('pointerdown',e=>{const c=e.target.closest('[data-
 $('sheetIn').addEventListener('pointermove',e=>{if(lpXY&&Math.hypot(e.clientX-lpXY[0],e.clientY-lpXY[1])>10)clearTimeout(lpT)});
 for(const n of['pointerup','pointercancel','pointerleave'])$('sheetIn').addEventListener(n,()=>clearTimeout(lpT));
 const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],[data-webadd]');if(!b||b.disabled)return;const d=b.dataset;sfx('ui');
+  if(d.try){tryGear(d.try);toast('Test gear. It will not be saved.');drawSheet();return}
+  if(d.isk!==undefined){sel={isk:+d.isk};drawSheet();return}
+  if(d.iskkey!==undefined){const k=+d.iskkey,i=sel&&sel.isk;if(i>=100&&itemSkillOn(i)){const o=G.slots.indexOf(i);if(o>=0)G.slots[o]=-1;G.slots[k]=i;setSkillButtons()}drawSheet();return}
+  if(d.iskside){const i=sel&&sel.isk;if(i>=100)assignMouse(d.iskside,i);drawSheet();return}
   if(d.popx)sel=null;
   if(d.sellq!==undefined){const q=+d.sellq;if(q<0&&!sellArm){sellArm=true;drawSheet();return}let t=0;G.bag=G.bag.filter(i=>{if(q===9?i.junk:!i.charm&&(q<0||i.q===q)){t+=sellValue(i);return false}return true});G.credits+=t;sel=null;sfx('coin');toast('Sold for '+fmt(t))}
   sellArm=false;
@@ -561,7 +566,7 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
     if(d.do==='sock'){sel.sock=true;drawSheet();return}
     if(d.do==='mgive'){const old=G.merc[it.slot];G.merc[it.slot]=it;it.junk=false;G.bag.splice(sel.bag,1);if(old)G.bag.push(old);sel=null;sfx('equip');toast(G.merc.name+' takes the '+it.base)}
     if(d.do==='unequip'){if(G.bag.length>=24)toast('Your pack is full');else{G.bag.push(it);G.eq[sel.eq]=null;sel=null;sfx('equip')}}
-    if(d.do==='sell'){G.credits+=sellValue(it);G.bag.splice(sel.bag,1);sel=null;sfx('coin')}
+    if(d.do==='sell'){if(it.test){toast('Test gear has no price');return}G.credits+=sellValue(it);G.bag.splice(sel.bag,1);sel=null;sfx('coin')}
     if(d.do==='drop'){G.bag.splice(sel.bag,1);W.drops.push({x:P.x+1.1,y:P.y+1.1,it,t:1});sel=null}
     calc()}
   if(d.word){const it=sel.eq?G.eq[sel.eq]:G.bag[sel.bag];socketWord(it,d.word);sel.sock=it.words.length<it.soc&&!it.pw}
@@ -571,7 +576,7 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.mbest){const n=mercBest();toast(n?G.merc.name+' takes '+n+' piece'+(n>1?'s':''):'Nothing spare is better for them. Pieces that would improve you are left alone.');sfx(n?'equip':'ui')}
   if(d.claim!==undefined){const b=G.bounties[+d.claim];if(b&&b.c>=b.n){const m=repRank('anon')>=1?1.25:1;b.sats=Math.ceil(b.sats*m);b.cr*=m;addRep('anon',6);if(repRank('anon')>=3){const w=pick(WK);gotWord(w);toast('A note is pinned to the payment: '+w)}G.sats+=b.sats;/* The board and the paid line print whole credits, so the purse gains that floor. */const pay=Math.floor(b.cr*G.cpi);G.credits+=pay;G.bounties.splice(+d.claim,1);sfx('quest');toast('Paid: '+b.sats+' sats and '+fmt(pay))}}
   if(d.st!==undefined){const it=ACC.stash[+d.st];if(it){if(G.bag.length>=24)toast('Your pack is full');else{ACC.stash.splice(+d.st,1);G.bag.push(it);sfx('equip');accSave();save(true)}}}
-  if(d.sb!==undefined){const it=G.bag[+d.sb];if(it){if(ACC.stash.length>=36)toast('The lockbox is full');else{G.bag.splice(+d.sb,1);it.junk=false;ACC.stash.push(it);sfx('equip');accSave();save(true)}}}
+  if(d.sb!==undefined){const it=G.bag[+d.sb];if(it){if(it.test)toast('Test gear does not go in the lockbox');else if(ACC.stash.length>=36)toast('The lockbox is full');else{G.bag.splice(+d.sb,1);it.junk=false;ACC.stash.push(it);sfx('equip');accSave();save(true)}}}
   if(d.acc){const k=d.acc;if(k[0]==='s'){const n=k==='si10'?10:k==='siall'?G.sats:k==='so10'?-10:-ACC.sats;G.sats-=n;ACC.sats+=n}else if(k==='coall'){/* The box line prints whole credits, so take-all pays that floor. */const pay=Math.floor(ACC.cr*G.cpi);G.credits+=pay;ACC.cr=0}else{/* Half and all move whole credits. The fee is still a tenth of that. */const a=k==='cihalf'?Math.floor(G.credits/2):Math.floor(G.credits);if(a>0){G.credits-=a;ACC.cr+=a/G.cpi*.9}}sfx('coin');accSave();save(true)}
   if(d.bull){closeSheet();bullStart();return}
   if(d.shiftp){sel={shp:d.shiftp};drawSheet();return}
@@ -654,16 +659,17 @@ let pickSide='R',pickHov=null;
 function paintMouseSlots(){
   if(!G||!CLS[G.cls])return;
   ensureMouse();
-  const paint=(id,i,tag)=>{
+    const paint=(id,i,tag)=>{
     const b=$(id);if(!b)return;
-    const sk=i>=0?CLS[G.cls].sk[i]:null;
+    const sk=i>=100&&itemSkillsReady?ISK[i]:(i>=0?CLS[G.cls].sk[i]:null);
     const name=i<0?'ATK':(sk?sk.ab:'');
     b.querySelector('b').textContent=name;
     b.querySelector('i').textContent=tag;
     b.title=(i<0?'Attack':(sk?sk.n:''))+' ('+(tag==='L'?'left click':'right click')+')';
     const c=b.querySelector('canvas'),g=c.getContext('2d');
     g.clearRect(0,0,28,28);
-    if(i>=0)glyph(g,G.cls,i,28);
+    if(i>=100&&sk){g.fillStyle='#d0aa62';g.font='9px Cinzel,serif';g.textAlign='center';g.fillText(sk.ab,14,17)}
+    else if(i>=0)glyph(g,G.cls,i,28);
     else{g.strokeStyle='#e0bd6e';g.lineWidth=2;g.lineCap='round';g.beginPath();g.moveTo(8,21);g.lineTo(20,8);g.moveTo(8,14);g.lineTo(14,8);g.stroke()}
     const em=b.querySelector('em');
     if(i>=0&&P&&P.cd&&sk)em.style.transform='scaleY('+clamp((P.cd[i]||0)/(sk.cd||1),0,1)+')';
@@ -674,17 +680,20 @@ function paintPick(){
   const box=$('mPick');if(!box||box.hidden||!G)return;
   const sk=CLS[G.cls].sk,ids=[-1];
   for(let i=0;i<sk.length;i++){if(!learnedAct(i)||i<0)continue;if(pickSide==='L'&&!leftOk(i))continue;ids.push(i)}
+  for(const id of [100,101,102,103,104,105]){if(!learnedAct(id))continue;if(pickSide==='L'&&!leftOk(id))continue;if(pickSide==='R'&&leftOk(id))continue;ids.push(id)}
   let html='<h3>'+(pickSide==='L'?'Left click':'Right click')+'</h3><div class="grid">';
   for(const i of ids){
     const on=(pickSide==='L'?G.mouse.L:G.mouse.R)===i;
     let key='';for(let f=0;f<8;f++)if(G.hot[f]===i)key='F'+(f+1);
-    const name=i<0?'Attack':sk[i].n;
+    const name=i<0?'Attack':(i>=100?ISK[i].n:sk[i].n);
     html+='<button type="button" data-msk="'+i+'" class="'+(on?'on':'')+'" title="'+esc(name)+'">'+(i<0?'<b>ATK</b>':'')+'<u>'+key+'</u></button>'}
   html+='</div><p class="hint">Tap or click a skill for this button. On a desk, hover one and press F1–F8 to bind it. In a fight those keys, and the wheel, fill the right button. On a phone, keys 1, 2 and 3 are the thumb buttons.</p>';
   box.innerHTML=html;
   box.querySelectorAll('button[data-msk]').forEach(b=>{
     const i=+b.dataset.msk;if(!(i>=0))return;
-    const c=document.createElement('canvas');c.width=28;c.height=28;b.insertBefore(c,b.firstChild);glyph(c.getContext('2d'),G.cls,i,28)})}
+    const c=document.createElement('canvas');c.width=28;c.height=28;b.insertBefore(c,b.firstChild);
+    if(i>=100){const g=c.getContext('2d');g.fillStyle='#d0aa62';g.font='10px Cinzel,serif';g.textAlign='center';g.fillText(ISK[i].ab,14,18)}
+    else glyph(c.getContext('2d'),G.cls,i,28)})}
 function openPick(side){
   ensureMouse();
   const box=$('mPick');if(!box)return;
@@ -764,6 +773,7 @@ function drawCls(){$('clsList').innerHTML=Object.entries(CLS).filter(([k,c])=>!c
 drawCls();
 $('clsList').addEventListener('click',e=>{const b=e.target.closest('[data-cls]');if(!b)return;sfx('ui');const go=()=>{$('title').hidden=true;newGame(b.dataset.cls)};const cur=slotInfo(SLOT);if(!cur)return go();dlg('Replace slot '+(SLOT+1)+'?','A new wanderer begins at the very start: level 1, Act I, nothing carried over. It replaces the level '+cur.lvl+' '+CLS[cur.cls].n+' saved in this slot, who cannot be brought back. To keep them, tap an empty slot first.',[['Keep my hero',()=>{mode='title'}],['Start a new '+CLS[b.dataset.cls].n,go]],2)});
 $('bWalk').onclick=$('bWalkLead').onclick=()=>{sfx('ui');walkChoose(true)};
+if($('bTryGear'))$('bTryGear').onclick=()=>{sfx('ui');dlg('Test gear','Six uniques grant a skill only while you wear them. Once you are in the world, the hero sheet can put a test copy on you. A test copy is left out of every save, the lockbox, and a sale. The same names can also drop for real, and those save.',[['Good']])};
 $('bLoadCode').onclick=()=>openSheet('load',{only:['load']});
 function showContinue(){$('bCont').hidden=true;drawSlots()}
 /* three save slots: each row is a hero (the newer of this device's copy and the account's), or an empty place for a new one */
@@ -809,4 +819,4 @@ function showDisc(){const d=$('disc');if(!d)return;
   addEventListener('pointerdown',go,true);addEventListener('keydown',go,true)}
 showDisc();
 cloudInit();
-window.__g={heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},get shop(){return shop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide};
+window.__g={heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},get shop(){return shop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,get ISK(){return ISK}};

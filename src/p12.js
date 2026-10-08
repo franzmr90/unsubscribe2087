@@ -150,3 +150,103 @@ function maxiBuff() {
   if (!G || G.cls !== 'maxi' || !P.aura) return null;
   return CLS.maxi.sk[P.aura.i].n;
 }
+
+/* Item skills. An index at 100 or above is not a class skill. It exists only
+   while the unique that grants it is worn. Test copies are marked test:1 and
+   packSave / accSave / sell / scrap leave them out of the economy. */
+var itemSkillsReady=false;
+const ISK={
+  100:{n:'Teleport',ab:'TEL',cd:.85,cost:14,tip:'Blink up to 6.5 paces toward the pointer. Walls, hedges, and sealed tiles stop it. A second blink within a few seconds costs more. A fresh hit will not let you blink.'},
+  101:{n:'Standing Call',ab:'CAL',cd:20,cost:22,tip:'You and allies within 6 paces gain 12% life and 8% energy for 10 seconds. Allies hit during it take a little less.'},
+  102:{n:'Open Book',ab:'BOK',cd:14,cost:16,tip:'For 8 seconds you, and allies within 6 paces, deal 8% more damage to machines. It does not cut resists, and it does not add that damage against a player.'},
+  103:{n:'Quiet Ledger',ab:'LDG',cd:12,cost:6,tip:'For 6 seconds you recover 8 energy a second, and allies within 6 paces mend a little.'},
+  104:{n:'Bear Market',ab:'BER',cd:18,cost:18,tip:'For 8 seconds you hit harder and your armor is thicker. Other item skills wait. This is not a homesteader shape.'},
+  105:{n:'Spare Chair',ab:'CHR',cd:16,cost:20,tip:'A colleague sits with you for 18 seconds and swings. Only one chair. A blow against a player is still the small share.'}
+};
+if(!AFK.pdr)AFK.pdr={k:'pdr',t:'Damage reduced by {v}%'};
+function itemSkillOn(i){
+  if(!itemSkillsReady||!G||!G.eq)return false;
+  for(const sl of SLOTS){const it=G.eq[sl];if(!it||!it.uid||!uOk(it))continue;const u=UNIK[it.uid];if(u&&u.isk===i)return true}
+  return false}
+function gearPerLevel(s){
+  let U;try{U=UNIK}catch(e){return}
+  if(!U||!G||!G.eq||!s)return;
+  const lv=G.lvl||1;
+  for(const sl of SLOTS){const it=G.eq[sl];if(!it||!it.uid||!uOk(it))continue;const u=U[it.uid];if(!u||!u.per)continue;for(const k in u.per)s[k]=(s[k]||0)+u.per[k]*lv}}
+function scrubItemBinds(){
+  if(!itemSkillsReady||!G)return;
+  ensureMouse();
+  if(G.mouse){if(G.mouse.L>=100&&!itemSkillOn(G.mouse.L))G.mouse.L=-1;if(G.mouse.R>=100&&!itemSkillOn(G.mouse.R))G.mouse.R=0}
+  if(G.hot)for(let f=0;f<G.hot.length;f++)if(G.hot[f]>=100&&!itemSkillOn(G.hot[f]))G.hot[f]=null;
+  if(G.slots)for(let s=0;s<G.slots.length;s++)if(G.slots[s]>=100&&!itemSkillOn(G.slots[s]))G.slots[s]=-1}
+function blinkCast(){
+  if(!P||!W)return false;
+  if(P.hitStun>0){toast('Still taking the hit');sfx('err');return false}
+  const aim=P.blinkAt;let tx,ty;
+  if(aim&&aim.x!=null){tx=aim.x;ty=aim.y}else{tx=P.x+(P.dir&&P.dir.x||1)*6.5;ty=P.y+(P.dir&&P.dir.y||0)*6.5}
+  let dx=tx-P.x,dy=ty-P.y,len=Math.hypot(dx,dy);
+  if(!(len>.15)){dx=(P.dir&&P.dir.x)||1;dy=(P.dir&&P.dir.y)||0;len=Math.hypot(dx,dy)||1}
+  const max=6.5;if(len>max){dx*=max/len;dy*=max/len;len=max}
+  const ux=dx/len,uy=dy/len,N=W.N;let last=null;
+  for(let s=.25;s<=len+1e-4;s+=.25){
+    const nx=P.x+ux*Math.min(s,len),ny=P.y+uy*Math.min(s,len);
+    if(nx<.45||ny<.45||nx>N-.55||ny>N-.55)break;
+    if(!walk(nx,ny)||!free(nx,ny,P.r||.32)||hedgeAt(nx,ny,P))break;
+    last={x:nx,y:ny}}
+  if(!last||Math.hypot(last.x-P.x,last.y-P.y)<.2){toast('No room to blink');sfx('err');return false}
+  const ox=P.x,oy=P.y;P.x=last.x;P.y=last.y;P.blinkChain=2.4;P.dir={x:ux,y:uy};
+  W.fx.push({k:'ring',x:ox,y:oy,r:.8,t:0,life:.25,col:'#9a6cff'},{k:'ring',x:P.x,y:P.y,r:1.1,t:0,life:.3,col:'#c9b6ff'});
+  return true}
+function callCast(){
+  P.orders=10;calc();heal(S.maxHp*.12);G.en=Math.min(S.maxEn,G.en+S.maxEn*.08);
+  const bump=a=>{if(!a||!(a.hp>0)||dist(a,P)>=6)return;a.orders=10;if(a.max)a.hp=Math.min(a.max,a.hp+(a.max)*.12)};
+  if(W&&W.merc)bump(W.merc);if(W&&W.tag)bump(W.tag);if(W)for(const a of W.allies)bump(a);
+  float(P.x,P.y,'Standing','#e6e2d6',0);return true}
+function bookCast(){P.book=8;float(P.x,P.y,'Open','#9a6cff',0);W.fx.push({k:'ring',x:P.x,y:P.y,r:6,t:0,life:.4,col:'#9a6cff'});return true}
+function ledgerCast(){P.ledger=6;float(P.x,P.y,'Quiet','#7be495',0);return true}
+function bearCast(){if(P.bear>0){P.bear=0;calc();float(P.x,P.y,'Up','#c9a868',0);return true}P.bear=8;calc();float(P.x,P.y,'Bear','#c9a868',0);return true}
+function chairCast(){summon({kind:'chair',m:.42,ivl:.85,hp:S.maxHp*.55,max:S.maxHp*.55,r:.34,spd:3.4,life:18},1);float(P.x,P.y,'Chair','#e6e2d6',0);return true}
+function castItem(i){
+  const sk=ISK[i];if(!sk||!itemSkillOn(i)||!P)return;
+  if(P.castWait>0){toast('Still casting');sfx('err');return}
+  if(P.silence>0){toast('Silenced');sfx('err');return}
+  if(P.dash)return;
+  if(P.bear>0&&i!==104){toast('The bear does not cast that');sfx('err');return}
+  if((P.cd[i]||0)>0)return;
+  if(i===100&&P.hitStun>0){toast('Still taking the hit');sfx('err');return}
+  const pay=sk.cost+(i===100&&P.blinkChain>0?12:0);
+  if(G.en<pay){toast('Not enough energy');sfx('err');return}
+  let ok=false;
+  if(i===100)ok=blinkCast();else if(i===101)ok=callCast();else if(i===102)ok=bookCast();else if(i===103)ok=ledgerCast();else if(i===104)ok=bearCast();else if(i===105)ok=chairCast();
+  if(!ok)return;
+  G.en-=pay;P.cd[i]=sk.cd*(1-Math.min(.6,S.cdr||0));sfx('cast')}
+function itemSkillTick(dt){
+  if(!P)return;
+  if(P.hitStun>0)P.hitStun=Math.max(0,P.hitStun-dt);
+  if(P.blinkChain>0)P.blinkChain=Math.max(0,P.blinkChain-dt);
+  if(P.orders>0){P.orders-=dt;if(P.orders<=0){P.orders=0;if(G)calc()}}
+  if(P.book>0)P.book=Math.max(0,P.book-dt);
+  if(P.bear>0){P.bear-=dt;if(P.bear<=0){P.bear=0;if(G)calc()}}
+  if(P.ledger>0){P.ledger=Math.max(0,P.ledger-dt);if(G&&S)G.en=Math.min(S.maxEn,G.en+8*dt);
+    if(W){const mend=a=>{if(a&&a.hp>0&&dist(a,P)<6){if(a.max)a.hp=Math.min(a.max,a.hp+3*dt)}};mend(W.merc);mend(W.tag);for(const a of W.allies)mend(a)}}
+  if(P.cd)for(const id of [100,101,102,103,104,105])if(P.cd[id]>0)P.cd[id]=Math.max(0,P.cd[id]-dt);
+  if(W){if(W.merc&&W.merc.orders>0)W.merc.orders=Math.max(0,W.merc.orders-dt);if(W.tag&&W.tag.orders>0)W.tag.orders=Math.max(0,W.tag.orders-dt);for(const a of W.allies)if(a.orders>0)a.orders=Math.max(0,a.orders-dt)}}
+function tryGear(id){
+  if(!G)return null;const u=UNI.find(x=>x.id===id);if(!u)return null;
+  const it=mkFixed(u,Math.max(u.il,G.lvl||1),4);it.test=1;it.id=true;it.val=0;
+  const old=G.eq[u.slot];G.eq[u.slot]=it;if(old&&!old.test&&G.bag.length<24)G.bag.push(old);calc();return it}
+function itemTryRow(){
+  const rows=[['cipher','The Cipher Mantle'],['call','The Standing Call'],['book','The Open Book'],['ledger','The Quiet Ledger'],['bear','The Bear Market'],['chair','The Spare Chair']];
+  return '<h3>Test gear</h3><p class="hint">Puts on a copy marked test. A test copy is left out of saves, the lockbox, sales, and scrap. A real drop of the same name is a normal unique and does save.</p><div class="list">'+rows.map(r=>'<button class="li" data-try="'+r[0]+'"><div><b>'+r[1]+'</b><span>Item skill, not saved.</span></div></button>').join('')+'</div>'}
+function itemSkillPane(){
+  if(!G||!itemSkillsReady)return '';
+  const ids=[100,101,102,103,104,105].filter(itemSkillOn);
+  let h='<h3>Item skills</h3>';
+  if(!ids.length)return h+'<p class="hint">Some uniques grant a skill while you wear them. Take the item off and the skill leaves the buttons.</p>';
+  h+='<div class="list">';
+  for(const i of ids){const s=ISK[i];h+='<button class="li'+(sel&&sel.isk===i?' on':'')+'" data-isk="'+i+'"><div><b>'+s.n+'</b><span>+1 to '+s.n+' (item skill)</span><span>'+s.tip+'</span><span>'+s.cost+' energy · '+s.cd+'s</span></div></button>'}
+  h+='</div>';
+  if(sel&&sel.isk>=100&&itemSkillOn(sel.isk)){const i=sel.isk,s=ISK[i];
+    h+='<div class="card"><div class="nm q4">'+s.n+'</div><div class="ln">'+s.tip+'</div><div class="ln off">+1 to '+s.n+' (item skill)</div><div class="row">'+[0,1,2].map(k=>'<button class="ghost" data-iskkey="'+k+'">Key '+(k+1)+(G.slots[k]===i?' ✓':'')+'</button>').join('')+'<button class="ghost" data-iskside="L">Left'+(G.mouse&&G.mouse.L===i?' ✓':'')+'</button><button class="ghost" data-iskside="R">Right'+(G.mouse&&G.mouse.R===i?' ✓':'')+'</button></div></div>'}
+  return h}
+itemSkillsReady=true;

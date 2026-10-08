@@ -305,7 +305,13 @@ const UNI=[
  {id:'quorum',n:'Quorum',slot:'ring',il:32,base:'Halo Band',mods:{skills:[1,2],crit:[8,12],dmg:[30,45]},sp:'Each companion or summoned ally adds 5% to your damage, up to six',fl:'Nothing may be decided alone.'},
  {id:'still',n:'Still Water',slot:'amulet',il:34,base:'Cloud Core',bossOnly:1,mods:{hp:[80,120],regenH:[6,9],skills:[1,1]},sp:'Once every 90 seconds, a killing blow heals you fully instead',fl:'It watched. That was all. It was enough.'},
  {id:'lines',n:'Forty-Four Lines',slot:'ring',il:4,base:'Signet Chip',bossOnly:1,mods:{hp:[44,44],regenH:[4,4],mf:[19,19]},sp:'Mediators cannot mend machines while you wear this',fl:'Nobody asked for it. It cost nineteen minutes a night.'},
- {id:'exit',n:'Exit Interview',slot:'weapon',il:9,base:'Signal Baton',bi:0,bossOnly:1,mods:{dmg:[60,90],crit:[8,12],leech:[4,6]},sp:'+50% damage to champions, lieutenants and executives',fl:'“Any feedback for management?”'}
+ {id:'exit',n:'Exit Interview',slot:'weapon',il:9,base:'Signal Baton',bi:0,bossOnly:1,mods:{dmg:[60,90],crit:[8,12],leech:[4,6]},sp:'+50% damage to champions, lieutenants and executives',fl:'“Any feedback for management?”'},
+ {id:'cipher',n:'The Cipher Mantle',slot:'armor',il:66,base:'Cloud Mantle',tc:'late',isk:100,mods:{skills:[1,1],mspd:[14,18],pdr:[8,8],armorP:[40,70]},per:{mgt:.25,mf:.4},sp:'+1 to Teleport (item skill)',fl:'A short blink, not a map. The cipher is the point. The coat is where it sits.'},
+ {id:'call',n:'The Standing Call',slot:'amulet',il:44,base:'Sigil Core',tc:'high',isk:101,mods:{skills:[1,1],hp:[40,70],regenH:[2,4]},sp:'+1 to Standing Call (item skill)',fl:'Everyone in earshot stands up straighter. It wears off.'},
+ {id:'book',n:'The Open Book',slot:'weapon',il:52,base:'Null Sceptre',tc:'high',isk:102,mods:{skills:[1,1],dmg:[35,60],shock:[6,14]},sp:'+1 to Open Book (item skill)',fl:'The page is open. It does not close their eyes. It only helps you hit.'},
+ {id:'ledger',n:'The Quiet Ledger',slot:'belt',il:28,base:'Power Girdle',tc:'mid',isk:103,mods:{regen:[2,4],en:[18,30],mf:[8,16]},sp:'+1 to Quiet Ledger (item skill)',fl:'The books balance if you sit with them. Not for long.'},
+ {id:'bear',n:'The Bear Market',slot:'helm',il:40,base:'Praetor Visor',tc:'high',isk:104,mods:{armorP:[50,80],hp:[36,64],dmg:[8,16]},sp:'+1 to Bear Market (item skill)',fl:'You wear the downturn. It is not a shape the verge taught you.'},
+ {id:'chair',n:'The Spare Chair',slot:'weapon',il:34,base:'Arc Sceptre',tc:'mid',isk:105,mods:{skills:[1,1],hp:[18,36],thorns:[4,9]},sp:'+1 to Spare Chair (item skill)',fl:'Someone has to sit in. They do not get a vote.'}
 ];
 const SETS={striker:{n:'The Striker’s Vigil',b2:'+20% Enhanced Damage (2 pieces)',b3:'+1 to All Skills, and kills restore 3% life (3 pieces)',items:[
  {id:'st1',n:'Striker’s Placard',slot:'weapon',il:2,base:'Stop Sign',bi:1,mods:{dmg:[20,30],hp:[10,18]}},
