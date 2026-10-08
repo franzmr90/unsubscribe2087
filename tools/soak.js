@@ -146,7 +146,7 @@ function percentile(sorted, p) {
       if (tick % 10 === b.i % 10) {
         b.n++;
         b.pingAt.set(b.n, t);
-        b.send({ t: 'ping', n: b.n, t });
+        b.send({ t: 'ping', n: b.n, at: t });
       }
       if (tick % 20 === b.i % 20) b.send({ t: 'chat', text: 'soak ' + b.i + ' ' + tick });
     }
@@ -190,7 +190,7 @@ function percentile(sorted, p) {
   fs.rmSync(tmp, { recursive: true, force: true });
 
   if (CHECK) {
-    const bad = connectFail > 0 || !alive || (sorted.length && summary.p95 > 500) || bots.length < BOTS;
+    const bad = connectFail > 0 || !alive || bots.length < BOTS || sorted.length < bots || summary.p95 > 500;
     process.exit(bad ? 1 : 0);
   }
 })().catch(e => { console.error(e); process.exit(1); });

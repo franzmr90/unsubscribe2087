@@ -158,7 +158,7 @@ const same = (a, b) => a.status === b.status && JSON.stringify(a.body) === JSON.
 
   as(ada);
   auth.rateClear('ml:' + ada.user.id);
-  live.live.set(bo.user.id, { uid: bo.user.id });
+  live.live.set(bo.user.id, { uid: bo.user.id, conn: {} });
   r = await call('/api/mail/send', { name: 'Bo', text: 'while you are here' });
   live.live.delete(bo.user.id);
   ok('mail to someone online is not boxed', r.status === 400, JSON.stringify(r.body));
@@ -174,7 +174,7 @@ const same = (a, b) => a.status === b.status && JSON.stringify(a.body) === JSON.
   ok('the flag survives a new table', new Table('friends').get(bo.user.id) && new Table('friends').get(bo.user.id).closed === true);
   as(ada);
   auth.rateClear('ml:' + ada.user.id);
-  live.live.set(bo.user.id, { uid: bo.user.id, name: 'Bo' });
+  live.live.set(bo.user.id, { uid: bo.user.id, name: 'Bo', conn: {} });
   const quietOn = await call('/api/mail/send', { name: 'Bo', text: 'are you taking these' });
   live.live.delete(bo.user.id);
   const quietOff = await call('/api/mail/send', { name: 'Bo', text: 'are you taking these' });
