@@ -500,6 +500,7 @@ let VGC=null,VGK='';
 function vigCanvas(){const key=Math.round(VW)+'x'+Math.round(VH);if(VGK===key)return VGC;VGK=key;
   const c=mk(Math.max(1,Math.round(VW)),Math.max(1,Math.round(VH))),g=c.getContext('2d'),w=c.width,h=c.height;
   const q=g.createRadialGradient(w/2,h/2,Math.min(w,h)*.58,w/2,h/2,Math.max(w,h)*.82);q.addColorStop(0,'rgba(0,0,0,0)');q.addColorStop(1,'rgba(3,2,8,.34)');g.fillStyle=q;g.fillRect(0,0,w,h);return VGC=c}
+let FC=null,FG=null,FCK='';
 function render(){
   ctx.setTransform(DPR*ZM,0,0,DPR*ZM,0,0);if(W&&P)backdrop();else{ctx.fillStyle='#050409';ctx.fillRect(0,0,VW,VH)}
   if(!W||!P)return;LIGHTS=[];fxBind();fxTrim();stateMarks();
@@ -507,10 +508,18 @@ function render(){
   const z=W.z,N=W.N,R=Math.ceil(VW/128+VH/64)+3,pd=P.x+P.y;
   const x0=Math.max(0,Math.floor(P.x-R)),x1=Math.min(N-1,Math.ceil(P.x+R)),y0=Math.max(0,Math.floor(P.y-R)),y1=Math.min(N-1,Math.ceil(P.y+R));
   const dl=[];const vis=o=>W.seen[(o.y|0)*N+(o.x|0)];
+  /* Floors do not animate. A still camera reuses the last raster; a step or a
+     newly seen tile draws them again. Walls stay in the depth list either way. */
+  const fkey=shake?'':(W.zi+'|'+cx.toFixed(2)+'|'+cy.toFixed(2)+'|'+(W.seenGen||0)+'|'+ctx.canvas.width+'x'+ctx.canvas.height);
+  let pen=null;
+  if(!(fkey&&FC&&FCK===fkey)){
+    if(!FC||FC.width!==ctx.canvas.width||FC.height!==ctx.canvas.height){FC=document.createElement('canvas');FC.width=ctx.canvas.width;FC.height=ctx.canvas.height;FG=FC.getContext('2d')}
+    FG.setTransform(DPR*ZM,0,0,DPR*ZM,0,0);FG.clearRect(0,0,VW,VH);pen=FG;FCK=fkey}
   for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){
     const X=SX(x+.5,y+.5),Y=SY(x+.5,y+.5);if(X<-40||X>VW+40||Y<-70||Y>VH+70)continue;const t=W.map[y*N+x];if(!W.seen[y*N+x])continue;
-    if(t!==0){ctx.drawImage(TX.floor[(x*7+y*13+((x*y)%3))%5],X-33,Y-17);const sn=W.seen;if(!z.town&&(!sn[y*N+x+1]||!sn[y*N+x-1]||!sn[(y+1)*N+x]||!sn[(y-1)*N+x])){ctx.fillStyle='rgba(5,4,9,.6)';ctx.beginPath();ctx.moveTo(X-33,Y);ctx.lineTo(X,Y-17);ctx.lineTo(X+33,Y);ctx.lineTo(X,Y+17);ctx.fill()}}
+    if(t!==0){if(pen){pen.drawImage(TX.floor[(x*7+y*13+((x*y)%3))%5],X-33,Y-17);const sn=W.seen;if(!z.town&&(!sn[y*N+x+1]||!sn[y*N+x-1]||!sn[(y+1)*N+x]||!sn[(y-1)*N+x])){pen.fillStyle='rgba(5,4,9,.6)';pen.beginPath();pen.moveTo(X-33,Y);pen.lineTo(X,Y-17);pen.lineTo(X+33,Y);pen.lineTo(X,Y+17);pen.fill()}}}
     else{const h=W.wh[y*N+x];if(h)dl.push({d:x+y+1,k:0,X,Y,h,near:h>1&&x+y+1>pd&&Math.abs(x+.5-P.x)<3.2&&Math.abs(y+.5-P.y)<3.2})}}
+  if(FC){ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.drawImage(FC,0,0);ctx.restore()}
   for(const d of W.decals){const X=SX(d.x,d.y),Y=SY(d.x,d.y);ctx.fillStyle='rgba(5,4,9,.42)';ctx.beginPath();ctx.ellipse(X,Y,d.r*30,d.r*15,d.a,0,6.283);ctx.fill();ctx.fillStyle='rgba(60,50,40,.5)';ctx.fillRect(X-4+d.a*3,Y-2,5,2);ctx.fillRect(X+3-d.a*2,Y+2,4,2)}
   for(const a of W.allies)if(a.k==='trops'||a.k==='storm'){const X=SX(a.x,a.y),Y=SY(a.x,a.y),r=a.k==='trops'?2.6:3.5;ctx.fillStyle=a.k==='trops'?'rgba(200,210,220,.14)':'rgba(40,30,80,.35)';ctx.beginPath();ctx.ellipse(X,Y,r*45,r*22.5,0,0,6.283);ctx.fill();
     if(a.k==='trops'){ctx.fillStyle='#c8d0d8';for(let i=0;i<22;i++){const an=i*2.4,rr=(i*37%100)/100*r;ctx.fillRect(X+Math.cos(an)*rr*45,Y+Math.sin(an)*rr*22,2.5,2.5)}}}

@@ -309,4 +309,4 @@ function storyGate(){
   if(G.q.q20===3&&!G.q.q21)return{n:'Act IV complete',d:'Speak to Gramps in '+ZONES[HT()].n+' to begin Act V'};
   if(G.q.q20===3&&!G.act5)return{n:'Act IV complete',d:'Take the Transit Gate to The Garage to begin Act V'};
   return null}
-function bookFix(){for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;actBriefMigrate();if(G.q.q15===3&&G.unlocked<22)G.unlocked=22;if(G.q.q20===3&&G.unlocked<28)G.unlocked=28;if(G.q.q24===3)G.module=1}
+function bookFix(){if(!G)return;if(!G.q||typeof G.q!=='object')G.q={};for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;actBriefMigrate();if(G.q.q15===3&&G.unlocked<22)G.unlocked=22;if(G.q.q20===3&&G.unlocked<28)G.unlocked=28;if(G.q.q24===3)G.module=1}
