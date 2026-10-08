@@ -18,7 +18,8 @@ const MP = {
   friends: {}, face: {}, joinUid: '', csrf: '',
   whispers: [], whisperTo: '', mail: [], closed: false, portalUntil: 0,
   resume: null, gamePass: '', buildAsked: false,
-  maps: {}, mapAsked: null, wantEnter: null, freshFor: null, freshBase: -1
+  maps: {}, mapAsked: null, wantEnter: null, freshFor: null, freshBase: -1,
+  mobHost: '', mobAt: 0, mobSeqSent: 0, mobSnap: null
 };
 
 const mpOn = () => MP.on && !!MP.conn && MP.conn.readyState === 1;
@@ -202,7 +203,7 @@ function mpRecv(m) {
   } else if (m.t === 'game') {
     const prevId = MP.game && MP.game.id;
     const nextId = m.game && m.game.id;
-    if (prevId !== nextId) { MP.maps = {}; MP.mapAsked = null; MP.freshFor = null; MP.freshBase = -1; MP.wantEnter = null; }
+    if (prevId !== nextId) { MP.maps = {}; MP.mapAsked = null; MP.freshFor = null; MP.freshBase = -1; MP.wantEnter = null; MP.mobHost = ''; MP.mobSnap = null; }
     MP.game = m.game; MP.scale = m.scale || null;
     MP.view = m.game ? 'game' : 'lobby';
     if (m.maps) mpStoreMaps(m.maps);
@@ -210,7 +211,7 @@ function mpRecv(m) {
       MP.resume = null; MP.gamePass = '';
       MP.maps = {};
       MP.roster = []; MP.others = []; MP.party = null; MP.hostile = {}; MP.sim = null;
-      MP.speaking = {}; MP.chat = [];
+      MP.speaking = {}; MP.chat = []; MP.mobHost = ''; MP.mobSnap = null;
       mpVoiceStop();
       if (W && W.ents) for (let i = W.ents.length - 1; i >= 0; i--) if (W.ents[i].mp) W.ents.splice(i, 1);
       toast('You have left the game. Your character is saved.');
@@ -294,6 +295,21 @@ function mpRecv(m) {
     mpSay(m.duel ? m.killer + ' took the duel against ' + m.dead + '.' : m.killer + ' has slain ' + m.dead + '.');
   } else if (m.t === 'sim') {
     mpSimMsg(m);
+  } else if (m.t === 'mhost') {
+    MP.mobHost = m.uid || '';
+  } else if (m.t === 'mobs') {
+    if (!mpApplyMobs(m)) MP.mobSnap = m;
+  } else if (m.t === 'mhp') {
+    mpMhp(m);
+  } else if (m.t === 'mkill') {
+    mpMkill(m);
+  } else if (m.t === 'mxp') {
+    if (G && mode !== 'title' && m.amount > 0) {
+      gainXp(m.amount, 1);
+      if (mode === 'play' && P) float(P.x, P.y, '+' + m.amount + ' xp', '#9fd0ff', 1);
+    }
+  } else if (m.t === 'mdmg') {
+    if (G && P && mode === 'play') hurt(m.d, m.slow, { name: m.name || 'a machine' });
   }
 }
 
@@ -311,7 +327,7 @@ function mpMovePkt() {
     x: +P.x.toFixed(2), y: +P.y.toFixed(2), zi: W.zi,
     dir: Math.atan2(P.dir.y, P.dir.x),
     hp: Math.round(G.hp), hpm: Math.round(S.maxHp), inst: W.inst || null,
-    lvl: G.lvl | 0
+    lvl: G.lvl | 0, tier: G.tier | 0
   };
   const au = (P.aura && (P.aura.i === 3 || P.aura.i === 4 || P.aura.i === 7)) ? P.aura.i : null;
   if (au !== mpSent.au) { pkt.au = au; mpSent.au = au; }
@@ -404,6 +420,115 @@ function mpTick(dt) {
   }
 }
 
+/* Shared machines. The host moves them. The server owns their hit points and pays the
+   kill. A guest draws the host's positions and does not run the machine AI. Solo play
+   never enters this: there is no game, so mpMobShared is false. */
+function mpMobShared() { return mpIn() && !!W && W.z && !W.z.town; }
+function mpMobHost() { return mpMobShared() && !!MP.me && MP.mobHost === MP.me.uid; }
+function mpMobWatch() { return mpMobShared() && !mpMobHost(); }
+function mpMobHit(e, d) {
+  if (!mpOn() || !e || !e.mid || !(d > 0) || !W || !G) return;
+  mpMobPush(true);
+  mpSend('mhit', { zi: W.zi, tier: G.tier | 0, id: e.mid, d: Math.round(d) });
+}
+function mpMobGone(e) {
+  if (!mpMobHost() || !e || !e.mid || !W || !G) return;
+  mpSend('mgone', { zi: W.zi, tier: G.tier | 0, id: e.mid });
+}
+function mpMobSplash(e, d) {
+  if (!mpMobHost() || !e || !(d > 0) || !MP.others) return;
+  const reach = ((ET[e.k] && ET[e.k].range) || 1) + 1.4;
+  for (let i = 0; i < MP.others.length; i++) {
+    const o = MP.others[i];
+    if (!o || !(o.hp > 0)) continue;
+    if (Math.hypot(o.x - e.x, o.y - e.y) <= reach) mpSend('mdmg', { uid: o.uid, d: Math.round(d), name: e.name || 'a machine' });
+  }
+}
+function mpMobPush(soon) {
+  if (!mpMobHost() || !W || !G) return;
+  const now = Date.now();
+  const seq = W.mobSeq || 0;
+  if (!soon && MP.mobAt && now - MP.mobAt < 180) return;
+  if (soon && MP.mobSeqSent === seq && MP.mobAt && now - MP.mobAt < 180) return;
+  if (soon && MP.mobAt && now - MP.mobAt < 40 && MP.mobSeqSent === seq) return;
+  MP.mobAt = now;
+  MP.mobSeqSent = seq;
+  const list = [];
+  for (let i = 0; i < W.ents.length; i++) {
+    const e = W.ents[i];
+    if (!e || !e.mid || e.mp || !(e.hp > 0)) continue;
+    list.push({
+      id: e.mid, k: e.k, x: +e.x.toFixed(2), y: +e.y.toFixed(2),
+      hp: Math.round(e.hp), max: Math.round(e.max || e.hp), ml: W.ml | 0,
+      champ: e.champ ? 1 : 0, su: e.su ? 1 : 0, min: e.minion ? 1 : 0, xpm: e.xpM || 1
+    });
+    if (list.length >= 60) break;
+  }
+  mpSend('mobs', { zi: W.zi, tier: G.tier | 0, list });
+}
+function mpStub(row) {
+  const t = ET[row.k];
+  if (!t || !W) return null;
+  const e = {
+    k: row.k, x: +row.x || 0, y: +row.y || 0, tx: +row.x || 0, ty: +row.y || 0,
+    r: t.r, hp: +row.hp || 1, max: +row.max || 1, mid: row.id | 0,
+    dmg: t.dmg, spd: t.spd, cd: 0, wind: 0, stun: 0, slow: 0, mark: 0, flash: 0,
+    aggro: true, champ: row.champ ? 1 : 0, su: row.su ? 1 : 0, sz: row.su ? 1.4 : row.champ ? 1.22 : 1,
+    ph: 0, mods: {}, ward: 0, healCd: 2, name: t.n, minion: row.min ? 1 : 0, hits: 0, arcCd: 0
+  };
+  W.ents.push(e);
+  if (typeof isBoss === 'function' && isBoss(e.k)) W.boss = e;
+  return e;
+}
+function mpApplyMobs(m) {
+  if (!W || !m || W.zi !== (m.zi | 0) || ((G && G.tier) | 0) !== (m.tier | 0)) return false;
+  const host = mpMobHost();
+  for (let i = 0; i < (m.list || []).length; i++) {
+    const row = m.list[i];
+    if (!row || !(row.id > 0)) continue;
+    let e = null;
+    for (let j = 0; j < W.ents.length; j++) if (W.ents[j].mid === row.id) { e = W.ents[j]; break; }
+    if (!e) e = mpStub(row);
+    if (!e) continue;
+    if (!host) {
+      e.tx = +row.x; e.ty = +row.y;
+      if (m.snap || e.x == null) { e.x = e.tx; e.y = e.ty; }
+      e.hp = +row.hp; e.max = +row.max || e.max;
+    } else if (m.snap) {
+      e.hp = +row.hp; e.max = +row.max || e.max;
+    }
+  }
+  if (m.you || host) {
+    let n = W.mobSeq || 0;
+    for (let i = 0; i < W.ents.length; i++) if (W.ents[i].mid > n) n = W.ents[i].mid;
+    W.mobSeq = n;
+  }
+  MP.mobSnap = null;
+  return true;
+}
+function mpMhp(m) {
+  if (!W || !m) return;
+  for (let i = 0; i < W.ents.length; i++) if (W.ents[i].mid === m.id) {
+    W.ents[i].hp = +m.hp; W.ents[i].max = +m.max || W.ents[i].max; W.ents[i].flash = .12; return;
+  }
+}
+function mpMkill(m) {
+  if (!W || !m) return;
+  let e = null;
+  for (let i = 0; i < W.ents.length; i++) if (W.ents[i].mid === m.id) { e = W.ents[i]; break; }
+  if (!e) return;
+  if (m.silent) {
+    const i = W.ents.indexOf(e);
+    if (i >= 0) W.ents.splice(i, 1);
+    if (W.boss === e) W.boss = null;
+    return;
+  }
+  kill(e, { net: 1, noXp: 1, noLoot: !m.loot });
+}
+function mpMobCatch() {
+  if (MP.mobSnap) mpApplyMobs(MP.mobSnap);
+}
+
 /* Reporting where you are runs on its own clock, because update() stops while a dialog
    or a sheet is open and somebody reading their inventory has not left the district. */
 function mpBeat() {
@@ -417,6 +542,7 @@ function mpBeat() {
   if ((G.cls || '') !== mpAnnounced) mpHello();
   MP.lastMove = performance.now();
   mpSend('move', mpMovePkt());
+  mpMobPush(false);
 }
 
 /* Drawn simply and labelled clearly: in a fight you need to know at a glance who is a
@@ -821,7 +947,7 @@ function mpGamePanel() {
   return h;
 }
 
-if (typeof devOn === 'function' && devOn()) window.__mp={MP,send:mpSend,get on(){return mpOn()},get inGame(){return mpIn()},get roster(){return MP.roster},get me(){return MP.me},get scale(){return MP.scale},mpHp,mpXp,mpDmg,mute:mpMute,loadFriends:mpFriendsLoad};
+if (typeof devOn === 'function' && devOn()) window.__mp={MP,send:mpSend,get on(){return mpOn()},get inGame(){return mpIn()},get roster(){return MP.roster},get me(){return MP.me},get scale(){return MP.scale},get mobHost(){return MP.mobHost},mpHp,mpXp,mpDmg,mute:mpMute,loadFriends:mpFriendsLoad};
 
 function mpWhere(zi) {
   if (zi === undefined || zi === null) return 'somewhere';
