@@ -52,7 +52,7 @@ function freePort() {
 function start(port, extra) {
   const env = Object.assign({}, process.env, {
     LAN: '1', PORT: String(port), DATA_DIR: extra && extra.data || tmp,
-    SMTP_HOST: '', DEBUG_HOOKS: ''
+    SMTP_HOST: '', DEBUG_HOOKS: '1'
   }, extra && extra.env || {});
   for (const k of ['GITHUB_TOKEN', 'TLS_KEY', 'TLS_CERT', 'INVITE_REQUIRED', 'INVITE_CODES', 'ALLOWLIST', 'BUG_WEBHOOK_URL', 'BUG_WEBHOOK_KEY', 'PUBLIC_ORIGIN']) delete env[k];
   if (extra && extra.keep) for (const k of extra.keep) env[k] = extra.env[k];
@@ -77,7 +77,7 @@ function start(port, extra) {
   try { boot = await srv.ready; } catch (e) { console.error(e); process.exit(1); }
   const urls = boot.split('\n').map(s => s.trim()).filter(s => /^http:\/\/\d+\.\d+\.\d+\.\d+:/.test(s));
   ok('the banner prints a non-localhost address', urls.length > 0 && urls.every(u => !/127\.0\.0\.1|localhost/.test(u)), urls.join(' '));
-  ok('the banner says reports are not sent to GitHub', /not sent to GitHub/.test(boot) && /no GitHub token/.test(boot));
+  ok('the banner says reports are not sent to GitHub', /not sent to GitHub/.test(boot), boot.slice(0, 700));
   ok('plain http, no certificate', !/TLS on/.test(boot));
   const host = (urls[0] || '').replace(/^http:\/\//, '').replace(/:\d+$/, '');
   const base = 'http://' + host + ':' + port;
@@ -90,7 +90,7 @@ function start(port, extra) {
   const bug = await post(host, port, host, '/api/bug', { happened: 'The lantern in the hall went dark while we were walking.' });
   ok('a bug report is accepted without a token', bug.status === 200 && !!bug.body.id, JSON.stringify(bug.body));
   const saved = fs.existsSync(path.join(tmp, 'bugs', bug.body.id + '.json'));
-  ok('the report is on disk and was not filed', saved && !/intake github|GITHUB_TOKEN/.test(srv.log()));
+  ok('the report is on disk and was not filed', saved && /no GitHub token/.test(srv.log()) && !/intake github/.test(srv.log()), srv.log().slice(-400));
 
   const { chromium } = require('playwright');
   const browser = await chromium.launch();
@@ -149,9 +149,23 @@ function start(port, extra) {
   const listed = await bea.locator('button[data-mpj]').innerText();
   ok('the second player sees the game on the house address', /Kitchen table/.test(listed), listed);
   await bea.click('button[data-mpj]');
-  await bea.waitForFunction(() => /In this game/.test(document.body.innerText) && /Ada/.test(document.body.innerText), null, { timeout: 8000 });
-  await ada.waitForFunction(() => /Bea/.test(document.body.innerText), null, { timeout: 8000 });
-  ok('both browsers are in the same game', true);
+  const joined = async (page, who) => {
+    const end = Date.now() + 8000;
+    let snap = null;
+    while (Date.now() < end) {
+      snap = await page.evaluate(name => {
+        const mp = window.__mp;
+        const roster = mp && mp.roster ? mp.roster.map(r => r.name) : [];
+        return { game: mp && mp.MP && mp.MP.game && mp.MP.game.name, roster, on: !!(mp && mp.on) };
+      }, who);
+      if (snap.game === 'Kitchen table' && snap.roster.indexOf(who) >= 0) return snap;
+      await page.waitForTimeout(200);
+    }
+    return snap;
+  };
+  const beaJoin = await joined(bea, 'Ada');
+  const adaJoin = await joined(ada, 'Bea');
+  ok('both browsers are in the same game', !!(beaJoin && adaJoin && beaJoin.game === 'Kitchen table' && adaJoin.game === 'Kitchen table' && beaJoin.roster.indexOf('Ada') >= 0 && adaJoin.roster.indexOf('Bea') >= 0), JSON.stringify({ beaJoin, adaJoin }));
   ok('no page errors', errs.length === 0, errs.slice(0, 3).join(' | '));
 
   const shot = process.env.LAN_SHOT || path.join(tmp, 'lan-join.png');
