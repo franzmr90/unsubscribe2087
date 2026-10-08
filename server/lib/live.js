@@ -605,7 +605,8 @@ const HANDLERS = {
   /* Soak clients measure this. It is not a game action. */
   ping(p, m) {
     if (!rate(p, 'ping', 30, 10000)) return;
-    send(p, 'pong', { n: m.n, t: m.t });
+    /* `t` is the frame type. The client's clock rides in `at`, or it would replace the type. */
+    send(p, 'pong', { n: m.n, at: m.at });
   },
 
   /* Reported by the defender, so a win cannot simply be asserted by the winner. */
