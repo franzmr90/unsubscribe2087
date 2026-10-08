@@ -5,7 +5,7 @@
 #   dist/Unsubscribe-2087-standalone.html  - the same page wrapped so it opens from the filesystem
 # The wrapper swaps the fragment's bare <title> (its first line) for a real <head>.
 cd "$(dirname "$0")/src" || exit 1
-ORDER="p1.js p2.js p5.js p6.js p7.js p8.js p9.js p10.js p11.js p3.js p4.js p12.js p13.js"
+ORDER="formulas.js p1.js p2.js p5.js p6.js p7.js p8.js p9.js p10.js p11.js p3.js p4.js p12.js p13.js"
 mkdir -p ../dist ../.tmp
 { echo '(()=>{'; cat $ORDER; echo '})();'; } > ../.tmp/all.js
 node --check ../.tmp/all.js || exit 1

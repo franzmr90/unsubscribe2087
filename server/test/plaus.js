@@ -73,16 +73,61 @@ healed.burst = 0;
 plaus.clampVitals(healed, { hp: 400, hpm: 400 }, 2050);
 ok('a bar filled faster than regen and leech is clamped', healed.hp > 100 && healed.hp < 250, String(healed.hp));
 
-const ignore = { cls: 'scrapper', name: 'Iron', lvl: 20, hp: 200, hpm: 400, vitAt: 3000 };
+const ignore = { cls: 'courier', name: 'Iron', lvl: 20, hp: 200, hpm: 400, vitAt: 3000 };
 plaus.notePvp(ignore, 160);
-const chip = Math.max(1, Math.round(160 * 0.08));
+const chip = plaus.pvpOwed(ignore, 160);
 plaus.clampVitals(ignore, { hp: 200, hpm: 400 }, 3200);
-ok('an ignored hit still comes off the bar', ignore.hp === 200 - chip, String(ignore.hp) + ' chip ' + chip);
+ok('an ignored hit still comes off the bar', ignore.hp === 200 - chip && chip === Math.max(1, Math.round(160 * 0.08)), String(ignore.hp) + ' chip ' + chip);
 
 const stim = { cls: 'scrapper', name: 'Stim', lvl: 20, hp: 100, hpm: 400, vitAt: 4000 };
 plaus.notePvp(stim, 160);
 plaus.clampVitals(stim, { hp: 280, hpm: 400 }, 4200);
 ok('a stim-sized jump is not called an ignored hit', stim.hp >= 250, String(stim.hp));
+
+const { FORMULAS } = require('../../src/formulas');
+ok('founder life is the balance pass', FORMULAS.cls.founder.hp === 102 && FORMULAS.cls.founder.hpL === 13);
+ok('homesteader life is the balance pass', FORMULAS.cls.homesteader.hp === 120 && FORMULAS.cls.homesteader.hpL === 16);
+ok('witness life is the balance pass', FORMULAS.cls.witness.hp === 102 && FORMULAS.cls.witness.hpL === 13);
+ok('maximalist life is the balance pass', FORMULAS.cls.maxi.hp === 118 && FORMULAS.cls.maxi.hpL === 15);
+const oldFounder = Math.round((90 + 19 * 12 + (5 * 19 + 80) * 4 + 2200 + 12 * 20) * 2.8);
+ok('a braced founder is not clamped to the old life', plaus.lifeCap('founder', 20) > oldFounder);
+
+/* A real hit that the brace can swallow (under 1 life on the bar) is not a cheat.
+   An ignored hit that should still show is taken off. */
+function braceCase(cls, landed, hpm, drop) {
+  const quiet = { cls, name: cls, lvl: 40, hp: hpm, hpm, vitAt: 8000 };
+  const owed = plaus.pvpOwed(quiet, landed);
+  plaus.notePvp(quiet, landed);
+  plaus.clampVitals(quiet, { hp: hpm, hpm }, 8200);
+  const honest = { cls, name: cls + 'h', lvl: 40, hp: hpm, hpm, vitAt: 9000 };
+  plaus.notePvp(honest, landed);
+  plaus.clampVitals(honest, { hp: hpm - drop, hpm }, 9200);
+  return { owed, quiet: quiet.hp, honest: honest.hp };
+}
+const big = 400, bar = 800;
+const braces = [
+  ['scrapper', 'Hold the Line'],
+  ['founder', 'Interns'],
+  ['homesteader', 'Cold Frame'],
+  ['witness', 'the Sentence and Colophon'],
+  ['maxi', 'Tick Tock, Few Understand, and Twenty-One Million']
+];
+for (const [cls, name] of braces) {
+  const keep = plaus.braceKeep(cls);
+  const raw = Math.max(1, Math.round(big * 0.08));
+  const c = braceCase(cls, big, bar, 2);
+  ok(name + ' lowers the chip', c.owed > 0 && c.owed < raw && Math.abs(c.owed - Math.floor(raw * keep)) < 0.01, 'owed ' + c.owed + ' raw ' + raw);
+  ok(name + ' still docks a bar that does not move', c.quiet === bar - c.owed, String(c.quiet));
+  ok(name + ' leaves a bar that did move', c.honest === bar - 2, String(c.honest));
+}
+const eaten = braceCase('witness', 20, 100, 0);
+ok('a witness brace can eat a small hit', eaten.owed === 0 && eaten.quiet === 100, 'owed ' + eaten.owed + ' hp ' + eaten.quiet);
+const bare = FORMULAS.brace.hacker;
+FORMULAS.brace.hacker = 0.5;
+const withBrace = braceCase('hacker', big, bar, 2);
+FORMULAS.brace.hacker = bare;
+ok('a Technomancer brace is one number', withBrace.owed === Math.floor(Math.max(1, Math.round(big * 0.08)) * 0.5) && withBrace.quiet === bar - withBrace.owed, String(withBrace.owed));
+ok('the Technomancer brace is empty until it exists', plaus.braceKeep('hacker') === 1);
 
 (async () => {
   await new Promise(r => server.listen(0, r));

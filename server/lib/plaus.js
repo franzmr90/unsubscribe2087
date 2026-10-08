@@ -8,17 +8,10 @@
 /* Same towns as live.js. Inlined so this file does not require live.js. */
 const TOWNS = new Set([0, 17, 18, 21, 27]);
 
-/* Class base life and the unbuffed swing interval, from the class table. */
-const CLS = {
-  scrapper: { hp: 130, hpL: 17, ivl: 0.6, melee: 1 },
-  hacker: { hp: 85, hpL: 12, ivl: 0.62, melee: 0 },
-  courier: { hp: 100, hpL: 14, ivl: 0.4, melee: 0 },
-  anon: { hp: 95, hpL: 13, ivl: 0.42, melee: 1 },
-  founder: { hp: 90, hpL: 12, ivl: 0.6, melee: 0 },
-  homesteader: { hp: 110, hpL: 15, ivl: 0.55, melee: 0 },
-  witness: { hp: 80, hpL: 11, ivl: 0.68, melee: 1 },
-  maxi: { hp: 104, hpL: 14, ivl: 0.5, melee: 1 }
-};
+const { FORMULAS, braceKeep } = require('../../src/formulas');
+const CLS = FORMULAS.cls;
+const LIFE = FORMULAS.life;
+const PVP = FORMULAS.pvp;
 
 /* Tiles. Basic is a swing or a shot. Skill is an active that is not a leap or a storm.
    Far is a rush, a chain, a placed storm. Slack covers one position report plus 150 ms
@@ -43,22 +36,7 @@ const SWING_MAX = 24;
 const RATE_WINDOW = 1000;
 const RATE_SLACK = 2;
 
-/* Life ceiling: every attribute point in vitality, plus a gear ceiling, times the
-   stacked life multipliers (iron hide, % life, orders). */
-const VIT_GEAR = 80;
-const HP_FLAT = 2200;
-const HP_PER = 12;
-const HP_MULT = 2.8;
-const REGEN_FLAT = 50;
-const REGEN_PCT = 0.025;
-const TOWN_PCT = 0.32;
-const LEECH = 0.15;
-const SWINGS_PER_S = 8;
-const BURST_BARS = 2;
-const BURST_REFILL = 0.5;
-const PVP_FRAC = 0.08;
-const PVP_MIN = 0.15;
-const PVP_WINDOW = 2500;
+/* Life ceiling, heal clamps, and the PvP chip live in src/formulas.js. */
 
 let hitRej = 0, hpFlag = 0;
 
@@ -132,24 +110,24 @@ function hitOk(p, rec, sk) {
 function lifeCap(cls, lvl) {
   const c = classOf(cls);
   const L = Math.max(1, Math.min(100, +lvl || 1));
-  const vit = 5 * (L - 1) + VIT_GEAR;
-  const raw = c.hp + (L - 1) * c.hpL + vit * 4 + HP_FLAT + HP_PER * L;
-  return Math.round(raw * HP_MULT);
+  const vit = 5 * (L - 1) + LIFE.vitGear;
+  const raw = c.hp + (L - 1) * c.hpL + vit * 4 + LIFE.hpFlat + LIFE.hpPer * L;
+  return Math.round(raw * LIFE.hpMult);
 }
 
 function healPerSec(p) {
   const cap = p.hpm || lifeCap(p.cls, p.lvl);
-  const town = TOWNS.has(p.zi | 0) ? TOWN_PCT : 0;
-  const regen = REGEN_FLAT + cap * (REGEN_PCT + town);
-  const leech = LEECH * (40 + 35 * Math.max(1, +p.lvl || 1)) * SWINGS_PER_S;
+  const town = TOWNS.has(p.zi | 0) ? LIFE.townPct : 0;
+  const regen = LIFE.regenFlat + cap * (LIFE.regenPct + town);
+  const leech = LIFE.leech * (40 + 35 * Math.max(1, +p.lvl || 1)) * LIFE.swingsPerS;
   return regen + leech;
 }
 
 function allowGain(p, gain, dt) {
   const regen = healPerSec(p) * dt;
   const bar = p.hpm || 1;
-  if (p.burst == null) p.burst = bar * BURST_BARS;
-  p.burst = Math.min(bar * BURST_BARS, p.burst + bar * BURST_REFILL * dt);
+  if (p.burst == null) p.burst = bar * LIFE.burstBars;
+  p.burst = Math.min(bar * LIFE.burstBars, p.burst + bar * LIFE.burstRefill * dt);
   const need = Math.max(0, gain - regen);
   if (need <= p.burst + 1) {
     p.burst -= Math.max(0, need);
@@ -160,12 +138,23 @@ function allowGain(p, gain, dt) {
   return allowed;
 }
 
-function notePvp(q, landed) {
-  if (!q) return;
+/* Chip the bar must show, after that class's braces. Under 1 life, the
+   brace ate the visible hit and an unchanged bar is honest. */
+function pvpOwed(q, landed) {
+  if (!q) return 0;
   const hpm = q.hpm || 1;
-  if (!(landed >= hpm * PVP_MIN)) return;
-  const chip = Math.max(1, Math.round(landed * PVP_FRAC));
-  q.pvpDebt = Math.max(q.pvpDebt || 0, chip);
+  if (!(landed >= hpm * PVP.min)) return 0;
+  const chip = Math.max(1, Math.round(landed * PVP.frac));
+  return Math.floor(chip * braceKeep(q.cls) + 1e-9);
+}
+
+function notePvp(q, landed) {
+  const owed = pvpOwed(q, landed);
+  if (owed < 1) {
+    if (q) q.pvpDebt = 0;
+    return;
+  }
+  q.pvpDebt = Math.max(q.pvpDebt || 0, owed);
   q.pvpDebtAt = Date.now();
 }
 
@@ -193,11 +182,11 @@ function clampVitals(p, m, now) {
     /* A stim is about 45% of life and cannot be told from a packet. An unchanged
        bar after a real hit is not a stim. A jump of that size, once a second and
        a half, is. */
-    if (p.pvpDebt > 0 && now - (p.pvpDebtAt || 0) < PVP_WINDOW && !(p.safeUntil > now)) {
+    if (p.pvpDebt > 0 && now - (p.pvpDebtAt || 0) < PVP.window && !(p.safeUntil > now)) {
       const debt = p.pvpDebt;
       p.pvpDebt = 0;
       if (hp >= p.hp - 1) {
-        const stim = hp >= p.hp + hpm * 0.3 && now - (p.stimAt || 0) > 1400;
+        const stim = hp >= p.hp + hpm * LIFE.stimJump && now - (p.stimAt || 0) > 1400;
         if (stim) p.stimAt = now;
         else {
           hpFlag++;
@@ -224,6 +213,6 @@ function takeHpFlag() { const n = hpFlag; hpFlag = 0; return n; }
 
 module.exports = {
   CLS, REACH, SLACK, CAST_FLOOR, ASPD_DIV, SWING_MS, RATE_SLACK,
-  reachOf, minGapMs, allowBurst, hitOk, lifeCap, healPerSec, clampVitals, notePvp,
-  takeHitRej, takeHpFlag
+  reachOf, minGapMs, allowBurst, hitOk, lifeCap, healPerSec, clampVitals, notePvp, pvpOwed,
+  braceKeep, takeHitRej, takeHpFlag
 };

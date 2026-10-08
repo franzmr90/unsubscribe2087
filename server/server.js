@@ -585,7 +585,7 @@ if (require.main === module) {
       if (TLS) console.log('TLS on. A self-signed certificate warns once per device; accept it and voice will work.');
       else if (!SECURE) console.log('No TLS: voice works on localhost, but not from another device over the network. See TESTING.md.');
     }
-    if (!mail.enabled()) console.log('No SMTP configured: mail goes to server/data/outbox and the console.');
+    if (!mail.enabled()) console.log('No SMTP configured: mail goes to ' + mail.outboxDir() + ' and the console.');
     if (!process.env.GITHUB_TOKEN) console.log('[bug] no GitHub token: a report is saved on this computer and is not filed online.');
   };
   if (lan.on()) server.listen(PORT, '0.0.0.0', started);

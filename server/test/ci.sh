@@ -17,6 +17,7 @@ node server/test/reconnect.js
 node server/test/admin.js
 node server/test/maps.js
 node server/test/plaus.js
+node deploy/dry-run.js
 node server/test/lan.js
 node server/test/mobs.js
 node server/test/live.js

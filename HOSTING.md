@@ -78,6 +78,24 @@ What it needs, and why most hosts are wrong for it:
 A beta of 5–20 people fits on the smallest always-on box. Games hold eight. The process
 is one Node server with no database.
 
+### Check the box on this computer first
+
+`node deploy/dry-run.js` does the file steps from `deploy/setup.sh` in a temporary
+directory: the env file, the Caddyfile, and the systemd unit. It does not install
+packages, open ports, or talk to GitHub. It then starts the server with that env and
+checks the things a real night would get wrong:
+
+- registration is closed until an invite is minted
+- `PUBLIC_ORIGIN` is `https://…`, so the session cookie is `Secure`
+- `TRUST_PROXY=1`, so the address Caddy forwards is the one that gets rate-limited
+- Caddy is the TLS terminator and proxies to `127.0.0.1:8087`, including WebSockets
+- the unit is `Restart=always`, and a killed process comes back with the accounts still there
+- with `GITHUB_TOKEN` empty, a bug report is a file under the data directory and is not sent anywhere
+
+`node server/test/intake.js` is the other half: a fake GitHub and a fake webhook, covering
+the labels, the "comment instead of a second issue" rule, and the per-account and
+per-server caps. Run that before you put a real token in the env file.
+
 ### What you do, in order
 
 You pick the host, the domain, and the DNS. The script does not create accounts or spend

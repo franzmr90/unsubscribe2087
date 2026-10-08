@@ -218,9 +218,9 @@ function calc(){
     if(f==='hound'){armM*=HS.houndArm;s.mspd+=HS.houndSpd}
     else if(f==='hull'){armM*=HS.hullArm;s.mspd+=HS.hullSpd;if(L(13))s.armor+=Math.min(HS.bigMax,Math.floor((G.formT||0)/HS.bigStep))*HS.bigArm*L(13)}
     else if(f==='worn'){armM*=HS.wornArm;s.mspd+=HS.hullSpd}}
-  if(G.cls==='witness'){if(L(2))s.margin=1+.2*L(2);if(L(5))s.filed=2+.4*L(5);if(L(8)){s.footnote=1+.08*L(8);hpM=Math.max(.4,hpM-.04*L(8))}if(L(11)){s.pdr=(s.pdr||0)+14+3*L(11);s.coloHi=1-Math.min(.45,.04*L(11));s.coloLo=1+.03*L(11)}if(L(13))s.named=.05*L(13)}
+  if(G.cls==='witness'){if(L(2))s.margin=1+.2*L(2);if(L(5))s.filed=2+.4*L(5);if(L(8)){s.footnote=1+.08*L(8);hpM=Math.max(.4,hpM-.04*L(8))}if(L(11)){s.pdr=(s.pdr||0)+FORMULAS.brace.colophon.pdr+FORMULAS.brace.colophon.pdrL*L(11);s.coloHi=1-Math.min(FORMULAS.brace.colophon.hi,FORMULAS.brace.colophon.hiPer*L(11));s.coloLo=1+.03*L(11)}if(L(13))s.named=.05*L(13)}
   /* Twenty-One Million prints +8% armour per rank, the same multiplier Iron Hide uses, and 8% + 2% damage reduction per rank. */
-  if(G.cls==='maxi'&&L(8)){armM+=.08*L(8);s.pdr=(s.pdr||0)+8+2*L(8)}
+  if(G.cls==='maxi'&&L(8)){armM+=.08*L(8);s.pdr=(s.pdr||0)+FORMULAS.brace.million.pdr+FORMULAS.brace.million.pdrL*L(8)}
   if(s.sp.nda)s.dodge+=15;if(s.sp.cloud9)s.dodge+=10;if(s.sp.fineprint)s.cdr+=.2;if(s.sp.repair)s.cap+=4;
   hpM+=extra(s);s.cdr=Math.min(.6,s.cdr||0);
   s.dmg+=(G.at.mgt+(s.mgt||0))*1.5;s.crit=Math.round((s.crit+5+(G.at.ref+(s.ref||0))*.3)*10)/10;
@@ -229,7 +229,7 @@ function calc(){
   s.maxHp=Math.round((c.hp+(G.lvl-1)*c.hpL+(G.at.vit+(s.vit||0))*4+s.hp+(s.hpL||0)*(G.lvl||1))*hpM);
   s.maxEn=Math.max(1,Math.round((50+G.lvl*2+(G.at.bnd+(s.bnd||0))*3+s.en+(s.enL||0)*(G.lvl||1))*(1+Math.min(80,s.enPct||0)/100)));
   if(P&&P.orders>0){s.maxHp=Math.round(s.maxHp*1.12);s.maxEn=Math.round(s.maxEn*1.08)}
-  if(s.pdr)s.pdr=Math.min(50,s.pdr);
+  if(s.pdr)s.pdr=Math.min(FORMULAS.brace.pdrCap,s.pdr);
   s.aspd+=s.wspd;s.mspd=Math.min(s.mspd,50);
   if(s.r_all)for(const k of RTK)s['r_'+k]=(s['r_'+k]||0)+s.r_all;
   S=s;G.hp=Math.min(G.hp,S.maxHp);G.en=Math.min(G.en,S.maxEn);G.stims=Math.min(G.stims,S.cap);scrubItemBinds()}
@@ -561,15 +561,15 @@ function defragAct1(e){return !!(e&&e.q==='q3'&&!G.act2)}
 function hurt(d,slow,src){const pv=src&&src.pvp,wasStun=P.hitStun>0;if(mode==='dying'||(P.inv>0&&!pv)||(mode!=='play'&&!pv)||G.god)return;if(P.redact>0){float(P.x,P.y,'Redacted','#e6dcc8',1);return}if(src&&W&&W.ents&&W.ents.indexOf(src)>=0)src.lastAtk=d;if(P.dip){P.dip=0;float(P.x,P.y,'The dip','#f7931a',1);sfx('whiff');return}if(!pv)d*=partyD();if(!pv){let mk=P.mkAura>0?1.3:1;if(P.mkP>0)mk=Math.max(mk,1+P.mkP);if(mk>1)d*=mk}
   if(S.dodge&&Math.random()*100<S.dodge){float(P.x,P.y,'Dodge','#9fe0d0',1);sfx('whiff');return}
   if(P.route>0&&G.cls==='courier'&&sl(10)&&!boonOn(10)&&Math.random()*100<6+2*sl(10)){float(P.x,P.y,'Route','#3fbf8f',1);sfx('whiff');return}
-  d=typedIn(d,src);if(S.pdr)d*=1-Math.min(50,S.pdr)/100;if(S.sp.indemnity&&src&&src.crit){d/=(src.critM||2);src.crit=0}d*=S.taken||1;d*=100/(100+(S.armor+(G.cls==='scrapper'&&sl(11)&&!boonOn(11)?Math.floor(Math.min(6,P.lineT||0))*4*sl(11):0))*(P.mech>0?2:1)*(P.guard>0?1.6:1)*(P.shr&&P.shr.k==='guard'?2:1));if(P.lastTy==='rust')P.rustD={dps:d*.25/3,t:3};
+  d=typedIn(d,src);if(S.pdr)d*=1-Math.min(FORMULAS.brace.pdrCap,S.pdr)/100;if(S.sp.indemnity&&src&&src.crit){d/=(src.critM||2);src.crit=0}d*=S.taken||1;d*=100/(100+(S.armor+(G.cls==='scrapper'&&sl(11)&&!boonOn(11)?Math.floor(Math.min(6,P.lineT||0))*4*sl(11):0))*(P.mech>0?2:1)*(P.guard>0?1.6:1)*(P.shr&&P.shr.k==='guard'?2:1));if(P.lastTy==='rust')P.rustD={dps:d*.25/3,t:3};
   const preEn=d;let fromEn=0;if(S.enc){const a=Math.min(G.en,preEn*S.enc);G.en-=a;d-=a;fromEn=a}if(P.ward>0&&d>0&&G.en>0){const want=Math.min(preEn*.3,Math.max(0,preEn*.7-fromEn));const a=Math.min(G.en,d,want);if(a>0){G.en-=a;d-=a;float(P.x,P.y,'Ward','#59e0e6',1)}}
   if(P.barrier>0&&d>0){const a=Math.min(P.barrier,d);P.barrier-=a;d-=a;if(a>0)float(P.x,P.y,'patched','#59e0e6',1);if(d<=0)return}
   if(G.cls==='witness'&&!(P&&P.tag)&&!(P.paper>0)){const r=recGet();if(r>80&&S.coloHi)d*=S.coloHi;else if(r<20&&S.coloLo)d*=S.coloLo}
-  if(P.paper>0)d*=.52;if(P.maxiBlock>0)d*=.78;
-  if(G.cls==='scrapper'&&sl(11)&&!boonOn(11))d*=1-Math.min(30,Math.floor(P.lineT||0)*5)/100;
-  if(G.cls==='maxi'&&sl(2)&&W){let c=0;for(const o of W.ents)if(o.hp>0&&!o.mp&&dist(o,P)<6&&++c>=5)break;if(c)d*=1-Math.min(.3,.06*c)}
-  if(G.cls==='founder'&&W&&W.allies){const n=W.allies.filter(a=>a.per&&a.hp>0).length;if(n)d*=1-Math.min(.2,.05*n)}
-  if(G.cls==='homesteader'&&W&&W.allies){const n=W.allies.filter(a=>a.plot&&a.life>0).length;if(n)d*=1-Math.min(.28,.12+.04*(n-1))}
+  if(P.paper>0)d*=FORMULAS.brace.sentence;if(P.maxiBlock>0)d*=FORMULAS.brace.tick;
+  if(G.cls==='scrapper'&&sl(11)&&!boonOn(11))d*=1-Math.min(FORMULAS.brace.hold.pct,Math.floor(P.lineT||0)*5)/100;
+  if(G.cls==='maxi'&&sl(2)&&W){let c=0;for(const o of W.ents)if(o.hp>0&&!o.mp&&dist(o,P)<6&&++c>=5)break;if(c)d*=1-Math.min(FORMULAS.brace.few.cap,FORMULAS.brace.few.per*c)}
+  if(G.cls==='founder'&&W&&W.allies){const n=W.allies.filter(a=>a.per&&a.hp>0).length;if(n)d*=1-Math.min(FORMULAS.brace.intern.cap,FORMULAS.brace.intern.per*n)}
+  if(G.cls==='homesteader'&&W&&W.allies){const n=W.allies.filter(a=>a.plot&&a.life>0).length;if(n)d*=1-Math.min(FORMULAS.brace.cold.cap,FORMULAS.brace.cold.base+FORMULAS.brace.cold.extra*(n-1))}
   if(d>0)P.hitStun=.45;G.hp-=d;if(G.hp>0&&S.sp.remote&&!wasStun&&!(P.remoteCd>0)&&Math.random()<.25){P.remoteCd=pv?6:2;remoteStep()}if(d>0)P.lastLoss=d;P.flash=.15;sfx('hurt');float(P.x,P.y,'-'+Math.max(1,Math.round(d)),'#ff5a4d',1);if(slow&&!S.sp.offer&&!(P.lastShift>0)&&!(P.two&&P.two.n>0))P.slow=1.6;if(S.sp.clock&&G.hp>0&&G.hp<S.maxHp*.3&&!(G.clockT>0)){G.clockT=60;for(const o of W.ents)if(dist(o,P)<9){o.slow=4;o.stun=Math.max(o.stun,.6)}sfx('warn');toast('The dead alarm rings. Time drags for the machines.')}if(OPT.shake)shake=Math.max(shake,3);
   if(src&&src.hp>0){if(src.mods&&src.mods.leech&&!(src.noheal>0))src.hp=Math.min(src.max,src.hp+src.max*(defragAct1(src)?.05:.15));if(S.sp.terms)src.stun=Math.max(src.stun,1);if(S.thorns){const prev=DT;DT='impact';P.holdTy=1;const out=typed(src,S.thorns);P.holdTy=0;DT=prev;dmgEnemy(src,out,false)}}
   if(G.hp<=0&&S.sp.still&&!(G.stillT>0)){G.stillT=90;G.hp=S.maxHp;P.inv=2;for(const o of W.ents)o.stun=Math.max(o.stun,2.5);sfx('shrine');toast('Still Water: the room holds its breath.');return}

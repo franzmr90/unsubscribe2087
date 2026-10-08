@@ -19,7 +19,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
    Rows 4 and 5 are that class's own skills. */
 const ROWREQ=[1,4,9,26,51];
 const CLS={
- scrapper:{n:'Scrapper',tag:'A laid-off line worker with a road sign and a grudge. Tough, close range.',hp:130,hpL:17,melee:true,mult:1.25,ivl:.6,spd:4.1,col:'#d9822b',
+ scrapper:{n:'Scrapper',tag:'A laid-off line worker with a road sign and a grudge. Tough, close range.',hp:FORMULAS.cls.scrapper.hp,hpL:FORMULAS.cls.scrapper.hpL,melee:true,mult:1.25,ivl:.6,spd:4.1,col:'#d9822b',
   sk:[
    {n:'Stop Sign',ab:'STOP\nSIGN',a:1,cost:5,cd:.8,d:L=>`A wide swing. The machine in front takes ${pct(1.3+.15*L)}. Everyone else in the swing takes 22% of that, with a ${15+2*L}% chance to stun.`},
    {n:'Hurl',ab:'HURL',a:1,cost:6,cd:.6,d:L=>`Throw scrap that passes through enemies for ${pct(1.2+.2*L)} damage.`},
@@ -36,7 +36,7 @@ const CLS={
    {n:'Call the Strike',ab:'CALL THE\nSTRIKE',a:1,cost:18,cd:11,d:L=>`A horn. Ordinary machines are pushed back. Elites and bosses are pulled in. Everyone caught takes ${pct(.55+.08*L)} noise.`},
    {n:'Two-Handed',ab:'TWO-\nHANDED',a:1,cost:14,cd:9,d:L=>`Your next three swings are slow, cannot be interrupted, and hit a wider arc.`},
    {n:'Last Shift',ab:'LAST\nSHIFT',a:1,cost:24,cd:22,d:L=>`For ${(4+.3*L).toFixed(1)}s your swings leech ${8+L}% and you do not flinch. If you fall while it is up, you fall.`}]},
- hacker:{n:'Technomancer',tag:'An IT contractor who read the machines’ source and learned to curse in it. Fragile, ranged, clears crowds.',hp:85,hpL:12,melee:false,mult:1.1,ivl:.62,spd:4.1,col:'#9a6cff',
+ hacker:{n:'Technomancer',tag:'An IT contractor who read the machines’ source and learned to curse in it. Fragile, ranged, clears crowds.',hp:FORMULAS.cls.hacker.hp,hpL:FORMULAS.cls.hacker.hpL,melee:false,mult:1.1,ivl:.62,spd:4.1,col:'#9a6cff',
   sk:[
    {n:'Arc Chain',ab:'ARC\nCHAIN',a:1,cost:11,cd:1.2,d:L=>`Lightning that leaps through ${3+Math.floor(L/2)} enemies for ${pct(1.2+.18*L)} each. For 1.7s after you cast it, 30% of each hit is paid from energy, and only as much as you have.`},
    {n:'Spark Lance',ab:'SPARK\nLANCE',a:1,cost:5,cd:.5,d:L=>`A bolt that pierces every enemy in a line for ${pct(1.4+.2*L)}. Primes your next Arc Chain within 3 seconds for +30%.`},
@@ -53,7 +53,7 @@ const CLS={
    {n:'Step Back',ab:'STEP\nBACK',a:1,cost:8,cd:4,d:L=>`About four paces back along your facing.`},
    {n:'Patched',ab:'',a:0,d:L=>`Passive. ${Math.round((10+2*L))}% of the Surge damage you deal becomes a barrier, up to ${Math.round(20+2*L)}% of your life. Nothing, if your Schema is Heat or Noise.`},
    {n:'Kill Dash Nine',ab:'KILL -9',a:1,cost:26,cd:16,d:L=>`One machine, for ${pct(2.8+.4*L)} of your Schema element. It ignores that element's resistance, once. A resistance of zero is still a wall. Casting it locks your hands.`}]},
- courier:{n:'Runner',tag:'A courier who stopped delivering and kept running. Fast feet, faster hands.',hp:100,hpL:14,melee:false,mult:.82,ivl:.4,spd:4.8,col:'#3fbf8f',
+ courier:{n:'Runner',tag:'A courier who stopped delivering and kept running. Fast feet, faster hands.',hp:FORMULAS.cls.courier.hp,hpL:FORMULAS.cls.courier.hpL,melee:false,mult:.82,ivl:.4,spd:4.8,col:'#3fbf8f',
   sk:[
    {n:'Scatter Shot',ab:'SCATTER',a:1,cost:9,cd:1.2,d:L=>`Throw a fan of ${3+Math.floor(L/2)} blades for ${pct(.9+.1*L)} each. Anything within arm’s reach is also cut for ${pct(.5+.06*L)}.`},
    {n:'Fleet Step',ab:'FLEET\nSTEP',a:1,cost:9,cd:3.5,d:L=>`Dash, untouchable, then run 50% faster for ${(2+.3*L).toFixed(1)}s.`},
@@ -72,7 +72,7 @@ const CLS={
    {n:'Missed Connection',ab:'MISSED\nCONN',a:1,cost:18,cd:12,d:L=>`Mark a machine. If it dies within ${(4+.25*L).toFixed(1)}s, to you or to anyone with you, you appear where it fell and your next throw costs nothing.`}]}
 };
 Object.assign(CLS,{
- anon:{n:'Anon',tag:'No name, no face, no account. Traps, vanishing acts and a knife from behind.',hp:95,hpL:13,melee:true,mult:1,ivl:.42,spd:4.7,col:'#3f3f4c',
+ anon:{n:'Anon',tag:'No name, no face, no account. Traps, vanishing acts and a knife from behind.',hp:FORMULAS.cls.anon.hp,hpL:FORMULAS.cls.anon.hpL,melee:true,mult:1,ivl:.42,spd:4.7,col:'#3f3f4c',
   sk:[
    {n:'Honeypot',ab:'HONEY-\nPOT',a:1,cost:14,cd:9,d:L=>`Plant a lure. Machines swarm it for 3s, then it bursts for ${pct(2.2+.35*L)} and stuns.`},
    {n:'Proxy Hop',ab:'PROXY\nHOP',a:1,cost:10,cd:3.5,d:L=>`Appear behind the nearest machine and stab for ${pct(1.6+.25*L)}, always a deadly strike.`},
@@ -89,7 +89,7 @@ Object.assign(CLS,{
    {n:'Dead Drop',ab:'DEAD\nDROP',a:1,cost:12,cd:3,d:L=>`Place a mark. Activate again to appear there. One mark. It does not explode.`},
    {n:'Cutout',ab:'',a:0,d:L=>`Passive. The first hit that would destroy a mine or a sockpuppet is ignored. It does not apply to you.`},
    {n:'We Were Never Here',ab:'NEVER\nHERE',a:1,cost:20,cd:16,d:L=>`Every mine and sockpuppet goes off as a silence, and you drop into Incognito. If you have none, nothing happens.`}]},
- founder:{n:'Founder',tag:'He left the Board with a grudge and a headcount. Summons a workforce and lets it do the dying.',hp:102,hpL:13,melee:false,mult:.7,ivl:.6,spd:4,col:'#26262e',
+ founder:{n:'Founder',tag:'He left the Board with a grudge and a headcount. Summons a workforce and lets it do the dying.',hp:FORMULAS.cls.founder.hp,hpL:FORMULAS.cls.founder.hpL,melee:false,mult:.7,ivl:.6,spd:4,col:'#26262e',
   sk:[
    {n:'Interns',ab:'INTERN',a:1,cost:8,cd:.5,d:L=>`Summon an intern that fights for ${pct(.35+.05*L)}. You keep up to ${Math.min(7,2+Math.floor(L/2))}. They follow you everywhere, step in front of a blow, and each one alive cuts the damage you take by 5%, up to 20%.`},
    {n:'Cease & Desist',ab:'CEASE &\nDESIST',a:1,cost:14,cd:7,d:L=>`Bind every machine in an area for ${(2+.3*L).toFixed(1)}s and deal ${pct(.8+.15*L)}.`},
@@ -106,7 +106,7 @@ Object.assign(CLS,{
    {n:'Term Sheet',ab:'TERM\nSHEET',a:1,cost:28,cd:14,d:L=>`One officer. You may feed it a weapon from your pack. The weapon is consumed, and the officer strikes with that damage type for ${pct(.9+.12*L)}. Empty-handed, it is weaker and it is Impact.`},
    {n:'Org Debt',ab:'',a:0,d:L=>`Passive. Each worker on the field cuts the damage you deal by ${4+L}% and raises theirs by ${8+L}%. It stacks. Swing it yourself with a full headcount and you are playing this class wrong.`},
    {n:'Liquidation',ab:'LIQUID-\nATION',a:1,cost:18,cd:9,d:L=>`Enemy corpses within 5 paces explode for ${pct(1.1+.15*L)}. Your staff does not. Layoffs is the button that spends them.`}]},
- homesteader:{n:'Homesteader',tag:'Lives on the verge the Office says does not exist. Tends a plot, wears a dead machine, or keeps a flock that does not love them.',hp:120,hpL:16,melee:false,mult:1,ivl:.55,spd:4.3,col:'#6a8f62',
+ homesteader:{n:'Homesteader',tag:'Lives on the verge the Office says does not exist. Tends a plot, wears a dead machine, or keeps a flock that does not love them.',hp:FORMULAS.cls.homesteader.hp,hpL:FORMULAS.cls.homesteader.hpL,melee:false,mult:1,ivl:.55,spd:4.3,col:'#6a8f62',
   sk:[
    {n:'Cold Frame',ab:'COLD\nFRAME',a:1,cost:12,cd:6,d:L=>`A rust patch with a 2.2-pace radius for 6 seconds. It slows, and deals ${pct(.22+.04*L)} every half second. It ends if you enter a chassis. While you have a plot down you take 12% less, and 4% less for each further plot, up to 28%.`},
    {n:'Wear the Hound',ab:'HOUND',a:1,cost:8,cd:1,d:()=>`Become the hound: faster, melee, less armour. Plot and flock skills grey out. A ranged weapon keeps its damage and loses its reach. Click Hound again to step out, or Shed. Your hands are busy for 0.7s either way.`},
@@ -123,7 +123,7 @@ Object.assign(CLS,{
    {n:'Salt the Earth',ab:'SALT',a:1,cost:18,cd:12,d:L=>`Every plot you have placed bursts for ${pct(.8+.12*L)} rust and is gone.`},
    {n:'Too Big for the Door',ab:'',a:0,d:L=>`Passive. The hull cannot dash. Armour in the hull rises the longer you have worn it: +${3*L} every 2 seconds, up to 8 times.`},
    {n:'Slaughter Weight',ab:'SLAUGH-\nTER',a:1,cost:20,cd:12,d:L=>`Each drone and the bull become a rust plot where they stand, ${pct(.28+.05*L)} every half second. The flock is spent. You cannot do this from a chassis.`}]},
- witness:{n:'Witness',tag:'Kept notes when Unity told everyone to stop looking. Stillwater watches and does nothing. The Witness writes it down. The record is paper.',hp:102,hpL:13,melee:true,mult:.8,ivl:.68,spd:4.2,col:'#8d9aab',
+ witness:{n:'Witness',tag:'Kept notes when Unity told everyone to stop looking. Stillwater watches and does nothing. The Witness writes it down. The record is paper.',hp:FORMULAS.cls.witness.hp,hpL:FORMULAS.cls.witness.hpL,melee:true,mult:.8,ivl:.68,spd:4.2,col:'#8d9aab',
   sk:[
    {n:'Look',ab:'LOOK',a:1,cost:4,cd:.5,d:()=>`Mark one machine with Testimony. The stack grows while you can see them and you are not casting. No Record cost. A swing against a marked machine hits 7% harder for each point of Testimony, up to six.`},
    {n:'The Sentence',ab:'THE\nSENTENCE',a:1,cost:8,cd:2,d:L=>`Spend Record, up to 25. Delay that machine's next attack by ${(0.4+.08*L).toFixed(2)}s at a full page. Less Record, a shorter delay. For 2.4s afterward you take 48% less, and an empty page does not punish you while that holds.`},
@@ -142,7 +142,7 @@ Object.assign(CLS,{
    {n:'Retraction',ab:'',a:0,d:()=>`Passive. If you would die with Record above 80, you drop to 1 life, the Record hits 0, and this cannot happen again for a long time. If you would die with an empty Record, you die.`}]},
  /* Unlocked by finishing the story. Deals Sound damage, which nothing resists, because
     that is the joke and also the build. */
- maxi:{n:'The Maximalist',tag:'A paladin, essentially. He has not had a new thought since 2017 and has never needed one. His auras are always on, and everything he does is Sound damage, which nothing in this world resists.',hp:118,hpL:15,melee:true,mult:1.2,ivl:.5,spd:4.2,col:'#f7931a',locked:'story',
+ maxi:{n:'The Maximalist',tag:'A paladin, essentially. He has not had a new thought since 2017 and has never needed one. His auras are always on, and everything he does is Sound damage, which nothing in this world resists.',hp:FORMULAS.cls.maxi.hp,hpL:FORMULAS.cls.maxi.hpL,melee:true,mult:1.2,ivl:.5,spd:4.2,col:'#f7931a',locked:'story',
   sk:[
    {n:'Tick Tock Next Block',ab:'TICK\nTOCK',a:1,cost:9,cd:2.4,d:L=>`Nine quick strikes of ${pct(.5+.08*L)}. The tenth is a block and lands for ${pct(4+.8*L)}. While the strikes are landing, and for 2.2s after the block, you take 22% less.`},
    {n:'Have Fun Staying Poor',ab:'HAVE FUN\nSTAYING\nPOOR',a:1,cost:12,cd:4,d:L=>`Close range, ${pct(1.4+.25*L)}. It cannot miss, and it stuns for ${(1.2+.15*L).toFixed(1)}s.`},
