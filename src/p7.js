@@ -106,8 +106,8 @@ ZONES.push({n:'Sealed Proceedings',sub:true,lvl:1,style:'trib',amb:.6,mix:[['bot
 const SUBZ=ZONES.length-1;
 function subStart(l){if(G.sats<3){toast('Serving a subpoena costs 3 sats');sfx('err');return}G.sats-=3;const z=ZONES[SUBZ],src=ZONES[pick([2,4,5,7,9,11,12,13,14,15])],ks=Object.keys(SUBM).sort(()=>Math.random()-.5);
   SUBP={lvl:l,mods:ks.slice(0,l>=5?3:2)};z.n='Subpoena · Level '+l;z.lvl=G.lvl+2*l-G.tier*12;z.style=src.style;z.amb=src.amb;z.mix=src.mix;z.su.k=pick(['hr','mech','seer','lancer']);z.su.mods=['strong','shield','fast','arc','leech'].sort(()=>Math.random()-.5).slice(0,2);
-  delete ZS[SUBZ];enter(SUBZ,{fresh:true});W.sub=SUBP;W.portals=W.portals.filter(p=>p.kind!=='next');for(const p of W.portals)if(p.kind==='prev')p.kind='home';
-  dlg(z.n,'Sealed proceedings. Find and break The Respondent. Rules in force: '+SUBP.mods.map(m=>SUBM[m]).join('; ')+'.',[['Enter']])}
+  delete ZS[SUBZ];enter(SUBZ,{fresh:true,after(){W.sub=SUBP;W.portals=W.portals.filter(p=>p.kind!=='next');for(const p of W.portals)if(p.kind==='prev')p.kind='home';
+    dlg(z.n,'Sealed proceedings. Find and break The Respondent. Rules in force: '+SUBP.mods.map(m=>SUBM[m]).join('; ')+'.',[['Enter']])}})}
 function p7Spawn(e){e.hits=0;if(W.z.sim)return;const cl=G.lvl+(G.para||0)*.5;let h=1+.012*cl,d=1+.008*cl;if(W.pow){h*=1.3;d*=1.25}if(SEA.k==='bull')d*=1.15;if(SEA.k==='over')h*=1.15;
   if(W.z.sub&&SUBP){h*=(1+.15*SUBP.lvl)*(SUBP.mods.includes('thick')?1.5:1);d*=1+.1*SUBP.lvl;if(SUBP.mods.includes('swift'))e.spd*=1.3}
   e.hp*=h;e.max*=h;e.dmg*=d;adaptSpawn(e);

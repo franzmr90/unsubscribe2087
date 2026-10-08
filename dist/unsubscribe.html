@@ -386,6 +386,11 @@ const pct=x=>Math.round(x*100)+'%';
 const UNITS=['','K','M','B','T','Qa','Qi','Sx','Sp','Oc','No','Dc'];
 function fmt(n){let i=0;while(n>=1000&&i<UNITS.length-1){n/=1000;i++}return '₡'+(i?n.toFixed(n<10?2:n<100?1:0):Math.floor(n))+UNITS[i]}
 function wpick(pairs){let s=0;for(const p of pairs)s+=p[1];let r=Math.random()*s;for(const p of pairs){r-=p[1];if(r<=0)return p[0]}return pairs[0][0]}
+/* A shared district swaps Math.random only for the draw. Combat, loot and shops outside
+   that draw keep the ordinary one. Solo play never sets a seed, so it is unchanged. */
+let mapShared=false;
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296}}
+function withMapRng(seed,fn){if(seed==null)return fn();const prev=Math.random,was=mapShared;Math.random=mulberry32(seed>>>0);mapShared=true;try{return fn()}finally{Math.random=prev;mapShared=was}}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* ================= classes and skill trees =================
@@ -1062,7 +1067,7 @@ const unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 function encW(w){return{zi:w.zi,N:w.N,ml:w.ml,tier:w.tier,map:b64(w.map),wh:b64(w.wh),seen:b64(w.seen),leftT:w.leftT,sub:w.sub,suAt:w.suAt,ents:w.ents.filter(e=>!e.mp),objs:w.objs,drops:(w.drops||[]).filter(d=>!(d.it&&d.it.test)),decals:w.decals.slice(-40),portals:w.portals,goal:w.goal,start:w.start}}
 function decW(o){const w=Object.assign({},o);w.map=unb64(o.map);w.wh=unb64(o.wh);w.seen=unb64(o.seen);return w}
 function packSave(G0,zs,cur){const G2=Object.assign({},G0);G2.eq=Object.assign({},G0.eq||{});for(const sl of SLOTS)if(G2.eq[sl]&&G2.eq[sl].test)G2.eq[sl]=null;G2.bag=(G0.bag||[]).filter(it=>!(it&&it.test));G2.stash=(G0.stash||[]).filter(it=>!(it&&it.test));if(G0.merc){G2.merc=Object.assign({},G0.merc);for(const sl of ['weapon','helm','armor'])if(G2.merc[sl]&&G2.merc[sl].test)G2.merc[sl]=null}return{G:G2,zs,cur,opt:OPT,t:Date.now()}}
-function saveObj(){const zs={};for(const k in ZS)zs[k]=encW(ZS[k]);let cur=null;if(W&&P){if(!W.z.town&&!W.z.sim)zs[W.zi]=encW(W);cur={zi:W.zi,x:P.x,y:P.y};if(W.z.sim&&W.sim)cur.sim=W.sim.rush?{rush:1}:{wave:Math.max(1,W.sim.wave|0)}}return packSave(G,zs,cur)}
+function saveObj(){const zs={};for(const k in ZS)if(String(k).indexOf('g:')!==0)zs[k]=encW(ZS[k]);let cur=null;if(W&&P){if(!W.z.town&&!W.z.sim)zs[W.zi]=encW(W);cur={zi:W.zi,x:P.x,y:P.y};if(W.z.sim&&W.sim)cur.sim=W.sim.rush?{rush:1}:{wave:Math.max(1,W.sim.wave|0)}}return packSave(G,zs,cur)}
 function save(force){if(!G)return false;let ok=false;try{localStorage.setItem(skey(SLOT),JSON.stringify(saveObj()));localStorage.setItem(SAVEKEY+'_slot',SLOT);ok=true}catch(e){}
   if(CL&&(force||Date.now()-clAt>10000))cloudSave();return ok||!!CL}
 /* account save: the viewer's own private documents in this page's database, one for the hero and one per district */
@@ -1132,12 +1137,15 @@ function buildSim(wave,rush){W=blankW(6,30);const N=30;for(let y=4;y<=25;y++)for
 function simTick(dt){const s=W.sim;if(s.rush)return rushTick(dt);if(W.ents.length)return;s.t-=dt;if(s.t>0)return;
   if(s.wave>=1&&!s.paid){G.simBest=Math.max(G.simBest||0,s.wave)}
   s.wave++;s.t=4;const n=s.wave;mpSimWave(n);if(n>1)simChoice(n);W.ml=Math.max(1,G.lvl-1+Math.floor(n/2));W.dyn=dynFor(W.ml);
+  const waveSeed=(typeof mpWaveSeed==='function')?mpWaveSeed(n):null;
+  withMapRng(waveSeed,()=>{
   const pool=['drone','tick'];if(n>=2)pool.push('bot');if(n>=3)pool.push('hound');if(n>=4)pool.push('ad');if(n>=5)pool.push('hr');if(n>=6)pool.push('mech');if(G.act2){if(n>=3)pool.push('lancer','splitter');if(n>=5)pool.push('seer','aegis')}
   const at=()=>{const a=rnd(0,6.283),r=rnd(7,9.5);return[clamp(15+Math.cos(a)*r,5,24.5),clamp(15+Math.sin(a)*r,5,24.5)]};
   const add=(k,o)=>{const[x,y]=at(),e=spawn(k,x,y,o);if(e)e.aggro=true;return e};
   for(let i=Math.min(22,4+Math.floor(n*1.5));i--;)add(pick(pool));
   for(let i=Math.floor(n/3);i--;)add(pick(pool.filter(k=>k!=='tick')),{champ:1});
   if(n%5===0)add(pick(['mech','bot','hr']),{su:{n:'Simulated '+pick(CN1)+pick(CN2),mods:Object.keys(MODS).sort(()=>Math.random()-.5).slice(0,2)}});
+  });
   toast('Wave '+n+(n%5===0?' · a lieutenant joins':''));sfx('warn');$('zone').textContent='The Simulator · Wave '+n;
   if(n>1){heal(S.maxHp*.3);G.en=S.maxEn;addDrop({cr:(3+W.ml*2)*(2+n)*Math.pow(G.cpi,.9)},P.x,P.y);if((n-1)%5===0)dropFrom('chest',P.x,P.y,W.ml)}}
 /* the Humming Fields must always hold Marrow's cage until she is freed, including in districts saved before a fix */
@@ -1170,7 +1178,7 @@ function genZone(zi){
   const corner=r=>{for(let t=0;t<25;t++){const x=r.x+ri(2,r.w)*(Math.random()<.5?-1:1),y=r.y+ri(2,r.h)*(Math.random()<.5?-1:1);let ok=true;for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++)if(map[(y+j)*N+x+i]!==1)ok=false;if(ok)return[x,y]}return null};
   const put=(r,k,ex)=>{const c=corner(r);return c?solid(k,c[0],c[1],ex):null};
   const L=rooms[n-1];W.goal={x:L.x+.5,y:L.y+.5};
-  const left=MEMOS.map((m,i)=>i).filter(i=>!G.memos.includes(i)).sort(()=>Math.random()-.5).slice(0,2);
+  const left=(mapShared?MEMOS.map((m,i)=>i):MEMOS.map((m,i)=>i).filter(i=>!G.memos.includes(i))).sort(()=>Math.random()-.5).slice(0,2);
   const memoRooms=[ri(1,n-2),ri(2,n-1)],strayRoom=ri(1,n-3),gobRoom=Math.random()<.4?ri(2,n-2):-1;
   for(let i=0;i<n;i++){const r=rooms[i];
     put(r,'lamp');if(Math.random()<.6)put(r,'lamp');
@@ -1200,12 +1208,25 @@ function spawn(k,x,y,o){
   if(e.mods.fast)e.spd*=1.5;if(e.mods.strong)e.dmg*=1.6;
   if(defragAct1(e)){e.dty='impact';e.dmg*=.85}
   p7Spawn(e);W.ents.push(e);if(isBoss(k))W.boss=e;return e}
+function zoneBag(zi){if(typeof mpZoneBag==='function'){const w=mpZoneBag(zi);if(w)return w}const w=ZS[zi];return w&&w.tier===G.tier?w:null}
+function mapPrint(){if(!W||!W.map)return null;let floor=0;for(let i=0;i<W.map.length;i++)if(W.map[i]===1)floor++;
+  const ents=W.ents.map(e=>e.k+'@'+e.x.toFixed(2)+','+e.y.toFixed(2)).sort().join('|');
+  const portals=(W.portals||[]).map(p=>p.kind+'@'+(+p.x).toFixed(2)+','+(+p.y).toFixed(2)).sort().join('|');
+  const res=(W.npcs||[]).filter(n=>n.id==='res').map(n=>(+n.x).toFixed(2)+','+(+n.y).toFixed(2)).sort().join('|');
+  const st=W.start?(+W.start.x).toFixed(2)+','+(+W.start.y).toFixed(2):'';
+  return {zi:W.zi,seed:W.mapSeed||0,floor,start:st,ents,portals,res,shared:W.sharedKey||''}}
 function enter(zi,o){setTimeout(mpBeat,0);
-  o=o||{};if(actBriefHold(zi)){actBriefDeny();return false}const carry=!o.swap&&W&&W.allies?W.allies.filter(a=>a.per):[];if(!o.swap&&W&&!W.z.town&&!W.z.sim){raidLeave();W.leftT=G.time;ZS[W.zi]=W;clDirty[W.zi]=1}
+  o=o||{};if(actBriefHold(zi)){actBriefDeny();return false}
+  const spec=(typeof mpMapSpec==='function')?mpMapSpec(zi,o):null;
+  if(spec&&spec.wait)return false;
+  const carry=!o.swap&&W&&W.allies?W.allies.filter(a=>a.per):[];if(!o.swap&&W&&!W.z.town&&!W.z.sim){raidLeave();W.leftT=G.time;const pk=W.sharedKey||W.zi;ZS[pk]=W;if(!W.sharedKey)clDirty[W.zi]=1}
   const z=ZONES[zi];G.zone=zi;if(!z.sim)G.town=townOf(zi);let old=0;
-  if(z.town)buildTown(zi);else if(z.sim)buildSim(o.wave||1,o.rush);else if(ZS[zi]&&ZS[zi].tier===G.tier&&!o.fresh){W=ZS[zi];old=1;ensureCage();initRuntime()}else genZone(zi);
+  if(spec&&spec.tpl&&typeof mpApplyTpl==='function')mpApplyTpl(zi,spec.tpl);
+  const slot=spec&&spec.key?spec.key:zi;
+  if(z.town)withMapRng(spec&&spec.seed,()=>buildTown(zi));else if(z.sim)buildSim(o.wave||1,o.rush);else if(!o.fresh&&ZS[slot]&&ZS[slot].tier===G.tier){W=ZS[slot];old=1;ensureCage();initRuntime()}else withMapRng(spec&&spec.seed,()=>genZone(zi));
+  if(spec&&spec.key){W.sharedKey=spec.key;W.mapSeed=spec.seed|0}
   let at=o.at||W.start;if(o.from==='next'){const p=W.portals.find(p=>p.kind==='next');at=nearFree(p||W.goal||W.start)}else if(o.from==='exit'&&W.exit)at={x:W.exit.ix,y:W.exit.iy};else if(o.at&&!(o.exact&&walk(at.x,at.y))&&!free(at.x,at.y,.3))at=nearFree(at,1.2);
-  MO=null;HOVER=null;P={x:at.x,y:at.y,r:.32,dir:{x:1,y:0},atk:0,cd:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],silence:0,oc:0,swing:0,flash:0,inv:.5,slow:0,buff:0,haste:0,guard:0,dash:null,volley:null,moving:false,warn:0,movedT:0,spin:0,walkPh:0,shr:null,band:10,hb:0,stealth:0,ambT:0,ambM:1,mech:0,crunch:0,streak:0,streakT:0};BLOOD=[];for(const a of carry){a.x=P.x+rnd(-1,1);a.y=P.y+rnd(-1,1);W.allies.push(a)}spawnMerc();evEnd(1);if(old&&W.leftT!==undefined&&G.time-W.leftT>150&&repop())setTimeout(()=>toast('You were gone a while. The machines have drifted back.'),900);if(!z.town&&!z.sim){placeQuestObjs();ensureNode();}p7Enter();if(!z.town&&!z.sim){for(const k in SQ){const st=sqStep(k);if(st&&st.t==='esc'&&st.zi===zi)escStart(k,SQ[k].steps[G.sq[k].s-1].esc)}}if(z.town)for(const k in sqSkip)delete sqSkip[k];
+  MO=null;HOVER=null;P={x:at.x,y:at.y,r:.32,dir:{x:1,y:0},atk:0,cd:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],silence:0,oc:0,swing:0,flash:0,inv:.5,slow:0,buff:0,haste:0,guard:0,dash:null,volley:null,moving:false,warn:0,movedT:0,spin:0,walkPh:0,shr:null,band:10,hb:0,stealth:0,ambT:0,ambM:1,mech:0,crunch:0,streak:0,streakT:0};BLOOD=[];for(const a of carry){a.x=P.x+rnd(-1,1);a.y=P.y+rnd(-1,1);W.allies.push(a)}spawnMerc();evEnd(1);if(old&&W.leftT!==undefined&&G.time-W.leftT>150&&repop())setTimeout(()=>toast('You were gone a while. The machines have drifted back.'),900);if(!z.town&&!z.sim){placeQuestObjs();withMapRng(spec&&spec.seed,()=>ensureNode());}p7Enter();if(!z.town&&!z.sim){for(const k in SQ){const st=sqStep(k);if(st&&st.t==='esc'&&st.zi===zi)escStart(k,SQ[k].steps[G.sq[k].s-1].esc)}}if(z.town)for(const k in sqSkip)delete sqSkip[k];
   if(z.town){if(G.form){G.form=null;G.formDt=null;G.formT=0;calc()}G.hp=S.maxHp;G.en=S.maxEn}
   else if(!z.sim){const q=z.su?z.su.q:z.bq;if(G.q[q]===0&&!QUESTS[q].brief){G.q[q]=1;toast('New quest: '+QUESTS[q].n);sfx('questnew')}if(q==='q3'&&G.q.q3===1&&!W.ents.some(e=>e.q==='q3'))G.q3open=1;if(q==='q8')ensurePage();if(q==='q12')ensureMinute()
   }
@@ -1218,7 +1239,7 @@ function enter(zi,o){setTimeout(mpBeat,0);
   else if(act===2&&!G.act2){G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO2,()=>{mode='play';dlg('Act II · The Cloud','Level limit 50, and a fourth skill row opens. The fourth row is yours. Vale does not get a vote on it.',[['Begin']])}),50)}
   else if(!z.town&&!G['in'+zi]&&z.intro){G['in'+zi]=1;dlg(z.n,z.intro,[['Go on']])}
   else toast(z.town?z.n:'Entering '+z.n);
-  if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}seenT=0;music(zoneMusic());save(true)}
+  if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}if(o.after)o.after();seenT=0;music(zoneMusic());save(true)}
 /* A cast portal lives on this character: zone and the exact spot. A new cast forgets the last one, in this district and in any district already saved. */
 function dropCastPortals(){const strip=w=>{if(w&&w.portals)w.portals=w.portals.filter(q=>!q.cast)};strip(W);for(const k in ZS)if(ZS[k]!==W)strip(ZS[k])}
 function openPortal(){if(mode!=='play'||W.z.town)return;if(mpPortalBlocked())return;if(W.z.sim){sfx('portal');enter(HT());return}if(nearest(4)){toast('Machines are too close to open a portal');return}
@@ -2427,8 +2448,8 @@ ZONES.push({n:'Sealed Proceedings',sub:true,lvl:1,style:'trib',amb:.6,mix:[['bot
 const SUBZ=ZONES.length-1;
 function subStart(l){if(G.sats<3){toast('Serving a subpoena costs 3 sats');sfx('err');return}G.sats-=3;const z=ZONES[SUBZ],src=ZONES[pick([2,4,5,7,9,11,12,13,14,15])],ks=Object.keys(SUBM).sort(()=>Math.random()-.5);
   SUBP={lvl:l,mods:ks.slice(0,l>=5?3:2)};z.n='Subpoena · Level '+l;z.lvl=G.lvl+2*l-G.tier*12;z.style=src.style;z.amb=src.amb;z.mix=src.mix;z.su.k=pick(['hr','mech','seer','lancer']);z.su.mods=['strong','shield','fast','arc','leech'].sort(()=>Math.random()-.5).slice(0,2);
-  delete ZS[SUBZ];enter(SUBZ,{fresh:true});W.sub=SUBP;W.portals=W.portals.filter(p=>p.kind!=='next');for(const p of W.portals)if(p.kind==='prev')p.kind='home';
-  dlg(z.n,'Sealed proceedings. Find and break The Respondent. Rules in force: '+SUBP.mods.map(m=>SUBM[m]).join('; ')+'.',[['Enter']])}
+  delete ZS[SUBZ];enter(SUBZ,{fresh:true,after(){W.sub=SUBP;W.portals=W.portals.filter(p=>p.kind!=='next');for(const p of W.portals)if(p.kind==='prev')p.kind='home';
+    dlg(z.n,'Sealed proceedings. Find and break The Respondent. Rules in force: '+SUBP.mods.map(m=>SUBM[m]).join('; ')+'.',[['Enter']])}})}
 function p7Spawn(e){e.hits=0;if(W.z.sim)return;const cl=G.lvl+(G.para||0)*.5;let h=1+.012*cl,d=1+.008*cl;if(W.pow){h*=1.3;d*=1.25}if(SEA.k==='bull')d*=1.15;if(SEA.k==='over')h*=1.15;
   if(W.z.sub&&SUBP){h*=(1+.15*SUBP.lvl)*(SUBP.mods.includes('thick')?1.5:1);d*=1+.1*SUBP.lvl;if(SUBP.mods.includes('swift'))e.spd*=1.3}
   e.hp*=h;e.max*=h;e.dmg*=d;adaptSpawn(e);
@@ -2996,7 +3017,7 @@ const BULLZ=ZONES.length-1;
 MEMOS.push(['Notice from the Office of Price Stability','There is no bull market. There has never been a bull market. Reports of a “bull run” beyond the Transit Gate are false, and Residents are reminded not to bring machine parts to the gate, in particular legs.']);
 function legCheck(){if(W.zi!==1||G.leg||G.q.q15!==3)return;const p=nearFree({x:W.start.x+1.6,y:W.start.y+1.2},.3);let o=W.objs.find(o=>o.k==='leg');if(!o){o={k:'leg'};W.objs.push(o)}o.x=p.x;o.y=p.y;setTimeout(()=>toast('Something is twitching on the ground near the gate.'),1500)}
 function legTake(o){W.objs.splice(W.objs.indexOf(o),1);G.leg=1;sfx('unique');dlg('A servo leg','All that is left of Gatewarden HOA-9: one leg, still twitching, stamped PROPERTY OF UNITY HOLDINGS. It is no use to anyone. You take it anyway. Somebody once said the Transit Gate does odd things when you jam the wrong part into it.',[['Keep it']])}
-function bullStart(){if(!G.leg)return;if(G.sats<10){toast('The gate wants 10 sats to look the other way');sfx('err');return}G.sats-=10;const z=ZONES[BULLZ];z.lvl=G.lvl+2-G.tier*12;delete ZS[BULLZ];enter(BULLZ,{fresh:true});W.portals=W.portals.filter(p=>p.kind!=='next');for(const p of W.portals)if(p.kind==='prev')p.kind='home';for(const e of W.ents)if(e.k==='bull'&&!e.su&&Math.random()<.5)e.say=1}
+function bullStart(){if(!G.leg)return;if(G.sats<10){toast('The gate wants 10 sats to look the other way');sfx('err');return}G.sats-=10;const z=ZONES[BULLZ];z.lvl=G.lvl+2-G.tier*12;delete ZS[BULLZ];enter(BULLZ,{fresh:true,after(){W.portals=W.portals.filter(p=>p.kind!=='next');for(const p of W.portals)if(p.kind==='prev')p.kind='home';for(const e of W.ents)if(e.k==='bull'&&!e.su&&Math.random()<.5)e.say=1}})}
 function bullKill(e){if(e.k!=='bull'||!W.z.secret)return;if(Math.random()<.22)addDrop({sat:ri(1,3)},e.x,e.y);
   if(e.su){G.st.bullKing=(G.st.bullKing||0)+1;mktNews(.3,'the Golden Bull is down');for(let i=0;i<6;i++)addDrop({sat:ri(6,12)},e.x,e.y);addDrop({it:makeItem(W.ml+2,4)},e.x,e.y);W.portals.push({x:e.x,y:e.y,kind:'home'});sfx('quest');setTimeout(()=>dlg('The Golden Bull is down','The field goes quiet. Somewhere a chart stops going up, just for a moment. The Office of Price Stability will deny that any of this happened, and for once you are inclined to let them.',[['Moo']]),900)}}
 /* ================= builds: when the rig rolls for you, it offers plans that hang together ================= */
@@ -4515,7 +4536,7 @@ function drawSheet(){
     if(sel&&sel.sat!==undefined&&satShop[sel.sat]){const o=satShop[sel.sat];pop=itemCard(o.it,`<button class="big" data-satbuy="1" ${G.sats<satPrice(o)||G.bag.length>=24?'disabled':''}>Buy for ${satPrice(o)} sats</button>`)}}
   if(tab==='travel'){h+=`<h2>Transit Gate</h2>`;if(!gateAct||sheetCtx.gFresh){sheetCtx.gFresh=0;gateAct=actOf(W.zi)||1}const acts=[[1,'I',1],[2,'II',G.q.q5===3],[3,'III',G.q.q10===3],[4,'IV',G.q.q15===3],[5,'V',G.q.q20===3],[6,'More',1]];if(!acts[gateAct-1][2])gateAct=1;
     h+=`<div class="row">${acts.map(a=>`<button class="${gateAct===a[0]?'big':'ghost'}" data-gact="${a[0]}" ${a[2]?'':'disabled'}>${a[1]}</button>`).join('')}</div><div class="list">`;
-    const row=i=>{const z=ZONES[i],ok=i<=G.unlocked,held=ok&&actBriefHold(i);return `<button class="li" data-go="${i}" ${ok?'':'disabled'}><div><b>${z.n}</b><span>${held?'Talk to Gramps first.':ok?(ZS[i]&&ZS[i].tier===G.tier?'Machine level '+ZS[i].ml+' · '+ZS[i].ents.length+' machines remain':'Machine level '+zoneLevel(z)+' · untouched'):'Locked. Clear the district before it.'}</span></div></button>`};
+    const row=i=>{const z=ZONES[i],ok=i<=G.unlocked,held=ok&&actBriefHold(i);return `<button class="li" data-go="${i}" ${ok?'':'disabled'}><div><b>${z.n}</b><span>${held?'Talk to Gramps first.':ok?((b=>b?'Machine level '+b.ml+' · '+b.ents.length+' machines remain':'Machine level '+zoneLevel(z)+' · untouched')(zoneBag(i))):'Locked. Clear the district before it.'}</span></div></button>`};
     const trow=i=>{const held=actBriefHold(i);return `<button class="li${W.zi===i?' on':''}" data-go="${i}"><div><b>${ZONES[i].n}</b><span>${held?'Talk to Gramps first.':'Town'+(W.zi===i?' · you are here':'')}</span></div></button>`};
     if(gateAct===1){h+=`<h3>The Regional Office</h3>`+trow(0);for(let i=1;i<6;i++)h+=row(i)}
     if(gateAct===2){h+=`<h3>The Cloud</h3>`+trow(17);for(let i=7;i<12;i++)h+=row(i)}
@@ -4828,7 +4849,7 @@ function showDisc(){const d=$('disc');if(!d)return;
 showDisc();
 cloudInit();
 function devOn(){try{if(window.__DEBUG)return true;var h=location.hostname;if(h==='localhost'||h==='127.0.0.1'||h==='::1')return true;if(location.protocol==='file:'||location.protocol==='about:')return true}catch(e){}return false}
-if(devOn())window.__g={heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},get shop(){return shop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK}};
+if(devOn())window.__g={heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},get shop(){return shop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng};
 /* late additions that need the dialogue tables */
 QRW.push(
  ['q16','gramps','“I do not remember the nine years after I clicked.” You gain 1 skill point.',()=>G.sp++,'Gramps'],
@@ -5101,11 +5122,99 @@ const MP = {
   voice: false, muted: {}, speaking: {}, peers: {}, stream: null,
   friends: {}, face: {}, joinUid: '', csrf: '',
   whispers: [], whisperTo: '', mail: [], closed: false, portalUntil: 0,
-  resume: null, gamePass: '', buildAsked: false
+  resume: null, gamePass: '', buildAsked: false,
+  maps: {}, mapAsked: null, wantEnter: null, freshFor: null, freshBase: -1
 };
 
 const mpOn = () => MP.on && !!MP.conn && MP.conn.readyState === 1;
 const mpIn = () => mpOn() && !!MP.game;
+
+/* The server names the seed for this game, this district, this tier. Solo play
+   never asks, so a character's own districts stay where they were. */
+function mpMapLatest(zi, tier) {
+  let b = null;
+  for (const k in MP.maps) {
+    const m = MP.maps[k];
+    if (m && m.zi === zi && m.tier === tier && (!b || m.roll > b.roll)) b = m;
+  }
+  return b;
+}
+function mpStoreMaps(rows) {
+  if (!rows) return;
+  for (const m of rows) {
+    if (!m || m.seed == null || !m.key) continue;
+    MP.maps[m.key] = m;
+  }
+}
+function mpZoneTpl(zi) {
+  const z = ZONES[zi];
+  if (!z || (!z.sub && !z.secret)) return null;
+  const tpl = { n: z.n, lvl: z.lvl, style: z.style, mix: z.mix, out: z.out ? 1 : 0, su: z.su || null };
+  if (z.sub && typeof SUBP !== 'undefined' && SUBP) tpl.sub = SUBP;
+  return tpl;
+}
+function mpApplyTpl(zi, tpl) {
+  const z = ZONES[zi];
+  if (!z || !tpl) return;
+  if (tpl.n) z.n = tpl.n;
+  if (tpl.lvl != null) z.lvl = tpl.lvl;
+  if (tpl.style) z.style = tpl.style;
+  if (tpl.mix) z.mix = tpl.mix;
+  if (tpl.out) z.out = 1;
+  if (tpl.su) z.su = tpl.su;
+  if (tpl.sub && z.sub) SUBP = tpl.sub;
+}
+function mpZoneBag(zi) {
+  if (!mpIn() || !G) return null;
+  const z = ZONES[zi];
+  if (!z || z.sim) return null;
+  const tier = z.town ? 0 : (G.tier | 0);
+  const have = mpMapLatest(zi, tier);
+  if (!have) return null;
+  return ZS[have.key] || null;
+}
+function mpMapContinue() {
+  const w = MP.wantEnter;
+  if (!w) return;
+  const spec = mpMapSpec(w.zi, w.o);
+  if (!spec || spec.wait) return;
+  MP.wantEnter = null;
+  enter(w.zi, w.o);
+}
+function mpMapSpec(zi, o) {
+  if (!mpIn() || !G || !ZONES[zi] || ZONES[zi].sim) return null;
+  const tier = ZONES[zi].town ? 0 : (G.tier | 0);
+  if (o && o.fresh && MP.freshFor !== o) {
+    const have = mpMapLatest(zi, tier);
+    MP.freshFor = o;
+    MP.freshBase = have ? have.roll : -1;
+    MP.wantEnter = { zi, o };
+    MP.mapAsked = null;
+    mpSend('map', { zi, tier, fresh: 1, tpl: mpZoneTpl(zi) });
+    return { wait: true };
+  }
+  if (o && o.fresh && MP.freshFor === o) {
+    const have = mpMapLatest(zi, tier);
+    if (!have || have.roll <= MP.freshBase) { MP.wantEnter = { zi, o }; return { wait: true }; }
+  }
+  const have = mpMapLatest(zi, tier);
+  if (!have) {
+    MP.wantEnter = { zi, o: o || {} };
+    if (!MP.mapAsked || MP.mapAsked.zi !== zi || MP.mapAsked.tier !== tier) {
+      MP.mapAsked = { zi, tier };
+      mpSend('map', { zi, tier, fresh: 0 });
+    }
+    return { wait: true };
+  }
+  return { seed: have.seed, key: have.key, roll: have.roll, tpl: have.tpl || null };
+}
+function mpWaveSeed(n) {
+  const s = MP.sim && MP.sim.seed;
+  if (!s) return null;
+  let x = (s ^ Math.imul(n | 0, 0x9E3779B1)) >>> 0;
+  x = Math.imul(x ^ (x >>> 16), 0x7FEB352D);
+  return ((x ^ (x >>> 15)) >>> 0) || 1;
+}
 
 /* Monsters get tougher with the number of people in the game and with the difficulty it
    was made on, the way Diablo II's did. These feed the multipliers the game already had
@@ -5192,11 +5301,19 @@ function mpRecv(m) {
     MP.lobby = m.games || []; MP.diffs = m.diffs || MP.diffs;
     MP.maxGame = m.max || MP.maxGame;
     if (mode === 'sheet' && tab === 'party') drawSheet();
+  } else if (m.t === 'map') {
+    mpStoreMaps([m]);
+    mpMapContinue();
   } else if (m.t === 'game') {
+    const prevId = MP.game && MP.game.id;
+    const nextId = m.game && m.game.id;
+    if (prevId !== nextId) { MP.maps = {}; MP.mapAsked = null; MP.freshFor = null; MP.freshBase = -1; MP.wantEnter = null; }
     MP.game = m.game; MP.scale = m.scale || null;
     MP.view = m.game ? 'game' : 'lobby';
+    if (m.maps) mpStoreMaps(m.maps);
     if (!m.game) {
       MP.resume = null; MP.gamePass = '';
+      MP.maps = {};
       MP.roster = []; MP.others = []; MP.party = null; MP.hostile = {}; MP.sim = null;
       MP.speaking = {}; MP.chat = [];
       mpVoiceStop();
@@ -5206,6 +5323,7 @@ function mpRecv(m) {
     else {
       MP.resume = { id: m.game.id, pass: MP.gamePass || '' };
       toast((m.resumed ? 'Back in "' : 'In "') + m.game.name + '" \u00b7 ' + m.game.diffName + ' \u00b7 ' + m.game.n + ' of ' + m.game.max);
+      mpMapContinue();
     }
     if (mode === 'sheet' && tab === 'party') drawSheet();
   } else if (m.t === 'joinfail') {

@@ -17,11 +17,99 @@ const MP = {
   voice: false, muted: {}, speaking: {}, peers: {}, stream: null,
   friends: {}, face: {}, joinUid: '', csrf: '',
   whispers: [], whisperTo: '', mail: [], closed: false, portalUntil: 0,
-  resume: null, gamePass: '', buildAsked: false
+  resume: null, gamePass: '', buildAsked: false,
+  maps: {}, mapAsked: null, wantEnter: null, freshFor: null, freshBase: -1
 };
 
 const mpOn = () => MP.on && !!MP.conn && MP.conn.readyState === 1;
 const mpIn = () => mpOn() && !!MP.game;
+
+/* The server names the seed for this game, this district, this tier. Solo play
+   never asks, so a character's own districts stay where they were. */
+function mpMapLatest(zi, tier) {
+  let b = null;
+  for (const k in MP.maps) {
+    const m = MP.maps[k];
+    if (m && m.zi === zi && m.tier === tier && (!b || m.roll > b.roll)) b = m;
+  }
+  return b;
+}
+function mpStoreMaps(rows) {
+  if (!rows) return;
+  for (const m of rows) {
+    if (!m || m.seed == null || !m.key) continue;
+    MP.maps[m.key] = m;
+  }
+}
+function mpZoneTpl(zi) {
+  const z = ZONES[zi];
+  if (!z || (!z.sub && !z.secret)) return null;
+  const tpl = { n: z.n, lvl: z.lvl, style: z.style, mix: z.mix, out: z.out ? 1 : 0, su: z.su || null };
+  if (z.sub && typeof SUBP !== 'undefined' && SUBP) tpl.sub = SUBP;
+  return tpl;
+}
+function mpApplyTpl(zi, tpl) {
+  const z = ZONES[zi];
+  if (!z || !tpl) return;
+  if (tpl.n) z.n = tpl.n;
+  if (tpl.lvl != null) z.lvl = tpl.lvl;
+  if (tpl.style) z.style = tpl.style;
+  if (tpl.mix) z.mix = tpl.mix;
+  if (tpl.out) z.out = 1;
+  if (tpl.su) z.su = tpl.su;
+  if (tpl.sub && z.sub) SUBP = tpl.sub;
+}
+function mpZoneBag(zi) {
+  if (!mpIn() || !G) return null;
+  const z = ZONES[zi];
+  if (!z || z.sim) return null;
+  const tier = z.town ? 0 : (G.tier | 0);
+  const have = mpMapLatest(zi, tier);
+  if (!have) return null;
+  return ZS[have.key] || null;
+}
+function mpMapContinue() {
+  const w = MP.wantEnter;
+  if (!w) return;
+  const spec = mpMapSpec(w.zi, w.o);
+  if (!spec || spec.wait) return;
+  MP.wantEnter = null;
+  enter(w.zi, w.o);
+}
+function mpMapSpec(zi, o) {
+  if (!mpIn() || !G || !ZONES[zi] || ZONES[zi].sim) return null;
+  const tier = ZONES[zi].town ? 0 : (G.tier | 0);
+  if (o && o.fresh && MP.freshFor !== o) {
+    const have = mpMapLatest(zi, tier);
+    MP.freshFor = o;
+    MP.freshBase = have ? have.roll : -1;
+    MP.wantEnter = { zi, o };
+    MP.mapAsked = null;
+    mpSend('map', { zi, tier, fresh: 1, tpl: mpZoneTpl(zi) });
+    return { wait: true };
+  }
+  if (o && o.fresh && MP.freshFor === o) {
+    const have = mpMapLatest(zi, tier);
+    if (!have || have.roll <= MP.freshBase) { MP.wantEnter = { zi, o }; return { wait: true }; }
+  }
+  const have = mpMapLatest(zi, tier);
+  if (!have) {
+    MP.wantEnter = { zi, o: o || {} };
+    if (!MP.mapAsked || MP.mapAsked.zi !== zi || MP.mapAsked.tier !== tier) {
+      MP.mapAsked = { zi, tier };
+      mpSend('map', { zi, tier, fresh: 0 });
+    }
+    return { wait: true };
+  }
+  return { seed: have.seed, key: have.key, roll: have.roll, tpl: have.tpl || null };
+}
+function mpWaveSeed(n) {
+  const s = MP.sim && MP.sim.seed;
+  if (!s) return null;
+  let x = (s ^ Math.imul(n | 0, 0x9E3779B1)) >>> 0;
+  x = Math.imul(x ^ (x >>> 16), 0x7FEB352D);
+  return ((x ^ (x >>> 15)) >>> 0) || 1;
+}
 
 /* Monsters get tougher with the number of people in the game and with the difficulty it
    was made on, the way Diablo II's did. These feed the multipliers the game already had
@@ -108,11 +196,19 @@ function mpRecv(m) {
     MP.lobby = m.games || []; MP.diffs = m.diffs || MP.diffs;
     MP.maxGame = m.max || MP.maxGame;
     if (mode === 'sheet' && tab === 'party') drawSheet();
+  } else if (m.t === 'map') {
+    mpStoreMaps([m]);
+    mpMapContinue();
   } else if (m.t === 'game') {
+    const prevId = MP.game && MP.game.id;
+    const nextId = m.game && m.game.id;
+    if (prevId !== nextId) { MP.maps = {}; MP.mapAsked = null; MP.freshFor = null; MP.freshBase = -1; MP.wantEnter = null; }
     MP.game = m.game; MP.scale = m.scale || null;
     MP.view = m.game ? 'game' : 'lobby';
+    if (m.maps) mpStoreMaps(m.maps);
     if (!m.game) {
       MP.resume = null; MP.gamePass = '';
+      MP.maps = {};
       MP.roster = []; MP.others = []; MP.party = null; MP.hostile = {}; MP.sim = null;
       MP.speaking = {}; MP.chat = [];
       mpVoiceStop();
@@ -122,6 +218,7 @@ function mpRecv(m) {
     else {
       MP.resume = { id: m.game.id, pass: MP.gamePass || '' };
       toast((m.resumed ? 'Back in "' : 'In "') + m.game.name + '" \u00b7 ' + m.game.diffName + ' \u00b7 ' + m.game.n + ' of ' + m.game.max);
+      mpMapContinue();
     }
     if (mode === 'sheet' && tab === 'party') drawSheet();
   } else if (m.t === 'joinfail') {
