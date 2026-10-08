@@ -181,7 +181,6 @@ const FIELDS = ['act', 'browser', 'build', 'class', 'difficulty', 'district', 'd
   ok('anonymous traffic still opened no issue', issueN === 0, String(issueN));
   clearBugIp();
 
-  const code = invites.mint({ uses: 1, note: 'scrub' }).code;
   async function register(name) {
     clearBugIp();
     auth.rateClear('reg:127.0.0.1');
@@ -196,6 +195,9 @@ const FIELDS = ['act', 'browser', 'build', 'class', 'difficulty', 'district', 'd
     return sessionCookie(res);
   }
   const hunter = await register('BugHunter');
+  const rater = await register('Rater');
+  const capper = await register('Capper');
+  const code = invites.mint({ uses: 1, note: 'scrub' }).code;
   const secretHappened = 'Screen died ghp_ABCDEFGHIJ12345678 mail ada@example.com at 203.0.113.9 code ' + code;
   const t0 = Date.now();
   r = await postBug({
@@ -272,7 +274,6 @@ const FIELDS = ['act', 'browser', 'build', 'class', 'difficulty', 'district', 'd
   ok('a GitHub failure still returns the report id', broke.status === 200 && !!broke.body.id, JSON.stringify(broke.body));
   ok('a GitHub failure is recorded and not notified', issueN === beforeFail && brokeDisk.intake === 'failed' && hooks.length === hooksBeforeFail && intake.failures() >= 1, brokeDisk && brokeDisk.intake);
 
-  const rater = await register('Rater');
   let made = 0;
   for (let i = 0; i < 5; i++) {
     const one = await postBug(Object.assign(happened('Rater saw a fresh failure number ' + i + ' today'), {
@@ -289,7 +290,6 @@ const FIELDS = ['act', 'browser', 'build', 'class', 'difficulty', 'district', 'd
   ok('five reports an hour reach GitHub', made === 5, String(made));
   ok('the sixth is saved and queued', queued.status === 200 && queuedDisk.intake === 'queued' && !queuedDisk.issue, queuedDisk && queuedDisk.intake);
 
-  const capper = await register('Capper');
   intake.testSetServerHits(50);
   const capped = await postBug(Object.assign(happened('Capper hit the server-wide cap today'), {
     errors: ['CapError @ c.js:4:4']
