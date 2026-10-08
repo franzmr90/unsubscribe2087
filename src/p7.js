@@ -28,10 +28,10 @@ function webFit(){const stage=$('webStage');if(!stage)return;const r=stage.getBo
   webVB={x:(WEB-w)/2,y:(WEB-h)/2,w:w,h:h};webFitVB=Object.assign({},webVB);webApply()}
 function webZoomAt(factor,wx,wy){if(!webVB)webFit();if(!webVB)return;const cap=webFitVB?webFitVB.w:WEB,aspect=webVB.h/webVB.w;let nw=webVB.w/factor;if(nw>cap)nw=cap;if(nw<280)nw=280;const nh=nw*aspect;
   if(wx==null){wx=webVB.x+webVB.w/2;wy=webVB.y+webVB.h/2}const rx=(wx-webVB.x)/webVB.w,ry=(wy-webVB.y)/webVB.h;webVB.w=nw;webVB.h=nh;webVB.x=wx-rx*nw;webVB.y=wy-ry*nh;webClamp();webApply()}
-function webTipHTML(id){const n=webNode(id);if(!n)return '';const body=n.id==='c'?'Where every path starts.':modTxt(n.m);
-  const half=n.a>=0&&!n.key&&webWeak(n.a)?' Halved: '+WARMS[(n.a+4)%8][0]+', across the web, has more of your points.':'';
+function webTipHTML(id){const n=webNode(id);if(!n)return '';const half=n.a>=0&&!n.key&&webWeak(n.a);let mods=n.m;if(half){mods={};for(const k in n.m)mods[k]=n.m[k]/2}const body=n.id==='c'?'Where every path starts.':modTxt(mods);
+  const note=half?' Halved: '+WARMS[(n.a+4)%8][0]+', across the web, has more of your points.':'';
   const state=n.id==='c'||G.web[n.id]?'Placed.':webCan(n.id)?'Lit. Tap to place a point.':webPts()>0?'Not connected yet.':'No points left.';
-  return '<b>'+n.n+'</b> '+body+half+' <i>'+state+'</i>'}
+  return '<b>'+n.n+'</b> '+body+note+' <i>'+state+'</i>'}
 function webShowTip(id){const tip=$('webTip');if(!tip)return;if(!id){tip.hidden=true;tip.innerHTML='';return}tip.hidden=false;tip.innerHTML=webTipHTML(id)}
 function webBind(){if(!webVB)webFit();else webApply();const stage=$('webStage');if(!stage)return;const svg=stage.querySelector('svg');
   if(sel&&sel.web)webShowTip(sel.web);

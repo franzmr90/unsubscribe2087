@@ -1,5 +1,6 @@
 /* Measures Acts III–V. Does not change any combat number.
-   One sample of the random gear and the random fight. Adaptive difficulty stays on.
+   Default: one pack fight per class, per district, on Normal, Hard, and Brutal.
+   BAL_WALK=1 keeps the older full-district walker.
    Usage: node tools/balance.js
    Writes notes/balance-acts-3-5.md */
 const {chromium} = require('playwright');
@@ -233,11 +234,167 @@ function row(zname, cls, build, r) {
   return `| ${zname} | ${cls} ${build} | ${r.result} | ${r.sim} | ${r.hp}% | ${r.stims} | ${r.left}/${r.started} | ${r.boss || '—'} |`;
 }
 
-(async () => {
-  if (!fs.existsSync(htmlPath)) {
-    console.error('missing ' + htmlPath + ' — run npm run build first');
-    process.exit(1);
-  }
+/* One pack per district, every class, Normal / Hard / Brutal.
+   Gear is identified rares at the district level, so it sits in the same
+   item band a drop from that district would. Caps stay the live ones. */
+const PACK_CLASSES = [
+  ['scrapper', 'crew'], ['hacker', 'chain'], ['courier', 'rush'], ['anon', 'demo'],
+  ['founder', 'head'], ['homesteader', 'bed'], ['witness', 'page'], ['maxi', 'orange']
+];
+const PACK_ZONES = [12, 13, 14, 15, 16, 22, 23, 24, 25, 26, 28, 29, 30, 31, 32];
+const PACK_DIFF = [0, 1, 2];
+
+async function arm(page, cls, build, zi) {
+  await page.evaluate(({cls, build, zi}) => {
+    const g = __g, G = g.G, L = g.ZONES[zi].lvl;
+    G.god = false;
+    G.hc = false;
+    G.merc = null;
+    G.tag = null;
+    G.lvl = L;
+    G.xp = 0;
+    G.sp = L - 1;
+    G.ap = (L - 1) * 5;
+    G.sk = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    G.at = {mgt: 0, ref: 0, vit: 0, bnd: 0};
+    G.pas = null;
+    G.web = {};
+    G.fork = {};
+    G.doc = null;
+    G.sats = 80;
+    G.act2 = L >= 15;
+    G.act3 = L >= 30;
+    G.act4 = L >= 45;
+    G.act5 = L >= 60;
+    G.unlocked = 40;
+    G.tier = 0;
+    G.ez = {};
+    G.dz = {};
+    G.adapt = 0;
+    for (let i = 1; i <= 25; i++) G.q['q' + i] = 3;
+    g.setMode('play');
+    if (g.W && g.W.zi !== 0) g.enter(0);
+    g.shapeShift(cls, build);
+  }, {cls, build, zi});
+  const mode = await dismiss(page);
+  if (mode !== 'play') return mode;
+  await page.evaluate(zi => {
+    const g = __g, G = g.G, L = g.ZONES[zi].lvl;
+    for (const slot of ['weapon', 'armor', 'helm', 'gloves', 'boots', 'belt']) {
+      const it = g.makeItem(L, 2, slot);
+      it.id = true;
+      G.eq[slot] = it;
+    }
+    G.eq.ring = null;
+    G.eq.amulet = null;
+    g.calc();
+    G.hp = g.S.maxHp;
+    G.en = g.S.maxEn;
+    G.stims = 6;
+  }, zi);
+  return 'play';
+}
+
+async function packFight(page, zi, diff) {
+  await page.evaluate(({zi, diff}) => {
+    const g = __g, G = g.G;
+    G.diff = diff;
+    G.ez = {};
+    G.dz = {};
+    G.adapt = 0;
+    G.god = false;
+    G.hp = g.S.maxHp;
+    g.setMode('play');
+    g.enter(zi, {fresh: true});
+  }, {zi, diff});
+  const mode = await dismiss(page);
+  if (mode !== 'play') return {err: mode};
+  return page.evaluate(zi => {
+    const g = __g, G = g.G, P = g.P, W = g.W;
+    const boss = !!(W.z && W.z.boss);
+    W.ents = W.ents.filter(e => e.mp);
+    W.projs = [];
+    W.fx = [];
+    P.inv = 0;
+    P.barrier = 0;
+    G.god = false;
+    G.hp = g.S.maxHp;
+    G.en = g.S.maxEn;
+    G.stims = 6;
+    g.setMode('play');
+    W.bi = 1;
+    const kind = boss ? (W.z.bossK || 'boss') : ((W.z.mix || []).map(m => m[0]).find(k => k !== 'tick') || 'bot');
+    const spawned = [];
+    const n = boss ? 1 : 5;
+    for (let i = 0; i < n; i++) {
+      const e = g.spawn(kind, P.x + 0.7, P.y + (i - 2) * 0.2, boss ? {} : {});
+      if (e) { e.aggro = true; spawned.push(e); }
+    }
+    if (g.ltEnd) g.ltEnd();
+    g.setMode('play');
+    P.inv = 0;
+    const hp0 = spawned.reduce((a, e) => a + (e.max || 0), 0);
+    const life0 = G.hp, t0 = G.time, stim0 = G.stims;
+    const cap = boss ? 25 : 16;
+    let died = 0, steps = 0;
+    const melee = g.CLS[G.cls].melee || (G.cls === 'homesteader' && G.form);
+    for (; steps < cap * 30; steps++) {
+      if (G.hp <= 0 || g.mode === 'dying') { died = 1; break; }
+      if (g.mode !== 'play') {
+        const sc = document.getElementById('scene');
+        if (sc && !sc.hidden) { const k = document.getElementById('scSkip'); if (k) k.click(); }
+        const dg = document.getElementById('dlg');
+        if (dg && !dg.hidden) { const x = dg.querySelector('#dBtns button:not([disabled])'); if (x) x.click(); }
+        if (g.mode === 'intro' && g.ltEnd) g.ltEnd();
+        if (g.mode !== 'play' && g.mode !== 'dying' && G.hp > 0) g.setMode('play');
+      }
+      let best = null, bd = 1e9;
+      for (const e of W.ents) {
+        if (e.hp > 0 && !e.mp) {
+          const d = Math.hypot(e.x - P.x, e.y - P.y);
+          if (d < bd) { bd = d; best = e; }
+        }
+      }
+      if (!best) break;
+      P.dir = {x: (best.x - P.x) / (bd || 1), y: (best.y - P.y) / (bd || 1)};
+      const want = melee ? 1.5 : 4.2;
+      if (bd > want) {
+        const sp = Math.min(bd - want, (g.CLS[G.cls].spd || 4) / 28);
+        const nx = P.x + P.dir.x * sp, ny = P.y + P.dir.y * sp;
+        const N = W.N, floor = (x, y) => { const ix = x | 0, iy = y | 0; return ix > 0 && iy > 0 && ix < N - 1 && iy < N - 1 && W.map[iy * N + ix] === 1; };
+        if (floor(nx, P.y)) P.x = nx;
+        if (floor(P.x, ny)) P.y = ny;
+      }
+      if (bd < (melee ? 2.5 : 6.6)) g.keys.Space = true;
+      else g.keys.Space = false;
+      if (G.hp < g.S.maxHp * 0.5 && G.stims > 0) g.stim();
+      g.cast(0);
+      g.update(1 / 30);
+      g.keys.Space = false;
+    }
+    if (G.hp <= 0 || g.mode === 'dying') died = 1;
+    const stims = Math.max(0, stim0 - G.stims);
+    const taken = Math.max(0, life0 - Math.max(0, G.hp)) + stims * g.S.maxHp * 0.45;
+    const left = W.ents.filter(e => e.hp > 0 && !e.mp).length;
+    const ml = W.ml;
+    let pool = 0;
+    try { pool = g.UNI.filter(u => g.uniqEligible(u, ml)).length; } catch (e) {}
+    g.setMode('play');
+    G.hp = Math.max(1, G.hp);
+    return {
+      ttk: Math.round((G.time - t0) * 10) / 10,
+      taken: Math.round(taken),
+      died, left, n: spawned.length,
+      packHp: Math.round(hp0),
+      ml, kind, boss: boss ? 1 : 0,
+      pool, dyn: W.dyn ? Math.round(W.dyn.hp * 100) / 100 : 1,
+      pdr: g.S.pdr || 0,
+      res: g.resPen ? g.resPen() : 0
+    };
+  }, zi);
+}
+
+async function runWalk() {
   const lines = [];
   const browser = await chromium.launch(launchOpts());
   const page = await browser.newPage({viewport: {width: 390, height: 800}});
@@ -259,18 +416,14 @@ function row(zname, cls, build, r) {
       const line = row(name, run.cls, run.build, r);
       console.log(line);
       lines.push(line);
-      if (await page.evaluate(() => __g.mode) === 'dying') {
-        await boot(page, run.cls);
-      }
+      if (await page.evaluate(() => __g.mode) === 'dying') await boot(page, run.cls);
     }
   }
   await browser.close();
   const body = [
     '# Acts III–V measurement',
     '',
-    'One sample. The bot rolled one set of rare items per district and fought once. Nothing in `src/` was changed.',
-    '',
-    'Protocol: level matched to the district, identified rare weapon, armor, helm, gloves, boots and belt, no uniques, no hire. Scrapper on the Wrecking Crew build for every district below. Technomancer on Chain Reaction for the three bosses only. Adaptive difficulty left on (the default). The bot steps along open floor tiles toward the nearest machine, holds attack in range, stims below 45% life, and casts the first skill button when it is ready. Dialog buttons are polled until they enable. Scenes are skipped. Boss and lieutenant title cards are ended through the test hook. Sim time is `G.time`. A fight stops when the district is empty, the hero dies, the hero has not moved and has not had a kill for 8 sim seconds, or the cap is hit (40 sim seconds in a district, 75 on a boss, 90 seconds of wall clock). Stuck with life still high means the bot lost the path, not that the district killed it.',
+    'District walker (BAL_WALK=1). One sample. Nothing in `src/` was changed.',
     '',
     '| District | Build | Result | Sim s | Life left | Stims | Enemies left/at start | Boss life |',
     '|---|---|---|---:|---:|---:|---:|---:|',
@@ -280,4 +433,101 @@ function row(zname, cls, build, r) {
   fs.mkdirSync(path.dirname(outPath), {recursive: true});
   fs.writeFileSync(outPath, body);
   console.log('wrote ' + outPath);
+}
+
+async function runPack() {
+  const browser = await chromium.launch(launchOpts());
+  const page = await browser.newPage({viewport: {width: 390, height: 800}});
+  page.on('pageerror', e => console.log('pageerror', e.message));
+  await boot(page, 'scrapper');
+  const caps = await page.evaluate(() => {
+    const g = __g, G = g.G, P = g.P;
+    G.diff = 2; G.god = false; P.inv = 0; P.barrier = 0; G.eq = {weapon: null, helm: null, armor: null, gloves: null, boots: null, belt: null, ring: null, amulet: null};
+    g.calc();
+    g.S.armor = 0; g.S.dodge = 0; g.S.taken = 1; g.S.pdr = 0; g.S.enc = 0;
+    for (const k of ['impact', 'surge', 'rust', 'heat', 'noise']) g.S['r_' + k] = 0;
+    const hit = pdr => { g.S.pdr = pdr; G.hp = 1000; P.inv = 0; g.setMode('play'); g.hurt(200, false, {dty: 'impact', name: 'measure', pvp: 1, hp: 1, mods: {}}); return Math.round(1000 - G.hp); };
+    const out = {pdr0: hit(0), pdr40: hit(40), pdr80: hit(80), res: g.resPen(), cdr: g.S.cdr};
+    const bands = {};
+    for (const ml of [12, 27, 36, 42, 48, 57, 60, 70]) bands[ml] = g.UNI.filter(u => g.uniqEligible(u, ml)).length;
+    out.bands = bands;
+    return out;
+  });
+  console.log('caps', JSON.stringify(caps));
+  const lines = [];
+  const names = {};
+  for (const [cls, build] of PACK_CLASSES) {
+    for (const zi of PACK_ZONES) {
+      const mode = await arm(page, cls, build, zi);
+      if (!names[zi]) names[zi] = await page.evaluate(zi => __g.ZONES[zi].n + ' ' + __g.ZONES[zi].lvl, zi);
+      for (const diff of PACK_DIFF) {
+        let r;
+        if (mode !== 'play') r = {err: mode};
+        else r = await packFight(page, zi, diff);
+        const dn = ['Normal', 'Hard', 'Brutal'][diff];
+        const line = r.err
+          ? `| ${names[zi]} | ${cls} | ${dn} | ERR ${r.err} | | | | | |`
+          : `| ${names[zi]} | ${cls} | ${dn} | ${r.ttk} | ${r.taken} | ${r.died} | ${r.left}/${r.n} | ${r.packHp} | ${r.kind} | ${r.pool} |`;
+        console.log(line);
+        lines.push({zi, cls, build, diff, name: names[zi], r, line});
+        if (await page.evaluate(() => __g.mode) === 'dying') {
+          await page.evaluate(() => { __g.setMode('play'); __g.G.hp = __g.S.maxHp; });
+        }
+      }
+    }
+  }
+  await browser.close();
+  const concern = [];
+  const by = (pred) => lines.filter(x => x.r && !x.r.err && pred(x));
+  const deadN = by(x => x.diff === 0 && x.r.died);
+  if (deadN.length) concern.push('Died to the Normal pack: ' + deadN.map(x => x.cls + ' in ' + x.name + ' (' + x.r.ttk + 's, ' + x.r.taken + ' taken)').join('; ') + '.');
+  const deadB = by(x => x.diff === 2 && x.r.died);
+  if (deadB.length) concern.push('Died to the Brutal pack: ' + deadB.map(x => x.cls + ' in ' + x.name).join('; ') + '.');
+  const slow = by(x => x.diff === 0 && !x.r.boss && x.r.ttk >= 14 && !x.r.died).sort((a, b) => b.r.ttk - a.r.ttk).slice(0, 5);
+  if (slow.length) concern.push('Slowest Normal trash clears still up at the cap: ' + slow.map(x => x.cls + ' ' + x.name + ' ' + x.r.ttk + 's, ' + x.r.left + ' left').join('; ') + '.');
+  const fast = by(x => x.diff === 2 && x.r.boss && x.r.ttk > 0 && x.r.ttk < 4 && !x.r.died);
+  if (fast.length) concern.push('Brutal bosses falling in under 4s: ' + fast.map(x => x.cls + ' ' + x.name + ' ' + x.r.ttk + 's').join('; ') + '.');
+  const ratios = [];
+  for (const [cls] of PACK_CLASSES) {
+    for (const zi of PACK_ZONES) {
+      const n = lines.find(x => x.cls === cls && x.zi === zi && x.diff === 0);
+      const b = lines.find(x => x.cls === cls && x.zi === zi && x.diff === 2);
+      if (!n || !b || n.r.err || b.r.err || !(n.r.ttk > 0)) continue;
+      ratios.push({cls, name: n.name, ratio: b.r.ttk / n.r.ttk, bn: n.r.ttk, bb: b.r.ttk, died: b.r.died});
+    }
+  }
+  ratios.sort((a, b) => b.ratio - a.ratio);
+  if (ratios.length) concern.push('Largest Brutal/Normal time ratio: ' + ratios.slice(0, 4).map(x => x.cls + ' ' + x.name + ' ' + x.bn + 's → ' + x.bb + 's (×' + x.ratio.toFixed(1) + (x.died ? ', died' : '') + ')').join('; ') + '.');
+  const body = [
+    '# Acts III–V measurement',
+    '',
+    'Pack fights. One sample each. Nothing in combat numbers was changed for this run.',
+    '',
+    'Protocol: level matched to the district, the class build named below, identified rare weapon, armor, helm, gloves, boots and belt rolled at that level, no uniques, no hire. Adaptive scaling left on, then reset before each fight so an earlier death does not ease the next one. Trash districts spawn 5 ordinary machines of that district\'s first non-tick kind, on top of the hero. Boss districts spawn the act boss alone. The hero stims under half life (6 stims), casts the first skill button, and steps toward the pack. Sim time is `G.time`. Cap 16s on a pack and 25s on a boss. Damage taken is life lost plus 45% of max life per stim. Died is 1 if the hero fell. Unique pool is how many non-boss uniques `uniqEligible` allows at that machine level (the new bands).',
+    '',
+    'Caps, measured on a naked Brutal hero, armor 0, resists 0, one impact hit of 200 that ignores the player-damage quarter. The Brutal resist cut is ' + caps.res + ', so a 0 resist becomes −50 and the hit lands at 1.5× before physical reduction: pdr 0 removed ' + caps.pdr0 + ', pdr 40 removed ' + caps.pdr40 + ', pdr 80 removed ' + caps.pdr80 + ' (the 50% cap). Unique pool sizes by monster level: ' + Object.keys(caps.bands).map(ml => ml + '→' + caps.bands[ml]).join(', ') + '. Left counts living machines when the clock stops, including anything the pack summoned.',
+    '',
+    '| District | Class | Difficulty | Seconds | Damage taken | Died | Left | Pack life | Kind | Unique pool |',
+    '|---|---|---|---:|---:|---:|---:|---:|---|---:|',
+    ...lines.map(x => x.line),
+    '',
+    '## Concerns a reader should check',
+    '',
+    ...concern.map(c => '- ' + c),
+    ''
+  ].join('\n');
+  fs.mkdirSync(path.dirname(outPath), {recursive: true});
+  fs.writeFileSync(outPath, body);
+  console.log('wrote ' + outPath);
+  console.log('CONCERNS');
+  concern.forEach(c => console.log('- ' + c));
+}
+
+(async () => {
+  if (!fs.existsSync(htmlPath)) {
+    console.error('missing ' + htmlPath + ' — run npm run build first');
+    process.exit(1);
+  }
+  if (process.env.BAL_WALK) await runWalk();
+  else await runPack();
 })().catch(e => { console.error(e); process.exit(1); });
