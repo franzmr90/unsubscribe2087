@@ -18,10 +18,12 @@ A game is one map. The server issues a seed for each district, each tier, and ea
 redraw (a subpoena or the bull field). Both clients draw that district from the seed, so
 the rooms, the spawn points, the waypoints and the town's residents match. A character's
 own districts, saved on that character, are not used while the game is up and are not
-overwritten by it. Gramps still holds the act gate on each character. Monsters are still
-each client's: the same machine stands in the same place, and each browser keeps its own
-hit points. The Simulator's wave number and its wave seed are shared, so a wave spawns in
-the same places. The boss-rush lineup is still whoever that character has beaten.
+overwritten by it. Gramps still holds the act gate on each character. The machines
+are shared too: one player in the district (the host, whoever arrived first and is
+still there) moves them, and the server keeps the one pool of hit points. A kill pays
+experience from that pool. Loot is still rolled on your own client, for you and for
+the party members standing in the district. The Simulator's wave number and its wave
+seed are shared. The boss-rush lineup is still whoever that character has beaten.
 
 Scoping to a game of eight is also what makes the server safe to post publicly. Every cost
 — the roster, the movement fan-out, the chat — is bounded by the size of a game rather than
@@ -101,8 +103,7 @@ The Simulator takes a party. The leader books it, either way:
 
 - **Waves, together** — everyone fights the same wave number, and the first to clear it
   moves everybody on. The server holds the wave number and a seed. Each wave is drawn from
-  that seed, so the machines spawn in the same places. Each client still tracks its own
-  hit points.
+  that seed, and the same host-and-hit-point rules apply as in a district.
 - **Duelling** — the rig is the one place a fight between players costs nothing, because
   the game already knows that nothing in there is real. You still have to declare against
   each other first, or you will both swing at nothing.
@@ -111,21 +112,24 @@ The Simulator takes a party. The leader books it, either way:
 
 **It decides:** who exists, who is in which party, who is hostile to whom, who is in which
 district, the layout seed for that district, how experience is split, whether two players
-are allowed to fight at all, and the Simulator's wave number and wave seed. It also refuses
-experience, player damage, quest flags and saves that are outside a coarse bound. Those
-bounds are not a simulation.
+are allowed to fight at all, the Simulator's wave number and wave seed, and the hit points
+of a machine in a game. A kill's experience is paid from that hit-point pool. It also refuses
+experience, player damage, quest flags and saves that are outside a coarse bound.
 
-**It does not decide:** monster hit points, or damage. Each client simulates the machines
-that the shared seed placed, and an attack that lands is an attack your client says
-landed. The server checks that the two of you are permitted to fight, caps the damage
-against the target's max life and the attacker's level, and passes it on. It cannot tell
-a real hit from an invented one inside that cap. A cast portal is still that character's.
+**The host client still moves the machines.** The server does not run their AI. That is
+the whole of why a small box can hold several games: the soak of twenty walking players
+sat near one percent of a core, and copying `update()` onto the server would spend the
+box on pathfinding. When the host leaves the district, the next person there is handed
+the positions and carries on. A guest's blows go to the server as numbers, clamped to
+the machine's max life, and the bar you see is the number that comes back.
 
-**This is cheatable, and it is written here rather than hidden.** A modified client could
-claim hits it did not land. It is the right trade for a server meant for a few people who
-know each other, and it is the wrong trade for a public ladder. Making it otherwise means
-an authoritative simulation — the server running `update()` and owning every monster — and
-that is a rewrite of the game loop, not a patch to it.
+**This is still cheatable, and it is written here rather than hidden.** The host can
+describe a swing that did not happen, and a guest can report a hit from across the
+district; the server checks the size, not the distance. A modified client can also still
+send the old party-experience packet (memos use it, and it stays capped). It is the right
+trade for a few people who know each other, and the wrong trade for a public ladder.
+Owning the AI as well means the server running `update()`, which is a rewrite of the
+game loop, not a patch to it. A cast portal is still that character's.
 
 ## How it is built
 
@@ -216,9 +220,9 @@ The remaining limit is **one process**: presence is in memory, and saves, friend
 so running several copies behind a load balancer would give you several servers that cannot
 see each other, fighting over the same directory. Run one. Several hundred people across
 several dozen games is a reasonable expectation for it. `node tools/soak.js` puts twenty
-headless players through movement, chat and party traffic and prints latency, CPU, memory
-and messages per second. That is a soak of the social traffic, not of shared monsters,
-which this server does not simulate.
+headless players through movement, chat, party traffic and a thin combat loop (host
+reports, others hit) and prints latency, CPU, memory, messages per second, and how many
+hit-point updates came back. The server is not simulating the machines. The host client is.
 
 ## Reporting a problem
 

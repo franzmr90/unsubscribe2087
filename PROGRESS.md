@@ -8,8 +8,9 @@ this work (version 59). `./build.sh` writes both dist files; republishing after 
 edits just means publishing `dist/unsubscribe.html` to that same URL again.
 
 **Co-op beta, not on the Artifact.** Invites, a build check, reconnect, admin, and coarse
-save/XP/PvP bounds live on the account server. Districts and monsters are still per client.
-HOSTING.md is the runbook for a small box. The Artifact is unchanged: no server, no lobby.
+save/XP/PvP bounds live on the account server. A game shares its district seeds, and the
+server keeps one hit-point pool per machine while a host client moves them. HOSTING.md
+is the runbook for a small box. The Artifact is unchanged: no server, no lobby.
 
 **What the Artifact can and cannot show you.** Everything single-player: the story pass,
 the renderer work, the market at Nonce's counter, and the Report button (which, with no
