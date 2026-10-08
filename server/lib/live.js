@@ -25,6 +25,7 @@ const ws = require('./ws');
 const guard = require('./guard');
 const mobMath = require('./mobs');
 const { buildId } = require('./buildid');
+const intake = require('./intake');
 const { turnCfg } = require('./turn');
 
 const MAX_GAME = 8;                /* Diablo II's number, and the reason this scales */
@@ -1073,7 +1074,7 @@ function attach(server, verify) {
   const stats = setInterval(() => {
     const mem = process.memoryUsage();
     console.log('[live] players=' + live.size + ' games=' + games.size + ' parties=' + parties.size +
-      ' msgs=' + msgN + ' rss=' + Math.round(mem.rss / 1048576) + 'MB');
+      ' msgs=' + msgN + ' rss=' + Math.round(mem.rss / 1048576) + 'MB bugFail=' + intake.failures());
     msgN = 0;
   }, 60000);
   stats.unref();

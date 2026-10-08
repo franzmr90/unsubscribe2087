@@ -16,6 +16,7 @@ const { docs } = require('./lib/store');
 const mail = require('./lib/mail');
 const live = require('./lib/live');
 const bugs = require('./lib/bugs');
+const intake = require('./lib/intake');
 const social = require('./lib/social');
 const invites = require('./lib/invites');
 const bans = require('./lib/bans');
@@ -481,11 +482,14 @@ route('POST', '/api/bug', async (req, res) => {
   const b = await readBody(req);
   if (!b || String(b.happened || '').trim().length < 10) return bad(res, 400, 'Tell us what happened first.');
   const ctx = auth(req);
-  const rec = bugs.file(Object.assign({}, b, {
-    from: ctx ? ctx.user.name : (b.from || ''),
-    agent: req.headers['user-agent'] || ''
+  const rec = bugs.file(Object.assign({}, intake.scrubReport(b), {
+    from: intake.scrub(ctx ? ctx.user.name : (b.from || '')),
+    agent: intake.scrub(req.headers['user-agent'] || '')
   }));
   ok(res, { id: rec.id });
+  /* GitHub and the webhook run after the player already has an id. Anonymous
+     reports stay on disk only — a broken login is one of the things people report. */
+  if (ctx && process.env.GITHUB_TOKEN) intake.schedule(rec, { uid: ctx.user.id, build: buildId() });
 });
 
 /* ---------- serving the game ---------- */
