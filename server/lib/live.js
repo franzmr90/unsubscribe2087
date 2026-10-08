@@ -15,11 +15,19 @@
    Town is safe. The arena is not.
 
    What the server is authoritative over: who exists, which game they are in, who is in
-   which party, who is hostile to whom, who is in which district, and the Simulator's wave
-   number. What it is not authoritative over: monsters and damage, which each client
-   simulates for itself. That is a real limitation and MULTIPLAYER.md says so plainly. */
+   which party, who is hostile to whom, who is in which district, the layout seed for each
+   district of that game, the Simulator's wave number and wave seed, and — inside a game,
+   outside town — a monster's hit points and the experience for killing it. One client in
+   the district (the host) still moves the machines. The server does not run their AI. */
 'use strict';
+const crypto = require('crypto');
 const ws = require('./ws');
+const guard = require('./guard');
+const mobMath = require('./mobs');
+const { buildId } = require('./buildid');
+const intake = require('./intake');
+const plaus = require('./plaus');
+const { turnCfg } = require('./turn');
 
 const MAX_GAME = 8;                /* Diablo II's number, and the reason this scales */
 const MAX_PARTY = 8;
@@ -43,13 +51,24 @@ const DIFFS = {
 const live = new Map();            /* uid -> player */
 const games = new Map();           /* game id -> game */
 const parties = new Map();         /* party id -> party */
+/* uid -> { id, game, until } kept after a dropped socket's grace runs out, so the same
+   account can be put back in the party if the game is still there. */
+const partyMemo = new Map();
+const GRACE_MS = +(process.env.RESUME_GRACE_MS || 45000);
 let partySeq = 1, gameSeq = 1;
+let msgN = 0;
 
 const nowSec = () => Math.floor(Date.now() / 1000);
 const clean = (s, n) => String(s === undefined || s === null ? '' : s).slice(0, n);
 
 function send(p, t, d) { if (p && p.conn) p.conn.send(Object.assign({ t }, d)); }
 function sys(p, text) { send(p, 'sys', { text }); }
+function notice(p, text) { send(p, 'sys', { text, notice: 1 }); }
+
+/* Reported max life is what player-damage is capped against. A tiny report would make
+   somebody unkillable; a huge one would let one packet delete them. The floor tracks
+   level. The ceiling is far above any honest character. */
+function takeVitals(p, m) { plaus.clampVitals(p, m); }
 
 /* Loaded inside the call. social.js requires this module at the top, so a
    top-level require here would hand it the exports object before it is filled. */
@@ -181,22 +200,85 @@ function gameScale(g) {
   };
 }
 
+/* One seed per district, per tier, per redraw. The client draws from it. A fresh
+   ask (a subpoena, the bull field, a tier the table has not seen) mints the next
+   roll so the previous layout stays put for anyone still standing in it. */
+function mapRows(g) {
+  const out = [];
+  if (!g || !g.maps) return out;
+  for (const k in g.maps) out.push(g.maps[k]);
+  return out;
+}
+function mapRecord(g, zi, tier, fresh, tpl) {
+  g.maps = g.maps || {};
+  g.mapRoll = g.mapRoll || {};
+  const base = zi + '/' + tier;
+  if (fresh) g.mapRoll[base] = (g.mapRoll[base] || 0) + 1;
+  const roll = g.mapRoll[base] || 0;
+  const id = base + '/' + roll;
+  let row = g.maps[id];
+  if (!row) {
+    const seed = crypto.randomBytes(4).readUInt32BE(0) || 1;
+    row = { zi, tier, roll, seed, key: 'g:' + g.id + ':' + zi + ':t' + tier + ':r' + roll };
+    g.maps[id] = row;
+  }
+  if (fresh && tpl && typeof tpl === 'object' && !Array.isArray(tpl)) {
+    let s = '';
+    try { s = JSON.stringify(tpl); } catch (e) { s = ''; }
+    if (s && s.length < 700) row.tpl = tpl;
+  }
+  return row;
+}
+
 function joinGame(p, g) {
+  if (p.game === g.id) {
+    p.awayUntil = 0;
+    zoneIndex(p);
+    send(p, 'game', { game: gameInfo(g), you: p.uid, scale: gameScale(g), maps: mapRows(g), resumed: 1 });
+    const party = partyOf(p);
+    if (party) pushParty(party);
+    pushRoster(g);
+    pushZone(p);
+    return null;
+  }
   if (g.players.size >= MAX_GAME) return 'That game is full.';
   if (p.game) leaveGame(p);
   g.players.add(p.uid);
   p.game = g.id;
   zoneIndex(p);
-  send(p, 'game', { game: gameInfo(g), you: p.uid, scale: gameScale(g) });
+  send(p, 'game', { game: gameInfo(g), you: p.uid, scale: gameScale(g), maps: mapRows(g) });
   for (const q of gamePlayers(g)) if (q !== p) sys(q, p.name + ' has entered the game.');
   pushRoster(g);
   pushLobby();
   pushFriends(p);
+  restoreParty(p);
   return null;
+}
+
+function rememberParty(p) {
+  if (!p || !p.party || !p.game) return;
+  partyMemo.set(p.uid, { id: p.party, game: p.game, until: Date.now() + 180000 });
+}
+
+function restoreParty(p) {
+  const m = partyMemo.get(p.uid);
+  if (!m || m.until < Date.now() || m.game !== p.game || p.party) return;
+  const party = parties.get(m.id);
+  if (!party || party.members.size >= MAX_PARTY) return;
+  const lead = live.get(party.leader);
+  if (!lead || lead.game !== p.game) return;
+  party.members.add(p.uid);
+  p.party = party.id;
+  partyMemo.delete(p.uid);
+  for (const m2 of membersOf(party)) sys(m2, p.name + ' rejoined the party.');
+  pushParty(party);
+  pushRoster(gameOf(p));
 }
 
 function leaveGame(p, opt) {
   const g = gameOf(p);
+  const left = mobSample(p);
+  if (!(opt && opt.holdParty)) partyMemo.delete(p.uid);
   leaveParty(p, true);
   zoneIndex(p, true);
   p.game = null;
@@ -213,6 +295,8 @@ function leaveGame(p, opt) {
      first would flash them back online to everyone they know. */
   if (!g) { if (!(opt && opt.silent)) pushFriends(p); return; }
   g.players.delete(p.uid);
+  p.mobKey = '';
+  if (g.players.size && !TOWNS.has(left.zi | 0)) mobTell(g, left);
   for (const q of gamePlayers(g)) { q.hostile.delete(p.uid); sys(q, p.name + ' has left the game.'); }
   /* A game is its players. When the last one leaves — or logs off, which is the same
      thing from here — it is over, and it stops being listed. */
@@ -291,14 +375,165 @@ function zonePeers(p) {
   return out;
 }
 function pushZone(p) { send(p, 'zone', { zi: p.zi, players: zonePeers(p).map(loc) }); }
+
+/* One host client moves the machines. The server keeps their hit points, so a second
+   browser cannot kill a private copy, and a reported experience packet is not how a
+   shared kill pays. Towns have no machines. */
+function mobKey(zi, tier, inst) { return (zi | 0) + '/' + (tier | 0) + '/' + (inst || ''); }
+function mobSample(p) { return { zi: p.zi | 0, tier: p.tier | 0, inst: p.inst || '' }; }
+function mobZone(g, sample) {
+  g.zones = g.zones || {};
+  const key = mobKey(sample.zi, sample.tier, sample.inst);
+  if (!g.zones[key]) g.zones[key] = { host: '', mobs: {} };
+  return g.zones[key];
+}
+function mobHere(g, sample) {
+  return gamePlayers(g).filter(q => q.conn && (q.zi | 0) === (sample.zi | 0) && (q.tier | 0) === (sample.tier | 0) && (q.inst || '') === (sample.inst || '') && !TOWNS.has(q.zi | 0));
+}
+function mobList(z) {
+  const out = [];
+  for (const id in z.mobs) {
+    const r = z.mobs[id];
+    if (!r || r.dead) continue;
+    out.push({
+      id: +id, k: r.k, x: Math.round(r.x * 100) / 100, y: Math.round(r.y * 100) / 100,
+      hp: Math.round(r.hp), max: r.max, ml: r.ml, champ: r.champ, su: r.su, min: r.min
+    });
+  }
+  return out;
+}
+function mobTell(g, sample) {
+  const here = mobHere(g, sample);
+  const key = mobKey(sample.zi, sample.tier, sample.inst);
+  if (!here.length) {
+    if (g.zones) delete g.zones[key];
+    return;
+  }
+  const z = mobZone(g, sample);
+  /* The host stays until they are actually gone. The next one is named while they
+     are still here, and already has the positions, so the handoff is not a resync. */
+  const ids = here.map(q => q.uid);
+  const had = z.host;
+  let handed = 0;
+  if (!ids.includes(z.host)) {
+    const promote = z.next && ids.includes(z.next) ? z.next : (ids[0] || '');
+    handed = had && promote && promote !== had ? 1 : 0;
+    z.host = promote;
+  }
+  const rest = ids.filter(id => id !== z.host);
+  if (!rest.includes(z.next)) z.next = rest[0] || '';
+  const list = mobList(z);
+  for (const q of here) {
+    send(q, 'mhost', {
+      zi: sample.zi | 0, tier: sample.tier | 0, uid: z.host, next: z.next || '',
+      hand: handed && q.uid === z.host ? 1 : 0
+    });
+    send(q, 'mobs', {
+      zi: sample.zi | 0, tier: sample.tier | 0, snap: handed ? 0 : 1,
+      you: q.uid === z.host ? 1 : 0, next: z.next || '', list
+    });
+  }
+  if (handed) armHandoff(g, sample, z);
+}
+/* If the promotion packet is lost, say it again until the new host reports in. */
+function armHandoff(g, sample, z) {
+  const token = {};
+  z.arm = token;
+  const key = mobKey(sample.zi, sample.tier, sample.inst);
+  const timer = setTimeout(() => {
+    if (z.arm !== token || !g.zones || g.zones[key] !== z) return;
+    if (z.pushedAt && Date.now() - z.pushedAt < 400) return;
+    const here = mobHere(g, sample);
+    if (!here.some(q => q.uid === z.host)) return;
+    const list = mobList(z);
+    for (const q of here) {
+      send(q, 'mhost', {
+        zi: sample.zi | 0, tier: sample.tier | 0, uid: z.host, next: z.next || '',
+        hand: q.uid === z.host ? 1 : 0
+      });
+      send(q, 'mobs', {
+        zi: sample.zi | 0, tier: sample.tier | 0, snap: 0,
+        you: q.uid === z.host ? 1 : 0, next: z.next || '', list
+      });
+    }
+  }, 250);
+  if (timer.unref) timer.unref();
+}
+function mobNote(p) {
+  const g = gameOf(p);
+  if (!g) return;
+  const sample = mobSample(p);
+  const key = mobKey(sample.zi, sample.tier, sample.inst);
+  if (p.mobKey === key) {
+    if (TOWNS.has(sample.zi)) return;
+    const z = g.zones && g.zones[key];
+    if (z && z.host && mobHere(g, sample).some(q => q.uid === z.host)) return;
+  }
+  const prev = p.mobKey;
+  p.mobKey = key;
+  if (prev && prev !== key) {
+    const old = prev.split('/');
+    mobTell(g, { zi: +old[0] || 0, tier: +old[1] || 0, inst: old.slice(2).join('/') });
+  }
+  if (!TOWNS.has(sample.zi)) mobTell(g, sample);
+}
+function grantMobXp(p, amount, ml) {
+  amount = Math.round(Math.max(0, +amount || 0));
+  if (!amount || !p) return;
+  const party = partyOf(p);
+  const here = party
+    ? membersOf(party).filter(q => q.game === p.game && q.zi === p.zi && (q.inst || '') === (p.inst || '') && (q.tier | 0) === (p.tier | 0))
+    : [p];
+  if (here.length < 2) {
+    send(p, 'mxp', { amount, self: 1 });
+    return;
+  }
+  const pool = amount * PARTY_POOL;
+  const sum = here.reduce((a, q) => a + Math.max(1, q.lvl), 0);
+  for (const q of here) {
+    const share = Math.round(pool * (Math.max(1, q.lvl) / sum) * xpCurve(q.lvl, ml));
+    if (share > 0) send(q, 'mxp', { amount: share, from: p.name, self: q.uid === p.uid ? 1 : 0 });
+  }
+}
+function mobKill(g, sample, rec, id, killer, silent) {
+  if (!rec || rec.dead) return;
+  rec.dead = 1;
+  const here = mobHere(g, sample);
+  if (!silent && killer) {
+    const scale = gameScale(g).xp;
+    let xp = mobMath.killXp(rec.k, rec.ml, rec, scale, rec.xpm, (sample.zi | 0) === SIM_ZONE);
+    const cap = guard.xpCap(rec.ml, scale);
+    if (xp > cap) xp = cap;
+    grantMobXp(killer, xp, rec.ml);
+  }
+  const party = killer && partyOf(killer);
+  const paid = new Set(party ? party.members : (killer ? [killer.uid] : []));
+  for (const q of here) {
+    send(q, 'mkill', {
+      id: +id, k: rec.k, x: rec.x, y: rec.y, ml: rec.ml,
+      champ: rec.champ, su: rec.su,
+      loot: !silent && paid.has(q.uid) ? 1 : 0,
+      silent: silent ? 1 : 0,
+      by: killer ? killer.uid : ''
+    });
+  }
+}
+function diffHpOf(g) {
+  const n = g && g.players ? g.players.size : 1;
+  return gameScale(g).hp / Math.max(1, 1 + 0.5 * (n - 1));
+}
 /* A cast is one beat long. Push it to the district instead of waiting for their next
    heartbeat, or the other client can sample the beat after it has already been cleared. */
 function pushPeers(p) { for (const q of zonePeers(p)) pushZone(q); }
 
 const HANDLERS = {
   hello(p, m) {
-    p.lvl = +m.lvl || 1; p.cls = clean(m.cls, 16);
-    p.zi = +m.zi || 0; p.hp = +m.hp || 0; p.hpm = +m.hpm || 1;
+    p.cls = clean(m.cls, 16);
+    p.zi = +m.zi || 0;
+    takeVitals(p, m);
+    /* The real client asks to be held in its game across a dropped socket. Test
+       clients do not, so a closed socket there still ends the session at once. */
+    if (m && m.resume) p.wantsResume = true;
     zoneIndex(p);
     if (p.game) pushRoster(gameOf(p)); else pushLobby();
     pushFriends(p);
@@ -313,7 +548,7 @@ const HANDLERS = {
     const name = clean(m.name, 40).trim() || (p.name + "'s game");
     if ([...games.values()].some(g => g.name.toLowerCase() === name.toLowerCase() && g.players.size)) return sys(p, 'There is already a game by that name.');
     const diff = DIFFS[clean(m.diff, 12)] ? clean(m.diff, 12) : 'normal';
-    const g = { id: 'g' + (gameSeq++), name, diff, host: p.uid, pass: clean(m.pass, 40), players: new Set(), created: Date.now() };
+    const g = { id: 'g' + (gameSeq++), name, diff, host: p.uid, pass: clean(m.pass, 40), players: new Set(), created: Date.now(), maps: {}, mapRoll: {}, zones: {} };
     games.set(g.id, g);
     const err = joinGame(p, g);
     if (err) sys(p, err);
@@ -340,31 +575,54 @@ const HANDLERS = {
 
   'game.leave'(p) { leaveGame(p); pushLobby(); },
 
+  /* The layout of a district: the seed both clients draw from, and the subpoena
+     template if the district was rolled rather than taken from the book. A fresh
+     roll forgets the machines that were standing in the previous one. */
+  map(p, m) {
+    const g = gameOf(p);
+    if (!g) return;
+    const zi = m.zi | 0;
+    if (zi !== m.zi || zi < 0 || zi > 63) return;
+    const tier = Math.max(0, Math.min(30, m.tier | 0));
+    const fresh = m.fresh ? 1 : 0;
+    if (fresh && !rate(p, 'mapfresh', 8, 60000)) return sys(p, 'That district was just redrawn. Give it a moment.');
+    if (!rate(p, 'map', 40, 10000)) return;
+    const row = mapRecord(g, zi, tier, fresh, m.tpl);
+    if (fresh && g.zones) {
+      const pre = zi + '/' + tier + '/';
+      for (const k of Object.keys(g.zones)) if (k.startsWith(pre)) delete g.zones[k];
+      for (const q of gamePlayers(g)) if ((q.zi | 0) === zi && (q.tier | 0) === tier) q.mobKey = '';
+    }
+    inGame(g, 'map', row);
+    if (fresh) for (const q of gamePlayers(g)) if ((q.zi | 0) === zi && (q.tier | 0) === tier) mobNote(q);
+  },
+
   /* ---- being somewhere ---- */
   /* sk, au and sw are stored and forwarded like dir. They are not simulated, and they
      are not a hit. A missing field leaves the stored value alone. */
   move(p, m) {
     p.x = +m.x || 0; p.y = +m.y || 0; p.dir = +m.dir || 0;
-    p.hp = +m.hp || 0; p.hpm = +m.hpm || 1;
-    if ('lvl' in m) p.lvl = Math.max(1, +m.lvl || 1);
+    takeVitals(p, m);
     const cosmetic = ('sk' in m) || ('au' in m) || ('sw' in m);
     if ('sk' in m) p.sk = m.sk === null ? null : skillIx(m.sk);
     if ('au' in m) p.au = auraIx(m.au);
     if ('sw' in m) p.sw = m.sw === 1 ? 1 : 0;
     if (!p.game) return;
     const zi = +m.zi, inst = m.inst || null;
-    if (zi !== p.zi || inst !== p.inst) {
+    const nextTier = m.tier == null ? (p.tier | 0) : (m.tier | 0);
+    if (zi !== p.zi || inst !== p.inst || nextTier !== (p.tier | 0)) {
       /* A declaration holds them in the district the server already recorded, for ten
          seconds. A modified client can ignore the local half and walk anyway. This is
          the server's half: it does not follow them, so they are not a combatant there. */
       if (!(p.portalLock > Date.now())) {
-        p.zi = zi; p.inst = inst;
+        p.zi = zi; p.inst = inst; p.tier = nextTier;
         zoneIndex(p);
         pushRoster(gameOf(p));
         /* Walking in buys five seconds, so a hostile cannot camp the doorway. */
         p.safeUntil = Date.now() + 5000;
       }
     }
+    if (p.game) mobNote(p);
     pushZone(p);
     if (cosmetic) pushPeers(p);
   },
@@ -424,7 +682,9 @@ const HANDLERS = {
     if (!rel.mutual || rel.blocked) return whisperNote(p, book.MISS);
     if (book.closed(who.id)) return whisperNote(p, book.QUIET);
     const q = live.get(who.id);
-    if (q) {
+    /* A held place has no socket. Treat that as offline so the letter goes in the box
+       instead of vanishing into a connection that is not there. */
+    if (q && q.conn) {
       send(q, 'whisper', { from: p.name, uid: p.uid, text: raw });
       whisperNote(p, 'delivered.', { to: who.id, name: who.name, line: raw });
       return;
@@ -492,7 +752,17 @@ const HANDLERS = {
   },
 
   xp(p, m) {
-    const amount = Math.max(0, Math.min(1e9, +m.amount || 0));
+    if (!rate(p, 'xp', 25, 10000)) return;
+    const scale = gameScale(gameOf(p)).xp;
+    const cap = guard.xpCap(m.ml, scale);
+    let amount = Math.max(0, +m.amount || 0);
+    if (!amount) return;
+    const decided = guard.xpAccept(amount, p.lvl, cap, p.bankPaid);
+    if (decided.clamped) {
+      console.log('[xp] clamped ' + p.name + ' ' + amount + ' to ' + decided.amount + ' ml=' + (+m.ml || 0));
+    }
+    amount = decided.amount;
+    p.bankPaid = decided.paid;
     if (!amount) return;
     const party = partyOf(p);
     if (!party) return;
@@ -513,17 +783,126 @@ const HANDLERS = {
   quest(p, m) {
     const party = partyOf(p);
     if (!party) return;
-    const k = clean(m.k, 12), v = +m.v;
-    if (!/^q\d{1,2}$/.test(k) || !(v >= 0 && v <= 3)) return;
-    for (const q of membersOf(party)) if (q.uid !== p.uid && q.zi === p.zi) send(q, 'quest', { k, v, from: p.name });
+    if (!rate(p, 'quest', 8, 30000)) return;
+    const k = clean(m.k, 12);
+    p.quest = p.quest || {};
+    const step = guard.questStep(p.quest, k, +m.v);
+    if (step == null) return;
+    p.quest[k] = step;
+    for (const q of membersOf(party)) if (q.uid !== p.uid && q.zi === p.zi) send(q, 'quest', { k, v: step, from: p.name });
   },
 
   pvp(p, m) {
     const q = live.get(m.uid);
     if (!canFight(p, q)) return;
-    const dmg = Math.max(0, Math.min(1e7, +m.dmg || 0)) * PVP_SCALE;
-    if (!dmg) return;
-    send(q, 'pvp', { from: p.name, fromUid: p.uid, dmg: Math.round(dmg), kind: clean(m.kind, 12) });
+    if (!rate(p, 'pvp', 80, 10000)) return;
+    const raw = Math.max(0, +m.dmg || 0);
+    if (!raw) return;
+    const landedCap = guard.pvpLandedCap(p.lvl, q.hpm);
+    let landed = raw * PVP_SCALE;
+    if (landed > landedCap) {
+      console.log('[pvp] clamped ' + p.name + ' ' + Math.round(landed) + ' to ' + Math.round(landedCap) + ' vs ' + q.name);
+      landed = landedCap;
+    }
+    if (!landed) return;
+    plaus.notePvp(q, landed);
+    send(q, 'pvp', { from: p.name, fromUid: p.uid, dmg: Math.round(landed), kind: clean(m.kind, 12) });
+  },
+
+  /* The host's picture of where the machines are. Hit points in the packet are ignored
+     once a machine is known: those belong to the server. */
+  mobs(p, m) {
+    const g = gameOf(p);
+    if (!g || TOWNS.has(p.zi | 0)) return;
+    if (!rate(p, 'mobs', 80, 10000)) return;
+    const sample = mobSample(p);
+    if ((m.zi | 0) !== sample.zi || (m.tier | 0) !== sample.tier) return;
+    const z = mobZone(g, sample);
+    if (z.host !== p.uid) return;
+    z.pushedAt = Date.now();
+    const list = Array.isArray(m.list) ? m.list.slice(0, 60) : [];
+    const seen = {};
+    const diffHp = diffHpOf(g);
+    for (let i = 0; i < list.length; i++) {
+      const row = list[i];
+      if (!row || typeof row !== 'object') continue;
+      const rec = mobMath.upsert(z, row, diffHp, clean);
+      if (rec) seen[row.id | 0] = 1;
+    }
+    for (const id in z.mobs) {
+      const rec = z.mobs[id];
+      if (!rec || rec.dead) continue;
+      if (seen[id]) continue;
+      rec.miss = (rec.miss || 0) + 1;
+      if (rec.miss >= 3) mobKill(g, sample, rec, id, null, true);
+    }
+    const out = mobList(z);
+    for (const q of mobHere(g, sample)) if (q !== p) send(q, 'mobs', { zi: sample.zi, tier: sample.tier, list: out });
+  },
+
+  mhit(p, m) {
+    const g = gameOf(p);
+    if (!g || TOWNS.has(p.zi | 0)) return;
+    if (!rate(p, 'mhit', 100, 10000)) return;
+    const sample = mobSample(p);
+    if ((m.zi | 0) !== sample.zi || (m.tier | 0) !== sample.tier) return;
+    const z = g.zones && g.zones[mobKey(sample.zi, sample.tier, sample.inst)];
+    if (!z) return;
+    const id = m.id | 0;
+    const rec = z.mobs[id];
+    if (!rec || rec.dead) return;
+    const sk = m.sk == null ? -1 : (m.sk | 0);
+    if (sk === -2) {
+      if (z.host !== p.uid) return;
+    } else if (!plaus.hitOk(p, rec, sk)) return;
+    let d = Math.max(0, +m.d || 0);
+    if (!(d > 0)) return;
+    if (d > rec.max) {
+      console.log('[mob] clamped ' + p.name + ' hit ' + Math.round(d) + ' to ' + rec.max);
+      d = rec.max;
+    }
+    rec.hp = Math.max(0, rec.hp - d);
+    for (const q of mobHere(g, sample)) send(q, 'mhp', { id, hp: Math.round(rec.hp), max: rec.max });
+    if (rec.hp <= 0) mobKill(g, sample, rec, id, p, false);
+  },
+
+  /* The host says a machine left without a kill: a drone that got away, a minion
+     dismissed with its boss. No experience. */
+  mgone(p, m) {
+    const g = gameOf(p);
+    if (!g || !rate(p, 'mgone', 40, 10000)) return;
+    const sample = mobSample(p);
+    const z = g.zones && g.zones[mobKey(sample.zi, sample.tier, sample.inst)];
+    if (!z || z.host !== p.uid) return;
+    const rec = z.mobs[m.id | 0];
+    if (!rec || rec.dead) return;
+    mobKill(g, sample, rec, m.id | 0, null, true);
+  },
+
+  /* A machine's swing, as the host saw it, forwarded to the person who was standing there. */
+  mdmg(p, m) {
+    const g = gameOf(p);
+    if (!g || TOWNS.has(p.zi | 0)) return;
+    if (!rate(p, 'mdmg', 120, 10000)) return;
+    const z = g.zones && g.zones[mobKey(p.zi, p.tier, p.inst)];
+    if (!z || z.host !== p.uid) return;
+    const q = live.get(clean(m.uid, 64));
+    if (!q || q.game !== p.game || q.zi !== p.zi || (q.tier | 0) !== (p.tier | 0)) return;
+    let d = Math.max(0, +m.d || 0);
+    if (!(d > 0)) return;
+    const cap = Math.max(1, (+q.hpm || 80) * 0.55);
+    if (d > cap) {
+      console.log('[mob] clamped strike ' + Math.round(d) + ' to ' + Math.round(cap) + ' on ' + q.name);
+      d = cap;
+    }
+    send(q, 'mdmg', { d: Math.round(d), name: clean(m.name, 40) || 'a machine', slow: m.slow ? 1 : 0 });
+  },
+
+  /* Soak clients measure this. It is not a game action. */
+  ping(p, m) {
+    if (!rate(p, 'ping', 30, 10000)) return;
+    /* `t` is the frame type. The client's clock rides in `at`, or it would replace the type. */
+    send(p, 'pong', { n: m.n, at: m.at });
   },
 
   /* Reported by the defender, so a win cannot simply be asserted by the winner. */
@@ -603,11 +982,107 @@ function rate(p, key, max, win) {
   b.n++; return true;
 }
 
+function greet(p, opt) {
+  const turn = turnCfg();
+  send(p, 'you', {
+    uid: p.uid, name: p.name, maxParty: MAX_PARTY, maxGame: MAX_GAME,
+    pvpScale: PVP_SCALE, simZone: SIM_ZONE, build: buildId(), grace: GRACE_MS,
+    turn: turn || undefined, resumed: opt && opt.resumed ? 1 : 0
+  });
+}
+
+function wire(p, conn) {
+  conn.on('message', m => {
+    if (live.get(p.uid) !== p || p.conn !== conn) return;
+    if (!m || typeof m.t !== 'string') return;
+    const fn = HANDLERS[m.t];
+    if (!fn) return;
+    msgN++;
+    if (!rate(p, 'msg', 300, 10000)) return;
+    try { fn(p, m); } catch (e) { console.error('[live]', m.t, e.message); }
+  });
+  conn.on('close', () => {
+    if (live.get(p.uid) !== p || p.conn !== conn) return;
+    park(p);
+  });
+}
+
+/* A client that asked to be resumed keeps its game and party for GRACE_MS. Anything
+   else — a test socket, an explicit leave, a kick — is gone immediately. */
+function park(p) {
+  if (!p.wantsResume || !p.game) {
+    leaveGame(p, { silent: true });
+    pushOffline(p);
+    live.delete(p.uid);
+    pushLobby();
+    return;
+  }
+  p.conn = null;
+  p.awayUntil = Date.now() + GRACE_MS;
+  zoneIndex(p, true);
+  const g = gameOf(p);
+  for (const q of gamePlayers(g)) if (q !== p) sys(q, p.name + ' dropped. Holding their place.');
+  if (p.awayTimer) clearTimeout(p.awayTimer);
+  p.awayTimer = setTimeout(() => {
+    if (live.get(p.uid) !== p || p.conn) return;
+    rememberParty(p);
+    leaveGame(p, { silent: true, holdParty: true });
+    pushOffline(p);
+    live.delete(p.uid);
+    pushLobby();
+  }, GRACE_MS);
+  if (p.awayTimer.unref) p.awayTimer.unref();
+}
+
+function resume(p, conn) {
+  if (p.awayTimer) { clearTimeout(p.awayTimer); p.awayTimer = null; }
+  p.conn = conn;
+  p.awayUntil = 0;
+  wire(p, conn);
+  greet(p, { resumed: 1 });
+  const g = gameOf(p);
+  if (g) {
+    zoneIndex(p);
+    send(p, 'game', { game: gameInfo(g), you: p.uid, scale: gameScale(g), maps: mapRows(g), resumed: 1 });
+    const party = partyOf(p);
+    if (party) pushParty(party);
+    pushRoster(g);
+    pushZone(p);
+    for (const q of gamePlayers(g)) if (q !== p) sys(q, p.name + ' is back.');
+  } else {
+    send(p, 'lobby', { games: lobby(), max: MAX_GAME, diffs: DIFFS });
+  }
+  pushFriends(p);
+}
+
+function drop(p, text) {
+  if (!p) return;
+  p.wantsResume = false;
+  if (p.awayTimer) { clearTimeout(p.awayTimer); p.awayTimer = null; }
+  if (text) notice(p, text);
+  const conn = p.conn;
+  p.conn = null;
+  if (live.get(p.uid) === p) {
+    leaveGame(p, { silent: true });
+    pushOffline(p);
+    live.delete(p.uid);
+    pushLobby();
+  }
+  if (conn) { try { conn.close(); } catch (e) {} }
+}
+
 function attach(server, verify) {
   ws.attach(server, '/live', verify, (conn, ctx) => {
     const old = live.get(ctx.user.id);
+    if (old && !old.conn && old.awayUntil > Date.now()) {
+      resume(old, conn);
+      return;
+    }
     if (old) {
-      try { old.conn.close(); } catch (e) {}
+      old.wantsResume = false;
+      const prev = old.conn;
+      old.conn = null;
+      if (prev) { try { prev.close(); } catch (e) {} }
       leaveGame(old, { silent: true });
       pushOffline(old);
       if (live.get(old.uid) === old) live.delete(old.uid);
@@ -623,42 +1098,37 @@ function attach(server, verify) {
       uid: ctx.user.id, name: ctx.user.name, conn,
       lvl: 1, cls: '', zi: 0, inst: null, zoneKey: undefined, x: 0, y: 0, dir: 0, hp: 1, hpm: 1,
       sk: null, au: null, sw: 0,
-      game: null, party: null, hostile: new Set(), declaredAt: new Map(), portalLock: 0, invites: new Map(), safeUntil: 0, voice: false, joined: Date.now()
+      game: null, party: null, quest: {}, hostile: new Set(), declaredAt: new Map(), portalLock: 0, invites: new Map(), safeUntil: 0, voice: false, joined: Date.now(),
+      wantsResume: false, awayUntil: 0, awayTimer: null
     };
     live.set(p.uid, p);
-
-    send(p, 'you', { uid: p.uid, name: p.name, maxParty: MAX_PARTY, maxGame: MAX_GAME, pvpScale: PVP_SCALE, simZone: SIM_ZONE });
+    wire(p, conn);
+    greet(p);
     send(p, 'lobby', { games: lobby(), max: MAX_GAME, diffs: DIFFS });
     pushFriends(p);
-
-    conn.on('message', m => {
-      if (!m || typeof m.t !== 'string') return;
-      const fn = HANDLERS[m.t];
-      if (!fn) return;
-      if (!rate(p, 'msg', 300, 10000)) return;
-      try { fn(p, m); } catch (e) { console.error('[live]', m.t, e.message); }
-    });
-
-    conn.on('close', () => {
-      if (live.get(p.uid) !== p) return;
-      leaveGame(p, { silent: true });
-      pushOffline(p);
-      live.delete(p.uid);
-      pushLobby();
-    });
   });
 
   const beat = setInterval(() => {
     for (const p of live.values()) {
+      if (!p.conn) continue;
       if (!p.conn.alive) { p.conn.close(); continue; }
       p.conn.ping();
     }
   }, 25000);
   beat.unref();
+
+  const stats = setInterval(() => {
+    const mem = process.memoryUsage();
+    console.log('[live] players=' + live.size + ' games=' + games.size + ' parties=' + parties.size +
+      ' msgs=' + msgN + ' rss=' + Math.round(mem.rss / 1048576) + 'MB bugFail=' + intake.failures() +
+      ' hitRej=' + plaus.takeHitRej() + ' hpFlag=' + plaus.takeHpFlag());
+    msgN = 0;
+  }, 60000);
+  stats.unref();
 }
 
 module.exports = {
   attach, live, games, parties, MAX_PARTY, MAX_GAME, MAX_PLAYERS, MAX_GAMES,
   PARTY_POOL, PVP_SCALE, SIM_ZONE, TOWNS, canFight, mutualHostile, gameScale, DIFFS,
-  poke, pushFriends
+  poke, pushFriends, send, notice, drop, GRACE_MS
 };

@@ -47,6 +47,8 @@ All optional; all environment variables.
 | Variable | Default | |
 |---|---|---|
 | `PORT` | `8087` | |
+| `LAN` | off | `1` binds `0.0.0.0`, stays on plain http, prints the home-network links, and only allows new accounts from a private address. The launchers in `lan/` set this. See `LAN-PLAY.md`. |
+| `LAN_INVITE` | off | With `LAN=1`, mint one shared code, print it, and require it. Off means anyone on the home network can make an account. |
 | `PUBLIC_ORIGIN` | `http://localhost:$PORT` | **Set this in production.** It builds the links in emails, and an `https://` value is what turns on `Secure` cookies. |
 | `DATA_DIR` | `server/data` | |
 | `TLS_KEY` `TLS_CERT` | none | Paths to a certificate and key. Set both and the server speaks https instead — needed to test voice from another device on your network, since the microphone is refused on a plain-http address that is not `localhost`. See `TESTING.md`. |

@@ -24,6 +24,12 @@ ls -1t "$DEST"/unsubscribe2087-*.tar.gz 2>/dev/null | tail -n +$((KEEP + 1)) | x
 
 echo "$out ($(du -h "$out" | cut -f1)), $(ls -1 "$DEST"/unsubscribe2087-*.tar.gz | wc -l) kept"
 
-# To get them off the machine, add one line to the cron entry, e.g.
-#   rclone copy "$DEST" remote:unsubscribe-backups
-#   rsync -az "$DEST/" you@elsewhere:/backups/unsubscribe/
+# Off the box. Set BACKUP_HOOK in /etc/unsubscribe2087.env to an executable that
+# receives the archive path. The copies above stay on this machine either way.
+if [ -z "${BACKUP_HOOK:-}" ] && [ -f /etc/unsubscribe2087.env ]; then
+  BACKUP_HOOK=$(grep -E '^BACKUP_HOOK=' /etc/unsubscribe2087.env | tail -1 | cut -d= -f2- | tr -d '"' | tr -d "'")
+fi
+if [ -n "${BACKUP_HOOK:-}" ]; then
+  echo "off-box: $BACKUP_HOOK"
+  "$BACKUP_HOOK" "$out" || echo "off-box hook failed" >&2
+fi

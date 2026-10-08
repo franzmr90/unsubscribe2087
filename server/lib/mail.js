@@ -127,4 +127,6 @@ async function send(msg) {
   }
 }
 
-module.exports = { send, enabled, CFG };
+const outboxDir = () => path.join(DATA, 'outbox');
+
+module.exports = { send, enabled, CFG, outboxDir };

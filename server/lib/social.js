@@ -235,8 +235,9 @@ function listMail(uid) {
 
 const QUIET = 'They are not taking messages.';
 
-/* The box is for when they are not connected. An open line is delivered on the
-   socket and never written here. Not-a-friend, missing, and blocked all answer
+/* The box is for when they are not connected. An open socket is delivered live
+   and never written here. A held reconnect slot has no socket, so a whisper
+   during that gap is a letter. Not-a-friend, missing, and blocked all answer
    with the same sentence, so sending is not a directory. Not-taking-messages
    is checked before online, so the reply does not say which they are. */
 function send(from, name, text) {
@@ -253,7 +254,10 @@ function send(from, name, text) {
   const mutual = mine && mine.state === 'friend' && theirs && theirs.state === 'friend';
   if (blocked || !mutual) return miss();
   if (closed(who.id)) return fail(400, QUIET);
-  if (live.live && live.live.get(who.id)) return fail(400, 'They are on. Say it when the line is open.');
+  if (live.live) {
+    const q = live.live.get(who.id);
+    if (q && q.conn) return fail(400, 'They are on. Say it when the line is open.');
+  }
   const box = freshBox(who.id);
   const msg = { id: 'm' + A.rand(9), from: from.id, fromName: from.name, text: body, at: Date.now(), read: false };
   box.push(msg);
