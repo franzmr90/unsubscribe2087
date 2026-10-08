@@ -595,7 +595,8 @@ function hackTick(dt){
     if(a.k==='pstorm'){if(a.arm>0){a.arm-=dt;continue}a.pulse-=dt;if(a.pulse>0)continue;a.pulse=.5;DT='noise';for(const e of W.ents.slice())if(dist(e,a)<a.r+e.r)hit(e,a.m,true);DT=null;W.fx.push({k:'strike',x:a.x,y:a.y,t:0,life:.15})}}}
 function runTick(dt){
   if(P.route>0)P.route=Math.max(0,P.route-dt);
-  for(const a of W.allies){if(a.k!=='drop'||!(a.life>0))continue;const d=dist(a,P);if(d>a.leash){a.life=0;toast('The second drop pops');continue}if(d>1.5){a.x+=(P.x-a.x)/d*3.2*dt;a.y+=(P.y-a.y)/d*3.2*dt}}}
+  /* The parcel stays where it was set down. The leash is how far you may walk before it pops. It does not follow. */
+  for(const a of W.allies){if(a.k!=='drop'||!(a.life>0))continue;if(dist(a,P)>a.leash)a.life=0}}
 function anonDump(n,L,m){if(n>=3){dumpSpent('blades');W.fx.push({k:'ring',x:P.x,y:P.y,r:8,t:0,life:.35,col:'#e6e2d6'});for(const e of W.ents.slice())if(dist(e,P)<9)hit(e,(.9+.12*L)*m)}
   else if(n===2){dumpSpent('silence');for(const e of W.ents.slice())if(dist(e,P)<4.2){e.quiet=Math.max(e.quiet||0,2+.15*L);hit(e,(.4+.06*L)*m);float(e.x,e.y,'Silenced','#e6e2d6',0)}}
   else{const t=nearest(5);if(!t){toast('Nothing in reach');return}dumpSpent('rust');DT='rust';hit(t,(.8+.12*L)*m);DT=null}}
@@ -728,7 +729,7 @@ const SKF={
   6:(L,m)=>{P.volley={t:1.5,cd:0,m:(.5+.07*L)*m}},
   7:(L,m)=>{const t=nearest(7);if(!t){toast('No target in reach');return}face(t);hit(t,(3+.5*L)*m);t.mark=8},
   9:(L,m)=>shoot(P.dir,(1.1+.16*L)*m,99,{ret:1,life:.5,col:'#3fbf8f'}),
-  11:()=>{if(!P.lastThrow){toast('You have not thrown anything');return}for(const a of W.allies)if(a.k==='drop')a.life=0;const x=P.x,y=P.y,t=P.lastThrow;W.allies.push({k:'drop',x,y,life:6,leash:4.5,r:.25});shoot({x:t.dx,y:t.dy},t.m,t.pierce,{from:{x,y},throw:1,dt:t.dt,col:t.col,life:t.life,spd:t.spd,ret:t.ret,split:t.split})},
+  11:()=>{if(!P.lastThrow){toast('You have not thrown anything');return}for(const a of W.allies)if(a.k==='drop')a.life=0;let x=P.x-P.dir.x*.6,y=P.y-P.dir.y*.6;if(!free(x,y,.2)){x=P.x;y=P.y}const t=P.lastThrow;W.allies.push({k:'drop',x,y,life:6,leash:4.5,r:.25});shoot({x:t.dx,y:t.dy},t.m,t.pierce,{from:{x,y},throw:1,dt:t.dt,col:t.col,life:t.life,spd:t.spd,ret:t.ret,split:t.split});float(x,y,'Second drop','#3fbf8f',0)},
   12:(L,m)=>shoot(P.dir,(1+.14*L)*m,99,{split:1,col:'#e6e2d6'}),
   14:(L)=>{const t=nearest(8);if(!t){toast('No machine to mark');return}face(t);for(const e of W.ents)e.mc=0;t.mc=4+.25*L;fxAim('mark',t.x,t.y);float(t.x,t.y,'Marked','#3fbf8f',0)}}
 };
@@ -919,7 +920,7 @@ function update(dt){
         if(a.soundSwing)witWrap(a,strike);else{const ph=P.partyHit;P.partyHit=1;strike(false);P.partyHit=ph}}}
     if(a.k==='mine'){a.arm-=dt;if(a.arm<=0&&nearest(1.3,a)){if(!a.cut&&G.cls==='anon'&&sl(13)&&!boonOn(13))a.cut=1;else a.life=0}}
     if(a.k==='raid'&&a.cd<=0){a.cd=.13;const c2=W.ents.filter(e=>dist(e,P)<9);if(c2.length){const t=pick(c2);W.fx.push({k:'bolt',x:t.x+rnd(-5,5),y:t.y-rnd(3,6),x2:t.x,y2:t.y,t:0,life:.18,col:'#e6e2d6'});hit(t,a.m)}}
-    if(a.life<=0){W.allies.splice(W.allies.indexOf(a),1);if(a.k==='decoy')burst(a.x,a.y,2.6,a.m,a.stun||0,'#ffb238');if((a.k==='mine'||a.k==='blast')&&!a.hush)burst(a.x,a.y,a.r||2.4,a.m,0,'#ff5d4d');if(a.k==='pail'){parts(a.x,a.y,8,['#c9a868','#7be495'],1.6);toast('The lunch pail is empty.')}}}
+    if(a.life<=0){W.allies.splice(W.allies.indexOf(a),1);if(a.k==='decoy')burst(a.x,a.y,2.6,a.m,a.stun||0,'#ffb238');if(a.k==='drop'){burst(a.x,a.y,1.8,0,0,'#3fbf8f');parts(a.x,a.y,14,['#2a8f68','#e6e2d6','#fff'],2.6);sfx('boom');float(a.x,a.y,'Pop','#3fbf8f',1);toast('The second drop pops')}if((a.k==='mine'||a.k==='blast')&&!a.hush)burst(a.x,a.y,a.r||2.4,a.m,0,'#ff5d4d');if(a.k==='pail'){parts(a.x,a.y,8,['#c9a868','#7be495'],1.6);toast('The lunch pail is empty.')}}}
   DT=null;typeTick(dt);typeInTick(dt);updMerc(dt);updTag(dt);if(W.z.sim)simTick(dt);sqTick(dt);escTick(dt);evTick(dt);achTick(dt);p7Tick(dt);
   // projectiles
   for(const p of W.projs.slice()){p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;let gone=p.life<=0||!open(p.x,p.y);

@@ -82,6 +82,49 @@ const r=await p.evaluate(()=>{
     check('Signed For hits for the printed 350%',Math.abs(dmg-expect)<0.6 && e.mark>=7.5,'dmg '+dmg.toFixed(2)+' expect '+expect.toFixed(2)+' mark '+e.mark+' sheet '+g.S.dmin+'-'+g.S.dmax+' dmg% '+g.S.dmg+' shock '+g.S.shock+' crit '+g.S.crit);
     check('Signed For mark is +30% on the next hit',Math.abs(next-mid()*1.3)<0.6,'next '+next.toFixed(2));
   }
+  /* Second Drop copies the last throw from a parcel that stays put, then pops past 4.5 paces. */
+  {
+    boot('courier');
+    const card1=g.CLS.courier.sk[11].d(1),card10=g.CLS.courier.sk[11].d(10);
+    check('Second Drop card names the 4.5-pace leash and 6s',/4\.5-pace leash for 6s/.test(card1)&&card1===card10,card1);
+    g.P.lastThrow=null;g.G.sk[11]=1;g.G.slots=[11,-1,-1];g.calc();g.G.en=g.S.maxEn;g.P.cd[11]=0;g.setMode('play');g.cast(0);g.setMode('shot');
+    check('Second Drop refuses with nothing thrown',!g.W.allies.some(a=>a.k==='drop'));
+    g.W.ents.length=0;g.W.projs.length=0;g.P.dir={x:1,y:0};g.P.atk=0;g.setMode('play');g.attack();g.setMode('shot');
+    const remembered=g.P.lastThrow&&g.P.lastThrow.m;
+    check('a throw is remembered',remembered>0,String(remembered));
+    const e=foe(3.2);const hp=e.hp;
+    g.W.projs.length=0;g.G.sk[11]=1;g.G.slots=[11,-1,-1];g.calc();g.G.en=g.S.maxEn;g.P.cd[11]=0;g.setMode('play');g.cast(0);g.setMode('shot');
+    const drop=g.W.allies.find(a=>a.k==='drop');
+    const copied=g.W.projs.find(pr=>pr.throw);
+    check('Second Drop leaves the package behind',!!drop&&Math.hypot(drop.x-g.P.x,drop.y-g.P.y)>0.2,drop&&Math.hypot(drop.x-g.P.x,drop.y-g.P.y).toFixed(2));
+    check('Second Drop copies the throw',!!copied&&Math.abs(copied.m-remembered)<0.001,'m '+(copied&&copied.m));
+    g.G.sk[11]=10;g.G.slots=[11,-1,-1];g.calc();g.G.en=g.S.maxEn;g.P.cd[11]=0;g.W.projs.length=0;g.setMode('play');g.cast(0);g.setMode('shot');
+    const copy10=g.W.projs.find(pr=>pr.throw);
+    const drop10=g.W.allies.filter(a=>a.k==='drop'&&a.life>0).pop();
+    check('rank 10 copies the same throw',!!copy10&&!!drop10&&Math.abs(copy10.m-remembered)<0.001,'m '+(copy10&&copy10.m));
+    const ox=drop10.x,oy=drop10.y;
+    for(let i=0;i<20;i++)g.update(1/30);
+    const held=g.W.allies.find(a=>a.k==='drop');
+    check('the package does not follow',!!held&&Math.hypot(held.x-ox,held.y-oy)<0.05);
+    check('the copied throw hits',e.hp<hp,'hp '+(hp-e.hp).toFixed(2));
+    g.P.x=ox+2;g.P.y=oy;g.update(1/30);
+    check('inside 4.5 paces it stays',g.W.allies.some(a=>a.k==='drop'&&a.life>0&&Math.hypot(a.x-ox,a.y-oy)<0.05));
+    g.P.x=ox+6;g.P.y=oy;g.W.fx.length=0;g.update(1/30);
+    check('past 4.5 paces the package pops',!g.W.allies.some(a=>a.k==='drop'&&a.life>0)&&g.W.fx.some(f=>f.k==='ring'));
+    /* Lure and Tack Strip are dropped in place too. */
+    boot('courier');const lure=foe(0.4);const lhp=lure.hp;cast(3);
+    const dec=g.W.allies.find(a=>a.k==='decoy');const dx=dec&&dec.x,dy=dec&&dec.y;
+    g.P.x=dx+3;g.P.y=dy;for(let i=0;i<15;i++)g.update(1/30);
+    const dec2=g.W.allies.find(a=>a.k==='decoy');
+    check('Lure stays where it was dropped',!!dec2&&Math.hypot(dec2.x-dx,dec2.y-dy)<0.05);
+    for(let i=0;i<90&&g.W.allies.some(a=>a.k==='decoy');i++)g.update(1/30);
+    check('Lure bursts for its card',lure.hp<lhp);
+    boot('courier');const tack=foe(0.3);const thp=tack.hp;cast(4);
+    const strip=g.W.allies.find(a=>a.k==='trops');const tx=strip&&strip.x,ty=strip&&strip.y;
+    g.P.x=tx+3;for(let i=0;i<20;i++)g.update(1/30);
+    const strip2=g.W.allies.find(a=>a.k==='trops');
+    check('Tack Strip stays and keeps biting',!!strip2&&Math.hypot(strip2.x-tx,strip2.y-ty)<0.05&&tack.hp<thp);
+  }
   {
     boot('anon');const e=foe(1.05);const hp=e.hp;cast(5);
     const dmg=hp-e.hp,expect=mid()*1.2;
