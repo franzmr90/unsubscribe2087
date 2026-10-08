@@ -144,11 +144,30 @@ money. Nothing below makes the repository public.
 
    | | Cost | What you do |
    |---|---|---|
-   | **coturn on this same box** | €0, plus the bandwidth of the audio | `apt install coturn`, open 3478, set `TURN_URLS=turn:play.yourdomain.com:3478` and a user/pass. For 20 people the audio is small. |
+   | **coturn on this same box** | €0, plus the bandwidth of the audio | `TURN=1 bash deploy/setup.sh` (see below). For 20 people the audio is small. |
    | **Hosted TURN** | Metered.ca has a free 20 GB/mo tier, then about $10/mo. Twilio's Network Traversal is billed per GB, a few dollars at this size. | Put their url, username and credential in `TURN_URLS`, `TURN_USER`, `TURN_PASS` and restart. |
 
-   The server sends those to the browser on connect. Audio still does not pass through
-   Node. Leave the keys empty until a tester actually cannot hear anyone.
+   **coturn on this box.** Re-run setup with the flag. It is idempotent, and it will not
+   replace a `TURN_PASS` you already chose:
+
+   ```sh
+   DOMAIN=play.yourdomain.com TURN=1 bash deploy/setup.sh
+   ```
+
+   That installs coturn, sets `TURNSERVER_ENABLED=1`, writes `/etc/turnserver.conf`
+   (port 3478, long-term credentials, realm = your domain, no TLS, relay ports
+   49160–49200), and, when `TURN_URLS` is still empty, sets these in
+   `/etc/unsubscribe2087.env`:
+
+   ```
+   TURN_URLS=turn:play.yourdomain.com:3478
+   TURN_USER=unsub
+   TURN_PASS=<generated once>
+   ```
+
+   Open **udp/tcp 3478** and **udp 49160–49200** on the firewall. The game reads that env
+   on connect and sends it as the ICE server list (`you.turn`). Audio still does not pass
+   through Node. Leave the keys empty until a tester actually cannot hear anyone.
 
 ### Values that have to be right
 
@@ -174,7 +193,7 @@ comments every key.
 ### Running it after the first night
 
 ```sh
-journalctl -u unsubscribe2087 -f          # includes a [live] stats line each minute
+journalctl -u unsubscribe2087 -f          # a [live] line each minute: players, games, hitRej, hpFlag
 node /opt/unsubscribe2087/server/admin.js online
 node /opt/unsubscribe2087/server/admin.js kick "Some Name"
 node /opt/unsubscribe2087/server/admin.js ban "Some Name" --reason "needed"
