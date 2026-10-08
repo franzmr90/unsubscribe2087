@@ -182,6 +182,13 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   const struck = await hostPage.evaluate(() => {
     const e = __g.W.ents.find(x => x.mid && !x.su && !x.mp && x.k !== 'boss' && x.k !== 'boss2' && x.k !== 'boss3');
     if (!e) return null;
+    /* The server refuses a swing from outside reach. Stand on the machine and say so
+       before the blow, which is what a real swing does. */
+    __g.P.x = e.x; __g.P.y = e.y;
+    __mp.send('move', {
+      x: +e.x.toFixed(2), y: +e.y.toFixed(2), zi: __g.W.zi, dir: 0,
+      hp: Math.round(__g.G.hp), hpm: Math.round(__g.S.maxHp), lvl: __g.G.lvl | 0, tier: __g.G.tier | 0
+    });
     const hp = e.hp, id = e.mid;
     __g.dmgEnemy(e, 1e6, false);
     return { id, hp, now: e.hp, xp: __g.G.xp };
