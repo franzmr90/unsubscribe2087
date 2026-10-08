@@ -61,7 +61,7 @@ function achTick(dt){achT-=dt;if(achT>0)return;achT=2;maxiCheck();for(const a of
 /* ================= boss rush ================= */
 function rushList(){const l=[];for(const zi of[1,2,3,4,7,8,9,10,12,13,14,15,22,23,24,25,28,29,30,31])if(G.unlocked>zi||G.q[ZONES[zi].su.q]>=2)l.push({k:ZONES[zi].su.k,n:ZONES[zi].su.n,mods:ZONES[zi].su.mods});
   if(G.q.q5===3)l.push({boss:'boss'});if(G.q.q10===3)l.push({boss:'boss2'});if(G.q.q15===3)l.push({boss:'boss3'});if(G.q.q20===3)l.push({boss:'boss4'});if(G.q.q25===3)l.push({boss:'boss5'});return l}
-function rushTick(dt){const s=W.sim;if(W.ents.some(e=>!e.minion))return;s.t-=dt;if(s.t>0)return;for(const o of W.ents.slice())W.ents.splice(W.ents.indexOf(o),1);W.projs=[];
+function rushTick(dt){const s=W.sim;if(W.ents.some(e=>!e.minion))return;s.t-=dt;if(s.t>0)return;if(!s.list.length){s.t=1e9;dlg('Boss rush','Nobody is on the list yet. Clear a district, or beat a lieutenant, and the row fills in.',[['Unplug',()=>enter(HT())]]);return}for(const o of W.ents.slice())W.ents.splice(W.ents.indexOf(o),1);W.projs=[];
   if(s.i>=0){G.sats+=2;float(P.x,P.y,'+2 sats','#f7931a');sfx('coin')}s.i++;
   if(s.i>=s.list.length){s.t=1e9;G.rushDone=true;G.sats+=10;sfx('level');dlg('Boss rush complete','Every lieutenant and executive you have beaten, back to back. Ten sats on top of the purse.',[['Unplug',()=>enter(HT())]]);return}
   s.t=3;const it=s.list[s.i];W.ml=G.lvl;W.dyn=dynFor(W.ml);heal(S.maxHp*.5);G.en=S.maxEn;$('zone').textContent='Boss rush · '+(s.i+1)+' of '+s.list.length;
