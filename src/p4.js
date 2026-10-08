@@ -853,6 +853,7 @@ function showDisc(){const d=$('disc');if(!d)return;
   const go=e=>{if(e.type==='keydown'&&e.key==='Tab')return;skipDisc();
     removeEventListener('pointerdown',go,true);removeEventListener('keydown',go,true)};
   addEventListener('pointerdown',go,true);addEventListener('keydown',go,true)}
+uiBoot();
 showDisc();
 cloudInit();
 function devOn(){try{if(window.__DEBUG)return true;var h=location.hostname;if(h==='localhost'||h==='127.0.0.1'||h==='::1')return true;if(location.protocol==='file:'||location.protocol==='about:')return true}catch(e){}return false}

@@ -346,7 +346,7 @@ html[data-ui="touch"] .cls{min-height:44px}
 #dlg{padding-top:calc(12px + env(safe-area-inset-top,0px));padding-bottom:calc(9vh + env(safe-area-inset-bottom,0px));padding-left:calc(16px + env(safe-area-inset-left,0px));padding-right:calc(16px + env(safe-area-inset-right,0px));max-height:100dvh;overflow:auto}
 #popIn,#dlg .card,.bugp,#discIn,#title .wrap{max-width:min(520px,100%);max-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 28px);overflow:auto}
 #mPick{width:min(440px,calc(100vw - 24px));max-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 96px);top:calc(78px + env(safe-area-inset-top,0px))}
-#clsList,#slots{max-height:42dvh;overflow:auto}
+#clsList,#slots{flex:0 0 auto}
 @media (orientation:portrait) and (max-width:700px){
   html[data-ui="touch"] #pad{transform:scale(.82);transform-origin:bottom right}
   html[data-ui="touch"] #log{bottom:calc(188px + env(safe-area-inset-bottom,0px))}

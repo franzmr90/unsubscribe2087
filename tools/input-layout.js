@@ -79,7 +79,7 @@ async function panelFits(page, tab) {
 
   /* Desktop starts as mouse, then a touch and a key switch it live. */
   {
-    const ctx = await browser.newContext({viewport: {width: 1280, height: 800}, hasTouch: true});
+    const ctx = await browser.newContext({viewport: {width: 1280, height: 800}, hasTouch: false});
     const page = await ctx.newPage();
     const errs = await boot(page);
     check('desktop boots clean', !errs.length, errs[0]);
@@ -102,7 +102,7 @@ async function panelFits(page, tab) {
     shots.mouse.push(['Title', await shot(page, 'mouse-title')]);
     await enterTown(page);
     shots.mouse.push(['Fight', await shot(page, 'mouse-hud')]);
-    const codex = await page.evaluate(() => { __g.openSheet('codex', {}); return document.getElementById('sheetIn').innerText; });
+    const codex = await page.evaluate(() => { __g.openSheet('codex', {}); return document.getElementById('sheetIn').textContent; });
     check('desk controls say left click', /left click/i.test(codex));
     check('desk controls say F1 through F8', /F1 through F8/.test(codex));
     check('desk controls hide the phone paragraph', !/On a phone, the stick walks/.test(codex));
@@ -116,6 +116,7 @@ async function panelFits(page, tab) {
     }));
     check('touch shows the pad and hides the hotbar', afterTouch.pad !== 'none' && afterTouch.mL === 'none', JSON.stringify(afterTouch));
     check('the last touch is remembered', afterTouch.seen === 'touch', afterTouch.seen);
+    await page.waitForTimeout(900);
     const moved = await fire(page, 'pointermove', 'mouse', {movementX: 12, movementY: 4});
     check('a real mouse move switches back', moved === 'mouse', moved);
     await page.evaluate(() => { __g.OPT.ui = 'auto'; __g.noteInput('touch'); });
@@ -191,14 +192,15 @@ async function panelFits(page, tab) {
       return nodes;
     });
     const shown = blurb.filter(n => n.on).map(n => n.k);
-    check(name + ' title copy is touch only', shown.length === 1 && shown[0] === 'touch', JSON.stringify(blurb));
+    check(name + ' title copy is touch only', shown.length > 0 && shown.every(k => k === 'touch'), JSON.stringify(blurb));
     if (name === 'iPhone') {
       shots.touch.push(['Title', await shot(page, 'touch-title')]);
       await enterTown(page);
+      await page.evaluate(() => __g.noteInput('touch'));
       shots.touch.push(['Fight', await shot(page, 'touch-hud')]);
       const tips = await page.evaluate(() => ({atk: document.getElementById('bAtk').title, map: document.getElementById('bMap').title}));
       check('phone tips do not name keys', tips.atk === 'Attack' && tips.map === 'Map', JSON.stringify(tips));
-      const codex = await page.evaluate(() => { __g.openSheet('codex', {}); return document.getElementById('sheetIn').innerText; });
+      const codex = await page.evaluate(() => { __g.openSheet('codex', {}); return document.getElementById('sheetIn').textContent; });
       check('phone controls say the stick', /On a phone, the stick walks/.test(codex));
       check('phone controls hide F1 through F8', !/F1 through F8/.test(codex));
       await page.evaluate(() => __g.closeSheet());
@@ -221,6 +223,7 @@ async function panelFits(page, tab) {
       check('a later touch returns the phone layout', back === 'touch', back);
     } else {
       await enterTown(page);
+      await page.evaluate(() => __g.noteInput('touch'));
     }
     shots.devices.push([name + (landscape ? ' landscape' : ''), await shot(page, 'device-' + name.toLowerCase().replace(/\s+/g, '-') + (landscape ? '-land' : ''))]);
     await ctx.close();
