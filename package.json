@@ -8,7 +8,9 @@
     "smoke:acts": "node tools/smoke-acts.js",
     "balance": "node tools/balance.js",
     "arena": "node tools/arena.js",
-    "test:saves": "node tools/save-paths.js"
+    "test:saves": "node tools/save-paths.js",
+    "test:server": "sh server/test/ci.sh",
+    "soak": "node tools/soak.js"
   },
   "devDependencies": {
     "playwright": "^1.55.0"

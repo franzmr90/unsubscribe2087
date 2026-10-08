@@ -8,7 +8,7 @@
    It also puts the sign-in panel on screen, because the game has no idea accounts exist. */
 (function () {
   'use strict';
-  var me = null, csrf = '', booted = false;
+  var me = null, csrf = '', booted = false, inviteRequired = false;
 
   /* The game looks for this before it tries to open a socket. Only this server serves the
      page with this file in it, so only here is there anybody to talk to. */
@@ -29,6 +29,7 @@
 
   var ready = api('/api/me', undefined, 'GET').then(function (j) {
     me = j.user; csrf = j.csrf || '';
+    inviteRequired = !!j.inviteRequired;
     return j;
   }).catch(function () { return {}; });
 
@@ -134,6 +135,7 @@
         '<label>Name</label><input id="f_name" autocomplete="username" autocapitalize="off">' +
         '<label>Password</label><input id="f_pass" type="password" autocomplete="new-password">' +
         '<label>Email (optional)</label><input id="f_email" type="email" autocomplete="email" autocapitalize="off">' +
+        (inviteRequired ? '<label>Invite code</label><input id="f_invite" autocomplete="off" autocapitalize="off">' : '') +
         '<button id="go">Create it</button><div id="accMsg"></div>' +
         '<div id="accFoot"><a data-m="skip">Play without an account</a></div>';
     } else if (mode === 'forgot') {
@@ -214,7 +216,7 @@
     var old = el('f_old') && el('f_old').value;
     var req;
     if (mode === 'in') req = api('/api/login', { name: name, pass: pass });
-    else if (mode === 'up') req = api('/api/register', { name: name, pass: pass, email: email || undefined });
+    else if (mode === 'up') req = api('/api/register', { name: name, pass: pass, email: email || undefined, invite: (el('f_invite') && el('f_invite').value.trim()) || undefined });
     else if (mode === 'forgot') req = api('/api/forgot', { email: email });
     else if (mode === 'reset') req = api('/api/reset', { token: linkToken, pass: pass });
     else if (mode === 'acct') req = saveAccount(email, old, pass);
@@ -241,7 +243,7 @@
   }
 
   function refresh() {
-    return api('/api/me', undefined, 'GET').then(function (j) { me = j.user; csrf = j.csrf || ''; tag(); draw(); });
+    return api('/api/me', undefined, 'GET').then(function (j) { me = j.user; csrf = j.csrf || ''; inviteRequired = !!j.inviteRequired; tag(); draw(); });
   }
 
   function boot() {

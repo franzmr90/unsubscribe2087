@@ -15,4 +15,5 @@ node --check ../.tmp/all.js || exit 1
   tail -n +2 ../dist/unsubscribe.html
   printf '%s' '</body></html>'
 } > ../dist/Unsubscribe-2087-standalone.html
+(git -C .. rev-parse --short HEAD 2>/dev/null || date -u +%Y%m%d%H%M%S) > ../dist/BUILD
 wc -c ../dist/unsubscribe.html ../dist/Unsubscribe-2087-standalone.html
