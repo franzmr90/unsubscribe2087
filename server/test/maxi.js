@@ -27,7 +27,7 @@ const clear = async p => { for (let i = 0; i < 14; i++) { await p.evaluate(() =>
   await p.evaluate(() => __g.skipDisc()); await p.waitForTimeout(250);
 
   const offered = await p.evaluate(() => [...document.querySelectorAll('[data-cls]')].map(e => e.dataset.cls));
-  ok('five classes on a fresh account', offered.length === 5, offered.join(','));
+  ok('the starter classes are on a fresh account', offered.length === 7 && offered.includes('witness') && offered.includes('homesteader'), offered.join(','));
   ok('the Maximalist is not among them', !offered.includes('maxi'), offered.join(','));
 
   /* ---- he exists in the data, with a full tree ---- */
