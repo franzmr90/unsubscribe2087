@@ -193,11 +193,8 @@ function scrubItemBinds(){
   if(G.mouse){if(G.mouse.L>=100&&!itemSkillOn(G.mouse.L))G.mouse.L=-1;if(G.mouse.R>=100&&!itemSkillOn(G.mouse.R))G.mouse.R=0}
   if(G.hot)for(let f=0;f<G.hot.length;f++)if(G.hot[f]>=100&&!itemSkillOn(G.hot[f]))G.hot[f]=null;
   if(G.slots)for(let s=0;s<G.slots.length;s++)if(G.slots[s]>=100&&!itemSkillOn(G.slots[s]))G.slots[s]=-1}
-function blinkCast(){
-  if(!P||!W)return false;
-  if(P.hitStun>0){toast('Still taking the hit');sfx('err');return false}
-  const aim=P.blinkAt;let tx,ty;
-  if(aim&&aim.x!=null){tx=aim.x;ty=aim.y}else{tx=P.x+(P.dir&&P.dir.x||1)*6.5;ty=P.y+(P.dir&&P.dir.y||0)*6.5}
+function blinkEnd(tx,ty){
+  if(!P||!W)return null;
   let dx=tx-P.x,dy=ty-P.y,len=Math.hypot(dx,dy);
   if(!(len>.15)){dx=(P.dir&&P.dir.x)||1;dy=(P.dir&&P.dir.y)||0;len=Math.hypot(dx,dy)||1}
   const max=6.5;if(len>max){dx*=max/len;dy*=max/len;len=max}
@@ -207,8 +204,15 @@ function blinkCast(){
     if(nx<.45||ny<.45||nx>N-.55||ny>N-.55)break;
     if(!walk(nx,ny)||!free(nx,ny,P.r||.32)||hedgeAt(nx,ny,P))break;
     last={x:nx,y:ny}}
-  if(!last||Math.hypot(last.x-P.x,last.y-P.y)<.2){toast('No room to blink');sfx('err');return false}
-  const ox=P.x,oy=P.y;P.x=last.x;P.y=last.y;P.blinkChain=2.4;P.dir={x:ux,y:uy};
+  return last?{x:last.x,y:last.y,ux:ux,uy:uy}:null}
+function blinkCast(){
+  if(!P||!W)return false;
+  if(P.hitStun>0){toast('Still taking the hit');sfx('err');return false}
+  const aim=P.blinkAt;let tx,ty;
+  if(aim&&aim.x!=null){tx=aim.x;ty=aim.y}else{tx=P.x+(P.dir&&P.dir.x||1)*6.5;ty=P.y+(P.dir&&P.dir.y||0)*6.5}
+  const end=blinkEnd(tx,ty);
+  if(!end||Math.hypot(end.x-P.x,end.y-P.y)<.2){toast('No room to blink');sfx('err');return false}
+  const ox=P.x,oy=P.y;P.x=end.x;P.y=end.y;P.blinkChain=2.4;P.dir={x:end.ux,y:end.uy};
   W.fx.push({k:'ring',x:ox,y:oy,r:.8,t:0,life:.25,col:'#9a6cff'},{k:'ring',x:P.x,y:P.y,r:1.1,t:0,life:.3,col:'#c9b6ff'});fxTrail(ox,oy,P.x,P.y,'#c9b6ff',.4);
   return true}
 function callCast(){
