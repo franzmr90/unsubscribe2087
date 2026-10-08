@@ -144,8 +144,8 @@ function baseStats(it,b,tr){const il=it.il,s=it.slot;
   if(s==='belt')it.cap=6+tr*2}
 function rollAffix(a,il){const el=a.tiers.filter(t=>t[1]<=il);if(!el.length)return null;const t=Math.random()<.55?el[el.length-1]:pick(el);const f={k:a.k,v:ri(t[2],t[3]),nm:t[0],pre:a.pre?1:0};if(a.grp)f.grp=a.grp;return f}
 /* A unique's band is the monster levels that may still roll it. Missing tc follows item level, so older uniques age out. The late band stays open above 80: a tier replay should still find the chase, and the early names should still be gone. */
-const BANDS={early:[1,18],mid:[16,40],high:[36,60],late:[58,999]};
-function uniqBand(u){if(u.tc&&BANDS[u.tc])return u.tc;const il=u.il||1;if(il<=14)return 'early';if(il<=34)return 'mid';if(il<=58)return 'high';return 'late'}
+const BANDS={early:[1,18],mid:[19,40],high:[41,60],late:[61,999]};
+function uniqBand(u){if(u.tc&&BANDS[u.tc])return u.tc;const il=u.il||1;if(il<=14)return 'early';if(il<=34)return 'mid';if(il<=60)return 'high';return 'late'}
 function uniqEligible(u,ml,slot){if(!u||u.bossOnly)return false;if(slot&&u.slot!==slot)return false;const w=BANDS[uniqBand(u)];return !!(w&&ml>=w[0]&&ml<=w[1])}
 function modRoll(m){if(m[0]===m[1])return m[0];return ri(m[0],m[1])}
 function mkFixed(u,il,q,set){il=Math.max(il,u.il);let b=null,tr=0;BASE[u.slot].forEach((tl,ti)=>tl.forEach(x=>{if(x.n===u.base){b=x;tr=ti}}));
@@ -376,7 +376,7 @@ function genZone(zi){
 function spawn(k,x,y,o){
   o=o||{};if(!free(x,y,.4)){x=Math.floor(x)+.5;y=Math.floor(y)+.5;if(!free(x,y,.4))return null}
   const t=ET[k],ml=W.ml,ch=o.champ||o.su?1:0,su=o.su?1:0;
-  const df=W.z.sim?DIFFS[0]:DF(),dy={hp:(W.dyn?W.dyn.hp:1)*df.hp,dmg:(W.dyn?W.dyn.dmg:1)*df.dmg},hp=t.hp*(1+.42*(ml-1))*(su?5:ch?2.8:1)*(isBoss(k)?2.5:1)*dy.hp;
+  const df=DF(),dy={hp:(W.dyn?W.dyn.hp:1)*df.hp,dmg:(W.dyn?W.dyn.dmg:1)*df.dmg},hp=t.hp*(1+.42*(ml-1))*(su?5:ch?2.8:1)*(isBoss(k)?2.5:1)*dy.hp;
   const e={k,x,y,r:t.r*(ch?1.2:1),hp,max:hp,dmg:t.dmg*(1+.22*(ml-1))*(ch?1.3:1)*(isBoss(k)?1.35:1)*(ml>25?1+.008*(ml-25):1)*dy.dmg,ward:0,spd:t.spd,cd:rnd(0,1),wind:0,stun:0,slow:0,mark:0,flash:0,aggro:false,champ:ch,su,sz:su?1.4:ch?1.22:1,ph:rnd(0,6),mods:{},b1:3,b2:6,b3:0,arcCd:0,healCd:rnd(2,5),name:t.n,minion:o.minion?1:0};
   if(!isBoss(k)&&W.z.lvl)e.name=(ZADJ[W.zi]?ZADJ[W.zi]+' ':'')+t.n;
   if(su){e.name=o.su.n;e.q=o.su.q;for(const m of o.su.mods)e.mods[m]=1}
@@ -399,7 +399,7 @@ function enter(zi,o){setTimeout(mpBeat,0);
   if(z.pre){preEnter()}
   else if(act===5&&!G.act5){G.act5=G.act4=G.act3=G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO5,()=>{mode='play';dlg('Act V · The Awakening','Level limit 100, a fifth passive slot, and fast machines that silence skills. The Old Drive is in the garage, in a coffee can. It will talk, if the machines let you hear it.',[['Begin']])}),50)}
   else if(act===4&&!G.act4){G.act4=G.act3=G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO4,()=>{mode='play';dlg('Act IV · The Gentle Years','Level limit 90. These machines slow you, drain your energy, and hit harder than the Board. They will not chase you if you sit down. Do not sit down.',[['Begin']])}),50)}
-  else if(act===3&&!G.act3){G.act3=true;G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO3,()=>{mode='play';dlg('Act III · The Board','Level limit 75, and a fifth skill row opens at level 51. They have been in those chairs longer than you have been alive. The row does not care.',[['Begin']])}),50)}
+  else if(act===3&&!G.act3){G.act3=true;G.act2=true;G['in'+zi]=1;flushBank();setTimeout(()=>playScene(INTRO3,()=>{mode='play';dlg('Act III · The Board','Level limit 75, and a fifth skill row opens at level 51. They have been in those chairs longer than you have been alive. The row does not care.',[['Begin']])}),50)}
   else if(act===2&&!G.act2){G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO2,()=>{mode='play';dlg('Act II · The Cloud','Level limit 50, and a fourth skill row opens. The fourth row is yours. Vale does not get a vote on it.',[['Begin']])}),50)}
   else if(!z.town&&!G['in'+zi]&&z.intro){G['in'+zi]=1;dlg(z.n,z.intro,[['Go on']])}
   else toast(z.town?z.n:'Entering '+z.n);
@@ -530,8 +530,8 @@ function kill(e){
     save(true);P.inv=4;
     const rep=(b3?G.boss3Kills:b2?G.boss2Kills:G.bossKills)>1;
     setTimeout(()=>{if(rep){toast(ET[e.k].n+' falls again.');return}if(b3)playScene(ENDING3.concat(CLOCK3),()=>{mode='play';actDone(3)});else playScene(b2?ENDING2:endingSlides(),()=>{mode='play';actDone(b2?2:1)})},1400)}}
-function gainXp(v,fromParty,ml){if(fromParty!=='share'){if(P.shr&&P.shr.k==='xp')v*=1.5;v*=(G.hc?1.25:1)*(SEA.k==='over'?1.2:1);if(!fromParty&&mpShareXp(v,ml))return}
-  if(G.lvl>=lvlCap()){paraXp(v);return}G.xp+=v;while(G.xp>=xpNext(G.lvl)&&G.lvl<lvlCap()){G.xp-=xpNext(G.lvl);G.lvl++;G.sp++;G.ap+=5;calc();G.hp=S.maxHp;G.en=S.maxEn;sfx('level');toast('Level '+G.lvl+'. One skill point, five attribute points, and a point for the web.');W.fx.push({k:'ring',x:P.x,y:P.y,r:2.8,t:0,life:.7,col:'#ffe36b'});parts(P.x,P.y,24,['#ffe36b','#fff'],2,1.6)}}
+function gainXp(v,fromParty,ml){if(fromParty!=='bank'&&G.act3&&(G.bankXp||0)>0)flushBank();if(fromParty!=='share'&&fromParty!=='bank'){if(P&&P.shr&&P.shr.k==='xp')v*=1.5;v*=(G.hc?1.25:1)*(SEA.k==='over'?1.2:1);if(!fromParty&&mpShareXp(v,ml))return}
+  if(G.lvl>=lvlCap()){paraXp(v);return}G.xp+=v;while(G.xp>=xpNext(G.lvl)&&G.lvl<lvlCap()){G.xp-=xpNext(G.lvl);G.lvl++;G.sp++;G.ap+=5;calc();G.hp=S.maxHp;G.en=S.maxEn;sfx('level');toast('Level '+G.lvl+'. One skill point, five attribute points, and a point for the web.');if(W&&W.fx&&P){W.fx.push({k:'ring',x:P.x,y:P.y,r:2.8,t:0,life:.7,col:'#ffe36b'});parts(P.x,P.y,24,['#ffe36b','#fff'],2,1.6)}}if(G.lvl>=lvlCap()&&G.xp>0){const left=G.xp;G.xp=0;paraXp(left)}}
 /* Hardcore does not re-onboard. Begin again throws this hero away, so a fee here would be a number that never lands. The notice prints whole credits, so the charge is the floor of the rate. */
 function deathFee(){if(G.hc)return 0;if(S.sp&&S.sp.coldwallet)return 0;if(G.act2)return Math.floor(G.credits*.15);const early=(G.deaths||0)<10,rate=early?.05:.08,cap=early?15:hireCost()*.08;return Math.floor(Math.min(G.credits*rate,cap))}
 /* Act I Defrag (quest q3, before the Cloud). Later acts keep the old numbers. */
@@ -542,7 +542,7 @@ function hurt(d,slow,src){const pv=src&&src.pvp,wasStun=P.hitStun>0;if(mode==='d
   if(S.dodge&&Math.random()*100<S.dodge){float(P.x,P.y,'Dodge','#9fe0d0',1);sfx('whiff');return}
   if(P.route>0&&G.cls==='courier'&&sl(10)&&!boonOn(10)&&Math.random()*100<6+2*sl(10)){float(P.x,P.y,'Route','#3fbf8f',1);sfx('whiff');return}
   d=typedIn(d,src);if(S.pdr)d*=1-Math.min(50,S.pdr)/100;if(S.sp.indemnity&&src&&src.crit){d/=(src.critM||2);src.crit=0}d*=S.taken||1;d*=100/(100+(S.armor+(G.cls==='scrapper'&&sl(11)&&!boonOn(11)?Math.floor(Math.min(6,P.lineT||0))*4*sl(11):0))*(P.mech>0?2:1)*(P.guard>0?1.6:1)*(P.shr&&P.shr.k==='guard'?2:1));if(P.lastTy==='rust')P.rustD={dps:d*.25/3,t:3};
-  if(S.enc){const a=Math.min(G.en,d*S.enc);G.en-=a;d-=a}
+  const preEn=d;let fromEn=0;if(S.enc){const a=Math.min(G.en,preEn*S.enc);G.en-=a;d-=a;fromEn=a}if(P.ward>0&&d>0&&G.en>0){const want=Math.min(preEn*.3,Math.max(0,preEn*.7-fromEn));const a=Math.min(G.en,d,want);if(a>0){G.en-=a;d-=a;float(P.x,P.y,'Ward','#59e0e6',1)}}
   if(P.barrier>0&&d>0){const a=Math.min(P.barrier,d);P.barrier-=a;d-=a;if(a>0)float(P.x,P.y,'patched','#59e0e6',1);if(d<=0)return}
   if(G.cls==='witness'&&!(P&&P.tag)&&!(P.paper>0)){const r=recGet();if(r>80&&S.coloHi)d*=S.coloHi;else if(r<20&&S.coloLo)d*=S.coloLo}
   if(P.paper>0)d*=.52;if(P.maxiBlock>0)d*=.78;
@@ -734,7 +734,7 @@ const SKF={
   13:()=>{P.two={n:3};float(P.x,P.y,'Two-handed','#d9822b',0)},
   14:(L)=>{P.lastShift=4+.3*L;float(P.x,P.y,'Last shift','#ffb238',0)}},
  hacker:{
-  0:(L,m)=>{if(P.oc>0){m*=1.3;P.oc=0;float(P.x,P.y,'Primed','#59e0e6',0)}if(!chain(P,3+Math.floor(L/2),(1.2+.18*L)*m))W.fx.push({k:'bolt',x:P.x,y:P.y,x2:P.x+P.dir.x*3,y2:P.y+P.dir.y*3,t:0,life:.2})},
+  0:(L,m)=>{if(P.oc>0){m*=1.3;P.oc=0;float(P.x,P.y,'Primed','#59e0e6',0)}P.ward=1.7;if(!chain(P,3+Math.floor(L/2),(1.2+.18*L)*m))W.fx.push({k:'bolt',x:P.x,y:P.y,x2:P.x+P.dir.x*3,y2:P.y+P.dir.y*3,t:0,life:.2})},
   1:(L,m)=>{P.oc=3;shoot(P.dir,(1.4+.2*L)*m,99,{spd:15,big:1})},
   3:(L,m)=>burst(P.x,P.y,3.4,(.9+.2*L)*m,1.5+.2*L,'#59e0e6'),
   4:(L,m)=>W.allies.push({k:'turret',x:P.x+P.dir.x*.8,y:P.y+P.dir.y*.8,life:10+2*L,m:(.5+.08*L)*m,cd:0}),
@@ -1152,7 +1152,7 @@ function update(dt){
   mpTick(dt);maxiAura(dt);
   G.time+=dt;const gr=G.adopt>=100?1:Math.pow(SEA.k==='stim'?1.005:1.0025,dt*(1.45-G.adopt/100)*(G.fate==='fail'?1.4:1));G.cpi*=gr;if(S.sp.hedge)G.credits*=gr;G.ubiT=Math.max(0,G.ubiT-dt);G.chuteT=Math.max(0,G.chuteT-dt);
   const c=CLS[G.cls];
-  for(const k of['atk','swing','flash','inv','slow','buff','haste','guard','warn','movedT','spin','stealth','ambT','mech','crunch','streakT','silence','oc'])P[k]=Math.max(0,P[k]-dt);if(P.paper>0)P.paper-=dt;if(P.maxiBlock>0)P.maxiBlock-=dt;
+  for(const k of['atk','swing','flash','inv','slow','buff','haste','guard','warn','movedT','spin','stealth','ambT','mech','crunch','streakT','silence','oc'])P[k]=Math.max(0,P[k]-dt);if(P.paper>0)P.paper-=dt;if(P.maxiBlock>0)P.maxiBlock-=dt;if(P.ward>0)P.ward-=dt;
   for(let i=0;i<15;i++)P.cd[i]=Math.max(0,P.cd[i]-dt);
   if(P.shr){P.shr.t-=dt;if(P.shr.t<=0)P.shr=null}
   G.en=Math.min(S.maxEn,G.en+(4+S.regen+G.at.bnd*.05)*dt);heal((S.regenH+(S.sp.pension?S.maxHp*.02:0)+(W.z.town?S.maxHp*.3:0))*dt);

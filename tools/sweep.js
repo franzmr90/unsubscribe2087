@@ -374,23 +374,31 @@ async function click(p, sel) {
   /* ---------- paragon ---------- */
   const para = await page.evaluate(() => {
     const g = __g, G = g.G;
-    G.act3 = false; G.act4 = false; G.act5 = false; G.para = 0; G.px = 0; G.lvl = 25; G.xp = 0;
+    G.act2 = true; G.act3 = false; G.act4 = false; G.act5 = false; G.para = 0; G.px = 0; G.bankXp = 0; G.lvl = 25; G.xp = 0;
     /* below the cap, experience is kept */
     g.gainXp(50);
-    const kept = G.xp === 50 && (G.para || 0) === 0;
-    G.act2 = true; G.lvl = 50; G.xp = 0;
+    const kept = G.xp === 50 && (G.para || 0) === 0 && !(G.bankXp > 0);
+    G.act2 = true; G.act3 = false; G.lvl = 50; G.xp = 0; G.bankXp = 0; G.para = 0;
     g.gainXp(1000);
-    const discarded = (G.para || 0) === 0 && G.xp === 0;
-    G.act3 = true; G.lvl = 75; G.xp = 0; G.web = {};
+    const banked = (G.para || 0) === 0 && G.xp === 0 && G.bankXp === 1000;
+    g.gainXp(1e12);
+    const full = G.bankXp;
+    g.gainXp(1e12);
+    const oneBar = Math.round(60 * Math.pow(50, 1.75));
+    const capped = full === oneBar && G.bankXp === full && (G.para || 0) === 0;
+    G.act3 = true;
+    g.flushBank();
+    const paid = (G.bankXp || 0) === 0 && G.lvl === 51 && (G.para || 0) === 0;
+    G.act3 = true; G.act4 = false; G.act5 = false; G.lvl = 75; G.xp = 0; G.bankXp = 0; G.para = 0; G.px = 0; G.web = {};
     const dmg0 = (g.calc(), g.S.dmg);
     const hp0 = g.S.maxHp;
     g.gainXp(1e9);
     const p = G.para;
     g.calc();
-    return {kept, discarded, p, dmg: g.S.dmg - dmg0, hp: g.S.maxHp - hp0, pts: g.webPts(), cap: p};
+    return {kept, banked, capped, paid, full, oneBar, p, dmg: g.S.dmg - dmg0, hp: g.S.maxHp - hp0, pts: g.webPts(), cap: p};
   });
   check('experience under the level cap is kept', para.kept);
-  check('tenure waits for Act III', para.discarded);
+  check('tenure waits for Act III', para.banked && para.capped && para.paid, JSON.stringify(para));
   check('one tenure is +1% damage, +1% life, and a web point', para.p >= 1 && para.dmg === para.p && para.pts === (75 - 1 + para.p), JSON.stringify(para));
   finding.push('Tenure life is +' + para.hp + ' at +' + para.p + ' tenure on a level-75 hero (1% of max life, rounded). Damage is +' + para.dmg + '%.');
 
@@ -415,26 +423,48 @@ async function click(p, sel) {
     const hpH = b ? b.max : 0;
     const oldStill = a ? a.max : 0;
     G.diff = 2;
+    const res = g.resPen();
+    const row = () => [0, 1, 2].map(i => {
+      const el = document.querySelector('[data-diff="' + i + '"]');
+      return el ? (el.disabled ? 'off' : 'on') : 'missing';
+    });
+    G.diff = 0; G.diffGate = 0;
+    g.setMode('play');
     g.openSheet('opts');
-    const brutal = document.querySelector('[data-diff="2"]');
-    const hard = document.querySelector('[data-diff="1"]');
-    const normal = document.querySelector('[data-diff="0"]');
+    const locked = row();
+    const hint = (document.getElementById('diffHint') || {}).textContent || '';
+    G.diffGate = 2;
+    g.drawSheet();
+    const open = row();
     g.closeSheet();
+    G.diffMigrated = 0; G.diffGate = 0; G.diff = 0; G.bk = {boss5: 1};
+    g.migrateDiff();
+    const migKill = G.diffGate;
+    G.diffMigrated = 0; G.diffGate = 0; G.diff = 2; G.bk = {};
+    g.migrateDiff();
+    const migBrutal = G.diffGate;
+    G.diffMigrated = 0; G.diffGate = 0; G.diff = 1; G.bk = {};
+    g.migrateDiff();
+    const migHard = G.diffGate;
+    G.diffMigrated = 0; G.diffGate = 0; G.diff = 0; G.bk = {};
+    g.migrateDiff();
+    const migFresh = G.diffGate;
     g.enter(0); g.setMode('play');
     g.talkTo('gate');
     return {
       hpN, hpH, oldStill,
       ratio: hpN ? Math.round(hpH / hpN * 100) / 100 : 0,
-      buttons: [normal, hard, brutal].map(x => x ? (x.disabled ? 'off' : 'on') : 'missing'),
-      res: g.resPen()
+      locked, open, hint, migKill, migBrutal, migHard, migFresh, res
     };
   });
   await clearUI(page);
   check('Hard life is 1.8/1.25 of Normal on a new spawn', Math.abs(diff.ratio - 1.8 / 1.25) < 0.02, diff.ratio + ' from ' + diff.hpN + '/' + diff.hpH);
   check('a machine already in the room keeps its old life', diff.oldStill === diff.hpN);
-  check('Normal, Hard, and Brutal are on the options row from the start', diff.buttons.join(',') === 'on,on,on', diff.buttons.join(','));
+  check('Hard and Brutal stay locked until Act V is cleared', diff.locked.join(',') === 'on,off,off' && /Hard opens after you clear Act V on Normal/.test(diff.hint) && /Brutal opens after you clear Act V on Hard/.test(diff.hint), diff.locked.join(',') + ' ' + diff.hint);
+  check('a cleared gate puts every difficulty on the row', diff.open.join(',') === 'on,on,on', diff.open.join(','));
+  check('an old PROVIDENCE kill keeps Hard, and a hero already on a difficulty keeps it', diff.migKill === 1 && diff.migBrutal === 2 && diff.migHard === 1 && diff.migFresh === 0, JSON.stringify(diff));
   check('Brutal cuts resists by 50', diff.res === 50, diff.res);
-  finding.push('Hard and Brutal have no quest unlock. They are on the options row from level 1. The tier ladder is the one that waits for Act I.');
+  finding.push('Hard opens after Act V on Normal. Brutal opens after Act V on Hard. An old save that already killed PROVIDENCE keeps Hard, and a hero already standing on Hard or Brutal keeps that choice.');
 
   const tier = await page.evaluate(() => {
     const g = __g, G = g.G;
@@ -527,6 +557,11 @@ async function click(p, sel) {
     g.W.sim.t = 0.01; g.W.sim.wave = 0; g.W.sim.paid = 0;
     g.update(0.05);
     const wave1 = g.W.sim.wave;
+    G.diff = 0;
+    const simN = g.spawn('bot', P2.x + 1.2, P2.y, {});
+    G.diff = 2;
+    const simB = g.spawn('bot', P2.x - 1.2, P2.y, {});
+    const simRatio = simN && simB && simN.max ? Math.round(simB.max / simN.max * 100) / 100 : 0;
     const best = G.simBest || 0;
     P2.inv = 0; G.god = false; G.hp = 1; G.chuteT = 1; G.stillT = 1; G.keyT = 1; G.retractT = 1;
     g.setMode('play');
@@ -535,9 +570,10 @@ async function click(p, sel) {
     const fee = G.credits !== credits ? G.credits - credits : 0;
     const box = document.getElementById('dlg');
     const dlg = box && !box.hidden && document.getElementById('dT') ? document.getElementById('dT').textContent : '';
-    return {wave, wave1, best, died, fee, dlg, hp: G.hp, mode: g.mode, sim: !!(g.W.z && g.W.z.sim)};
+    return {wave, wave1, best, died, fee, dlg, hp: G.hp, mode: g.mode, sim: !!(g.W.z && g.W.z.sim), simRatio};
   });
   check('the simulator starts a wave', sim.wave1 === 1, sim.wave1);
+  check('the simulator uses the selected difficulty', Math.abs(sim.simRatio - 2.6 / 1.25) < 0.02, sim.simRatio);
   check('falling there does not count a death or a fee', sim.died === false && sim.fee === 0 && /Simulation ended/.test(sim.dlg), sim.dlg + ' fee ' + sim.fee + ' hp ' + sim.hp + ' mode ' + sim.mode);
   await clearUI(page);
 
