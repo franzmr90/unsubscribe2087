@@ -107,6 +107,23 @@ p strong{color:var(--ink);font-weight:600}
 .sheetBody{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:3px}
 .sheetBody>*{flex:none}
 .sheetBody.canScroll{overflow-y:auto;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+.sheetBody.web{overflow:hidden;gap:0}
+.sheetBody.web>.webPane{flex:1;min-height:0;display:flex;flex-direction:column;gap:4px}
+.webBar{display:flex;flex-wrap:wrap;gap:4px;align-items:center;flex:none}
+.webBar .pts{flex:1 0 auto;font:700 14px var(--display);color:var(--gold);letter-spacing:.04em}
+.webChips{display:flex;gap:3px;flex:1 1 240px;overflow-x:auto;min-width:0}
+.webChips button,.webBar>.ghost{width:auto;flex:none;padding:6px 8px;min-height:0;font-size:11px}
+.webChips button.on{background:linear-gradient(#e0bd6e,#9c7a34);color:#1a1200;border-color:#000}
+.webStage{flex:1;min-height:0;position:relative;overflow:hidden;border:1px solid var(--edge);background:#07060b;touch-action:none;cursor:grab}
+.webStage.panning{cursor:grabbing}
+.webStage svg{width:100%;height:100%;display:block;touch-action:none}
+.webStage [data-web],.webStage [data-webadd]{cursor:pointer}
+.webTip{position:absolute;left:8px;right:8px;bottom:8px;z-index:2;pointer-events:none;background:rgba(5,4,9,.92);border:1px solid var(--edge);padding:6px 8px;font-size:13px;line-height:1.35;color:var(--ink)}
+.webTip b{font:700 12px var(--display);letter-spacing:.04em;color:var(--gold);margin-right:6px}
+.webTip i{font-style:normal;color:var(--volt)}
+.webHelp{flex:none;border:1px solid var(--edge);background:var(--stone);padding:4px 8px}
+.webHelp summary{cursor:pointer;font:700 11px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.webHelp p{font-size:13px;line-height:1.4;margin-top:4px}
 .tab{font:700 10px var(--display);letter-spacing:.03em;text-transform:uppercase;padding:7px 3px;border:1px solid var(--edge);color:var(--dim);background:var(--stone);flex:1 0 calc(20% - 3px);max-width:calc(20% - 3px);min-height:0}
 .tab.on{background:linear-gradient(#e0bd6e,#9c7a34);color:#1a1200}
 .tab.x{flex:none;color:var(--ink)}

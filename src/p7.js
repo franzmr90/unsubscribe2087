@@ -16,23 +16,70 @@ const webPts=()=>G.lvl-1+(G.para||0)-Object.keys(G.web||{}).length;
 function webNext(a){for(let r=1;r<=10;r++)if(!G.web[a+'_'+r])return a+'_'+r;return null}
 const webCan=id=>!G.web[id]&&webPts()>0&&webAdj(id).some(n=>n==='c'||G.web[n]);
 const modTxt=m=>Object.keys(m).map(k=>{const v=k==='cdr'?Math.round(m[k]*100):m[k];return (v>0?'+':'')+(WEBT[k]||AFK[k].t.replace(/^\+/,'')).replace('{v}',v)}).join(', ');
-let webSc=[270,230],SB=null,SUBP=null;
-function webSvg(){const C=430,R=40,pos=id=>{if(id==='c')return[C,C];const[a,r]=id.split('_').map(Number),an=a*Math.PI/4-Math.PI/2;return[C+Math.cos(an)*r*R,C+Math.sin(an)*r*R]};
+let webVB=null,webFitVB=null,webArm=-1,webHelpOpen=false,webPanMoved=0,SB=null,SUBP=null;
+/* The world box is larger than the outermost node so the arm names sit inside the fit, with room for the word itself. */
+const WEB=1160,WEBC=580,WEBR=40;
+function webClientToWorld(svg,x,y){if(!svg||!svg.createSVGPoint)return null;const pt=svg.createSVGPoint();pt.x=x;pt.y=y;const m=svg.getScreenCTM();if(!m)return null;const q=pt.matrixTransform(m.inverse());return {x:q.x,y:q.y}}
+function webApply(){const svg=document.querySelector('#webStage svg');if(!svg||!webVB)return;svg.setAttribute('viewBox',webVB.x+' '+webVB.y+' '+webVB.w+' '+webVB.h)}
+function webClamp(){if(!webVB)return;const m=140;if(webVB.x>WEB-m)webVB.x=WEB-m;if(webVB.y>WEB-m)webVB.y=WEB-m;if(webVB.x+webVB.w<m)webVB.x=m-webVB.w;if(webVB.y+webVB.h<m)webVB.y=m-webVB.h}
+function webFit(){const stage=$('webStage');if(!stage)return;const r=stage.getBoundingClientRect();
+  if(r.width<20||r.height<20){webVB={x:0,y:0,w:WEB,h:WEB};webFitVB=Object.assign({},webVB);webApply();if(!webFit._t){webFit._t=1;requestAnimationFrame(()=>{webFit._t=0;if($('webStage'))webFit()})}return}
+  const a=r.width/r.height;let w,h;if(a>=1){h=WEB;w=WEB*a}else{w=WEB;h=WEB/a}
+  webVB={x:(WEB-w)/2,y:(WEB-h)/2,w:w,h:h};webFitVB=Object.assign({},webVB);webApply()}
+function webZoomAt(factor,wx,wy){if(!webVB)webFit();if(!webVB)return;const cap=webFitVB?webFitVB.w:WEB,aspect=webVB.h/webVB.w;let nw=webVB.w/factor;if(nw>cap)nw=cap;if(nw<280)nw=280;const nh=nw*aspect;
+  if(wx==null){wx=webVB.x+webVB.w/2;wy=webVB.y+webVB.h/2}const rx=(wx-webVB.x)/webVB.w,ry=(wy-webVB.y)/webVB.h;webVB.w=nw;webVB.h=nh;webVB.x=wx-rx*nw;webVB.y=wy-ry*nh;webClamp();webApply()}
+function webTipHTML(id){const n=webNode(id);if(!n)return '';const body=n.id==='c'?'Where every path starts.':modTxt(n.m);
+  const half=n.a>=0&&!n.key&&webWeak(n.a)?' Halved: '+WARMS[(n.a+4)%8][0]+', across the web, has more of your points.':'';
+  const state=n.id==='c'||G.web[n.id]?'Placed.':webCan(n.id)?'Lit. Tap to place a point.':webPts()>0?'Not connected yet.':'No points left.';
+  return '<b>'+n.n+'</b> '+body+half+' <i>'+state+'</i>'}
+function webShowTip(id){const tip=$('webTip');if(!tip)return;if(!id){tip.hidden=true;tip.innerHTML='';return}tip.hidden=false;tip.innerHTML=webTipHTML(id)}
+function webBind(){if(!webVB)webFit();else webApply();const stage=$('webStage');if(!stage)return;const svg=stage.querySelector('svg');
+  if(sel&&sel.web)webShowTip(sel.web);
+  const help=$('webHelp');if(help)help.addEventListener('toggle',()=>{webHelpOpen=help.open;webFit()});
+  stage.addEventListener('wheel',e=>{e.preventDefault();const p=webClientToWorld(svg,e.clientX,e.clientY);webZoomAt(e.deltaY<0?1.12:1/1.12,p&&p.x,p&&p.y)},{passive:false});
+  const pts=new Map();let pan=null,pinch=null;
+  stage.addEventListener('pointerdown',e=>{if(e.button>1)return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(pts.size>=2){try{stage.setPointerCapture(e.pointerId)}catch(err){}const a=[...pts.values()];pinch={d:Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)||1,w:webVB.w,h:webVB.h,x:webVB.x,y:webVB.y};pan=null;return}
+    const r=stage.getBoundingClientRect();pan={id:e.pointerId,x:e.clientX,y:e.clientY,ox:webVB.x,oy:webVB.y,s:(r.width||1)/webVB.w,moved:false}});
+  stage.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(pts.size>=2&&pinch){const a=[...pts.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)||1,factor=d/pinch.d;const cap=webFitVB?webFitVB.w:WEB;let nw=pinch.w/factor;if(nw>cap)nw=cap;if(nw<280)nw=280;const nh=nw*(pinch.h/pinch.w),cx=pinch.x+pinch.w/2,cy=pinch.y+pinch.h/2;webVB={x:cx-nw/2,y:cy-nh/2,w:nw,h:nh};webClamp();webApply();webPanMoved=1;return}
+    if(!pan||e.pointerId!==pan.id)return;const dx=e.clientX-pan.x,dy=e.clientY-pan.y;if(Math.hypot(dx,dy)<=6)return;pan.moved=true;stage.classList.add('panning');try{stage.setPointerCapture(e.pointerId)}catch(err){}webVB.x=pan.ox-dx/pan.s;webVB.y=pan.oy-dy/pan.s;webClamp();webApply()});
+  const end=e=>{const moved=pan&&pan.id===e.pointerId&&pan.moved;pts.delete(e.pointerId);if(pan&&pan.id===e.pointerId)pan=null;if(pts.size<2)pinch=null;stage.classList.remove('panning');if(moved)webPanMoved=1};
+  stage.addEventListener('pointerup',end);stage.addEventListener('pointercancel',end);
+  stage.addEventListener('pointerover',e=>{const n=e.target.closest&&e.target.closest('[data-web]');if(n)webShowTip(n.dataset.web)});
+  stage.addEventListener('pointerleave',()=>webShowTip(sel&&sel.web));
+  stage.addEventListener('contextmenu',e=>{const n=e.target.closest&&e.target.closest('[data-web]');if(!n)return;e.preventDefault();e.stopPropagation();const id=n.dataset.web;sel={web:id};webShowTip(id);
+    toast(G.web[id]?'A single node does not come back. Refund all, in the bar, takes every point back for 5 sats.':'Tap a lit node to place a point.')});
+  const pane=stage.parentNode;pane.querySelectorAll('[data-webzoom],[data-webfit]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();sfx('ui');
+    if(b.dataset.webfit){webFit();return}const r=svg.getBoundingClientRect(),p=webClientToWorld(svg,r.left+r.width/2,r.top+r.height/2);webZoomAt(b.dataset.webzoom==='in'?1.22:1/1.22,p&&p.x,p&&p.y)}))}
+function webKey(e){const stage=$('webStage');if(!stage||mode!=='sheet'||tab!=='web')return false;const svg=stage.querySelector('svg');
+  const zoom=f=>{const r=svg.getBoundingClientRect(),p=webClientToWorld(svg,r.left+r.width/2,r.top+r.height/2);webZoomAt(f,p&&p.x,p&&p.y)};
+  if(e.code==='Equal'||e.code==='NumpadAdd'){zoom(1.22);e.preventDefault();return true}
+  if(e.code==='Minus'||e.code==='NumpadSubtract'){zoom(1/1.22);e.preventDefault();return true}
+  if(e.code==='Digit0'||e.code==='KeyF'){webFit();e.preventDefault();return true}
+  const pan={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.code];
+  if(pan&&webVB){webVB.x+=pan[0]*webVB.w*.08;webVB.y+=pan[1]*webVB.h*.08;webClamp();webApply();e.preventDefault();return true}
+  return false}
+function webSvg(){const C=WEBC,R=WEBR,pos=id=>{if(id==='c')return[C,C];const[a,r]=id.split('_').map(Number),an=a*Math.PI/4-Math.PI/2;return[C+Math.cos(an)*r*R,C+Math.sin(an)*r*R]};
+  const armOf=id=>id==='c'?-1:+id.split('_')[0];
   let ln='',nd='';const ids=['c'];for(let a=0;a<8;a++)for(let r=1;r<=10;r++)ids.push(a+'_'+r);
-  for(const id of ids){const p=pos(id),n=webNode(id),on=id==='c'||G.web[id],can=id!=='c'&&webCan(id);
-    for(const o of webAdj(id))if(o<id||o==='c'){const q=pos(o),both=on&&(o==='c'||G.web[o]);ln+=`<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${both?'#e0bd6e':'#3a3250'}" stroke-width="${both?3:1.5}"/>`}
-    nd+=`<circle data-web="${id}" cx="${p[0]}" cy="${p[1]}" r="${n.key?16:n.big?13:id==='c'?14:10}" fill="${on?'#e0bd6e':can?'#2a2440':'#14111c'}" stroke="${sel&&sel.web===id?'#fff':n.key?'#f7931a':can?'#59e0e6':'#4a4266'}" stroke-width="${sel&&sel.web===id?3:can||n.key?2:1}"/>`}
-  for(let a=0;a<8;a++){const an=a*Math.PI/4-Math.PI/2;nd+=`<text x="${C+Math.cos(an)*11.2*R}" y="${C+Math.sin(an)*11.2*R+4}" fill="#a39c86" font-size="12" font-family="Cinzel,serif" text-anchor="middle">${WARMS[a][0]}</text>`}
-  if(webPts()>0)for(let a=0;a<8;a++){
-    if(!G.web[a+'_1']||!webNext(a))continue;
-    const p=pos(a+'_1'),an=a*Math.PI/4-Math.PI/2,px=Math.cos(an+Math.PI/2),py=Math.sin(an+Math.PI/2);
-    const x=p[0]+px*17,y=p[1]+py*17;
-    /* the visible badge is small; the circle under it is a thumb-sized target */
-    nd+=`<g data-webadd="${a}" style="cursor:pointer">
-      <circle cx="${x}" cy="${y}" r="17" fill="transparent"/>
-      <circle cx="${x}" cy="${y}" r="9" fill="#10313a" stroke="#59e0e6" stroke-width="2"/>
-      <text x="${x}" y="${y+4.5}" fill="#59e0e6" font-size="14" font-weight="700" font-family="Cinzel,serif" text-anchor="middle" style="pointer-events:none">+</text></g>`}
-  return `<div id="webBox" style="overflow:auto;height:56vh;border:1px solid var(--edge);background:#07060b;touch-action:pan-x pan-y"><svg width="860" height="860" style="display:block">${ln}${nd}</svg></div>`}
+  for(const id of ids){const p=pos(id),n=webNode(id),on=id==='c'||G.web[id],can=id!=='c'&&webCan(id),vr=n.key?16:n.big?13:id==='c'?14:10;
+    for(const o of webAdj(id))if(o<id||o==='c'){const q=pos(o),both=on&&(o==='c'||G.web[o]),dim=webArm>=0&&armOf(id)!==webArm&&armOf(o)!==webArm;
+      ln+=`<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${both?'#e0bd6e':'#3a3250'}" stroke-width="${both?3:1.5}" opacity="${dim?0.15:1}" stroke-dasharray="${both?'':'4 6'}"/>`}
+    const dimN=webArm>=0&&n.a!==webArm&&id!=='c';
+    nd+=`<g opacity="${dimN?0.28:1}"><circle data-web="${id}" cx="${p[0]}" cy="${p[1]}" r="${vr+14}" fill="transparent"/>`;
+    nd+=`<circle cx="${p[0]}" cy="${p[1]}" r="${vr}" fill="${on?'#e0bd6e':can?'#1c3c48':'#14111c'}" stroke="${sel&&sel.web===id?'#fff':n.key?'#f7931a':can?'#59e0e6':'#4a4266'}" stroke-width="${sel&&sel.web===id?3:can||n.key?2.5:1}" pointer-events="none"/>`;
+    if(can)nd+=`<circle cx="${p[0]}" cy="${p[1]}" r="${vr+5}" fill="none" stroke="#59e0e6" stroke-width="1.5" pointer-events="none"/>`;
+    nd+=`</g>`}
+  for(let a=0;a<8;a++){const an=a*Math.PI/4-Math.PI/2,dim=webArm>=0&&webArm!==a;nd+=`<text x="${C+Math.cos(an)*11.7*R}" y="${C+Math.sin(an)*11.7*R+4}" fill="#c8bda6" font-size="13" font-family="Cinzel,serif" text-anchor="middle" opacity="${dim?0.28:1}">${WARMS[a][0]}</text>`}
+  if(webPts()>0)for(let a=0;a<8;a++){if(!G.web[a+'_1']||!webNext(a))continue;
+    const p=pos(a+'_1'),an=a*Math.PI/4-Math.PI/2,px=Math.cos(an+Math.PI/2),py=Math.sin(an+Math.PI/2),x=p[0]+px*22,y=p[1]+py*22,dim=webArm>=0&&webArm!==a;
+    nd+=`<g data-webadd="${a}" opacity="${dim?0.28:1}"><circle cx="${x}" cy="${y}" r="18" fill="transparent"/><circle cx="${x}" cy="${y}" r="9" fill="#10313a" stroke="#59e0e6" stroke-width="2" pointer-events="none"/><text x="${x}" y="${y+4.5}" fill="#59e0e6" font-size="14" font-weight="700" font-family="Cinzel,serif" text-anchor="middle" pointer-events="none">+</text></g>`}
+  return `<svg viewBox="0 0 ${WEB} ${WEB}" preserveAspectRatio="xMidYMid meet">${ln}${nd}</svg>`}
+function webPane(){const n=webPts(),chips=[[-1,'All']].concat(WARMS.map((a,i)=>[i,a[0]]));
+  const bar=`<div class="webBar"><b class="pts">${n} point${n===1?'':'s'}</b><div class="webChips">${chips.map(([i,name])=>`<button class="ghost${webArm===i?' on':''}" data-webarm="${i<0?'all':i}">${name}</button>`).join('')}</div><button class="ghost" data-webzoom="out" aria-label="Zoom out">−</button><button class="ghost" data-webfit="1">Fit</button><button class="ghost" data-webzoom="in" aria-label="Zoom in">+</button><button class="ghost" data-webreset="1" ${(G.sats<5||!Object.keys(G.web||{}).length)?'disabled':''}>Refund all · 5 sats</button></div>`;
+  const help=`<details class="webHelp" id="webHelp"${webHelpOpen?' open':''}><summary>How the ledger works</summary><p>Each level you gain adds one, and each Tenure adds one. You start with none. Start at the centre and work outward along connected nodes; the arms join at rings 3, 6 and 9. Once an arm is started, a <b style="color:#59e0e6">+</b> appears beside its first node — tap that to put the next point straight onto the end of that arm without hunting for it. The orange node at the end of each arm is a keystone: a large gain with a real cost. <strong>Arms across from each other oppose:</strong> of each facing pair (Might and Current, Flesh and Stride, Plate and Fortune, Nerve and Thirst), the arm with fewer points pays out half. Drag the web to move it. The wheel, a pinch, or + and − zoom it, and Fit puts every arm back in view. Tap a lit node to place a point. A single node does not come back; Refund all takes every point back for 5 sats.</p></details>`;
+  return `<div class="webPane">${bar}<div id="webStage" class="webStage">${webSvg()}<div id="webTip" class="webTip" hidden></div></div>${help}</div>`}
 /* charms: small bonuses that work from the pack, so pack space is their price */
 ICON.charm='M12 3a6 6 0 016 6c0 4-6 12-6 12S6 13 6 9a6 6 0 016-6zm0 3.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z';
 const CHN=['Streaming','Meal Kit','Cloud Storage','Gym','Newsletter','Loyalty','Extended Warranty','Premium'];

@@ -297,7 +297,7 @@ function mktChart(){const s=mktSeries(),n=s.p.length;if(n<2)return '';
     <text x="${(L+iw).toFixed(1)}" y="${H-3}" fill="${MKC.ink}" font-size="8.5" font-family="Spectral,serif" text-anchor="end">ratio scale · the last few minutes</text>
   </svg></div>`}
 const hireCost=()=>200*G.cpi*(1+G.lvl*.25),reviveCost=()=>cause()?0:80*G.cpi*(1+G.lvl*.25);
-function openSheet(t,c){if(mode!=='play'&&mode!=='title')return;sheetCtx=c||{};sheetCtx.from=mode;tab=t;sel=null;mode='sheet';$('sheet').hidden=false;$('sheet').scrollTop=0;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;drawSheet()}
+function openSheet(t,c){if(mode!=='play'&&mode!=='title')return;sheetCtx=c||{};sheetCtx.from=mode;if(t==='web')webVB=null;tab=t;sel=null;mode='sheet';$('sheet').hidden=false;$('sheet').scrollTop=0;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;drawSheet()}
 function closeSheet(){$('sheet').hidden=true;$('pop').hidden=true;if(sheetCtx.from==='title'){mode='title';return}mode='play';calc();setSkillButtons();save(true)}
 function pscore(s){return{dps:((s.dmin+s.dmax)/2*(1+s.dmg/100)+s.shock)*(1+Math.max(-50,s.aspd)/100)*(1+Math.min(100,s.crit)/100*(s.critM-1)),ehp:s.maxHp*(1+s.armor/100)/(1-Math.min(.6,(s.dodge||0)/100))}}
 /* how much stronger (+) or weaker (-) the hero gets by equipping this, as a fraction; null when it cannot be judged */
@@ -347,7 +347,7 @@ const selling=()=>sheetCtx.only&&(sheetCtx.only.includes('shop')||sheetCtx.only.
 function drawSheet(){
   const only=sheetCtx.only||(mpOn()?['char','items','skills','web','party','quests','story','codex','opts']:['char','items','skills','web','quests','story','codex','opts']);let pop='';$('pop').hidden=true;
   const sheetFit=tab==='char'||tab==='items'||tab==='skills'||tab==='quests'||tab==='opts';
-  let h=`<div class="shead">${only.map(t=>`<button class="tab${tab===t?' on':''}" data-tab="${t}">${TABS[t]}${t==='skills'&&G&&G.sp?' •':t==='char'&&G&&G.ap?' •':t==='story'&&sdxUnseen()?' •':''}</button>`).join('')}<button class="tab x" data-close="1">Close</button></div><div class="sheetBody${sheetFit?' fit':' canScroll'}">`;
+  let h=`<div class="shead">${only.map(t=>`<button class="tab${tab===t?' on':''}" data-tab="${t}">${TABS[t]}${t==='skills'&&G&&G.sp?' •':t==='char'&&G&&G.ap?' •':t==='story'&&sdxUnseen()?' •':''}</button>`).join('')}<button class="tab x" data-close="1">Close</button></div><div class="sheetBody${sheetFit?' fit':tab==='web'?' web':' canScroll'}">`;
   if(tab==='load'){h+=`<h2>Load a save code</h2><p>Paste a code copied from the Options tab. This replaces the saved wanderer on this device.</p><textarea id="codeIn" placeholder="Paste here"></textarea><button class="big" data-loadcode="1">Load</button></div>`;$('sheetIn').innerHTML=h;return}
   calc();
   if(tab==='char'){const c=CLS[G.cls];
@@ -396,9 +396,7 @@ function drawSheet(){
       if(s.a&&L){const cur=(G.fork||{})[i];h+=`<div class="ln off" style="margin-top:6px">Fork${L<3?' · opens at 3 points':': one at a time, free to change in town'}</div>`;if(L>=3)h+=`<div class="list">${forkSet(G.cls,i).map(k=>`<button class="li${cur===k?' on':''}" data-fork="${k}" ${W.z.town?'':'disabled'}><div><b>${cur===k?'◆ ':''}${FORKS[k].n} ${s.n}</b><span>${FORKS[k].d}</span></div></button>`).join('')}</div>`}
       if(s.a&&L)h+=`<div class="row">${[0,1,2].map(k=>`<button class="ghost" data-assign="${k}">Button ${k+1}${G.slots[k]===i?' ✓':''}</button>`).join('')}</div>`;
       h+=`<div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`;pop=h.slice(h0);h=h.slice(0,h0)}h+=`<p>Tap a skill to read it. Blue names are passive; ◆ marks the ones switched on. A numbered badge shows which button a skill is on.</p>`}
-  if(tab==='web'){G.web=G.web||{};const n=sel&&sel.web?webNode(sel.web):null;h+=`<h2>The ledger web</h2><p><strong>${webPts()} point${webPts()===1?'':'s'}</strong> to place. Each level you gain adds one, and each Tenure adds one. You start with none. Start at the centre and work outward along connected nodes; the arms join at rings 3, 6 and 9. Once an arm is started, a <b style="color:#59e0e6">+</b> appears beside its first node — tap that to put the next point straight onto the end of that arm without hunting for it. The orange node at the end of each arm is a keystone: a large gain with a real cost. <strong>Arms across from each other oppose:</strong> of each facing pair (Might and Current, Flesh and Stride, Plate and Fortune, Nerve and Thirst), the arm with fewer points pays out half.</p>`+webSvg();
-    h+=n?`<div class="card" style="text-align:left"><div class="nm q${n.key?4:n.big?3:2}">${n.n}</div><div class="ln mod">${n.id==='c'?'Where every path starts.':modTxt(n.m)}</div>${n.a>=0&&!n.key&&webWeak(n.a)?`<div class="ln red">Halved: ${WARMS[(n.a+4)%8][0]}, across the web, has more of your points.</div>`:''}<div class="row"><button class="big" data-weball="1" ${n.id!=='c'&&webCan(n.id)?'':'disabled'}>${G.web[n.id]||n.id==='c'?'Placed':webCan(n.id)?'Place a point':'Not connected yet'}</button></div></div>`:`<p>Drag to move around the web. Tap a node to read it.</p>`;
-    h+=`<button class="ghost" data-webreset="1" ${G.sats<5||!Object.keys(G.web).length?'disabled':''}>Take every point back · 5 sats</button>`}
+  if(tab==='web'){G.web=G.web||{};h+=webPane()}
   if(tab==='quests'){h+=`<h2>Quests</h2><p>Five acts: the Regional Office, the Cloud, the Board, the Gentle Years and the Awakening. The first three are MANDATE's. The last two are hers, and then the thing that was hunting them both. The Story tab keeps who is who.</p><div class="list">`;
     const sy=storyStep();h+=`<p>Next in the story: <strong>${esc(sy.d)}</strong>. This always stays on screen, with one errand beside it. Tap an errand below to choose which.</p>`;const tk=(id,live)=>live?` data-track="${id}"`:'',tm=id=>G.track===id?'◆ ':'';
     for(const k in QUESTS){const q=QUESTS[k],st=G.q[k];if(!st)continue;h+=`<div class="li${st<3?' on':''}"><div><b>${q.n}${st===3?' · done':st===2?' · return to '+q.back:''}</b><span>${q.d}</span><span>Reward: ${q.rw}. Given by ${q.by}.</span></div></div>`}
@@ -524,7 +522,7 @@ function drawSheet(){
     }
     h+=`</div>`;if(gateAct===6)h+=`<button class="ghost" data-dev="reset">Respawn all machines</button>`;
     if(G.maxTier>0&&gateAct===6)h+=`<h3>Tier</h3><div class="row"><button class="ghost" data-tier="-1" ${G.tier<=0?'disabled':''}>Easier</button><button class="ghost" disabled>Tier ${G.tier}</button><button class="ghost" data-tier="1" ${G.tier>=G.maxTier?'disabled':''}>Harder</button></div><p>Each tier adds 12 machine levels and raises item levels to match. Changing tier respawns every district.</p>`}
-  h+=`</div>`;$('sheetIn').innerHTML=h;paintGlyphs($('sheetIn'));{const wb=$('webBox');if(wb){wb.scrollLeft=webSc[0];wb.scrollTop=webSc[1];wb.onscroll=()=>{webSc=[wb.scrollLeft,wb.scrollTop]}}}if(pop){$('popIn').innerHTML=pop;paintGlyphs($('popIn'));$('pop').hidden=false;$('pop').scrollTop=0}}
+  h+=`</div>`;$('sheetIn').innerHTML=h;paintGlyphs($('sheetIn'));if($('webStage'))webBind();if(pop){$('popIn').innerHTML=pop;paintGlyphs($('popIn'));$('pop').hidden=false;$('pop').scrollTop=0}}
 let sellArm=false;
 const satsOk=()=>G.adopt>=60||(G.wonF&&G.wonF.brenda===1)||shopVia,satCost=it=>Math.max(1,Math.ceil(buyPrice(it)/satRate()));let shopVia=0;const buyPrice=it=>{const her=payTag(it.val*2.5*G.cpi*(G.disc?.85:1)*(repRank('norm')>=3?.8:repRank('norm')>=1?.9:1));return shopVia?payTag(her*.7):her};
 const boxPrice=()=>payTag((8+G.lvl*5)*9*G.cpi);
@@ -545,7 +543,7 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   sellArm=false;
   if(d.close)return closeSheet();
   if(d.loadcode){const v=$('codeIn').value;if(!loadCode(v)){const p=document.createElement('p');p.className='red';p.textContent='That code could not be read. Check that all of it was pasted.';$('sheetIn').appendChild(p)}return}
-  if(d.tab){tab=d.tab;sel=null}
+  if(d.tab){if(d.tab==='web')webVB=null;tab=d.tab;sel=null}
   if(d.eq)sel={eq:d.eq};
   if(d.ch!==undefined)sel={ch:+d.ch};
   if(d.chdo){const i=sel.ch,it=G.charms[i];if(d.chdo==='tog'){it.on=!it.on;sfx('equip')}else{G.charms.splice(i,1);sel=null;if(d.chdo==='sell'){G.credits+=sellValue(it);sfx('coin')}else if(d.chdo==='scrap'){G.parts=(G.parts||0)+2;sfx('equip')}else W.drops.push({x:P.x+1.1,y:P.y+1.1,it,t:1})}calc()}
@@ -601,7 +599,16 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.assign!==undefined){const k=+d.assign,i=sel.sk,o=G.slots.indexOf(i);if(o>=0)G.slots[o]=G.slots[k];G.slots[k]=i}
   if(d.pas!==undefined){const i=+d.pas,k=G.pas.indexOf(i);if(k>=0)G.pas.splice(k,1);else if(G.pas.length<PCAP())G.pas.push(i);calc();G.hp=Math.min(G.hp,S.maxHp)}
   if(d.fork){G.fork=G.fork||{};const i=sel.sk;if(G.fork[i]===d.fork)delete G.fork[i];else G.fork[i]=d.fork}
-  if(d.web){sel={web:d.web}}
+  if(d.webzoom||d.webfit||d.webarm!==undefined){
+    if(d.webarm!==undefined)webArm=d.webarm==='all'?-1:+d.webarm;
+    if(d.webfit)webFit();
+    if(d.webzoom){const svg=$('webStage')&&$('webStage').querySelector('svg');if(svg){const r=svg.getBoundingClientRect(),p=webClientToWorld(svg,r.left+r.width/2,r.top+r.height/2);if(p)webZoomAt(d.webzoom==='in'?1.22:1/1.22,p.x,p.y)}}}
+  if(d.web){
+    if(webPanMoved)webPanMoved=0;
+    else{const id=d.web;
+      if(ev.shiftKey){toast(G.web[id]?'A single node does not come back. Refund all, in the bar, takes every point back for 5 sats.':'Shift-click does not place a point. Tap a lit node.');sel={web:id}}
+      else if(id!=='c'&&!G.web[id]&&webCan(id)){G.web[id]=1;sel={web:id};calc();sfx('learn')}
+      else{sel={web:id};if(id!=='c'&&!G.web[id])toast(webPts()>0?'Not connected yet. Follow a lit node out from the centre.':'No points left to place.')}}}
   /* the + over an arm's first node: spend straight away on the far end of that arm */
   if(d.webadd!==undefined){const nx=webNext(+d.webadd);
     if(nx&&webPts()>0){G.web[nx]=1;sel={web:nx};calc();sfx('learn')}}
@@ -633,7 +640,7 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.go){if(mpPortalBlocked())return;closeSheet();enter(+d.go);return}
   if(d.tier){G.tier=clamp(G.tier+ +d.tier,0,G.maxTier);resetZones()}
   drawSheet()};
-$('sheet').addEventListener('click',sheetClick);
+$('sheet').addEventListener('click',ev=>{if(webPanMoved){webPanMoved=0;if(ev.target.closest&&ev.target.closest('#webStage'))return}sheetClick(ev)});
 $('pop').addEventListener('click',ev=>{if(ev.target.id==='pop'){sel=null;sfx('ui');drawSheet();return}sheetClick(ev)});
 
 function showDeath(){const town=ZONES[HT()]||{n:'town'};$('deathP').textContent='Slain by '+DY.by+' in '+ZONES[DY.zi].n+', with '+DTY[P.lastTy||'impact'].n+' damage.'+(G.hc?' This was a hardcore hero. They are gone, and a new wanderer will take the road.':'');
@@ -657,7 +664,7 @@ $('bMap').addEventListener('click',()=>{OPT.minimap=!OPT.minimap});
 $('bBug').addEventListener('click',bugAsk);
 $('bRecall').addEventListener('click',openPortal);
 addEventListener('keydown',e=>{if(e.target&&e.target.tagName==='TEXTAREA')return;keys[e.code]=true;if(mode==='play'){if(e.code==='Digit1')cast(0);if(e.code==='Digit2')cast(1);if(e.code==='Digit3')cast(2);if(e.code==='KeyQ')stim();if(e.code==='ShiftLeft')dodge();if(e.code==='KeyE'&&actTarget)actTarget.fn();if(e.code==='KeyT')openPortal();if(e.code==='Tab'){OPT.minimap=!OPT.minimap;e.preventDefault()}if(e.code==='KeyB'||e.code==='KeyI')openSheet('items',{});if(e.code==='Space')e.preventDefault()}
-  else if(mode==='scene'&&SC&&SC.back){if(e.code==='ArrowRight'){$('scNext').click();e.preventDefault()}else if(e.code==='ArrowLeft'){$('scBack').click();e.preventDefault()}}else if(mode==='sheet'&&(e.code==='Escape'||e.code==='KeyB'))closeSheet()});
+  else if(mode==='scene'&&SC&&SC.back){if(e.code==='ArrowRight'){$('scNext').click();e.preventDefault()}else if(e.code==='ArrowLeft'){$('scBack').click();e.preventDefault()}}else if(mode==='sheet'){if(tab==='web'&&webKey(e)){}else if(e.code==='Escape'||e.code==='KeyB')closeSheet()}});
 addEventListener('keyup',e=>keys[e.code]=false);
 addEventListener('blur',()=>{for(const k in keys)keys[k]=false;atkHeld=false});
 document.addEventListener('contextmenu',e=>e.preventDefault());
