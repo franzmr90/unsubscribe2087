@@ -10,7 +10,18 @@ a difficulty and an optional password; it appears in everyone else's lobby and h
 people. A game is its own world — its own districts, its own monsters, its own difficulty.
 
 Join a game, play, leave it, and you land back in the lobby. **A game is its players**: when
-the last one leaves or logs off, it is over and stops being listed.
+the last one leaves or logs off, it is over and stops being listed. A dropped connection
+holds your place in the game and the party for 45 seconds, then lets go. The client keeps
+trying to reconnect and asks to be let back in if the game is still there.
+
+A game is one map. The server issues a seed for each district, each tier, and each
+redraw (a subpoena or the bull field). Both clients draw that district from the seed, so
+the rooms, the spawn points, the waypoints and the town's residents match. A character's
+own districts, saved on that character, are not used while the game is up and are not
+overwritten by it. Gramps still holds the act gate on each character. Monsters are still
+each client's: the same machine stands in the same place, and each browser keeps its own
+hit points. The Simulator's wave number and its wave seed are shared, so a wave spawns in
+the same places. The boss-rush lineup is still whoever that character has beaten.
 
 Scoping to a game of eight is also what makes the server safe to post publicly. Every cost
 — the roster, the movement fan-out, the chat — is bounded by the size of a game rather than
@@ -88,9 +99,10 @@ bandwidth; those people simply will not connect to some peers.
 
 The Simulator takes a party. The leader books it, either way:
 
-- **Waves, together** — everyone fights the same wave, and the first to clear it moves
-  everybody on. The server holds the wave number and the seed, so every client generates
-  the same waves.
+- **Waves, together** — everyone fights the same wave number, and the first to clear it
+  moves everybody on. The server holds the wave number and a seed. Each wave is drawn from
+  that seed, so the machines spawn in the same places. Each client still tracks its own
+  hit points.
 - **Duelling** — the rig is the one place a fight between players costs nothing, because
   the game already knows that nothing in there is real. You still have to declare against
   each other first, or you will both swing at nothing.
@@ -98,13 +110,16 @@ The Simulator takes a party. The leader books it, either way:
 ## What the server is authoritative over, and what it is not
 
 **It decides:** who exists, who is in which party, who is hostile to whom, who is in which
-district, how experience is split, whether two players are allowed to fight at all, and
-the Simulator's wave number and seed.
+district, the layout seed for that district, how experience is split, whether two players
+are allowed to fight at all, and the Simulator's wave number and wave seed. It also refuses
+experience, player damage, quest flags and saves that are outside a coarse bound. Those
+bounds are not a simulation.
 
-**It does not decide:** monsters, or damage. Each client simulates its own monsters, and an
-attack that lands is an attack your client says landed. The server checks that the two of
-you are permitted to fight, scales the damage and passes it on, but it cannot tell a real
-hit from an invented one.
+**It does not decide:** monster hit points, or damage. Each client simulates the machines
+that the shared seed placed, and an attack that lands is an attack your client says
+landed. The server checks that the two of you are permitted to fight, caps the damage
+against the target's max life and the attacker's level, and passes it on. It cannot tell
+a real hit from an invented one inside that cap. A cast portal is still that character's.
 
 **This is cheatable, and it is written here rather than hidden.** A modified client could
 claim hits it did not land. It is the right trade for a server meant for a few people who
@@ -200,8 +215,10 @@ happened and what to do, and keeps playing alone.
 The remaining limit is **one process**: presence is in memory, and saves, friends and the letter box are files on disk,
 so running several copies behind a load balancer would give you several servers that cannot
 see each other, fighting over the same directory. Run one. Several hundred people across
-several dozen games is a reasonable expectation for it; it has not been load-tested, and
-that is the honest caveat.
+several dozen games is a reasonable expectation for it. `node tools/soak.js` puts twenty
+headless players through movement, chat and party traffic and prints latency, CPU, memory
+and messages per second. That is a soak of the social traffic, not of shared monsters,
+which this server does not simulate.
 
 ## Reporting a problem
 

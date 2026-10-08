@@ -15,11 +15,15 @@
    Town is safe. The arena is not.
 
    What the server is authoritative over: who exists, which game they are in, who is in
-   which party, who is hostile to whom, who is in which district, and the Simulator's wave
-   number. What it is not authoritative over: monsters and damage, which each client
-   simulates for itself. That is a real limitation and MULTIPLAYER.md says so plainly. */
+   which party, who is hostile to whom, who is in which district, the layout seed for each
+   district of that game, and the Simulator's wave number and wave seed. What it is not
+   authoritative over: monsters and damage, which each client simulates for itself. */
 'use strict';
+const crypto = require('crypto');
 const ws = require('./ws');
+const guard = require('./guard');
+const { buildId } = require('./buildid');
+const { turnCfg } = require('./turn');
 
 const MAX_GAME = 8;                /* Diablo II's number, and the reason this scales */
 const MAX_PARTY = 8;
@@ -43,13 +47,30 @@ const DIFFS = {
 const live = new Map();            /* uid -> player */
 const games = new Map();           /* game id -> game */
 const parties = new Map();         /* party id -> party */
+/* uid -> { id, game, until } kept after a dropped socket's grace runs out, so the same
+   account can be put back in the party if the game is still there. */
+const partyMemo = new Map();
+const GRACE_MS = +(process.env.RESUME_GRACE_MS || 45000);
 let partySeq = 1, gameSeq = 1;
+let msgN = 0;
 
 const nowSec = () => Math.floor(Date.now() / 1000);
 const clean = (s, n) => String(s === undefined || s === null ? '' : s).slice(0, n);
 
 function send(p, t, d) { if (p && p.conn) p.conn.send(Object.assign({ t }, d)); }
 function sys(p, text) { send(p, 'sys', { text }); }
+function notice(p, text) { send(p, 'sys', { text, notice: 1 }); }
+
+/* Reported max life is what player-damage is capped against. A tiny report would make
+   somebody unkillable; a huge one would let one packet delete them. The floor tracks
+   level. The ceiling is far above any honest character. */
+function takeVitals(p, m) {
+  if (m && 'lvl' in m) p.lvl = Math.max(1, Math.min(100, +m.lvl || 1));
+  const floor = 80 + 12 * Math.max(1, p.lvl || 1);
+  const reported = Math.max(1, Math.min(500000, +m.hpm || p.hpm || floor));
+  p.hpm = Math.max(floor, reported);
+  if (m && 'hp' in m) p.hp = Math.max(0, Math.min(p.hpm, +m.hp || 0));
+}
 
 /* Loaded inside the call. social.js requires this module at the top, so a
    top-level require here would hand it the exports object before it is filled. */
@@ -181,22 +202,84 @@ function gameScale(g) {
   };
 }
 
+/* One seed per district, per tier, per redraw. The client draws from it. A fresh
+   ask (a subpoena, the bull field, a tier the table has not seen) mints the next
+   roll so the previous layout stays put for anyone still standing in it. */
+function mapRows(g) {
+  const out = [];
+  if (!g || !g.maps) return out;
+  for (const k in g.maps) out.push(g.maps[k]);
+  return out;
+}
+function mapRecord(g, zi, tier, fresh, tpl) {
+  g.maps = g.maps || {};
+  g.mapRoll = g.mapRoll || {};
+  const base = zi + '/' + tier;
+  if (fresh) g.mapRoll[base] = (g.mapRoll[base] || 0) + 1;
+  const roll = g.mapRoll[base] || 0;
+  const id = base + '/' + roll;
+  let row = g.maps[id];
+  if (!row) {
+    const seed = crypto.randomBytes(4).readUInt32BE(0) || 1;
+    row = { zi, tier, roll, seed, key: 'g:' + g.id + ':' + zi + ':t' + tier + ':r' + roll };
+    g.maps[id] = row;
+  }
+  if (fresh && tpl && typeof tpl === 'object' && !Array.isArray(tpl)) {
+    let s = '';
+    try { s = JSON.stringify(tpl); } catch (e) { s = ''; }
+    if (s && s.length < 700) row.tpl = tpl;
+  }
+  return row;
+}
+
 function joinGame(p, g) {
+  if (p.game === g.id) {
+    p.awayUntil = 0;
+    zoneIndex(p);
+    send(p, 'game', { game: gameInfo(g), you: p.uid, scale: gameScale(g), maps: mapRows(g), resumed: 1 });
+    const party = partyOf(p);
+    if (party) pushParty(party);
+    pushRoster(g);
+    pushZone(p);
+    return null;
+  }
   if (g.players.size >= MAX_GAME) return 'That game is full.';
   if (p.game) leaveGame(p);
   g.players.add(p.uid);
   p.game = g.id;
   zoneIndex(p);
-  send(p, 'game', { game: gameInfo(g), you: p.uid, scale: gameScale(g) });
+  send(p, 'game', { game: gameInfo(g), you: p.uid, scale: gameScale(g), maps: mapRows(g) });
   for (const q of gamePlayers(g)) if (q !== p) sys(q, p.name + ' has entered the game.');
   pushRoster(g);
   pushLobby();
   pushFriends(p);
+  restoreParty(p);
   return null;
+}
+
+function rememberParty(p) {
+  if (!p || !p.party || !p.game) return;
+  partyMemo.set(p.uid, { id: p.party, game: p.game, until: Date.now() + 180000 });
+}
+
+function restoreParty(p) {
+  const m = partyMemo.get(p.uid);
+  if (!m || m.until < Date.now() || m.game !== p.game || p.party) return;
+  const party = parties.get(m.id);
+  if (!party || party.members.size >= MAX_PARTY) return;
+  const lead = live.get(party.leader);
+  if (!lead || lead.game !== p.game) return;
+  party.members.add(p.uid);
+  p.party = party.id;
+  partyMemo.delete(p.uid);
+  for (const m2 of membersOf(party)) sys(m2, p.name + ' rejoined the party.');
+  pushParty(party);
+  pushRoster(gameOf(p));
 }
 
 function leaveGame(p, opt) {
   const g = gameOf(p);
+  if (!(opt && opt.holdParty)) partyMemo.delete(p.uid);
   leaveParty(p, true);
   zoneIndex(p, true);
   p.game = null;
@@ -297,8 +380,12 @@ function pushPeers(p) { for (const q of zonePeers(p)) pushZone(q); }
 
 const HANDLERS = {
   hello(p, m) {
-    p.lvl = +m.lvl || 1; p.cls = clean(m.cls, 16);
-    p.zi = +m.zi || 0; p.hp = +m.hp || 0; p.hpm = +m.hpm || 1;
+    p.cls = clean(m.cls, 16);
+    p.zi = +m.zi || 0;
+    takeVitals(p, m);
+    /* The real client asks to be held in its game across a dropped socket. Test
+       clients do not, so a closed socket there still ends the session at once. */
+    if (m && m.resume) p.wantsResume = true;
     zoneIndex(p);
     if (p.game) pushRoster(gameOf(p)); else pushLobby();
     pushFriends(p);
@@ -313,7 +400,7 @@ const HANDLERS = {
     const name = clean(m.name, 40).trim() || (p.name + "'s game");
     if ([...games.values()].some(g => g.name.toLowerCase() === name.toLowerCase() && g.players.size)) return sys(p, 'There is already a game by that name.');
     const diff = DIFFS[clean(m.diff, 12)] ? clean(m.diff, 12) : 'normal';
-    const g = { id: 'g' + (gameSeq++), name, diff, host: p.uid, pass: clean(m.pass, 40), players: new Set(), created: Date.now() };
+    const g = { id: 'g' + (gameSeq++), name, diff, host: p.uid, pass: clean(m.pass, 40), players: new Set(), created: Date.now(), maps: {}, mapRoll: {} };
     games.set(g.id, g);
     const err = joinGame(p, g);
     if (err) sys(p, err);
@@ -340,13 +427,28 @@ const HANDLERS = {
 
   'game.leave'(p) { leaveGame(p); pushLobby(); },
 
+  /* The layout of a district. Not the monsters' hit points — those are still each
+     client's — just the seed both clients draw from, and the subpoena template if
+     the district was rolled rather than taken from the book. */
+  map(p, m) {
+    const g = gameOf(p);
+    if (!g) return;
+    const zi = m.zi | 0;
+    if (zi !== m.zi || zi < 0 || zi > 63) return;
+    const tier = Math.max(0, Math.min(30, m.tier | 0));
+    const fresh = m.fresh ? 1 : 0;
+    if (fresh && !rate(p, 'mapfresh', 8, 60000)) return sys(p, 'That district was just redrawn. Give it a moment.');
+    if (!rate(p, 'map', 40, 10000)) return;
+    const row = mapRecord(g, zi, tier, fresh, m.tpl);
+    inGame(g, 'map', row);
+  },
+
   /* ---- being somewhere ---- */
   /* sk, au and sw are stored and forwarded like dir. They are not simulated, and they
      are not a hit. A missing field leaves the stored value alone. */
   move(p, m) {
     p.x = +m.x || 0; p.y = +m.y || 0; p.dir = +m.dir || 0;
-    p.hp = +m.hp || 0; p.hpm = +m.hpm || 1;
-    if ('lvl' in m) p.lvl = Math.max(1, +m.lvl || 1);
+    takeVitals(p, m);
     const cosmetic = ('sk' in m) || ('au' in m) || ('sw' in m);
     if ('sk' in m) p.sk = m.sk === null ? null : skillIx(m.sk);
     if ('au' in m) p.au = auraIx(m.au);
@@ -424,7 +526,9 @@ const HANDLERS = {
     if (!rel.mutual || rel.blocked) return whisperNote(p, book.MISS);
     if (book.closed(who.id)) return whisperNote(p, book.QUIET);
     const q = live.get(who.id);
-    if (q) {
+    /* A held place has no socket. Treat that as offline so the letter goes in the box
+       instead of vanishing into a connection that is not there. */
+    if (q && q.conn) {
       send(q, 'whisper', { from: p.name, uid: p.uid, text: raw });
       whisperNote(p, 'delivered.', { to: who.id, name: who.name, line: raw });
       return;
@@ -492,8 +596,15 @@ const HANDLERS = {
   },
 
   xp(p, m) {
-    const amount = Math.max(0, Math.min(1e9, +m.amount || 0));
+    if (!rate(p, 'xp', 25, 10000)) return;
+    const scale = gameScale(gameOf(p)).xp;
+    const cap = guard.xpCap(m.ml, scale);
+    let amount = Math.max(0, +m.amount || 0);
     if (!amount) return;
+    if (amount > cap) {
+      console.log('[xp] clamped ' + p.name + ' ' + amount + ' to ' + cap + ' ml=' + (+m.ml || 0));
+      amount = cap;
+    }
     const party = partyOf(p);
     if (!party) return;
     const here = membersOf(party).filter(q => q.zi === p.zi && q.inst === p.inst && q.game === p.game);
@@ -513,17 +624,36 @@ const HANDLERS = {
   quest(p, m) {
     const party = partyOf(p);
     if (!party) return;
-    const k = clean(m.k, 12), v = +m.v;
-    if (!/^q\d{1,2}$/.test(k) || !(v >= 0 && v <= 3)) return;
-    for (const q of membersOf(party)) if (q.uid !== p.uid && q.zi === p.zi) send(q, 'quest', { k, v, from: p.name });
+    if (!rate(p, 'quest', 8, 30000)) return;
+    const k = clean(m.k, 12);
+    p.quest = p.quest || {};
+    const step = guard.questStep(p.quest, k, +m.v);
+    if (step == null) return;
+    p.quest[k] = step;
+    for (const q of membersOf(party)) if (q.uid !== p.uid && q.zi === p.zi) send(q, 'quest', { k, v: step, from: p.name });
   },
 
   pvp(p, m) {
     const q = live.get(m.uid);
     if (!canFight(p, q)) return;
-    const dmg = Math.max(0, Math.min(1e7, +m.dmg || 0)) * PVP_SCALE;
-    if (!dmg) return;
-    send(q, 'pvp', { from: p.name, fromUid: p.uid, dmg: Math.round(dmg), kind: clean(m.kind, 12) });
+    if (!rate(p, 'pvp', 80, 10000)) return;
+    const raw = Math.max(0, +m.dmg || 0);
+    if (!raw) return;
+    const landedCap = guard.pvpLandedCap(p.lvl, q.hpm);
+    let landed = raw * PVP_SCALE;
+    if (landed > landedCap) {
+      console.log('[pvp] clamped ' + p.name + ' ' + Math.round(landed) + ' to ' + Math.round(landedCap) + ' vs ' + q.name);
+      landed = landedCap;
+    }
+    if (!landed) return;
+    send(q, 'pvp', { from: p.name, fromUid: p.uid, dmg: Math.round(landed), kind: clean(m.kind, 12) });
+  },
+
+  /* Soak clients measure this. It is not a game action. */
+  ping(p, m) {
+    if (!rate(p, 'ping', 30, 10000)) return;
+    /* `t` is the frame type. The client's clock rides in `at`, or it would replace the type. */
+    send(p, 'pong', { n: m.n, at: m.at });
   },
 
   /* Reported by the defender, so a win cannot simply be asserted by the winner. */
@@ -603,11 +733,107 @@ function rate(p, key, max, win) {
   b.n++; return true;
 }
 
+function greet(p, opt) {
+  const turn = turnCfg();
+  send(p, 'you', {
+    uid: p.uid, name: p.name, maxParty: MAX_PARTY, maxGame: MAX_GAME,
+    pvpScale: PVP_SCALE, simZone: SIM_ZONE, build: buildId(), grace: GRACE_MS,
+    turn: turn || undefined, resumed: opt && opt.resumed ? 1 : 0
+  });
+}
+
+function wire(p, conn) {
+  conn.on('message', m => {
+    if (live.get(p.uid) !== p || p.conn !== conn) return;
+    if (!m || typeof m.t !== 'string') return;
+    const fn = HANDLERS[m.t];
+    if (!fn) return;
+    msgN++;
+    if (!rate(p, 'msg', 300, 10000)) return;
+    try { fn(p, m); } catch (e) { console.error('[live]', m.t, e.message); }
+  });
+  conn.on('close', () => {
+    if (live.get(p.uid) !== p || p.conn !== conn) return;
+    park(p);
+  });
+}
+
+/* A client that asked to be resumed keeps its game and party for GRACE_MS. Anything
+   else — a test socket, an explicit leave, a kick — is gone immediately. */
+function park(p) {
+  if (!p.wantsResume || !p.game) {
+    leaveGame(p, { silent: true });
+    pushOffline(p);
+    live.delete(p.uid);
+    pushLobby();
+    return;
+  }
+  p.conn = null;
+  p.awayUntil = Date.now() + GRACE_MS;
+  zoneIndex(p, true);
+  const g = gameOf(p);
+  for (const q of gamePlayers(g)) if (q !== p) sys(q, p.name + ' dropped. Holding their place.');
+  if (p.awayTimer) clearTimeout(p.awayTimer);
+  p.awayTimer = setTimeout(() => {
+    if (live.get(p.uid) !== p || p.conn) return;
+    rememberParty(p);
+    leaveGame(p, { silent: true, holdParty: true });
+    pushOffline(p);
+    live.delete(p.uid);
+    pushLobby();
+  }, GRACE_MS);
+  if (p.awayTimer.unref) p.awayTimer.unref();
+}
+
+function resume(p, conn) {
+  if (p.awayTimer) { clearTimeout(p.awayTimer); p.awayTimer = null; }
+  p.conn = conn;
+  p.awayUntil = 0;
+  wire(p, conn);
+  greet(p, { resumed: 1 });
+  const g = gameOf(p);
+  if (g) {
+    zoneIndex(p);
+    send(p, 'game', { game: gameInfo(g), you: p.uid, scale: gameScale(g), maps: mapRows(g), resumed: 1 });
+    const party = partyOf(p);
+    if (party) pushParty(party);
+    pushRoster(g);
+    pushZone(p);
+    for (const q of gamePlayers(g)) if (q !== p) sys(q, p.name + ' is back.');
+  } else {
+    send(p, 'lobby', { games: lobby(), max: MAX_GAME, diffs: DIFFS });
+  }
+  pushFriends(p);
+}
+
+function drop(p, text) {
+  if (!p) return;
+  p.wantsResume = false;
+  if (p.awayTimer) { clearTimeout(p.awayTimer); p.awayTimer = null; }
+  if (text) notice(p, text);
+  const conn = p.conn;
+  p.conn = null;
+  if (live.get(p.uid) === p) {
+    leaveGame(p, { silent: true });
+    pushOffline(p);
+    live.delete(p.uid);
+    pushLobby();
+  }
+  if (conn) { try { conn.close(); } catch (e) {} }
+}
+
 function attach(server, verify) {
   ws.attach(server, '/live', verify, (conn, ctx) => {
     const old = live.get(ctx.user.id);
+    if (old && !old.conn && old.awayUntil > Date.now()) {
+      resume(old, conn);
+      return;
+    }
     if (old) {
-      try { old.conn.close(); } catch (e) {}
+      old.wantsResume = false;
+      const prev = old.conn;
+      old.conn = null;
+      if (prev) { try { prev.close(); } catch (e) {} }
       leaveGame(old, { silent: true });
       pushOffline(old);
       if (live.get(old.uid) === old) live.delete(old.uid);
@@ -623,42 +849,36 @@ function attach(server, verify) {
       uid: ctx.user.id, name: ctx.user.name, conn,
       lvl: 1, cls: '', zi: 0, inst: null, zoneKey: undefined, x: 0, y: 0, dir: 0, hp: 1, hpm: 1,
       sk: null, au: null, sw: 0,
-      game: null, party: null, hostile: new Set(), declaredAt: new Map(), portalLock: 0, invites: new Map(), safeUntil: 0, voice: false, joined: Date.now()
+      game: null, party: null, quest: {}, hostile: new Set(), declaredAt: new Map(), portalLock: 0, invites: new Map(), safeUntil: 0, voice: false, joined: Date.now(),
+      wantsResume: false, awayUntil: 0, awayTimer: null
     };
     live.set(p.uid, p);
-
-    send(p, 'you', { uid: p.uid, name: p.name, maxParty: MAX_PARTY, maxGame: MAX_GAME, pvpScale: PVP_SCALE, simZone: SIM_ZONE });
+    wire(p, conn);
+    greet(p);
     send(p, 'lobby', { games: lobby(), max: MAX_GAME, diffs: DIFFS });
     pushFriends(p);
-
-    conn.on('message', m => {
-      if (!m || typeof m.t !== 'string') return;
-      const fn = HANDLERS[m.t];
-      if (!fn) return;
-      if (!rate(p, 'msg', 300, 10000)) return;
-      try { fn(p, m); } catch (e) { console.error('[live]', m.t, e.message); }
-    });
-
-    conn.on('close', () => {
-      if (live.get(p.uid) !== p) return;
-      leaveGame(p, { silent: true });
-      pushOffline(p);
-      live.delete(p.uid);
-      pushLobby();
-    });
   });
 
   const beat = setInterval(() => {
     for (const p of live.values()) {
+      if (!p.conn) continue;
       if (!p.conn.alive) { p.conn.close(); continue; }
       p.conn.ping();
     }
   }, 25000);
   beat.unref();
+
+  const stats = setInterval(() => {
+    const mem = process.memoryUsage();
+    console.log('[live] players=' + live.size + ' games=' + games.size + ' parties=' + parties.size +
+      ' msgs=' + msgN + ' rss=' + Math.round(mem.rss / 1048576) + 'MB');
+    msgN = 0;
+  }, 60000);
+  stats.unref();
 }
 
 module.exports = {
   attach, live, games, parties, MAX_PARTY, MAX_GAME, MAX_PLAYERS, MAX_GAMES,
   PARTY_POOL, PVP_SCALE, SIM_ZONE, TOWNS, canFight, mutualHostile, gameScale, DIFFS,
-  poke, pushFriends
+  poke, pushFriends, send, notice, drop, GRACE_MS
 };

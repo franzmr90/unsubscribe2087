@@ -138,8 +138,16 @@ Chromium. Set `PW_CHROMIUM` only if you want a different binary. Nothing in `too
 hard-codes a machine path.
 
 A push runs the build, the smoke test and `test:saves` in GitHub Actions
-(`.github/workflows/smoke.yml`). The balance report is not part of that run: it is a
-measurement, and it takes longer.
+(`.github/workflows/smoke.yml`). The same workflow runs the server suites
+(`sh server/test/ci.sh`: accounts, games, social, invites, the cheap bounds, reconnect,
+admin, shared district seeds, the two-browser live test, and an 8-second 20-bot soak). The balance report is
+not part of that run: it is a measurement, and it takes longer.
+
+```sh
+node tools/soak.js                  # 20 bots, 20 seconds, prints a summary
+node tools/soak.js --seconds 8 --check
+node server/admin.js invite mint    # needs DATA_DIR; see HOSTING.md
+```
 
 ---
 

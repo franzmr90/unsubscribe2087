@@ -75,8 +75,23 @@ Nightly to `/var/lib/unsubscribe2087-backups`, fourteen kept. Saves are plain fi
 restore is `tar -xzf` over the data directory with the service stopped.
 
 **They are on the same machine**, which protects against a bad deploy and not against
-losing the box. The last line of `backup.sh` shows the one line to add — `rclone` or
-`rsync` — to get them somewhere else.
+losing the box. Set `BACKUP_HOOK` in the env file to an executable. It is run with the
+new archive path. `rclone copy` or `rsync` is the whole hook. HOSTING.md has the lines.
+
+## Who is allowed on
+
+`INVITE_REQUIRED=1` is written into a fresh env file. `setup.sh` mints one 25-use code and
+prints it. `ALLOWLIST` is optional emails or names. `node server/admin.js invite mint`
+makes another code; `invite revoke` kills one. The running server re-reads the file.
+
+`ADMIN_TOKEN` is generated into the env file. `online`, `kick` and `broadcast` use it.
+`ban`, `unban` and `reset` write the data directory; a reset also tells a connected client
+to drop its local copy.
+
+## Voice relay
+
+Leave `TURN_URLS` empty until someone cannot hear the group. HOSTING.md has coturn (free,
+on this box) and a hosted relay (a free tier, then about $10/mo).
 
 ## One process, on purpose
 

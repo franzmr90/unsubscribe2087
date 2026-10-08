@@ -16,11 +16,100 @@ const MP = {
   mkName: '', mkDiff: 'normal', mkPass: '',
   voice: false, muted: {}, speaking: {}, peers: {}, stream: null,
   friends: {}, face: {}, joinUid: '', csrf: '',
-  whispers: [], whisperTo: '', mail: [], closed: false, portalUntil: 0
+  whispers: [], whisperTo: '', mail: [], closed: false, portalUntil: 0,
+  resume: null, gamePass: '', buildAsked: false,
+  maps: {}, mapAsked: null, wantEnter: null, freshFor: null, freshBase: -1
 };
 
 const mpOn = () => MP.on && !!MP.conn && MP.conn.readyState === 1;
 const mpIn = () => mpOn() && !!MP.game;
+
+/* The server names the seed for this game, this district, this tier. Solo play
+   never asks, so a character's own districts stay where they were. */
+function mpMapLatest(zi, tier) {
+  let b = null;
+  for (const k in MP.maps) {
+    const m = MP.maps[k];
+    if (m && m.zi === zi && m.tier === tier && (!b || m.roll > b.roll)) b = m;
+  }
+  return b;
+}
+function mpStoreMaps(rows) {
+  if (!rows) return;
+  for (const m of rows) {
+    if (!m || m.seed == null || !m.key) continue;
+    MP.maps[m.key] = m;
+  }
+}
+function mpZoneTpl(zi) {
+  const z = ZONES[zi];
+  if (!z || (!z.sub && !z.secret)) return null;
+  const tpl = { n: z.n, lvl: z.lvl, style: z.style, mix: z.mix, out: z.out ? 1 : 0, su: z.su || null };
+  if (z.sub && typeof SUBP !== 'undefined' && SUBP) tpl.sub = SUBP;
+  return tpl;
+}
+function mpApplyTpl(zi, tpl) {
+  const z = ZONES[zi];
+  if (!z || !tpl) return;
+  if (tpl.n) z.n = tpl.n;
+  if (tpl.lvl != null) z.lvl = tpl.lvl;
+  if (tpl.style) z.style = tpl.style;
+  if (tpl.mix) z.mix = tpl.mix;
+  if (tpl.out) z.out = 1;
+  if (tpl.su) z.su = tpl.su;
+  if (tpl.sub && z.sub) SUBP = tpl.sub;
+}
+function mpZoneBag(zi) {
+  if (!mpIn() || !G) return null;
+  const z = ZONES[zi];
+  if (!z || z.sim) return null;
+  const tier = z.town ? 0 : (G.tier | 0);
+  const have = mpMapLatest(zi, tier);
+  if (!have) return null;
+  return ZS[have.key] || null;
+}
+function mpMapContinue() {
+  const w = MP.wantEnter;
+  if (!w) return;
+  const spec = mpMapSpec(w.zi, w.o);
+  if (!spec || spec.wait) return;
+  MP.wantEnter = null;
+  enter(w.zi, w.o);
+}
+function mpMapSpec(zi, o) {
+  if (!mpIn() || !G || !ZONES[zi] || ZONES[zi].sim) return null;
+  const tier = ZONES[zi].town ? 0 : (G.tier | 0);
+  if (o && o.fresh && MP.freshFor !== o) {
+    const have = mpMapLatest(zi, tier);
+    MP.freshFor = o;
+    MP.freshBase = have ? have.roll : -1;
+    MP.wantEnter = { zi, o };
+    MP.mapAsked = null;
+    mpSend('map', { zi, tier, fresh: 1, tpl: mpZoneTpl(zi) });
+    return { wait: true };
+  }
+  if (o && o.fresh && MP.freshFor === o) {
+    const have = mpMapLatest(zi, tier);
+    if (!have || have.roll <= MP.freshBase) { MP.wantEnter = { zi, o }; return { wait: true }; }
+  }
+  const have = mpMapLatest(zi, tier);
+  if (!have) {
+    MP.wantEnter = { zi, o: o || {} };
+    if (!MP.mapAsked || MP.mapAsked.zi !== zi || MP.mapAsked.tier !== tier) {
+      MP.mapAsked = { zi, tier };
+      mpSend('map', { zi, tier, fresh: 0 });
+    }
+    return { wait: true };
+  }
+  return { seed: have.seed, key: have.key, roll: have.roll, tpl: have.tpl || null };
+}
+function mpWaveSeed(n) {
+  const s = MP.sim && MP.sim.seed;
+  if (!s) return null;
+  let x = (s ^ Math.imul(n | 0, 0x9E3779B1)) >>> 0;
+  x = Math.imul(x ^ (x >>> 16), 0x7FEB352D);
+  return ((x ^ (x >>> 15)) >>> 0) || 1;
+}
 
 /* Monsters get tougher with the number of people in the game and with the difficulty it
    was made on, the way Diablo II's did. These feed the multipliers the game already had
@@ -47,13 +136,23 @@ function mpConnect() {
   c.onopen = () => {
     MP.on = true; MP.retry = 0;
     mpHello();
+    /* The server holds a dropped place for a short while. If that window has closed
+       and the game is still up, ask to be let back in. A password we already typed
+       rides along; a wrong one comes back as a normal join failure. */
+    if (MP.resume && MP.resume.id) mpSend('game.join', { id: MP.resume.id, pass: MP.resume.pass || '' });
     if (!MP.beat) MP.beat = setInterval(mpBeat, 100);
   };
   c.onmessage = ev => { let m; try { m = JSON.parse(ev.data); } catch (e) { return; } mpRecv(m); };
   c.onclose = () => {
-    MP.on = false; MP.conn = null; MP.others = []; MP.party = null;
-    /* Back off rather than hammering a server that is down or a session that expired. */
-    if (MP.retry < 6) setTimeout(mpConnect, 2000 * Math.pow(2, MP.retry++));
+    MP.on = false; MP.conn = null; MP.others = [];
+    if (MP.beat) { clearInterval(MP.beat); MP.beat = null; }
+    if (MP.game && MP.game.id) MP.resume = { id: MP.game.id, pass: MP.gamePass || '' };
+    /* Keep trying, with the wait capped, until the tab is closed or the server says
+       the world is full. Six tries used to stop for good and never rejoin the game. */
+    if (MP.retry >= 12) { mpSay('Could not reconnect.'); return; }
+    const waitMs = Math.min(15000, 1000 * Math.pow(2, MP.retry++));
+    if (MP.retry === 1) mpSay('Connection lost. Reconnecting…');
+    setTimeout(mpConnect, waitMs);
   };
   c.onerror = () => {};
 }
@@ -62,7 +161,7 @@ let mpAnnounced = '';
 function mpHello() {
   if (!G) return;
   mpAnnounced = G.cls || '';
-  mpSend('hello', { lvl: G.lvl, cls: G.cls, zi: W ? W.zi : 0, hp: G.hp, hpm: S.maxHp, act: actOf ? actOf(W ? W.zi : 0) : 1 });
+  mpSend('hello', { lvl: G.lvl, cls: G.cls, zi: W ? W.zi : 0, hp: G.hp, hpm: S.maxHp, act: actOf ? actOf(W ? W.zi : 0) : 1, resume: 1 });
 }
 
 function mpSay(text) {
@@ -77,6 +176,14 @@ function mpRecv(m) {
   if (m.t === 'you') {
     MP.me = { uid: m.uid, name: m.name };
     MP.maxParty = m.maxParty; MP.pvpScale = m.pvpScale; MP.simZone = m.simZone;
+    if (m.turn && m.turn.urls) {
+      RTC_CFG.iceServers = RTC_CFG.iceServers.filter(s => !s.turn);
+      RTC_CFG.iceServers.push(Object.assign({ turn: 1 }, m.turn));
+    }
+    if (m.build && window.__BUILD && m.build !== window.__BUILD && !MP.buildAsked) {
+      MP.buildAsked = true;
+      dlg('This page is out of date', 'The server is running a newer build. Reload to pick it up. Your character is saved.', [['Reload', () => location.reload()], ['Not now']]);
+    }
     mpHello();
     mpFriendsLoad();
   } else if (m.t === 'roster') {
@@ -89,19 +196,33 @@ function mpRecv(m) {
     MP.lobby = m.games || []; MP.diffs = m.diffs || MP.diffs;
     MP.maxGame = m.max || MP.maxGame;
     if (mode === 'sheet' && tab === 'party') drawSheet();
+  } else if (m.t === 'map') {
+    mpStoreMaps([m]);
+    mpMapContinue();
   } else if (m.t === 'game') {
+    const prevId = MP.game && MP.game.id;
+    const nextId = m.game && m.game.id;
+    if (prevId !== nextId) { MP.maps = {}; MP.mapAsked = null; MP.freshFor = null; MP.freshBase = -1; MP.wantEnter = null; }
     MP.game = m.game; MP.scale = m.scale || null;
     MP.view = m.game ? 'game' : 'lobby';
+    if (m.maps) mpStoreMaps(m.maps);
     if (!m.game) {
+      MP.resume = null; MP.gamePass = '';
+      MP.maps = {};
       MP.roster = []; MP.others = []; MP.party = null; MP.hostile = {}; MP.sim = null;
       MP.speaking = {}; MP.chat = [];
       mpVoiceStop();
       if (W && W.ents) for (let i = W.ents.length - 1; i >= 0; i--) if (W.ents[i].mp) W.ents.splice(i, 1);
       toast('You have left the game. Your character is saved.');
     }
-    else toast('In "' + m.game.name + '" \u00b7 ' + m.game.diffName + ' \u00b7 ' + m.game.n + ' of ' + m.game.max);
+    else {
+      MP.resume = { id: m.game.id, pass: MP.gamePass || '' };
+      toast((m.resumed ? 'Back in "' : 'In "') + m.game.name + '" \u00b7 ' + m.game.diffName + ' \u00b7 ' + m.game.n + ' of ' + m.game.max);
+      mpMapContinue();
+    }
     if (mode === 'sheet' && tab === 'party') drawSheet();
   } else if (m.t === 'joinfail') {
+    if (MP.resume && m.id === MP.resume.id) MP.resume = null;
     toast(m.reason); sfx('err');
     if (MP.joinUid && /password/i.test(m.reason || '')) {
       const uid = MP.joinUid;
@@ -148,9 +269,20 @@ function mpRecv(m) {
     MP.note = m.text;
     MP.retry = 99;                 /* a full world is not a dropped connection; do not hammer it */
     dlg('The world is full', m.text + '\n\nYou can keep playing on your own — your character is saved either way — and the Party tab will say when there is room.', [['Carry on alone']]);
+  } else if (m.t === 'wipe') {
+    MP.resume = null; MP.retry = 99;
+    try {
+      const slots = m.slot === 'all' || m.slot == null ? [0, 1, 2] : [+m.slot];
+      for (const n of slots) localStorage.removeItem(skey(n));
+    } catch (e) {}
+    G = null;
+    dlg('Character reset', 'The server cleared this character. Reloading.', [['Reload', () => location.reload()]]);
+    setTimeout(() => location.reload(), 800);
   } else if (m.t === 'sys') {
     mpSay(m.text);
+    if (m.notice) dlg('From the server', m.text, [['OK']]);
     if (m.text && /asked to be your friend/.test(m.text)) mpFriendsLoad();
+    if (MP.resume && /that game is over/i.test(m.text || '')) MP.resume = null;
   } else if (m.t === 'xp') {
     /* The server's share. The killer's own share is already final; everyone else's still meets the local multipliers. */
     if (G && mode !== 'title') { gainXp(m.amount, m.self ? 'share' : 1); if (mode === 'play') float(P.x, P.y, '+' + m.amount + ' party', '#9fd0ff', 1); }
@@ -689,7 +821,7 @@ function mpGamePanel() {
   return h;
 }
 
-window.__mp={MP,send:mpSend,get on(){return mpOn()},get inGame(){return mpIn()},get roster(){return MP.roster},get me(){return MP.me},get scale(){return MP.scale},mpHp,mpXp,mpDmg,mute:mpMute,loadFriends:mpFriendsLoad};
+if (typeof devOn === 'function' && devOn()) window.__mp={MP,send:mpSend,get on(){return mpOn()},get inGame(){return mpIn()},get roster(){return MP.roster},get me(){return MP.me},get scale(){return MP.scale},mpHp,mpXp,mpDmg,mute:mpMute,loadFriends:mpFriendsLoad};
 
 function mpWhere(zi) {
   if (zi === undefined || zi === null) return 'somewhere';
@@ -728,20 +860,21 @@ function mpClick(d) {
   if (d.mpj) {
     const g = MP.lobby.find(x => x.id === d.mpj);
     if (g && g.locked) {
-      dlgPrompt('“' + g.name + '” is locked', 'It needs a password.', pw => mpSend('game.join', { id: d.mpj, pass: pw }));
-    } else mpSend('game.join', { id: d.mpj });
+      dlgPrompt('“' + g.name + '” is locked', 'It needs a password.', pw => { MP.gamePass = pw || ''; mpSend('game.join', { id: d.mpj, pass: pw }); });
+    } else { MP.gamePass = ''; mpSend('game.join', { id: d.mpj }); }
     return true;
   }
   if (d.mpd) { MP.mkDiff = d.mpd; drawSheet(); return true; }
   if (d.mpk) {
     const n = document.getElementById('mpName'), pw = document.getElementById('mpPass');
     MP.mkName = n ? n.value.trim() : '';
-    mpSend('game.create', { name: MP.mkName, diff: MP.mkDiff, pass: pw ? pw.value : '' });
+    MP.gamePass = pw ? pw.value : '';
+    mpSend('game.create', { name: MP.mkName, diff: MP.mkDiff, pass: MP.gamePass });
     return true;
   }
   if (d.mpq) {
     dlg('Leave this game?', 'Your character and everything on it are saved. You lose the party, anybody you declared against stops being hostile, and the game carries on without you.',
-      [['Leave', () => { mpSend('game.leave', {}); drawSheet(); }], ['Stay']]);
+      [['Leave', () => { MP.resume = null; MP.gamePass = ''; mpSend('game.leave', {}); drawSheet(); }], ['Stay']]);
     return true;
   }
   if (d.mpv) { mpMicToggle(); setTimeout(drawSheet, 300); return true; }
