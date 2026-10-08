@@ -72,7 +72,8 @@ const report=await p.evaluate(()=>{
   G.diff=1;check('Coverage is cut by Hard', g.resOf('impact')===-8&&g.resOf('heat')===12, g.resOf('impact')+'/'+g.resOf('heat'));
 
   quiet();
-  G.diff=2;P.inv=0;G.god=false;g.S.armor=100;g.S.dodge=0;g.S.taken=1;g.S.r_heat=0;g.S.enc=0;P.barrier=0;
+  G.eq.armor=null;g.calc();
+  G.diff=2;P.inv=0;G.god=false;g.S.armor=100;g.S.dodge=0;g.S.taken=1;g.S.r_rust=0;g.S.enc=0;P.barrier=0;
   const hp0=G.hp=500;
   g.hurt(100,false,{dty:'rust',name:'corrosion',pvp:1,hp:1,mods:{}});
   const landed=hp0-G.hp,dot=P.rustD&&P.rustD.dps;
@@ -134,13 +135,15 @@ const report=await p.evaluate(()=>{
   if(eH)g.hit(eH,1);
   check('Hedgerow does not retag the next swing as Rust', !P.fm.dt&&eH&&eH.lt==='heat', 'dt '+P.fm.dt+' lt '+(eH&&eH.lt));
 
+  function placeMerc(k,lvl,diff){
+    G.lvl=lvl;G.diff=diff;
+    G.merc={k:k,name:'Kit',hp:1000,dead:false,weapon:null,armor:null,helm:null};
+    W.merc={x:P.x,y:P.y,r:.28,hp:1000,max:1000,cd:0,hc:3,ph:0,flash:0,taunt:1,armM:1,fx:1,swing:0,stuck:0,slow:0};
+  }
   function mercSwing(k){
     quiet();
-    G.lvl=10;G.diff=0;
-    G.merc={k:'guard',name:'Kit',hp:500,dead:false,weapon:null,armor:null,helm:null};
-    g.spawnMerc();
+    placeMerc('guard',10,0);
     const e=foe(k,0.4);if(!e)return 0;
-    W.merc.x=P.x;W.merc.y=P.y;W.merc.cd=0;
     const h=e.hp;
     g.update(0.05);
     return h-e.hp;
@@ -170,9 +173,8 @@ const report=await p.evaluate(()=>{
   check('an acqui-hired Surge machine cannot hurt an immune Aegis', hired&&hired.cd>0&&victim.hp===500, victim.hp+' cd '+(hired&&hired.cd));
 
   quiet();
-  G.merc={k:'guard',name:'Kit',hp:1000,dead:false};
-  G.lvl=1;G.diff=2;g.calc();
-  g.spawnMerc();
+  placeMerc('guard',1,2);
+  g.calc();
   W.merc.hp=1000;W.merc.max=1000;W.merc.armM=1;
   const before=W.merc.hp;
   g.hurtAlly(W.merc,100,{dty:'impact',name:'tap',mods:{}});
