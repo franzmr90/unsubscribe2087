@@ -89,42 +89,42 @@ const skType=(cls,i)=>cls==='homesteader'&&i===6?null:cls==='hacker'&&i===14?(G.
    and a handful of shots is an orbit. Passives stay glyphs. */
 const SKV_LIFE={arc:.22,bolt:.28,trail:.32,beam:.34,strike:.28,ring:.42,patch:.62,orbit:.55,mark:.8};
 const SKV={scrapper:{
-  0:{k:'arc',w:1.5},
+  0:{k:'arc',w:1.5,reach:2.4},
   1:{k:'bolt',r:4,at:'foe'},
   2:{k:'patch',r:1.4},
-  3:{k:'orbit'},
+  3:{k:'ring',r:2.5},
   4:{k:'trail',r:3.2},
-  5:{k:'ring',r:2.2},
+  5:{k:'ring',r:4},
   6:{k:'patch',r:1.2},
-  7:{k:'strike'},
+  7:{k:'trail',r:3,at:'foe'},
   8:{k:'mark'},
-  9:{k:'patch',r:2.4},
+  9:{k:'patch',r:2.6},
   10:{k:'mark'},
   11:{k:'patch',r:1.6},
   12:{k:'patch',r:4.2,tel:1},
-  13:{k:'arc',w:2.3},
-  14:{k:'beam'}
+  13:{k:'ring',r:1.2},
+  14:{k:'ring',r:1.1}
 },hacker:{
   0:{k:'bolt',r:5,n:3},
-  1:{k:'beam'},
+  1:{k:'mark',col:'#59e0e6'},
   2:{k:'patch',r:1.5},
-  3:{k:'ring',r:2.4},
-  4:{k:'orbit'},
+  3:{k:'ring',r:3.4},
+  4:{k:'trail',r:.8},
   5:{k:'mark'},
-  6:{k:'strike'},
+  6:{k:'ring',r:3.5},
   7:{k:'orbit',n:3},
   8:{k:'mark'},
-  9:{k:'patch',r:2.6},
-  10:{k:'patch',r:1.7},
+  9:{k:'trail',r:4.5,col:'#ff7a3c'},
+  10:{k:'patch',r:2.2,tel:1},
   11:{k:'mark'},
   12:{k:'trail',r:4,at:'back',col:'#9a6cff'},
   13:{k:'patch',r:1.1},
   14:{k:'bolt',r:6,at:'foe',n:1}
 },courier:{
-  0:{k:'arc',w:1.2},
+  0:{k:'ring',r:2},
   1:{k:'trail',r:3,col:'#3fbf8f'},
   2:{k:'mark'},
-  3:{k:'patch',r:1.6},
+  3:{k:'patch',r:2.6},
   4:{k:'patch',r:2.6},
   5:{k:'mark'},
   6:{k:'orbit',n:3},
@@ -132,51 +132,51 @@ const SKV={scrapper:{
   8:{k:'mark'},
   9:{k:'trail',r:4.2},
   10:{k:'mark'},
-  11:{k:'patch',r:1.15},
-  12:{k:'beam'},
+  11:{k:'patch',r:1.8},
+  12:{k:'mark',col:'#e6e2d6'},
   13:{k:'mark'},
   14:{k:'mark',at:'foe',n:0,col:'#3fbf8f'}
 },anon:{
-  0:{k:'patch',r:1.8},
-  1:{k:'trail',r:2.6},
+  0:{k:'patch',r:2.6},
+  1:{k:'ring',r:.8},
   2:{k:'mark'},
-  3:{k:'patch',r:1.05},
+  3:{k:'patch',r:2.4},
   4:{k:'ring',r:1.4},
   5:{k:'patch',r:3,at:'foe',tel:1},
-  6:{k:'ring',r:2.8},
+  6:{k:'ring',r:2.2},
   7:{k:'orbit'},
-  8:{k:'strike'},
-  9:{k:'arc',w:1.1},
-  10:{k:'ring',r:3.2},
+  8:{k:'ring',r:9},
+  9:{k:'arc',w:1,reach:3.2},
+  10:{k:'mark'},
   11:{k:'mark'},
   12:{k:'patch',r:1.35},
   13:{k:'patch',r:1.9},
-  14:{k:'beam'}
+  14:{k:'mark'}
 },founder:{
   0:{k:'orbit'},
   1:{k:'patch',r:3,tel:1},
   2:{k:'mark'},
   3:{k:'orbit',n:3},
-  4:{k:'ring',r:2},
-  5:{k:'arc',w:2},
-  6:{k:'arc',w:1.25},
+  4:{k:'ring',r:1.1},
+  5:{k:'ring',r:2},
+  6:{k:'orbit'},
   7:{k:'mark',at:'foe',n:0,col:'#7be495'},
-  8:{k:'ring',r:3.1},
+  8:{k:'mark'},
   9:{k:'mark',at:'foe',n:0,col:'#c9a868'},
-  10:{k:'bolt',r:3.5,at:'foe',n:2},
+  10:{k:'mark',at:'foe',n:0},
   11:{k:'mark'},
-  12:{k:'beam'},
+  12:{k:'orbit'},
   13:{k:'patch',r:1.5},
-  14:{k:'patch',r:2.3}
+  14:{k:'ring',r:5}
 },maxi:{
-  0:{k:'arc',w:1},
+  0:{k:'arc',w:1,reach:2.6},
   1:{k:'bolt',r:2.2,at:'foe',n:1},
   2:{k:'mark'},
   3:{k:'patch',r:2.2},
   4:{k:'patch',r:3.6},
   5:{k:'trail',r:3.4},
   6:{k:'orbit',n:3},
-  7:{k:'patch',r:1.5},
+  7:{k:'patch',r:3.3},
   8:{k:'mark'},
   9:{k:'patch',r:4.2,tel:1},
   10:{k:'mark'},
@@ -188,23 +188,23 @@ const SKV={scrapper:{
   0:{k:'patch',r:2.2},
   1:{k:'mark'},
   2:{k:'orbit',n:3},
-  3:{k:'patch',r:1.4},
+  3:{k:'ring',r:3},
   4:{k:'mark'},
   5:{k:'orbit',n:1},
-  6:{k:'patch',r:1.8},
+  6:{k:'mark',col:'#4e6a48'},
   7:{k:'mark'},
   8:{k:'mark'},
   9:{k:'patch',r:3.4},
   10:{k:'mark'},
   11:{k:'mark'},
-  12:{k:'ring',r:2.4},
+  12:{k:'mark'},
   13:{k:'mark'},
-  14:{k:'patch',r:1.8}
+  14:{k:'mark'}
 },witness:{
   0:{k:'mark',at:'foe',n:0,col:'#e6dcc8'},
   1:{k:'mark',at:'foe'},
   2:{k:'mark'},
-  3:{k:'bolt',r:3,at:'foe'},
+  3:{k:'mark',at:'foe',n:0,col:'#e6dcc8'},
   4:{k:'bolt',r:2.2,at:'foe',n:1},
   5:{k:'mark'},
   6:{k:'mark'},
@@ -213,18 +213,18 @@ const SKV={scrapper:{
   9:{k:'mark',at:'foe',n:0,col:'#8d9aab'},
   10:{k:'mark'},
   11:{k:'mark'},
-  12:{k:'patch',r:3.2,tel:1,col:'#e6dcc8'},
+  12:{k:'mark',col:'#e6dcc8'},
   13:{k:'mark'},
   14:{k:'mark'}
 }};
 function skvOf(cls,i){const row=(SKV[cls]||{})[i];if(!row)return null;const sk=CLS[cls]&&CLS[cls].sk[i];let col=row.col;
   if(!col&&sk&&sk.a){const ty=skType(cls,i);if(DTY[ty])col=DTY[ty].c}if(!col)col=(CLS[cls]&&CLS[cls].col)||'#e6e2d6';
-  return {k:row.k,col:col,r:row.r||1.2,w:row.w||1,n:row.n!=null?row.n:(row.k==='orbit'?3:1),life:row.life||SKV_LIFE[row.k]||.4,at:row.at||'',tel:row.tel?1:0}}
+  return {k:row.k,col:col,r:row.r||1.2,w:row.w||1,n:row.n!=null?row.n:(row.k==='orbit'?3:1),life:row.life||SKV_LIFE[row.k]||.4,at:row.at||'',tel:row.tel?1:0,reach:row.reach||0}}
 function skvPlay(cls,i,x,y,dir,remote){const v=skvOf(cls,i);if(!v||!W||!W.fx)return;const dx=(dir&&dir.x)||1,dy=(dir&&dir.y)||0;
   let px=x,py=y,x2=x+dx*(v.r||3),y2=y+dy*(v.r||3);
   if(v.at==='back'){x2=x-dx*(v.r||3);y2=y-dy*(v.r||3)}
   if(v.at==='foe'&&!remote){const t=nearest(8);if(t){x2=t.x;y2=t.y;if(v.k==='mark'||v.k==='patch'||v.k==='ring'||v.k==='strike'){px=t.x;py=t.y}}}
-  W.fx.push({k:v.k,x:px,y:py,x2:x2,y2:y2,dx:dx,dy:dy,r:v.r,w:v.w,n:v.n,col:v.col,t:0,life:v.life,tel:v.tel,remote:remote?1:0})}
+  W.fx.push({k:v.k,x:px,y:py,x2:x2,y2:y2,dx:dx,dy:dy,r:v.r,w:v.w,n:v.n,col:v.col,t:0,life:v.life,tel:v.tel,reach:v.reach||0,remote:remote?1:0})}
 const baseType=()=>G.cls==='maxi'?'sound':(G.eq.weapon&&G.eq.weapon.dt)||(G.cls==='hacker'?'surge':'impact');
 const RES={tick:{surge:1.5},drone:{surge:1.5,noise:.5},bot:{impact:.75,rust:1.5},hound:{noise:1.5,rust:.5},ad:{noise:0,impact:1.5},hr:{noise:.5,heat:1.5},mech:{impact:.5,rust:1.5,surge:1.25},seer:{surge:.5,impact:1.5},aegis:{surge:0,heat:1.5},lancer:{noise:1.5,heat:.5},splitter:{heat:1.5,impact:.5},
  director:{noise:.5,rust:1.5},proxy:{rust:.5,surge:1.5},censor:{noise:0,heat:1.5},shill:{noise:1.5},boss:{noise:.5,rust:1.5,heat:1.25},boss2:{noise:0,surge:1.5,impact:.75},boss3:{surge:.5,noise:.5,impact:1.5,heat:1.25}};
