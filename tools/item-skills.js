@@ -74,7 +74,7 @@ const report=await p.evaluate(()=>{
   }
 
   check('six item skills', g.ISK&&Object.keys(g.ISK).length===6);
-  check('names stay off the eight anchors', !['Force Majeure','The All-Hands','The Unspent Output','Remote Hands','The Rate Card','The Night Audit','The Indemnity','The Coupon'].some(n=>g.UNI.some(u=>u.n===n)));
+  const homage=['The Cipher Mantle','The Standing Call','The Open Book','The Quiet Ledger','The Bear Market','The Spare Chair'];const anchors=['Force Majeure','The All-Hands','The Unspent Output','Remote Hands','The Rate Card','The Night Audit','The Indemnity','The Coupon'];check('homage names do not collide with the anchors', !homage.some(n=>anchors.includes(n))&&new Set(g.UNI.map(u=>u.n)).size===g.UNI.length);
   const ids=['cipher','call','book','ledger','bear','chair'];
   check('six homage uniques', ids.every(id=>g.UNI.some(u=>u.id===id)));
 

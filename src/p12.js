@@ -222,7 +222,7 @@ function castItem(i){
   G.en-=pay;P.cd[i]=sk.cd*(1-Math.min(.6,S.cdr||0));sfx('cast')}
 function itemSkillTick(dt){
   if(!P)return;
-  if(P.hitStun>0)P.hitStun=Math.max(0,P.hitStun-dt);
+  if(P.hitStun>0)P.hitStun=Math.max(0,P.hitStun-dt);if(P.remoteCd>0)P.remoteCd=Math.max(0,P.remoteCd-dt);
   if(P.blinkChain>0)P.blinkChain=Math.max(0,P.blinkChain-dt);
   if(P.orders>0){P.orders-=dt;if(P.orders<=0){P.orders=0;if(G)calc()}}
   if(P.book>0)P.book=Math.max(0,P.book-dt);

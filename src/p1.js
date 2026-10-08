@@ -217,8 +217,8 @@ const TC={
  censor:{n:'Censor',picks:1,no:46,gold:26,item:20,stim:8,q:{u:240,s:190,r:34,m:4}},
  boss3:{n:'MANDATE',picks:9,no:0,gold:20,item:70,stim:10,q:{u:5,s:7,r:2,m:1},note:'First kill: one unique for certain'},
  gob:{n:'Dividend Drone',picks:5,no:0,gold:55,item:35,stim:10,q:{u:60,s:50,r:6,m:1.5},note:'Flees, and escapes after 14 seconds'},
- champ:{n:'Champion (any kind)',picks:2,no:12,gold:30,item:48,stim:10,q:{u:75,s:60,r:10,m:1.5},note:'At least one magic item'},
- su:{n:'Named lieutenant',picks:4,no:0,gold:30,item:60,stim:10,q:{u:20,s:25,r:3,m:1},note:'At least one rare'},
+ champ:{n:'Champion (any kind)',picks:2,no:12,gold:30,item:48,stim:10,q:{u:52,s:60,r:10,m:1.5},note:'At least one magic item'},
+ su:{n:'Named lieutenant',picks:4,no:0,gold:30,item:60,stim:10,q:{u:15,s:25,r:3,m:1},note:'At least one rare'},
  boss:{n:'Pryce',picks:7,no:0,gold:20,item:70,stim:10,q:{u:8,s:10,r:2.5,m:1},note:'First kill: one unique for certain'},
  crate:{n:'Crate',picks:1,no:45,gold:38,item:9,stim:8,q:{u:600,s:450,r:90,m:7}},
  chest:{n:'Lockbox',picks:3,no:10,gold:40,item:42,stim:8,q:{u:120,s:100,r:12,m:3}}
@@ -277,7 +277,9 @@ const AFX2=[];
 for(const[k,n]of[['impact','Impact'],['surge','Surge'],['rust','Rust'],['heat','Heat'],['noise','Noise']]){AFX2.push({k:'t_'+k,pre:1,t:'+{v}% '+n+' damage',tiers:[['Tuned',3,10,18],['Tuned',12,19,32],['Tuned',24,33,50],['Tuned',36,51,70]]});AFX2.push({k:'r_'+k,pre:0,grp:'res',t:'+{v}% '+n+' resistance',tiers:[['of Proofing',3,6,12],['of Proofing',12,13,20],['of Proofing',24,21,30],['of Proofing',36,31,45]]})}
 AFX2.push({k:'t_sound',pre:1,t:'+{v}% Sound damage',tiers:[['Tuned',3,10,18],['Tuned',12,19,32],['Tuned',24,33,50],['Tuned',36,51,70]]});
 AFX.push({k:'t_x',pre:1,t:'+{v}% typed damage',sl:['weapon','gloves','ring','amulet','helm'],tiers:AFX2[0].tiers},{k:'r_x',pre:0,grp:'res',t:'+{v}% resistance',sl:['armor','helm','boots','belt','ring','amulet'],tiers:AFX2[1].tiers},{k:'r_all',pre:0,w:.3,grp:'res',t:'+{v}% to all resistances',sl:['armor','helm','belt','ring','amulet'],tiers:[['of Coverage',12,5,8],['of Coverage',24,9,15],['of Coverage',36,16,20]]});
+AFX.push({k:'cdr',t:'+{v}% Faster Cast Rate',sl:['gloves'],tiers:[['of the Quill',8,8,12]]},{k:'cdr',t:'+{v}% Faster Cast Rate',sl:['armor','weapon'],tiers:[['of the Quill',8,15,20]]},{k:'cdr',t:'+{v}% Faster Cast Rate',sl:['amulet'],tiers:[['of the Quill',8,8,12]]});
 const AFK={};for(const a of AFX.concat(AFX2))AFK[a.k]=a;
+Object.assign(AFK,{pdr:{k:'pdr',t:'Damage reduced by {v}%'},hpL:{k:'hpL',t:'+{v} Life per Level'},enL:{k:'enL',t:'+{v} Energy per Level'},enPct:{k:'enPct',t:'+{v}% to Maximum Energy'},enKill:{k:'enKill',t:'+{v} Energy after each Kill'},enleech:{k:'enleech',t:'{v}% Energy Stolen per Hit'},mgt:{k:'mgt',t:'+{v} to Might'},ref:{k:'ref',t:'+{v} to Reflex'},vit:{k:'vit',t:'+{v} to Vitality'},bnd:{k:'bnd',t:'+{v} to Bandwidth'},sk_hacker:{k:'sk_hacker',t:'+{v} to Technomancer Skills'},sk_courier:{k:'sk_courier',t:'+{v} to Runner Skills'}});
 const STATK=AFX.concat(AFX2).map(a=>a.k);
 const RN1=['Rust','Ash','Grim','Hollow','Static','Wraith','Carrion','Dread','Null','Ember','Vex','Blight','Cinder','Gloom','Havoc','Rune','Bone','Storm','Viper','Plague'];
 const RN2={weapon:['Fang','Bite','Edge','Verdict','Ruin','Splitter','Thirst'],helm:['Crown','Cowl','Visage','Brow','Mask'],armor:['Shroud','Hide','Carapace','Mantle','Ward'],gloves:['Grasp','Clutch','Hand','Knuckle','Hold'],boots:['Tread','Stride','Spur','Track','Trample'],belt:['Cinch','Coil','Lash','Buckle','Clasp'],ring:['Loop','Circle','Band','Knot','Spiral'],amulet:['Token','Eye','Heart','Charm','Noose']};
@@ -311,7 +313,15 @@ const UNI=[
  {id:'book',n:'The Open Book',slot:'weapon',il:52,base:'Null Sceptre',tc:'high',isk:102,mods:{skills:[1,1],dmg:[35,60],shock:[6,14]},sp:'+1 to Open Book (item skill)',fl:'The page is open. It does not close their eyes. It only helps you hit.'},
  {id:'ledger',n:'The Quiet Ledger',slot:'belt',il:28,base:'Power Girdle',tc:'mid',isk:103,mods:{regen:[2,4],en:[18,30],mf:[8,16]},sp:'+1 to Quiet Ledger (item skill)',fl:'The books balance if you sit with them. Not for long.'},
  {id:'bear',n:'The Bear Market',slot:'helm',il:40,base:'Praetor Visor',tc:'high',isk:104,mods:{armorP:[50,80],hp:[36,64],dmg:[8,16]},sp:'+1 to Bear Market (item skill)',fl:'You wear the downturn. It is not a shape the verge taught you.'},
- {id:'chair',n:'The Spare Chair',slot:'weapon',il:34,base:'Arc Sceptre',tc:'mid',isk:105,mods:{skills:[1,1],hp:[18,36],thorns:[4,9]},sp:'+1 to Spare Chair (item skill)',fl:'Someone has to sit in. They do not get a vote.'}
+ {id:'chair',n:'The Spare Chair',slot:'weapon',il:34,base:'Arc Sceptre',tc:'mid',isk:105,mods:{skills:[1,1],hp:[18,36],thorns:[4,9]},sp:'+1 to Spare Chair (item skill)',fl:'Someone has to sit in. They do not get a vote.'},
+ {id:'majeure',n:'Force Majeure',slot:'weapon',il:70,base:'Last-Mile Cannon',tc:'late',mods:{dmg:[180,250],aspd:[15,20],enleech:[6,8],mgt:[8,12],ref:[4,8],sk_courier:[1,1]},sp:'Knocks ordinary machines back. Bosses, lieutenants, and players get one short shove, and a second within 1.5s does nothing.',fl:'An act of God, as defined by the party that can afford the lawyer.'},
+ {id:'allhands',n:'The All-Hands',slot:'helm',il:62,base:'Halo Circuit',tc:'late',mods:{skills:[2,2],hpL:[1.5,1.5],enL:[1.5,1.5],pdr:[10,10],mf:[40,50],mgt:[2,2],ref:[2,2],vit:[2,2],bnd:[2,2]},sp:null,fl:'Attendance was mandatory. The hat was not. Everyone wore it anyway.'},
+ {id:'output',n:'The Unspent Output',slot:'ring',il:29,base:'Signet Chip',tc:'mid',mods:{skills:[1,1],enPct:[25,25],shock:[4,10],en:[15,25]},sp:null,fl:'An output nobody posted. Sats are still what things cost.'},
+ {id:'remote',n:'Remote Hands',slot:'weapon',il:42,base:'Zero-Day Rig',tc:'mid',cls:'hacker',mods:{sk_hacker:[3,3],enKill:[5,5],r_all:[15,20],cdr:[25,25],vit:[15,15],bnd:[15,15],mf:[40,50]},sp:'When struck, 25% chance to dash about 3 paces along your facing. 2s between dashes, 6s against a player. Will not fire while you are stunned.',fl:'You were at your desk. The desk disagrees.'},
+ {id:'rate',n:'The Rate Card',slot:'armor',il:29,base:'Aegis Shell',tc:'mid',mods:{skills:[1,1],armorP:[80,120],r_all:[20,30],cdr:[25,25],pdr:[4,4]},sp:null,fl:'The rate is the rate. The coat just itemises it.'},
+ {id:'audit',n:'The Night Audit',slot:'helm',il:41,base:'Riot Helm',tc:'high',mods:{armorP:[80,100],leech:[6,8],enleech:[4,6],pdr:[12,18],shock:[6,16]},sp:null,fl:'They close the books at night. Something else opens them.'},
+ {id:'indemnity',n:'The Indemnity',slot:'armor',il:68,base:'Seraph Plate',tc:'late',mods:{pdr:[25,25],r_surge:[20,20],mgt:[20,30],thorns:[8,14],armorP:[80,120]},sp:'Attacks against you cannot crit.',fl:'The policy pays. It does not pay all of it. Read the exclusion.'},
+ {id:'coupon',n:'The Coupon',slot:'weapon',il:4,base:'Box Cutter',tc:'early',mods:{mf:[80,100],en:[-8,-8],dmg:[0,10]},sp:null,fl:'Expires. Not accepted on the thing you actually wanted.'}
 ];
 const SETS={striker:{n:'The Striker’s Vigil',b2:'+20% Enhanced Damage (2 pieces)',b3:'+1 to All Skills, and kills restore 3% life (3 pieces)',items:[
  {id:'st1',n:'Striker’s Placard',slot:'weapon',il:2,base:'Stop Sign',bi:1,mods:{dmg:[20,30],hp:[10,18]}},
