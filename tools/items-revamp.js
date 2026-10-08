@@ -69,8 +69,10 @@ const report=await p.evaluate(()=>{
   }
   const pool=ml=>g.UNI.filter(u=>g.uniqEligible(u,ml));
   const late=pool(70).map(u=>u.id).sort();
-  check('late band is eight uniques', late.length===8, late.join(','));
-  check('Force Majeure is one of those eight', late.includes('majeure'));
+  const lateEight=['majeure','cipher','allhands','indemnity','tenmin','notyourkeys','uncertain','twentyone'];
+  check('late band keeps the original eight and is at least a mid band', late.length>=18&&lateEight.every(id=>late.includes(id)), late.length+' '+late.join(','));
+  check('Force Majeure is in the late band', late.includes('majeure'));
+  check('high band at 50 is at least a mid band', pool(50).length>=18, String(pool(50).length));
   check('the Cipher Mantle shares that band', late.includes('cipher'));
   check('the Coupon is not in the late band', !late.includes('coupon'));
   check('the Night Audit is not in the late band', !late.includes('audit'));

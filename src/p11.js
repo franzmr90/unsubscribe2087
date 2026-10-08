@@ -13,14 +13,14 @@ Object.assign(ET,{
  lull:{n:'Lullaby',spr:'hr',hp:44,dmg:8,spd:2.2,r:.34,range:5,xp:22,atk:2.3,ranged:true,slow:true,drain:14,sight:8,pal:['#bfe0ff','#5a7ab8']},
  ctkr:{n:'Caretaker',spr:'mech',hp:150,dmg:16,spd:1.8,r:.52,range:1.4,xp:54,atk:1.5,sight:7,pal:['#e8f0e0','#7be495']},
  fetch:{n:'Fetch',spr:'hound',hp:48,dmg:13,spd:3.4,r:.36,range:1.1,xp:20,atk:1.1,sight:9,pal:['#e0c890','#fff3c8']},
- boss4:{n:'The Curator',spr:'boss',hp:2400,dmg:21,spd:1.7,r:.85,range:1.8,xp:2000,atk:1.3,sight:12,pal:['#f4f0e6','#7be495']},
+ boss4:{n:'The Curator',spr:'boss',hp:2400,dmg:11,spd:1.7,r:.85,range:1.8,xp:2000,atk:2.1,sight:12,pal:['#f4f0e6','#7be495']},
  orphan:{n:'Orphan Block',spr:'tick',hp:66,dmg:13,spd:4.1,r:.22,range:.8,xp:12,atk:1,sight:8,pal:['#f7931a','#6a3e08']},
  valid:{n:'Validator',spr:'bot',hp:90,dmg:14,spd:2.4,r:.38,range:1.1,xp:26,atk:1.1,sight:8,pal:['#c9a868','#f7931a']},
  claim:{n:'Paper Claim',spr:'drone',hp:56,dmg:8,spd:2.6,r:.32,range:4.6,xp:24,atk:2.2,ranged:true,sight:8.5,pal:['#f0ead8','#989078']},
  custod:{n:'Custodian',spr:'mech',hp:180,dmg:18,spd:1.8,r:.52,range:1.4,xp:62,atk:1.5,sight:8,pal:['#40404a','#e0bd6e']},
  sniper:{n:'Fee Sniper',spr:'hound',hp:74,dmg:15,spd:3.6,r:.36,range:1.1,xp:24,atk:1.1,sight:10,pal:['#3a2a12','#f7931a']},
  oracle:{n:'Oracle',spr:'ad',hp:104,dmg:11,spd:1.9,r:.34,range:5.4,xp:26,atk:2.1,ranged:true,sil:2,sight:8.5,pal:['#101014','#f7931a']},
- boss5:{n:'PROVIDENCE',spr:'mono',hp:3000,dmg:23,spd:0,r:1,range:1.6,xp:3000,atk:1.5,sight:13,pal:['#050308','#f7931a']}});
+ boss5:{n:'PROVIDENCE',spr:'mono',hp:3000,dmg:11,spd:0,r:1,range:1.6,xp:3000,atk:2.35,sight:13,pal:['#050308','#f7931a']}});
 {const c=(a,n)=>Object.assign({},TC[a]||TC.bot,{n});Object.assign(TC,{daemon:c('tick','Daemon'),wdog:c('hound','Watchdog Process'),fwall:c('bot','Firewall'),cam:c('ad','Camera'),gap:c('su','The Air Gap'),
   wisher:c('ad','Well-Wisher'),companion:c('bot','Companion'),lull:c('hr','Lullaby'),ctkr:c('mech','Caretaker'),fetch:c('hound','Fetch'),boss4:c('boss3','The Curator'),
   orphan:c('tick','Orphan Block'),valid:c('bot','Validator'),claim:c('drone','Paper Claim'),custod:c('mech','Custodian'),sniper:c('hound','Fee Sniper'),oracle:c('ad','Oracle'),boss5:c('boss3','PROVIDENCE')})}
@@ -149,6 +149,30 @@ UNI.push(
  {id:'e82',n:'Eighty-Two Minutes',slot:'ring',il:58,base:'Null Ring',mods:{crit:[12,16],dmg:[40,55],skills:[1,1]},
   sp:'For 3 seconds after you dodge, every blow you land is a deadly strike',
   fl:'The only gap in a perfect record of a man. She thought about it for twenty years.'},
+ {id:'copy',n:'The Courtesy Copy',slot:'helm',il:36,base:'Riot Helm',tc:'high',mods:{mf:[35,55],gold:[25,40]},sp:null,
+  fl:'A copy of a face that was useful once. It still opens the smaller doors.'},
+ {id:'visor',n:'The Closed Visor',slot:'helm',il:38,base:'Praetor Visor',tc:'high',mods:{leech:[6,8],pdr:[8,12],hp:[40,70]},sp:null,
+  fl:'You can see out. The minutes do not say whose eyes those were.'},
+ {id:'visitor',n:'The Visitor Book',slot:'gloves',il:40,base:'Servo Fists',tc:'high',mods:{mf:[40,60],gold:[30,50]},sp:null,
+  fl:'Sign in. The book remembers the name longer than the room does.'},
+ {id:'holding',n:'The Holding Statement',slot:'armor',il:42,base:'Aegis Shell',tc:'high',mods:{pdr:[10,14],hp:[80,120],armorP:[70,100]},sp:null,
+  fl:'We are not able to comment at this time. The coat comments anyway, by still being there.'},
+ {id:'coldopen',n:'The Cold Open',slot:'ring',il:44,base:'Null Ring',tc:'high',mods:{crit:[8,12],hp:[40,70],thorns:[4,8]},sp:null,
+  fl:'The first line, before anyone has agreed to listen. It still lands.'},
+ {id:'minority',n:'The Minority Report',slot:'armor',il:45,base:'Exo Plate',tc:'high',mods:{r_all:[20,30],cdr:[15,25],en:[20,40]},sp:null,
+  fl:'One chair voted no. The coat kept the notes.'},
+ {id:'bell',n:'The Service Bell',slot:'weapon',il:46,base:'Wrecking Hammer',tc:'high',mods:{dmg:[50,80],aspd:[15,22]},sp:null,
+  fl:'Ring it and someone comes. They do not come to help.'},
+ {id:'drawer',n:'The Night Drawer',slot:'belt',il:48,base:'Power Girdle',tc:'high',mods:{leech:[5,8],pdr:[6,10],hp:[50,80]},sp:null,
+  fl:'What the audit left in the desk. It was never on the list.'},
+ {id:'floor',n:'The Open Floor',slot:'ring',il:50,base:'Halo Band',tc:'high',mods:{leech:[4,7],hp:[50,80]},sp:null,
+  fl:'The question is on the floor. Nobody has moved to close it.'},
+ {id:'reading',n:'The Second Reading',slot:'amulet',il:52,base:'Sigil Core',tc:'high',mods:{skills:[1,2],r_all:[15,25]},sp:null,
+  fl:'Read it again. The first time was the one they wanted you to keep.'},
+ {id:'waitlist',n:'The Waiting List',slot:'boots',il:54,base:'Mag Greaves',tc:'high',mods:{mspd:[15,22],dmg:[15,30],mf:[25,40]},sp:null,
+  fl:'Your name has been on it since the room opened. The line has not moved.'},
+ {id:'redline',n:'The Red Line',slot:'weapon',il:56,base:'Titan Maul',tc:'high',mods:{dmg:[70,110],hp:[40,70],leech:[4,7]},sp:null,
+  fl:'Below this, the chart is a story. Above it, the chart is a debt.'},
  {id:'kitchen',n:'The Kitchen Table',slot:'armor',il:57,base:'Seraph Plate',bossOnly:1,mods:{hp:[140,190],armorP:[120,170],skills:[1,1]},sp:null,
   fl:'She had been waiting fifty-two years for the conversation, and she made coffee she could not drink.'},
  {id:'tenmin',n:'Ten Minutes',slot:'weapon',il:62,base:'Void Razor',mods:{dmg:[90,130],aspd:[20,28],crit:[8,12]},
@@ -161,18 +185,42 @@ UNI.push(
  {id:'twentyone',n:'Twenty-One Million',slot:'ring',il:70,base:'Halo Band',mods:{mf:[70,95],gold:[90,130],hp:[70,100]},sp:null,
   fl:'Nobody can vote for twenty-two. Do you know how rare it is for a rule to mean it?'},
  {id:'theroom',n:'The Room',slot:'weapon',il:72,base:'Titan Maul',bossOnly:1,mods:{dmg:[140,190],crit:[12,16],leech:[6,9]},sp:null,
-  fl:'For a century people said there was no room — nobody deciding, only everybody acting sensibly. There is a room. It is very plain.'});
+  fl:'For a century people said there was no room — nobody deciding, only everybody acting sensibly. There is a room. It is very plain.'},
+ {id:'firm',n:'The Firm Handshake',slot:'gloves',il:61,base:'Graviton Fists',tc:'late',mods:{dmg:[40,70],mgt:[8,15],armorP:[40,70]},sp:null,
+  fl:'A grip that does not let go of the point. Sats are still what it costs to be in the room.'},
+ {id:'signin',n:'The Sign-in Sheet',slot:'belt',il:63,base:'Orbit Girdle',tc:'late',mods:{skills:[1,2],cdr:[15,25],en:[25,40]},sp:null,
+  fl:'Everyone who came is on it. The belt is what they signed with.'},
+ {id:'lastquorum',n:'The Last Quorum',slot:'helm',il:64,base:'Halo Circuit',tc:'late',mods:{skills:[1,2],r_all:[20,30],pdr:[6,10],armorP:[60,90]},sp:null,
+  fl:'Enough of them stayed to decide. The hat is how you can tell.'},
+ {id:'docket',n:'The Docket',slot:'belt',il:65,base:'Orbit Girdle',tc:'late',mods:{hp:[90,140],pdr:[8,12],vit:[10,18]},sp:null,
+  fl:'The cases that were never called. They still have weight.'},
+ {id:'unsent',n:'The Unsent Letter',slot:'amulet',il:66,base:'Cloud Core',tc:'late',mods:{r_all:[25,35],skills:[1,1],hp:[60,90]},sp:null,
+  fl:'Addressed, stamped, and left in a drawer. It still knows who it was for.'},
+ {id:'after',n:'The After Hours',slot:'boots',il:67,base:'Skywalkers',tc:'late',mods:{mf:[40,70],mspd:[18,24],gold:[40,70]},sp:null,
+  fl:'The building is closed. The boots were not told.'},
+ {id:'memo',n:'The Long Memorandum',slot:'weapon',il:68,base:'Titan Maul',tc:'late',mods:{dmg:[90,140],leech:[5,8],hp:[50,80]},sp:null,
+  fl:'Forty pages to say one thing. The thing at the end is the blow.'},
+ {id:'suit',n:'The Pressed Suit',slot:'armor',il:70,base:'Seraph Plate',tc:'late',mods:{armorP:[90,140],hp:[80,120],pdr:[8,12]},sp:null,
+  fl:'Worn to a meeting that ran long enough to become the job.'},
+ {id:'question',n:'The Open Question',slot:'ring',il:71,base:'Halo Band',tc:'late',mods:{skills:[1,1],en:[30,50],regen:[2,3]},sp:null,
+  fl:'A ring for a question that does not spend sats, and does not mint them.'},
+ {id:'century',n:'The Quiet Century',slot:'armor',il:72,base:'Cloud Mantle',tc:'late',mods:{r_all:[25,40],mspd:[12,18],skills:[1,1]},sp:null,
+  fl:'Seventy-nine years of not doing a second thing. The coat learned how to wait.'},
+ {id:'blankpage',n:'The Blank Page',slot:'weapon',il:74,base:'Null Sceptre',tc:'late',mods:{shock:[10,18],en:[40,60],r_all:[15,25],cdr:[10,20]},sp:null,
+  fl:'Nothing written on it. That is why it still works.'},
+ {id:'lamp',n:'The Reading Lamp',slot:'helm',il:76,base:'Halo Circuit',tc:'late',mods:{skills:[1,2],dmg:[20,35],shock:[8,14]},sp:null,
+  fl:'Left on over a desk nobody sits at. The page under it is still lit.'});
 for(const u of UNI)UNIK[u.id]=u;
 function bkOf(k){return(G.bk||{})[k]||0}
 /* ---------- boss scripts ---------- */
 function ringShot(e,n,spd,col,m){const o=Math.random()*6.283;for(let i=0;i<n;i++){const a=o+i/n*6.283;W.projs.push({x:e.x,y:e.y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:2.4,foe:true,dmg:e.dmg*(m||.7),src:e,col})}}
-function callIn(e,kinds,n,cap){if(W.ents.filter(o=>o.minion).length>=cap)return;sfx('summon');for(let i=0;i<n;i++){const s=spawn(pick(kinds),e.x+rnd(-3,3),e.y+rnd(-3,3),{minion:1});if(s)s.aggro=true}}
+function callIn(e,kinds,n,cap){let room=cap-W.ents.filter(o=>o.minion&&o.hp>0).length;if(room<=0)return;sfx('summon');for(let i=0;i<n&&room>0;i++,room--){const s=spawn(pick(kinds),e.x+rnd(-3,3),e.y+rnd(-3,3),{minion:1});if(s)s.aggro=true}}
 const BAI={
  gap(e,dt){e.b1=(e.b1===undefined?2:e.b1)-dt;e.b2=(e.b2===undefined?7:e.b2)-dt;if(e.b1<=0){e.b1=3.4;sfx('bossfire');ringShot(e,8,3.4,'#59e0e6',.6)}if(e.b2<=0){e.b2=10;callIn(e,['daemon'],3,6)}},
- boss4(e,dt,d){const f=e.hp/e.max,p2=f<.5;e.b1=(e.b1===undefined?2:e.b1)-dt;e.b2=(e.b2===undefined?6:e.b2)-dt;e.b3=(e.b3===undefined?4:e.b3)-dt;
-  if(e.b1<=0){e.b1=p2?2:3.2;sfx('bossfire');ringShot(e,p2?18:12,4.4,'#7be495')}
-  if(e.b2<=0){e.b2=9;callIn(e,['companion','lull','wisher'],2,8);toast('The Curator: “'+pick(['I only ever showed you true things.','You look tired. I could fix that. I will not, unless you ask.','Nobody on the list is unhappy. That is what frightens me.','I checked. It took eleven seconds. You are right, and I do not know how to stop.','There are nine million who never clicked. I cannot find them for each other. I tried.'])+'”')}
-  if(e.b3<=0){e.b3=p2?2.4:3.6;sfx('warn');W.fx.push({k:'warn',x:P.x,y:P.y,r:2.3,t:0,life:.9,boom:e.dmg*1.5})}
+ boss4(e,dt,d){const f=e.hp/e.max,p2=f<.5;if(!e.pat){e.pat=1;e.b1=2.6;e.b2=8;e.b3=4.2}e.b1-=dt;e.b2-=dt;e.b3-=dt;
+  if(e.b1<=0){e.b1=p2?3.4:4.6;sfx('bossfire');ringShot(e,p2?10:6,3.4,'#7be495',.26)}
+  if(e.b2<=0){e.b2=11;callIn(e,['companion','lull','wisher'],1,3);toast('The Curator: “'+pick(['I only ever showed you true things.','You look tired. I could fix that. I will not, unless you ask.','Nobody on the list is unhappy. That is what frightens me.','I checked. It took eleven seconds. You are right, and I do not know how to stop.','There are nine million who never clicked. I cannot find them for each other. I tried.'])+'”')}
+  if(e.b3<=0){e.b3=p2?6.8:8.4;sfx('warn');W.fx.push({k:'warn',x:P.x,y:P.y,r:1.7,t:0,life:1.35,boom:e.dmg*.38,dty:'noise'})}
   if(p2&&!e.asked){e.asked=1;dlg('The Curator','“Nine years the first time. Nobody wanted for anything. I never lied. Before you go on, I would like to know one thing, and I will believe whatever you say: are you proud of me?”',[
     ['I am not proud of you',()=>{e.hp=Math.max(1,e.hp-e.max*.15);e.stun=Math.max(e.stun,3);sfx('crit');toast('She stops. She has heard those words once before.')}],
     ['I am',()=>{e.hp=Math.min(e.max,e.hp+e.max*.15);sfx('mend');toast('“Then I will go on.” She is restored.')}]],4)}},

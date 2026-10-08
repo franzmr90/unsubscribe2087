@@ -1,6 +1,7 @@
-/* Measures Acts III–V. Does not change any combat number.
+/* Measures Acts III–V after the balance pass.
    Default: one pack fight per class, per district, on Normal, Hard, and Brutal.
    BAL_WALK=1 keeps the older full-district walker.
+   BAL_CLASS, BAL_ZONE, BAL_DIFF filter the sample. BAL_OUT redirects the notes file.
    Usage: node tools/balance.js
    Writes notes/balance-acts-3-5.md */
 const {chromium} = require('playwright');
@@ -9,7 +10,7 @@ const path = require('path');
 
 const root = path.join(__dirname, '..');
 const htmlPath = path.join(root, 'dist', 'unsubscribe.html');
-const outPath = path.join(root, 'notes', 'balance-acts-3-5.md');
+const outPath = process.env.BAL_OUT || path.join(root, 'notes', 'balance-acts-3-5.md');
 
 const TRASH = [12, 13, 14, 15, 22, 23, 24, 25, 28, 29, 30, 31];
 const BOSSES = [16, 26, 32];
@@ -243,6 +244,9 @@ const PACK_CLASSES = [
 ];
 const PACK_ZONES = [12, 13, 14, 15, 16, 22, 23, 24, 25, 26, 28, 29, 30, 31, 32];
 const PACK_DIFF = [0, 1, 2];
+const BAL_CLASS = process.env.BAL_CLASS ? process.env.BAL_CLASS.split(',') : null;
+const BAL_ZONE = process.env.BAL_ZONE ? process.env.BAL_ZONE.split(',').map(Number) : null;
+const BAL_DIFF = process.env.BAL_DIFF ? process.env.BAL_DIFF.split(',').map(Number) : null;
 
 async function arm(page, cls, build, zi) {
   await page.evaluate(({cls, build, zi}) => {
@@ -457,10 +461,13 @@ async function runPack() {
   const lines = [];
   const names = {};
   for (const [cls, build] of PACK_CLASSES) {
+    if (BAL_CLASS && !BAL_CLASS.includes(cls)) continue;
     for (const zi of PACK_ZONES) {
+      if (BAL_ZONE && !BAL_ZONE.includes(zi)) continue;
       const mode = await arm(page, cls, build, zi);
       if (!names[zi]) names[zi] = await page.evaluate(zi => __g.ZONES[zi].n + ' ' + __g.ZONES[zi].lvl, zi);
       for (const diff of PACK_DIFF) {
+        if (BAL_DIFF && !BAL_DIFF.includes(diff)) continue;
         let r;
         if (mode !== 'play') r = {err: mode};
         else r = await packFight(page, zi, diff);
@@ -501,7 +508,7 @@ async function runPack() {
   const body = [
     '# Acts III–V measurement',
     '',
-    'Pack fights. One sample each. Nothing in combat numbers was changed for this run.',
+    'Pack fights. One sample each. This run is after the Act III–V balance pass.',
     '',
     'Protocol: level matched to the district, the class build named below, identified rare weapon, armor, helm, gloves, boots and belt rolled at that level, no uniques, no hire. Adaptive scaling left on, then reset before each fight so an earlier death does not ease the next one. Trash districts spawn 5 ordinary machines of that district\'s first non-tick kind, on top of the hero. Boss districts spawn the act boss alone. The hero stims under half life (6 stims), casts the first skill button, and steps toward the pack. Sim time is `G.time`. Cap 16s on a pack and 25s on a boss. Damage taken is life lost plus 45% of max life per stim. Died is 1 if the hero fell. Unique pool is how many non-boss uniques `uniqEligible` allows at that machine level (the new bands).',
     '',

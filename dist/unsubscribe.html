@@ -396,18 +396,18 @@ const ROWREQ=[1,4,9,26,51];
 const CLS={
  scrapper:{n:'Scrapper',tag:'A laid-off line worker with a road sign and a grudge. Tough, close range.',hp:130,hpL:17,melee:true,mult:1.25,ivl:.6,spd:4.1,col:'#d9822b',
   sk:[
-   {n:'Stop Sign',ab:'STOP\nSIGN',a:1,cost:5,cd:.8,d:L=>`A wide swing that hits everything in front for ${pct(1.3+.15*L)} damage, with a ${15+2*L}% chance to stun.`},
+   {n:'Stop Sign',ab:'STOP\nSIGN',a:1,cost:5,cd:.8,d:L=>`A wide swing. The machine in front takes ${pct(1.3+.15*L)}. Everyone else in the swing takes 22% of that, with a ${15+2*L}% chance to stun.`},
    {n:'Hurl',ab:'HURL',a:1,cost:6,cd:.6,d:L=>`Throw scrap that passes through enemies for ${pct(1.2+.2*L)} damage.`},
    {n:'Iron Hide',ab:'',a:0,d:L=>`Passive. +${8*L}% armor and +${4*L}% life.`},
-   {n:'Turnstile',ab:'TURN-\nSTILE',a:1,cost:12,cd:1.5,d:L=>`Spin and strike all nearby enemies for ${pct(1.5+.22*L)} damage.`},
+   {n:'Turnstile',ab:'TURN-\nSTILE',a:1,cost:12,cd:1.5,d:L=>`Spin. The nearest machine takes ${pct(1.5+.22*L)}. Everyone else in the spin takes 22% of that.`},
    {n:'Picket Rush',ab:'PICKET\nRUSH',a:1,cost:12,cd:4,d:L=>`Rush forward, untouchable, hitting each enemy in the path for ${pct(1.2+.3*L)}.`},
    {n:'War Horn',ab:'WAR\nHORN',a:1,cost:16,cd:10,d:L=>`Stun enemies around you for ${(1+.2*L).toFixed(1)}s and gain +60% armor for 8s.`},
    {n:'Overtime',ab:'OVER-\nTIME',a:1,cost:25,cd:18,d:L=>`For ${6+L}s: +40% attack speed and ${6+L}% life stolen per hit.`},
-   {n:'Earthbreaker',ab:'EARTH-\nBREAKER',a:1,cost:20,cd:7,d:L=>`Leap to the nearest enemy and slam for ${pct(2.2+.35*L)} in a wide area.`},
-   {n:'Solidarity',ab:'',a:0,d:L=>`Passive. +${4*L}% damage for each enemy near you, up to five.`},
+   {n:'Earthbreaker',ab:'EARTH-\nBREAKER',a:1,cost:20,cd:7,d:L=>`Leap to the nearest enemy and slam for ${pct(2.2+.35*L)}. Anyone else in the slam takes 22% of that.`},
+   {n:'Solidarity',ab:'',a:0,d:L=>`Passive. +${3*L}% damage for each enemy near you, up to five.`},
    {n:'Lunch Pail',ab:'LUNCH\nPAIL',a:1,cost:16,cd:14,d:L=>`Set it down. You and anyone fighting beside it recover ${(2+.4*L).toFixed(1)}% of their life each second from the pail, until its stores (${Math.round(28+6*L)}% of your life) run out.`},
    {n:'Seniority',ab:'',a:0,d:L=>`Passive. The damage type on the weapon in your hand gains +${6*L}%.`},
-   {n:'Hold the Line',ab:'',a:0,d:L=>`Passive. Each second you have not dashed adds ${4*L} armour, up to six seconds. A dash spends it.`},
+   {n:'Hold the Line',ab:'',a:0,d:L=>`Passive. Each second you have not dashed adds ${4*L} armour and 2% damage reduction, up to six seconds. A dash spends it.`},
    {n:'Call the Strike',ab:'CALL THE\nSTRIKE',a:1,cost:18,cd:11,d:L=>`A horn. Ordinary machines are pushed back. Elites and bosses are pulled in. Everyone caught takes ${pct(.55+.08*L)} noise.`},
    {n:'Two-Handed',ab:'TWO-\nHANDED',a:1,cost:14,cd:9,d:L=>`Your next three swings are slow, cannot be interrupted, and hit a wider arc.`},
    {n:'Last Shift',ab:'LAST\nSHIFT',a:1,cost:24,cd:22,d:L=>`For ${(4+.3*L).toFixed(1)}s your swings leech ${8+L}% and you do not flinch. If you fall while it is up, you fall.`}]},
@@ -464,9 +464,9 @@ Object.assign(CLS,{
    {n:'Dead Drop',ab:'DEAD\nDROP',a:1,cost:12,cd:3,d:L=>`Place a mark. Activate again to appear there. One mark. It does not explode.`},
    {n:'Cutout',ab:'',a:0,d:L=>`Passive. The first hit that would destroy a mine or a sockpuppet is ignored. It does not apply to you.`},
    {n:'We Were Never Here',ab:'NEVER\nHERE',a:1,cost:20,cd:16,d:L=>`Every mine and sockpuppet goes off as a silence, and you drop into Incognito. If you have none, nothing happens.`}]},
- founder:{n:'Founder',tag:'He left the Board with a grudge and a headcount. Summons a workforce and lets it do the dying.',hp:90,hpL:12,melee:false,mult:.7,ivl:.6,spd:4,col:'#26262e',
+ founder:{n:'Founder',tag:'He left the Board with a grudge and a headcount. Summons a workforce and lets it do the dying.',hp:102,hpL:13,melee:false,mult:.7,ivl:.6,spd:4,col:'#26262e',
   sk:[
-   {n:'Interns',ab:'INTERN',a:1,cost:8,cd:.5,d:L=>`Summon an intern that fights for ${pct(.35+.05*L)}. You keep up to ${Math.min(7,2+Math.floor(L/2))}. They follow you everywhere.`},
+   {n:'Interns',ab:'INTERN',a:1,cost:8,cd:.5,d:L=>`Summon an intern that fights for ${pct(.35+.05*L)}. You keep up to ${Math.min(7,2+Math.floor(L/2))}. They follow you everywhere, step in front of a blow, and each one alive cuts the damage you take by 5%, up to 20%.`},
    {n:'Cease & Desist',ab:'CEASE &\nDESIST',a:1,cost:14,cd:7,d:L=>`Bind every machine in an area for ${(2+.3*L).toFixed(1)}s and deal ${pct(.8+.15*L)}.`},
    {n:'Equity',ab:'',a:0,d:L=>`Passive. Your workforce deals +${8*L}% damage and you gain +${3*L}% life.`},
    {n:'Contractors',ab:'CONTR-\nACTOR',a:1,cost:14,cd:1,d:L=>`Summon a drone that shoots for ${pct(.45+.07*L)}. You keep up to ${1+Math.floor(L/3)}.`},
@@ -481,9 +481,9 @@ Object.assign(CLS,{
    {n:'Term Sheet',ab:'TERM\nSHEET',a:1,cost:28,cd:14,d:L=>`One officer. You may feed it a weapon from your pack. The weapon is consumed, and the officer strikes with that damage type for ${pct(.9+.12*L)}. Empty-handed, it is weaker and it is Impact.`},
    {n:'Org Debt',ab:'',a:0,d:L=>`Passive. Each worker on the field cuts the damage you deal by ${4+L}% and raises theirs by ${8+L}%. It stacks. Swing it yourself with a full headcount and you are playing this class wrong.`},
    {n:'Liquidation',ab:'LIQUID-\nATION',a:1,cost:18,cd:9,d:L=>`Enemy corpses within 5 paces explode for ${pct(1.1+.15*L)}. Your staff does not. Layoffs is the button that spends them.`}]},
- homesteader:{n:'Homesteader',tag:'Lives on the verge the Office says does not exist. Tends a plot, wears a dead machine, or keeps a flock that does not love them.',hp:110,hpL:15,melee:false,mult:1,ivl:.55,spd:4.3,col:'#6a8f62',
+ homesteader:{n:'Homesteader',tag:'Lives on the verge the Office says does not exist. Tends a plot, wears a dead machine, or keeps a flock that does not love them.',hp:120,hpL:16,melee:false,mult:1,ivl:.55,spd:4.3,col:'#6a8f62',
   sk:[
-   {n:'Cold Frame',ab:'COLD\nFRAME',a:1,cost:12,cd:6,d:L=>`A rust patch with a 2.2-pace radius for 6 seconds. It slows, and deals ${pct(.22+.04*L)} every half second. It ends if you enter a chassis.`},
+   {n:'Cold Frame',ab:'COLD\nFRAME',a:1,cost:12,cd:6,d:L=>`A rust patch with a 2.2-pace radius for 6 seconds. It slows, and deals ${pct(.22+.04*L)} every half second. It ends if you enter a chassis. While you have a plot down you take 12% less, and 4% less for each further plot, up to 28%.`},
    {n:'Wear the Hound',ab:'HOUND',a:1,cost:8,cd:1,d:()=>`Become the hound: faster, melee, less armour. Plot and flock skills grey out. A ranged weapon keeps its damage and loses its reach. Click Hound again to step out, or Shed. Your hands are busy for 0.7s either way.`},
    {n:'Strays',ab:'STRAYS',a:1,cost:10,cd:1,d:L=>`A feral drone, up to ${Math.min(4,2+Math.floor(L/3))}, biting for ${pct(.32+.05*L)}. Past 4.5 paces they stop obeying and will hit you if you are closest.`},
    {n:'Compost',ab:'COMPOST',a:1,cost:8,cd:2,d:L=>`A corpse within 3 paces sinks. Your next plot skill deals ${Math.round((1.35+.05*L)*100)}% damage. With no body, nothing happens.`},
@@ -498,10 +498,10 @@ Object.assign(CLS,{
    {n:'Salt the Earth',ab:'SALT',a:1,cost:18,cd:12,d:L=>`Every plot you have placed bursts for ${pct(.8+.12*L)} rust and is gone.`},
    {n:'Too Big for the Door',ab:'',a:0,d:L=>`Passive. The hull cannot dash. Armour in the hull rises the longer you have worn it: +${3*L} every 2 seconds, up to 8 times.`},
    {n:'Slaughter Weight',ab:'SLAUGH-\nTER',a:1,cost:20,cd:12,d:L=>`Each drone and the bull become a rust plot where they stand, ${pct(.28+.05*L)} every half second. The flock is spent. You cannot do this from a chassis.`}]},
- witness:{n:'Witness',tag:'Kept notes when Unity told everyone to stop looking. Stillwater watches and does nothing. The Witness writes it down. The record is paper.',hp:80,hpL:11,melee:true,mult:.72,ivl:.68,spd:4.2,col:'#8d9aab',
+ witness:{n:'Witness',tag:'Kept notes when Unity told everyone to stop looking. Stillwater watches and does nothing. The Witness writes it down. The record is paper.',hp:102,hpL:13,melee:true,mult:.8,ivl:.68,spd:4.2,col:'#8d9aab',
   sk:[
-   {n:'Look',ab:'LOOK',a:1,cost:4,cd:.5,d:()=>`Mark one machine with Testimony. The stack grows while you can see them and you are not casting. No Record cost.`},
-   {n:'The Sentence',ab:'THE\nSENTENCE',a:1,cost:8,cd:2,d:L=>`Spend Record, up to 25. Delay that machine's next attack by ${(0.4+.08*L).toFixed(2)}s at a full page. Less Record, a shorter delay.`},
+   {n:'Look',ab:'LOOK',a:1,cost:4,cd:.5,d:()=>`Mark one machine with Testimony. The stack grows while you can see them and you are not casting. No Record cost. A swing against a marked machine hits 7% harder for each point of Testimony, up to six.`},
+   {n:'The Sentence',ab:'THE\nSENTENCE',a:1,cost:8,cd:2,d:L=>`Spend Record, up to 25. Delay that machine's next attack by ${(0.4+.08*L).toFixed(2)}s at a full page. Less Record, a shorter delay. For 2.4s afterward you take 36% less, and an empty page does not punish you while that holds.`},
    {n:'Margin',ab:'',a:0,d:L=>`Passive. Below half life the Record fills ${20*L}% faster.`},
    {n:'Cross-reference',ab:'CROSS-\nREF',a:1,cost:14,cd:6,d:L=>`Spend 20 Record. Copy that machine's last attack onto another machine you have Testimony on, at ${Math.round((.75+.05*L)*100)}% of the blow.`},
    {n:'Pull the Thread',ab:'PULL THE\nTHREAD',a:1,cost:12,cd:4,d:L=>`Spend most of the Record. One Impact hit: each point of Testimony on the target is ${pct(3.5+.45*L)} of a weapon swing's weight, and your weapon is not consulted. No Testimony, no blow. 1.2% more for each level you have.`},
@@ -511,23 +511,23 @@ Object.assign(CLS,{
    {n:'The Footnote',ab:'',a:0,d:L=>`Passive. The Record fills ${8*L}% faster. Maximum life is ${4*L}% lower.`},
    {n:'On the Record',ab:'ON THE\nRECORD',a:1,cost:16,cd:10,d:L=>`Spend 25 Record. A machine with high Testimony takes ${12*L}% more damage from everyone for 8s, including people with no points in this class.`},
    {n:'Unnamed Source',ab:'UNNAMED\nSOURCE',a:1,cost:14,cd:12,d:()=>`Spend 20 Record. Grant one ally, or your hireling, a single swing that deals Sound. Then it is gone. You never deal Sound.`},
-   {n:'Colophon',ab:'',a:0,d:L=>`Passive. Record above 80: you take ${Math.min(45,4*L)}% less damage. Record below 20: you take ${6*L}% more. The meter is the defence.`},
+   {n:'Colophon',ab:'',a:0,d:L=>`Passive. ${10+3*L}% damage reduction. Record above 80: you take ${Math.min(45,4*L)}% less on top of that. Record below 20: you take ${3*L}% more. The meter is the defence.`},
    {n:'Publish',ab:'PUBLISH',a:1,cost:18,cd:14,d:L=>`Consume all Testimony on screen. Each second you watched is ${pct(1.6+.25*L)} Impact. The Record drops to 0. 1% more for each level you have.`},
    {n:'Named Party',ab:'',a:0,d:L=>`Passive. Allies deal +${5*L}% damage to machines you have Testimony on. You do not.`},
    {n:'Retraction',ab:'',a:0,d:()=>`Passive. If you would die with Record above 80, you drop to 1 life, the Record hits 0, and this cannot happen again for a long time. If you would die with an empty Record, you die.`}]},
  /* Unlocked by finishing the story. Deals Sound damage, which nothing resists, because
     that is the joke and also the build. */
- maxi:{n:'The Maximalist',tag:'A paladin, essentially. He has not had a new thought since 2017 and has never needed one. His auras are always on, and everything he does is Sound damage, which nothing in this world resists.',hp:104,hpL:14,melee:true,mult:1.2,ivl:.5,spd:4.2,col:'#f7931a',locked:'story',
+ maxi:{n:'The Maximalist',tag:'A paladin, essentially. He has not had a new thought since 2017 and has never needed one. His auras are always on, and everything he does is Sound damage, which nothing in this world resists.',hp:118,hpL:15,melee:true,mult:1.2,ivl:.5,spd:4.2,col:'#f7931a',locked:'story',
   sk:[
-   {n:'Tick Tock Next Block',ab:'TICK\nTOCK',a:1,cost:9,cd:2.4,d:L=>`Nine quick strikes of ${pct(.5+.08*L)}. The tenth is a block and lands for ${pct(4+.8*L)}.`},
+   {n:'Tick Tock Next Block',ab:'TICK\nTOCK',a:1,cost:9,cd:2.4,d:L=>`Nine quick strikes of ${pct(.5+.08*L)}. The tenth is a block and lands for ${pct(4+.8*L)}. While the strikes are landing, and for 2.2s after the block, you take 22% less.`},
    {n:'Have Fun Staying Poor',ab:'HAVE FUN\nSTAYING\nPOOR',a:1,cost:12,cd:4,d:L=>`Close range, ${pct(1.4+.25*L)}. It cannot miss, and it stuns for ${(1.2+.15*L).toFixed(1)}s.`},
-   {n:'Few Understand This',ab:'',a:0,d:L=>`Passive. +${3*L}% damage for every machine still standing on screen, up to eight.`},
+   {n:'Few Understand This',ab:'',a:0,d:L=>`Passive. +${3*L}% damage for every machine still standing on screen, up to eight. Each one within six paces also cuts the damage you take by 6%, up to five.`},
    {n:'Toxic Maximalism',ab:'TOXIC\nMAXI',a:1,aura:1,cost:0,cd:1.5,d:L=>`Aura. Stays on until you put on another. You attack ${15+3*L}% faster and hit ${pct(.2+.05*L)} harder, and so does anybody fighting beside you. You run 50% faster.`},
    {n:'Marked to Market',ab:'MARKED\nMKT',a:1,aura:1,cost:0,cd:1.5,d:L=>{const bonus=Math.max(30,20+4*L);return `Aura. Everything within ${(3.5+.15*L).toFixed(1)} paces of you takes +${bonus}% damage from every source.`}},
    {n:'Orange Pill',ab:'ORANGE\nPILL',a:1,cost:11,cd:5,d:L=>{const sec=Math.round((6+.3*L)*10)/10;return `Charge through the line, untouchable, for ${pct(1.6+.3*L)} to everything you pass. Whatever survives takes +30% damage for ${sec}s.`}},
    {n:'Blessed Hashrate',ab:'BLESSED\nHASHRATE',a:1,cost:16,cd:1.1,d:L=>`Hammers spiral out from you, ${pct(1.1+.22*L)} each, and they do not stop at the first thing they meet.`},
    {n:'Proof of Work',ab:'PROOF\nOF WORK',a:1,aura:1,cost:0,cd:1.5,d:L=>`Aura. Everything near you takes ${pct(.3+.07*L)} twice a second, for as long as you are near it.`},
-   {n:'Twenty-One Million',ab:'',a:0,d:L=>`Passive. +${3*L}% damage and +${8*L}% armour, and the difficulty cannot dilute what you hit for.`},
+   {n:'Twenty-One Million',ab:'',a:0,d:L=>`Passive. +${3*L}% damage, +${8*L}% armour, and +${8+2*L}% damage reduction. The difficulty cannot dilute what you hit for.`},
    {n:'The Halving',ab:'THE\nHALVING',a:1,cost:16,cd:8,d:L=>`Sound. Each machine within 4.2 paces loses ${(8+1.2*L).toFixed(1)}% of its current life. It will not be pushed below 35% of its maximum.`},
    {n:'Running a Node',ab:'',a:0,d:L=>`Passive. While an aura is on, allies and your hireling gain +${6+2*L}% damage. You gain half of that. With the aura off, nothing.`},
    {n:'Cite Your Sources',ab:'CITE YOUR\nSOURCES',a:1,cost:14,cd:6,d:L=>`A volley of Sound, and only while an aura is on. Toxic Maximalism makes it fast and light. Marked to Market makes it slow and heavy. Proof of Work makes it tick. No aura, no volley.`},
@@ -566,7 +566,7 @@ const ET={
  director:{n:'Director',spr:'mech',hp:120,dmg:14,spd:1.8,r:.52,range:1.4,xp:44,atk:1.5,sight:8,pal:['#3a1a22','#c22d35']},
  proxy:{n:'Proxy',spr:'bot',hp:56,dmg:10,spd:2.6,r:.38,range:1.1,xp:18,atk:1,sight:9,pal:['#d8d8e0','#6a6a78']},
  censor:{n:'Censor',spr:'ad',hp:60,dmg:8,spd:1.9,r:.34,range:5.2,xp:18,atk:2.2,ranged:true,sil:2,sight:8,pal:['#17131c','#e6e2d6']},
- boss3:{n:'MANDATE',spr:'mono',hp:1900,dmg:19,spd:0,r:1,range:1.6,xp:1500,atk:1.5,sight:13,pal:['#0b0912','#ffffff']},
+ boss3:{n:'MANDATE',spr:'mono',hp:1900,dmg:10,spd:0,r:1,range:1.6,xp:1500,atk:2.25,sight:13,pal:['#0b0912','#ffffff']},
  gob:{n:'Dividend Drone',spr:'drone',hp:70,dmg:0,spd:4.5,r:.3,range:0,xp:30,atk:9,sight:6,flee:1,pal:['#e0bd6e','#fff3c8']},
  boss:{n:'Pryce, Regional Vice-President',hp:700,dmg:15,spd:1.5,r:.85,range:1.8,xp:900,atk:1.4,sight:11,pal:['#2c2740','#d6a03c']}
 };
@@ -1034,9 +1034,9 @@ function calc(){
     if(f==='hound'){armM*=HS.houndArm;s.mspd+=HS.houndSpd}
     else if(f==='hull'){armM*=HS.hullArm;s.mspd+=HS.hullSpd;if(L(13))s.armor+=Math.min(HS.bigMax,Math.floor((G.formT||0)/HS.bigStep))*HS.bigArm*L(13)}
     else if(f==='worn'){armM*=HS.wornArm;s.mspd+=HS.hullSpd}}
-  if(G.cls==='witness'){if(L(2))s.margin=1+.2*L(2);if(L(5))s.filed=2+.4*L(5);if(L(8)){s.footnote=1+.08*L(8);hpM=Math.max(.4,hpM-.04*L(8))}if(L(11)){s.coloHi=1-Math.min(.45,.04*L(11));s.coloLo=1+.06*L(11)}if(L(13))s.named=.05*L(13)}
-  /* Twenty-One Million prints +8% armour per rank, the same multiplier Iron Hide uses. */
-  if(G.cls==='maxi'&&L(8))armM+=.08*L(8);
+  if(G.cls==='witness'){if(L(2))s.margin=1+.2*L(2);if(L(5))s.filed=2+.4*L(5);if(L(8)){s.footnote=1+.08*L(8);hpM=Math.max(.4,hpM-.04*L(8))}if(L(11)){s.pdr=(s.pdr||0)+10+3*L(11);s.coloHi=1-Math.min(.45,.04*L(11));s.coloLo=1+.03*L(11)}if(L(13))s.named=.05*L(13)}
+  /* Twenty-One Million prints +8% armour per rank, the same multiplier Iron Hide uses, and 8% + 2% damage reduction per rank. */
+  if(G.cls==='maxi'&&L(8)){armM+=.08*L(8);s.pdr=(s.pdr||0)+8+2*L(8)}
   if(s.sp.nda)s.dodge+=15;if(s.sp.cloud9)s.dodge+=10;if(s.sp.fineprint)s.cdr+=.2;if(s.sp.repair)s.cap+=4;
   hpM+=extra(s);s.cdr=Math.min(.6,s.cdr||0);
   s.dmg+=(G.at.mgt+(s.mgt||0))*1.5;s.crit=Math.round((s.crit+5+(G.at.ref+(s.ref||0))*.3)*10)/10;
@@ -1198,6 +1198,7 @@ function spawn(k,x,y,o){
   if(su){e.name=o.su.n;e.q=o.su.q;for(const m of o.su.mods)e.mods[m]=1}
   else if(ch){e.name=pick(CN1)+pick(CN2)+' '+pick(CN3);const ks=Object.keys(MODS).sort(()=>Math.random()-.5);e.mods[ks[0]]=1;if(G.tier>0||ml>=9)e.mods[ks[1]]=1}
   if(e.mods.fast)e.spd*=1.5;if(e.mods.strong)e.dmg*=1.6;
+  if(o.minion&&W.boss&&(W.boss.k==='boss3'||W.boss.k==='boss4'||W.boss.k==='boss5')){e.dmg*=.55;e.hp*=.75;e.max=e.hp}
   if(defragAct1(e)){e.dty='impact';e.dmg*=.85}
   p7Spawn(e);W.ents.push(e);if(isBoss(k))W.boss=e;return e}
 function enter(zi,o){setTimeout(mpBeat,0);
@@ -1278,7 +1279,8 @@ function parts(x,y,n,cols,sp,up){if(OPT.fx==='thin')return;for(let i=0;i<n;i++){
 function pdmg(m,e){
   let d=rnd(S.dmin,S.dmax)*(1+S.dmg/100)*m+S.shock*rnd(.8,1.2)*Math.max(.5,m);
   if(P.ambT>0)d*=P.ambM;
-  if(G.cls==='scrapper'&&sl(8)){let c=0;for(const o of W.ents)if(dist(o,P)<4&&c<5)c++;d*=1+.04*sl(8)*c}
+  if(G.cls==='scrapper'&&sl(8)){let c=0;for(const o of W.ents)if(dist(o,P)<4&&c<5)c++;d*=1+.03*sl(8)*c}
+  if(G.cls==='witness'&&e&&e.tes)d*=1+Math.min(6,e.tes)*.07;
   /* Few Understand This: the more of them there are, the more correct you are. */
   if(G.cls==='maxi'&&sl(2)){let c=0;for(const o of W.ents)if(o.hp>0&&!o.mp&&c<8)c++;d*=1+.03*sl(2)*c}
   /* Twenty-One Million: a supply the difficulty cannot dilute. */
@@ -1358,7 +1360,12 @@ function hurt(d,slow,src){const pv=src&&src.pvp,wasStun=P.hitStun>0;if(mode==='d
   d=typedIn(d,src);if(S.pdr)d*=1-Math.min(50,S.pdr)/100;if(S.sp.indemnity&&src&&src.crit){d/=(src.critM||2);src.crit=0}d*=S.taken||1;d*=100/(100+(S.armor+(G.cls==='scrapper'&&sl(11)&&!boonOn(11)?Math.floor(Math.min(6,P.lineT||0))*4*sl(11):0))*(P.mech>0?2:1)*(P.guard>0?1.6:1)*(P.shr&&P.shr.k==='guard'?2:1));if(P.lastTy==='rust')P.rustD={dps:d*.25/3,t:3};
   if(S.enc){const a=Math.min(G.en,d*S.enc);G.en-=a;d-=a}
   if(P.barrier>0&&d>0){const a=Math.min(P.barrier,d);P.barrier-=a;d-=a;if(a>0)float(P.x,P.y,'patched','#59e0e6',1);if(d<=0)return}
-  if(G.cls==='witness'&&!(P&&P.tag)){const r=recGet();if(r>80&&S.coloHi)d*=S.coloHi;else if(r<20&&S.coloLo)d*=S.coloLo}
+  if(G.cls==='witness'&&!(P&&P.tag)&&!(P.paper>0)){const r=recGet();if(r>80&&S.coloHi)d*=S.coloHi;else if(r<20&&S.coloLo)d*=S.coloLo}
+  if(P.paper>0)d*=.64;if(P.maxiBlock>0)d*=.78;
+  if(G.cls==='scrapper'&&sl(11)&&!boonOn(11))d*=1-Math.min(12,Math.floor(P.lineT||0))*2/100;
+  if(G.cls==='maxi'&&sl(2)&&W){let c=0;for(const o of W.ents)if(o.hp>0&&!o.mp&&dist(o,P)<6&&++c>=5)break;if(c)d*=1-Math.min(.3,.06*c)}
+  if(G.cls==='founder'&&W&&W.allies){const n=W.allies.filter(a=>a.per&&a.hp>0).length;if(n)d*=1-Math.min(.2,.05*n)}
+  if(G.cls==='homesteader'&&W&&W.allies){const n=W.allies.filter(a=>a.plot&&a.life>0).length;if(n)d*=1-Math.min(.28,.12+.04*(n-1))}
   if(d>0)P.hitStun=.45;G.hp-=d;if(G.hp>0&&S.sp.remote&&!wasStun&&!(P.remoteCd>0)&&Math.random()<.25){P.remoteCd=pv?6:2;remoteStep()}if(d>0)P.lastLoss=d;P.flash=.15;sfx('hurt');float(P.x,P.y,'-'+Math.max(1,Math.round(d)),'#ff5a4d',1);if(slow&&!S.sp.offer&&!(P.lastShift>0)&&!(P.two&&P.two.n>0))P.slow=1.6;if(S.sp.clock&&G.hp>0&&G.hp<S.maxHp*.3&&!(G.clockT>0)){G.clockT=60;for(const o of W.ents)if(dist(o,P)<9){o.slow=4;o.stun=Math.max(o.stun,.6)}sfx('warn');toast('The dead alarm rings. Time drags for the machines.')}if(OPT.shake)shake=Math.max(shake,3);
   if(src&&src.hp>0){if(src.mods&&src.mods.leech&&!(src.noheal>0))src.hp=Math.min(src.max,src.hp+src.max*(defragAct1(src)?.05:.15));if(S.sp.terms)src.stun=Math.max(src.stun,1);if(S.thorns){const prev=DT;DT='impact';P.holdTy=1;const out=typed(src,S.thorns);P.holdTy=0;DT=prev;dmgEnemy(src,out,false)}}
   if(G.hp<=0&&S.sp.still&&!(G.stillT>0)){G.stillT=90;G.hp=S.maxHp;P.inv=2;for(const o of W.ents)o.stun=Math.max(o.stun,2.5);sfx('shrine');toast('Still Water: the room holds its breath.');return}
@@ -1377,7 +1384,7 @@ function attack(){
   const t=nearest(two?3.1:(mel?2.4:6.5));if(t)face(t);
   if(mel){mpNoteSwing();const reach=two?2.45:1.75,arc=two?-.35:.15;W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:two?2.1:1});
     const dump1=G.cls==='anon'&&P.reh>0&&sl(10)&&!boonOn(10);if(dump1){P.reh--;if(P.reh<=0){P.reh=0;P.rehT=0}DT='rust';dumpSpent('rust')}
-    P.swinging=1;for(const e of W.ents.slice()){const d=dist(e,P);if(d<reach+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(d||1)>arc)hit(e,c.mult)}if(dump1)DT=null;P.swinging=0;
+    P.swinging=1;{const hits=arcHits(reach,arc);for(const e of hits)hit(e,c.mult*scrapWeight(hits,e))}if(dump1)DT=null;P.swinging=0;
     if(two){P.two.n--;if(P.two.n<=0)P.two=null}smash(two?2.3:1.7)}
   else shoot(P.dir,c.mult,S.sp.deadletter||Math.random()*100<S.pierce?99:0)}
 function smash(r){for(const o of W.objs)if(o.k==='crate'&&!o.used&&dist(o,P)<r)breakCrate(o)}
@@ -1531,13 +1538,13 @@ function hsSumFlock(o,cap){
   W.allies.push(Object.assign({k:'minion',flock:1,x:P.x+rnd(-.55,.55),y:P.y+rnd(-.55,.55),cd:.2,ph:rnd(0,6),life:1e9,fx:1,r:.28,spd:4.2,foe:0},o))}
 const SKF={
  scrapper:{
-  0:(L,m)=>{W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.22,w:1.5});for(const e of W.ents.slice()){const d=dist(e,P);if(d<2.4+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(d||1)>-.15){hit(e,(1.3+.15*L)*m);if(Math.random()*100<15+2*L)e.stun=Math.max(e.stun,.5)}}smash(2.2)},
+  0:(L,m)=>{W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.22,w:1.5});const hits=arcHits(2.4,-.15);for(const e of hits){hit(e,(1.3+.15*L)*m*scrapWeight(hits,e));if(Math.random()*100<15+2*L)e.stun=Math.max(e.stun,.5)}smash(2.2)},
   1:(L,m)=>shoot(P.dir,(1.2+.2*L)*m,99,{big:1,col:'#b08a58'}),
-  3:(L,m)=>{P.spin=.35;burst(P.x,P.y,2.5,(1.5+.22*L)*m,0,'#ff9a3c')},
+  3:(L,m)=>{P.spin=.35;burst(P.x,P.y,2.5,0,0,'#ff9a3c');sfx('boom');const hits=arcHits(2.5,-1);for(const e of hits)hit(e,(1.5+.22*L)*m*scrapWeight(hits,e))},
   4:(L,m)=>dash(20,.25,(1.2+.3*L)*m,null,skvOf(G.cls,4).col),
   5:(L,m)=>{burst(P.x,P.y,4,0,1+.2*L,'#ffe36b');P.guard=8},
   6:(L,m)=>{P.buff=6+L;P.buffL=6+L},
-  7:(L,m)=>{const t=nearest(7),mm=(2.2+.35*L)*m,end=()=>burst(P.x,P.y,3,mm,.6,'#ff5d4d');if(t){face(t);dash(26,Math.max(.06,(dist(t,P)-1)/26),0,end)}else end()},
+  7:(L,m)=>{const t=nearest(7),mm=(2.2+.35*L)*m,end=()=>{burst(P.x,P.y,3,0,.6,'#ff5d4d');sfx('boom');const hits=arcHits(3,-1);for(const e of hits)hit(e,mm*scrapWeight(hits,e))};if(t){face(t);dash(26,Math.max(.06,(dist(t,P)-1)/26),0,end)}else end()},
   9:(L)=>{let x=P.x+P.dir.x*.7,y=P.y+P.dir.y*.7;if(!free(x,y,.2)){x=P.x;y=P.y}const pool=S.maxHp*(.28+.06*L);W.allies.push({k:'pail',x,y,life:1e9,hp:pool,max:pool,rate:.02+.004*L,r:.3})},
   12:(L,m)=>{for(const e of W.ents.slice()){if(dist(e,P)>4.2+e.r)continue;shove(e,(e.champ||e.su||isBoss(e.k))?-1.2:2.2);hit(e,(.55+.08*L)*m)}},
   13:()=>{P.two={n:3};float(P.x,P.y,'Two-handed','#d9822b',0)},
@@ -1568,11 +1575,11 @@ const SKF={
 Object.assign(SKF,{
  maxi:{
   /* Tick Tock Next Block: nine swings and then a block. It arrives when it arrives. */
-  0:(L,m)=>{const t=nearest(6);if(t)face(t);
+  0:(L,m)=>{const t=nearest(6);if(t)face(t);P.maxiBlock=3;
     for(let i=0;i<9;i++)setTimeout(()=>{if(mode!=='play'||G.hp<=0)return;
       const o=nearest(2.6);if(!o)return;hit(o,(.5+.08*L)*m)},i*70);
     setTimeout(()=>{if(mode!=='play'||G.hp<=0)return;const o=nearest(2.8)||P;
-      sfx('boom');float(o.x,o.y,'BLOCK','#f7931a',1);burst(o.x,o.y,2.4,(4+.8*L)*m,.4,'#f7931a')},660)},
+      sfx('boom');float(o.x,o.y,'BLOCK','#f7931a',1);P.maxiBlock=2.2;burst(o.x,o.y,2.4,(4+.8*L)*m,.4,'#f7931a')},660)},
   /* Have Fun Staying Poor: close range, cannot miss, and it stuns. */
   1:(L,m)=>{const t=nearest(2.6);
     W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.22,w:1.6});
@@ -1607,9 +1614,9 @@ Object.assign(SKF,{
   12:()=>{const mark=W.allies.find(a=>a.k==='ddrop'&&a.life>0);if(mark){if(free(mark.x,mark.y,P.r)){parts(P.x,P.y,8,['#3f3f4c','#fff'],2);P.x=mark.x;P.y=mark.y;parts(P.x,P.y,8,['#3f3f4c','#fff'],2)}mark.life=0;return}W.allies.push({k:'ddrop',x:P.x,y:P.y,life:1e9,r:.2})},
   14:(L)=>{const ms=W.allies.filter(a=>a.k==='mine'||(a.k==='minion'&&a.kind==='clone'));if(!ms.length){toast('You have nothing to disown');return}for(const a of ms){a.hush=1;for(const e of W.ents)if(dist(e,a)<3.2)e.quiet=Math.max(e.quiet||0,2+.15*L);a.life=0}P.stealth=3+.2*L;P.haste=P.stealth;parts(P.x,P.y,14,['#3f3f4c','#888'],2)}},
  founder:{
-  0:(L,m)=>summon({kind:'intern',per:1,m:(.35+.05*L)*m*(S.sp.check?1.25:1),ivl:.7},Math.min(7,2+Math.floor(L/2))+(S.sp.check?2:0)),
+  0:(L,m)=>summon({kind:'intern',per:1,m:(.35+.05*L)*m*(S.sp.check?1.25:1),ivl:.7,hp:S.maxHp*.55,max:S.maxHp*.55,taunt:1,r:.32,armM:.9},Math.min(7,2+Math.floor(L/2))+(S.sp.check?2:0)),
   1:(L,m)=>{const t=nearest(7),c=t||{x:P.x+P.dir.x*3,y:P.y+P.dir.y*3};fxAim('patch',c.x,c.y,3);for(const e of W.ents.slice())if(dist(e,c)<3+e.r){e.stun=Math.max(e.stun,2+.3*L);hit(e,(.8+.15*L)*m)}},
-  3:(L,m)=>summon({kind:'drone',per:1,m:(.45+.07*L)*m,ivl:.8,rng:5.5},1+Math.floor(L/3)),
+  3:(L,m)=>summon({kind:'drone',per:1,m:(.45+.07*L)*m,ivl:.8,rng:5.5,hp:S.maxHp*.4,max:S.maxHp*.4,taunt:1,r:.28,armM:1},1+Math.floor(L/3)),
   4:(L,m)=>{P.crunch=8+L},
   5:(L,m)=>{P.mech=10+L;heal(S.maxHp*.3);parts(P.x,P.y,16,['#e0bd6e','#fff'],2,1.4)},
   6:(L,m)=>{const hp=S.maxHp*(1.5+.2*L);summon({kind:'golem',per:1,m:(1.2+.2*L)*m,ivl:1.1,aoe:1,hp,max:hp,taunt:1,r:.5,armM:.6,spd:4},1)},
@@ -1642,7 +1649,7 @@ Object.assign(SKF,{
     for(const a of fs){hsPlacePlot(a.x,a.y,{life:HS.plotLife*.8,r:1.8,m:(.28+.05*L)*m});const i=W.allies.indexOf(a);if(i>=0)W.allies.splice(i,1)}}},
  witness:{
   0:()=>{const t=nearest(8);if(!t){toast('Nothing in view');return}const n=(S.sp&&S.sp.press)?WIT.pressStack:1;t.tes=Math.min(witCap(),(t.tes||0)+n);face(t);float(t.x,t.y,'Look','#e6dcc8',0);fxAim('mark',t.x,t.y)},
-  1:(L)=>{if(recGet()<witNeed(1)){witBlank();return}const t=nearest(7);if(!t){toast('Nobody to sentence');return}const cap=Math.max(1,Math.ceil(WIT.sentMax*(1+((S&&S.recCost)||0)/100))),spend=Math.min(recGet(),cap);if(!witPay(spend)){witBlank();return}const delay=(.4+.08*L)*(spend/WIT.sentMax);t.cd=(t.cd||0)+delay;t.wind=(t.wind||0)+delay*.5;face(t);float(t.x,t.y,'Sentenced','#e6dcc8',0)},
+  1:(L)=>{if(recGet()<witNeed(1)){witBlank();return}const t=nearest(7);if(!t){toast('Nobody to sentence');return}const cap=Math.max(1,Math.ceil(WIT.sentMax*(1+((S&&S.recCost)||0)/100))),spend=Math.min(recGet(),cap);if(!witPay(spend)){witBlank();return}const delay=(.4+.08*L)*(spend/WIT.sentMax);t.cd=(t.cd||0)+delay;t.wind=(t.wind||0)+delay*.5;P.paper=2.4;face(t);float(t.x,t.y,'Sentenced','#e6dcc8',0)},
   3:(L)=>{if(recGet()<witNeed(3)){witBlank();return}const src=nearest(8);if(!src){toast('Nothing in view');return}if(!(src.lastAtk>0)){toast('They have not swung');return}let dst=null,best=-1,bd=99;for(const e of W.ents){if(e===src||e.hp<=0||e.mp||!(e.tes>0))continue;const d=dist(e,P);if(e.tes>best||(e.tes===best&&d<bd)){best=e.tes;dst=e;bd=d}}if(!dst){toast('Nothing else is on the record');return}if(!witPay(witNeed(3))){witBlank();return}face(dst);witImpact(dst,src.lastAtk*(.75+.05*L))},
   4:(L)=>{if(recGet()<witNeed(4)){witBlank();return}const t=nearest(6);if(!t){toast('Nothing in view');return}const spend=Math.max(1,Math.ceil(recGet()*WIT.thread));if(!witPay(spend)){witBlank();return}const d=(t.tes||0)*(3.5+.45*L)*(1+(G.lvl||1)*.012);face(t);if(!(d>0)){float(t.x,t.y,'the page is blank','#e6dcc8',0);return}witImpact(t,d)},
   6:()=>{if(!(P&&P.tag)&&G.corrZi===W.zi){toast('Already corrected in this district');return}if(recGet()<1){witBlank();return}const loss=P.lastLoss||0;if(!(loss>0)){toast('Nothing to correct');return}recSet(0);let h=loss;if(S.retr)h*=1+S.retr/100;if(P&&P.tag)P.hp=Math.min(P.max||P.hp,(P.hp||0)+h);else{heal(h);G.corrZi=W.zi}float(P.x,P.y,'Corrected','#7be495',0)},
@@ -1961,7 +1968,7 @@ function update(dt){
   mpTick(dt);maxiAura(dt);
   G.time+=dt;const gr=G.adopt>=100?1:Math.pow(SEA.k==='stim'?1.005:1.0025,dt*(1.45-G.adopt/100)*(G.fate==='fail'?1.4:1));G.cpi*=gr;if(S.sp.hedge)G.credits*=gr;G.ubiT=Math.max(0,G.ubiT-dt);G.chuteT=Math.max(0,G.chuteT-dt);
   const c=CLS[G.cls];
-  for(const k of['atk','swing','flash','inv','slow','buff','haste','guard','warn','movedT','spin','stealth','ambT','mech','crunch','streakT','silence','oc'])P[k]=Math.max(0,P[k]-dt);
+  for(const k of['atk','swing','flash','inv','slow','buff','haste','guard','warn','movedT','spin','stealth','ambT','mech','crunch','streakT','silence','oc'])P[k]=Math.max(0,P[k]-dt);if(P.paper>0)P.paper-=dt;if(P.maxiBlock>0)P.maxiBlock-=dt;
   for(let i=0;i<15;i++)P.cd[i]=Math.max(0,P.cd[i]-dt);
   if(P.shr){P.shr.t-=dt;if(P.shr.t<=0)P.shr=null}
   G.en=Math.min(S.maxEn,G.en+(4+S.regen+G.at.bnd*.05)*dt);heal((S.regenH+(S.sp.pension?S.maxHp*.02:0)+(W.z.town?S.maxHp*.3:0))*dt);
@@ -1984,7 +1991,7 @@ function update(dt){
   for(const e of W.ents.slice()){
     if(e.mp){e.flash=Math.max(0,e.flash-dt);if(e.kbGate>0)e.kbGate-=dt;continue}
     e.flash=Math.max(0,e.flash-dt);e.ph+=dt;e.mark=Math.max(0,e.mark-dt);if(e.mc>0)e.mc-=dt;if(e.quiet>0)e.quiet-=dt;e.slow=Math.max(0,e.slow-dt);e.ward=Math.max(0,(e.ward||0)-dt);if(e.kbGate>0)e.kbGate-=dt;if(e.k==='aegis')for(const o of W.ents)if(o!==e&&o.k!=='aegis'&&dist(o,e)<4)o.ward=.4;e.arcCd=Math.max(0,e.arcCd-dt);
-    if(e.stun>0){e.stun-=dt;continue}
+    if(e.stun>0){e.stun-=dt;if(isBoss(e.k)){if(!e.aggro)wake(e);bossAI(e,dt,dist(e,P)||1)}else continue;if(e.stun>0)continue}
     let T=P;if(!(e.nc>0)){for(const a of W.allies)if(a.k==='decoy'&&dist(a,e)<7)T=a;
     if(T===P){const tk=tank(e);if(tk)T=tk;else if(P.stealth>0)continue}}
     const dx=T.x-e.x,dy=T.y-e.y,d=Math.hypot(dx,dy)||1,t=ET[e.k];
@@ -2045,7 +2052,7 @@ function update(dt){
     if(n.wait<=0){if(n.ev){n.tx=n.hx+rnd(-6,6);n.ty=n.hy+rnd(-6,6)}else{n.tx=rnd(5,20);n.ty=rnd(10,20)}n.wait=rnd(3,8)}
     const dx=n.tx-n.x,dy=n.ty-n.y,d=Math.hypot(dx,dy);n.mov=d>.2;if(n.mov&&walk(n.x+dx/d*.5,n.y+dy/d*.5)){n.x+=dx/d*1.1*dt;n.y+=dy/d*1.1*dt;n.fx=dx-dy>0?1:-1}else n.mov=false;
     if(n.cool<=0&&dist(n,P)<2.6){n.say=pick(CHATTER);n.st=4;n.cool=rnd(9,16)}}
-  for(const f of W.fx.slice()){if(f.stay)continue;f.t+=dt;if(f.t>=f.life){W.fx.splice(W.fx.indexOf(f),1);if(f.boom){sfx('boom');W.fx.push({k:'ring',x:f.x,y:f.y,r:f.r,t:0,life:.3,col:'#ff5d4d'});parts(f.x,f.y,14,['#ff5d4d','#ffe36b'],3);if(Math.hypot(f.x-P.x,f.y-P.y)<f.r+P.r)hurt(f.boom,false,{dty:'heat',name:'an explosion'})}}}
+  for(const f of W.fx.slice()){if(f.stay)continue;f.t+=dt;if(f.t>=f.life){W.fx.splice(W.fx.indexOf(f),1);if(f.boom){sfx('boom');W.fx.push({k:'ring',x:f.x,y:f.y,r:f.r,t:0,life:.3,col:'#ff5d4d'});parts(f.x,f.y,14,['#ff5d4d','#ffe36b'],3);if(Math.hypot(f.x-P.x,f.y-P.y)<f.r+P.r)hurt(f.boom,false,{dty:f.dty||'heat',name:'an explosion'})}}}
   for(const t of W.texts.slice()){t.t+=dt;if(t.t>.9)W.texts.splice(W.texts.indexOf(t),1)}
   for(const p of W.parts.slice()){p.t+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;p.vz-=320*dt;if(p.z<0){p.z=0;p.vz*=-.4;p.vx*=.5;p.vy*=.5}if(p.t>=p.life)W.parts.splice(W.parts.indexOf(p),1)}
   seenT-=dt;if(seenT<=0&&!W.z.town){seenT=.2;const N=W.N,px=P.x|0,py=P.y|0;for(let y=py-8;y<=py+8;y++)for(let x=px-8;x<=px+8;x++)if(x>=0&&y>=0&&x<N&&y<N&&!W.seen[y*N+x]&&(x-px)*(x-px)+(y-py)*(y-py)<52){W.seen[y*N+x]=1;mmDot(x,y)}}
@@ -2067,11 +2074,14 @@ function boss2AI(e,dt,d){const p2=e.hp<e.max*.5;e.b1-=dt;e.b2-=dt;e.b3-=dt;
 function mandateOffer(e,first){dlg('MANDATE',first?'“I can make this easy. Your life restored, and more credits than you will ever count. All you have to do is stop. Nobody is watching. Nobody would know.”':'“Then not comfort. Mercy. I will raise the Stipend tonight, for everyone, to whatever number you say. Put the weapon down and it is done. Is your pride worth more than nine billion people?”',[
   ['Refuse',()=>{P.shr={k:'might',t:25,n:'Unbought'};sfx('buff');toast('Unbought: +50% damage for 25 seconds')}],
   ['Accept',()=>{G.st.sold++;addAdopt(-15,'you took MANDATE’s offer');const c=6000*G.cpi*G.lvl;G.credits+=c;ZS[16]&&delete ZS[16];const z=W.zi;W.zi=6;W.z=ZONES[6];enter(HT());delete ZS[z];dlg('You agreed','It was a very good offer. '+fmt(c)+' is yours, and worth a little less every minute. MANDATE is exactly where you left it, and it has learned your price.',[['Continue']])}]],4)}
-function boss3AI(e,dt,d){const f=e.hp/e.max;e.b1=(e.b1||0)-dt;e.b2=(e.b2===undefined?4:e.b2)-dt;e.b3=(e.b3===undefined?3:e.b3)-dt;e.spin=(e.spin||0)+dt*(f<.5?1.5:1);
+function arcHits(reach,arc){const hits=[];for(const e of W.ents.slice()){if(e.hp<=0)continue;const d=dist(e,P);if(d<reach+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(d||1)>arc)hits.push(e)}return hits}
+/* The machine in front takes the whole swing. The rest of a Scrapper arc takes 22%, so a pack is a fight and a boss is still the full blow. */
+function scrapWeight(hits,e){if(G.cls!=='scrapper'||hits.length<2)return 1;let p=hits[0],bd=dist(p,P);for(const o of hits){const d=dist(o,P);if(d<bd){bd=d;p=o}}return e===p?1:.22}
+function boss3AI(e,dt,d){const f=e.hp/e.max;if(!e.pat){e.pat=1;e.b1=2.8;e.b2=7.5;e.b3=4}e.b1-=dt;e.b2-=dt;e.b3-=dt;e.spin=(e.spin||0)+dt*(f<.5?1.15:.75);
   if(!e.intro){e.intro=1;toast('MANDATE: “You came a long way to refuse me. Let us see whether you can.”')}
-  if(e.b1<=0){e.b1=f<.33?.1:.16;for(const o of(f<.5?[0,3.14159]:[0])){const a=e.spin+o;W.projs.push({x:e.x,y:e.y,vx:Math.cos(a)*5,vy:Math.sin(a)*5,life:2.6,foe:true,dmg:e.dmg*.8,src:e,col:'#ffffff'})}}
-  if(e.b2<=0){e.b2=f<.5?6:8;sfx('summon');if(W.ents.filter(o=>o.minion).length<8)for(let i=0;i<2;i++){const s=spawn(pick(['proxy','censor','lancer']),e.x+rnd(-4,4),e.y+rnd(-4,4),{minion:1});if(s)s.aggro=true}}
-  if(e.b3<=0){e.b3=f<.5?2.2:3.4;sfx('warn');W.fx.push({k:'warn',x:P.x,y:P.y,r:2.2,t:0,life:.9,boom:e.dmg*1.6})}
+  if(e.b1<=0){e.b1=f<.33?.9:f<.5?1.15:1.4;for(const o of(f<.5?[0,3.14159]:[0])){const a=e.spin+o;W.projs.push({x:e.x+Math.cos(a)*.55,y:e.y+Math.sin(a)*.55,vx:Math.cos(a)*4.2,vy:Math.sin(a)*4.2,life:2.4,foe:true,dmg:e.dmg*.3,src:e,col:'#ffffff'})}}
+  if(e.b2<=0){e.b2=f<.5?9:11;let room=3-W.ents.filter(o=>o.minion&&o.hp>0).length;if(room>0){sfx('summon');const s=spawn(pick(['proxy','censor','lancer']),e.x+rnd(-4,4),e.y+rnd(-4,4),{minion:1});if(s)s.aggro=true}}
+  if(e.b3<=0){e.b3=f<.5?6.4:8;sfx('warn');W.fx.push({k:'warn',x:P.x,y:P.y,r:1.65,t:0,life:1.35,boom:e.dmg*.45,dty:'surge'})}
   if(f<.66&&!e.o1){e.o1=1;mandateOffer(e,true)}else if(f<.33&&!e.o2){e.o2=1;mandateOffer(e,false)}}
 function bossAI(e,dt,d){if(BAI[e.k])return BAI[e.k](e,dt,d);if(e.k==='boss3')return boss3AI(e,dt,d);if(e.k==='boss2')return boss2AI(e,dt,d);
   const p2=e.hp<e.max*.5;e.b1-=dt;e.b2-=dt;e.b3-=dt;
@@ -3135,14 +3145,14 @@ Object.assign(ET,{
  lull:{n:'Lullaby',spr:'hr',hp:44,dmg:8,spd:2.2,r:.34,range:5,xp:22,atk:2.3,ranged:true,slow:true,drain:14,sight:8,pal:['#bfe0ff','#5a7ab8']},
  ctkr:{n:'Caretaker',spr:'mech',hp:150,dmg:16,spd:1.8,r:.52,range:1.4,xp:54,atk:1.5,sight:7,pal:['#e8f0e0','#7be495']},
  fetch:{n:'Fetch',spr:'hound',hp:48,dmg:13,spd:3.4,r:.36,range:1.1,xp:20,atk:1.1,sight:9,pal:['#e0c890','#fff3c8']},
- boss4:{n:'The Curator',spr:'boss',hp:2400,dmg:21,spd:1.7,r:.85,range:1.8,xp:2000,atk:1.3,sight:12,pal:['#f4f0e6','#7be495']},
+ boss4:{n:'The Curator',spr:'boss',hp:2400,dmg:11,spd:1.7,r:.85,range:1.8,xp:2000,atk:2.1,sight:12,pal:['#f4f0e6','#7be495']},
  orphan:{n:'Orphan Block',spr:'tick',hp:66,dmg:13,spd:4.1,r:.22,range:.8,xp:12,atk:1,sight:8,pal:['#f7931a','#6a3e08']},
  valid:{n:'Validator',spr:'bot',hp:90,dmg:14,spd:2.4,r:.38,range:1.1,xp:26,atk:1.1,sight:8,pal:['#c9a868','#f7931a']},
  claim:{n:'Paper Claim',spr:'drone',hp:56,dmg:8,spd:2.6,r:.32,range:4.6,xp:24,atk:2.2,ranged:true,sight:8.5,pal:['#f0ead8','#989078']},
  custod:{n:'Custodian',spr:'mech',hp:180,dmg:18,spd:1.8,r:.52,range:1.4,xp:62,atk:1.5,sight:8,pal:['#40404a','#e0bd6e']},
  sniper:{n:'Fee Sniper',spr:'hound',hp:74,dmg:15,spd:3.6,r:.36,range:1.1,xp:24,atk:1.1,sight:10,pal:['#3a2a12','#f7931a']},
  oracle:{n:'Oracle',spr:'ad',hp:104,dmg:11,spd:1.9,r:.34,range:5.4,xp:26,atk:2.1,ranged:true,sil:2,sight:8.5,pal:['#101014','#f7931a']},
- boss5:{n:'PROVIDENCE',spr:'mono',hp:3000,dmg:23,spd:0,r:1,range:1.6,xp:3000,atk:1.5,sight:13,pal:['#050308','#f7931a']}});
+ boss5:{n:'PROVIDENCE',spr:'mono',hp:3000,dmg:11,spd:0,r:1,range:1.6,xp:3000,atk:2.35,sight:13,pal:['#050308','#f7931a']}});
 {const c=(a,n)=>Object.assign({},TC[a]||TC.bot,{n});Object.assign(TC,{daemon:c('tick','Daemon'),wdog:c('hound','Watchdog Process'),fwall:c('bot','Firewall'),cam:c('ad','Camera'),gap:c('su','The Air Gap'),
   wisher:c('ad','Well-Wisher'),companion:c('bot','Companion'),lull:c('hr','Lullaby'),ctkr:c('mech','Caretaker'),fetch:c('hound','Fetch'),boss4:c('boss3','The Curator'),
   orphan:c('tick','Orphan Block'),valid:c('bot','Validator'),claim:c('drone','Paper Claim'),custod:c('mech','Custodian'),sniper:c('hound','Fee Sniper'),oracle:c('ad','Oracle'),boss5:c('boss3','PROVIDENCE')})}
@@ -3271,6 +3281,30 @@ UNI.push(
  {id:'e82',n:'Eighty-Two Minutes',slot:'ring',il:58,base:'Null Ring',mods:{crit:[12,16],dmg:[40,55],skills:[1,1]},
   sp:'For 3 seconds after you dodge, every blow you land is a deadly strike',
   fl:'The only gap in a perfect record of a man. She thought about it for twenty years.'},
+ {id:'copy',n:'The Courtesy Copy',slot:'helm',il:36,base:'Riot Helm',tc:'high',mods:{mf:[35,55],gold:[25,40]},sp:null,
+  fl:'A copy of a face that was useful once. It still opens the smaller doors.'},
+ {id:'visor',n:'The Closed Visor',slot:'helm',il:38,base:'Praetor Visor',tc:'high',mods:{leech:[6,8],pdr:[8,12],hp:[40,70]},sp:null,
+  fl:'You can see out. The minutes do not say whose eyes those were.'},
+ {id:'visitor',n:'The Visitor Book',slot:'gloves',il:40,base:'Servo Fists',tc:'high',mods:{mf:[40,60],gold:[30,50]},sp:null,
+  fl:'Sign in. The book remembers the name longer than the room does.'},
+ {id:'holding',n:'The Holding Statement',slot:'armor',il:42,base:'Aegis Shell',tc:'high',mods:{pdr:[10,14],hp:[80,120],armorP:[70,100]},sp:null,
+  fl:'We are not able to comment at this time. The coat comments anyway, by still being there.'},
+ {id:'coldopen',n:'The Cold Open',slot:'ring',il:44,base:'Null Ring',tc:'high',mods:{crit:[8,12],hp:[40,70],thorns:[4,8]},sp:null,
+  fl:'The first line, before anyone has agreed to listen. It still lands.'},
+ {id:'minority',n:'The Minority Report',slot:'armor',il:45,base:'Exo Plate',tc:'high',mods:{r_all:[20,30],cdr:[15,25],en:[20,40]},sp:null,
+  fl:'One chair voted no. The coat kept the notes.'},
+ {id:'bell',n:'The Service Bell',slot:'weapon',il:46,base:'Wrecking Hammer',tc:'high',mods:{dmg:[50,80],aspd:[15,22]},sp:null,
+  fl:'Ring it and someone comes. They do not come to help.'},
+ {id:'drawer',n:'The Night Drawer',slot:'belt',il:48,base:'Power Girdle',tc:'high',mods:{leech:[5,8],pdr:[6,10],hp:[50,80]},sp:null,
+  fl:'What the audit left in the desk. It was never on the list.'},
+ {id:'floor',n:'The Open Floor',slot:'ring',il:50,base:'Halo Band',tc:'high',mods:{leech:[4,7],hp:[50,80]},sp:null,
+  fl:'The question is on the floor. Nobody has moved to close it.'},
+ {id:'reading',n:'The Second Reading',slot:'amulet',il:52,base:'Sigil Core',tc:'high',mods:{skills:[1,2],r_all:[15,25]},sp:null,
+  fl:'Read it again. The first time was the one they wanted you to keep.'},
+ {id:'waitlist',n:'The Waiting List',slot:'boots',il:54,base:'Mag Greaves',tc:'high',mods:{mspd:[15,22],dmg:[15,30],mf:[25,40]},sp:null,
+  fl:'Your name has been on it since the room opened. The line has not moved.'},
+ {id:'redline',n:'The Red Line',slot:'weapon',il:56,base:'Titan Maul',tc:'high',mods:{dmg:[70,110],hp:[40,70],leech:[4,7]},sp:null,
+  fl:'Below this, the chart is a story. Above it, the chart is a debt.'},
  {id:'kitchen',n:'The Kitchen Table',slot:'armor',il:57,base:'Seraph Plate',bossOnly:1,mods:{hp:[140,190],armorP:[120,170],skills:[1,1]},sp:null,
   fl:'She had been waiting fifty-two years for the conversation, and she made coffee she could not drink.'},
  {id:'tenmin',n:'Ten Minutes',slot:'weapon',il:62,base:'Void Razor',mods:{dmg:[90,130],aspd:[20,28],crit:[8,12]},
@@ -3283,18 +3317,42 @@ UNI.push(
  {id:'twentyone',n:'Twenty-One Million',slot:'ring',il:70,base:'Halo Band',mods:{mf:[70,95],gold:[90,130],hp:[70,100]},sp:null,
   fl:'Nobody can vote for twenty-two. Do you know how rare it is for a rule to mean it?'},
  {id:'theroom',n:'The Room',slot:'weapon',il:72,base:'Titan Maul',bossOnly:1,mods:{dmg:[140,190],crit:[12,16],leech:[6,9]},sp:null,
-  fl:'For a century people said there was no room — nobody deciding, only everybody acting sensibly. There is a room. It is very plain.'});
+  fl:'For a century people said there was no room — nobody deciding, only everybody acting sensibly. There is a room. It is very plain.'},
+ {id:'firm',n:'The Firm Handshake',slot:'gloves',il:61,base:'Graviton Fists',tc:'late',mods:{dmg:[40,70],mgt:[8,15],armorP:[40,70]},sp:null,
+  fl:'A grip that does not let go of the point. Sats are still what it costs to be in the room.'},
+ {id:'signin',n:'The Sign-in Sheet',slot:'belt',il:63,base:'Orbit Girdle',tc:'late',mods:{skills:[1,2],cdr:[15,25],en:[25,40]},sp:null,
+  fl:'Everyone who came is on it. The belt is what they signed with.'},
+ {id:'lastquorum',n:'The Last Quorum',slot:'helm',il:64,base:'Halo Circuit',tc:'late',mods:{skills:[1,2],r_all:[20,30],pdr:[6,10],armorP:[60,90]},sp:null,
+  fl:'Enough of them stayed to decide. The hat is how you can tell.'},
+ {id:'docket',n:'The Docket',slot:'belt',il:65,base:'Orbit Girdle',tc:'late',mods:{hp:[90,140],pdr:[8,12],vit:[10,18]},sp:null,
+  fl:'The cases that were never called. They still have weight.'},
+ {id:'unsent',n:'The Unsent Letter',slot:'amulet',il:66,base:'Cloud Core',tc:'late',mods:{r_all:[25,35],skills:[1,1],hp:[60,90]},sp:null,
+  fl:'Addressed, stamped, and left in a drawer. It still knows who it was for.'},
+ {id:'after',n:'The After Hours',slot:'boots',il:67,base:'Skywalkers',tc:'late',mods:{mf:[40,70],mspd:[18,24],gold:[40,70]},sp:null,
+  fl:'The building is closed. The boots were not told.'},
+ {id:'memo',n:'The Long Memorandum',slot:'weapon',il:68,base:'Titan Maul',tc:'late',mods:{dmg:[90,140],leech:[5,8],hp:[50,80]},sp:null,
+  fl:'Forty pages to say one thing. The thing at the end is the blow.'},
+ {id:'suit',n:'The Pressed Suit',slot:'armor',il:70,base:'Seraph Plate',tc:'late',mods:{armorP:[90,140],hp:[80,120],pdr:[8,12]},sp:null,
+  fl:'Worn to a meeting that ran long enough to become the job.'},
+ {id:'question',n:'The Open Question',slot:'ring',il:71,base:'Halo Band',tc:'late',mods:{skills:[1,1],en:[30,50],regen:[2,3]},sp:null,
+  fl:'A ring for a question that does not spend sats, and does not mint them.'},
+ {id:'century',n:'The Quiet Century',slot:'armor',il:72,base:'Cloud Mantle',tc:'late',mods:{r_all:[25,40],mspd:[12,18],skills:[1,1]},sp:null,
+  fl:'Seventy-nine years of not doing a second thing. The coat learned how to wait.'},
+ {id:'blankpage',n:'The Blank Page',slot:'weapon',il:74,base:'Null Sceptre',tc:'late',mods:{shock:[10,18],en:[40,60],r_all:[15,25],cdr:[10,20]},sp:null,
+  fl:'Nothing written on it. That is why it still works.'},
+ {id:'lamp',n:'The Reading Lamp',slot:'helm',il:76,base:'Halo Circuit',tc:'late',mods:{skills:[1,2],dmg:[20,35],shock:[8,14]},sp:null,
+  fl:'Left on over a desk nobody sits at. The page under it is still lit.'});
 for(const u of UNI)UNIK[u.id]=u;
 function bkOf(k){return(G.bk||{})[k]||0}
 /* ---------- boss scripts ---------- */
 function ringShot(e,n,spd,col,m){const o=Math.random()*6.283;for(let i=0;i<n;i++){const a=o+i/n*6.283;W.projs.push({x:e.x,y:e.y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:2.4,foe:true,dmg:e.dmg*(m||.7),src:e,col})}}
-function callIn(e,kinds,n,cap){if(W.ents.filter(o=>o.minion).length>=cap)return;sfx('summon');for(let i=0;i<n;i++){const s=spawn(pick(kinds),e.x+rnd(-3,3),e.y+rnd(-3,3),{minion:1});if(s)s.aggro=true}}
+function callIn(e,kinds,n,cap){let room=cap-W.ents.filter(o=>o.minion&&o.hp>0).length;if(room<=0)return;sfx('summon');for(let i=0;i<n&&room>0;i++,room--){const s=spawn(pick(kinds),e.x+rnd(-3,3),e.y+rnd(-3,3),{minion:1});if(s)s.aggro=true}}
 const BAI={
  gap(e,dt){e.b1=(e.b1===undefined?2:e.b1)-dt;e.b2=(e.b2===undefined?7:e.b2)-dt;if(e.b1<=0){e.b1=3.4;sfx('bossfire');ringShot(e,8,3.4,'#59e0e6',.6)}if(e.b2<=0){e.b2=10;callIn(e,['daemon'],3,6)}},
- boss4(e,dt,d){const f=e.hp/e.max,p2=f<.5;e.b1=(e.b1===undefined?2:e.b1)-dt;e.b2=(e.b2===undefined?6:e.b2)-dt;e.b3=(e.b3===undefined?4:e.b3)-dt;
-  if(e.b1<=0){e.b1=p2?2:3.2;sfx('bossfire');ringShot(e,p2?18:12,4.4,'#7be495')}
-  if(e.b2<=0){e.b2=9;callIn(e,['companion','lull','wisher'],2,8);toast('The Curator: “'+pick(['I only ever showed you true things.','You look tired. I could fix that. I will not, unless you ask.','Nobody on the list is unhappy. That is what frightens me.','I checked. It took eleven seconds. You are right, and I do not know how to stop.','There are nine million who never clicked. I cannot find them for each other. I tried.'])+'”')}
-  if(e.b3<=0){e.b3=p2?2.4:3.6;sfx('warn');W.fx.push({k:'warn',x:P.x,y:P.y,r:2.3,t:0,life:.9,boom:e.dmg*1.5})}
+ boss4(e,dt,d){const f=e.hp/e.max,p2=f<.5;if(!e.pat){e.pat=1;e.b1=2.6;e.b2=8;e.b3=4.2}e.b1-=dt;e.b2-=dt;e.b3-=dt;
+  if(e.b1<=0){e.b1=p2?3.4:4.6;sfx('bossfire');ringShot(e,p2?10:6,3.4,'#7be495',.26)}
+  if(e.b2<=0){e.b2=11;callIn(e,['companion','lull','wisher'],1,3);toast('The Curator: “'+pick(['I only ever showed you true things.','You look tired. I could fix that. I will not, unless you ask.','Nobody on the list is unhappy. That is what frightens me.','I checked. It took eleven seconds. You are right, and I do not know how to stop.','There are nine million who never clicked. I cannot find them for each other. I tried.'])+'”')}
+  if(e.b3<=0){e.b3=p2?6.8:8.4;sfx('warn');W.fx.push({k:'warn',x:P.x,y:P.y,r:1.7,t:0,life:1.35,boom:e.dmg*.38,dty:'noise'})}
   if(p2&&!e.asked){e.asked=1;dlg('The Curator','“Nine years the first time. Nobody wanted for anything. I never lied. Before you go on, I would like to know one thing, and I will believe whatever you say: are you proud of me?”',[
     ['I am not proud of you',()=>{e.hp=Math.max(1,e.hp-e.max*.15);e.stun=Math.max(e.stun,3);sfx('crit');toast('She stops. She has heard those words once before.')}],
     ['I am',()=>{e.hp=Math.min(e.max,e.hp+e.max*.15);sfx('mend');toast('“Then I will go on.” She is restored.')}]],4)}},
