@@ -15,10 +15,11 @@
    Town is safe. The arena is not.
 
    What the server is authoritative over: who exists, which game they are in, who is in
-   which party, who is hostile to whom, who is in which district, and the Simulator's wave
-   number. What it is not authoritative over: monsters and damage, which each client
-   simulates for itself. That is a real limitation and MULTIPLAYER.md says so plainly. */
+   which party, who is hostile to whom, who is in which district, the layout seed for each
+   district of that game, and the Simulator's wave number and wave seed. What it is not
+   authoritative over: monsters and damage, which each client simulates for itself. */
 'use strict';
+const crypto = require('crypto');
 const ws = require('./ws');
 const guard = require('./guard');
 const { buildId } = require('./buildid');
@@ -201,11 +202,41 @@ function gameScale(g) {
   };
 }
 
+/* One seed per district, per tier, per redraw. The client draws from it. A fresh
+   ask (a subpoena, the bull field, a tier the table has not seen) mints the next
+   roll so the previous layout stays put for anyone still standing in it. */
+function mapRows(g) {
+  const out = [];
+  if (!g || !g.maps) return out;
+  for (const k in g.maps) out.push(g.maps[k]);
+  return out;
+}
+function mapRecord(g, zi, tier, fresh, tpl) {
+  g.maps = g.maps || {};
+  g.mapRoll = g.mapRoll || {};
+  const base = zi + '/' + tier;
+  if (fresh) g.mapRoll[base] = (g.mapRoll[base] || 0) + 1;
+  const roll = g.mapRoll[base] || 0;
+  const id = base + '/' + roll;
+  let row = g.maps[id];
+  if (!row) {
+    const seed = crypto.randomBytes(4).readUInt32BE(0) || 1;
+    row = { zi, tier, roll, seed, key: 'g:' + g.id + ':' + zi + ':t' + tier + ':r' + roll };
+    g.maps[id] = row;
+  }
+  if (fresh && tpl && typeof tpl === 'object' && !Array.isArray(tpl)) {
+    let s = '';
+    try { s = JSON.stringify(tpl); } catch (e) { s = ''; }
+    if (s && s.length < 700) row.tpl = tpl;
+  }
+  return row;
+}
+
 function joinGame(p, g) {
   if (p.game === g.id) {
     p.awayUntil = 0;
     zoneIndex(p);
-    send(p, 'game', { game: gameInfo(g), you: p.uid, scale: gameScale(g), resumed: 1 });
+    send(p, 'game', { game: gameInfo(g), you: p.uid, scale: gameScale(g), maps: mapRows(g), resumed: 1 });
     const party = partyOf(p);
     if (party) pushParty(party);
     pushRoster(g);
@@ -217,7 +248,7 @@ function joinGame(p, g) {
   g.players.add(p.uid);
   p.game = g.id;
   zoneIndex(p);
-  send(p, 'game', { game: gameInfo(g), you: p.uid, scale: gameScale(g) });
+  send(p, 'game', { game: gameInfo(g), you: p.uid, scale: gameScale(g), maps: mapRows(g) });
   for (const q of gamePlayers(g)) if (q !== p) sys(q, p.name + ' has entered the game.');
   pushRoster(g);
   pushLobby();
@@ -369,7 +400,7 @@ const HANDLERS = {
     const name = clean(m.name, 40).trim() || (p.name + "'s game");
     if ([...games.values()].some(g => g.name.toLowerCase() === name.toLowerCase() && g.players.size)) return sys(p, 'There is already a game by that name.');
     const diff = DIFFS[clean(m.diff, 12)] ? clean(m.diff, 12) : 'normal';
-    const g = { id: 'g' + (gameSeq++), name, diff, host: p.uid, pass: clean(m.pass, 40), players: new Set(), created: Date.now() };
+    const g = { id: 'g' + (gameSeq++), name, diff, host: p.uid, pass: clean(m.pass, 40), players: new Set(), created: Date.now(), maps: {}, mapRoll: {} };
     games.set(g.id, g);
     const err = joinGame(p, g);
     if (err) sys(p, err);
@@ -395,6 +426,22 @@ const HANDLERS = {
   },
 
   'game.leave'(p) { leaveGame(p); pushLobby(); },
+
+  /* The layout of a district. Not the monsters' hit points — those are still each
+     client's — just the seed both clients draw from, and the subpoena template if
+     the district was rolled rather than taken from the book. */
+  map(p, m) {
+    const g = gameOf(p);
+    if (!g) return;
+    const zi = m.zi | 0;
+    if (zi !== m.zi || zi < 0 || zi > 63) return;
+    const tier = Math.max(0, Math.min(30, m.tier | 0));
+    const fresh = m.fresh ? 1 : 0;
+    if (fresh && !rate(p, 'mapfresh', 8, 60000)) return sys(p, 'That district was just redrawn. Give it a moment.');
+    if (!rate(p, 'map', 40, 10000)) return;
+    const row = mapRecord(g, zi, tier, fresh, m.tpl);
+    inGame(g, 'map', row);
+  },
 
   /* ---- being somewhere ---- */
   /* sk, au and sw are stored and forwarded like dir. They are not simulated, and they
@@ -747,7 +794,7 @@ function resume(p, conn) {
   const g = gameOf(p);
   if (g) {
     zoneIndex(p);
-    send(p, 'game', { game: gameInfo(g), you: p.uid, scale: gameScale(g), resumed: 1 });
+    send(p, 'game', { game: gameInfo(g), you: p.uid, scale: gameScale(g), maps: mapRows(g), resumed: 1 });
     const party = partyOf(p);
     if (party) pushParty(party);
     pushRoster(g);

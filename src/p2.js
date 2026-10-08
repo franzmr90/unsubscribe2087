@@ -246,7 +246,7 @@ const unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 function encW(w){return{zi:w.zi,N:w.N,ml:w.ml,tier:w.tier,map:b64(w.map),wh:b64(w.wh),seen:b64(w.seen),leftT:w.leftT,sub:w.sub,suAt:w.suAt,ents:w.ents.filter(e=>!e.mp),objs:w.objs,drops:(w.drops||[]).filter(d=>!(d.it&&d.it.test)),decals:w.decals.slice(-40),portals:w.portals,goal:w.goal,start:w.start}}
 function decW(o){const w=Object.assign({},o);w.map=unb64(o.map);w.wh=unb64(o.wh);w.seen=unb64(o.seen);return w}
 function packSave(G0,zs,cur){const G2=Object.assign({},G0);G2.eq=Object.assign({},G0.eq||{});for(const sl of SLOTS)if(G2.eq[sl]&&G2.eq[sl].test)G2.eq[sl]=null;G2.bag=(G0.bag||[]).filter(it=>!(it&&it.test));G2.stash=(G0.stash||[]).filter(it=>!(it&&it.test));if(G0.merc){G2.merc=Object.assign({},G0.merc);for(const sl of ['weapon','helm','armor'])if(G2.merc[sl]&&G2.merc[sl].test)G2.merc[sl]=null}return{G:G2,zs,cur,opt:OPT,t:Date.now()}}
-function saveObj(){const zs={};for(const k in ZS)zs[k]=encW(ZS[k]);let cur=null;if(W&&P){if(!W.z.town&&!W.z.sim)zs[W.zi]=encW(W);cur={zi:W.zi,x:P.x,y:P.y};if(W.z.sim&&W.sim)cur.sim=W.sim.rush?{rush:1}:{wave:Math.max(1,W.sim.wave|0)}}return packSave(G,zs,cur)}
+function saveObj(){const zs={};for(const k in ZS)if(String(k).indexOf('g:')!==0)zs[k]=encW(ZS[k]);let cur=null;if(W&&P){if(!W.z.town&&!W.z.sim)zs[W.zi]=encW(W);cur={zi:W.zi,x:P.x,y:P.y};if(W.z.sim&&W.sim)cur.sim=W.sim.rush?{rush:1}:{wave:Math.max(1,W.sim.wave|0)}}return packSave(G,zs,cur)}
 function save(force){if(!G)return false;let ok=false;try{localStorage.setItem(skey(SLOT),JSON.stringify(saveObj()));localStorage.setItem(SAVEKEY+'_slot',SLOT);ok=true}catch(e){}
   if(CL&&(force||Date.now()-clAt>10000))cloudSave();return ok||!!CL}
 /* account save: the viewer's own private documents in this page's database, one for the hero and one per district */
@@ -316,12 +316,15 @@ function buildSim(wave,rush){W=blankW(6,30);const N=30;for(let y=4;y<=25;y++)for
 function simTick(dt){const s=W.sim;if(s.rush)return rushTick(dt);if(W.ents.length)return;s.t-=dt;if(s.t>0)return;
   if(s.wave>=1&&!s.paid){G.simBest=Math.max(G.simBest||0,s.wave)}
   s.wave++;s.t=4;const n=s.wave;mpSimWave(n);if(n>1)simChoice(n);W.ml=Math.max(1,G.lvl-1+Math.floor(n/2));W.dyn=dynFor(W.ml);
+  const waveSeed=(typeof mpWaveSeed==='function')?mpWaveSeed(n):null;
+  withMapRng(waveSeed,()=>{
   const pool=['drone','tick'];if(n>=2)pool.push('bot');if(n>=3)pool.push('hound');if(n>=4)pool.push('ad');if(n>=5)pool.push('hr');if(n>=6)pool.push('mech');if(G.act2){if(n>=3)pool.push('lancer','splitter');if(n>=5)pool.push('seer','aegis')}
   const at=()=>{const a=rnd(0,6.283),r=rnd(7,9.5);return[clamp(15+Math.cos(a)*r,5,24.5),clamp(15+Math.sin(a)*r,5,24.5)]};
   const add=(k,o)=>{const[x,y]=at(),e=spawn(k,x,y,o);if(e)e.aggro=true;return e};
   for(let i=Math.min(22,4+Math.floor(n*1.5));i--;)add(pick(pool));
   for(let i=Math.floor(n/3);i--;)add(pick(pool.filter(k=>k!=='tick')),{champ:1});
   if(n%5===0)add(pick(['mech','bot','hr']),{su:{n:'Simulated '+pick(CN1)+pick(CN2),mods:Object.keys(MODS).sort(()=>Math.random()-.5).slice(0,2)}});
+  });
   toast('Wave '+n+(n%5===0?' · a lieutenant joins':''));sfx('warn');$('zone').textContent='The Simulator · Wave '+n;
   if(n>1){heal(S.maxHp*.3);G.en=S.maxEn;addDrop({cr:(3+W.ml*2)*(2+n)*Math.pow(G.cpi,.9)},P.x,P.y);if((n-1)%5===0)dropFrom('chest',P.x,P.y,W.ml)}}
 /* the Humming Fields must always hold Marrow's cage until she is freed, including in districts saved before a fix */
@@ -354,7 +357,7 @@ function genZone(zi){
   const corner=r=>{for(let t=0;t<25;t++){const x=r.x+ri(2,r.w)*(Math.random()<.5?-1:1),y=r.y+ri(2,r.h)*(Math.random()<.5?-1:1);let ok=true;for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++)if(map[(y+j)*N+x+i]!==1)ok=false;if(ok)return[x,y]}return null};
   const put=(r,k,ex)=>{const c=corner(r);return c?solid(k,c[0],c[1],ex):null};
   const L=rooms[n-1];W.goal={x:L.x+.5,y:L.y+.5};
-  const left=MEMOS.map((m,i)=>i).filter(i=>!G.memos.includes(i)).sort(()=>Math.random()-.5).slice(0,2);
+  const left=(mapShared?MEMOS.map((m,i)=>i):MEMOS.map((m,i)=>i).filter(i=>!G.memos.includes(i))).sort(()=>Math.random()-.5).slice(0,2);
   const memoRooms=[ri(1,n-2),ri(2,n-1)],strayRoom=ri(1,n-3),gobRoom=Math.random()<.4?ri(2,n-2):-1;
   for(let i=0;i<n;i++){const r=rooms[i];
     put(r,'lamp');if(Math.random()<.6)put(r,'lamp');
@@ -385,12 +388,25 @@ function spawn(k,x,y,o){
   if(o.minion&&W.boss&&(W.boss.k==='boss3'||W.boss.k==='boss4'||W.boss.k==='boss5')){e.dmg*=.55;e.hp*=.75;e.max=e.hp}
   if(defragAct1(e)){e.dty='impact';e.dmg*=.85}
   p7Spawn(e);W.ents.push(e);if(isBoss(k))W.boss=e;return e}
+function zoneBag(zi){if(typeof mpZoneBag==='function'){const w=mpZoneBag(zi);if(w)return w}const w=ZS[zi];return w&&w.tier===G.tier?w:null}
+function mapPrint(){if(!W||!W.map)return null;let floor=0;for(let i=0;i<W.map.length;i++)if(W.map[i]===1)floor++;
+  const ents=W.ents.map(e=>e.k+'@'+e.x.toFixed(2)+','+e.y.toFixed(2)).sort().join('|');
+  const portals=(W.portals||[]).map(p=>p.kind+'@'+(+p.x).toFixed(2)+','+(+p.y).toFixed(2)).sort().join('|');
+  const res=(W.npcs||[]).filter(n=>n.id==='res').map(n=>(+n.x).toFixed(2)+','+(+n.y).toFixed(2)).sort().join('|');
+  const st=W.start?(+W.start.x).toFixed(2)+','+(+W.start.y).toFixed(2):'';
+  return {zi:W.zi,seed:W.mapSeed||0,floor,start:st,ents,portals,res,shared:W.sharedKey||''}}
 function enter(zi,o){setTimeout(mpBeat,0);
-  o=o||{};if(actBriefHold(zi)){actBriefDeny();return false}const carry=!o.swap&&W&&W.allies?W.allies.filter(a=>a.per):[];if(!o.swap&&W&&!W.z.town&&!W.z.sim){raidLeave();W.leftT=G.time;ZS[W.zi]=W;clDirty[W.zi]=1}
+  o=o||{};if(actBriefHold(zi)){actBriefDeny();return false}
+  const spec=(typeof mpMapSpec==='function')?mpMapSpec(zi,o):null;
+  if(spec&&spec.wait)return false;
+  const carry=!o.swap&&W&&W.allies?W.allies.filter(a=>a.per):[];if(!o.swap&&W&&!W.z.town&&!W.z.sim){raidLeave();W.leftT=G.time;const pk=W.sharedKey||W.zi;ZS[pk]=W;if(!W.sharedKey)clDirty[W.zi]=1}
   const z=ZONES[zi];G.zone=zi;if(!z.sim)G.town=townOf(zi);let old=0;
-  if(z.town)buildTown(zi);else if(z.sim)buildSim(o.wave||1,o.rush);else if(ZS[zi]&&ZS[zi].tier===G.tier&&!o.fresh){W=ZS[zi];old=1;ensureCage();initRuntime()}else genZone(zi);
+  if(spec&&spec.tpl&&typeof mpApplyTpl==='function')mpApplyTpl(zi,spec.tpl);
+  const slot=spec&&spec.key?spec.key:zi;
+  if(z.town)withMapRng(spec&&spec.seed,()=>buildTown(zi));else if(z.sim)buildSim(o.wave||1,o.rush);else if(!o.fresh&&ZS[slot]&&ZS[slot].tier===G.tier){W=ZS[slot];old=1;ensureCage();initRuntime()}else withMapRng(spec&&spec.seed,()=>genZone(zi));
+  if(spec&&spec.key){W.sharedKey=spec.key;W.mapSeed=spec.seed|0}
   let at=o.at||W.start;if(o.from==='next'){const p=W.portals.find(p=>p.kind==='next');at=nearFree(p||W.goal||W.start)}else if(o.from==='exit'&&W.exit)at={x:W.exit.ix,y:W.exit.iy};else if(o.at&&!(o.exact&&walk(at.x,at.y))&&!free(at.x,at.y,.3))at=nearFree(at,1.2);
-  MO=null;HOVER=null;P={x:at.x,y:at.y,r:.32,dir:{x:1,y:0},atk:0,cd:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],silence:0,oc:0,swing:0,flash:0,inv:.5,slow:0,buff:0,haste:0,guard:0,dash:null,volley:null,moving:false,warn:0,movedT:0,spin:0,walkPh:0,shr:null,band:10,hb:0,stealth:0,ambT:0,ambM:1,mech:0,crunch:0,streak:0,streakT:0};BLOOD=[];for(const a of carry){a.x=P.x+rnd(-1,1);a.y=P.y+rnd(-1,1);W.allies.push(a)}spawnMerc();evEnd(1);if(old&&W.leftT!==undefined&&G.time-W.leftT>150&&repop())setTimeout(()=>toast('You were gone a while. The machines have drifted back.'),900);if(!z.town&&!z.sim){placeQuestObjs();ensureNode();}p7Enter();if(!z.town&&!z.sim){for(const k in SQ){const st=sqStep(k);if(st&&st.t==='esc'&&st.zi===zi)escStart(k,SQ[k].steps[G.sq[k].s-1].esc)}}if(z.town)for(const k in sqSkip)delete sqSkip[k];
+  MO=null;HOVER=null;P={x:at.x,y:at.y,r:.32,dir:{x:1,y:0},atk:0,cd:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],silence:0,oc:0,swing:0,flash:0,inv:.5,slow:0,buff:0,haste:0,guard:0,dash:null,volley:null,moving:false,warn:0,movedT:0,spin:0,walkPh:0,shr:null,band:10,hb:0,stealth:0,ambT:0,ambM:1,mech:0,crunch:0,streak:0,streakT:0};BLOOD=[];for(const a of carry){a.x=P.x+rnd(-1,1);a.y=P.y+rnd(-1,1);W.allies.push(a)}spawnMerc();evEnd(1);if(old&&W.leftT!==undefined&&G.time-W.leftT>150&&repop())setTimeout(()=>toast('You were gone a while. The machines have drifted back.'),900);if(!z.town&&!z.sim){placeQuestObjs();withMapRng(spec&&spec.seed,()=>ensureNode());}p7Enter();if(!z.town&&!z.sim){for(const k in SQ){const st=sqStep(k);if(st&&st.t==='esc'&&st.zi===zi)escStart(k,SQ[k].steps[G.sq[k].s-1].esc)}}if(z.town)for(const k in sqSkip)delete sqSkip[k];
   if(z.town){if(G.form){G.form=null;G.formDt=null;G.formT=0;calc()}G.hp=S.maxHp;G.en=S.maxEn}
   else if(!z.sim){const q=z.su?z.su.q:z.bq;if(G.q[q]===0&&!QUESTS[q].brief){G.q[q]=1;toast('New quest: '+QUESTS[q].n);sfx('questnew')}if(q==='q3'&&G.q.q3===1&&!W.ents.some(e=>e.q==='q3'))G.q3open=1;if(q==='q8')ensurePage();if(q==='q12')ensureMinute()
   }
@@ -403,7 +419,7 @@ function enter(zi,o){setTimeout(mpBeat,0);
   else if(act===2&&!G.act2){G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO2,()=>{mode='play';dlg('Act II · The Cloud','Level limit 50, and a fourth skill row opens. The fourth row is yours. Vale does not get a vote on it.',[['Begin']])}),50)}
   else if(!z.town&&!G['in'+zi]&&z.intro){G['in'+zi]=1;dlg(z.n,z.intro,[['Go on']])}
   else toast(z.town?z.n:'Entering '+z.n);
-  if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}seenT=0;music(zoneMusic());save(true)}
+  if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}if(o.after)o.after();seenT=0;music(zoneMusic());save(true)}
 /* A cast portal lives on this character: zone and the exact spot. A new cast forgets the last one, in this district and in any district already saved. */
 function dropCastPortals(){const strip=w=>{if(w&&w.portals)w.portals=w.portals.filter(q=>!q.cast)};strip(W);for(const k in ZS)if(ZS[k]!==W)strip(ZS[k])}
 function openPortal(){if(mode!=='play'||W.z.town)return;if(mpPortalBlocked())return;if(W.z.sim){sfx('portal');enter(HT());return}if(nearest(4)){toast('Machines are too close to open a portal');return}

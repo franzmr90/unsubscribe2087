@@ -6,6 +6,11 @@ const pct=x=>Math.round(x*100)+'%';
 const UNITS=['','K','M','B','T','Qa','Qi','Sx','Sp','Oc','No','Dc'];
 function fmt(n){let i=0;while(n>=1000&&i<UNITS.length-1){n/=1000;i++}return '₡'+(i?n.toFixed(n<10?2:n<100?1:0):Math.floor(n))+UNITS[i]}
 function wpick(pairs){let s=0;for(const p of pairs)s+=p[1];let r=Math.random()*s;for(const p of pairs){r-=p[1];if(r<=0)return p[0]}return pairs[0][0]}
+/* A shared district swaps Math.random only for the draw. Combat, loot and shops outside
+   that draw keep the ordinary one. Solo play never sets a seed, so it is unchanged. */
+let mapShared=false;
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296}}
+function withMapRng(seed,fn){if(seed==null)return fn();const prev=Math.random,was=mapShared;Math.random=mulberry32(seed>>>0);mapShared=true;try{return fn()}finally{Math.random=prev;mapShared=was}}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* ================= classes and skill trees =================
