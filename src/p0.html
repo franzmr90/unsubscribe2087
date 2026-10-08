@@ -60,6 +60,20 @@ button:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
 .sk.off{opacity:.3}.sk.low{border-color:var(--mana)!important;color:#7f9be0!important}
 #bDodge{right:166px;bottom:70px;width:46px;height:46px;border-color:var(--volt)!important;color:var(--volt)!important;font-size:8px!important}
 #bPot{right:154px;bottom:140px;width:52px;height:52px;border-color:var(--blood)!important;color:#ff8d82!important}
+.mslot{pointer-events:auto;width:42px;height:42px;flex:none;margin-top:10px;position:relative;border:2px solid var(--edge);background:radial-gradient(circle at 35% 28%,#3a3044,#120e17 70%);color:var(--gold);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1px #000}
+.mslot canvas{width:26px;height:26px;pointer-events:none}
+.mslot b{position:absolute;left:0;right:0;bottom:0;font:700 7px var(--display);line-height:1;text-align:center;pointer-events:none;text-shadow:0 1px 2px #000;white-space:pre-line}
+.mslot em{position:absolute;inset:0;background:rgba(5,4,9,.72);transform-origin:bottom;transform:scaleY(0);pointer-events:none}
+.mslot i{position:absolute;left:2px;top:0;font:700 8px var(--display);font-style:normal;color:var(--gold);pointer-events:none;text-shadow:0 1px 2px #000}
+#mPick{position:absolute;z-index:4;left:50%;top:78px;transform:translateX(-50%);width:min(440px,94vw);max-height:min(420px,62vh);overflow:auto;background:rgba(11,9,16,.96);border:2px solid var(--edge);box-shadow:0 10px 32px #000;padding:8px 8px 10px}
+#mPick h3{margin:0 0 6px;text-align:center}
+#mPick .grid{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+#mPick button{position:relative;width:52px;height:52px;border:1px solid var(--edge);background:#120e17;color:var(--gold);display:flex;align-items:center;justify-content:center}
+#mPick button canvas{width:28px;height:28px;pointer-events:none}
+#mPick button b{font:700 9px var(--display);pointer-events:none}
+#mPick button u{position:absolute;right:2px;top:0;font:700 8px var(--display);text-decoration:none;color:var(--gold);pointer-events:none}
+#mPick button.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+#mPick .hint{font-size:12px;color:var(--dim);text-align:center;margin:6px 0 0}
 #bAct{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(232px + env(safe-area-inset-bottom,0px));background:linear-gradient(#e0bd6e,#9c7a34);color:#1a1200;font:700 13px var(--display);letter-spacing:.05em;padding:12px 18px;max-width:calc(100% - 32px);border:1px solid #000;box-shadow:0 0 0 2px var(--edge),0 4px 10px #000}
 
 #hud{z-index:1;isolation:isolate}
@@ -294,6 +308,7 @@ textarea{width:100%;height:70px;background:#050409;color:var(--ink);border:1px s
   <canvas id="cv"></canvas>
   <div id="hud" hidden>
     <div id="top">
+      <button id="mL" class="mslot" type="button" title="Left skill"><i>L</i><canvas width="28" height="28"></canvas><em></em><b>ATK</b></button>
       <div class="orb hp"><i id="hpF"></i><span id="hpT"></span></div>
       <div id="mid">
         <div id="zone"></div>
@@ -302,6 +317,7 @@ textarea{width:100%;height:70px;background:#050409;color:var(--ink);border:1px s
         <div id="tbs"><button class="tb" id="bMap">Map</button><button class="tb" id="bRecall">Portal</button><button class="tb" id="bBug" title="Report a problem">Report</button></div>
       </div>
       <div id="enCol"><div class="orb en"><i id="enF"></i><span id="enT"></span></div><div id="rec" hidden><i id="recF"></i></div></div>
+      <button id="mR" class="mslot" type="button" title="Right skill"><i>R</i><canvas width="28" height="28"></canvas><em></em><b></b></button>
     </div>
     <div id="boss" hidden><span id="bossn"></span><div class="bar"><i id="bossb"></i></div></div>
     <div id="buffs"></div>
@@ -320,6 +336,7 @@ textarea{width:100%;height:70px;background:#050409;color:var(--ink);border:1px s
       <button id="bAtk">ATTACK</button>
     </div>
   </div>
+  <div id="mPick" hidden></div>
 
   <div id="title">
     <div class="wrap">
@@ -334,7 +351,7 @@ textarea{width:100%;height:70px;background:#050409;color:var(--ink);border:1px s
       <div class="list" id="clsList"></div>
       <button class="ghost" id="bWalk">Walkthrough</button>
       <button class="ghost" id="bLoadCode">Load from a save code</button>
-      <p style="font-size:13px;text-align:center">Left thumb moves, right thumb fights. Keyboard: WASD, Space, 1 2 3, Q stim, E interact, T portal, Tab map, B menu.</p>
+      <p style="font-size:13px;text-align:center">On a desk the mouse leads: left click walks and strikes, right click casts. The slots beside the orbs pick those skills. F1–F8 bind them. WASD still walks. Space, 1 2 3, Q stim, E interact, T portal, Tab map, I pack, C hero, H help.</p>
     </div>
   </div>
 

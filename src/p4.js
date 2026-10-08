@@ -134,11 +134,11 @@ function endingSlides(){const n=G.unseen||0,sl=[
  sl.push({art:'title',title:'END OF ACT I',text:'The Regional Office has fallen. Above it sit the Senior Vice-Presidents, the Board of Nine, and a mind that has never lost.'});return sl}
 const WALK={
 basics:[
- {art:'wanderer',title:'Your hands',text:'Left thumb on the stick moves you. WASD does the same. The right side is the fight: Attack, three skills, a stim, and Dodge. Space swings. 1, 2 and 3 are the skills. Q is the stim. Shift dodges.'},
- {art:'feed',title:'The swing',text:'Hold Attack and you keep swinging at whatever is nearest. Dodge spends a little energy and steps you out of a telegraph. The orange circles on the ground are the ones to leave. E, or the button that appears, uses whatever you are standing on.'},
- {art:'ticker',title:'What the screen is saying',text:'The left orb is life. The right is energy. Between them: the district, a bar for the next level, and your credits. Credits rot. Menu is the bottom left, and B opens it. Tab is the map. T opens a portal home, and it will not open with a machine in your face.'},
+ {art:'wanderer',title:'Your hands',text:'On a desk, left click walks. Hold it and you keep following the pointer. Left click on a machine walks you in and uses the left skill, which starts as Attack. Right click casts the right skill where you point, and holding it casts again. Shift with a click does either one without a step. The two slots beside the life and energy orbs open the list. Hover a skill there and press F1 to F8 to bind it. Those keys, and the wheel, put a binding on the right slot. The stick and WASD still walk. Attack, three skills, a stim and Dodge stay under the right thumb. Space swings. 1, 2 and 3 are those three skills. Q is the stim. Shift by itself dodges.'},
+ {art:'feed',title:'The swing',text:'Hold Attack, or hold the left button on a machine, and you keep swinging. Dodge spends a little energy and steps you out of a telegraph. The orange circles on the ground are the ones to leave. E, or the button that appears, uses whatever you are standing on. Alt, held, puts a name on everything on the ground.'},
+ {art:'ticker',title:'What the screen is saying',text:'The left orb is life. The right is energy. A skill slot sits outside each one. Between them: the district, a bar for the next level, and your credits. Credits rot. Menu is the bottom left. I or B opens the pack. C opens the hero. H opens this guide. Esc closes a panel. Tab is the map. T opens a portal home, and it will not open with a machine in your face.'},
  {art:'dawn',title:'A level',text:'When the bar fills you gain a level, and points. Hero spends attribute points: Might, Reflex, Vitality, Bandwidth. Skills spends skill points. Rows open as you level. A point you have not spent does nothing.'},
- {art:'cage',title:'Three buttons',text:'You can learn more skills than you can hold. Open Skills and put three on the buttons. The number on a button is its key. Passives live in that same sheet. Only the ones you switch on are real, and in town you can swap them.'},
+ {art:'cage',title:'Three buttons',text:'You can learn more skills than fit on the thumb buttons. The two mouse slots beside the orbs hold what left and right click do. The left slot takes Attack and the blows, throws and shots. Open Skills to put three more on the thumb buttons. The number on a thumb button is its key. Passives live in that same sheet. Only the ones you switch on are real, and in town you can swap them.'},
  {art:'letters',title:'What they drop',text:'Stand on a drop and it comes up, or press the action button. Items wears it. A stronger piece says so before you put it on. Unidentified gear is a guess until Marrow names it for nothing, or Brenda appraises it for a fee.'},
  {art:'board',title:'The work',text:'Quests sit on the left. Tap the line to tuck it away. Gramps, on the bench in Stillwater, is where Act I starts. The Quests tab is the whole list. Story is the same events, written down as you would have heard them.'},
  {art:'skyline',title:'Town',text:'Town fills your life and your energy, and it takes off a shape you were wearing. Brenda sells. Wren sells boxes. Nonce deals in sats. Kestrel hires. The Transit Gate is the way out to a district. In the square, nothing is hunting you.'},
@@ -254,7 +254,7 @@ function hud(){objHud();if(P&&P.dg)setT('dgn',P.dg.n);
   const a=$('bAct');if(actTarget){a.hidden=false;setT('bAct',actTarget.label)}else a.hidden=true;
   if(W.boss&&W.boss.aggro){$('boss').hidden=false;setT('bossn',ET[W.boss.k].n+' · deals '+dealTxt(W.boss.k)+(resTxt(W.boss.k)?' · '+resTxt(W.boss.k):''));$('bossb').style.width=Math.max(0,W.boss.hp/W.boss.max*100)+'%'}
   const bf=[];const au=maxiBuff();if(au)bf.push('\u25c6 '+au);if(P.shr)bf.push(P.shr.n+' '+Math.ceil(P.shr.t)+'s');if(P.buff>0)bf.push('Frenzy '+Math.ceil(P.buff)+'s');if(P.guard>0)bf.push('War Horn '+Math.ceil(P.guard)+'s');if(P.slow>0)bf.push('Slowed');if(G.cls==='homesteader'&&G.form)bf.push(G.form==='hound'?'Hound':G.form==='hull'?'Hull':'Wearing a machine');if(G.god)bf.push('Untouchable (testing)');if(EV)bf.push(EVS[EV.k].n+' '+Math.ceil(EV.t)+'s');if(P.silence>0)bf.push('Silenced');if(W.pow)bf.push('Proof of work '+Math.ceil(W.pow.t)+'s');if(G.tpT>0)bf.push('On credit '+Math.ceil(G.tpT)+'s');if(W.sub)bf.push(W.sub.mods.map(m=>SUBM[m]).join(' · '));if(W.esc)bf.push(W.esc.name+' is with you');if(W.hold)bf.push('Node syncing '+Math.ceil(W.hold.t)+'s');if(P.streakT>0&&P.streak>=3)bf.push('Streak ×'+P.streak+' · +'+Math.round(Math.min(.5,.02*P.streak)*100)+'% experience');
-  setT('buffs',bf.join('\n'));$('buffs').style.whiteSpace='pre'}
+  setT('buffs',bf.join('\n'));$('buffs').style.whiteSpace='pre';paintMouseSlots()}
 
 /* ================= sheets ================= */
 let tab='items',sel=null,sheetCtx={},lastBox=null;
@@ -297,7 +297,7 @@ function mktChart(){const s=mktSeries(),n=s.p.length;if(n<2)return '';
     <text x="${(L+iw).toFixed(1)}" y="${H-3}" fill="${MKC.ink}" font-size="8.5" font-family="Spectral,serif" text-anchor="end">ratio scale · the last few minutes</text>
   </svg></div>`}
 const hireCost=()=>200*G.cpi*(1+G.lvl*.25),reviveCost=()=>cause()?0:80*G.cpi*(1+G.lvl*.25);
-function openSheet(t,c){if(mode!=='play'&&mode!=='title')return;sheetCtx=c||{};sheetCtx.from=mode;if(t==='web')webVB=null;tab=t;sel=null;mode='sheet';$('sheet').hidden=false;$('sheet').scrollTop=0;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;drawSheet()}
+function openSheet(t,c){if(mode!=='play'&&mode!=='title')return;sheetCtx=c||{};sheetCtx.from=mode;if(t==='web')webVB=null;tab=t;sel=null;mode='sheet';$('sheet').hidden=false;$('sheet').scrollTop=0;J.x=J.y=0;atkHeld=false;MO=null;const pk=$('mPick');if(pk)pk.hidden=true;$('stick').hidden=true;drawSheet()}
 function closeSheet(){$('sheet').hidden=true;$('pop').hidden=true;if(sheetCtx.from==='title'){mode='title';return}mode='play';calc();setSkillButtons();save(true)}
 function pscore(s){return{dps:((s.dmin+s.dmax)/2*(1+s.dmg/100)+s.shock)*(1+Math.max(-50,s.aspd)/100)*(1+Math.min(100,s.crit)/100*(s.critM-1)),ehp:s.maxHp*(1+s.armor/100)/(1-Math.min(.6,(s.dodge||0)/100))}}
 /* how much stronger (+) or weaker (-) the hero gets by equipping this, as a fraction; null when it cannot be judged */
@@ -414,6 +414,7 @@ function drawSheet(){
     sdxSeen()}
   if(tab==='party')h+=mpPanel();
   if(tab==='codex'){const mf=Math.round(mfNow());
+    h+=`<h2>Controls</h2><p>On a desk the mouse leads. Left click walks, and left click on a machine walks you into range and uses the left skill, which starts as Attack. Right click casts the right skill at the pointer. Hold either button to keep at it. Shift and a click swings or casts without a step. The two slots beside the orbs open the skill list. The left list is Attack and the blows, throws and shots. F1 through F8, while that list is open and a skill is under the pointer, bind it. Those same keys in a fight put the binding on the right button. The wheel cycles those bindings. WASD and the arrows still walk. Space swings. 1, 2 and 3 are the three thumb skills. Q is the stim. Shift by itself dodges. E uses what you are standing on. T is the portal. Tab is the map. I or B opens the pack. C is the hero. H is this guide. Esc closes a list or a panel. Alt, held, names every item on the ground. There is no second weapon set, and no walk toggle: you run.</p>`;
     h+=`<h2>Drop rates</h2><p>Every kill makes a number of rolls. Each roll lands on nothing, credits, an item or a stim. An item then tests for quality in order: unique, set, rare, magic. Odds below include your <strong>${mf}% magic find</strong>, which helps less and less on the rarer tiers.</p><div class="tw"><table><tr><th>Source</th><th>Rolls</th><th>None</th><th>₡</th><th>Item</th><th>Stim</th><th>Magic</th><th>Rare</th><th>Set</th><th>Unique</th></tr>`;
     for(const k in TC){const t=TC[k],sum=t.no+t.gold+t.item+t.stim,c=qChance(k,mf),p=v=>Math.round(v/sum*100)+'%',o=v=>v>=1?'always':'1 in '+Math.round(1/v);
       h+=`<tr><td>${t.n}</td><td>${t.picks}</td><td>${p(t.no)}</td><td>${p(t.gold)}</td><td>${p(t.item)}</td><td>${p(t.stim)}</td><td class="q1">${o(c.m)}</td><td class="q2">${o(c.r)}</td><td class="q3">${o(c.s)}</td><td class="q4">${o(c.u)}</td></tr>`}
@@ -649,9 +650,77 @@ function showDeath(){const town=ZONES[HT()]||{n:'town'};$('deathP').textContent=
   $('deathS').innerHTML=`<div>Level<b>${G.lvl}</b></div><div>Machines scrapped<b>${G.kills}</b></div><div>Re-onboarding fee<b>${G.hc?'none':fmt(DY.fee)}</b></div>`;$('death').hidden=false}
 $('bRise').onclick=()=>{if(!DY)return;if(G.hc){hcBegin();return}const d=DY;DY=null;$('death').hidden=true;G.hp=S.maxHp;G.en=S.maxEn;mode='play';G.portal={zi:d.zi,x:d.st.x,y:d.st.y};sfx('portal');enter(HT());toast('A portal back stands open in the square')};
 
+let pickSide='R',pickHov=null;
+function paintMouseSlots(){
+  if(!G||!CLS[G.cls])return;
+  ensureMouse();
+  const paint=(id,i,tag)=>{
+    const b=$(id);if(!b)return;
+    const sk=i>=0?CLS[G.cls].sk[i]:null;
+    const name=i<0?'ATK':(sk?sk.ab:'');
+    b.querySelector('b').textContent=name;
+    b.querySelector('i').textContent=tag;
+    b.title=(i<0?'Attack':(sk?sk.n:''))+' ('+(tag==='L'?'left click':'right click')+')';
+    const c=b.querySelector('canvas'),g=c.getContext('2d');
+    g.clearRect(0,0,28,28);
+    if(i>=0)glyph(g,G.cls,i,28);
+    else{g.strokeStyle='#e0bd6e';g.lineWidth=2;g.lineCap='round';g.beginPath();g.moveTo(8,21);g.lineTo(20,8);g.moveTo(8,14);g.lineTo(14,8);g.stroke()}
+    const em=b.querySelector('em');
+    if(i>=0&&P&&P.cd&&sk)em.style.transform='scaleY('+clamp((P.cd[i]||0)/(sk.cd||1),0,1)+')';
+    else em.style.transform='scaleY(0)'};
+  paint('mL',G.mouse.L|0,'L');
+  paint('mR',G.mouse.R|0,'R')}
+function paintPick(){
+  const box=$('mPick');if(!box||box.hidden||!G)return;
+  const sk=CLS[G.cls].sk,ids=[-1];
+  for(let i=0;i<sk.length;i++){if(!learnedAct(i)||i<0)continue;if(pickSide==='L'&&!leftOk(i))continue;ids.push(i)}
+  let html='<h3>'+(pickSide==='L'?'Left click':'Right click')+'</h3><div class="grid">';
+  for(const i of ids){
+    const on=(pickSide==='L'?G.mouse.L:G.mouse.R)===i;
+    let key='';for(let f=0;f<8;f++)if(G.hot[f]===i)key='F'+(f+1);
+    const name=i<0?'Attack':sk[i].n;
+    html+='<button type="button" data-msk="'+i+'" class="'+(on?'on':'')+'" title="'+esc(name)+'">'+(i<0?'<b>ATK</b>':'')+'<u>'+key+'</u></button>'}
+  html+='</div><p class="hint">Click a skill for this button. Hover one and press F1–F8 to bind it. In a fight those keys, and the wheel, fill the right button.</p>';
+  box.innerHTML=html;
+  box.querySelectorAll('button[data-msk]').forEach(b=>{
+    const i=+b.dataset.msk;if(!(i>=0))return;
+    const c=document.createElement('canvas');c.width=28;c.height=28;b.insertBefore(c,b.firstChild);glyph(c.getContext('2d'),G.cls,i,28)})}
+function openPick(side){
+  ensureMouse();
+  const box=$('mPick');if(!box)return;
+  if(!box.hidden&&pickSide===side){box.hidden=true;return}
+  pickSide=side;pickHov=null;box.hidden=false;paintPick()}
+function assignMouse(side,i){
+  ensureMouse();
+  if(i!==-1&&!learnedAct(i))return;
+  if(side==='L'&&!leftOk(i)){toast('That skill belongs on the right button');sfx('err');return}
+  G.mouse[side]=i;paintMouseSlots();paintPick()}
+function uiEats(t){
+  if(!t||!t.closest)return false;
+  if(t.closest('#mPick,#sheet,#pop,#dlg,#scene,#death,#title,#disc,#pad,#bbs,#obj,#bAct,#bSwap,#top'))return true;
+  if(t.id==='cv'||t.id==='stickzone'||t.id==='stick'||t.id==='app'||t.id==='hud')return false;
+  if(t.closest('button,input,textarea,a,label'))return true;
+  return false}
+function worldPointer(e){
+  if(e.pointerType&&e.pointerType!=='mouse')return null;
+  if(uiEats(e.target))return null;
+  if(!W||!P||mode!=='play')return null;
+  const r=cv.getBoundingClientRect();
+  const vx=(e.clientX-r.left)/ZM,vy=(e.clientY-r.top)/ZM;
+  const A=(vx+cx-VW/2)/32,B=(vy+cy-VH*.44)/16;
+  return {x:(A+B)/2,y:(B-A)/2,vx,vy}}
+function syncHover(e){
+  const w=worldPointer(e);
+  if(!w){if(mode!=='play'){HOVER=null;const app=$('app');if(app)app.style.cursor=''}return}
+  HOVER=pickScreen(w.vx,w.vy);
+  const app=$('app'),k=HOVER&&HOVER.kind;
+  if(app)app.style.cursor=k==='foe'?'crosshair':(k==='npc'||k==='use')?'pointer':k==='item'?'grab':'default';
+  if(MBTN.l)setMouseOrder('left',w.x,w.y,!!(e.shiftKey||keys.ShiftLeft||keys.ShiftRight),HOVER,true);
+  else if(MBTN.r)setMouseOrder('right',w.x,w.y,!!(e.shiftKey||keys.ShiftLeft||keys.ShiftRight),HOVER,true)}
+
 /* ================= input ================= */
 const sz=$('stickzone');let sid=null,so={x:0,y:0};
-sz.addEventListener('pointerdown',e=>{if(sid!==null)return;sid=e.pointerId;sz.setPointerCapture(sid);const r=$('app').getBoundingClientRect();so={x:e.clientX,y:e.clientY};const s=$('stick');s.hidden=false;s.style.left=e.clientX-r.left+'px';s.style.top=e.clientY-r.top+'px';$('knob').style.transform=''});
+sz.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')return;if(sid!==null)return;sid=e.pointerId;sz.setPointerCapture(sid);const r=$('app').getBoundingClientRect();so={x:e.clientX,y:e.clientY};const s=$('stick');s.hidden=false;s.style.left=e.clientX-r.left+'px';s.style.top=e.clientY-r.top+'px';$('knob').style.transform=''});
 sz.addEventListener('pointermove',e=>{if(e.pointerId!==sid)return;let dx=e.clientX-so.x,dy=e.clientY-so.y;const l=Math.hypot(dx,dy),m=44;if(l>m){dx*=m/l;dy*=m/l}J.x=dx/m;J.y=dy/m;$('knob').style.transform=`translate(${dx}px,${dy}px)`});
 const send=e=>{if(e.pointerId!==sid)return;sid=null;J.x=J.y=0;$('stick').hidden=true};sz.addEventListener('pointerup',send);sz.addEventListener('pointercancel',send);
 const ba=$('bAtk');ba.addEventListener('pointerdown',e=>{atkHeld=true;ba.setPointerCapture(e.pointerId)});['pointerup','pointercancel'].forEach(n=>ba.addEventListener(n,()=>atkHeld=false));
@@ -663,11 +732,30 @@ $('bMenu').addEventListener('click',()=>openSheet('items',{}));$('bChars').addEv
 $('bMap').addEventListener('click',()=>{OPT.minimap=!OPT.minimap});
 $('bBug').addEventListener('click',bugAsk);
 $('bRecall').addEventListener('click',openPortal);
-addEventListener('keydown',e=>{if(e.target&&e.target.tagName==='TEXTAREA')return;keys[e.code]=true;if(mode==='play'){if(e.code==='Digit1')cast(0);if(e.code==='Digit2')cast(1);if(e.code==='Digit3')cast(2);if(e.code==='KeyQ')stim();if(e.code==='ShiftLeft')dodge();if(e.code==='KeyE'&&actTarget)actTarget.fn();if(e.code==='KeyT')openPortal();if(e.code==='Tab'){OPT.minimap=!OPT.minimap;e.preventDefault()}if(e.code==='KeyB'||e.code==='KeyI')openSheet('items',{});if(e.code==='Space')e.preventDefault()}
+addEventListener('keydown',e=>{if(e.target&&e.target.tagName==='TEXTAREA')return;keys[e.code]=true;if(mode==='play'){if(e.code==='Digit1')cast(0);if(e.code==='Digit2')cast(1);if(e.code==='Digit3')cast(2);if(e.code==='KeyQ')stim();if(e.code==='ShiftLeft')dodge();if(e.code==='KeyE'&&actTarget)actTarget.fn();if(e.code==='KeyT')openPortal();if(e.code==='Tab'){OPT.minimap=!OPT.minimap;e.preventDefault()}if(e.code==='KeyB'||e.code==='KeyI')openSheet('items',{});if(/^F[1-8]$/.test(e.code)){e.preventDefault();const n=+e.code.slice(1)-1;const pk=$('mPick');if(pk&&!pk.hidden&&pickHov!==null&&pickHov!==undefined)hotBind(n,pickHov);else hotUse(n)}if(e.code==='KeyC')openSheet('char',{});if(e.code==='KeyH'){e.preventDefault();const pk=$('mPick');if(pk)pk.hidden=true;playWalk('basics')}if(e.code==='Escape'){const pk=$('mPick');if(pk&&!pk.hidden){pk.hidden=true;e.preventDefault()}}if(e.code==='AltLeft'||e.code==='AltRight')e.preventDefault();if(e.code==='Space')e.preventDefault()}
   else if(mode==='scene'&&SC&&SC.back){if(e.code==='ArrowRight'){$('scNext').click();e.preventDefault()}else if(e.code==='ArrowLeft'){$('scBack').click();e.preventDefault()}}else if(mode==='sheet'){if(tab==='web'&&webKey(e)){}else if(e.code==='Escape'||e.code==='KeyB')closeSheet()}});
 addEventListener('keyup',e=>keys[e.code]=false);
 addEventListener('blur',()=>{for(const k in keys)keys[k]=false;atkHeld=false});
 document.addEventListener('contextmenu',e=>e.preventDefault());
+addEventListener('pointerdown',e=>{
+  if(e.pointerType&&e.pointerType!=='mouse')return;
+  if(e.button!==0&&e.button!==2)return;
+  const w=worldPointer(e);if(!w)return;
+  const pk=$('mPick');if(pk&&!pk.hidden)pk.hidden=true;
+  e.preventDefault();
+  const which=e.button===2?'right':'left';
+  if(which==='left')MBTN.l=1;else MBTN.r=1;
+  HOVER=pickScreen(w.vx,w.vy);
+  setMouseOrder(which,w.x,w.y,!!(e.shiftKey||keys.ShiftLeft||keys.ShiftRight),HOVER,true)},true);
+addEventListener('pointermove',syncHover,true);
+addEventListener('pointerup',e=>{if(e.pointerType&&e.pointerType!=='mouse')return;mouseUp(e.button===2?'right':'left')},true);
+addEventListener('pointercancel',e=>{if(e.button===2)mouseUp('right');else mouseUp('left')});
+addEventListener('wheel',e=>{if(mode!=='play')return;if(e.target&&e.target.closest&&e.target.closest('#sheet,#pop,#dlg,#title'))return;e.preventDefault();cycleRight(e.deltaY>0?1:-1)},{passive:false});
+$('mL').addEventListener('click',e=>{e.stopPropagation();if(mode==='play')openPick('L')});
+$('mR').addEventListener('click',e=>{e.stopPropagation();if(mode==='play')openPick('R')});
+$('mPick').addEventListener('click',e=>{const b=e.target.closest('[data-msk]');if(!b)return;e.stopPropagation();assignMouse(pickSide,+b.dataset.msk)});
+$('mPick').addEventListener('pointermove',e=>{const b=e.target.closest('[data-msk]');pickHov=b?+b.dataset.msk:pickHov});
+
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&G&&mode!=='title')save(true)});
 addEventListener('pagehide',()=>{if(G&&mode!=='title')save(true)});
 
@@ -721,4 +809,4 @@ function showDisc(){const d=$('disc');if(!d)return;
   addEventListener('pointerdown',go,true);addEventListener('keydown',go,true)}
 showDisc();
 cloudInit();
-window.__g={heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},get shop(){return shop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide};
+window.__g={heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},get shop(){return shop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide};
