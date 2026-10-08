@@ -309,7 +309,7 @@ const dPct=d=>(d>0?'+':'−')+Math.min(999,Math.round(Math.abs(d)*100))+'%';
 function cell(it,attr,isSel,slot,d){if(!it)return `<button class="cell empty" ${attr} disabled>${slot?svgIcon(slot):''}</button>`;
   const can=it.id&&G.lvl>=it.req,v=d==null||d===undefined?'':d>.01?(can?' better':' locked'):d<-.01?' worse':'';
   return `<button class="cell q${it.q}${isSel?' sel':''}${it.id?'':' unid'}${v}${it.junk?' junk':''}" ${attr}>${svgIcon(it.slot)}<small>${it.il}</small>${v&&d!=null?`<em>${dPct(d)}</em>`:''}${it.junk?'<u>JUNK</u>':''}</button>`}
-function equipFromBag(i){const it=G.bag[i];if(!it)return false;if(it.charm){toast('Subscriptions run on their own. They are not worn.');return false}if(!it.id){toast('Identify it first');sfx('err');return false}if(G.lvl<it.req){toast('Needs level '+it.req);sfx('err');return false}
+function equipFromBag(i){const it=G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.charm){toast('Subscriptions run on their own. They are not worn.');return false}if(!it.id){toast('Identify it first');sfx('err');return false}if(G.lvl<it.req){toast('Needs level '+it.req);sfx('err');return false}
   const old=G.eq[it.slot];G.eq[it.slot]=it;it.junk=false;G.bag.splice(i,1);if(old)G.bag.push(old);calc();sfx('equip');return true}
 function equipBest(){let n=0;for(const slot of SLOTS){let best=-1,bd=.01;G.bag.forEach((it,i)=>{if(it.slot!==slot||!it.id||G.lvl<it.req)return;const d=itemDelta(it);if(d>bd){bd=d;best=i}});if(best>=0&&equipFromBag(best))n++}return n}
 function gearNow(s){return{lo:Math.round(s.dmin*(1+s.dmg/100)+s.shock),hi:Math.round(s.dmax*(1+s.dmg/100)+s.shock),arm:s.armor}}
@@ -536,7 +536,7 @@ function copyText(s,ta){const fb=()=>{ta.hidden=false;ta.value=s;ta.focus();ta.s
 function loadCode(s){try{const o=JSON.parse(decodeURIComponent(escape(atob(s.trim()))));if(!applySave(o))throw 0;$('sheet').hidden=true;startPlay();save();toast('Save loaded');return true}catch(e){toast('That code could not be read');return false}}
 let tapT=null,tapI=-1,lpT=null,lpFired=false,lpXY=null;
 function longPress(i){const it=G.bag[i];if(!it)return;lpFired=true;clearTimeout(tapT);tapT=null;try{navigator.vibrate&&navigator.vibrate(25)}catch(e){}
-  if(selling()){const v=sellValue(it);G.credits+=v;G.bag.splice(i,1);sfx('coin');toast('Sold '+(it.id?it.name:it.base)+' for '+fmt(v))}else{it.junk=!it.junk;sfx('ui');toast(it.junk?'Marked as junk':'No longer junk')}
+  if(selling()){if(typeof tradeLocked==='function'&&tradeLocked(it))return;const v=sellValue(it);G.credits+=v;G.bag.splice(i,1);sfx('coin');toast('Sold '+(it.id?it.name:it.base)+' for '+fmt(v))}else{it.junk=!it.junk;sfx('ui');toast(it.junk?'Marked as junk':'No longer junk')}
   sel=null;drawSheet()}
 $('sheetIn').addEventListener('pointerdown',e=>{const c=e.target.closest('[data-bag]');lpFired=false;clearTimeout(lpT);if(!c||c.disabled)return;const i=+c.dataset.bag;lpXY=[e.clientX,e.clientY];lpT=setTimeout(()=>longPress(i),480)});
 $('sheetIn').addEventListener('pointermove',e=>{if(lpXY&&Math.hypot(e.clientX-lpXY[0],e.clientY-lpXY[1])>10)clearTimeout(lpT)});
@@ -566,10 +566,10 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
     if(d.do==='junk'){it.junk=!it.junk;sel=null}
     if(d.do==='scrap'||d.do==='reroll'||d.do==='addsoc'){if(craft(it,d.do))sel=null;drawSheet();return}
     if(d.do==='sock'){sel.sock=true;drawSheet();return}
-    if(d.do==='mgive'){const old=G.merc[it.slot];G.merc[it.slot]=it;it.junk=false;G.bag.splice(sel.bag,1);if(old)G.bag.push(old);sel=null;sfx('equip');toast(G.merc.name+' takes the '+it.base)}
+    if(d.do==='mgive'){if(typeof tradeLocked==='function'&&tradeLocked(it))return;const old=G.merc[it.slot];G.merc[it.slot]=it;it.junk=false;G.bag.splice(sel.bag,1);if(old)G.bag.push(old);sel=null;sfx('equip');toast(G.merc.name+' takes the '+it.base)}
     if(d.do==='unequip'){if(G.bag.length>=24)toast('Your pack is full');else{G.bag.push(it);G.eq[sel.eq]=null;sel=null;sfx('equip')}}
-    if(d.do==='sell'){if(it.test){toast('Test gear has no price');return}G.credits+=sellValue(it);G.bag.splice(sel.bag,1);sel=null;sfx('coin')}
-    if(d.do==='drop'){G.bag.splice(sel.bag,1);W.drops.push({x:P.x+1.1,y:P.y+1.1,it,t:1});sel=null}
+    if(d.do==='sell'){if(it.test){toast('Test gear has no price');return}if(typeof tradeLocked==='function'&&tradeLocked(it))return;G.credits+=sellValue(it);G.bag.splice(sel.bag,1);sel=null;sfx('coin')}
+    if(d.do==='drop'){if(typeof tradeLocked==='function'&&tradeLocked(it))return;G.bag.splice(sel.bag,1);W.drops.push({x:P.x+1.1,y:P.y+1.1,it,t:1});sel=null}
     calc()}
   if(d.word){const it=sel.eq?G.eq[sel.eq]:G.bag[sel.bag];socketWord(it,d.word);sel.sock=it.words.length<it.soc&&!it.pw}
   if(d.at){G.at[d.at]++;G.ap--}
@@ -578,7 +578,7 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.mbest){const n=mercBest();toast(n?G.merc.name+' takes '+n+' piece'+(n>1?'s':''):'Nothing spare is better for them. Pieces that would improve you are left alone.');sfx(n?'equip':'ui')}
   if(d.claim!==undefined){const b=G.bounties[+d.claim];if(b&&b.c>=b.n){const m=repRank('anon')>=1?1.25:1;b.sats=Math.ceil(b.sats*m);b.cr*=m;addRep('anon',6);if(repRank('anon')>=3){const w=pick(WK);gotWord(w);toast('A note is pinned to the payment: '+w)}G.sats+=b.sats;/* The board and the paid line print whole credits, so the purse gains that floor. */const pay=Math.floor(b.cr*G.cpi);G.credits+=pay;G.bounties.splice(+d.claim,1);sfx('quest');toast('Paid: '+b.sats+' sats and '+fmt(pay))}}
   if(d.st!==undefined){const it=ACC.stash[+d.st];if(it){if(G.bag.length>=24)toast('Your pack is full');else{ACC.stash.splice(+d.st,1);G.bag.push(it);sfx('equip');accSave();save(true)}}}
-  if(d.sb!==undefined){const it=G.bag[+d.sb];if(it){if(it.test)toast('Test gear does not go in the lockbox');else if(ACC.stash.length>=36)toast('The lockbox is full');else{G.bag.splice(+d.sb,1);it.junk=false;ACC.stash.push(it);sfx('equip');accSave();save(true)}}}
+  if(d.sb!==undefined){const it=G.bag[+d.sb];if(it){if(typeof tradeLocked==='function'&&tradeLocked(it))return;if(it.test)toast('Test gear does not go in the lockbox');else if(ACC.stash.length>=36)toast('The lockbox is full');else{G.bag.splice(+d.sb,1);it.junk=false;ACC.stash.push(it);sfx('equip');accSave();save(true)}}}
   if(d.acc){const k=d.acc;if(k[0]==='s'){const n=k==='si10'?10:k==='siall'?G.sats:k==='so10'?-10:-ACC.sats;G.sats-=n;ACC.sats+=n}else if(k==='coall'){/* The box line prints whole credits, so take-all pays that floor. */const pay=Math.floor(ACC.cr*G.cpi);G.credits+=pay;ACC.cr=0}else{/* Half and all move whole credits. The fee is still a tenth of that. */const a=k==='cihalf'?Math.floor(G.credits/2):Math.floor(G.credits);if(a>0){G.credits-=a;ACC.cr+=a/G.cpi*.9}}sfx('coin');accSave();save(true)}
   if(d.bull){closeSheet();bullStart();return}
   if(d.shiftp){sel={shp:d.shiftp};drawSheet();return}
@@ -775,6 +775,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden&&G&&mode!==
 addEventListener('pagehide',()=>{if(G&&mode!=='title')save(true)});
 
 /* ================= boot ================= */
+{const ln=$('lanNote');if(ln)ln.hidden=!window.__LAN}
 function drawCls(){$('clsList').innerHTML=Object.entries(CLS).filter(([k,c])=>!c.locked||maxiOn()).map(([k,c])=>`<button class="cls" data-cls="${k}"><i style="background:${c.col}"></i><div><b>${c.n}</b><span>${c.tag}</span></div></button>`).join('')}
 drawCls();
 $('clsList').addEventListener('click',e=>{const b=e.target.closest('[data-cls]');if(!b)return;sfx('ui');const go=()=>{$('title').hidden=true;newGame(b.dataset.cls)};const cur=slotInfo(SLOT);if(!cur)return go();dlg('Replace slot '+(SLOT+1)+'?','A new wanderer begins at the very start: level 1, Act I, nothing carried over. It replaces the level '+cur.lvl+' '+CLS[cur.cls].n+' saved in this slot, who cannot be brought back. To keep them, tap an empty slot first.',[['Keep my hero',()=>{mode='title'}],['Start a new '+CLS[b.dataset.cls].n,go]],2)});

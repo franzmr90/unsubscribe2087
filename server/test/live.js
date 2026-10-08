@@ -162,10 +162,72 @@ async function until(page, fn, arg, ms) {
   const far = await until(B, () => __mp.MP.lastCast && __mp.MP.lastCast.n ? __mp.MP.lastCast : null);
   ok('the other client plays one cast', !!far && far.n === 1 && far.k === want.k && far.col === want.col, JSON.stringify(far));
 
-  /* ---- hostility. Declaring is a town act, and it holds the declarer there for ten seconds. ---- */
+  /* ---- auras. Rank travels, and the radius is that rank's radius. ---- */
+  await A.evaluate(() => {
+    __g.G.cls = 'maxi'; __g.P.aura = { i: 4, L: 10, t: 1 }; __g.P.x = 8; __g.P.y = 8; __g.calc();
+  });
+  await B.evaluate(() => { __g.P.x = 8; __g.P.y = 8; });
+  await wait(500);
+  const aura = await until(B, () => {
+    __g.setMode('play');
+    const o = __mp.MP.others[0];
+    if (!o || o.au !== 4 || o.aL !== 10) return null;
+    const junk = { k: 'tick', x: o.x + 4, y: o.y, hp: 10, max: 10, r: .2, mods: {} };
+    __g.W.ents.push(junk);
+    __g.maxiAura(0.016);
+    const mk = junk.mkP || 0;
+    const ix = __g.W.ents.indexOf(junk);
+    if (ix >= 0) __g.W.ents.splice(ix, 1);
+    __g.P.x = o.x + 1; __g.P.y = o.y;
+    o.au = 3; o.aL = 10;
+    __g.maxiAura(0.016);
+    const toxNear = __g.P.toxL;
+    __g.P.x = o.x + 6; __g.P.y = o.y;
+    __g.maxiAura(0.016);
+    const toxFar = __g.P.toxL;
+    o.au = 4; o.aL = 10;
+    return { aL: 10, mk, toxNear, toxFar };
+  });
+  ok('a rank-10 aura reaches four paces and a rank-1 aura would not', !!aura && aura.mk > 0.5, JSON.stringify(aura));
+  ok('toxic maximalism buffs a teammate inside it and not outside it', !!aura && aura.toxNear === 10 && aura.toxFar === 0, JSON.stringify(aura));
+  await A.evaluate(() => { __g.G.cls = 'scrapper'; __g.P.aura = null; __g.calc(); });
+
+  /* ---- a trade, in town, both confirm, one swap ---- */
   await A.evaluate(() => { __g.enter(0); __mp.send('hello', { lvl: __g.G.lvl, cls: __g.G.cls, zi: 0, hp: __g.G.hp, hpm: __g.S.maxHp }); });
   await B.evaluate(() => { __g.enter(0); __mp.send('hello', { lvl: __g.G.lvl, cls: __g.G.cls, zi: 0, hp: __g.G.hp, hpm: __g.S.maxHp }); });
-  await wait(300);
+  await wait(400);
+  await A.evaluate(() => { __g.G.sats = 40; __g.G.bag.push({ slot: 'helm', il: 5, q: 1, base: 'Cap', name: 'Ada Helm', aff: [], id: true, tid: 'helmAda001', val: 10, req: 1 }); });
+  await B.evaluate(() => { __g.G.sats = 7; __g.G.bag.push({ slot: 'ring', il: 5, q: 1, base: 'Ring', name: 'Vale Ring', aff: [], id: true, tid: 'ringVale01', val: 10, req: 1 }); });
+  await A.evaluate(u => __mp.send('trade.ask', { uid: u }), uidB);
+  await B.evaluate(u => __mp.send('trade.accept', { uid: u }), uidA);
+  const table = await until(A, () => __mp.MP.trade && __mp.MP.trade.phase === 'open' ? 1 : 0);
+  ok('a trade window opens', !!table);
+  await A.evaluate(() => __mp.send('trade.offer', { sats: 10, items: [__g.G.bag.find(i => i.tid === 'helmAda001')] }));
+  await B.evaluate(() => __mp.send('trade.offer', { sats: 3, items: [__g.G.bag.find(i => i.tid === 'ringVale01')] }));
+  await wait(200);
+  await A.evaluate(() => __mp.send('trade.confirm', {}));
+  await B.evaluate(() => __mp.send('trade.confirm', {}));
+  const swapped = await until(A, () => {
+    const bag = __g.G.bag.map(i => i.tid);
+    return bag.indexOf('ringVale01') >= 0 && bag.indexOf('helmAda001') < 0 && __g.G.sats === 33 ? 1 : 0;
+  });
+  const swappedB = await until(B, () => {
+    const bag = __g.G.bag.map(i => i.tid);
+    return bag.indexOf('helmAda001') >= 0 && bag.indexOf('ringVale01') < 0 && __g.G.sats === 14 ? 1 : 0;
+  });
+  ok('both confirms swap sats and items once', !!swapped && !!swappedB);
+
+  /* ---- hostility. Declaring is a town act, and it holds the declarer there for ten seconds. ---- */
+  await A.evaluate(() => { __g.enter(1); __mp.send('hello', { lvl: __g.G.lvl, cls: __g.G.cls, zi: 1, hp: __g.G.hp, hpm: __g.S.maxHp }); });
+  await wait(250);
+  await A.evaluate(() => { __g.enter(0); __mp.send('hello', { lvl: __g.G.lvl, cls: __g.G.cls, zi: 0, hp: __g.G.hp, hpm: __g.S.maxHp }); });
+  await B.evaluate(() => { __g.enter(0); __mp.send('hello', { lvl: __g.G.lvl, cls: __g.G.cls, zi: 0, hp: __g.G.hp, hpm: __g.S.maxHp }); });
+  await wait(200);
+  await A.evaluate(u => __mp.send('hostile', { uid: u }), uidB);
+  await wait(250);
+  const tooSoon = await B.evaluate(u => __mp.MP.hostile[u] ? 1 : 0, uidA);
+  ok('hostility does not stick the moment you arrive', !tooSoon);
+  await wait(3200);
   await A.evaluate(u => { __mp.MP.hostile[u] = 1; __mp.send('hostile', { uid: u }); }, uidB);
   const bKnows = await until(B, u => __mp.MP.hostile[u] ? 1 : 0, uidA);
   ok('hostility reaches the other player', !!bKnows);
@@ -192,6 +254,56 @@ async function until(page, fn, arg, ms) {
   const hurt = await until(B, h => __g.G.hp < h ? h - __g.G.hp : 0, hpBefore);
   ok('damage crosses between players', hurt > 0, 'took ' + hurt);
   ok('damage between players is scaled down', hurt > 0 && hurt < 400, 'took ' + hurt + ' of 400');
+
+  const leech = await A.evaluate(() => {
+    const e = __g.W.ents.find(x => x.mp);
+    if (!e) return null;
+    e.hp = 5000; e.max = 5000; e.snd = 0;
+    __g.G.cls = 'courier';
+    __g.P.aura = null; __g.P.toxL = 0; __g.P.e82 = 0; __g.P.ambT = 0; __g.P.shr = null;
+    __g.P.bear = 0; __g.P.book = 0; __g.P.rBook = 0; __g.P.fm = null; __g.P.nodeM = 0; __g.P.buff = 0;
+    __g.calc();
+    __g.S.dmin = 100; __g.S.dmax = 100; __g.S.dmg = 0; __g.S.shock = 0; __g.S.crit = 0; __g.S.critM = 1;
+    __g.S.leech = 100;
+    if (__g.S.sp) __g.S.sp.severance = 0;
+    __g.G.hp = 50; __g.S.maxHp = 100000;
+    const before = __g.G.hp;
+    __g.hit(e, 1, false);
+    return { gain: __g.G.hp - before };
+  });
+  ok('leech against a player stops at 4%', !!leech && leech.gain >= 3.9 && leech.gain < 15, JSON.stringify(leech));
+  await A.evaluate(() => { __g.G.cls = 'scrapper'; __g.calc(); });
+
+  async function braceHit(on) {
+    await B.evaluate(flag => {
+      __g.G.cls = 'scrapper';
+      __g.G.sk = flag ? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0] : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      __g.G.pas = flag ? [11] : [];
+      __g.G.god = false;
+      __g.calc();
+      __g.P.lineT = flag ? 6 : 0;
+      __g.G.en = 0;
+      __g.G.hp = __g.S.maxHp;
+    }, on);
+    await wait(250);
+    const before = await B.evaluate(() => __g.G.hp);
+    await A.evaluate(u => __mp.send('pvp', { uid: u, dmg: 400 }), uidB);
+    return until(B, h => __g.G.hp < h ? +(h - __g.G.hp).toFixed(2) : 0, before);
+  }
+  const open = await braceHit(false);
+  const held = await braceHit(true);
+  ok('hold the line keeps more of a player hit', open > 0 && held > 0 && held < open * 0.85, open + ' open, ' + held + ' braced');
+
+  await B.evaluate(() => { __g.G.god = true; __g.G.hp = __g.S.maxHp; });
+  await wait(250);
+  const liedMax = await B.evaluate(() => __g.S.maxHp);
+  await A.evaluate(u => __mp.send('pvp', { uid: u, dmg: 800 }), uidB);
+  const lied = await until(A, max => {
+    const o = __mp.MP.others[0];
+    return o && o.hp < max - 1 ? o.hp : 0;
+  }, liedMax);
+  await B.evaluate(() => { __g.G.god = false; });
+  ok('a life bar that ignores a player hit is docked', lied > 0 && lied < liedMax - 1, lied + ' of ' + liedMax);
 
   /* ---- town is safe ---- */
   await B.evaluate(() => __g.enter(0));

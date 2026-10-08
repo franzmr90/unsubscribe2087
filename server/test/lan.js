@@ -101,6 +101,11 @@ function start(port, extra) {
     p.on('pageerror', e => errs.push(name + ': ' + e.message));
     await p.goto(base + '/');
     await p.waitForSelector('#accTag', { timeout: 8000 });
+    if (name === 'Ada') {
+      const note = await p.locator('#lanNote').textContent();
+      const hidden = await p.locator('#lanNote').getAttribute('hidden');
+      ok('the title says this computer is hosting', hidden === null && /hosting the game/.test(note || ''), note || '');
+    }
     await p.click('#accTag');
     await p.click('#accTabs button[data-m=up]');
     ok(name + ' is not asked for an invite code', await p.locator('#f_invite').count() === 0);

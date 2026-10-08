@@ -109,7 +109,7 @@ function toxicDmg(L) {
 function maxiAura(dt) {
   if (!G || !P) return;
   dt = dt || 0;
-  P.toxL = 0; P.mkAura = 0; P.mkP = 0;
+  P.toxL = 0; P.mkAura = 0; P.mkP = 0; P.nodeM = 0;
   if (W && W.merc) W.merc.toxL = 0;
   if (W && W.tag) { W.tag.toxL = 0; W.tag.nodeM = 0; }
   if (W && W.allies) for (const a of W.allies) if (a) a.toxL = 0;
@@ -155,6 +155,7 @@ function maxiAura(dt) {
   /* Running a Node. The hireling's shot already multiplies nodeMul. A companion
      swing borrows the companion's class, so the same check never sees the Maximalist. */
   if (G.cls === 'maxi' && sl(10) && P.aura && W.tag && W.tag.hp > 0) W.tag.nodeM = nodeMul(false);
+  if (typeof mpApplyParty === 'function') mpApplyParty();
 }
 
 /* The heads-up display already lists what is running; the aura belongs there. */
@@ -239,6 +240,7 @@ function itemSkillTick(dt){
   if(P.orders>0){P.orders-=dt;if(P.orders<=0){P.orders=0;if(G)calc()}}
   if(P.book>0)P.book=Math.max(0,P.book-dt);
   if(P.bear>0){P.bear-=dt;if(P.bear<=0){P.bear=0;if(G)calc()}}
+  if(P.rLedger>0&&G&&S)heal(3*dt);
   if(P.ledger>0){P.ledger=Math.max(0,P.ledger-dt);if(G&&S)G.en=Math.min(S.maxEn,G.en+8*dt);
     if(W){const mend=a=>{if(a&&a.hp>0&&dist(a,P)<6){if(a.max)a.hp=Math.min(a.max,a.hp+3*dt)}};mend(W.merc);mend(W.tag);for(const a of W.allies)mend(a)}}
   if(P.cd)for(const id of [100,101,102,103,104,105])if(P.cd[id]>0)P.cd[id]=Math.max(0,P.cd[id]-dt);

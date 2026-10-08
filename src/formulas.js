@@ -45,7 +45,19 @@ const FORMULAS = {
   /* One level of experience, the same curve the client uses. */
   xp: { base: 60, pow: 1.75 },
   /* Experience past the act cap, paid in one write on entering Act III. */
-  bank: { levels: 1 }
+  bank: { levels: 1 },
+  /* Maximalist auras, and the item skills that already name a radius.
+     Witness Named Party is not in here: the card says allies, not a circle.
+     Founder Interns and Equity stay on the founder's own body and workforce. */
+  aura: {
+    toxic: { aspd: 15, aspdL: 3, r: 2.2 },
+    mark: { base: 3.5, per: 0.15 },
+    work: { base: 3.2, per: 0.1 },
+    call: { r: 6, life: 0.12, en: 0.08 },
+    book: { r: 6 },
+    ledger: { r: 6 },
+    named: { per: 0.05 }
+  }
 };
 
 /* Fraction of a hit still taken when that class's braces are fully up.
@@ -67,4 +79,30 @@ function xpNext(lvl) {
   return Math.round(FORMULAS.xp.base * Math.pow(l, FORMULAS.xp.pow));
 }
 
-if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep, xpNext };
+/* 1..20, or 0 when the packet is not a rank. */
+function auraRank(v) {
+  const n = +v;
+  const i = n | 0;
+  if (i !== n || i < 1 || i > 20) return 0;
+  return i;
+}
+
+/* The same radii the client draws. Rank 1 is not rank 10. */
+function auraRadius(i, L) {
+  const a = FORMULAS.aura;
+  const r = Math.max(1, Math.min(20, +L || 1));
+  if (i === 4) return a.mark.base + a.mark.per * r;
+  if (i === 7) return a.work.base + a.work.per * r;
+  if (i === 3) return a.toxic.r;
+  return 0;
+}
+
+/* Toxic Maximalism's attack-speed line: 15+3*L percent. */
+function toxicSwingMul(L) {
+  const n = auraRank(L);
+  if (!n) return 1;
+  const t = FORMULAS.aura.toxic;
+  return 1 + (t.aspd + t.aspdL * n) / 100;
+}
+
+if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep, xpNext, auraRank, auraRadius, toxicSwingMul };

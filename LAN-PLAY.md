@@ -28,7 +28,17 @@ This happens the first time, right as the window opens. The game is asking to be
 - **Mac.** A window asks if it should allow incoming connections for `node`. Click **Allow**. If you later find a Firewall switch in System Settings → Network → Firewall, leave it on, and keep Node allowed.
 - **Linux.** If you turned on a firewall yourself (`ufw`, firewalld), allow port 8087 on the local network. A normal home install has nothing extra to click.
 
-If the other person cannot open the link: you are on different Wi-Fi networks, a guest network, or the firewall was blocked. Same Wi-Fi, private network allowed, window still open.
+If the other person cannot open the link, read the next section. Same Wi-Fi, private network allowed, window still open.
+
+## If the other person cannot connect
+
+The link only works for people on the same home network as the computer that is running the launcher. A phone on mobile data, a laptop on a neighbour's Wi-Fi, or a computer at work cannot open it.
+
+- **Wrong network.** Both devices have to be on the same Wi-Fi, or plugged into the same router. A phone that says "Wi-Fi" can still be on a second network the router made, often named with "Guest" or "5G" while the computer is on the other one. Use the same name on both.
+- **Guest Wi-Fi.** Many guest networks block devices from seeing each other. The internet works, and the link still does not. Leave the guest network and use the main one.
+- **A VPN.** If either computer is on a VPN, it is no longer on the home network, even when the Wi-Fi icon looks right. Turn the VPN off on both, then try the link again.
+- **The firewall.** Go back to the section above and allow Node on private networks. A public-network block is the usual Windows mistake.
+- **The window.** If the launcher window was closed, the game is off. Open it again and use the new address it prints. An old address stops working when the window is closed.
 
 ## If a Mac says the launcher cannot be opened
 
