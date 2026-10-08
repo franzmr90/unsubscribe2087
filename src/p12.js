@@ -209,32 +209,33 @@ function blinkCast(){
     last={x:nx,y:ny}}
   if(!last||Math.hypot(last.x-P.x,last.y-P.y)<.2){toast('No room to blink');sfx('err');return false}
   const ox=P.x,oy=P.y;P.x=last.x;P.y=last.y;P.blinkChain=2.4;P.dir={x:ux,y:uy};
-  W.fx.push({k:'ring',x:ox,y:oy,r:.8,t:0,life:.25,col:'#9a6cff'},{k:'ring',x:P.x,y:P.y,r:1.1,t:0,life:.3,col:'#c9b6ff'});
+  W.fx.push({k:'ring',x:ox,y:oy,r:.8,t:0,life:.25,col:'#9a6cff'},{k:'ring',x:P.x,y:P.y,r:1.1,t:0,life:.3,col:'#c9b6ff'});fxTrail(ox,oy,P.x,P.y,'#c9b6ff',.4);
   return true}
 function callCast(){
   P.orders=10;calc();heal(S.maxHp*.12);G.en=Math.min(S.maxEn,G.en+S.maxEn*.08);
   const bump=a=>{if(!a||!(a.hp>0)||dist(a,P)>=6)return;a.orders=10;if(a.max)a.hp=Math.min(a.max,a.hp+(a.max)*.12)};
   if(W&&W.merc)bump(W.merc);if(W&&W.tag)bump(W.tag);if(W)for(const a of W.allies)bump(a);
-  float(P.x,P.y,'Standing','#e6e2d6',0);return true}
+  float(P.x,P.y,'Standing','#e6e2d6',0);W.fx.push({k:'ring',x:P.x,y:P.y,r:6,t:0,life:.4,col:'#e6e2d6'});return true}
 function bookCast(){P.book=8;float(P.x,P.y,'Open','#9a6cff',0);W.fx.push({k:'ring',x:P.x,y:P.y,r:6,t:0,life:.4,col:'#9a6cff'});return true}
-function ledgerCast(){P.ledger=6;float(P.x,P.y,'Quiet','#7be495',0);return true}
+function ledgerCast(){P.ledger=6;float(P.x,P.y,'Quiet','#7be495',0);W.fx.push({k:'ring',x:P.x,y:P.y,r:6,t:0,life:.4,col:'#7be495'});return true}
 function bearCast(){if(P.bear>0){P.bear=0;calc();float(P.x,P.y,'Up','#c9a868',0);return true}P.bear=8;calc();float(P.x,P.y,'Bear','#c9a868',0);return true}
 function chairCast(){summon({kind:'chair',m:.42,ivl:.85,hp:S.maxHp*.55,max:S.maxHp*.55,r:.34,spd:3.4,life:18},1);float(P.x,P.y,'Chair','#e6e2d6',0);return true}
 function castItem(i){
+  castWhy='no';
   const sk=ISK[i];if(!sk||!itemSkillOn(i)||!P)return;
-  if(P.castWait>0){toast('Still casting');sfx('err');return}
-  if(P.silence>0){toast('Silenced');sfx('err');return}
-  if(P.dash)return;
-  if(P.bear>0&&i!==104){toast('The bear does not cast that');sfx('err');return}
-  if((P.cd[i]||0)>0)return;
-  if(i===100&&P.hitStun>0){toast('Still taking the hit');sfx('err');return}
+  if(P.castWait>0){castWhy='wait';toast('Still casting');sfx('err');return}
+  if(P.silence>0){castWhy='wait';toast('Silenced');sfx('err');return}
+  if(P.dash){castWhy='wait';return}
+  if(P.bear>0&&i!==104){castWhy='no';toast('The bear does not cast that');sfx('err');return}
+  if((P.cd[i]||0)>0){castWhy='wait';return}
+  if(i===100&&P.hitStun>0){castWhy='wait';toast('Still taking the hit');sfx('err');return}
   const pay=sk.cost+(i===100&&P.blinkChain>0?12:0);
-  if(G.en<pay){toast('Not enough energy');sfx('err');return}
+  if(G.en<pay){castWhy='wait';toast('Not enough energy');sfx('err');return}
   let ok=false;
   if(i===100)ok=blinkCast();else if(i===101)ok=callCast();else if(i===102)ok=bookCast();else if(i===103)ok=ledgerCast();else if(i===104)ok=bearCast();else if(i===105)ok=chairCast();
-  if(!ok)return;
+  if(!ok){castWhy='no';return}
   if(typeof mpNoteCast==='function')mpNoteCast(i);
-  G.en-=pay;P.cd[i]=sk.cd*(1-Math.min(.6,S.cdr||0));sfx('cast')}
+  G.en-=pay;P.cd[i]=sk.cd*(1-Math.min(.6,S.cdr||0));castWhy='ok';sfx('cast')}
 function itemSkillTick(dt){
   if(!P)return;
   if(P.hitStun>0)P.hitStun=Math.max(0,P.hitStun-dt);if(P.remoteCd>0)P.remoteCd=Math.max(0,P.remoteCd-dt);
