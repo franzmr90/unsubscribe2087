@@ -10,8 +10,8 @@ const outDir=path.resolve(process.argv[4]||path.join('/tmp/gfx-'+label));
 fs.mkdirSync(outDir,{recursive:true});
 
 const SHOTS=[
-  {id:'manifest',cls:'courier',i:12,t:.14},
-  {id:'spark-lance',cls:'hacker',i:1,t:.12},
+  {id:'manifest',cls:'courier',i:12,t:.42},
+  {id:'spark-lance',cls:'hacker',i:1,t:.32},
   {id:'stop-sign',cls:'scrapper',i:0,t:.05},
   {id:'turnstile',cls:'scrapper',i:3,t:.08},
   {id:'war-horn',cls:'scrapper',i:5,t:.08},

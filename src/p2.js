@@ -836,7 +836,7 @@ Object.assign(SKF,{
   9:(L,m)=>{const t=nearest(3.2);if(t){face(t);hit(t,(.7+.1*L)*m)}W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.16,w:1,reach:3.2});if(P.reh>0&&P.rehT>0)P.reh=Math.min(3,P.reh+1);else P.reh=1;P.rehT=3},
   10:(L,m)=>{const n=P.reh||0;if(!n){toast('You have nothing rehearsed');return}P.reh=0;P.rehT=0;anonDump(n,L,m)},
   12:()=>{const mark=W.allies.find(a=>a.k==='ddrop'&&a.life>0);if(mark){if(free(mark.x,mark.y,P.r)){parts(P.x,P.y,8,['#3f3f4c','#fff'],2);P.x=mark.x;P.y=mark.y;parts(P.x,P.y,8,['#3f3f4c','#fff'],2)}mark.life=0;return}W.allies.push({k:'ddrop',x:P.x,y:P.y,life:1e9,r:.2})},
-  14:(L)=>{const ms=W.allies.filter(a=>a.k==='mine'||(a.k==='minion'&&a.kind==='clone'));if(!ms.length){toast('You have nothing to disown');return}for(const a of ms){a.hush=1;for(const e of W.ents)if(dist(e,a)<3.2)e.quiet=Math.max(e.quiet||0,2+.15*L);a.life=0}P.stealth=3+.2*L;P.haste=P.stealth;parts(P.x,P.y,14,['#3f3f4c','#888'],2)}},
+  14:(L)=>{const ms=W.allies.filter(a=>a.k==='mine'||(a.k==='minion'&&a.kind==='clone'));if(!ms.length){toast('You have nothing to disown');return}for(const a of ms){a.hush=1;W.fx.push({k:'ring',x:a.x,y:a.y,r:3.2,t:0,life:.35,col:'#d98cff'});for(const e of W.ents)if(dist(e,a)<3.2)e.quiet=Math.max(e.quiet||0,2+.15*L);a.life=0}P.stealth=3+.2*L;P.haste=P.stealth;parts(P.x,P.y,14,['#3f3f4c','#888'],2)}},
  founder:{
   0:(L,m)=>summon({kind:'intern',per:1,m:(.35+.05*L)*m*(S.sp.check?1.25:1),ivl:.7,hp:S.maxHp*.55,max:S.maxHp*.55,taunt:1,r:.32,armM:.9},Math.min(7,2+Math.floor(L/2))+(S.sp.check?2:0)),
   1:(L,m)=>{const t=nearest(7),c=t||{x:P.x+P.dir.x*3,y:P.y+P.dir.y*3};fxAim('patch',c.x,c.y,3);for(const e of W.ents.slice())if(dist(e,c)<3+e.r){e.stun=Math.max(e.stun,2+.3*L);hit(e,(.8+.15*L)*m)}},
