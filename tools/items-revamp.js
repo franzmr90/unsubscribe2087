@@ -69,8 +69,10 @@ const report=await p.evaluate(()=>{
   }
   const pool=ml=>g.UNI.filter(u=>g.uniqEligible(u,ml));
   const late=pool(70).map(u=>u.id).sort();
-  check('late band is eight uniques', late.length===8, late.join(','));
-  check('Force Majeure is one of those eight', late.includes('majeure'));
+  const lateEight=['majeure','cipher','allhands','indemnity','tenmin','notyourkeys','uncertain','twentyone'];
+  check('late band keeps the original eight and is at least a mid band', late.length>=18&&lateEight.every(id=>late.includes(id)), late.length+' '+late.join(','));
+  check('Force Majeure is in the late band', late.includes('majeure'));
+  check('high band at 50 is at least a mid band', pool(50).length>=18, String(pool(50).length));
   check('the Cipher Mantle shares that band', late.includes('cipher'));
   check('the Coupon is not in the late band', !late.includes('coupon'));
   check('the Night Audit is not in the late band', !late.includes('audit'));
@@ -280,9 +282,9 @@ const report=await p.evaluate(()=>{
   note.push('200 MF champion unique 1/'+any2.toFixed(1)+', Force Majeure 1/'+one2.toFixed(1)+' ('+h.uniq+' uniques, '+h.specN+' bows)');
   check('at 0 magic find a champion unique is about 1 in 35', any0>28&&any0<45, '1/'+any0.toFixed(2));
   check('at 200 magic find a champion unique is about 1 in 17', any2>13&&any2<22, '1/'+any2.toFixed(2));
-  check('Force Majeure is about 1 in 8 of the late uniques', z.specN/z.uniq>1/12&&z.specN/z.uniq<1/7, (z.uniq/z.specN).toFixed(2));
-  check('a specific late unique is about 1 in 280 at 0 MF', one0>190&&one0<420, '1/'+one0.toFixed(1));
-  check('a specific late unique is about 1 in 130 at 200 MF', one2>90&&one2<190, '1/'+one2.toFixed(1));
+  check('Force Majeure is about 1 in 20 of the late uniques', z.specN/z.uniq>1/30&&z.specN/z.uniq<1/16, (z.uniq/z.specN).toFixed(2));
+  check('a specific late unique is about 1 in 760 at 0 MF', one0>600&&one0<980, '1/'+one0.toFixed(1));
+  check('a specific late unique is about 1 in 420 at 200 MF', one2>320&&one2<560, '1/'+one2.toFixed(1));
   check('a level 70 champion did not drop the Coupon', z.coupon===0&&h.coupon===0, z.coupon+'/'+h.coupon);
   seed(7);const low=farm(0,4000,12);
   check('a level 12 champion did not drop the All-Hands', low.hands===0, low.hands);
