@@ -4,7 +4,9 @@
 #   DOMAIN=play.example.com REPO=https://github.com/you/unsubscribe2087 \
 #     bash deploy/setup.sh
 #
-# Idempotent: safe to run again after a change. It never touches DATA_DIR.
+# TURN=1 also installs coturn on this box and fills TURN_URLS when that key is empty.
+# Idempotent: safe to run again after a change. It never touches DATA_DIR, and it
+# does not rotate a TURN password that is already in the env file.
 set -euo pipefail
 
 DOMAIN="${DOMAIN:-}"
@@ -88,6 +90,64 @@ cat > /etc/cron.d/unsubscribe2087 <<CRON
 17 4 * * * root /usr/local/bin/unsubscribe2087-backup >/dev/null 2>&1
 CRON
 
+say "turn"
+if [ "${TURN:-}" = "1" ]; then
+  apt-get install -y -qq coturn
+  if [ -f /etc/default/coturn ]; then
+    if grep -q '^#\?TURNSERVER_ENABLED=' /etc/default/coturn; then
+      sed -i 's/^#\?TURNSERVER_ENABLED=.*/TURNSERVER_ENABLED=1/' /etc/default/coturn
+    else
+      echo 'TURNSERVER_ENABLED=1' >> /etc/default/coturn
+    fi
+  fi
+  turn_user="$(awk -F= '$1=="TURN_USER" && $2!=""{print substr($0, index($0,"=")+1); exit}' "$ENVF" 2>/dev/null || true)"
+  turn_pass="$(awk -F= '$1=="TURN_PASS" && $2!=""{print substr($0, index($0,"=")+1); exit}' "$ENVF" 2>/dev/null || true)"
+  [ -n "$turn_user" ] || turn_user=unsub
+  [ -n "$turn_pass" ] || turn_pass="$(openssl rand -hex 16)"
+  cat > /etc/turnserver.conf <<EOF
+listening-port=3478
+fingerprint
+lt-cred-mech
+realm=${DOMAIN}
+user=${turn_user}:${turn_pass}
+no-cli
+no-tls
+no-dtls
+min-port=49160
+max-port=49200
+EOF
+  systemctl enable coturn
+  systemctl restart coturn
+  urls_set=0
+  if [ -f "$ENVF" ] && awk -F= '$1=="TURN_URLS" && $2!=""{found=1} END{exit !found}' "$ENVF"; then
+    urls_set=1
+  fi
+  if [ "$urls_set" = 0 ]; then
+    tmpenv="$(mktemp)"
+    awk -v url="turn:${DOMAIN}:3478" -v user="$turn_user" -v pass="$turn_pass" '
+      BEGIN { u=0; p=0; l=0 }
+      $0 ~ /^TURN_URLS=/ { print "TURN_URLS=" url; l=1; next }
+      $0 ~ /^TURN_USER=/ { print "TURN_USER=" user; u=1; next }
+      $0 ~ /^TURN_PASS=/ { print "TURN_PASS=" pass; p=1; next }
+      { print }
+      END {
+        if (!l) print "TURN_URLS=" url
+        if (!u) print "TURN_USER=" user
+        if (!p) print "TURN_PASS=" pass
+      }
+    ' "$ENVF" > "$tmpenv"
+    cat "$tmpenv" > "$ENVF"
+    rm -f "$tmpenv"
+    chmod 600 "$ENVF"
+    echo "wrote TURN_URLS=turn:${DOMAIN}:3478 into $ENVF"
+  else
+    echo "TURN_URLS already set, left $ENVF alone"
+  fi
+  echo "coturn on 3478, relay udp 49160-49200. Open those ports."
+else
+  echo "TURN not requested. Voice stays on public STUN. Re-run with TURN=1 for coturn."
+fi
+
 say "services"
 systemctl daemon-reload
 systemctl enable --now unsubscribe2087
@@ -110,6 +170,12 @@ else
   echo "bootstrap invite (25 uses): $bootstrap"
 fi
 
+if [ "${TURN:-}" = "1" ]; then
+  turn_line="5. coturn is installed. Open udp/tcp 3478 and udp 49160-49200. ICE comes from TURN_URLS in $ENVF."
+else
+  turn_line="5. Voice uses public STUN until you re-run with TURN=1 (coturn on this box: udp/tcp 3478 and udp 49160-49200). See HOSTING.md."
+fi
+
 cat <<DONE
 
 Done.
@@ -125,4 +191,5 @@ Still to do by hand:
   3. Put SMTP details in $ENVF, then restart. Without them, password
      recovery mail goes to $DATA/outbox instead of anybody's inbox.
   4. Set BACKUP_HOOK in $ENVF so the nightly archive leaves this machine.
+  $turn_line
 DONE

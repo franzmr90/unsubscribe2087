@@ -26,6 +26,7 @@ const guard = require('./guard');
 const mobMath = require('./mobs');
 const { buildId } = require('./buildid');
 const intake = require('./intake');
+const plaus = require('./plaus');
 const { turnCfg } = require('./turn');
 
 const MAX_GAME = 8;                /* Diablo II's number, and the reason this scales */
@@ -67,13 +68,7 @@ function notice(p, text) { send(p, 'sys', { text, notice: 1 }); }
 /* Reported max life is what player-damage is capped against. A tiny report would make
    somebody unkillable; a huge one would let one packet delete them. The floor tracks
    level. The ceiling is far above any honest character. */
-function takeVitals(p, m) {
-  if (m && 'lvl' in m) p.lvl = Math.max(1, Math.min(100, +m.lvl || 1));
-  const floor = 80 + 12 * Math.max(1, p.lvl || 1);
-  const reported = Math.max(1, Math.min(500000, +m.hpm || p.hpm || floor));
-  p.hpm = Math.max(floor, reported);
-  if (m && 'hp' in m) p.hp = Math.max(0, Math.min(p.hpm, +m.hp || 0));
-}
+function takeVitals(p, m) { plaus.clampVitals(p, m); }
 
 /* Loaded inside the call. social.js requires this module at the top, so a
    top-level require here would hand it the exports object before it is filled. */
@@ -415,12 +410,54 @@ function mobTell(g, sample) {
     return;
   }
   const z = mobZone(g, sample);
-  if (!here.some(q => q.uid === z.host)) z.host = here[0].uid;
+  /* The host stays until they are actually gone. The next one is named while they
+     are still here, and already has the positions, so the handoff is not a resync. */
+  const ids = here.map(q => q.uid);
+  const had = z.host;
+  let handed = 0;
+  if (!ids.includes(z.host)) {
+    const promote = z.next && ids.includes(z.next) ? z.next : (ids[0] || '');
+    handed = had && promote && promote !== had ? 1 : 0;
+    z.host = promote;
+  }
+  const rest = ids.filter(id => id !== z.host);
+  if (!rest.includes(z.next)) z.next = rest[0] || '';
   const list = mobList(z);
   for (const q of here) {
-    send(q, 'mhost', { zi: sample.zi | 0, tier: sample.tier | 0, uid: z.host });
-    send(q, 'mobs', { zi: sample.zi | 0, tier: sample.tier | 0, snap: 1, you: q.uid === z.host ? 1 : 0, list });
+    send(q, 'mhost', {
+      zi: sample.zi | 0, tier: sample.tier | 0, uid: z.host, next: z.next || '',
+      hand: handed && q.uid === z.host ? 1 : 0
+    });
+    send(q, 'mobs', {
+      zi: sample.zi | 0, tier: sample.tier | 0, snap: handed ? 0 : 1,
+      you: q.uid === z.host ? 1 : 0, next: z.next || '', list
+    });
   }
+  if (handed) armHandoff(g, sample, z);
+}
+/* If the promotion packet is lost, say it again until the new host reports in. */
+function armHandoff(g, sample, z) {
+  const token = {};
+  z.arm = token;
+  const key = mobKey(sample.zi, sample.tier, sample.inst);
+  const timer = setTimeout(() => {
+    if (z.arm !== token || !g.zones || g.zones[key] !== z) return;
+    if (z.pushedAt && Date.now() - z.pushedAt < 400) return;
+    const here = mobHere(g, sample);
+    if (!here.some(q => q.uid === z.host)) return;
+    const list = mobList(z);
+    for (const q of here) {
+      send(q, 'mhost', {
+        zi: sample.zi | 0, tier: sample.tier | 0, uid: z.host, next: z.next || '',
+        hand: q.uid === z.host ? 1 : 0
+      });
+      send(q, 'mobs', {
+        zi: sample.zi | 0, tier: sample.tier | 0, snap: 0,
+        you: q.uid === z.host ? 1 : 0, next: z.next || '', list
+      });
+    }
+  }, 250);
+  if (timer.unref) timer.unref();
 }
 function mobNote(p) {
   const g = gameOf(p);
@@ -765,6 +802,7 @@ const HANDLERS = {
       landed = landedCap;
     }
     if (!landed) return;
+    plaus.notePvp(q, landed);
     send(q, 'pvp', { from: p.name, fromUid: p.uid, dmg: Math.round(landed), kind: clean(m.kind, 12) });
   },
 
@@ -778,6 +816,7 @@ const HANDLERS = {
     if ((m.zi | 0) !== sample.zi || (m.tier | 0) !== sample.tier) return;
     const z = mobZone(g, sample);
     if (z.host !== p.uid) return;
+    z.pushedAt = Date.now();
     const list = Array.isArray(m.list) ? m.list.slice(0, 60) : [];
     const seen = {};
     const diffHp = diffHpOf(g);
@@ -809,6 +848,10 @@ const HANDLERS = {
     const id = m.id | 0;
     const rec = z.mobs[id];
     if (!rec || rec.dead) return;
+    const sk = m.sk == null ? -1 : (m.sk | 0);
+    if (sk === -2) {
+      if (z.host !== p.uid) return;
+    } else if (!plaus.hitOk(p, rec, sk)) return;
     let d = Math.max(0, +m.d || 0);
     if (!(d > 0)) return;
     if (d > rec.max) {
@@ -1074,7 +1117,8 @@ function attach(server, verify) {
   const stats = setInterval(() => {
     const mem = process.memoryUsage();
     console.log('[live] players=' + live.size + ' games=' + games.size + ' parties=' + parties.size +
-      ' msgs=' + msgN + ' rss=' + Math.round(mem.rss / 1048576) + 'MB bugFail=' + intake.failures());
+      ' msgs=' + msgN + ' rss=' + Math.round(mem.rss / 1048576) + 'MB bugFail=' + intake.failures() +
+      ' hitRej=' + plaus.takeHitRej() + ' hpFlag=' + plaus.takeHpFlag());
     msgN = 0;
   }, 60000);
   stats.unref();
