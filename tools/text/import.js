@@ -10,12 +10,11 @@
 */
 const fs = require('fs');
 const path = require('path');
-const { execFileSync } = require('child_process');
 const E = require('./engine');
+const docx = require('./docx');
 
 const ROOT = path.join(__dirname, '..', '..');
 const CATALOG = path.join(ROOT, 'text', 'catalog.json');
-const PANDOC_MD = 'markdown-smart-tex_math_dollars-tex_math_single_backslash';
 
 function usage() {
   process.stderr.write('usage: node tools/text/import.js <file.md|file.docx|file.txt> [--dry-run]\n');
@@ -24,9 +23,7 @@ function usage() {
 
 function loadText(file) {
   const ext = path.extname(file).toLowerCase();
-  if (ext === '.docx') {
-    return execFileSync('pandoc', ['-f', 'docx', '-t', PANDOC_MD, '--wrap=none', file], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
-  }
+  if (ext === '.docx') return docx.readDocx(file);
   return fs.readFileSync(file, 'utf8');
 }
 

@@ -397,7 +397,7 @@ function drawSheet(){
     if(selling()&&G.bag.length){const sum=q=>G.bag.filter(i=>!i.charm&&(q<0||i.q===q)).reduce((a,i)=>a+sellValue(i),0),cnt=q=>G.bag.filter(i=>!i.charm&&i.q===q).length;h+=`<h3>Sell in bulk</h3>`;
       if(jn)h+=`<button class="big" data-sellq="9">Sell ${jn} junk · ${fmt(G.bag.filter(i=>i.junk).reduce((a,i)=>a+sellValue(i),0))}</button>`;h+=`<div class="row">`;
       ['Normal','Magic','Rare','Set','Unique'].forEach((n,q)=>{if(cnt(q))h+=`<button class="ghost q${q}" data-sellq="${q}">${cnt(q)} ${n}<br>${fmt(sum(q))}</button>`});
-      h+=`</div><button class="ghost" data-sellq="-1">${sellArm?(uiSay('Click again to sell all ','Tap again to sell all '))+G.bag.filter(i=>!i.charm).length+' items':'Sell everything in the pack · '+fmt(sum(-1))}</button><p style="font-size:13px">Bulk selling never touches what you are wearing or the subscriptions working from your pack.</p>`}
+      h+=`</div><button class="ghost" data-sellq="-1">Sell everything in the pack · ${fmt(sum(-1))}</button><p style="font-size:13px">Bulk selling never touches what you are wearing or the subscriptions working from your pack.</p>`}
     h+=`<p class="hint" style="font-size:13.5px">White is normal, <span class="q1">blue is magic</span>, <span class="q2">yellow is rare</span>, <span class="q3">green is a set piece</span>, <span class="q4">gold is unique</span>. Red items are unidentified.</p>`}
   if(tab==='skills'){const c=CLS[G.cls];h+=`<h2>${c.n} skills · ${G.sp} to spend</h2><p class="hint">${G.sp} point${G.sp===1?'':'s'} to spend. Rows open at levels 1, 4 and 9, and each skill needs the one above it. The fourth row opens at level 26 in Act II, the fifth at level 51 in Act III.</p><p class="hint"><strong>Passives active: ${G.pas.length} of ${PCAP()}.</strong> Only the passives you switch on do anything, so choose. A third slot opens in Act II, a fourth in Act III, and a fifth in Act V. Swap them freely in town.</p><p><strong>Passives ${G.pas.length}/${PCAP()}</strong></p><p>A third slot in Act II, a fourth in Act III, a fifth in Act V.</p>`;h+=`<h3>Doctrine${G.doc?'':' · choose one'}</h3><div class="list">${DOCS[G.cls].map(d=>`<button class="li${G.doc===d[0]?' on':''}" data-doc="${d[0]}"><div><b>${G.doc===d[0]?'◆ ':''}${d[1]}</b><span>${d[2]}</span><span>${docTxt(d[3])}</span></div></button>`).join('')}</div><p style="font-size:13px">One doctrine at a time. The first is free; changing costs 3 sats, in town.</p><h3>Breadth</h3><p class="hint" style="font-size:13px">Learn all three skills in a row for its bonus: ${ROWB.map((r,k)=>`<span style="color:${rowDone(k)?'var(--gold)':'var(--dim)'}">${rowDone(k)?'✓ ':''}${r[0]} ${r[1]}</span>`).join(' · ')}. <strong>Depth costs more:</strong> ranks 6 to 10 take two points each, and rank 10 masters a skill (★): two extra ranks of power, and 20% faster recovery on active skills.</p><div class="tree">`;
     c.sk.forEach((s,i)=>{const row=Math.floor(i/3),L=G.sk[i],lock=G.lvl<ROWREQ[row]||(row>0&&!G.sk[i-3])||(row===3&&!G.act2)||(row===4&&!G.act3)||!!hsBlocked(i),slot=G.slots.indexOf(i);
@@ -544,7 +544,6 @@ function drawSheet(){
     h+=`</div>`;if(gateAct===6&&devOn())h+=`<button class="ghost" data-dev="reset">Respawn all machines</button>`;
     if(G.maxTier>0&&gateAct===6)h+=`<h3>Tier</h3><div class="row"><button class="ghost" data-tier="-1" ${G.tier<=0?'disabled':''}>Easier</button><button class="ghost" disabled>Tier ${G.tier}</button><button class="ghost" data-tier="1" ${G.tier>=G.maxTier?'disabled':''}>Harder</button></div><p>Each tier adds 12 machine levels and raises item levels to match. Changing tier respawns every district.</p>`}
   h+=`</div>`;$('sheetIn').innerHTML=h;paintGlyphs($('sheetIn'));if($('webStage'))webBind();if(pop){$('popIn').innerHTML=pop;paintGlyphs($('popIn'));$('pop').hidden=false;$('pop').scrollTop=0}}
-let sellArm=false;
 const satsOk=()=>G.adopt>=60||(G.wonF&&G.wonF.brenda===1)||shopVia,satCost=it=>Math.max(1,Math.ceil(buyPrice(it)/satRate()));let shopVia=0;const buyPrice=it=>{const her=payTag(it.val*2.5*G.cpi*(G.disc?.85:1)*(repRank('norm')>=3?.8:repRank('norm')>=1?.9:1));return shopVia?payTag(her*.7):her};
 const boxPrice=()=>payTag((8+G.lvl*5)*9*G.cpi);
 /* The sell line prints whole credits, so the purse gains the floor of two fifths. */
@@ -564,8 +563,7 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.iskkey!==undefined){const k=+d.iskkey,i=sel&&sel.isk;if(i>=100&&itemSkillOn(i)){const o=G.slots.indexOf(i);if(o>=0)G.slots[o]=-1;G.slots[k]=i;setSkillButtons()}drawSheet();return}
   if(d.iskside){const i=sel&&sel.isk;if(i>=100)assignMouse(d.iskside,i);drawSheet();return}
   if(d.popx)sel=null;
-  if(d.sellq!==undefined){const q=+d.sellq;if(q<0&&!sellArm){sellArm=true;drawSheet();return}let t=0,held=false;G.bag=G.bag.filter(i=>{if(typeof tradeHeld==='function'&&tradeHeld(i)){held=true;return true}if(q===9?i.junk:!i.charm&&(q<0||i.q===q)){t+=sellValue(i);return false}return true});G.credits+=t;sel=null;sfx('coin');toast((held?'What is on the table stays. ':'')+'Sold for '+fmt(t))}
-  sellArm=false;
+  if(d.sellq!==undefined){const q=+d.sellq;let t=0,held=false;G.bag=G.bag.filter(i=>{if(typeof tradeHeld==='function'&&tradeHeld(i)){held=true;return true}if(q===9?i.junk:!i.charm&&(q<0||i.q===q)){t+=sellValue(i);return false}return true});G.credits+=t;sel=null;sfx('coin');toast((held?'What is on the table stays. ':'')+'Sold for '+fmt(t))}
   if(d.close)return closeSheet();
   if(d.loadcode){const v=$('codeIn').value;if(!loadCode(v)){const p=document.createElement('p');p.className='red';p.textContent='That code could not be read. Check that all of it was pasted.';$('sheetIn').appendChild(p)}return}
   if(d.tab){if(d.tab==='web')webVB=null;tab=d.tab;sel=null}
@@ -681,16 +679,18 @@ let mouseKey='';
 function paintMouseSlots(){
   if(!G||!CLS[G.cls])return;
   ensureMouse();
-  const key=(G.mouse.L|0)+':'+(G.mouse.R|0)+':'+G.cls+':'+(uiTouch()?1:0);
+  const key=(G.mouse.L|0)+':'+(G.mouse.R|0)+':'+G.cls+':'+(uiTouch()?1:0)+':'+(G.hot||[]).join(',');
   const fresh=key!==mouseKey;if(fresh)mouseKey=key;
+  const bound=()=>{const i=G.mouse.R;for(let f=0;f<8;f++)if(G.hot[f]===i)return 'F'+(f+1);return 'R'};
   const paint=(id,i,tag)=>{
     const b=$(id);if(!b)return;
     const sk=i>=100&&itemSkillsReady?ISK[i]:(i>=0?CLS[G.cls].sk[i]:null);
     if(fresh){
       const name=i<0?'ATK':(sk?sk.ab:'');
+      const badge=tag==='R'&&!uiTouch()?bound():tag;
       b.querySelector('b').textContent=name;
-      b.querySelector('i').textContent=tag==='R'&&!uiTouch()?'F1':tag;
-      b.title=(i<0?'Attack':(sk?sk.n:''))+(uiTouch()?'':(' ('+(tag==='L'?'left click':'right click, F1 through F8')+')'));
+      b.querySelector('i').textContent=badge;
+      b.title=(i<0?'Attack':(sk?sk.n:''))+(uiTouch()?'':(' ('+(tag==='L'?'left click':(badge==='R'?'right click':'right click, '+badge))+')'));
       const c=b.querySelector('canvas'),g=c.getContext('2d');
       g.clearRect(0,0,28,28);
       if(i>=100&&sk){g.fillStyle='#d0aa62';g.font='9px Cinzel,serif';g.textAlign='center';g.fillText(sk.ab,14,17)}

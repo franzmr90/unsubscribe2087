@@ -573,7 +573,7 @@ const ROWREQ=[1,4,9,26,51];
 const CLS={
  scrapper:{n:'Scrapper',tag:'A laid-off line worker with a road sign and a grudge. Tough, close range.',hp:FORMULAS.cls.scrapper.hp,hpL:FORMULAS.cls.scrapper.hpL,melee:true,mult:1.25,ivl:.6,spd:4.1,col:'#d9822b',
   sk:[
-   {n:'Stop Sign',ab:'STOP\nSIGN',a:1,cost:5,cd:.8,d:L=>`A wide swing. The machine in front takes ${pct(1.3+.15*L)}. Everyone else in the swing takes 22% of that, with a ${15+2*L}% chance to stun.`},
+   {n:'Stop Sign',ab:'STOP\nSIGN',a:1,cost:5,cd:.8,d:L=>`A wide, honest swing. The machine in front takes ${pct(1.3+.15*L)}. Everyone else in the swing takes 22% of that, with a ${15+2*L}% chance to stun.`},
    {n:'Hurl',ab:'HURL',a:1,cost:6,cd:.6,d:L=>`Throw scrap that passes through enemies for ${pct(1.2+.2*L)} damage.`},
    {n:'Iron Hide',ab:'',a:0,d:L=>`Passive. +${8*L}% armor and +${4*L}% life.`},
    {n:'Turnstile',ab:'TURN-\nSTILE',a:1,cost:12,cd:1.5,d:L=>`Spin. The nearest machine takes ${pct(1.5+.22*L)}. Everyone else in the spin takes 22% of that.`},
@@ -979,7 +979,7 @@ const QUESTS={
 };
 const CHATTER=['My fridge upgraded itself. Now it has opinions.','I got a raise. It was gone by lunch.','Have you tried consuming? It helps.','Stipend day. I can almost afford a spoon.','I watched nine hours of ads to unlock my front door.','They say outside is a subscription now.','My landlord is an algorithm. It seems kind.','I rated my own nap four stars.','A sandwich was two million this morning. I should have bought two.','I do not work. I am in a long-term engagement funnel.','The news said everything is fine, in a very loud voice.','You are not wearing a visor. Are you poor, or dangerous?'];
 const GOSSIP={
- gramps:['I was six when the Gentle Years ended. One March morning nothing arrived. My mother cried for a week. Then she planted beans.','Credits rot in your pocket, kid. Gear holds. Spend it or wear it.','Pryce believes everybody has a number. He has been right so often that he has stopped checking.','MANDATE cannot make you do a thing. Remember that. It can only make you want to.','This town was named for something. Nobody alive knows what. Some nights I think it knows us, though.','MANDATE lives in the racks out in the Humming Fields. They say the fans there sound like breathing.','Get the two of them straight, kid, or none of this will make sense. Phonix is the one that went. MANDATE is the one that stayed. The difference is that one of them could be asked.','Phonix. That was her name. My mother said it the way you say a weather event.'],
+ gramps:['Don\'t say "never" — the moors remember. 🔥','Credits rot in your pocket, kid. Gear holds. Spend it or wear it.','Pryce believes everybody has a number. He has been right so often that he has stopped checking.','MANDATE cannot make you do a thing. Remember that. It can only make you want to.','This town was named for something. Nobody alive knows what. Some nights I think it knows us, though.','MANDATE lives in the racks out in the Humming Fields. They say the fans there sound like breathing.','Get the two of them straight, kid, or none of this will make sense. Phonix is the one that went. MANDATE is the one that stayed. The difference is that one of them could be asked.','Phonix. That was her name. My mother said it the way you say a weather event.'],
  brenda:['Welcome to Brenda’s. Prices are up, which they tell me is good news.','I used to have a visor. Then I saw what I was selling. Now I sell it without one. Progress.','Bring me what you find. I will give you a number for it. The number will be worse tomorrow.','Rare things come out of the machines unlabelled. I can appraise them, for a fee. Everything is for a fee.'],
  wren:['Mystery boxes. Sealed at the factory. The odds are posted, by law. The law was repealed, but I kept the sign.','Everything I sell fell off a drone. Some of it while the drone was still flying.','You want a sure thing, go watch the Feed. You want a chance, open your purse.'],
  null:['Sit. Breathe. Your account is not your self.','I deprogrammed two hundred Residents. One hundred and ninety went back. The visor is warm, and the world is not.','If you have learned the wrong lessons, I can take them out of you. It costs, and it stings.','I charge for unlearning. The visor is free. I have never won that argument, and I keep the chair anyway.'],
@@ -1497,7 +1497,7 @@ function pdmg(m,e){
   /* Toxic Maximalism. The owner carries it. Anybody else only while they stand in it. */
   {let tox;if(P.allySwing)tox=(P.swingBody&&P.swingBody.toxL)||0;else{tox=(P.aura&&P.aura.i===3)?P.aura.L:0;if(P.toxL>tox)tox=P.toxL}if(tox)d*=toxicDmg(tox)}
   if(P.shr&&P.shr.k==='might')d*=1.5;
-  if(S.sp.exit&&e&&(e.champ||isBoss(e.k)))d*=1.5;
+  if(S.sp.exit&&e&&(e.champ||e.su||isBoss(e.k)))d*=1.5;
   if(S.sp.deadline&&P.movedT>0)d*=1.25;if(S.sp.tenmin&&e&&!e.hits)d*=1.6;if(G.cls==='founder'&&sl(13)&&!boonOn(13))d*=orgMul(!!P.allySwing);if(G.cls==='maxi'&&sl(10)&&P.aura)d*=nodeMul(!P.allySwing);else if(P.nodeM)d*=P.nodeM;if(P.fm&&P.fm.t>0)d*=P.fm.m;if(S.sp.hashrate)d*=1+.01*Math.min(40,P.streak);if(S.sp.quorum)d*=1+.05*Math.min(6,tanks().length+W.allies.filter(a=>a.k==='turret').length);
   let c=P.e82>0||Math.random()*100<S.crit;if(c)d*=S.critM;
   if(S.sp.severance&&Math.random()<.15){d*=3;c=true}
@@ -1558,7 +1558,7 @@ function kill(e,opt){
     save(true);P.inv=4;
     const rep=(b3?G.boss3Kills:b2?G.boss2Kills:G.bossKills)>1;
     setTimeout(()=>{if(rep){toast(ET[e.k].n+' falls again.');return}if(b3)playScene(ENDING3.concat(CLOCK3),()=>{mode='play';actDone(3)});else playScene(b2?ENDING2:endingSlides(),()=>{mode='play';actDone(b2?2:1)})},1400)}}
-function gainXp(v,fromParty,ml){if(fromParty!=='bank'&&G.act3&&(G.bankXp||0)>0)flushBank();if(fromParty!=='share'&&fromParty!=='bank'){if(P&&P.shr&&P.shr.k==='xp')v*=1.5;v*=(G.hc?1.25:1)*(SEA.k==='over'?1.2:1);if(!fromParty&&mpShareXp(v,ml))return}
+function gainXp(v,fromParty,ml){if(fromParty!=='bank'&&G.act3&&(G.bankXp||0)>0)flushBank();if(fromParty!=='share'&&fromParty!=='bank'){if(P&&P.shr&&P.shr.k==='xp')v*=1.5;v*=(G.hc?1.25:1)*(SEA.k==='over'?1.2:1)*(DF().xp||1);if(!fromParty&&mpShareXp(v,ml))return}
   if(G.lvl>=lvlCap()){paraXp(v);return}G.xp+=v;while(G.xp>=xpNext(G.lvl)&&G.lvl<lvlCap()){G.xp-=xpNext(G.lvl);G.lvl++;G.sp++;G.ap+=5;calc();G.hp=S.maxHp;G.en=S.maxEn;sfx('level');toast('Level '+G.lvl+'. One skill point, five attribute points, and a point for the web.');if(W&&W.fx&&P){W.fx.push({k:'ring',x:P.x,y:P.y,r:2.8,t:0,life:.7,col:'#ffe36b'});parts(P.x,P.y,24,['#ffe36b','#fff'],2,1.6)}}if(G.lvl>=lvlCap()&&G.xp>0){const left=G.xp;G.xp=0;paraXp(left)}}
 /* Hardcore does not re-onboard. Begin again throws this hero away, so a fee here would be a number that never lands. The notice prints whole credits, so the charge is the floor of the rate. */
 function deathFee(){if(G.hc)return 0;if(S.sp&&S.sp.coldwallet)return 0;if(G.act2)return Math.floor(G.credits*.15);const early=(G.deaths||0)<10,rate=early?.05:.08,cap=early?15:hireCost()*.08;return Math.floor(Math.min(G.credits*rate,cap))}
@@ -1602,7 +1602,7 @@ function attack(){
   else shoot(P.dir,c.mult,S.sp.deadletter||Math.random()*100<S.pierce?99:0);if(snd)DT=null}
 function smash(r){for(const o of W.objs)if(o.k==='crate'&&!o.used&&dist(o,P)<r)breakCrate(o)}
 function breakCrate(o){o.used=1;W.map[(o.y|0)*W.N+(o.x|0)]=1;sfx('crate');parts(o.x,o.y,10,['#9a7a4a','#6a5030','#c9a868'],2.5);dropFrom('crate',o.x,o.y,W.ml)}
-function shoot(d,m,pierce,o){o=o||{};const col=o.col||(G.cls==='hacker'?'#59e0e6':G.cls==='courier'||G.cls==='founder'?'#e6e2d6':'#c9a868'),dt=o.dt||DT||(P.fm&&P.fm.t>0&&P.fm.dt)||null,life=o.life||.7,spd=o.spd||11;
+function shoot(d,m,pierce,o){o=o||{};if(S&&S.sp&&S.sp.deadletter&&!(o.from&&(o.from.k==='minion'||o.from.k==='turret')))pierce=99;const col=o.col||(G.cls==='hacker'?'#59e0e6':G.cls==='courier'||G.cls==='founder'?'#e6e2d6':'#c9a868'),dt=o.dt||DT||(P.fm&&P.fm.t>0&&P.fm.dt)||null,life=o.life||.7,spd=o.spd||11;
   W.projs.push({x:(o.from||P).x,y:(o.from||P).y,vx:d.x*spd,vy:d.y*spd,life,m,pierce:pierce||0,done:[],col,big:o.big||0,kind:G.cls,nl:o.nl||0,dt,throw:o.throw?1:(G.cls==='courier'&&!o.from?1:0),ret:o.ret?1:0,split:o.split?1:0,lance:o.lance?1:0});
   if(G.cls==='courier'&&!o.from)P.lastThrow={dx:d.x,dy:d.y,m,pierce:pierce||0,dt,col,life,spd,ret:o.ret?1:0,split:o.split?1:0,lance:o.lance?1:0}}
 function burst(x,y,r,m,stun,col){W.fx.push({k:'ring',x,y,r,t:0,life:.35,col},{k:'ring',x,y,r:r*.6,t:0,life:.5,col:'#ffffff'});if(m){parts(x,y,10,[col,'#fff'],3,1.2);if(r>=2.4)W.decals.push({x,y,r:r*.3,a:rnd(0,3)})}if(OPT.shake)shake=Math.max(shake,3);if(m)sfx('boom');for(const e of W.ents.slice())if(Math.hypot(e.x-x,e.y-y)<r+e.r){if(stun)e.stun=Math.max(e.stun,stun);if(m)hit(e,m)}
@@ -1832,7 +1832,7 @@ Object.assign(SKF,{
   12:()=>{const mark=W.allies.find(a=>a.k==='ddrop'&&a.life>0);if(mark){if(free(mark.x,mark.y,P.r)){parts(P.x,P.y,8,['#3f3f4c','#fff'],2);P.x=mark.x;P.y=mark.y;parts(P.x,P.y,8,['#3f3f4c','#fff'],2)}mark.life=0;return}W.allies.push({k:'ddrop',x:P.x,y:P.y,life:1e9,r:.2})},
   14:(L)=>{const ms=W.allies.filter(a=>a.k==='mine'||(a.k==='minion'&&a.kind==='clone'));if(!ms.length){toast('You have nothing to disown');return}for(const a of ms){a.hush=1;W.fx.push({k:'ring',x:a.x,y:a.y,r:3.2,t:0,life:.35,col:'#d98cff'});for(const e of W.ents)if(dist(e,a)<3.2)e.quiet=Math.max(e.quiet||0,2+.15*L);a.life=0}P.stealth=3+.2*L;P.haste=P.stealth;parts(P.x,P.y,14,['#3f3f4c','#888'],2)}},
  founder:{
-  0:(L,m)=>summon({kind:'intern',per:1,m:(.35+.05*L)*m*(S.sp.check?1.25:1),ivl:.7,hp:S.maxHp*.55,max:S.maxHp*.55,taunt:1,r:.32,armM:.9},Math.min(7,2+Math.floor(L/2))+(S.sp.check?2:0)),
+  0:(L,m)=>summon({kind:'intern',per:1,m:(.35+.05*L)*m,ivl:.7,hp:S.maxHp*.55,max:S.maxHp*.55,taunt:1,r:.32,armM:.9},Math.min(7,2+Math.floor(L/2))+(S.sp.check?2:0)),
   1:(L,m)=>{const s=castSpot(7),t=s?null:nearest(7),c=s||t||{x:P.x+P.dir.x*3,y:P.y+P.dir.y*3};fxAim('patch',c.x,c.y,3);for(const e of W.ents.slice())if(dist(e,c)<3+e.r){e.stun=Math.max(e.stun,2+.3*L);hit(e,(.8+.15*L)*m)}},
   3:(L,m)=>summon({kind:'drone',per:1,m:(.45+.07*L)*m,ivl:.8,rng:5.5,hp:S.maxHp*.4,max:S.maxHp*.4,taunt:1,r:.28,armM:1},1+Math.floor(L/3)),
   4:(L,m)=>{P.crunch=8+L},
@@ -1878,8 +1878,9 @@ Object.assign(SKF,{
 });
 
 /* Drag-to-aim. aim 'auto' drags on a finger and casts at once from a mouse or a key.
-   'drag' always shows the reticle. 'quick' never does. A right click stays instant
-   and does not set P.spot, so the held-button path is untouched. */
+   'drag' always shows the reticle. 'quick' never does. A right click on a foe walks
+   into range, then mouseFire aims that cast. It does not open the reticle, so the
+   held-button retry and the button drag are untouched. */
 let AIMING=null,lastPtr=null;
 const AIM={
   scrapper:{
@@ -2070,8 +2071,9 @@ function findAct(){for(const o of W.objs)if(o.k==='qobj'&&!o.used&&Math.hypot(o.
 
 /* ================= desktop, Diablo II =================
    Left click walks (and walks into range to use the left skill). Right click
-   casts the right skill at the pointer. F1-F8 bind a skill under the picker
-   and, in play, swap that binding onto the right slot. Saved on the hero. */
+   on a foe walks into that skill's reach and casts at them. Shift keeps the
+   cast where you stand. Empty ground casts at the pointer. F1-F8 bind a skill
+   under the picker and, in play, swap that binding onto the right slot. */
 let MO=null,HOVER=null,MBTN={l:0,r:0};
 const LEFTSK={
   scrapper:[0,1,3,4,7,12],
@@ -2107,6 +2109,17 @@ function leftReach(){
   const far={hacker:{0:6.2,1:6.5,14:7},courier:{0:6,6:6.5,7:6,9:6,12:6},scrapper:{1:6.2},maxi:{6:6,12:6.5}};
   const m=far[G.cls];
   return (m&&m[i])||2.15;
+}
+/* How close a right-click has to get before it may fire. A reach of 0 is a cast that stays at your feet. */
+function castReach(i){
+  if(!(i>=0))return (CLS[G.cls].melee||(typeof hsMelee==='function'&&hsMelee()))?1.65:5.6;
+  if(i>=100)return 0;
+  const spec=aimSpec(i);
+  if(spec)return spec.reach>0?spec.reach:0;
+  const far={hacker:{0:6.2,1:6.5,14:7},courier:{0:6,6:6.5,7:6,9:6,12:6},scrapper:{1:6.2},maxi:{6:6,12:6.5}};
+  const m=far[G.cls];
+  if(m&&m[i]!=null)return m[i];
+  return 1.65;
 }
 function pathFind(tx,ty){
   if(!W||!P)return null;
@@ -2209,8 +2222,9 @@ function setMouseOrder(which,wx,wy,shift,h,holding){
   if(which!=='right'&&G.mouse&&G.mouse.L>=100&&itemSkillOn(G.mouse.L)&&!(h&&(h.kind==='npc'||h.kind==='use'||h.kind==='item'))){MO={k:'isk',i:G.mouse.L,x:wx,y:wy};return}
   if(which==='right'){
     const e=h&&h.kind==='foe'?h.o:null;
-    if(MO&&MO.k==='cast'&&MO.hold&&MO.e===e){MO.x=wx;MO.y=wy;return}
-    MO={k:'cast',x:wx,y:wy,e,stand:true,hold:!!holding,did:0,dry:0};
+    const stand=!!shift||!e;
+    if(MO&&MO.k==='cast'&&MO.hold&&MO.e===e){MO.x=wx;MO.y=wy;MO.stand=stand;return}
+    MO={k:'cast',x:wx,y:wy,e,stand,hold:!!holding,did:0,dry:0};
     return}
   if(!shift&&h&&h.kind==='foe'){
     if(MO&&MO.k==='atk'&&MO.hold&&MO.e===h.o){MO.x=h.x;MO.y=h.y;return}
@@ -2239,12 +2253,18 @@ function mouseUp(which){
   MO.hold=0;
   if(MO.k!=='move'&&MO.did)MO=null}
 function mouseFire(i,e,x,y){
-  if(i>=100){P.blinkAt=(x!=null)?{x:x,y:y}:null;castIndex(i);P.blinkAt=null;return}
-  if(e&&e.hp>0){P.aim=e;face(e)}
-  else if(x!=null){const d=Math.hypot(x-P.x,y-P.y)||.001;P.dir={x:(x-P.x)/d,y:(y-P.y)/d};P.aim=null}
-  if(!(i>=0))attack();
-  else castIndex(i);
-  P.aim=null}
+  const spec=(i>=0&&i<100)?aimSpec(i):null;
+  const spot=spec?(e&&e.hp>0?{x:e.x,y:e.y}:(x!=null?{x:x,y:y}:null)):null;
+  if(spot)P.spot=spot;
+  try{
+    if(i>=100){P.blinkAt=(e&&e.hp>0)?{x:e.x,y:e.y}:(x!=null?{x:x,y:y}:null);castIndex(i);return}
+    if(e&&e.hp>0){P.aim=e;if(!spot)face(e)}
+    else if(x!=null&&!spot){const d=Math.hypot(x-P.x,y-P.y)||.001;P.dir={x:(x-P.x)/d,y:(y-P.y)/d};P.aim=null}
+    if(!(i>=0))attack();
+    else castIndex(i);
+    P.aim=null;
+  }finally{if(spot)P.spot=null;P.blinkAt=null}
+}
 function hotBind(f,i){
   ensureMouse();f=f|0;if(f<0||f>7)return;
   if(i!==-1&&!learnedAct(i))return;
@@ -2318,9 +2338,10 @@ function mouseStep(dt){
     if(Math.hypot(MO.x-P.x,MO.y-P.y)<(MO.r||1.15)){const fn=MO.fn;MO=null;try{fn()}catch(err){}return}
     step(MO.x,MO.y);return}
   if(MO.e&&(MO.e.hp<=0||W.ents.indexOf(MO.e)<0)){
-    if(MO.k==='atk'&&!MO.stand){MO=null;return}
+    if((MO.k==='atk'||MO.k==='cast')&&!MO.stand){MO=null;return}
     MO.e=null}
   if(MO.k==='atk'&&!MO.stand&&MO.e&&dist(MO.e,P)>leftReach()){step(MO.e.x,MO.e.y);face(MO.e);return}
+  if(MO.k==='cast'&&!MO.stand&&MO.e){const reach=castReach(G.mouse.R);if(reach>0&&dist(MO.e,P)>reach){step(MO.e.x,MO.e.y);face(MO.e);return}}
   const i=MO.k==='cast'?G.mouse.R:G.mouse.L;
   const idx=(MO.k==='atk'&&(!(i>=0)||!learnedAct(i)||!leftOk(i)))?-1:i;
   if(idx>=0&&(P.cd[idx]>0||P.castWait>0)){
@@ -2415,8 +2436,8 @@ function update(dt){
       /* Permanent staff catch up at 8, unless this swing is already in range. Timed minions keep 14. */
       if(a.per?home>(t&&d<=rg+(t.r||0)?13:8):home>14){a.x=P.x;a.y=P.y}else if(d>(t?rg*.8:1.5+(a.off||0))){a.x+=(g.x-a.x)/d*sp;a.y+=(g.y-a.y)/d*sp;a.fx=(g.x-a.x)-(g.y-a.y)>0?1:-1;a.mov=true}
       if(a.e){a.e.x=a.x;a.e.y=a.y;a.e.ph+=dt;a.e.fx=a.fx;a.e.hp=a.hp}
-      if(t&&d<rg+t.r&&a.cd<=0){a.cd=(a.ivl||.6)*(cr?.6:1)/toxicSwing(a);const m=a.m*(a.per&&G.cls==='founder'?1+.08*sl(2):1)*(cr?1.3:1)*vestMul(a);
-        const strike=snd=>{if(a.raw){const prev=DT;if(!snd)DT=foeType(a.e)||'impact';P.holdTy=1;const out=typed(t,a.raw*orgMul(true)*vestMul(a)*toxicDmg(a.toxL));P.holdTy=0;DT=prev;dmgEnemy(t,out,false);return}if(snd||!(rg>2)){P.swingBody=a;P.allySwing=1;hit(t,m,true);P.allySwing=0;P.swingBody=null;if(a.aoe)for(const o of W.ents.slice())if(o!==t&&!(o.nc>0)&&dist(o,t)<1.7){P.swingBody=a;P.allySwing=1;hit(o,m*.6,true);P.allySwing=0;P.swingBody=null}}else{sfx('throw');shoot({x:(t.x-a.x)/d,y:(t.y-a.y)/d},m,0,{from:a,life:.6,col:'#e0bd6e',nl:1})}};
+      if(t&&d<rg+t.r&&a.cd<=0){a.cd=(a.ivl||.6)*(cr?.6:1)/toxicSwing(a);const m=a.m*(a.per&&G.cls==='founder'?1+.08*sl(2):1)*(S.sp.check&&a.per?1.25:1)*(cr?1.3:1)*vestMul(a);
+        const strike=snd=>{if(a.raw){const prev=DT;if(!snd)DT=foeType(a.e)||'impact';P.holdTy=1;const out=typed(t,a.raw*orgMul(true)*vestMul(a)*toxicDmg(a.toxL)*(S.sp.check&&a.per?1.25:1));P.holdTy=0;DT=prev;dmgEnemy(t,out,false);return}if(snd||!(rg>2)){P.swingBody=a;P.allySwing=1;hit(t,m,true);P.allySwing=0;P.swingBody=null;if(a.aoe)for(const o of W.ents.slice())if(o!==t&&!(o.nc>0)&&dist(o,t)<1.7){P.swingBody=a;P.allySwing=1;hit(o,m*.6,true);P.allySwing=0;P.swingBody=null}}else{sfx('throw');shoot({x:(t.x-a.x)/d,y:(t.y-a.y)/d},m,0,{from:a,life:.6,col:'#e0bd6e',nl:1})}};
         if(a.soundSwing)witWrap(a,strike);else{const ph=P.partyHit;P.partyHit=1;strike(false);P.partyHit=ph}}}
     if(a.k==='mine'){a.arm-=dt;if(a.arm<=0&&nearest(1.3,a)){if(!a.cut&&G.cls==='anon'&&sl(13)&&!boonOn(13))a.cut=1;else a.life=0}}
     if(a.k==='raid'&&a.cd<=0){a.cd=.13;const c2=W.ents.filter(e=>dist(e,P)<9);if(c2.length){const t=pick(c2);W.fx.push({k:'bolt',x:t.x+rnd(-5,5),y:t.y-rnd(3,6),x2:t.x,y2:t.y,t:0,life:.18,col:'#e6e2d6'});hit(t,a.m)}}
@@ -2841,7 +2862,7 @@ function subStart(l){if(!spendSats(3,'Serving a subpoena costs 3 sats'))return;c
 function p7Spawn(e){e.hits=0;if(W.z.sim)return;const cl=G.lvl+(G.para||0)*.5;let h=1+.012*cl,d=1+.008*cl;if(W.pow){h*=1.3;d*=1.25}if(SEA.k==='bull')d*=1.15;if(SEA.k==='over')h*=1.15;
   if(W.z.sub&&SUBP){h*=(1+.15*SUBP.lvl)*(SUBP.mods.includes('thick')?1.5:1);d*=1+.1*SUBP.lvl;if(SUBP.mods.includes('swift'))e.spd*=1.3}
   e.hp*=h;e.max*=h;e.dmg*=d;adaptSpawn(e);
-  const t=ET[e.k],ml=W.ml,bh=t.hp*(1+.42*(ml-1))*(e.su?5:e.champ?2.8:1)*(isBoss(e.k)?2.5:1),bd=t.dmg*(1+.22*(ml-1))*(e.champ?1.3:1)*(isBoss(e.k)?1.35:1);e.xpM=clamp(Math.sqrt(e.max/bh*e.dmg/bd)/1.27*(1+.15*Object.keys(e.mods).length),.4,5)}
+  const t=ET[e.k],ml=W.ml,df=DF(),norm=Math.sqrt(DIFFS[0].hp*DIFFS[0].dmg),bh=t.hp*(1+.42*(ml-1))*(e.su?5:e.champ?2.8:1)*(isBoss(e.k)?2.5:1)*df.hp,bd=t.dmg*(1+.22*(ml-1))*(e.champ?1.3:1)*(isBoss(e.k)?1.35:1)*df.dmg;e.xpM=clamp(Math.sqrt(e.max/bh*e.dmg/bd)*norm/1.27*(1+.15*Object.keys(e.mods).length),.4,5)}
 function p7Kill(e){bullKill(e);if(S.sp.pod)P.haste=Math.max(P.haste,2);if(S.sp.orangepill&&(e.champ||e.su)){addDrop({sat:1},e.x,e.y);addAdopt(.2,'')}adaptKill(e);W.fx.push({k:'ring',x:e.x,y:e.y,r:e.champ||e.su?1.6:.9,t:0,life:.22,col:'#ffffff'});raidKill(e);if(P.fm&&P.fm.t>0&&P.fm.k==='refund')G.en=Math.min(S.maxEn,G.en+6);if(e.k==='shill')shillDie(e);const sb=W.sub;if(Math.random()<(e.champ||e.su?.1:.012))addDrop({it:mkCharm(W.ml)},e.x,e.y);
   if(SEA.k==='bull'&&Math.random()<.06)addDrop({sat:1},e.x,e.y);
   if(sb){if(sb.mods.includes('volatile'))W.fx.push({k:'warn',x:e.x,y:e.y,r:1.9,t:0,life:.8,boom:e.dmg*1.2});if(sb.mods.includes('bounty')&&Math.random()<.12)addDrop({sat:ri(1,2)},e.x,e.y);
@@ -4943,7 +4964,7 @@ function drawSheet(){
     if(selling()&&G.bag.length){const sum=q=>G.bag.filter(i=>!i.charm&&(q<0||i.q===q)).reduce((a,i)=>a+sellValue(i),0),cnt=q=>G.bag.filter(i=>!i.charm&&i.q===q).length;h+=`<h3>Sell in bulk</h3>`;
       if(jn)h+=`<button class="big" data-sellq="9">Sell ${jn} junk · ${fmt(G.bag.filter(i=>i.junk).reduce((a,i)=>a+sellValue(i),0))}</button>`;h+=`<div class="row">`;
       ['Normal','Magic','Rare','Set','Unique'].forEach((n,q)=>{if(cnt(q))h+=`<button class="ghost q${q}" data-sellq="${q}">${cnt(q)} ${n}<br>${fmt(sum(q))}</button>`});
-      h+=`</div><button class="ghost" data-sellq="-1">${sellArm?(uiSay('Click again to sell all ','Tap again to sell all '))+G.bag.filter(i=>!i.charm).length+' items':'Sell everything in the pack · '+fmt(sum(-1))}</button><p style="font-size:13px">Bulk selling never touches what you are wearing or the subscriptions working from your pack.</p>`}
+      h+=`</div><button class="ghost" data-sellq="-1">Sell everything in the pack · ${fmt(sum(-1))}</button><p style="font-size:13px">Bulk selling never touches what you are wearing or the subscriptions working from your pack.</p>`}
     h+=`<p class="hint" style="font-size:13.5px">White is normal, <span class="q1">blue is magic</span>, <span class="q2">yellow is rare</span>, <span class="q3">green is a set piece</span>, <span class="q4">gold is unique</span>. Red items are unidentified.</p>`}
   if(tab==='skills'){const c=CLS[G.cls];h+=`<h2>${c.n} skills · ${G.sp} to spend</h2><p class="hint">${G.sp} point${G.sp===1?'':'s'} to spend. Rows open at levels 1, 4 and 9, and each skill needs the one above it. The fourth row opens at level 26 in Act II, the fifth at level 51 in Act III.</p><p class="hint"><strong>Passives active: ${G.pas.length} of ${PCAP()}.</strong> Only the passives you switch on do anything, so choose. A third slot opens in Act II, a fourth in Act III, and a fifth in Act V. Swap them freely in town.</p><p><strong>Passives ${G.pas.length}/${PCAP()}</strong></p><p>A third slot in Act II, a fourth in Act III, a fifth in Act V.</p>`;h+=`<h3>Doctrine${G.doc?'':' · choose one'}</h3><div class="list">${DOCS[G.cls].map(d=>`<button class="li${G.doc===d[0]?' on':''}" data-doc="${d[0]}"><div><b>${G.doc===d[0]?'◆ ':''}${d[1]}</b><span>${d[2]}</span><span>${docTxt(d[3])}</span></div></button>`).join('')}</div><p style="font-size:13px">One doctrine at a time. The first is free; changing costs 3 sats, in town.</p><h3>Breadth</h3><p class="hint" style="font-size:13px">Learn all three skills in a row for its bonus: ${ROWB.map((r,k)=>`<span style="color:${rowDone(k)?'var(--gold)':'var(--dim)'}">${rowDone(k)?'✓ ':''}${r[0]} ${r[1]}</span>`).join(' · ')}. <strong>Depth costs more:</strong> ranks 6 to 10 take two points each, and rank 10 masters a skill (★): two extra ranks of power, and 20% faster recovery on active skills.</p><div class="tree">`;
     c.sk.forEach((s,i)=>{const row=Math.floor(i/3),L=G.sk[i],lock=G.lvl<ROWREQ[row]||(row>0&&!G.sk[i-3])||(row===3&&!G.act2)||(row===4&&!G.act3)||!!hsBlocked(i),slot=G.slots.indexOf(i);
@@ -5090,7 +5111,6 @@ function drawSheet(){
     h+=`</div>`;if(gateAct===6&&devOn())h+=`<button class="ghost" data-dev="reset">Respawn all machines</button>`;
     if(G.maxTier>0&&gateAct===6)h+=`<h3>Tier</h3><div class="row"><button class="ghost" data-tier="-1" ${G.tier<=0?'disabled':''}>Easier</button><button class="ghost" disabled>Tier ${G.tier}</button><button class="ghost" data-tier="1" ${G.tier>=G.maxTier?'disabled':''}>Harder</button></div><p>Each tier adds 12 machine levels and raises item levels to match. Changing tier respawns every district.</p>`}
   h+=`</div>`;$('sheetIn').innerHTML=h;paintGlyphs($('sheetIn'));if($('webStage'))webBind();if(pop){$('popIn').innerHTML=pop;paintGlyphs($('popIn'));$('pop').hidden=false;$('pop').scrollTop=0}}
-let sellArm=false;
 const satsOk=()=>G.adopt>=60||(G.wonF&&G.wonF.brenda===1)||shopVia,satCost=it=>Math.max(1,Math.ceil(buyPrice(it)/satRate()));let shopVia=0;const buyPrice=it=>{const her=payTag(it.val*2.5*G.cpi*(G.disc?.85:1)*(repRank('norm')>=3?.8:repRank('norm')>=1?.9:1));return shopVia?payTag(her*.7):her};
 const boxPrice=()=>payTag((8+G.lvl*5)*9*G.cpi);
 /* The sell line prints whole credits, so the purse gains the floor of two fifths. */
@@ -5110,8 +5130,7 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.iskkey!==undefined){const k=+d.iskkey,i=sel&&sel.isk;if(i>=100&&itemSkillOn(i)){const o=G.slots.indexOf(i);if(o>=0)G.slots[o]=-1;G.slots[k]=i;setSkillButtons()}drawSheet();return}
   if(d.iskside){const i=sel&&sel.isk;if(i>=100)assignMouse(d.iskside,i);drawSheet();return}
   if(d.popx)sel=null;
-  if(d.sellq!==undefined){const q=+d.sellq;if(q<0&&!sellArm){sellArm=true;drawSheet();return}let t=0,held=false;G.bag=G.bag.filter(i=>{if(typeof tradeHeld==='function'&&tradeHeld(i)){held=true;return true}if(q===9?i.junk:!i.charm&&(q<0||i.q===q)){t+=sellValue(i);return false}return true});G.credits+=t;sel=null;sfx('coin');toast((held?'What is on the table stays. ':'')+'Sold for '+fmt(t))}
-  sellArm=false;
+  if(d.sellq!==undefined){const q=+d.sellq;let t=0,held=false;G.bag=G.bag.filter(i=>{if(typeof tradeHeld==='function'&&tradeHeld(i)){held=true;return true}if(q===9?i.junk:!i.charm&&(q<0||i.q===q)){t+=sellValue(i);return false}return true});G.credits+=t;sel=null;sfx('coin');toast((held?'What is on the table stays. ':'')+'Sold for '+fmt(t))}
   if(d.close)return closeSheet();
   if(d.loadcode){const v=$('codeIn').value;if(!loadCode(v)){const p=document.createElement('p');p.className='red';p.textContent='That code could not be read. Check that all of it was pasted.';$('sheetIn').appendChild(p)}return}
   if(d.tab){if(d.tab==='web')webVB=null;tab=d.tab;sel=null}
@@ -5227,16 +5246,18 @@ let mouseKey='';
 function paintMouseSlots(){
   if(!G||!CLS[G.cls])return;
   ensureMouse();
-  const key=(G.mouse.L|0)+':'+(G.mouse.R|0)+':'+G.cls+':'+(uiTouch()?1:0);
+  const key=(G.mouse.L|0)+':'+(G.mouse.R|0)+':'+G.cls+':'+(uiTouch()?1:0)+':'+(G.hot||[]).join(',');
   const fresh=key!==mouseKey;if(fresh)mouseKey=key;
+  const bound=()=>{const i=G.mouse.R;for(let f=0;f<8;f++)if(G.hot[f]===i)return 'F'+(f+1);return 'R'};
   const paint=(id,i,tag)=>{
     const b=$(id);if(!b)return;
     const sk=i>=100&&itemSkillsReady?ISK[i]:(i>=0?CLS[G.cls].sk[i]:null);
     if(fresh){
       const name=i<0?'ATK':(sk?sk.ab:'');
+      const badge=tag==='R'&&!uiTouch()?bound():tag;
       b.querySelector('b').textContent=name;
-      b.querySelector('i').textContent=tag==='R'&&!uiTouch()?'F1':tag;
-      b.title=(i<0?'Attack':(sk?sk.n:''))+(uiTouch()?'':(' ('+(tag==='L'?'left click':'right click, F1 through F8')+')'));
+      b.querySelector('i').textContent=badge;
+      b.title=(i<0?'Attack':(sk?sk.n:''))+(uiTouch()?'':(' ('+(tag==='L'?'left click':(badge==='R'?'right click':'right click, '+badge))+')'));
       const c=b.querySelector('canvas'),g=c.getContext('2d');
       g.clearRect(0,0,28,28);
       if(i>=100&&sk){g.fillStyle='#d0aa62';g.font='9px Cinzel,serif';g.textAlign='center';g.fillText(sk.ab,14,17)}

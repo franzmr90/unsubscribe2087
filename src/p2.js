@@ -504,7 +504,7 @@ function pdmg(m,e){
   /* Toxic Maximalism. The owner carries it. Anybody else only while they stand in it. */
   {let tox;if(P.allySwing)tox=(P.swingBody&&P.swingBody.toxL)||0;else{tox=(P.aura&&P.aura.i===3)?P.aura.L:0;if(P.toxL>tox)tox=P.toxL}if(tox)d*=toxicDmg(tox)}
   if(P.shr&&P.shr.k==='might')d*=1.5;
-  if(S.sp.exit&&e&&(e.champ||isBoss(e.k)))d*=1.5;
+  if(S.sp.exit&&e&&(e.champ||e.su||isBoss(e.k)))d*=1.5;
   if(S.sp.deadline&&P.movedT>0)d*=1.25;if(S.sp.tenmin&&e&&!e.hits)d*=1.6;if(G.cls==='founder'&&sl(13)&&!boonOn(13))d*=orgMul(!!P.allySwing);if(G.cls==='maxi'&&sl(10)&&P.aura)d*=nodeMul(!P.allySwing);else if(P.nodeM)d*=P.nodeM;if(P.fm&&P.fm.t>0)d*=P.fm.m;if(S.sp.hashrate)d*=1+.01*Math.min(40,P.streak);if(S.sp.quorum)d*=1+.05*Math.min(6,tanks().length+W.allies.filter(a=>a.k==='turret').length);
   let c=P.e82>0||Math.random()*100<S.crit;if(c)d*=S.critM;
   if(S.sp.severance&&Math.random()<.15){d*=3;c=true}
@@ -565,7 +565,7 @@ function kill(e,opt){
     save(true);P.inv=4;
     const rep=(b3?G.boss3Kills:b2?G.boss2Kills:G.bossKills)>1;
     setTimeout(()=>{if(rep){toast(ET[e.k].n+' falls again.');return}if(b3)playScene(ENDING3.concat(CLOCK3),()=>{mode='play';actDone(3)});else playScene(b2?ENDING2:endingSlides(),()=>{mode='play';actDone(b2?2:1)})},1400)}}
-function gainXp(v,fromParty,ml){if(fromParty!=='bank'&&G.act3&&(G.bankXp||0)>0)flushBank();if(fromParty!=='share'&&fromParty!=='bank'){if(P&&P.shr&&P.shr.k==='xp')v*=1.5;v*=(G.hc?1.25:1)*(SEA.k==='over'?1.2:1);if(!fromParty&&mpShareXp(v,ml))return}
+function gainXp(v,fromParty,ml){if(fromParty!=='bank'&&G.act3&&(G.bankXp||0)>0)flushBank();if(fromParty!=='share'&&fromParty!=='bank'){if(P&&P.shr&&P.shr.k==='xp')v*=1.5;v*=(G.hc?1.25:1)*(SEA.k==='over'?1.2:1)*(DF().xp||1);if(!fromParty&&mpShareXp(v,ml))return}
   if(G.lvl>=lvlCap()){paraXp(v);return}G.xp+=v;while(G.xp>=xpNext(G.lvl)&&G.lvl<lvlCap()){G.xp-=xpNext(G.lvl);G.lvl++;G.sp++;G.ap+=5;calc();G.hp=S.maxHp;G.en=S.maxEn;sfx('level');toast('Level '+G.lvl+'. One skill point, five attribute points, and a point for the web.');if(W&&W.fx&&P){W.fx.push({k:'ring',x:P.x,y:P.y,r:2.8,t:0,life:.7,col:'#ffe36b'});parts(P.x,P.y,24,['#ffe36b','#fff'],2,1.6)}}if(G.lvl>=lvlCap()&&G.xp>0){const left=G.xp;G.xp=0;paraXp(left)}}
 /* Hardcore does not re-onboard. Begin again throws this hero away, so a fee here would be a number that never lands. The notice prints whole credits, so the charge is the floor of the rate. */
 function deathFee(){if(G.hc)return 0;if(S.sp&&S.sp.coldwallet)return 0;if(G.act2)return Math.floor(G.credits*.15);const early=(G.deaths||0)<10,rate=early?.05:.08,cap=early?15:hireCost()*.08;return Math.floor(Math.min(G.credits*rate,cap))}
@@ -609,7 +609,7 @@ function attack(){
   else shoot(P.dir,c.mult,S.sp.deadletter||Math.random()*100<S.pierce?99:0);if(snd)DT=null}
 function smash(r){for(const o of W.objs)if(o.k==='crate'&&!o.used&&dist(o,P)<r)breakCrate(o)}
 function breakCrate(o){o.used=1;W.map[(o.y|0)*W.N+(o.x|0)]=1;sfx('crate');parts(o.x,o.y,10,['#9a7a4a','#6a5030','#c9a868'],2.5);dropFrom('crate',o.x,o.y,W.ml)}
-function shoot(d,m,pierce,o){o=o||{};const col=o.col||(G.cls==='hacker'?'#59e0e6':G.cls==='courier'||G.cls==='founder'?'#e6e2d6':'#c9a868'),dt=o.dt||DT||(P.fm&&P.fm.t>0&&P.fm.dt)||null,life=o.life||.7,spd=o.spd||11;
+function shoot(d,m,pierce,o){o=o||{};if(S&&S.sp&&S.sp.deadletter&&!(o.from&&(o.from.k==='minion'||o.from.k==='turret')))pierce=99;const col=o.col||(G.cls==='hacker'?'#59e0e6':G.cls==='courier'||G.cls==='founder'?'#e6e2d6':'#c9a868'),dt=o.dt||DT||(P.fm&&P.fm.t>0&&P.fm.dt)||null,life=o.life||.7,spd=o.spd||11;
   W.projs.push({x:(o.from||P).x,y:(o.from||P).y,vx:d.x*spd,vy:d.y*spd,life,m,pierce:pierce||0,done:[],col,big:o.big||0,kind:G.cls,nl:o.nl||0,dt,throw:o.throw?1:(G.cls==='courier'&&!o.from?1:0),ret:o.ret?1:0,split:o.split?1:0,lance:o.lance?1:0});
   if(G.cls==='courier'&&!o.from)P.lastThrow={dx:d.x,dy:d.y,m,pierce:pierce||0,dt,col,life,spd,ret:o.ret?1:0,split:o.split?1:0,lance:o.lance?1:0}}
 function burst(x,y,r,m,stun,col){W.fx.push({k:'ring',x,y,r,t:0,life:.35,col},{k:'ring',x,y,r:r*.6,t:0,life:.5,col:'#ffffff'});if(m){parts(x,y,10,[col,'#fff'],3,1.2);if(r>=2.4)W.decals.push({x,y,r:r*.3,a:rnd(0,3)})}if(OPT.shake)shake=Math.max(shake,3);if(m)sfx('boom');for(const e of W.ents.slice())if(Math.hypot(e.x-x,e.y-y)<r+e.r){if(stun)e.stun=Math.max(e.stun,stun);if(m)hit(e,m)}
@@ -839,7 +839,7 @@ Object.assign(SKF,{
   12:()=>{const mark=W.allies.find(a=>a.k==='ddrop'&&a.life>0);if(mark){if(free(mark.x,mark.y,P.r)){parts(P.x,P.y,8,['#3f3f4c','#fff'],2);P.x=mark.x;P.y=mark.y;parts(P.x,P.y,8,['#3f3f4c','#fff'],2)}mark.life=0;return}W.allies.push({k:'ddrop',x:P.x,y:P.y,life:1e9,r:.2})},
   14:(L)=>{const ms=W.allies.filter(a=>a.k==='mine'||(a.k==='minion'&&a.kind==='clone'));if(!ms.length){toast('You have nothing to disown');return}for(const a of ms){a.hush=1;W.fx.push({k:'ring',x:a.x,y:a.y,r:3.2,t:0,life:.35,col:'#d98cff'});for(const e of W.ents)if(dist(e,a)<3.2)e.quiet=Math.max(e.quiet||0,2+.15*L);a.life=0}P.stealth=3+.2*L;P.haste=P.stealth;parts(P.x,P.y,14,['#3f3f4c','#888'],2)}},
  founder:{
-  0:(L,m)=>summon({kind:'intern',per:1,m:(.35+.05*L)*m*(S.sp.check?1.25:1),ivl:.7,hp:S.maxHp*.55,max:S.maxHp*.55,taunt:1,r:.32,armM:.9},Math.min(7,2+Math.floor(L/2))+(S.sp.check?2:0)),
+  0:(L,m)=>summon({kind:'intern',per:1,m:(.35+.05*L)*m,ivl:.7,hp:S.maxHp*.55,max:S.maxHp*.55,taunt:1,r:.32,armM:.9},Math.min(7,2+Math.floor(L/2))+(S.sp.check?2:0)),
   1:(L,m)=>{const s=castSpot(7),t=s?null:nearest(7),c=s||t||{x:P.x+P.dir.x*3,y:P.y+P.dir.y*3};fxAim('patch',c.x,c.y,3);for(const e of W.ents.slice())if(dist(e,c)<3+e.r){e.stun=Math.max(e.stun,2+.3*L);hit(e,(.8+.15*L)*m)}},
   3:(L,m)=>summon({kind:'drone',per:1,m:(.45+.07*L)*m,ivl:.8,rng:5.5,hp:S.maxHp*.4,max:S.maxHp*.4,taunt:1,r:.28,armM:1},1+Math.floor(L/3)),
   4:(L,m)=>{P.crunch=8+L},
@@ -885,8 +885,9 @@ Object.assign(SKF,{
 });
 
 /* Drag-to-aim. aim 'auto' drags on a finger and casts at once from a mouse or a key.
-   'drag' always shows the reticle. 'quick' never does. A right click stays instant
-   and does not set P.spot, so the held-button path is untouched. */
+   'drag' always shows the reticle. 'quick' never does. A right click on a foe walks
+   into range, then mouseFire aims that cast. It does not open the reticle, so the
+   held-button retry and the button drag are untouched. */
 let AIMING=null,lastPtr=null;
 const AIM={
   scrapper:{
@@ -1077,8 +1078,9 @@ function findAct(){for(const o of W.objs)if(o.k==='qobj'&&!o.used&&Math.hypot(o.
 
 /* ================= desktop, Diablo II =================
    Left click walks (and walks into range to use the left skill). Right click
-   casts the right skill at the pointer. F1-F8 bind a skill under the picker
-   and, in play, swap that binding onto the right slot. Saved on the hero. */
+   on a foe walks into that skill's reach and casts at them. Shift keeps the
+   cast where you stand. Empty ground casts at the pointer. F1-F8 bind a skill
+   under the picker and, in play, swap that binding onto the right slot. */
 let MO=null,HOVER=null,MBTN={l:0,r:0};
 const LEFTSK={
   scrapper:[0,1,3,4,7,12],
@@ -1114,6 +1116,17 @@ function leftReach(){
   const far={hacker:{0:6.2,1:6.5,14:7},courier:{0:6,6:6.5,7:6,9:6,12:6},scrapper:{1:6.2},maxi:{6:6,12:6.5}};
   const m=far[G.cls];
   return (m&&m[i])||2.15;
+}
+/* How close a right-click has to get before it may fire. A reach of 0 is a cast that stays at your feet. */
+function castReach(i){
+  if(!(i>=0))return (CLS[G.cls].melee||(typeof hsMelee==='function'&&hsMelee()))?1.65:5.6;
+  if(i>=100)return 0;
+  const spec=aimSpec(i);
+  if(spec)return spec.reach>0?spec.reach:0;
+  const far={hacker:{0:6.2,1:6.5,14:7},courier:{0:6,6:6.5,7:6,9:6,12:6},scrapper:{1:6.2},maxi:{6:6,12:6.5}};
+  const m=far[G.cls];
+  if(m&&m[i]!=null)return m[i];
+  return 1.65;
 }
 function pathFind(tx,ty){
   if(!W||!P)return null;
@@ -1216,8 +1229,9 @@ function setMouseOrder(which,wx,wy,shift,h,holding){
   if(which!=='right'&&G.mouse&&G.mouse.L>=100&&itemSkillOn(G.mouse.L)&&!(h&&(h.kind==='npc'||h.kind==='use'||h.kind==='item'))){MO={k:'isk',i:G.mouse.L,x:wx,y:wy};return}
   if(which==='right'){
     const e=h&&h.kind==='foe'?h.o:null;
-    if(MO&&MO.k==='cast'&&MO.hold&&MO.e===e){MO.x=wx;MO.y=wy;return}
-    MO={k:'cast',x:wx,y:wy,e,stand:true,hold:!!holding,did:0,dry:0};
+    const stand=!!shift||!e;
+    if(MO&&MO.k==='cast'&&MO.hold&&MO.e===e){MO.x=wx;MO.y=wy;MO.stand=stand;return}
+    MO={k:'cast',x:wx,y:wy,e,stand,hold:!!holding,did:0,dry:0};
     return}
   if(!shift&&h&&h.kind==='foe'){
     if(MO&&MO.k==='atk'&&MO.hold&&MO.e===h.o){MO.x=h.x;MO.y=h.y;return}
@@ -1246,12 +1260,18 @@ function mouseUp(which){
   MO.hold=0;
   if(MO.k!=='move'&&MO.did)MO=null}
 function mouseFire(i,e,x,y){
-  if(i>=100){P.blinkAt=(x!=null)?{x:x,y:y}:null;castIndex(i);P.blinkAt=null;return}
-  if(e&&e.hp>0){P.aim=e;face(e)}
-  else if(x!=null){const d=Math.hypot(x-P.x,y-P.y)||.001;P.dir={x:(x-P.x)/d,y:(y-P.y)/d};P.aim=null}
-  if(!(i>=0))attack();
-  else castIndex(i);
-  P.aim=null}
+  const spec=(i>=0&&i<100)?aimSpec(i):null;
+  const spot=spec?(e&&e.hp>0?{x:e.x,y:e.y}:(x!=null?{x:x,y:y}:null)):null;
+  if(spot)P.spot=spot;
+  try{
+    if(i>=100){P.blinkAt=(e&&e.hp>0)?{x:e.x,y:e.y}:(x!=null?{x:x,y:y}:null);castIndex(i);return}
+    if(e&&e.hp>0){P.aim=e;if(!spot)face(e)}
+    else if(x!=null&&!spot){const d=Math.hypot(x-P.x,y-P.y)||.001;P.dir={x:(x-P.x)/d,y:(y-P.y)/d};P.aim=null}
+    if(!(i>=0))attack();
+    else castIndex(i);
+    P.aim=null;
+  }finally{if(spot)P.spot=null;P.blinkAt=null}
+}
 function hotBind(f,i){
   ensureMouse();f=f|0;if(f<0||f>7)return;
   if(i!==-1&&!learnedAct(i))return;
@@ -1325,9 +1345,10 @@ function mouseStep(dt){
     if(Math.hypot(MO.x-P.x,MO.y-P.y)<(MO.r||1.15)){const fn=MO.fn;MO=null;try{fn()}catch(err){}return}
     step(MO.x,MO.y);return}
   if(MO.e&&(MO.e.hp<=0||W.ents.indexOf(MO.e)<0)){
-    if(MO.k==='atk'&&!MO.stand){MO=null;return}
+    if((MO.k==='atk'||MO.k==='cast')&&!MO.stand){MO=null;return}
     MO.e=null}
   if(MO.k==='atk'&&!MO.stand&&MO.e&&dist(MO.e,P)>leftReach()){step(MO.e.x,MO.e.y);face(MO.e);return}
+  if(MO.k==='cast'&&!MO.stand&&MO.e){const reach=castReach(G.mouse.R);if(reach>0&&dist(MO.e,P)>reach){step(MO.e.x,MO.e.y);face(MO.e);return}}
   const i=MO.k==='cast'?G.mouse.R:G.mouse.L;
   const idx=(MO.k==='atk'&&(!(i>=0)||!learnedAct(i)||!leftOk(i)))?-1:i;
   if(idx>=0&&(P.cd[idx]>0||P.castWait>0)){
@@ -1422,8 +1443,8 @@ function update(dt){
       /* Permanent staff catch up at 8, unless this swing is already in range. Timed minions keep 14. */
       if(a.per?home>(t&&d<=rg+(t.r||0)?13:8):home>14){a.x=P.x;a.y=P.y}else if(d>(t?rg*.8:1.5+(a.off||0))){a.x+=(g.x-a.x)/d*sp;a.y+=(g.y-a.y)/d*sp;a.fx=(g.x-a.x)-(g.y-a.y)>0?1:-1;a.mov=true}
       if(a.e){a.e.x=a.x;a.e.y=a.y;a.e.ph+=dt;a.e.fx=a.fx;a.e.hp=a.hp}
-      if(t&&d<rg+t.r&&a.cd<=0){a.cd=(a.ivl||.6)*(cr?.6:1)/toxicSwing(a);const m=a.m*(a.per&&G.cls==='founder'?1+.08*sl(2):1)*(cr?1.3:1)*vestMul(a);
-        const strike=snd=>{if(a.raw){const prev=DT;if(!snd)DT=foeType(a.e)||'impact';P.holdTy=1;const out=typed(t,a.raw*orgMul(true)*vestMul(a)*toxicDmg(a.toxL));P.holdTy=0;DT=prev;dmgEnemy(t,out,false);return}if(snd||!(rg>2)){P.swingBody=a;P.allySwing=1;hit(t,m,true);P.allySwing=0;P.swingBody=null;if(a.aoe)for(const o of W.ents.slice())if(o!==t&&!(o.nc>0)&&dist(o,t)<1.7){P.swingBody=a;P.allySwing=1;hit(o,m*.6,true);P.allySwing=0;P.swingBody=null}}else{sfx('throw');shoot({x:(t.x-a.x)/d,y:(t.y-a.y)/d},m,0,{from:a,life:.6,col:'#e0bd6e',nl:1})}};
+      if(t&&d<rg+t.r&&a.cd<=0){a.cd=(a.ivl||.6)*(cr?.6:1)/toxicSwing(a);const m=a.m*(a.per&&G.cls==='founder'?1+.08*sl(2):1)*(S.sp.check&&a.per?1.25:1)*(cr?1.3:1)*vestMul(a);
+        const strike=snd=>{if(a.raw){const prev=DT;if(!snd)DT=foeType(a.e)||'impact';P.holdTy=1;const out=typed(t,a.raw*orgMul(true)*vestMul(a)*toxicDmg(a.toxL)*(S.sp.check&&a.per?1.25:1));P.holdTy=0;DT=prev;dmgEnemy(t,out,false);return}if(snd||!(rg>2)){P.swingBody=a;P.allySwing=1;hit(t,m,true);P.allySwing=0;P.swingBody=null;if(a.aoe)for(const o of W.ents.slice())if(o!==t&&!(o.nc>0)&&dist(o,t)<1.7){P.swingBody=a;P.allySwing=1;hit(o,m*.6,true);P.allySwing=0;P.swingBody=null}}else{sfx('throw');shoot({x:(t.x-a.x)/d,y:(t.y-a.y)/d},m,0,{from:a,life:.6,col:'#e0bd6e',nl:1})}};
         if(a.soundSwing)witWrap(a,strike);else{const ph=P.partyHit;P.partyHit=1;strike(false);P.partyHit=ph}}}
     if(a.k==='mine'){a.arm-=dt;if(a.arm<=0&&nearest(1.3,a)){if(!a.cut&&G.cls==='anon'&&sl(13)&&!boonOn(13))a.cut=1;else a.life=0}}
     if(a.k==='raid'&&a.cd<=0){a.cd=.13;const c2=W.ents.filter(e=>dist(e,P)<9);if(c2.length){const t=pick(c2);W.fx.push({k:'bolt',x:t.x+rnd(-5,5),y:t.y-rnd(3,6),x2:t.x,y2:t.y,t:0,life:.18,col:'#e6e2d6'});hit(t,a.m)}}

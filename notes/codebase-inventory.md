@@ -10,11 +10,10 @@ the `WARMS` passive lattice; *tier* = single-player replay difficulty (`G.tier`)
 
 ## Summary
 
-- **6 classes**, **15 skills each** in a 5×3 grid — but rows 4 and 5 are not hand-authored.
-  They are three generic passive boons per class pushed in a loop (p1.js:90, :94), so only
-  **9 skills per class are real**.
-- **No `SKF` gaps**: every active skill in all 6 classes has an implementation.
-- Items are a faithful D2 skeleton: `AFX` prefix/suffix tiers, `UNI` (24 uniques),
+- **8 classes**, **15 skills each** in a 5×3 grid. Homesteader and Witness are in `CLS`
+  beside the original six. The Maximalist stays locked until the story flag.
+- **No `SKF` gaps**: every active skill in all 8 classes has an implementation.
+- Items are a faithful D2 skeleton: `AFX` prefix/suffix tiers, `UNI` (89 uniques),
   **exactly one set** (`SETS.striker`, 3 pieces), `TC` drop tables (22 entries) with a real
   diminishing-MF curve (`MFK`/`qChance`).
 - **Multiplayer is the most finished and best-tested subsystem**: 474 lines of server, 18
@@ -33,17 +32,17 @@ the `WARMS` passive lattice; *tier* = single-player replay difficulty (`G.tier`)
 | hacker | Technomancer | 85 | 12 | no | 1.1 | .62 | 4.1 |
 | courier | Runner | 100 | 14 | no | .82 | .4 | 4.8 |
 | anon | Anon | 95 | 13 | yes | 1 | .42 | 4.7 |
-| founder | Founder | 90 | 12 | no | .7 | .6 | 4 |
-| maxi | The Maximalist | 104 | 14 | yes | 1.2 | .5 | 4.2 |
+| founder | Founder | 102 | 13 | no | .7 | .6 | 4 |
+| homesteader | Homesteader | 120 | 16 | no | 1 | .55 | 4.3 |
+| witness | Witness | 102 | 13 | yes | .8 | .68 | 4.2 |
+| maxi | The Maximalist | 118 | 15 | yes | 1.2 | .5 | 4.2 |
 
 Maxi is story-locked (`maxiCheck`).
 
 **Tree shape.** `ROWREQ=[1,4,9,26,51]`. Row = `floor(i/3)`, 3 skills per row, 5 rows, max
-rank 10. Gating (p4.js:339): level ≥ `ROWREQ[row]`, the skill directly above (`i-3`) needs
-≥1 point, row 3 needs `G.act2`, row 4 needs `G.act3`. Rows 1–3 are authored per class. Row 4
-is appended at p1.js:90 (`BOON.strike`/`mend`/`aura`, named by `BN`); row 5 at p1.js:94
-(`nova`/`mastery`/`guardian`, named by `BN3`). **All six boons are passive and mechanically
-identical across classes — only the name differs.**
+rank 10. Gating: level ≥ `ROWREQ[row]`, the skill directly above (`i-3`) needs ≥1 point,
+row 3 needs `G.act2`, row 4 needs `G.act3`. All fifteen skills are authored on the class.
+Life and life-per-level come from `FORMULAS.cls`.
 
 **Implementations.** `SKF` (p2.js:456, extended :480). Monster/companion AI reuses `SKF`
 (p10.js:247). Fork modifiers (`FORKS`, p7.js:2) wrap casts: `over`, `lean`, `echo`,
@@ -58,7 +57,7 @@ points. A full class change is `shapeShift` for 5 sats, keeping level, gear and 
 
 **`DOCS`** = doctrines, three mutually exclusive stat trade-offs per class. **`BUILDS`** =
 three preset plans per class (`doc`, `at`, `pr`, `sl`, `pa`, `web`), applied by
-`buildApply`, summarised by `buildSummary`. All six classes have entries in both.
+`buildApply`, summarised by `buildSummary`. All eight classes have entries in both.
 
 ## Items
 
@@ -72,8 +71,8 @@ sockets roll 40% on normal weapon/helm/armor (1–3, helm max 2) and 15% on magi
 `req=floor(il*.75)`. `tierOf(il)` = 4 base tiers at il 7/15/22. Item level from
 `zoneLevel(z)=z.lvl+G.tier*12`.
 
-**Uniques:** 24, five `bossOnly`, six with no special. **Sets: one** — `SETS.striker`, 3
-pieces.
+**Uniques:** 89. A `sp: null` entry is stats and flavor; the special, when there is one,
+is `S.sp.<id>`. **Sets: one** — `SETS.striker`, 3 pieces.
 
 **Drop tables.** `TC`, 22 entries: `picks`, `no`, `gold`, `item`, `stim`, optional
 `goldMul`/`jewel`, and `q:{u,s,r,m}` as 1-in-N odds. **MF maths:** `MFK={u:250,s:500,r:600}`;

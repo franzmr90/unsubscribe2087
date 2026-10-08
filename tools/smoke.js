@@ -4,7 +4,8 @@
 const {chromium}=require('playwright');const fs=require('fs');const path=require('path');
 const OUT=process.argv[2];
 (async()=>{
-const b=await chromium.launch();
+const CHROME=process.env.PW_CHROMIUM||'/usr/local/bin/google-chrome';
+const b=await chromium.launch({executablePath:CHROME,args:['--no-sandbox','--disable-dev-shm-usage']});
 const p=await b.newPage({viewport:{width:390,height:800}});
 const errs=[];p.on('pageerror',e=>errs.push(e.message+' @ '+(e.stack||'').split('\n')[1]));
 const root=path.join(__dirname,'..');

@@ -35,11 +35,16 @@ function walk(dir, acc) {
 }
 function snap(files) {
   const o = {};
-  for (const f of files) if (fs.existsSync(f)) o[f] = fs.readFileSync(f);
-  return o;
+  const missing = [];
+  for (const f of files) {
+    if (fs.existsSync(f)) o[f] = fs.readFileSync(f);
+    else missing.push(f);
+  }
+  return { files: o, missing };
 }
 function restore(saved) {
-  for (const f of Object.keys(saved)) fs.writeFileSync(f, saved[f]);
+  for (const f of Object.keys(saved.files)) fs.writeFileSync(f, saved.files[f]);
+  for (const f of saved.missing) { try { fs.unlinkSync(f); } catch (e) {} }
 }
 function fail(msg) {
   process.stderr.write(msg + '\n');
@@ -76,6 +81,7 @@ function main() {
 
   try {
     run('sh', ['build.sh'], { stdio: 'inherit' });
+    run('node', ['tools/text/export.js'], { stdio: 'inherit' });
     const before = sha(STAND);
     process.stdout.write('pre-import sha256 ' + before + '\n');
 
