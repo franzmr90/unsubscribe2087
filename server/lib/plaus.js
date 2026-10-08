@@ -8,7 +8,7 @@
 /* Same towns as live.js. Inlined so this file does not require live.js. */
 const TOWNS = new Set([0, 17, 18, 21, 27]);
 
-const { FORMULAS, braceKeep, toxicSwingMul } = require('../../src/formulas');
+const { FORMULAS, braceKeep, toxicSwingMul, auraRadius } = require('../../src/formulas');
 const CLS = FORMULAS.cls;
 const LIFE = FORMULAS.life;
 const PVP = FORMULAS.pvp;
@@ -35,6 +35,10 @@ const SWING_MS = 80;
 const SWING_MAX = 24;
 const RATE_WINDOW = 1000;
 const RATE_SLACK = 2;
+/* Holder pulses (Proof of Work, a fault, a storm, a plot) are not swings.
+   Two pulses a second across a crowded screen, with a little slack. */
+const AREA_WINDOW = 1000;
+const AREA_CAP = 96;
 
 /* Life ceiling, heal clamps, and the PvP chip live in src/formulas.js. */
 
@@ -106,6 +110,41 @@ function hitOk(p, rec, sk, cover) {
     console.log('[hit] rate ' + (p.name || '?'));
     return false;
   }
+  return true;
+}
+
+/* An area tick is a pulse the holder already owns. It must not spend the swing
+   window, and it has its own cap so a modified client cannot turn it into a stream. */
+function areaOk(p, rec, sk) {
+  const n = sk == null ? -1 : (sk | 0);
+  let reach = 0;
+  if (n === 7) reach = auraRadius(7, (p && p.aL) || 1) + 2.2;
+  else if (n === 9) reach = 14;
+  else if (n === 10) reach = 10;
+  else if (n === -3) reach = 8;
+  else {
+    hitRej++;
+    return false;
+  }
+  const dx = (+p.x || 0) - (+rec.x || 0);
+  const dy = (+p.y || 0) - (+rec.y || 0);
+  if (Math.hypot(dx, dy) > reach + SLACK) {
+    hitRej++;
+    console.log('[hit] area ' + (p.name || '?'));
+    return false;
+  }
+  const now = Date.now();
+  if (!p.areaWin) p.areaWin = [];
+  const win = p.areaWin;
+  let i = 0;
+  while (i < win.length && now - win[i] >= AREA_WINDOW) i++;
+  if (i) win.splice(0, i);
+  if (win.length >= AREA_CAP) {
+    hitRej++;
+    console.log('[hit] area rate ' + (p.name || '?'));
+    return false;
+  }
+  win.push(now);
   return true;
 }
 
@@ -208,8 +247,10 @@ function clampVitals(p, m, now, cover) {
         held = true;
       }
     }
+    const pail = p.pailCredit || 0;
+    p.pailCredit = 0;
     if (!held && hp > p.hp + 1) {
-      const allowed = allowGain(p, hp - p.hp, dt);
+      const allowed = allowGain(p, hp - p.hp, dt) + pail;
       if (hp > p.hp + allowed + 1) {
         hpFlag++;
         console.log('[hp] heal ' + (p.name || '?'));
@@ -225,7 +266,7 @@ function takeHitRej() { const n = hitRej; hitRej = 0; return n; }
 function takeHpFlag() { const n = hpFlag; hpFlag = 0; return n; }
 
 module.exports = {
-  CLS, REACH, SLACK, CAST_FLOOR, ASPD_DIV, SWING_MS, RATE_SLACK,
-  reachOf, minGapMs, allowBurst, hitOk, lifeCap, healPerSec, clampVitals, notePvp, pvpOwed,
+  CLS, REACH, SLACK, CAST_FLOOR, ASPD_DIV, SWING_MS, RATE_SLACK, AREA_CAP,
+  reachOf, minGapMs, allowBurst, hitOk, areaOk, lifeCap, healPerSec, clampVitals, notePvp, pvpOwed,
   braceKeep, takeHitRej, takeHpFlag
 };

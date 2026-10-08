@@ -119,6 +119,110 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   ok('party members may roll the drop and a stranger may not', !!(ka && kb && kc && ka.loot === 1 && kb.loot === 1 && kc.loot === 0), JSON.stringify({ ka, kb, kc }));
   ok('the experience is one pool split across the party', !!(xa && xb && xa.amount > 0 && xb.amount > 0 && of(C, 'mxp').length === 0), JSON.stringify({ xa, xb, c: of(C, 'mxp') }));
 
+  /* Aura rank and Running a Node. Rank 1 is not what a skilled aura reports. */
+  A.seen.length = 0; B.seen.length = 0;
+  A.send({ t: 'move', x: 10, y: 10, zi: 1, tier: 0, hp: 200, hpm: 400, lvl: 20, au: 7, aL: 10, node: 8 });
+  await wait(40);
+  const nodeRow = (of(B, 'zone').pop().players || []).find(p => p.name === 'Ada');
+  ok('aura rank and Running a Node rank are forwarded', !!(nodeRow && nodeRow.au === 7 && nodeRow.aL === 10 && nodeRow.node === 8), JSON.stringify(nodeRow && { au: nodeRow.au, aL: nodeRow.aL, node: nodeRow.node }));
+
+  /* Item skills are not class skills. 102 must pass. 15 must not. */
+  A.send({ t: 'move', x: 10, y: 10, zi: 1, tier: 0, hp: 200, hpm: 400, lvl: 20, sk: 102 });
+  await wait(30);
+  const book = (of(B, 'zone').pop().players || []).find(p => p.name === 'Ada');
+  ok('an item skill cast is forwarded', !!(book && book.sk === 102), JSON.stringify(book && book.sk));
+  A.send({ t: 'move', x: 10, y: 10, zi: 1, tier: 0, hp: 200, hpm: 400, lvl: 20, sk: 15 });
+  await wait(30);
+  const dropped = (of(B, 'zone').pop().players || []).find(p => p.name === 'Ada');
+  ok('a skill index past the class row is dropped', !!(dropped && dropped.sk == null), JSON.stringify(dropped && dropped.sk));
+
+  /* Testimony and On the Record live on the mob snapshot. */
+  A.send({ t: 'mobs', zi: 1, tier: 0, list: [{ id: 9, k: 'tick', x: 10, y: 12, hp: 400, max: 400, ml: 8 }] });
+  await wait(30);
+  B.send({ t: 'move', x: 11, y: 12, zi: 1, tier: 0, hp: 200, hpm: 400, lvl: 20, nm: 6, tes: { 9: 4 } });
+  await wait(40);
+  const tesSnap = of(A, 'mobs').slice().reverse().find(m => (m.list || []).some(r => r.id === 9 && r.tes));
+  const tesRow = tesSnap && tesSnap.list.find(r => r.id === 9);
+  ok('testimony is on the mob snapshot', !!(tesRow && tesRow.tes === 4), JSON.stringify(tesRow && tesRow.tes));
+  A.send({ t: 'curse', id: 9, k: 'rec', m: 1.48, sec: 8 });
+  await wait(20);
+  A.send({ t: 'mobs', zi: 1, tier: 0, list: [{ id: 9, k: 'tick', x: 10, y: 12, hp: 400, max: 400, ml: 8 }] });
+  await wait(30);
+  const recSnap = of(B, 'mobs').slice().reverse().find(m => (m.list || []).some(r => r.id === 9 && r.curse));
+  const recRow = recSnap && recSnap.list.find(r => r.id === 9);
+  ok('On the Record stays on the mob snapshot', !!(recRow && recRow.curse && recRow.curse.k === 'rec' && recRow.curse.m > 1), JSON.stringify(recRow && recRow.curse));
+
+  /* Lunch pail: one store. A second draw in the same instant does not spend it again. */
+  A.send({ t: 'move', x: 10, y: 10, zi: 1, tier: 0, hp: 200, hpm: 400, lvl: 20, pail: { x: 10, y: 10, L: 1, hp: 100, max: 100 } });
+  B.send({ t: 'move', x: 10.4, y: 10, zi: 1, tier: 0, hp: 200, hpm: 400, lvl: 20 });
+  await wait(40);
+  const placed = (of(B, 'zone').pop().players || []).find(p => p.name === 'Ada');
+  ok('the lunch pail relays position, rank, and store', !!(placed && placed.pail && placed.pail.L === 1 && placed.pail.hp === 100 && placed.pail.x === 10), JSON.stringify(placed && placed.pail));
+  A.seen.length = 0; B.seen.length = 0;
+  A.send({ t: 'pail', draw: [{ k: 'self' }, { k: bea }] });
+  await wait(30);
+  const once = of(A, 'pail').pop();
+  const granted = once && once.grants ? once.grants.reduce((s, g) => s + g.n, 0) : 0;
+  const beaHeal = of(B, 'pail').filter(m => m.n > 0).reduce((s, m) => s + m.n, 0);
+  ok('one pail heals the party from one store', !!(once && granted >= 2 && granted === (100 - once.hp) && beaHeal >= 1 && beaHeal < granted), JSON.stringify({ granted, beaHeal, hp: once && once.hp }));
+  const left = once ? once.hp : 100;
+  const replies = of(A, 'pail').length;
+  A.send({ t: 'pail', draw: [{ k: 'self' }, { k: bea }] });
+  B.send({ t: 'pail', draw: [{ k: 'self' }] });
+  await wait(30);
+  const storeNow = who('Ada').pailStore || 0;
+  ok('a second draw does not spend the pail again', storeNow === left && of(A, 'pail').length === replies, JSON.stringify({ left, storeNow, replies, now: of(A, 'pail').length }));
+  A.send({ t: 'move', x: 10, y: 10, zi: 1, tier: 0, hp: 200, hpm: 400, lvl: 20, pail: { x: 10, y: 10, L: 1, hp: 100, max: 100 } });
+  await wait(30);
+  ok('reporting the pail full again does not refill it', (who('Ada').pailStore || 0) === left, String(who('Ada').pailStore));
+
+  /* Unnamed Source, when the nearest ally is the other player. */
+  A.seen.length = 0; B.seen.length = 0;
+  A.send({ t: 'lend', uid: bea });
+  A.send({ t: 'lend', uid: who('Cid').uid });
+  await wait(30);
+  ok('Unnamed Source reaches the other player', of(B, 'lend').length === 1 && of(C, 'lend').length === 0, JSON.stringify({ b: of(B, 'lend').length, c: of(C, 'lend').length }));
+
+  /* Proof of Work is an area tick. It does not spend the swing window, and it has its own cap. */
+  await wait(1100);
+  /* max has to sit near the card or the server replaces it. A tick at ml 5 holds about 24, which dies before the area cap. */
+  A.send({ t: 'mobs', zi: 1, tier: 0, list: [{ id: 8, k: 'boss5', x: 10, y: 10, hp: 400000, max: 400000, ml: 20 }] });
+  B.send({ t: 'move', x: 10, y: 10, zi: 1, tier: 0, hp: 200, hpm: 400, lvl: 20, au: 7, aL: 1 });
+  await wait(40);
+  B.seen.length = 0;
+  for (let i = 0; i < 20; i++) B.send({ t: 'mhit', zi: 1, tier: 0, id: 8, d: 1, sk: -1 });
+  await wait(40);
+  const swingLanded = of(B, 'mhp').length;
+  const swingCap = Math.ceil(1000 / plaus.minGapMs('courier')) + plaus.RATE_SLACK;
+  B.seen.length = 0;
+  for (let i = 0; i < 12; i++) B.send({ t: 'mhit', zi: 1, tier: 0, id: 8, d: 1, sk: 7, area: 1 });
+  await wait(40);
+  const areaLanded = of(B, 'mhp').length;
+  B.seen.length = 0;
+  for (let i = 0; i < 8; i++) B.send({ t: 'mhit', zi: 1, tier: 0, id: 8, d: 1, sk: -1 });
+  await wait(30);
+  const stillFull = of(B, 'mhp').length;
+  ok('area ticks land after the swing window is full', swingLanded > 0 && swingLanded <= swingCap && areaLanded === 12, JSON.stringify({ swingLanded, swingCap, areaLanded }));
+  ok('area ticks do not refill the swing window', stillFull === 0, String(stillFull));
+  /* The twelve above are still inside the one-second window. The cap is what is left of it. */
+  await wait(1100);
+  B.send({ t: 'move', x: 10, y: 10, zi: 1, tier: 0, hp: 200, hpm: 400, lvl: 20, au: 7, aL: 1 });
+  await wait(30);
+  B.seen.length = 0;
+  const burst = plaus.AREA_CAP + 14;
+  for (let i = 0; i < burst; i++) B.send({ t: 'mhit', zi: 1, tier: 0, id: 8, d: 1, sk: 7, area: 1 });
+  await wait(80);
+  const flooded = of(B, 'mhp').length;
+  ok('area ticks stop at their own cap', flooded === plaus.AREA_CAP, String(flooded));
+  await wait(1100);
+  B.send({ t: 'move', x: 40, y: 10, zi: 1, tier: 0, hp: 200, hpm: 400, lvl: 20 });
+  await wait(30);
+  B.seen.length = 0;
+  B.send({ t: 'mhit', zi: 1, tier: 0, id: 8, d: 1, sk: 7, area: 1 });
+  B.send({ t: 'mhit', zi: 1, tier: 0, id: 8, d: 1, sk: -1, area: 1 });
+  await wait(30);
+  ok('an area tick outside the pulse, or with a swing skill, does not land', of(B, 'mhp').length === 0, String(of(B, 'mhp').length));
+
   /* Trade. Both confirm once. A drop before that cancels. A second confirm does not mint a second trade. */
   function item(tid, name) { return { tid, name, slot: 'helm', il: 4, q: 1, base: 'Cap', aff: [], id: true, val: 8, req: 1 }; }
   A.send({ t: 'move', x: 3, y: 3, zi: 0, tier: 0, hp: 200, hpm: 400, lvl: 20 });
@@ -258,6 +362,24 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   await wait(80);
   ok('a disconnect during the swap cancels it', of(A, 'trade').some(m => m.phase === 'dead'));
   ok('a disconnect during the swap leaves nothing to apply twice', !of(A, 'trade').some(m => m.phase === 'done'));
+
+  /* PvP carries the damage type and the crit multiplier. Town first, then the arm, then the lock. */
+  const cid = who('Cid').uid;
+  A.send({ t: 'move', x: 3, y: 3, zi: 0, tier: 0, hp: 200, hpm: 400, lvl: 20 });
+  C.send({ t: 'move', x: 4, y: 3, zi: 0, tier: 0, hp: 200, hpm: 400, lvl: 20 });
+  await wait(3200);
+  A.send({ t: 'hostile', uid: cid });
+  await wait(10200);
+  A.send({ t: 'move', x: 12, y: 12, zi: 1, tier: 0, hp: 200, hpm: 400, lvl: 20 });
+  C.send({ t: 'move', x: 12.4, y: 12, zi: 1, tier: 0, hp: 200, hpm: 400, lvl: 20 });
+  await wait(5300);
+  C.seen.length = 0;
+  A.send({ t: 'pvp', uid: cid, dmg: 80, kind: 'crit', dty: 'heat', critM: 3.5 });
+  A.send({ t: 'pvp', uid: cid, dmg: 80, kind: '', dty: 'nope', critM: 9 });
+  await wait(40);
+  const hits = of(C, 'pvp');
+  ok('a player hit carries the damage type and the crit multiplier', !!(hits[0] && hits[0].dty === 'heat' && hits[0].kind === 'crit' && hits[0].critM === 3.5), JSON.stringify(hits[0]));
+  ok('a bad type falls back to impact and a wild crit multiplier does not', !!(hits[1] && hits[1].dty === 'impact' && !hits[1].critM), JSON.stringify(hits[1]));
 
   A.s.close(); C.s.close();
   await wait(200);

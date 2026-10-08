@@ -28,7 +28,7 @@ const { buildId } = require('./buildid');
 const intake = require('./intake');
 const plaus = require('./plaus');
 const { turnCfg } = require('./turn');
-const { FORMULAS, auraRadius, auraRank } = require('../../src/formulas');
+const { FORMULAS, auraRadius, auraRank, pailMax, pailRate } = require('../../src/formulas');
 
 const MAX_GAME = 8;                /* Diablo II's number, and the reason this scales */
 const MAX_PARTY = 8;
@@ -164,8 +164,11 @@ function pub(p) {
 function skillIx(v) {
   if (typeof v !== 'number' || !Number.isFinite(v)) return null;
   const n = v | 0;
-  if (n !== v || n < 0 || n > 14) return null;
-  return n;
+  if (n !== v || n < 0) return null;
+  if (n <= 14) return n;
+  /* Item skills. Standing Call, Open Book, and Quiet Ledger sit at 101–103. */
+  if (n >= 100 && n <= 105) return n;
+  return null;
 }
 function auraIx(v) { return v === 3 || v === 4 || v === 7 ? v : null; }
 function loc(p) {
@@ -173,7 +176,8 @@ function loc(p) {
   return {
     uid: p.uid, name: p.name, lvl: p.lvl, cls: p.cls, x: p.x, y: p.y, hp: p.hp, hpm: p.hpm, dir: p.dir,
     sk: p.sk == null ? null : p.sk, au: p.au == null ? null : p.au, aL: p.au ? (p.aL || 1) : 0,
-    node: p.au ? (p.node || 0) : 0, nm: p.nm || 0, bf: bf, tes: p.tes || null, sw: p.sw ? 1 : 0
+    node: p.au ? (p.node || 0) : 0, nm: p.nm || 0, bf: bf, tes: p.tes || null, sw: p.sw ? 1 : 0,
+    pail: pailLoc(p)
   };
 }
 
@@ -200,6 +204,82 @@ function cleanTes(v) {
     n++;
   }
   return n ? out : null;
+}
+function mobStacks(r) {
+  if (!r || !r.tesBy) return 0;
+  let n = 0;
+  for (const u in r.tesBy) n = Math.max(n, r.tesBy[u] | 0);
+  return n;
+}
+/* The witness's testimony map is stamped onto the machines, so a guest reads it
+   from the mob snapshot and not only from the witness's own position packet. */
+function stampTes(p) {
+  const g = gameOf(p);
+  if (!g || TOWNS.has(p.zi | 0)) return 0;
+  const sample = mobSample(p);
+  const z = g.zones && g.zones[mobKey(sample.zi, sample.tier, sample.inst)];
+  if (!z) return 0;
+  const map = p.tes || {};
+  let changed = 0;
+  for (const id in z.mobs) {
+    const rec = z.mobs[id];
+    if (!rec || !rec.tesBy || !(p.uid in rec.tesBy)) continue;
+    if (!map[id]) { delete rec.tesBy[p.uid]; changed = 1; }
+  }
+  for (const id in map) {
+    const rec = z.mobs[id];
+    if (!rec || rec.dead) continue;
+    rec.tesBy = rec.tesBy || {};
+    if (rec.tesBy[p.uid] !== map[id]) { rec.tesBy[p.uid] = map[id]; changed = 1; }
+  }
+  return changed;
+}
+function pushMobSnap(g, sample) {
+  const z = g.zones && g.zones[mobKey(sample.zi, sample.tier, sample.inst)];
+  if (!z) return;
+  const list = mobList(z);
+  for (const q of mobHere(g, sample)) send(q, 'mobs', { zi: sample.zi | 0, tier: sample.tier | 0, list });
+}
+function clearPail(p) { p.pail = null; p.pailStore = 0; p.pailAt = null; }
+function pailLoc(p) {
+  if (!p || !p.pail || !(p.pailStore > 0)) return null;
+  return {
+    x: p.pail.x, y: p.pail.y, L: p.pail.L,
+    hp: Math.round(p.pailStore), max: p.pail.max
+  };
+}
+function cleanPail(p, raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const L = auraRank(raw.L) || 1;
+  const x = +raw.x, y = +raw.y;
+  if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+  const cap = pailMax(p.hpm || 1, L);
+  let max = Math.round(+raw.max || 0);
+  let hp = Math.round(+raw.hp || 0);
+  if (!(max > 0)) max = cap;
+  if (max > cap) max = cap;
+  if (hp > max) hp = max;
+  if (!(hp > 0)) return null;
+  return { x: Math.round(x * 100) / 100, y: Math.round(y * 100) / 100, L, hp, max };
+}
+/* A new pail sets the one store. A later report does not refill it: heals leave
+   through pail draws, so two clients cannot each spend a full copy. */
+function notePail(p, raw) {
+  if (raw == null) { if (p.pail) clearPail(p); return; }
+  const row = cleanPail(p, raw);
+  if (!row) { if (p.pail) clearPail(p); return; }
+  const prev = p.pail;
+  const moved = !prev || Math.hypot(prev.x - row.x, prev.y - row.y) > 0.8;
+  const now = Date.now();
+  if (!prev || !(p.pailStore > 0) || (moved && now - (p.pailPlaced || 0) >= 8000)) {
+    p.pail = row;
+    p.pailStore = row.hp;
+    p.pailAt = {};
+    p.pailPlaced = now;
+    return;
+  }
+  p.pail.x = prev.x; p.pail.y = prev.y; p.pail.L = prev.L; p.pail.max = prev.max;
+  p.pail.hp = p.pailStore;
 }
 /* A reported buff is a remaining duration, not a permanent flag. */
 function noteBf(p, raw) {
@@ -484,6 +564,8 @@ function mobList(z) {
     if (r.curse && r.curse.until > Date.now()) {
       row.curse = { k: r.curse.k, m: r.curse.m, sec: Math.max(0.1, Math.round((r.curse.until - Date.now()) / 100) / 10) };
     }
+    const stacks = mobStacks(r);
+    if (stacks > 0) row.tes = stacks;
     out.push(row);
   }
   return out;
@@ -846,7 +928,7 @@ const HANDLERS = {
   move(p, m) {
     p.x = +m.x || 0; p.y = +m.y || 0; p.dir = +m.dir || 0;
     takeVitals(p, m);
-    const cosmetic = ('sk' in m) || ('au' in m) || ('sw' in m) || ('bf' in m) || ('aL' in m) || ('nm' in m) || ('tes' in m) || ('node' in m);
+    let cosmetic = ('sk' in m) || ('au' in m) || ('sw' in m) || ('bf' in m) || ('aL' in m) || ('nm' in m) || ('tes' in m) || ('node' in m);
     if ('sk' in m) p.sk = m.sk === null ? null : skillIx(m.sk);
     if ('au' in m) {
       p.au = auraIx(m.au);
@@ -856,6 +938,12 @@ const HANDLERS = {
     if ('node' in m) p.node = p.au ? (auraRank(m.node) || 0) : 0;
     if ('nm' in m) p.nm = auraRank(m.nm) || 0;
     if ('tes' in m) p.tes = p.nm ? cleanTes(m.tes) : null;
+    if ('pail' in m) {
+      const before = pailLoc(p);
+      notePail(p, m.pail);
+      const after = pailLoc(p);
+      if (JSON.stringify(before) !== JSON.stringify(after)) cosmetic = true;
+    }
     if ('bf' in m) noteBf(p, m.bf);
     if ('sw' in m) p.sw = m.sw === 1 ? 1 : 0;
     if (!p.game) return;
@@ -877,6 +965,7 @@ const HANDLERS = {
       }
     }
     if (p.game) mobNote(p);
+    if ('tes' in m && p.game && stampTes(p)) pushMobSnap(gameOf(p), mobSample(p));
     pushZone(p);
     if (cosmetic) pushPeers(p);
   },
@@ -1074,6 +1163,77 @@ const HANDLERS = {
     for (const q of mobHere(g, sample)) send(q, 'mcurse', row);
   },
 
+  /* One lunch pail, one store. The owner asks; the server spends it once. */
+  pail(p, m) {
+    if (!p.pail || !(p.pailStore > 0) || !p.party) return;
+    if (!rate(p, 'pail', 12, 1000)) return;
+    const list = Array.isArray(m.draw) ? m.draw.slice(0, 8) : [];
+    if (!list.length) return;
+    const now = Date.now();
+    p.pailAt = p.pailAt || {};
+    const grants = [];
+    let spent = 0;
+    const rateN = pailRate(p.pail.L);
+    const reach = FORMULAS.pail.r + 1.5;
+    for (let i = 0; i < list.length; i++) {
+      const row = list[i];
+      if (!row || spent >= p.pailStore) break;
+      const raw = row.k === 'self' || row.k === 'merc' || row.k === 'tag' ? row.k : clean(row.k, 64);
+      if (!raw) continue;
+      let hpm = p.hpm || 1, hp = p.hp || 0, key = raw, who = null;
+      if (raw === 'self' || raw === 'merc' || raw === 'tag') {
+        const d = Math.hypot((+p.x || 0) - p.pail.x, (+p.y || 0) - p.pail.y);
+        if (d > reach) continue;
+        key = raw === 'self' ? p.uid : raw;
+        if (raw === 'self') hp = p.hp || 0;
+        else {
+          const want = Math.max(0, Math.round(+row.n || 0));
+          hp = want > 0 ? Math.max(0, hpm - want) : 0;
+        }
+      } else {
+        who = live.get(raw);
+        if (!who || who.uid === p.uid || who.party !== p.party || !sameRoom(who, p)) continue;
+        if ((p.hostile && p.hostile.has(who.uid)) || (who.hostile && who.hostile.has(p.uid))) continue;
+        const d = Math.hypot((+who.x || 0) - p.pail.x, (+who.y || 0) - p.pail.y);
+        if (d > reach) continue;
+        hpm = who.hpm || 1;
+        hp = who.hp || 0;
+        key = who.uid;
+      }
+      const last = p.pailAt[key] || 0;
+      const dt = last ? Math.min(1.2, (now - last) / 1000) : 0.25;
+      if (last && dt < 0.05) continue;
+      const room = Math.max(0, hpm - hp);
+      let n = Math.min(p.pailStore - spent, room, hpm * rateN * dt);
+      n = Math.round(n);
+      if (!(n >= 1)) continue;
+      p.pailAt[key] = now;
+      spent += n;
+      grants.push({ k: raw === 'self' ? 'self' : (who ? who.uid : raw), n });
+      if (who) {
+        who.pailCredit = (who.pailCredit || 0) + n;
+        send(who, 'pail', { n, hp: Math.round(p.pailStore - spent), x: p.pail.x, y: p.pail.y, L: p.pail.L, max: p.pail.max });
+      } else if (raw === 'self') p.pailCredit = (p.pailCredit || 0) + n;
+    }
+    if (!spent) return;
+    p.pailStore = Math.max(0, p.pailStore - spent);
+    if (p.pail) p.pail.hp = Math.round(p.pailStore);
+    send(p, 'pail', { hp: Math.round(p.pailStore), x: p.pail.x, y: p.pail.y, L: p.pail.L, max: p.pail && p.pail.max, grants });
+    if (!(p.pailStore > 0)) clearPail(p);
+    if (p.game) pushPeers(p);
+  },
+
+  /* Unnamed Source, when the nearest ally is the other player and not a local body. */
+  lend(p, m) {
+    if (!rate(p, 'lend', 4, 10000)) return;
+    const q = live.get(clean(m.uid, 64));
+    if (!q || !p.party || q.party !== p.party || !sameRoom(p, q)) return;
+    if ((p.hostile && p.hostile.has(q.uid)) || (q.hostile && q.hostile.has(p.uid))) return;
+    const d = Math.hypot((+p.x || 0) - (+q.x || 0), (+p.y || 0) - (+q.y || 0));
+    if (d > 14) return;
+    send(q, 'lend', { from: p.name, uid: p.uid });
+  },
+
   pvp(p, m) {
     const q = live.get(m.uid);
     if (!canFight(p, q)) return;
@@ -1088,7 +1248,15 @@ const HANDLERS = {
     }
     if (!landed) return;
     plaus.notePvp(q, landed);
-    send(q, 'pvp', { from: p.name, fromUid: p.uid, dmg: Math.round(landed), kind: clean(m.kind, 12) });
+    const TYPES = { impact: 1, surge: 1, rust: 1, heat: 1, noise: 1, sound: 1 };
+    const dty = TYPES[m.dty] ? m.dty : 'impact';
+    const kind = clean(m.kind, 12);
+    let critM = 0;
+    if (kind === 'crit') {
+      const n = +m.critM;
+      critM = (n >= 1 && n <= 8) ? Math.round(n * 100) / 100 : 2;
+    }
+    send(q, 'pvp', { from: p.name, fromUid: p.uid, dmg: Math.round(landed), kind, dty, critM });
   },
 
   /* The host's picture of where the machines are. Hit points in the packet are ignored
@@ -1125,7 +1293,10 @@ const HANDLERS = {
   mhit(p, m) {
     const g = gameOf(p);
     if (!g || TOWNS.has(p.zi | 0)) return;
-    if (!rate(p, 'mhit', 100, 10000)) return;
+    const area = m.area ? 1 : 0;
+    /* A pulse has its own flood cap. It does not spend the swing packet budget. */
+    if (area) { if (!rate(p, 'mtick', 120, 1000)) return; }
+    else if (!rate(p, 'mhit', 100, 10000)) return;
     const sample = mobSample(p);
     if ((m.zi | 0) !== sample.zi || (m.tier | 0) !== sample.tier) return;
     const z = g.zones && g.zones[mobKey(sample.zi, sample.tier, sample.inst)];
@@ -1136,6 +1307,8 @@ const HANDLERS = {
     const sk = m.sk == null ? -1 : (m.sk | 0);
     if (sk === -2) {
       if (z.host !== p.uid) return;
+    } else if (area) {
+      if (!plaus.areaOk(p, rec, sk)) return;
     } else if (!plaus.hitOk(p, rec, sk, partyCover(p))) return;
     let d = Math.max(0, +m.d || 0);
     if (!(d > 0)) return;
@@ -1460,7 +1633,7 @@ function attach(server, verify) {
     const p = {
       uid: ctx.user.id, name: ctx.user.name, conn,
       lvl: 1, cls: '', zi: 0, inst: null, zoneKey: undefined, x: 0, y: 0, dir: 0, hp: 1, hpm: 1,
-      sk: null, au: null, aL: 0, node: 0, nm: 0, bf: null, bfUntil: null, tes: null, sw: 0,
+      sk: null, au: null, aL: 0, node: 0, nm: 0, bf: null, bfUntil: null, tes: null, sw: 0, pail: null, pailStore: 0,
       game: null, party: null, quest: {}, hostile: new Set(), declaredAt: new Map(), portalLock: 0, invites: new Map(), safeUntil: 0, townSince: 0, voice: false, joined: Date.now(),
       wantsResume: false, awayUntil: 0, awayTimer: null
     };

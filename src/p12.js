@@ -147,8 +147,9 @@ function maxiAura(dt) {
       const m = (.3 + .07 * h.L) * syn(7);
       const prevSk = P.hitSk;
       P.hitSk = 7;
+      P.areaTick = 1;
       try { for (const e of auraFoes(h)) hit(e, m, true); }
-      finally { P.hitSk = prevSk; }
+      finally { P.hitSk = prevSk; P.areaTick = 0; }
       W.fx.push({ k: 'ring', x: P.x, y: P.y, r: auraVisR(7, h.L), t: 0, life: .25, col: '#f7931a' });
     }
   }
@@ -232,6 +233,7 @@ function castItem(i){
   let ok=false;
   if(i===100)ok=blinkCast();else if(i===101)ok=callCast();else if(i===102)ok=bookCast();else if(i===103)ok=ledgerCast();else if(i===104)ok=bearCast();else if(i===105)ok=chairCast();
   if(!ok)return;
+  if(typeof mpNoteCast==='function')mpNoteCast(i);
   G.en-=pay;P.cd[i]=sk.cd*(1-Math.min(.6,S.cdr||0));sfx('cast')}
 function itemSkillTick(dt){
   if(!P)return;

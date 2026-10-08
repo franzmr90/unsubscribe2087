@@ -57,7 +57,10 @@ const FORMULAS = {
     book: { r: 6 },
     ledger: { r: 6 },
     named: { per: 0.05 }
-  }
+  },
+  /* Lunch Pail. One placed store. life/lifeL are the fraction of max life it holds.
+     rate/rateL are the fraction of max life it pays each second, inside r tiles. */
+  pail: { life: 0.28, lifeL: 0.06, rate: 0.02, rateL: 0.004, r: 2.6 }
 };
 
 /* Fraction of a hit still taken when that class's braces are fully up.
@@ -105,4 +108,17 @@ function toxicSwingMul(L) {
   return 1 + (t.aspd + t.aspdL * n) / 100;
 }
 
-if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep, xpNext, auraRank, auraRadius, toxicSwingMul };
+/* The printed pool: (28+6*L)% of max life. */
+function pailMax(hpm, L) {
+  const n = auraRank(L) || 1;
+  const f = FORMULAS.pail;
+  return Math.max(1, Math.round((+hpm || 1) * (f.life + f.lifeL * n)));
+}
+/* (2+0.4*L)% of max life each second. */
+function pailRate(L) {
+  const n = auraRank(L) || 1;
+  const f = FORMULAS.pail;
+  return f.rate + f.rateL * n;
+}
+
+if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep, xpNext, auraRank, auraRadius, toxicSwingMul, pailMax, pailRate };
