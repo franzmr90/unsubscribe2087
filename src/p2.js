@@ -254,7 +254,7 @@ async function cloudInit(){try{if(!window.claude||!window.claude.use){clState='o
 async function cloudLoad(d,sn){const o=JSON.parse(d.s);o.zs={};for(const k of d.zk||[]){try{const z=await CL.doc(zdoc(sn||0,k)).get();if(z.exists)o.zs[k]=JSON.parse(z.data().s)}catch(e){}}return o}
 function cloudNote(){const n=$('cloudNote');if(n)n.textContent=clState==='looking'?'Looking for your saved game…':CL?'Your progress is saved to your account as you play.':'Account saving is not available in this view. Progress is kept in this browser only.'}
 function loadStored(n){try{const s=localStorage.getItem(skey(n===undefined?SLOT:n));return s?JSON.parse(s):null}catch(e){return null}}
-function applySave(o){if(!o||!o.G||!CLS[o.G.cls])return false;G=o.G;G.sats=G.sats||0;G.merc=G.merc||null;G.sq=G.sq||{};G.stash=G.stash||[];while(G.sk.length<15)G.sk.push(0);if(G.q.q10===3&&G.unlocked<12)G.unlocked=12;for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;if(G.q.q5===3&&G.unlocked<7)G.unlocked=7;if(G.hp<=0){if(!G.hc)G.hp=9999;o.cur=null}ZS={};for(const k in (o.zs||{}))ZS[k]=decW(o.zs[k]);if(o.opt)OPT=Object.assign({},OPT_DEF,o.opt);G._cur=o.cur||null;boonRefund();return true}
+function applySave(o){if(!o||!o.G||!CLS[o.G.cls])return false;G=o.G;G.sats=G.sats||0;G.merc=G.merc||null;G.sq=G.sq||{};G.stash=G.stash||[];while(G.sk.length<15)G.sk.push(0);if(G.q.q10===3&&G.unlocked<12)G.unlocked=12;for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;if(G.q.q5===3&&G.unlocked<7)G.unlocked=7;actBriefMigrate();if(G.hp<=0){if(!G.hc)G.hp=9999;o.cur=null}ZS={};for(const k in (o.zs||{}))ZS[k]=decW(o.zs[k]);if(o.opt)OPT=Object.assign({},OPT_DEF,o.opt);G._cur=o.cur||null;boonRefund();return true}
 /* A hardcore hero at 0 life is already gone. Loading that save begins again, the same as the death screen. */
 function hcBegin(){const c=G&&CLS[G.cls]?G.cls:'scrapper';DY=null;const d=$('death');if(d)d.hidden=true;resetZones();newGame(c);G.hc=true;save(true)}
 function startPlay(){ensureG();if(G.hc&&G.hp<=0){hcBegin();return}mpConnect();mode='play';$('title').hidden=true;$('hud').hidden=false;calc();setSkillButtons();
@@ -375,7 +375,7 @@ function spawn(k,x,y,o){
   if(defragAct1(e)){e.dty='impact';e.dmg*=.85}
   p7Spawn(e);W.ents.push(e);if(isBoss(k))W.boss=e;return e}
 function enter(zi,o){setTimeout(mpBeat,0);
-  o=o||{};const carry=!o.swap&&W&&W.allies?W.allies.filter(a=>a.per):[];if(!o.swap&&W&&!W.z.town&&!W.z.sim){raidLeave();W.leftT=G.time;ZS[W.zi]=W;clDirty[W.zi]=1}
+  o=o||{};if(actBriefHold(zi)){actBriefDeny();return false}const carry=!o.swap&&W&&W.allies?W.allies.filter(a=>a.per):[];if(!o.swap&&W&&!W.z.town&&!W.z.sim){raidLeave();W.leftT=G.time;ZS[W.zi]=W;clDirty[W.zi]=1}
   const z=ZONES[zi];G.zone=zi;if(!z.sim)G.town=townOf(zi);let old=0;
   if(z.town)buildTown(zi);else if(z.sim)buildSim(o.wave||1,o.rush);else if(ZS[zi]&&ZS[zi].tier===G.tier&&!o.fresh){W=ZS[zi];old=1;ensureCage();initRuntime()}else genZone(zi);
   let at=o.at||W.start;if(o.from==='next'){const p=W.portals.find(p=>p.kind==='next');at=nearFree(p||W.goal||W.start)}else if(o.from==='exit'&&W.exit)at={x:W.exit.ix,y:W.exit.iy};else if(o.at&&!(o.exact&&walk(at.x,at.y))&&!free(at.x,at.y,.3))at=nearFree(at,1.2);
@@ -839,7 +839,10 @@ function useObj(o){
   else if(o.k==='cage'){if(W.ents.some(e=>e.su)){toast('The cage is sealed while Defrag stands');return}o.used=1;G.marrow=true;G.q.q3=2;sfx('cage');sfx('quest');
     playScene(RESCUE,()=>{mode='play';toast('Quest complete: return to Gramps')})}}
 function portalLabel(p){const zi=W.zi;return p.kind==='home'?'Return to '+ZONES[HT()].n:p.kind==='exit'?'Walk out to '+ZONES[FIRST[W.z.act||1]].n:p.kind==='town'||p.kind==='prev'?'Walk back to '+ZONES[zi===FIRST[actOf(zi)]?townOf(zi):zi-1].n:p.kind==='next'?'Go on to '+ZONES[zi+1].n:'Portal to '+ZONES[G.portal.zi].n}
-function usePortal(p){if(mpPortalBlocked())return;if(p.kind==='back'&&!(G.portal&&G.portal.zi!=null))return;const zi=W.zi;sfx(p.kind==='home'||p.kind==='back'?'portal':'ui');
+function usePortal(p){if(mpPortalBlocked())return;if(p.kind==='back'&&!(G.portal&&G.portal.zi!=null))return;const zi=W.zi;
+  if(p.kind==='exit'&&actBriefHold(FIRST[W.z.act||1])){actBriefDeny();return}
+  if(p.kind==='next'&&actBriefHold(zi+1)){actBriefDeny();return}
+  sfx(p.kind==='home'||p.kind==='back'?'portal':'ui');
   if(p.kind==='exit'){const f=FIRST[W.z.act||1];G.unlocked=Math.max(G.unlocked,f);enter(f)}
   else if(p.kind==='town'||p.kind==='prev'){if(zi===FIRST[actOf(zi)])enter(townOf(zi),{from:'exit'});else enter(zi-1,{from:'next'})}
   else if(p.kind==='home'){if(p.cast){p.wasOut=false;G.portal={zi:W.zi,x:p.x,y:p.y,cast:1}}enter(HT());}

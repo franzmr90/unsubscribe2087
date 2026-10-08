@@ -113,7 +113,23 @@ function repop(){const z=W.z,N=W.N,base=z.boss?24:46,have=W.ents.filter(e=>!isBo
 /* ================= tracked quest ================= */
 function trackList(){const l=[];for(const k in SQ)if(G.sq[k]&&!G.sq[k].done)l.push('s:'+k);return l}
 function briefReady(k){const q=QUESTS[k];if(!q||!q.brief||(G.q[k]||0))return false;for(const j in QUESTS){if(j===k)return true;if((G.q[j]||0)!==3)return false}return false}
+/* The next act stays shut until this character has heard Gramps close the one just finished.
+   q6 opens Act II, q11 Act III, q16 Act IV, q21 Act V. Showing the line is what sets the flag.
+   The gate is this save alone. A party does not share the talk: a finished objective is what
+   gets sent across, not this briefing, so one member who has not heard Gramps cannot follow
+   another through, and one who already has is not held. Each character keeps their own town.
+   A save that already walked into the next act is not walked back. The skipped line is marked
+   heard: 1 when that act's first quest is still the work in front of them, 3 when a later
+   quest has already started, so the log does not rewind and Gramps speaks for where they are. */
+const ACT_OPEN=[{act:2,flag:'act2',prev:'q5',brief:'q6'},{act:3,flag:'act3',prev:'q10',brief:'q11'},{act:4,flag:'act4',prev:'q15',brief:'q16'},{act:5,flag:'act5',prev:'q20',brief:'q21'}];
+function actBriefHold(zi){if(zi==null||!ZONES[zi])return null;const dest=actOf(zi);if(!dest)return null;
+  for(const r of ACT_OPEN){if(r.act>dest)break;if(G[r.flag])continue;if((G.q[r.prev]||0)===3&&!(G.q[r.brief]||0))return r}return null}
+function actBriefDeny(){toast('Talk to Gramps first');sfx('err')}
+function actBriefMigrate(){if(!G||!G.q)return;
+  for(const r of ACT_OPEN){if(!G[r.flag]||(G.q[r.prev]||0)!==3||(G.q[r.brief]||0)>0)continue;let later=false,seen=false;
+    for(const k in QUESTS){if(k===r.brief){seen=true;continue}if(seen&&(G.q[k]||0)>0)later=true}G.q[r.brief]=later?3:1}}
 function storyStep(){const sg=storyGate();if(sg)return sg;
+  if(G.q.q5===3&&!G.q.q6)return{n:'Act I complete',d:'Speak to Gramps in '+ZONES[HT()].n+' to begin Act II'};
   if(G.q.q5===3&&!G.act2)return{n:'Act I complete',d:'Take the Transit Gate to The Landing to begin Act II'};
   if(G.q.q10===3&&!G.q.q11)return{n:'Act II complete',d:'Speak to Gramps in '+ZONES[HT()].n+' to begin Act III'};
   if(G.q.q10===3&&!G.act3)return{n:'Act II complete',d:'Take the Transit Gate to The Antechamber to begin Act III'};

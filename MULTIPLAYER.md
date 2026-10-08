@@ -46,6 +46,11 @@ Because they were right, and because they are the rules people already know.
   levels present. The pool is a third again the kill (×1.35), the same on a party of two
   as on a party of eight. Somebody standing in town is not helping.
 - **Quest progress is shared** with the members who are in the district when it happens.
+  Hearing Gramps close an act is not one of those shares. The next act stays shut on
+  each character until that character has heard him. A party mate who has heard it can
+  go on. One who has not stays where they are: Gramps is in that act's town, and the
+  quest log points at him. A save that already walked on is not pulled back. The skipped
+  line is marked heard, and Gramps talks about the act they are in.
 - **Hostility is declared, not ambient.** You press a button with somebody's name on it,
   in town, once a minute, and both of you need to be level 9. It takes them out of your
   party and it is announced. Outside a town you can fight. Standing down, also in town,

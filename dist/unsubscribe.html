@@ -1029,7 +1029,7 @@ async function cloudInit(){try{if(!window.claude||!window.claude.use){clState='o
 async function cloudLoad(d,sn){const o=JSON.parse(d.s);o.zs={};for(const k of d.zk||[]){try{const z=await CL.doc(zdoc(sn||0,k)).get();if(z.exists)o.zs[k]=JSON.parse(z.data().s)}catch(e){}}return o}
 function cloudNote(){const n=$('cloudNote');if(n)n.textContent=clState==='looking'?'Looking for your saved game…':CL?'Your progress is saved to your account as you play.':'Account saving is not available in this view. Progress is kept in this browser only.'}
 function loadStored(n){try{const s=localStorage.getItem(skey(n===undefined?SLOT:n));return s?JSON.parse(s):null}catch(e){return null}}
-function applySave(o){if(!o||!o.G||!CLS[o.G.cls])return false;G=o.G;G.sats=G.sats||0;G.merc=G.merc||null;G.sq=G.sq||{};G.stash=G.stash||[];while(G.sk.length<15)G.sk.push(0);if(G.q.q10===3&&G.unlocked<12)G.unlocked=12;for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;if(G.q.q5===3&&G.unlocked<7)G.unlocked=7;if(G.hp<=0){if(!G.hc)G.hp=9999;o.cur=null}ZS={};for(const k in (o.zs||{}))ZS[k]=decW(o.zs[k]);if(o.opt)OPT=Object.assign({},OPT_DEF,o.opt);G._cur=o.cur||null;boonRefund();return true}
+function applySave(o){if(!o||!o.G||!CLS[o.G.cls])return false;G=o.G;G.sats=G.sats||0;G.merc=G.merc||null;G.sq=G.sq||{};G.stash=G.stash||[];while(G.sk.length<15)G.sk.push(0);if(G.q.q10===3&&G.unlocked<12)G.unlocked=12;for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;if(G.q.q5===3&&G.unlocked<7)G.unlocked=7;actBriefMigrate();if(G.hp<=0){if(!G.hc)G.hp=9999;o.cur=null}ZS={};for(const k in (o.zs||{}))ZS[k]=decW(o.zs[k]);if(o.opt)OPT=Object.assign({},OPT_DEF,o.opt);G._cur=o.cur||null;boonRefund();return true}
 /* A hardcore hero at 0 life is already gone. Loading that save begins again, the same as the death screen. */
 function hcBegin(){const c=G&&CLS[G.cls]?G.cls:'scrapper';DY=null;const d=$('death');if(d)d.hidden=true;resetZones();newGame(c);G.hc=true;save(true)}
 function startPlay(){ensureG();if(G.hc&&G.hp<=0){hcBegin();return}mpConnect();mode='play';$('title').hidden=true;$('hud').hidden=false;calc();setSkillButtons();
@@ -1150,7 +1150,7 @@ function spawn(k,x,y,o){
   if(defragAct1(e)){e.dty='impact';e.dmg*=.85}
   p7Spawn(e);W.ents.push(e);if(isBoss(k))W.boss=e;return e}
 function enter(zi,o){setTimeout(mpBeat,0);
-  o=o||{};const carry=!o.swap&&W&&W.allies?W.allies.filter(a=>a.per):[];if(!o.swap&&W&&!W.z.town&&!W.z.sim){raidLeave();W.leftT=G.time;ZS[W.zi]=W;clDirty[W.zi]=1}
+  o=o||{};if(actBriefHold(zi)){actBriefDeny();return false}const carry=!o.swap&&W&&W.allies?W.allies.filter(a=>a.per):[];if(!o.swap&&W&&!W.z.town&&!W.z.sim){raidLeave();W.leftT=G.time;ZS[W.zi]=W;clDirty[W.zi]=1}
   const z=ZONES[zi];G.zone=zi;if(!z.sim)G.town=townOf(zi);let old=0;
   if(z.town)buildTown(zi);else if(z.sim)buildSim(o.wave||1,o.rush);else if(ZS[zi]&&ZS[zi].tier===G.tier&&!o.fresh){W=ZS[zi];old=1;ensureCage();initRuntime()}else genZone(zi);
   let at=o.at||W.start;if(o.from==='next'){const p=W.portals.find(p=>p.kind==='next');at=nearFree(p||W.goal||W.start)}else if(o.from==='exit'&&W.exit)at={x:W.exit.ix,y:W.exit.iy};else if(o.at&&!(o.exact&&walk(at.x,at.y))&&!free(at.x,at.y,.3))at=nearFree(at,1.2);
@@ -1614,7 +1614,10 @@ function useObj(o){
   else if(o.k==='cage'){if(W.ents.some(e=>e.su)){toast('The cage is sealed while Defrag stands');return}o.used=1;G.marrow=true;G.q.q3=2;sfx('cage');sfx('quest');
     playScene(RESCUE,()=>{mode='play';toast('Quest complete: return to Gramps')})}}
 function portalLabel(p){const zi=W.zi;return p.kind==='home'?'Return to '+ZONES[HT()].n:p.kind==='exit'?'Walk out to '+ZONES[FIRST[W.z.act||1]].n:p.kind==='town'||p.kind==='prev'?'Walk back to '+ZONES[zi===FIRST[actOf(zi)]?townOf(zi):zi-1].n:p.kind==='next'?'Go on to '+ZONES[zi+1].n:'Portal to '+ZONES[G.portal.zi].n}
-function usePortal(p){if(mpPortalBlocked())return;if(p.kind==='back'&&!(G.portal&&G.portal.zi!=null))return;const zi=W.zi;sfx(p.kind==='home'||p.kind==='back'?'portal':'ui');
+function usePortal(p){if(mpPortalBlocked())return;if(p.kind==='back'&&!(G.portal&&G.portal.zi!=null))return;const zi=W.zi;
+  if(p.kind==='exit'&&actBriefHold(FIRST[W.z.act||1])){actBriefDeny();return}
+  if(p.kind==='next'&&actBriefHold(zi+1)){actBriefDeny();return}
+  sfx(p.kind==='home'||p.kind==='back'?'portal':'ui');
   if(p.kind==='exit'){const f=FIRST[W.z.act||1];G.unlocked=Math.max(G.unlocked,f);enter(f)}
   else if(p.kind==='town'||p.kind==='prev'){if(zi===FIRST[actOf(zi)])enter(townOf(zi),{from:'exit'});else enter(zi-1,{from:'next'})}
   else if(p.kind==='home'){if(p.cast){p.wasOut=false;G.portal={zi:W.zi,x:p.x,y:p.y,cast:1}}enter(HT());}
@@ -1955,7 +1958,23 @@ function repop(){const z=W.z,N=W.N,base=z.boss?24:46,have=W.ents.filter(e=>!isBo
 /* ================= tracked quest ================= */
 function trackList(){const l=[];for(const k in SQ)if(G.sq[k]&&!G.sq[k].done)l.push('s:'+k);return l}
 function briefReady(k){const q=QUESTS[k];if(!q||!q.brief||(G.q[k]||0))return false;for(const j in QUESTS){if(j===k)return true;if((G.q[j]||0)!==3)return false}return false}
+/* The next act stays shut until this character has heard Gramps close the one just finished.
+   q6 opens Act II, q11 Act III, q16 Act IV, q21 Act V. Showing the line is what sets the flag.
+   The gate is this save alone. A party does not share the talk: a finished objective is what
+   gets sent across, not this briefing, so one member who has not heard Gramps cannot follow
+   another through, and one who already has is not held. Each character keeps their own town.
+   A save that already walked into the next act is not walked back. The skipped line is marked
+   heard: 1 when that act's first quest is still the work in front of them, 3 when a later
+   quest has already started, so the log does not rewind and Gramps speaks for where they are. */
+const ACT_OPEN=[{act:2,flag:'act2',prev:'q5',brief:'q6'},{act:3,flag:'act3',prev:'q10',brief:'q11'},{act:4,flag:'act4',prev:'q15',brief:'q16'},{act:5,flag:'act5',prev:'q20',brief:'q21'}];
+function actBriefHold(zi){if(zi==null||!ZONES[zi])return null;const dest=actOf(zi);if(!dest)return null;
+  for(const r of ACT_OPEN){if(r.act>dest)break;if(G[r.flag])continue;if((G.q[r.prev]||0)===3&&!(G.q[r.brief]||0))return r}return null}
+function actBriefDeny(){toast('Talk to Gramps first');sfx('err')}
+function actBriefMigrate(){if(!G||!G.q)return;
+  for(const r of ACT_OPEN){if(!G[r.flag]||(G.q[r.prev]||0)!==3||(G.q[r.brief]||0)>0)continue;let later=false,seen=false;
+    for(const k in QUESTS){if(k===r.brief){seen=true;continue}if(seen&&(G.q[k]||0)>0)later=true}G.q[r.brief]=later?3:1}}
 function storyStep(){const sg=storyGate();if(sg)return sg;
+  if(G.q.q5===3&&!G.q.q6)return{n:'Act I complete',d:'Speak to Gramps in '+ZONES[HT()].n+' to begin Act II'};
   if(G.q.q5===3&&!G.act2)return{n:'Act I complete',d:'Take the Transit Gate to The Landing to begin Act II'};
   if(G.q.q10===3&&!G.q.q11)return{n:'Act II complete',d:'Speak to Gramps in '+ZONES[HT()].n+' to begin Act III'};
   if(G.q.q10===3&&!G.act3)return{n:'Act II complete',d:'Take the Transit Gate to The Antechamber to begin Act III'};
@@ -3042,7 +3061,7 @@ function storyGate(){
   if(G.q.q20===3&&!G.q.q21)return{n:'Act IV complete',d:'Speak to Gramps in '+ZONES[HT()].n+' to begin Act V'};
   if(G.q.q20===3&&!G.act5)return{n:'Act IV complete',d:'Take the Transit Gate to The Garage to begin Act V'};
   return null}
-function bookFix(){for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;if(G.q.q15===3&&G.unlocked<22)G.unlocked=22;if(G.q.q20===3&&G.unlocked<28)G.unlocked=28;if(G.q.q24===3)G.module=1}
+function bookFix(){for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;actBriefMigrate();if(G.q.q15===3&&G.unlocked<22)G.unlocked=22;if(G.q.q20===3&&G.unlocked<28)G.unlocked=28;if(G.q.q24===3)G.module=1}
 /* ================= textures ================= */
 /* ================= air =================
    What the dark in a place is made of, and what drifts through it.
@@ -4172,8 +4191,8 @@ function drawSheet(){
     if(sel&&sel.sat!==undefined&&satShop[sel.sat]){const o=satShop[sel.sat];pop=itemCard(o.it,`<button class="big" data-satbuy="1" ${G.sats<satPrice(o)||G.bag.length>=24?'disabled':''}>Buy for ${satPrice(o)} sats</button>`)}}
   if(tab==='travel'){h+=`<h2>Transit Gate</h2>`;if(!gateAct||sheetCtx.gFresh){sheetCtx.gFresh=0;gateAct=actOf(W.zi)||1}const acts=[[1,'I',1],[2,'II',G.q.q5===3],[3,'III',G.q.q10===3],[4,'IV',G.q.q15===3],[5,'V',G.q.q20===3],[6,'More',1]];if(!acts[gateAct-1][2])gateAct=1;
     h+=`<div class="row">${acts.map(a=>`<button class="${gateAct===a[0]?'big':'ghost'}" data-gact="${a[0]}" ${a[2]?'':'disabled'}>${a[1]}</button>`).join('')}</div><div class="list">`;
-    const row=i=>{const z=ZONES[i],ok=i<=G.unlocked;return `<button class="li" data-go="${i}" ${ok?'':'disabled'}><div><b>${z.n}</b><span>${ok?(ZS[i]&&ZS[i].tier===G.tier?'Machine level '+ZS[i].ml+' · '+ZS[i].ents.length+' machines remain':'Machine level '+zoneLevel(z)+' · untouched'):'Locked. Clear the district before it.'}</span></div></button>`};
-    const trow=i=>`<button class="li${W.zi===i?' on':''}" data-go="${i}"><div><b>${ZONES[i].n}</b><span>Town${W.zi===i?' · you are here':''}</span></div></button>`;
+    const row=i=>{const z=ZONES[i],ok=i<=G.unlocked,held=ok&&actBriefHold(i);return `<button class="li" data-go="${i}" ${ok?'':'disabled'}><div><b>${z.n}</b><span>${held?'Talk to Gramps first.':ok?(ZS[i]&&ZS[i].tier===G.tier?'Machine level '+ZS[i].ml+' · '+ZS[i].ents.length+' machines remain':'Machine level '+zoneLevel(z)+' · untouched'):'Locked. Clear the district before it.'}</span></div></button>`};
+    const trow=i=>{const held=actBriefHold(i);return `<button class="li${W.zi===i?' on':''}" data-go="${i}"><div><b>${ZONES[i].n}</b><span>${held?'Talk to Gramps first.':'Town'+(W.zi===i?' · you are here':'')}</span></div></button>`};
     if(gateAct===1){h+=`<h3>The Regional Office</h3>`+trow(0);for(let i=1;i<6;i++)h+=row(i)}
     if(gateAct===2){h+=`<h3>The Cloud</h3>`+trow(17);for(let i=7;i<12;i++)h+=row(i)}
     if(gateAct===3){h+=`<h3>The Board</h3>`+trow(18);for(let i=12;i<17;i++)h+=row(i)}
@@ -4304,7 +4323,7 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.buy==='itemsat'){const it=shop[sel.shop];G.sats-=satCost(it);addAdopt(.5,'');G.bag.push(it);shop.splice(sel.shop,1);sel=null;sfx('coin')}
   if(d.buy==='item'){const it=shop[sel.shop];G.credits-=buyPrice(it);G.bag.push(it);shop.splice(sel.shop,1);sel=null;sfx('coin')}
   if(d.box){G.credits-=boxPrice();const r=Math.random(),q=r<.015?4:r<.035?3:r<.185?2:1;const it=makeItem(G.lvl+ri(-1,2)+G.tier*12,q,d.box);it.id=true;G.bag.push(it);lastBox=it;sfx(q===4?'unique':q>=2?'rare':'drop')}
-  if(d.go){if(mpPortalBlocked())return;closeSheet();enter(+d.go);return}
+  if(d.go){if(mpPortalBlocked())return;if(actBriefHold(+d.go)){actBriefDeny();return}closeSheet();enter(+d.go);return}
   if(d.tier){G.tier=clamp(G.tier+ +d.tier,0,G.maxTier);resetZones()}
   drawSheet()};
 $('sheet').addEventListener('click',ev=>{if(webPanMoved){webPanMoved=0;if(ev.target.closest&&ev.target.closest('#webStage'))return}sheetClick(ev)});
@@ -4388,7 +4407,7 @@ function showDisc(){const d=$('disc');if(!d)return;
   addEventListener('pointerdown',go,true);addEventListener('keydown',go,true)}
 showDisc();
 cloudInit();
-window.__g={heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},get shop(){return shop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide};
+window.__g={heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},get shop(){return shop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide};
 /* late additions that need the dialogue tables */
 QRW.push(
  ['q16','gramps','“I do not remember the nine years after I clicked.” You gain 1 skill point.',()=>G.sp++,'Gramps'],
