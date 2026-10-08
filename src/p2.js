@@ -546,7 +546,7 @@ function hurt(d,slow,src){const pv=src&&src.pvp,wasStun=P.hitStun>0;if(mode==='d
   if(P.barrier>0&&d>0){const a=Math.min(P.barrier,d);P.barrier-=a;d-=a;if(a>0)float(P.x,P.y,'patched','#59e0e6',1);if(d<=0)return}
   if(G.cls==='witness'&&!(P&&P.tag)&&!(P.paper>0)){const r=recGet();if(r>80&&S.coloHi)d*=S.coloHi;else if(r<20&&S.coloLo)d*=S.coloLo}
   if(P.paper>0)d*=.52;if(P.maxiBlock>0)d*=.78;
-  if(G.cls==='scrapper'&&sl(11)&&!boonOn(11))d*=1-Math.min(12,Math.floor(P.lineT||0))*2/100;
+  if(G.cls==='scrapper'&&sl(11)&&!boonOn(11))d*=1-Math.min(30,Math.floor(P.lineT||0)*5)/100;
   if(G.cls==='maxi'&&sl(2)&&W){let c=0;for(const o of W.ents)if(o.hp>0&&!o.mp&&dist(o,P)<6&&++c>=5)break;if(c)d*=1-Math.min(.3,.06*c)}
   if(G.cls==='founder'&&W&&W.allies){const n=W.allies.filter(a=>a.per&&a.hp>0).length;if(n)d*=1-Math.min(.2,.05*n)}
   if(G.cls==='homesteader'&&W&&W.allies){const n=W.allies.filter(a=>a.plot&&a.life>0).length;if(n)d*=1-Math.min(.28,.12+.04*(n-1))}
