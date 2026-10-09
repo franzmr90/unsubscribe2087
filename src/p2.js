@@ -319,7 +319,10 @@ function buildTown(zi){zi=zi||0;if(ZONES[zi].pre)return buildPre();const act=ZON
   const cols=['#7fa8d0','#d0a488','#a8c890','#c890bc','#d8c070','#90c8c0'];
   for(let i=0;i<(act===1?7:4);i++)W.npcs.push({id:'res',x:rnd(6,19),y:rnd(11,19),col:pick(cols),tx:12,ty:14,wait:rnd(0,3),say:'',st:0,cool:rnd(1,5),ph:rnd(0,6)});
   satShop=[];const arm=classWeapon((G.lvl||1)+(G.tier||0)*12+3);if(arm)satShop.push({it:arm,price:arm.q>=2?24:12});for(let i=0;i<(G.adopt<25?2:G.adopt>=60?7:5)+(G.nodeUp?1:0);i++){const r=Math.random(),q=r<.15?4:r<.32?3:2,it=makeItem(G.lvl+G.tier*12+ri(2,4),q);it.id=true;satShop.push({it,price:it.q===4?45:it.q===3?30:12})}
-  shop=[];for(let i=0;i<8;i++)shop.push(Object.assign(makeItem(G.lvl+G.tier*12+ri(0,2),Math.random()<.12?2:1),{id:true}))}
+  {const posted=mkCharm((G.lvl||1)+(G.tier||0)*12+2,{sz:Math.random()<.34?'filing':'notice'});if(posted){if((posted.q|0)<2)posted.q=2;satShop.push({it:posted,price:posted.cells>=4?30:18})}}
+  shop=[];for(let i=0;i<8;i++)shop.push(Object.assign(makeItem(G.lvl+G.tier*12+ri(0,2),Math.random()<.12?2:1),{id:true}));
+  shop.push(mkCharm((G.lvl||1)+(G.tier||0)*12,{sz:'slip'}));if(Math.random()<.5)shop.push(mkCharm((G.lvl||1)+(G.tier||0)*12+1,{sz:'notice'}));
+  BUYBACK.length=0}
 /* the simulator: an arena outside the campaign. Waves grow in size, level and variety; nothing is saved and nothing is lost. */
 function buildSim(wave,rush){W=blankW(6,30);const N=30;for(let y=4;y<=25;y++)for(let x=4;x<=25;x++)W.map[y*N+x]=1;
   for(const[x,y]of[[10,10],[19,10],[10,19],[19,19]])solid('prop',x,y,{v:1});for(const[x,y]of[[5,5],[24,5],[5,24],[24,24],[14,4],[14,25]])solid('lamp',x,y);

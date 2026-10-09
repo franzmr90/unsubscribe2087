@@ -41,15 +41,16 @@ const odd=await p.evaluate(()=>{
   const body=document.getElementById('dP').textContent;
   const btn=[...document.querySelectorAll('#dBtns button:not([disabled])')].find(e=>e.textContent==='Thank you, Unity');
   btn.click();
+  g.G.mkt={p:1};
   g.talkTo('brenda');
   const trade=[...document.querySelectorAll('#dBtns button:not([disabled])')].find(e=>e.textContent==='Trade');
   trade.click();
-  const tab=document.querySelector('[data-tab="shop"]');
-  if(tab)tab.click();
-  const tag=document.querySelector('[data-buy="stim"] .pr').textContent;
+  g.VEND.tab='supplies';
+  g.drawSheet();
+  const tag=document.querySelector('[data-vstim="1"] .vp').textContent;
   return {body,credits:g.G.credits,tag};
 });
-check('a ₡32 tag buys 15 stims', /buys 15 stims/.test(odd.body)&&!/\d+\.\d+ stim/.test(odd.body)&&odd.tag==='₡32'&&odd.credits===500, JSON.stringify(odd));
+check('a 32 sat tag buys 15 stims', /buys 15 stims/.test(odd.body)&&!/\d+\.\d+ stim/.test(odd.body)&&odd.tag==='32 sats'&&odd.credits===500, JSON.stringify(odd));
 
 await p.evaluate(()=>{
   __g.closeSheet();

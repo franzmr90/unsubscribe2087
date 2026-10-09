@@ -160,16 +160,17 @@ async function clearUI(page) {
   const sale = await page.evaluate(() => {
     const g = __g;
     g.G.credits = 1000;
+    g.G.sats = 0;
+    g.mktInit(); const f = g.mktFair() || 1; g.G.mkt.p = 1; g.G.mkt.r = 1 / f; g.G.mkt.sent = 0; g.G.mkt.sT = 1e9;
     g.G.bag = [g.makeItem(4, 1, 'helm')];
     g.G.bag[0].id = true;
-    const price = g.G.bag[0].val;
-    g.openSheet('items', { only: ['items', 'shop'] });
-    const btn = [...document.querySelectorAll('[data-sellq="-1"]')][0];
-    const label = btn ? btn.textContent : '';
-    if (btn) btn.click();
-    return { label, credits: g.G.credits, bag: g.G.bag.length, price };
+    g.setMode('play');
+    g.openVend('brenda');
+    const bid = g.vendBid(g.G.bag[0]);
+    const sold = g.vendSell(0);
+    return { sold, bid, credits: g.G.credits, sats: g.G.sats, bag: g.G.bag.length };
   });
-  ok('brenda sells on one click', sale.bag === 0 && sale.credits > 1000 && /Sell everything in the pack/.test(sale.label), JSON.stringify(sale));
+  ok('brenda sells on one click', sale.sold && sale.bag === 0 && sale.credits === 1000 && sale.sats === sale.bid && sale.bid > 0, JSON.stringify(sale));
   await page.screenshot({ path: path.join(SHOT, 'brenda-sold.png') });
 
   const badge = await page.evaluate(() => {
