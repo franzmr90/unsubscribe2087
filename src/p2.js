@@ -1578,7 +1578,7 @@ function update(dt){
   if(keys.KeyA||keys.ArrowLeft)sx-=1;if(keys.KeyD||keys.ArrowRight)sx+=1;if(keys.KeyW||keys.ArrowUp)sy-=1;if(keys.KeyS||keys.ArrowDown)sy+=1;
   const mag=Math.min(1,Math.hypot(sx,sy));let wx=sx+2*sy,wy=2*sy-sx;const wl=Math.hypot(wx,wy);
   P.moving=false;
-  if(P.dash){const d=P.dash;d.t-=dt;mv(P,P.dir.x*d.spd*dt,P.dir.y*d.spd*dt);P.moving=true;
+  if(P.dash){const d=P.dash;const step=Math.min(dt,Math.max(0,d.t));d.t-=step;mv(P,P.dir.x*d.spd*step,P.dir.y*d.spd*step);P.moving=true;
     if(d.m)for(const e of W.ents.slice())if(!d.hit.includes(e)&&dist(e,P)<1.1+e.r){d.hit.push(e);hit(e,d.m)}
     if(Math.random()<.6)W.parts.push({x:P.x,y:P.y,z:14,vx:0,vy:0,vz:0,t:0,life:.25,col:c.col,s:5});
     if(d.trail){d.tr-=dt;if(d.tr<=0){d.tr=.08;if(d.lx!==P.x||d.ly!==P.y)fxTrail(d.lx,d.ly,P.x,P.y,d.trail,.36);d.lx=P.x;d.ly=P.y}}

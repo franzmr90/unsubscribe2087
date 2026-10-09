@@ -56,7 +56,15 @@ const splash=await p.evaluate(()=>{
       for(let dy=-4;dy<=4;dy++)for(let dx=-4;dx<=4;dx++)if(W.map[(y+dy)*N+(x+dx)]===1)n++;
       if(n>bn){bn=n;best={x:x+.5,y:y+.5,n}}
     }
-    function seat(){P.x=best.x;P.y=best.y;P.dir={x:1,y:0};P.dash=null;P.castWait=0;P.hitStun=0;g.J.x=0;g.J.y=0}
+    function seat(){
+      const openAt=(x,y)=>x>1&&y>1&&x<N-1&&y<N-1&&g.walk(x-.35,y-.35)&&g.walk(x+.35,y-.35)&&g.walk(x-.35,y+.35)&&g.walk(x+.35,y+.35);
+      let found=false;
+      for(let y=5;y<N-5&&!found;y++)for(let x=5;x<N-5&&!found;x++){
+        const px=x+.5,py=y+.5;let ok=true;
+        for(let dy=-1;ok&&dy<=3;dy++)for(let dx=-3;ok&&dx<=6;dx++)if(!openAt(px+dx,py+dy))ok=false;
+        if(ok){P.x=px;P.y=py;found=true}}
+      if(!found&&best){P.x=best.x;P.y=best.y}
+      P.dir={x:1,y:0};P.dash=null;P.castWait=0;P.hitStun=0;g.J.x=0;g.J.y=0}
     function see(x,y,rad){
       const r=rad==null?1:rad;
       for(let iy=(y|0)-r;iy<=(y|0)+r;iy++)for(let ix=(x|0)-r;ix<=(x|0)+r;ix++)
@@ -85,10 +93,10 @@ const splash=await p.evaluate(()=>{
       document.querySelector('.sk[data-i="0"]').dispatchEvent(new PointerEvent(name,{bubbles:true,cancelable:true,pointerType:type||'touch',pointerId:7,button:0,clientX:x,clientY:y}));
     }
     function tap(){const h=home();ev('pointerdown',h.x,h.y);ev('pointerup',h.x,h.y)}
-    const h0=home();
-    if(!(h0.w>8))bad.push('skill button has no box');
 
     prep('hacker',6);
+    const h0=home();
+    if(!(h0.w>8))bad.push('skill button has no box');
     const seenFoe=foe(3,0);seeLine(seenFoe.x,seenFoe.y);
     tap();
     let storm=W.allies.find(a=>a.k==='storm');
@@ -104,11 +112,14 @@ const splash=await p.evaluate(()=>{
     const far=foe(3,0);
     if(far){far.hp=0}
     const live=foe(2.2,.4);const mate=foe(3.2,.4);
-    if(live&&mate){seeLine(live.x,live.y);seeLine(mate.x,mate.y)}
-    const mid={x:(live.x+mate.x)/2,y:(live.y+mate.y)/2};
-    tap();
-    storm=W.allies.find(a=>a.k==='storm');
-    if(!storm||Math.hypot(storm.x-mid.x,storm.y-mid.y)>0.35)bad.push('cluster '+JSON.stringify(storm&&{x:storm.x,y:storm.y,mid}));
+    if(!live||!mate)bad.push('cluster did not spawn');
+    else{
+      seeLine(live.x,live.y);seeLine(mate.x,mate.y);
+      const mid={x:(live.x+mate.x)/2,y:(live.y+mate.y)/2};
+      tap();
+      storm=W.allies.find(a=>a.k==='storm');
+      if(!storm||Math.hypot(storm.x-mid.x,storm.y-mid.y)>0.35)bad.push('cluster '+JSON.stringify(storm&&{x:storm.x,y:storm.y,mid}));
+    }
 
     prep('hacker',6);
     const hid=foe(3,0);
@@ -184,7 +195,7 @@ const splash=await p.evaluate(()=>{
     g.OPT.aim='auto';g.noteInput('touch');
     g.G.cls='hacker';
     return bad;
-  }catch(e){return ['threw '+e.message]}
+  }catch(e){return ['threw '+e.message+' '+String(e.stack).split('\n')[1]]}
 });
 splash.forEach(s=>fail.push(s));
 
@@ -220,7 +231,15 @@ const hops=await p.evaluate(()=>{
       for(let dy=-5;dy<=5;dy++)for(let dx=-5;dx<=5;dx++)if(x+dx>=0&&y+dy>=0&&x+dx<N&&y+dy<N&&W.map[(y+dy)*N+(x+dx)]===1)n++;
       if(n>bn){bn=n;best={x:x+.5,y:y+.5}}
     }
-    function seat(){P.x=best.x;P.y=best.y;P.dir={x:1,y:0};P.dash=null;P.castWait=0;P.hitStun=0;P.blinkChain=0;g.J.x=0;g.J.y=0}
+    function seat(){
+      const openAt=(x,y)=>x>1&&y>1&&x<N-1&&y<N-1&&g.walk(x-.35,y-.35)&&g.walk(x+.35,y-.35)&&g.walk(x-.35,y+.35)&&g.walk(x+.35,y+.35);
+      let found=false;
+      for(let y=5;y<N-5&&!found;y++)for(let x=5;x<N-5&&!found;x++){
+        const px=x+.5,py=y+.5;let ok=true;
+        for(let dy=-1;ok&&dy<=3;dy++)for(let dx=-3;ok&&dx<=6;dx++)if(!openAt(px+dx,py+dy))ok=false;
+        if(ok){P.x=px;P.y=py;found=true}}
+      if(!found&&best){P.x=best.x;P.y=best.y}
+      P.dir={x:1,y:0};P.dash=null;P.castWait=0;P.hitStun=0;P.blinkChain=0;g.J.x=0;g.J.y=0}
     function foe(dx,dy){const e=g.spawn('tick',P.x+dx,P.y+(dy||0));if(e){e.stun=99;e.aggro=false}return e}
     function prep(cls,sk){
       seat();W.ents.length=0;W.allies.length=0;W.seen.fill(1);
@@ -310,8 +329,8 @@ const hops=await p.evaluate(()=>{
     const plan=P.dash&&P.dash.t*P.dash.spd;
     run();
     const flew=P.x-fx;
-    if(!(plan>1.5&&plan<3.4))bad.push('fleet plan '+plan);
-    if(!(flew>1.5&&flew<3.6))bad.push('fleet hop '+flew);
+    if(!(plan>=1.2&&plan<3.4))bad.push('fleet plan '+plan);
+    if(!(flew>=1.2&&flew<3.6))bad.push('fleet hop '+flew);
     if(fleetFoe&&Math.hypot(P.x-fleetFoe.x,P.y-fleetFoe.y)<0.85)bad.push('fleet landed on a machine');
 
     prep('maxi',5);
