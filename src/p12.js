@@ -186,7 +186,7 @@ function gearPerLevel(s){
   let U;try{U=UNIK}catch(e){return}
   if(!U||!G||!G.eq||!s)return;
   const lv=G.lvl||1;
-  for(const sl of SLOTS){const it=G.eq[sl];if(!it||!it.uid||!uOk(it))continue;const u=U[it.uid];if(!u||!u.per)continue;for(const k in u.per)s[k]=(s[k]||0)+u.per[k]*lv}}
+  for(const sl of SLOTS){const it=G.eq[sl];if(!it||!it.uid||!uOk(it))continue;if(typeof gearQuiet==='function'&&gearQuiet(it))continue;const u=U[it.uid];if(!u||!u.per)continue;for(const k in u.per)s[k]=(s[k]||0)+u.per[k]*lv}}
 function scrubItemBinds(){
   if(!itemSkillsReady||!G)return;
   ensureMouse();
