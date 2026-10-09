@@ -58,7 +58,12 @@ const ACH=[['first','First Blood','Destroy a machine',()=>G.kills>=1],['k100','S
  ['maker','Making the Market','Fill an order you posted yourself',()=>(G.st.maker||0)>0],
  ['hodl2','Through the Trough','Hold a stack through a 20% fall and out the other side',()=>(G.st.hodl||0)>0],
  ['liq','Margin Call','Get liquidated by Mr. Float',()=>(G.st.liq||0)>0],
- ['res','Reserve','Make bitcoin the world’s reserve currency',()=>G.adopt>=100],['sold','Everyone Has a Price','Accept MANDATE’s offer',()=>G.st.sold>0]];
+ ['res','Reserve','Make bitcoin the world’s reserve currency',()=>G.adopt>=100],['sold','Everyone Has a Price','Accept MANDATE’s offer',()=>G.st.sold>0],
+ ['block0','Block Zero','Read the yellowed paper on Gramps’s wall',()=>!!(G.st&&G.st.block0)],
+ ['rumors','Rumors of My Death','Die 21 times and still finish the act',()=>(G.deaths||0)>=21&&G.q.q5===3],
+ ['unseenlink','Some Things Can’t Be Unseen (You Didn’t)','Open the blurred link and find only a 404',()=>!!(G.st&&G.st.hello404)],
+ ['lunch','Most Expensive Lunch','Eat the cold pies',()=>!!(G.st&&G.st.lunch)],
+ ['k100k','Until 100K','Hold 100,000 sats at once',()=>G.sats>=100000]];
 let achT=3;
 function achTick(dt){achT-=dt;if(achT>0)return;achT=2;maxiCheck();for(const a of ACH)if(!G.ach[a[0]]&&a[3]()){G.ach[a[0]]=1;G.sats+=1;sfx('quest');toast('Feat: '+a[1]+' · +1 sat');return}}
 

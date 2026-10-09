@@ -272,3 +272,34 @@ function itemSkillPane(){
     h+='<div class="card"><div class="nm q4">'+s.n+'</div><div class="ln">'+s.tip+'</div><div class="ln off">+1 to '+s.n+' (item skill)</div><div class="row">'+[0,1,2].map(k=>'<button class="ghost" data-iskkey="'+k+'">'+slotKeyLabel(k)+(G.slots[k]===i?' ✓':'')+'</button>').join('')+(uiTouch()?'':'<button class="ghost" data-iskside="L">Left click'+(G.mouse&&G.mouse.L===i?' ✓':'')+'</button><button class="ghost" data-iskside="R">Right click'+(G.mouse&&G.mouse.R===i?' ✓':'')+'</button>')+'</div></div>'}
   return h}
 itemSkillsReady=true;
+
+/* Text eggs. The sentences live on EGG, the memos, the feats, and the lemon errand.
+   The three consumables are requirement-free: no slot, level 1, and zero Might, Reflex, and Bandwidth. */
+let eggTipN=0;
+function eggFree(it){it.free=1;it.req=1;it.reqMgt=0;it.reqRef=0;it.reqBnd=0;it.aff=it.aff||[];it.id=true;return it}
+function eggHelloItem(){return eggFree({name:EGG.helloName,base:EGG.helloName,q:0,il:1,hello:1,junk:1,val:1,fl:EGG.helloFl})}
+function eggPieItem(){return eggFree({name:EGG.pieName,base:EGG.pieName,q:1,il:1,pie:1,val:0,fl:pieFl()})}
+function eggSourItem(){return eggFree({name:EGG.sourName,base:EGG.sourName,q:1,il:1,sour:1,val:0,fl:EGG.sourFl})}
+function pieFl(){const a=typeof actOf==='function'?actOf(G.zone||0):1;return EGG.pieBase+' '+(EGG.pieWhere[a]||EGG.pieWhere[1])}
+function eggPaper(){const i=EGG.paperAt;if(!G.memos.includes(i))G.memos.push(i);G.st.block0=1;sfx('page');dlg(MEMOS[i][0],MEMOS[i][1],[[EGG.paperKeep]])}
+function eggOnDeath(){G.obit=G.obit||[];G.obit.push(EGG.pundits[((G.deaths||1)-1)%EGG.pundits.length])}
+function eggPryceNote(){if(!DY||!/Pryce/.test(DY.by||''))return;const note=$('deathNote');note.textContent=note.textContent+' '+EGG.pryceLine}
+function eggBoard(){const n=G.deaths||0,lines=(G.obit&&G.obit.length)?G.obit.slice(-6).join(' '):EGG.boardNone;dlg(EGG.obitTitle,EGG.board.replace('{n}',n)+' '+lines,[[EGG.leave]])}
+function eggFlyer(){G.sawFlyer=1;dlg(EGG.flyerTitle,EGG.flyerBody,[[EGG.leave,()=>dlg(EGG.gramps,EGG.grampsSnatch,[[EGG.leave]])]])}
+function eggHelloFrame(){dlg(EGG.helloTitle,EGG.helloFrame,[[EGG.leave]])}
+function eggMemoBtn(i){if(i!==EGG.linkAt)return '';return '<button type="button" class="eggLink" data-egg="link">'+esc(EGG.linkFace)+'</button>'}
+function eggClick(k){if(k==='link')eggOpenLink()}
+function eggOpenLink(){dlg(EGG.wren,EGG.wrenWarn,[[EGG.linkOpen,()=>{G.st.hello404=1;if(!G.st.helloGot){G.st.helloGot=1;giveItem(eggHelloItem())}dlg(EGG.miss,EGG.link404,[[EGG.leave]])}],[EGG.leave]])}
+function eggUse(i){const it=G.bag[i];if(!it)return false;if(it.hello){toast(EGG.brendaNo);sfx('err');return false}if(it.pie){heal(S.maxHp);G.st.lunch=1;G.bag.splice(i,1);sfx('stim');sel=null;calc();return true}if(it.sour){heal(Math.max(1,S.maxHp*.3));G.bag.splice(i,1);sfx('stim');sel=null;calc();return true}return false}
+function eggBuyPie(){if(!(W&&W.pie)||vendKind()!=='brenda')return false;if(!bagCan(eggPieItem())){toast(EGG.packFull);sfx('err');return false}return vendPay(10000,EGG.pieName,()=>{if(!bagCan(eggPieItem())){toast(EGG.packFull);sfx('err');return}if(!spendSats(10000)){eggPoor();return}W.pie=0;G.bag.push(eggPieItem());sfx('coin');toast(EGG.paid);if(mode==='sheet')drawSheet()})}
+function eggPoor(){if(!(G&&G.cls==='maxi'))return;toast(EGG.poor);if(P)float(P.x,P.y,EGG.poor,'#f7931a')}
+function eggLaser(){if(P)parts(P.x,P.y,16,['#ff2a2a','#fff'],2,1.2);if(!G||G.cls!=='maxi'){toast(EGG.laserNo);return}G.st.laser=G.st.laser?0:1;toast(G.st.laser?EGG.laserOn:EGG.laserOff);if(G.st.laser){toast(EGG.few);if(P)float(P.x,P.y,EGG.few,'#ff2a2a')}}
+function eggTip(){if(typeof mode!=='undefined'&&mode!=='play')return;const d=$('dlg');if(d&&!d.hidden)return;toast(EGG.tips[eggTipN++%EGG.tips.length])}
+function eggEyes(X,hy,f){const dx=(f||1)*42;ctx.save();ctx.strokeStyle='#ff2a2a';ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(X-3,hy);ctx.lineTo(X-3+dx,hy-8);ctx.moveTo(X+3,hy);ctx.lineTo(X+3+dx,hy-8);ctx.stroke();ctx.restore();glow(X,hy,28,'#ff2a2a',.5);light(X,hy,120,'#ff2a2a')}
+function eggDrawProp(n,X,Y){ctx.strokeStyle=OL;ctx.lineWidth=1.4;
+  if(n.id==='paper'){shadow(X,Y,10);box(X-16,Y-36,32,22,1,'#e6d7a8');ctx.fillStyle='#6a5a40';ctx.fillRect(X-12,Y-32,24,1);ctx.fillRect(X-12,Y-28,18,1);label(X,Y-48,EGG.mast,'#e6d7a8','700 8.5px Cinzel,serif');return}
+  if(n.id==='flyer'){shadow(X,Y,8);box(X-14,Y-32,28,20,1,'#f4efe2');ctx.fillStyle='#e6d24a';ctx.beginPath();ctx.arc(X,Y-22,5,0,6.283);ctx.fill();label(X,Y-44,EGG.lemonLbl,'#e6d24a','700 8px Cinzel,serif');return}
+  if(n.id==='obit'){shadow(X,Y,12);box(X-18,Y-40,36,26,1,'#2a2630');ctx.fillStyle='#e6e2d6';ctx.font='700 8px Cinzel,serif';ctx.textAlign='center';ctx.fillText(String(G.deaths||0),X,Y-22);label(X,Y-52,EGG.still,'#e6e2d6','700 8px Cinzel,serif');return}
+  shadow(X,Y,16);poly([X-22,Y-8,X,Y-2,X,Y+4,X-22,Y-2],'#4a5060');poly([X,Y-2,X+22,Y-8,X+22,Y-2,X,Y+4],'#353a48');poly([X-22,Y-20,X,Y-28,X+22,Y-20,X,Y-12],'#6a7488');label(X,Y-40,EGG.helloTitle,'#ffe36b');glow(X,Y-16,40,'#ffe36b',.35)}
+if($('sheet')&&!$('sheet')._egg){$('sheet')._egg=1;$('sheet').addEventListener('pointerover',e=>{const b=e.target.closest&&e.target.closest('.eggLink');if(!b||(G.st&&G.st.wrenSaid))return;G.st.wrenSaid=1;toast(EGG.wrenWarn)})}
+if(typeof devOn==='function'&&devOn()&&window.__g)Object.assign(window.__g,{EGG,eggPaper,eggBoard,eggFlyer,eggHelloFrame,eggOpenLink,eggBuyPie,eggUse,eggLaser,eggTip,eggOnDeath,eggHelloItem,eggPieItem,eggSourItem,pieFl,achTick,talkTo,showDeath,setDY(v){DY=v},vendBid,openVend,stampReq,itemLines,equipFromBag,BINTRO,ACH,SQ,MEMOS});

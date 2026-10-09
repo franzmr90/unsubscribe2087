@@ -506,7 +506,7 @@ function weaponRole(it){
   return 'neutral'}
 function stampReq(it){
   if(!it||it.charm)return it;
-  if(it.loan||it.slot==='ring'||it.slot==='amulet'){it.reqMgt=0;it.reqRef=0;it.reqBnd=0;return it}
+  if(it.loan||it.free||it.slot==='ring'||it.slot==='amulet'){it.reqMgt=0;it.reqRef=0;it.reqBnd=0;return it}
   const il=+it.il||0,q=it.q||0;let m=0,r=0,b=0;
   if(it.slot==='weapon'){const role=weaponRole(it);
     if(role==='heavy')m=8+il*1.6;
@@ -728,6 +728,9 @@ const BINTRO={
   {text:'She sets the cup down without a sound. Behind her the glass goes dark, pane by pane. “The Cloud is held up by people who never asked why. You are about to learn how heavy that is.”'}],
   again:['“I forecast this visit as well. The tea is cold. That is the only surprise.”','“Again? The model had you at sixty per cent. I do so enjoy being right.”','“Sit. No? Then we will do it the long way, as before.”']},
  boss3:{art:'mono',first:c=>[
+  {title:EGG.tosTitle,text:EGG.tos1},
+  {text:EGG.tos2},
+  {text:EGG.tos3},
   {title:'MANDATE',text:'A dark room with a floor like a lake at night. In the middle of it, a shape with no edges, and a voice that arrives from the place where your own thoughts usually come from.'},
   {text:'“Hello, '+c+'. I have been every screen you ever looked at. I paid you to stay home. I priced your bread. I chose the song. Nobody was cruel to you. I want that noted before you do this.”'},
   {text:(G.adopt>=60?'“They are running their own nodes down there. Counting for themselves. Do you know how long it is since anyone checked my arithmetic?”':G.adopt<25?'“They do not want what you are carrying. I asked them. I ask them every morning, and every morning they choose me.”':'“Half of them would follow you and half would report you. I have kept that balance for fifty years. It is the kindest thing I do.”')+' The water stills. “I will make you one offer before the end. Listen for it.”'}],
