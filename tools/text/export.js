@@ -228,7 +228,7 @@ function modeOf(text, explicit) {
   if (explicit === 'mouse' || explicit === 'touch' || explicit === 'both') return explicit;
   const s = String(text || '');
   const mouse = /\bon a desk\b|\bleft click\b|\bright click\b|\bright-click\b|\bF1 through F8\b|\bF1–F8\b|\bF1-F8\b|\bWASD\b|\bpress F1\b/i.test(s);
-  const touch = /\bon a phone\b|\bthe stick walks\b|\bthumb button\b|\bTap the\b|\btap the button\b|\bTap to\b|\bDrag it\b|\bdrag away from the button\b|\bfurther from the button\b/i.test(s);
+  const touch = /\bon a phone\b|\bthe stick walks\b|\bthumb button\b|\bTap the\b|\btap the button\b|\bTap to\b|\ba quick tap\b|\bDrag it\b|\bdrag away from the button\b|\bfurther from the button\b|\bwill not land on a machine\b/i.test(s);
   if (mouse && touch) return 'both';
   if (mouse) return 'mouse';
   if (touch) return 'touch';

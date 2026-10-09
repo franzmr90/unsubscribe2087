@@ -89,7 +89,12 @@ for(const k in radii){
 }
 
 const hit=await p.evaluate(()=>{
-  const g=__g,W=g.W,P=g.P;
+  const g=__g,W=g.W,P=g.P,N=W.N;
+  const openAt=(x,y)=>g.walk(x-.4,y-.4)&&g.walk(x+.4,y-.4)&&g.walk(x-.4,y+.4)&&g.walk(x+.4,y+.4);
+  let parked=false;
+  for(let y=5;y<N-5&&!parked;y++)for(let x=5;x<N-5&&!parked;x++){
+    const px=x+.5,py=y+.5,ax=px+3,ay=py+1;
+    if(openAt(px,py)&&openAt(ax+3.4,ay)&&openAt(ax,ay+3.7)){P.x=px;P.y=py;parked=true}}
   g.G.cls='hacker';g.G.sk[6]=1;g.G.slots[0]=6;g.G.en=800;P.cd[6]=0;P.castWait=0;P.dir={x:1,y:0};
   W.ents.length=0;W.allies.length=0;
   g.OPT.aim='drag';
@@ -199,10 +204,10 @@ const thumb=await p.evaluate(()=>{
     const ev=(name,x,y)=>b.dispatchEvent(new PointerEvent(name,{bubbles:true,cancelable:true,pointerType:'touch',pointerId:7,button:0,clientX:x,clientY:y}));
     W.allies.length=0;g.G.en=800;P.cd[6]=0;P.castWait=0;P.dir={x:1,y:0};
     ev('pointerdown',home.x,home.y);
+    ev('pointermove',move.x,move.y);
     const ring=document.getElementById('aimStick');
     const ringOn=ring&&!ring.hidden;
     const reach=ring&&ring.querySelector('.ring').getBoundingClientRect();
-    ev('pointermove',move.x,move.y);
     const armed=g.AIMING&&{x:g.AIMING.x,y:g.AIMING.y,cancel:g.AIMING.cancel,thumb:g.AIMING.thumb,dead:g.AIMING.dead};
     const hero=g.screenAt(P.x,P.y);
     const spot=armed&&g.screenAt(armed.x,armed.y);
@@ -303,6 +308,7 @@ const placed=await p.evaluate(()=>{
   if(!dropA||Math.abs(dropA.x-sd.x)>0.08)bad.push('second drop');
   drop('anon',0,2,'decoy');
   drop('anon',3,1.5,'mine');
+  park([[1.2,0],[3,0],[4.5,0]]);
   if(floor(P.x+1.2,P.y)){
     prep('homesteader',0);g.beginAim(0,0,'touch');const sc=g.aimSet(P.x+1.2,P.y);g.aimRelease(null,null);
     const plot=W.allies.find(a=>a.k==='plot');
@@ -319,30 +325,50 @@ const placed=await p.evaluate(()=>{
   const fault=W.allies.find(a=>a.k==='fault');
   if(!fault||fault.r!==.75||fault.pts.length!==pts.length)bad.push('fault '+(fault&&fault.pts.length));
   else fault.pts.forEach((pt,i)=>{if(Math.abs(pt.x-pts[i].x)>0.02)bad.push('fault pt '+i)});
+  function openAt(x,y){return g.walk(x-.4,y-.4)&&g.walk(x+.4,y-.4)&&g.walk(x-.4,y+.4)&&g.walk(x+.4,y+.4)}
+  function park(offs){
+    const N=W.N;
+    for(let y=4;y<N-4;y++)for(let x=4;x<N-4;x++){
+      const px=x+.5,py=y+.5;
+      if(!openAt(px,py))continue;
+      if(!offs.every(([dx,dy])=>openAt(px+dx,py+dy)))continue;
+      P.x=px;P.y=py;P.dir={x:1,y:0};return true}
+    return false}
+  function tick(dx,dy){
+    const e=g.spawn('tick',P.x+dx,P.y+dy);
+    if(e){e.stun=99;e.aggro=false;e.max=5000;e.hp=5000}
+    else bad.push('no room for a machine at '+dx+','+dy);
+    return e}
   prep('founder',1);
-  const foe=g.spawn('tick',P.x+3,P.y);foe.stun=0;foe.aggro=false;const foeHp=foe.hp;
-  g.beginAim(1,0,'touch');g.aimSet(foe.x,foe.y);g.aimRelease(null,null);
-  if(!(foe.stun>1)||!(foe.hp<foeHp))bad.push('cease stun '+foe.stun+' hp '+(foeHp-foe.hp));
-  if(best){P.x=best.x;P.y=best.y;P.dir={x:1,y:0}}
+  park([[3,0]]);
+  const foe=tick(3,0);
+  if(foe){foe.stun=0;const foeHp=foe.hp;
+    g.beginAim(1,0,'touch');g.aimSet(foe.x,foe.y);g.aimRelease(null,null);
+    if(!(foe.stun>1)||!(foe.hp<foeHp))bad.push('cease stun '+foe.stun+' hp '+(foeHp-foe.hp))}
   prep('anon',5);
-  const dox=g.spawn('tick',P.x+3,P.y);const far=g.spawn('tick',P.x+3,P.y+4);dox.stun=99;far.stun=99;
-  g.beginAim(5,0,'touch');g.aimSet(dox.x,dox.y);g.aimRelease(null,null);
-  if(!(dox.mark>0)||far.mark>0)bad.push('dox mark '+dox.mark+'/'+far.mark);
+  park([[3,0],[3,4]]);
+  const dox=tick(3,0),far=tick(3,4);
+  if(dox&&far){g.beginAim(5,0,'touch');g.aimSet(dox.x,dox.y);g.aimRelease(null,null);
+    if(!(dox.mark>0)||far.mark>0)bad.push('dox mark '+dox.mark+'/'+far.mark)}
   prep('anon',6);
-  const zip=g.spawn('tick',P.x+3,P.y);const zfar=g.spawn('tick',P.x+3,P.y+4);zip.stun=99;zfar.stun=99;const zh=zip.hp,zf=zfar.hp;
-  g.beginAim(6,0,'touch');g.aimSet(zip.x,zip.y);g.aimRelease(null,null);
-  if(!(zip.hp<zh)||zfar.hp<zf)bad.push('zip bomb');
+  park([[3,0],[3,4]]);
+  const zip=tick(3,0),zfar=tick(3,4);
+  if(zip&&zfar){const zh=zip.hp,zf=zfar.hp;
+    g.beginAim(6,0,'touch');g.aimSet(zip.x,zip.y);g.aimRelease(null,null);
+    if(!(zip.hp<zh)||zfar.hp<zf)bad.push('zip bomb')}
   prep('scrapper',12);
-  const horn=g.spawn('tick',P.x+.4,P.y);const hfar=g.spawn('tick',P.x+6,P.y);horn.stun=99;hfar.stun=99;const hh=horn.hp,hf=hfar.hp;
-  g.beginAim(12,0,'touch');const stay=g.aimSet(P.x+9,P.y);g.aimRelease(null,null);
-  if(Math.hypot(stay.x-P.x,stay.y-P.y)>0.02)bad.push('strike reticle left the hero');
-  if(!(horn.hp<hh)||hfar.hp<hf)bad.push('call the strike');
+  park([[.4,0],[6,0]]);
+  const horn=tick(.4,0),hfar=tick(6,0);
+  if(horn&&hfar){const hh=horn.hp,hf=hfar.hp;
+    g.beginAim(12,0,'touch');const stay=g.aimSet(P.x+9,P.y);g.aimRelease(null,null);
+    if(Math.hypot(stay.x-P.x,stay.y-P.y)>0.02)bad.push('strike reticle left the hero');
+    if(!(horn.hp<hh)||hfar.hp<hf)bad.push('call the strike')}
   prep('maxi',9);
-  const half=g.spawn('tick',P.x+1,P.y);half.hp=half.max;half.stun=99;
-  const farH=g.spawn('tick',P.x+6,P.y);farH.hp=farH.max;farH.stun=99;
-  const h0=half.hp,f0=farH.hp;
-  g.beginAim(9,0,'touch');g.aimRelease(null,null);
-  if(!(half.hp<h0)||farH.hp<f0)bad.push('halving');
+  park([[1,0],[6,0]]);
+  const half=tick(1,0),farH=tick(6,0);
+  if(half&&farH){half.hp=half.max;farH.hp=farH.max;const h0=half.hp,f0=farH.hp;
+    g.beginAim(9,0,'touch');g.aimRelease(null,null);
+    if(!(half.hp<h0)||farH.hp<f0)bad.push('halving')}
   g.G.cls='hacker';
   return bad;
   }catch(e){return ['threw '+e.message+' @ '+String(e.stack).split('\n')[1]]}
