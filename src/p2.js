@@ -276,7 +276,7 @@ function applySave(o){if(!o||!o.G||!CLS[o.G.cls])return false;G=o.G;
   if(!Array.isArray(G.slots))G.slots=[0,-1,-1];
   if(typeof G.hp!=='number'||!isFinite(G.hp))G.hp=1;
   G.sats=G.sats||0;G.merc=G.merc||null;G.sq=(G.sq&&typeof G.sq==='object')?G.sq:{};
-  if(G.q.q10===3&&(G.unlocked||0)<12)G.unlocked=12;for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;if(G.q.q5===3&&(G.unlocked||0)<7)G.unlocked=7;actBriefMigrate();if(G.hp<=0){if(!G.hc)G.hp=9999;o.cur=null}ZS={};for(const k in (o.zs||{})){let z=null;try{z=decW(o.zs[k])}catch(e){z=null}if(z)ZS[k]=z;else keepGround(o.zs[k])}if(o.opt)OPT=Object.assign({},OPT_DEF,o.opt);G._cur=o.cur||null;boonRefund();return true}
+  if(G.q.q10===3&&(G.unlocked||0)<12)G.unlocked=12;for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;if(G.q.q5===3&&(G.unlocked||0)<7)G.unlocked=7;actBriefMigrate();if(G.hp<=0){if(!G.hc)G.hp=9999;o.cur=null}ZS={};for(const k in (o.zs||{})){let z=null;try{z=decW(o.zs[k])}catch(e){z=null}if(z)ZS[k]=z;else keepGround(o.zs[k])}if(o.opt){const raw=o.opt;OPT=Object.assign({},OPT_DEF,raw);lootMigrate(raw)}G._cur=o.cur||null;boonRefund();return true}
 function hcBegin(){const c=G&&CLS[G.cls]?G.cls:'scrapper';DY=null;const d=$('death');if(d)d.hidden=true;resetZones();newGame(c);G.hc=true;save(true)}
 function startPlay(){ensureG();if(G.hc&&G.hp<=0){hcBegin();return}mpConnect();mode='play';$('title').hidden=true;$('hud').hidden=false;calc();setSkillButtons();
   const c=G._cur;delete G._cur;const cz=c&&ZONES[c.zi];
@@ -1281,7 +1281,7 @@ function usePortal(p){if(mpPortalBlocked())return;if(p.kind==='back'&&!(G.portal
 function findAct(){for(const o of W.objs)if(o.k==='qobj'&&!o.used&&Math.hypot(o.x-P.x,o.y-P.y)<1.9){const st=sqStep(o.q);if(st)return{label:st.label,fn:()=>sqUse(o)}}
   let best=null,bd=1.8;const chk=(x,y,label,fn)=>{const d=Math.hypot(x-P.x,y-P.y);if(d<bd){bd=d;best={label,fn}}};
   for(const p of W.portals)chk(p.x,p.y,portalLabel(p),()=>usePortal(p));
-  /* Gear, notes and stims stay until you take them. Standing on one does not open a card. */
+  /* Walking over gear, notes and stims picks them up if they fit. Standing on one does not open a card. */
   if(W.z.town){if(G.portal&&!W.z.pre)chk(12.5,11.5,portalLabel({kind:'back'}),()=>usePortal({kind:'back'}));
     const rs=resStep();if(rs)for(const n of W.npcs)if(n.id==='res'&&!n.got)chk(n.x,n.y,rs.label,()=>sqRes(n));
     if(!rs)for(const n of W.npcs)if(n.id==='res')chk(n.x,n.y,'Talk to a Resident',()=>convo('res'));
@@ -1677,14 +1677,14 @@ function update(dt){
     if(gone){W.projs.splice(W.projs.indexOf(p),1);parts(p.x,p.y,2,[p.col],1.5)}}
   // pickups
   const magn=W.merc&&W.merc.hp>0&&G.merc.k==='hound';
-  for(let _di=W.drops.length-1;_di>=0;_di--){const d=W.drops[_di];if(!d)continue;d.t+=dt;const purse=!!(d.cr||d.sat);if(d.t<.35||(!purse&&!d.force))continue;if(dist(d,P)>(purse?(magn?5:2.2):.9))continue;
-    if(d.word){gotWord(d.word);float(P.x,P.y,'“'+d.word+'”','#f7931a');toast('A torn note with one word on it: '+d.word);sfx('page');W.drops.splice(W.drops.indexOf(d),1);continue}
+  for(let _di=W.drops.length-1;_di>=0;_di--){const d=W.drops[_di];if(!d)continue;d.t+=dt;const purse=!!(d.cr||d.sat);if(d.t<.35||(!purse&&!d.force&&!lootAuto(d)))continue;if(dist(d,P)>((purse||d.word)?(magn?5:2.2):.9))continue;
+    if(d.word){gotWord(d.word);float(P.x,P.y,'“'+d.word+'”','#f7931a');toast('\u201c'+d.word+'\u201d');sfx('page');W.drops.splice(W.drops.indexOf(d),1);continue}
     if(d.sat){const n=Math.ceil(d.sat*(W.merc&&W.merc.hp>0&&G.merc.k==='node'?1.5:1)*(repRank('btc')>=2?1.25:1)*(S.sp.coldwallet?1.25:1));G.sats+=n;float(P.x,P.y,'+'+n+' sats','#f7931a');sfx('coin');W.drops.splice(W.drops.indexOf(d),1);continue}
     /* The pickup line prints whole credits, so the purse gains that floor. */
     if(d.cr){const v=Math.floor(d.cr*(1+S.gold/100));G.credits+=v;if(v){float(P.x,P.y,'+'+fmt(v),'#ffe36b');sfx('coin')}}
-    else if(d.pot){if(G.stims>=S.cap)continue;G.stims++;float(P.x,P.y,'+stim','#7be495');sfx('pick')}
-    else if(d.it.charm){charmNormalize(d.it);if(!bagCan(d.it)){if(P.warn<=0){toast('Your pack is full');P.warn=3}continue}G.bag.push(d.it);sfx('pick');toast('Picked up '+d.it.name)}
-    else{if(!d.force&&skipPick(d.it))continue;if(!bagCan(d.it)){if(P.warn<=0){toast('Your pack is full');P.warn=3}continue}G.bag.push(d.it);sfx('pick');if(d.it.id&&G.lvl>=d.it.req&&!d.it.charm){const dl=itemDelta(d.it),emp=!G.eq[d.it.slot];if(emp||(OPT.autoEq&&dl>.01)){equipFromBag(G.bag.indexOf(d.it));toast('Equipped '+d.it.name);W.drops.splice(W.drops.indexOf(d),1);continue}if(dl>.2&&(!SWAP||dl>SWAP.d))SWAP={it:d.it,d:dl,t:8}}toast('Picked up '+(d.it.id?d.it.name:'an unidentified '+d.it.base))}
+    else if(d.pot){if(G.stims>=S.cap)continue;G.stims++;float(P.x,P.y,'+stim','#7be495');toast('Stim');sfx('pick')}
+    else if(d.it.charm){charmNormalize(d.it);if(!bagCan(d.it)){packFullCue();continue}G.bag.push(d.it);sfx('pick');float(P.x,P.y,lootName(d),lootCol(d));toast(lootName(d))}
+    else{if(!d.force&&skipPick(d.it))continue;if(!bagCan(d.it)){packFullCue();continue}G.bag.push(d.it);sfx('pick');float(P.x,P.y,lootName(d),lootCol(d));if(d.it.id&&G.lvl>=d.it.req&&!d.it.charm){const dl=itemDelta(d.it),emp=!G.eq[d.it.slot];if(emp||(OPT.autoEq&&dl>.01)){equipFromBag(G.bag.indexOf(d.it));toast('Equipped '+d.it.name);W.drops.splice(W.drops.indexOf(d),1);continue}if(dl>.2&&(!SWAP||dl>SWAP.d))SWAP={it:d.it,d:dl,t:8}}toast(d.it.id?d.it.name:'Unidentified '+d.it.base)}
     W.drops.splice(W.drops.indexOf(d),1)}
   for(const n of W.npcs){if(n.id!=='res')continue;n.wait-=dt;n.st=Math.max(0,n.st-dt);n.cool-=dt;n.ph+=dt;
     if(n.wait<=0){if(n.ev){n.tx=n.hx+rnd(-6,6);n.ty=n.hy+rnd(-6,6)}else{n.tx=rnd(5,20);n.ty=rnd(10,20)}n.wait=rnd(3,8)}

@@ -45,6 +45,7 @@ await p.evaluate(()=>{__g.setMode('play');__g.uiApply(true)});
 
 const logic=await p.evaluate(()=>{
   const g=__g,G=g.G,P=g.P,L=g.lootPrefs();
+  g.OPT.autoLoot=false;
   L.always=0;L.hideJunk=0;L.minQ=0;L.hold=0;g.keys.AltLeft=false;g.keys.AltRight=false;
   const piece=(q,name,extra)=>{const it=g.makeItem(4,Math.min(q,2),'gloves');it.q=q;it.id=true;it.name=name;it.req=1;it.junk=0;it.aff=it.aff||[];if(extra)Object.assign(it,extra);return it};
   const white=piece(0,'White Gloves');
