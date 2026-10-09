@@ -42,8 +42,10 @@ const FORMULAS = {
     cipher: { per: 0.06, cap: 0.60 },
     ward: { sec: 1.7, pct: 0.30, cap: 0.70 }
   },
-  /* One level of experience, the same curve the client uses. */
-  xp: { base: 60, pow: 1.75 },
+  /* One level of experience, the same curve the client uses.
+     A full clear of the written districts lands a few levels over each boss.
+     Pay falls off once you are more than `ahead` levels above the machine. */
+  xp: { base: 58, pow: 1.68, ahead: 5, fade: 0.08, floor: 0.2 },
   /* Experience past the act cap, paid in one write on entering Act III. */
   bank: { levels: 1 },
   /* Maximalist auras, and the item skills that already name a radius.
@@ -80,6 +82,16 @@ function braceKeep(cls) {
 function xpNext(lvl) {
   const l = Math.max(1, +lvl || 1);
   return Math.round(FORMULAS.xp.base * Math.pow(l, FORMULAS.xp.pow));
+}
+
+/* 1 while the character is within `ahead` levels of the machine.
+   Past that, each extra level keeps less, down to `floor`.
+   Hard and Brutal multiply whatever this leaves. */
+function xpPace(lvl, ml) {
+  const gap = Math.max(1, +lvl || 1) - Math.max(1, +ml || 1);
+  const x = FORMULAS.xp;
+  if (gap <= x.ahead) return 1;
+  return Math.max(x.floor, 1 - (gap - x.ahead) * x.fade);
 }
 
 /* 1..20, or 0 when the packet is not a rank. */
@@ -121,4 +133,4 @@ function pailRate(L) {
   return f.rate + f.rateL * n;
 }
 
-if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep, xpNext, auraRank, auraRadius, toxicSwingMul, pailMax, pailRate };
+if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep, xpNext, xpPace, auraRank, auraRadius, toxicSwingMul, pailMax, pailRate };

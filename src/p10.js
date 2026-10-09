@@ -273,6 +273,11 @@ const FAM={sign:{cls:'scrapper',n:'Sign',bases:['Road Sign','Girder','Wrecking B
  notebook:{cls:'witness',n:'Notebook',bases:['Stub Pencil','Court Pad','Bound Minutes','The Seventh Part'],dm:1,sp:0,perk:'the Record fills a little faster, and Testimony stacks one higher',st:{}}};
 function famify(it){const mine=Object.keys(FAM).find(k=>FAM[k].cls===G.cls),k=Math.random()<.5&&mine?mine:pick(Object.keys(FAM)),F=FAM[k],nb=F.bases[tierOf(it.il)];
   if(it.name&&it.base&&it.name.includes(it.base))it.name=it.name.replace(it.base,nb);else if(it.q===0)it.name=nb;it.base=nb;it.fam=k;it.dmin=Math.max(1,Math.round(it.dmin*F.dm));it.dmax=Math.max(it.dmin+1,Math.round(it.dmax*F.dm));it.spd=(it.spd||0)+F.sp;return it}
+/* Nonce always has one weapon the class can use, three item levels ahead of the character. */
+function classWeapon(il){const mine=Object.keys(FAM).find(k=>FAM[k].cls===G.cls);if(!mine)return null;const it=makeItem(Math.max(1,il|0),Math.random()<.35?2:1,'weapon');
+  if(it.fam&&it.fam!==mine&&FAM[it.fam]){const old=FAM[it.fam];it.dmin=Math.max(1,Math.round(it.dmin/old.dm));it.dmax=Math.max(it.dmin+1,Math.round(it.dmax/old.dm));it.spd=(it.spd||0)-old.sp;it.fam=null}
+  if(it.fam!==mine){const F=FAM[mine],nb=F.bases[tierOf(it.il)];it.name=nb;it.base=nb;it.fam=mine;it.dmin=Math.max(1,Math.round(it.dmin*F.dm));it.dmax=Math.max(it.dmin+1,Math.round(it.dmax*F.dm));it.spd=(it.spd||0)+F.sp}
+  it.id=true;return it}
 function famBonus(s){const w=G.eq.weapon;if(!w||!w.fam)return;const F=FAM[w.fam];if(F.cls!==G.cls)return;s.skills+=1;for(const k in F.st)s[k]=(s[k]||0)+F.st[k]}
 ITEM_HOOKS.push(function(it,il){if(it.slot==='weapon'&&it.q<4&&il>2&&G&&Math.random()<.4)famify(it);return it});
 /* ================= class uniques: items that only wake up in the right hands ================= */

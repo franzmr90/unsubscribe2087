@@ -384,7 +384,7 @@ async function click(p, sel) {
     g.gainXp(1e12);
     const full = G.bankXp;
     g.gainXp(1e12);
-    const oneBar = Math.round(60 * Math.pow(50, 1.75));
+    const oneBar = Math.round(58 * Math.pow(50, 1.68));
     const capped = full === oneBar && G.bankXp === full && (G.para || 0) === 0;
     G.act3 = true;
     g.flushBank();
