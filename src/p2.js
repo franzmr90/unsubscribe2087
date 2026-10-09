@@ -347,8 +347,9 @@ const lvlCap=()=>G.act5?100:G.act4?90:G.act3?75:G.act2?50:25;
    Hard and Brutal lift that ladder. They do not rise to the character.
    A subpoena and the Simulator already name the level they want. */
 function zoneLevel(z){const written=z.lvl||1;const ml=(z.sub||z.sim)?written:campaignLevel(written,G.diff||0);return ml+(G.tier||0)*12}
-/* A kill in a district written above 12 pays FORMULAS.xp.after. Act I pays full. */
-function xpRest(){if(!W||!W.z||W.z.sim||W.z.sub||W.z.secret)return 1;return (W.z.lvl||1)>12?FORMULAS.xp.after:1}
+/* Act I pays FORMULAS.xp.act1. A district written above 12 pays FORMULAS.xp.after.
+   The Simulator, a subpoena, and the Bull Run pay the card as written. */
+function xpRest(){if(!W||!W.z||W.z.sim||W.z.sub||W.z.secret)return 1;return (W.z.lvl||1)>12?FORMULAS.xp.after:FORMULAS.xp.act1}
 function dynFor(ml){if(!OPT.dyn||!(G.diff>0))return{hp:1,dmg:1};const p=pscore(S),f=r=>clamp(r<1?1:1+(r-1)*.8,1,12);return{hp:f(p.dps*2.4/(30*(1+.42*(ml-1)))),dmg:f(p.ehp/16/(7*(1+.22*(ml-1))))}}
 function fillRoom(r,z,zi,i){
   if(i===1&&zi>=1&&zi<=4){const hot=zi>=3,pool=z.mix.filter(m=>m[0]!=='tick'&&!(zi===4&&m[0]==='mech')),n=hot?2:ri(3,4),mul=zi===4?.55:.7;

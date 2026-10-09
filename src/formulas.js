@@ -43,12 +43,12 @@ const FORMULAS = {
     ward: { sec: 1.7, pct: 0.30, cap: 0.70 }
   },
   /* One level of experience, the same curve the client uses.
-     Act I still uses the written levels, and a clear of it lands a few levels over Pryce.
-     Districts written above 12 pay `after` of a kill. The ladder folds 12–72 into 12–38
-     on Normal (`ladder`), then Hard and Brutal lift that reading. A full clear is aimed
-     at the low 40s, the mid-60s, and about 80. Pay falls off once you are more than
-     `ahead` levels above the machine. */
-  xp: { base: 58, pow: 1.85, ahead: 5, fade: 0.08, floor: 0.2, after: 0.4 },
+     Act I pays `act1` of a kill and still uses the written levels, so Pryce is met a few up.
+     Districts written above 12 pay `after`. The ladder folds 12–72 into 12–38 on Normal
+     (`ladder`), then Hard and Brutal lift that reading. A full clear is aimed at the low
+     40s, the mid-60s, and about 80. Pay falls off once you are more than `ahead` levels
+     above the machine. */
+  xp: { base: 58, pow: 1.85, ahead: 5, fade: 0.08, floor: 0.2, act1: 1.6, after: 0.54 },
   /* Written 1–12 stay. Written 12–72 is read as 12–38. Hard adds `hard`, Brutal adds `brutal`. */
   ladder: { act1: 12, top: 72, end: 38, hard: 22, brutal: 38 },
   /* Experience past the act cap, paid in one write on entering Act III. */
