@@ -345,6 +345,18 @@ async function install(page, cls, seed) {
         const d = nearest(80, e => e.k === 'director' && !e.su);
         if (d) return d.e;
       }
+      if (G.q3open && (G.q.q3 || 0) < 2) {
+        const cg = W.objs.find(o => !o.used && o.k === 'cage');
+        if (cg) return cg;
+      }
+      if (G.q8down && !G.q8page && (G.q.q8 || 0) < 2) {
+        const pg = W.objs.find(o => !o.used && o.k === 'page');
+        if (pg) return pg;
+      }
+      if (G.q12down && (G.q.q12 || 0) < 2) {
+        const mn = W.objs.find(o => !o.used && o.k === 'minute');
+        if (mn) return mn;
+      }
       return __g.goalPt();
     }
     function noteStuck(dt) {
@@ -560,19 +572,27 @@ async function install(page, cls, seed) {
               useNear(o => o.k === 'cage' || o.k === 'page' || o.k === 'minute' || o.k === 'qobj', 'obj', reach + 0.2);
               if (sealed && W.objs.some(o => !o.used && o.k === jobKind)) {
                 const su = W.ents.find(e => e.hp > 0 && e.su);
-                if (su) { prog.focus = su; fight(su, true); return; }
+                if (su) {
+                  prog.focus = su;
+                  if (hypot(su, P) > (prof.kite ? prof.far : prof.reach) + (su.r || 0.4)) toward(su.x, su.y);
+                  else fight(su, false);
+                  return;
+                }
               }
               if (hypot(gp, P) >= 0.85) toward(gp.x, gp.y);
             } else toward(gp.x, gp.y);
           };
-          if (suNow && hypot(suNow, P) < 12) {
+          if (jobKind && suNow) {
+            const trash = nearest(1.05, e => !e.su && !skipMotion(e));
+            if (trash) fight(trash.e, false);
+            else if (hypot(suNow, P) > (prof.kite ? prof.far : prof.reach) + (suNow.r || 0.4)) toward(suNow.x, suNow.y);
+            else fight(suNow, false);
+          } else if (jobKind) {
+            goGoal();
+          } else if (suNow && hypot(suNow, P) < 12) {
             const trash = nearest(Math.min(3.1, hypot(suNow, P) - 0.4), e => !e.su && !skipMotion(e));
             if (trash) fight(trash.e, true);
             else { prog.focus = suNow; fight(suNow, true); }
-          } else if (jobKind && !suUp) {
-            // The lieutenant is down. Walk to the object. A swing here kites off it,
-            // and a saved Hard field is dense enough that something is always in reach.
-            goGoal();
           } else if (commit) {
             const su = W.ents.find(e => e.hp > 0 && e.su && e.q && (G.q[e.q] || 0) < 2 && !skipMotion(e));
             const onJob = prog.focus && su && prog.focus === su;

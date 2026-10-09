@@ -397,7 +397,7 @@ function genZone(zi){
     if(i===n-1&&z.boss){spawn(z.bossK||'boss',L.x+.5,L.y+.5);for(let k=0;k<4;k++)spawn(z.guard||'mech',r.x+rnd(-6,6),r.y+rnd(-6,6));continue}
     fillRoom(r,z,zi,i);
     if(i===gobRoom)spawn('gob',r.x+.5,r.y-1.5);
-    if(z.su&&i===n-2){const e=spawn(z.su.k,r.x+.5,r.y+.5,{su:z.su});for(let k=0;k<3;k++)spawn(z.su.k==='mech'?'bot':z.su.k,r.x+rnd(-2,2),r.y+rnd(-2,2));
+    if(z.su&&i===n-2&&!suStepDone(z)){const e=spawn(z.su.k,r.x+.5,r.y+.5,{su:z.su});for(let k=0;k<3;k++)spawn(z.su.k==='mech'?'bot':z.su.k,r.x+rnd(-2,2),r.y+rnd(-2,2));
       W.suAt={x:r.x,y:r.y}}
   }
   if(!z.boss)W.portals.push({x:L.x+.5,y:L.y+.5,kind:'next'});
