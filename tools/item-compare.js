@@ -162,7 +162,7 @@ const report=await p.evaluate(()=>{
   wipe();
   check('life alone is not a strict upgrade',g.strictUp(gear('ring',{aff:[{k:'hp',v:20}]}))===false);
   check('damage, armor and life together are a strict upgrade',g.strictUp(gear('amulet',{name:'All Three',aff:[{k:'dmg',v:10},{k:'hp',v:20},{k:'armor',v:10}]}))===true);
-  const shop=g.itemCard(gear('helm',{name:'Shop Helm',arm:6,aff:[{k:'hp',v:8}]}),'');
+  const shop=g.cmpHTML(gear('helm',{name:'Shop Helm',arm:6,aff:[{k:'hp',v:8}]}));
   check('shop cards are the side-by-side compare',shop.indexOf('cmpBox')>=0&&shop.indexOf('What changes')>=0);
   return {fail,note:note.length,errs:fail.length};
 });
@@ -177,15 +177,28 @@ await p.evaluate(()=>{
   G.bag[0]={slot:'weapon',id:true,req:1,name:'New Sign',base:'Maul',q:2,il:8,dmin:14,dmax:22,spd:-20,aff:[{k:'hp',v:40},{k:'en',v:-18}]};
   g.calc();
   const drop={slot:'ring',id:true,req:1,name:'Ground Loop',base:'Band',q:1,il:3,aff:[{k:'hp',v:12},{k:'r_heat',v:-10}]};
+  g.W.drops.length=0;
   g.W.drops.push({x:P.x+1.2,y:P.y,it:drop,t:5});
-  g.noteInput('touch');
-  g.hud();
+  g.noteInput('mouse');
 });
-const dock=await p.evaluate(()=>{
+const at=await p.evaluate(()=>__g.screenAt(__g.P.x+1.2,__g.P.y));
+await p.mouse.move(at.x,at.y);
+await p.waitForTimeout(120);
+const hover=await p.evaluate(()=>{
   const el=document.getElementById('cmpTip');
-  return {on:!!(el&&!el.hidden&&el.classList.contains('dock')&&el.querySelector('.cmpBox')),ui:document.documentElement.dataset.ui};
+  const h=__g.HOVER;
+  return {on:!!(el&&!el.hidden&&!el.classList.contains('dock')&&el.querySelector('.cmpBox')),name:!!(el&&el.textContent.indexOf('Ground Loop')>=0),kind:h&&h.kind,hn:h&&h.name,text:el&&el.textContent.slice(0,180)};
 });
-if(!dock.on){console.log('dock',dock);process.exit(1)}
+if(!hover.on||!hover.name){console.log('ground hover',JSON.stringify(hover));process.exit(1)}
+console.log('desktop ground hover');
+await p.evaluate(()=>__g.noteInput('touch'));
+await p.waitForTimeout(50);
+const dock=await p.evaluate(()=>{
+  __g.hud();
+  const el=document.getElementById('cmpTip');
+  return {on:!!(el&&!el.hidden&&el.classList.contains('dock')&&el.querySelector('.cmpBox')&&el.textContent.indexOf('Ground Loop')>=0),ui:document.documentElement.dataset.ui,text:el&&el.textContent.slice(0,120)};
+});
+if(!dock.on){console.log('dock',JSON.stringify(dock));process.exit(1)}
 console.log('touch dock',dock.ui);
 await p.evaluate(()=>{
   const el=document.getElementById('cmpTip');
@@ -194,17 +207,6 @@ await p.evaluate(()=>{
 await p.waitForTimeout(50);
 const muted=await p.evaluate(()=>{__g.hud();const el=document.getElementById('cmpTip');return !el||el.hidden});
 if(!muted){console.log('hide did not mute the dock');process.exit(1)}
-
-await p.evaluate(()=>__g.noteInput('mouse'));
-const at=await p.evaluate(()=>__g.screenAt(__g.P.x+1.2,__g.P.y));
-await p.mouse.move(at.x,at.y);
-await p.waitForTimeout(80);
-const hover=await p.evaluate(()=>{
-  const el=document.getElementById('cmpTip');
-  return {on:!!(el&&!el.hidden&&!el.classList.contains('dock')&&el.querySelector('.cmpBox')),name:el&&el.textContent.indexOf('Ground Loop')>=0};
-});
-if(!hover.on||!hover.name){console.log('ground hover',hover);process.exit(1)}
-console.log('desktop ground hover');
 
 await p.evaluate(()=>{
   const g=__g;
@@ -232,6 +234,7 @@ await p.evaluate(()=>{
   const mine={tid:'mine1',slot:'ring',id:true,req:1,name:'My Loop',base:'Band',q:1,il:2,aff:[{k:'hp',v:9}]};
   g.G.bag.push(mine);
   MP.trade={phase:'open',id:'t1',you:{sats:0,items:[],ok:false},them:{sats:0,items:[{slot:'ring',id:true,req:1,name:'Their Loop',base:'Band',q:2,il:5,aff:[{k:'hp',v:20},{k:'en',v:-6}]}]}};
+  g.setMode('play');
   g.openSheet('party',{});
 });
 const trade=await p.evaluate(()=>{
@@ -239,7 +242,7 @@ const trade=await p.evaluate(()=>{
   const mine=document.querySelector('[data-mpti]');
   return {see:!!see,mine:!!mine,hint:(document.getElementById('sheetIn').textContent||'').indexOf('beside what you wear')>=0};
 });
-if(!trade.see||!trade.mine||!trade.hint){console.log('trade panel',trade);process.exit(1)}
+if(!trade.see||!trade.mine||!trade.hint){console.log('trade panel',trade);const bit=await p.evaluate(()=>(document.getElementById('sheetIn').textContent||'').slice(0,400));console.log(bit);process.exit(1)}
 await p.evaluate(()=>document.querySelector('[data-tsee="0"]').click());
 await p.waitForTimeout(150);
 const theirs=await p.evaluate(()=>{
@@ -269,6 +272,7 @@ await p.evaluate(()=>{
   if(G.mouse)G.mouse.L=-1;
   g.OPT.cmpArrow=false;
   g.calc();
+  g.setMode('play');
   g.noteInput('mouse');
   g.openSheet('items',{});
 });
@@ -309,8 +313,7 @@ console.log('desktop',desk);
 await p.setViewportSize({width:390,height:844});
 await p.evaluate(()=>__g.noteInput('touch'));
 await p.waitForTimeout(200);
-const ban=await p.$('#uiPort:not([hidden])');
-if(ban)await p.click('#uiPortX');
+await p.evaluate(()=>{const b=document.getElementById('uiPort');if(b&&!b.hidden){const x=document.getElementById('uiPortX');if(x)x.click()}});
 const phone=await p.evaluate(()=>{
   const box=document.querySelector('#pop .cmpBox');
   const delta=document.querySelector('#pop .cmpDelta');
