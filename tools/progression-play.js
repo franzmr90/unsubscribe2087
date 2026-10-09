@@ -570,7 +570,7 @@ async function install(page, cls, seed) {
             if (trash) fight(trash.e, true);
             else { prog.focus = suNow; fight(suNow, true); }
           } else if (jobKind && !suUp) {
-            const block = nearest(2.05, e => !skipMotion(e));
+            const block = nearest(1.45, e => !skipMotion(e));
             if (block) fight(block.e, true);
             else goGoal();
           } else if (commit) {
