@@ -107,6 +107,8 @@ html[data-ui="mouse"] #bNames{display:none!important}
 .cell.junk svg{opacity:.5}
 .cell.thin{box-shadow:inset 0 0 0 2px #e0b03a}
 .cell.brk{box-shadow:inset 0 0 0 2px #e23b32}
+.cell.req{background:radial-gradient(circle at 50% 42%,#5a221c,#140c10);box-shadow:inset 0 0 0 2px #ff5a4d}
+.cell.req u.rq{top:0;bottom:auto;background:rgba(90,16,12,.94);color:#ffd0cb;letter-spacing:.01em;line-height:1.15;padding:1px 2px;white-space:normal}
 .cell .dw{position:absolute;top:0;left:3px;font:700 12px var(--display);font-style:normal;color:#e0b03a;text-shadow:0 1px 1px #000}
 .cell .lk{position:absolute;top:1px;right:2px;width:12px;height:12px;fill:var(--gold);pointer-events:none}
 .cell.seal{box-shadow:inset 0 0 0 1px var(--gold)}
@@ -1277,7 +1279,7 @@ function mkFixed(u,il,q,set){il=Math.max(il,u.il);let b=null,tr=0;BASE[u.slot].f
   const sc=1+(il-u.il)*.04,scale=['dmg','hp','shock','thorns','armor','en','armorP'];
   for(const k in u.mods){const m=u.mods[k];let v=modRoll(m);if(v>0&&scale.includes(k))v=Math.round(v*sc);it.aff.push({k,v})}
   if(u.sp){it.sp=u.id;it.spT=u.sp}if(set)it.set=set;
-  it.val=(8+il*5)*(q===4?8:6);it.req=Math.max(1,Math.floor(u.il*.75));if(u.ind)it.indestruct=1;if(u.patch)it.aff.push({k:'patch',v:1,nm:'of the Patch'});beltStamp(it);stampDura(it);return it}
+  it.val=(8+il*5)*(q===4?8:6);it.req=Math.max(1,Math.floor(u.il*.75));if(u.ind)it.indestruct=1;if(u.patch)it.aff.push({k:'patch',v:1,nm:'of the Patch'});beltStamp(it);stampDura(it);if(typeof stampReq==='function')stampReq(it);return it}
 const ITEM_HOOKS=[];
 function makeItem(il,q,slot){let it=makeItemCore(il,q,slot);for(const h of ITEM_HOOKS)it=h(it,il,q,slot);return it}
 function moorsBlade(){
@@ -1327,7 +1329,7 @@ const stimPrice=()=>25*G.cpi*(1+G.lvl*.2)*(G.disc?.85:1);
 function calc(){
   const c=CLS[G.cls],s={dmin:2,dmax:4,wspd:0,barm:0,sp:{},set:{},cap:4,cdr:0,dodge:0,pierce:0,critM:2,enc:0,grant:{}};
   for(const k of STATK)s[k]=0;
-  for(const slot of SLOTS){const it=G.eq[slot];if(!it)continue;if(itemBroken(it)){if(slot==='belt')s.beltBroken=1;continue}if(it.dmin){s.dmin=it.dmin;s.dmax=it.dmax;s.wspd=it.spd||0}if(it.arm)s.barm+=it.arm;if(it.slot==='belt'){const b=beltBudget(it);s.cap=b.stims;s.csl=b.slots}else if(it.cap)s.cap=it.cap;
+  const live=typeof gearLive==='function'?gearLive(null).live:null;for(const slot of SLOTS){const it=G.eq[slot];if(!it)continue;if(itemBroken(it)){if(slot==='belt')s.beltBroken=1;continue}if(live&&!live[slot])continue;if(it.dmin){s.dmin=it.dmin;s.dmax=it.dmax;s.wspd=it.spd||0}if(it.arm)s.barm+=it.arm;if(it.slot==='belt'){const b=beltBudget(it);s.cap=b.stims;s.csl=b.slots}else if(it.cap)s.cap=it.cap;
     for(const a of it.aff){let v=a.v;if(a.k==='cdr'&&v>1)v=v/100;s[a.k]=(s[a.k]||0)+v}if(it.sp&&uOk(it))s.sp[it.sp]=1;if(it.uid&&UNIK[it.uid]&&UNIK[it.uid].grant&&uOk(it))s.grant[UNIK[it.uid].grant[0]]=UNIK[it.uid].grant[1];if(it.set)s.set[it.set]=(s.set[it.set]||0)+1}
   if(G.cls==='hacker')s.skills+=(s.sk_hacker||0);if(G.cls==='courier')s.skills+=(s.sk_courier||0);gearPerLevel(s);famBonus(s);if(s.set.striker>=2)s.dmg+=20;if(s.set.striker>=3){s.skills+=1;s.sp.vigil=1}charmApply(s);s.skills=Math.min(4,s.skills||0)
   fixPas();const L=i=>{const b=G.sk[i]&&pon(i)?G.sk[i]+charmBonus(s,i)+mast(i):0,g=s.grant[i]||0;return g?Math.max(b,g+(G.sk[i]||0)):b};let hpM=1,armM=1;
@@ -1345,7 +1347,7 @@ function calc(){
   if(G.cls==='maxi'&&L(8)){armM+=.08*L(8);s.pdr=(s.pdr||0)+FORMULAS.brace.million.pdr+FORMULAS.brace.million.pdrL*L(8)}
   if(s.sp.nda)s.dodge+=15;if(s.sp.cloud9)s.dodge+=10;if(s.sp.fineprint)s.cdr+=.2;
   hpM+=extra(s);s.cdr=Math.min(.6,s.cdr||0);
-  s.dmg+=(G.at.mgt+(s.mgt||0))*1.5;s.crit=Math.round((s.crit+5+(G.at.ref+(s.ref||0))*.3)*10)/10;
+  s.crit=Math.round((s.crit+5+(G.at.ref+(s.ref||0))*.3)*10)/10;
   s.armor=Math.round((s.barm*(1+s.armorP/100)+s.armor+(G.at.ref+(s.ref||0)))*armM);
   if(P&&P.bear>0)s.armor=Math.round(s.armor*1.25);
   s.maxHp=Math.round((c.hp+(G.lvl-1)*c.hpL+(G.at.vit+(s.vit||0))*4+s.hp+(s.hpL||0)*(G.lvl||1))*hpM);s.preHp=Math.round((c.hp+(G.lvl-1)*c.hpL+(G.at.vit+(s.vit||0))*4+(s.hp-(s.chFlat||0))+(s.hpL||0)*(G.lvl||1))*hpM);s.chHp=Math.max(0,s.maxHp-s.preHp);
@@ -1354,11 +1356,11 @@ function calc(){
   if(s.pdr)s.pdr=Math.min(FORMULAS.brace.pdrCap,s.pdr);
   s.aspd+=s.wspd;s.mspd=Math.min(s.mspd,50);
   if(s.r_all)for(const k of RTK)s['r_'+k]=(s['r_'+k]||0)+s.r_all;
-  S=s;G.hp=Math.min(G.hp,S.maxHp);G.en=Math.min(G.en,S.maxEn);G.stims=Math.min(G.stims,S.cap);scrubItemBinds()}
+  s.blow=typeof swingBlow==='function'?swingBlow(s):0;S=s;G.hp=Math.min(G.hp,S.maxHp);G.en=Math.min(G.en,S.maxEn);G.stims=Math.min(G.stims,S.cap);scrubItemBinds()}
 function newGame(cls){
   G={v:2,cls,lvl:1,xp:0,sp:0,ap:0,sk:[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],slots:[0,-1,-1],at:{mgt:0,ref:0,vit:0,bnd:0},hp:9999,en:9999,credits:120,cpi:1,stims:3,bag:[],
     eq:{weapon:null,helm:null,armor:null,gloves:null,boots:null,belt:null,ring:null,amulet:null},unlocked:1,tier:0,maxTier:0,kills:0,deaths:0,ubiT:0,time:0,zone:0,
-    sats:0,merc:null,sq:{},stash:[],q:{q1:0,q2:0,q3:0,q4:0,q5:0,q6:0,q7:0,q8:0,q9:0,q10:0},memos:[],marrow:false,disc:false,portal:null,chuteT:0,bossKills:0,seenIntro:false,god:false};ensureMouse();
+    sats:0,merc:null,sq:{},stash:[],q:{q1:0,q2:0,q3:0,q4:0,q5:0,q6:0,q7:0,q8:0,q9:0,q10:0},memos:[],marrow:false,disc:false,portal:null,chuteT:0,bossKills:0,seenIntro:false,god:false,statNote:1};ensureMouse();
   G.eq.weapon=makeItem(1,0,'weapon');ZS={};freshState();calc();G.hp=S.maxHp;G.en=S.maxEn;
   G.walkNew=1;G.pre=1;playScene(PRE_INTRO,()=>startPlay())}
 
@@ -1402,6 +1404,7 @@ function applySave(o){if(!o||!o.G||!CLS[o.G.cls])return false;G=o.G;
   if(G.q.q10===3&&(G.unlocked||0)<12)G.unlocked=12;for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;if(G.q.q5===3&&(G.unlocked||0)<7)G.unlocked=7;actBriefMigrate();if(G.hp<=0){if(!G.hc)G.hp=9999;o.cur=null}ZS={};for(const k in (o.zs||{})){let z=null;try{z=decW(o.zs[k])}catch(e){z=null}if(z)ZS[k]=z;else keepGround(o.zs[k])}if(o.opt){const raw=o.opt;OPT=Object.assign({},OPT_DEF,raw);lootMigrate(raw)}if(Array.isArray(o.buyback))G._buyback=o.buyback.filter(r=>r&&r.it&&!r.it.test);G._cur=o.cur||null;boonRefund();return true}
 function hcBegin(){const c=G&&CLS[G.cls]?G.cls:'scrapper';DY=null;const d=$('death');if(d)d.hidden=true;resetZones();newGame(c);G.hc=true;save(true)}
 function startPlay(){ensureG();if(G.hc&&G.hp<=0){hcBegin();return}mpConnect();mode='play';$('title').hidden=true;$('hud').hidden=false;calc();setSkillButtons();
+  if(!G.statNote){G.statNote=1;const spent=(G.at.mgt||0)+(G.at.ref||0)+(G.at.vit||0)+(G.at.bnd||0);if(spent>0)setTimeout(()=>toast('Attribute damage has changed. Sister Null can return your points.'),400)}
   const c=G._cur;delete G._cur;const cz=c&&ZONES[c.zi];
   if(cz&&(cz.town||cz.sim||ZS[c.zi])){const o={at:c,swap:1};if(cz.sim){o.wave=(c.sim&&c.sim.wave)||1;if(c.sim&&c.sim.rush)o.rush=1}enter(c.zi,o);if(cz.pre)return}else if(G.pre===1){enter(PREZ);return}else enter(HT());
   if(!G.q.q1&&W.z.town&&G.seenIntro!==false){talkTo('gramps')}
@@ -1633,7 +1636,7 @@ function stateMarks(){if(!W||!W.fx||!P)return;const live={};
   for(let i=W.fx.length-1;i>=0;i--)if(W.fx[i].sid&&!live[W.fx[i].sid])W.fx.splice(i,1)}
 function parts(x,y,n,cols,sp,up){if(OPT.fx==='thin')return;for(let i=0;i<n;i++){const a=rnd(0,6.283),v=rnd(.3,1)*sp;W.parts.push({x,y,z:rnd(8,26),vx:Math.cos(a)*v,vy:Math.sin(a)*v,vz:rnd(40,120)*(up||1),t:0,life:rnd(.4,.9),col:pick(cols),s:rnd(2,4.5)})}}
 function pdmg(m,e){
-  let d=rnd(S.dmin,S.dmax)*(1+S.dmg/100)*m+S.shock*rnd(.8,1.2)*Math.max(.5,m);
+  let d=rnd(S.dmin,S.dmax)*(1+S.dmg/100)*(1+(typeof blowPct==='function'?blowPct():0)/100)*m+S.shock*rnd(.8,1.2)*Math.max(.5,m);
   if(P.ambT>0)d*=P.ambM;
   if(G.cls==='scrapper'&&sl(8)){let c=0;for(const o of W.ents)if(dist(o,P)<4&&c<5)c++;d*=1+.03*sl(8)*c}
   if(G.cls==='witness'&&e&&e.tes)d*=1+Math.min(6,e.tes)*.07;
@@ -1718,7 +1721,7 @@ function itemBroken(it){return !!(it&&it.duraMax>0&&(it.dura|0)<=0)}
 function migrateDurability(){if(!G)return;const touch=it=>{if(it)stampDura(it)};if(G.eq)for(const k in G.eq)touch(G.eq[k]);for(const it of G.bag||[])touch(it);for(const it of G.stash||[])touch(it);for(const it of G.cslots||[])touch(it);if(typeof ACC!=='undefined'&&ACC&&ACC.stash)for(const it of ACC.stash)touch(it);for(const c of G.corpses||[]){if(!c)continue;if(c.eq)for(const k in c.eq)touch(c.eq[k]);for(const it of c.cslots||[])touch(it)}if(!Array.isArray(G.corpses))G.corpses=[];G.duraMig=1}
 function deathCreditPct(){if(!G||G.hc)return 0;if(S&&S.sp&&S.sp.coldwallet)return 0;const diff=G.diff|0,cap=[.2,.35,.5][diff]||.2,floor=[.04,.08,.12][diff]||.04,t=Math.min(1,Math.max(0,((G.lvl||1)-1)/39));return floor+(cap-floor)*t}
 function deathFee(){return Math.floor((G&&G.credits||0)*deathCreditPct())}
-function loanerWeapon(){if(!G||!G.eq||(G.eq.weapon&&!G.eq.weapon.loan))return G.eq&&G.eq.weapon;if(G.eq.weapon&&G.eq.weapon.loan)return G.eq.weapon;const it=makeItem(Math.max(1,Math.min(3,G.lvl||1)),0,'weapon');if(!it)return null;it.loan=1;it.id=true;it.indestruct=1;stampDura(it);it.name=(it.base||'Weapon')+' (loaner)';G.eq.weapon=it;calc();return it}
+function loanerWeapon(){if(!G||!G.eq||(G.eq.weapon&&!G.eq.weapon.loan))return G.eq&&G.eq.weapon;if(G.eq.weapon&&G.eq.weapon.loan)return G.eq.weapon;const it=makeItem(Math.max(1,Math.min(3,G.lvl||1)),0,'weapon');if(!it)return null;it.loan=1;it.id=true;it.indestruct=1;if(typeof stampReq==='function')stampReq(it);stampDura(it);it.name=(it.base||'Weapon')+' (loaner)';G.eq.weapon=it;calc();return it}
 function layCorpse(x,y){lastLaid=false;if(!G||G.hc)return 0;if(W&&W.z&&W.z.sim)return 0;const eq={};let any=false;for(const sl of SLOTS){const it=G.eq[sl];if(it&&it.loan){eq[sl]=null;continue}eq[sl]=it||null;if(it)any=true;G.eq[sl]=null}const cslots=(G.cslots||[]).slice();if(cslots.length)any=true;G.cslots=[];const credits=deathFee();if(credits>0)any=true;G.credits=Math.max(0,(G.credits||0)-credits);if(!any){if(!G.eq.weapon)loanerWeapon();else calc();return 0}const id=(G.corpseN=(G.corpseN||0)+1);G.corpses=G.corpses||[];G.corpses.push({id,zi:W?W.zi:0,x,y,tier:G.tier|0,eq,cslots,credits,t:G.time||0});lastLaid=true;if(!G.eq.weapon)loanerWeapon();else calc();placeCorpses();calmNearCorpse();return credits}
 function placeCorpses(){if(!W||!W.objs||!G)return;W.objs=W.objs.filter(o=>o.k!=='corpse');for(const c of G.corpses||[]){if(!c||c.zi!==W.zi||(c.tier|0)!==(G.tier|0))continue;let x=c.x,y=c.y;if(typeof free==='function'&&!free(x,y,.3)&&typeof nearFree==='function'){const n=nearFree({x,y},1.4);x=n.x;y=n.y;c.x=x;c.y=y}W.objs.push({k:'corpse',id:c.id,x,y})}}
 function calmNearCorpse(){if(!W||!W.ents||(W.z&&W.z.town))return;const bodies=(W.objs||[]).filter(o=>o&&o.k==='corpse');if(!bodies.length)return;for(const e of W.ents){if(!e||e.hp<=0||e.mp)continue;let near=null;for(const b of bodies)if(Math.hypot(e.x-b.x,e.y-b.y)<14)near=b;if(!near)continue;e.aggro=false;e.calm=20;e.wind=0;let dx=e.x-near.x,dy=e.y-near.y,d=Math.hypot(dx,dy);if(d<0.4){const a=(e.ph||0)+1.7;dx=Math.cos(a);dy=Math.sin(a);d=1}const nx=near.x+dx/d*16,ny=near.y+dy/d*16;if(typeof free==='function'&&free(nx,ny,.35)){e.x=nx;e.y=ny}else if(typeof nearFree==='function'){const n=nearFree({x:near.x+dx/d*14,y:near.y+dy/d*14},5);if(n){e.x=n.x;e.y=n.y}}}}
@@ -1916,7 +1919,7 @@ function witHostile(){if(!W||!W.ents)return false;for(const e of W.ents)if(witSe
 function witBlank(){toast('The page is blank');float(P.x,P.y,'the page is blank','#e6dcc8',0);sfx('err')}
 function witBlock(i){if(!G||G.cls!=='witness')return null;const sk=CLS.witness.sk[i];if(!sk||!sk.a||i===0)return null;if(recGet()<witNeed(i))return 'The page is blank';if(i===6&&!(P&&P.tag)&&G.corrZi===W.zi)return 'Already corrected in this district';if(i===6&&!(P.lastLoss>0))return 'Nothing to correct';return null}
 function witPay(n){if(recGet()<n)return 0;recSet(recGet()-n);return n}
-function witImpact(e,d){if(!e||e.hp<=0||!(d>0))return;const prev=DT;DT='impact';const out=typed(e,d);dmgEnemy(e,out,false);DT=prev}
+function witImpact(e,d){if(!e||e.hp<=0||!(d>0))return;const vit=(G.at.vit||0)+((S&&S.vit)||0);d*=1+vit*.006;const prev=DT;DT='impact';const out=typed(e,d);dmgEnemy(e,out,false);DT=prev}
 function witWrap(who,fn){const snd=who&&who.soundSwing;if(snd)who.soundSwing=0;const prev=DT;if(snd)DT='sound';const ph=P.partyHit;P.partyHit=1;try{fn(!!snd)}finally{P.partyHit=ph;DT=prev}}
 function witMercHit(m,e,d){witWrap(m,snd=>{const prev=DT;if(!snd)DT=(MERCS[G.merc.k]||{}).dt||'impact';P.holdTy=1;const out=typed(e,d);P.holdTy=0;DT=prev;dmgEnemy(e,out,false)})}
 function witLends(a){return !!(a&&a.k==='minion'&&(a.hp===undefined||a.hp>0))}
@@ -2787,8 +2790,8 @@ function update(dt){
         const strike=snd=>{if(a.raw){const prev=DT;if(!snd)DT=foeType(a.e)||'impact';P.holdTy=1;const out=typed(t,a.raw*orgMul(true)*vestMul(a)*toxicDmg(a.toxL)*(S.sp.check&&a.per?1.25:1));P.holdTy=0;DT=prev;dmgEnemy(t,out,false);return}if(snd||!(rg>2)){P.swingBody=a;P.allySwing=1;hit(t,m,true);P.allySwing=0;P.swingBody=null;if(a.aoe)for(const o of W.ents.slice())if(o!==t&&!(o.nc>0)&&dist(o,t)<1.7){P.swingBody=a;P.allySwing=1;hit(o,m*.6,true);P.allySwing=0;P.swingBody=null}}else{sfx('throw');shoot({x:(t.x-a.x)/d,y:(t.y-a.y)/d},m,0,{from:a,life:.6,col:'#e0bd6e',nl:1})}};
         if(a.soundSwing)witWrap(a,strike);else{const ph=P.partyHit;P.partyHit=1;strike(false);P.partyHit=ph}}}
     if(a.k==='mine'){a.arm-=dt;if(a.arm<=0&&nearest(1.3,a)){if(!a.cut&&G.cls==='anon'&&sl(13)&&!boonOn(13))a.cut=1;else a.life=0}}
-    if(a.k==='raid'&&a.cd<=0){a.cd=.13;const c2=W.ents.filter(e=>dist(e,P)<9);if(c2.length){const t=pick(c2);W.fx.push({k:'bolt',x:t.x+rnd(-5,5),y:t.y-rnd(3,6),x2:t.x,y2:t.y,t:0,life:.18,col:'#e6e2d6'});hit(t,a.m)}}
-    if(a.life<=0){W.allies.splice(W.allies.indexOf(a),1);if(a.k==='decoy')burst(a.x,a.y,2.6,a.m,a.stun||0,'#ffb238');if(a.k==='drop'){burst(a.x,a.y,1.8,0,0,'#3fbf8f');parts(a.x,a.y,14,['#2a8f68','#e6e2d6','#fff'],2.6);sfx('boom');float(a.x,a.y,'Pop','#3fbf8f',1);toast('The second drop pops')}if((a.k==='mine'||a.k==='blast')&&!a.hush)burst(a.x,a.y,a.r||2.4,a.m,0,'#ff5d4d');if(a.k==='pail'){parts(a.x,a.y,8,['#c9a868','#7be495'],1.6);toast('The lunch pail is empty.')}}}
+    if(a.k==='raid'&&a.cd<=0){a.cd=.13;const c2=W.ents.filter(e=>dist(e,P)<9);if(c2.length){const t=pick(c2);W.fx.push({k:'bolt',x:t.x+rnd(-5,5),y:t.y-rnd(3,6),x2:t.x,y2:t.y,t:0,life:.18,col:'#e6e2d6'});const prev=P.blowForce;P.blowForce='mgt';hit(t,a.m);P.blowForce=prev}}
+    if(a.life<=0){W.allies.splice(W.allies.indexOf(a),1);if(a.k==='decoy'){const prev=P.blowForce;P.blowForce='mgt';burst(a.x,a.y,2.6,a.m,a.stun||0,'#ffb238');P.blowForce=prev}if(a.k==='drop'){burst(a.x,a.y,1.8,0,0,'#3fbf8f');parts(a.x,a.y,14,['#2a8f68','#e6e2d6','#fff'],2.6);sfx('boom');float(a.x,a.y,'Pop','#3fbf8f',1);toast('The second drop pops')}if((a.k==='mine'||a.k==='blast')&&!a.hush){const prev=P.blowForce;P.blowForce='mgt';burst(a.x,a.y,a.r||2.4,a.m,0,'#ff5d4d');P.blowForce=prev}if(a.k==='pail'){parts(a.x,a.y,8,['#c9a868','#7be495'],1.6);toast('The lunch pail is empty.')}}}
   DT=null;typeTick(dt);typeInTick(dt);updMerc(dt);updTag(dt);if(!(typeof mpMobWatch==='function'&&mpMobWatch())){if(W.z.sim)simTick(dt);sqTick(dt);escTick(dt);evTick(dt)}achTick(dt);p7Tick(dt);
   // projectiles
   for(let _pi=W.projs.length-1;_pi>=0;_pi--){const p=W.projs[_pi];if(!p)continue;p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;let gone=p.life<=0||!open(p.x,p.y);
@@ -2807,7 +2810,7 @@ function update(dt){
     if(d.cr){const v=Math.floor(d.cr*(1+S.gold/100));G.credits+=v;if(v){float(P.x,P.y,'+'+fmt(v),'#ffe36b');sfx('coin')}}
     else if(d.pot){if(G.stims>=S.cap)continue;G.stims++;float(P.x,P.y,'+stim','#7be495');toast('Stim');sfx('pick')}
     else if(d.it.charm){charmNormalize(d.it);if(!bagCan(d.it)){packFullCue();continue}G.bag.push(d.it);sfx('pick');float(P.x,P.y,lootName(d),lootCol(d));toast(lootName(d))}
-    else{if(!d.force&&skipPick(d.it))continue;if(!bagCan(d.it)){packFullCue();continue}G.bag.push(d.it);sfx('pick');float(P.x,P.y,lootName(d),lootCol(d));if(d.it.id&&G.lvl>=d.it.req&&!d.it.charm){const dl=itemDelta(d.it),emp=!G.eq[d.it.slot];if(emp||(OPT.autoEq&&dl>.01)){equipFromBag(G.bag.indexOf(d.it));toast('Equipped '+d.it.name);W.drops.splice(W.drops.indexOf(d),1);continue}if(dl>.2&&(!SWAP||dl>SWAP.d))SWAP={it:d.it,d:dl,t:8}}toast(d.it.id?d.it.name:'Unidentified '+d.it.base)}
+    else{if(!d.force&&skipPick(d.it))continue;if(!bagCan(d.it)){packFullCue();continue}G.bag.push(d.it);sfx('pick');float(P.x,P.y,lootName(d),lootCol(d));if(typeof canWear==='function'?canWear(d.it):(d.it.id&&G.lvl>=d.it.req&&!d.it.charm)){const dl=itemDelta(d.it),emp=!G.eq[d.it.slot];if(emp||(OPT.autoEq&&dl>.01)){equipFromBag(G.bag.indexOf(d.it));toast('Equipped '+d.it.name);W.drops.splice(W.drops.indexOf(d),1);continue}if(dl>.2&&(!SWAP||dl>SWAP.d))SWAP={it:d.it,d:dl,t:8}}toast(d.it.id?d.it.name:'Unidentified '+d.it.base)}
     W.drops.splice(W.drops.indexOf(d),1)}
   for(const n of W.npcs){if(n.id!=='res')continue;n.wait-=dt;n.st=Math.max(0,n.st-dt);n.cool-=dt;n.ph+=dt;
     if(n.wait<=0){if(n.ev){n.tx=n.hx+rnd(-6,6);n.ty=n.hy+rnd(-6,6)}else{n.tx=rnd(5,20);n.ty=rnd(10,20)}n.wait=rnd(3,8)}
@@ -2933,7 +2936,7 @@ function shapeShift(cls,roll){if(!spendSats(SHIFT_COST,'You need '+SHIFT_COST+' 
   G.cls=cls;delete G.schema;delete G.pas;delete G.doc;G.fork={};G.sk=G.sk.map(()=>0);boonRefund();G.at={mgt:0,ref:0,vit:0,bnd:0};let BR=null;
   if(typeof roll==='string'){const r=buildApply(cls,roll,sp,ap);sp=r.sp;ap=r.ap;BR=r.B;roll=0}else{G.sk[0]=1;sp--;G.slots=[0,-1,-1]}
   if(roll){let g=20000;while(sp>0&&g--){const i=ri(0,14),row=Math.floor(i/3);if(G.sk[i]>=10||G.lvl<ROWREQ[row]||(row>0&&!G.sk[i-3])||(row===3&&!G.act2)||(row===4&&!G.act3))continue;const c=skCost(i);if(sp<c)continue;G.sk[i]++;sp-=c}
-    while(ap>0){const k=Math.random()<.45?(CLS[cls].melee?'vit':'mgt'):pick(['mgt','ref','vit','bnd']),n=Math.min(ap,ri(1,5));G.at[k]+=n;ap-=n}
+    while(ap>0){const k=Math.random()<.45?(typeof driveStat==='function'?driveStat(cls):(CLS[cls].melee?'vit':'mgt')):pick(['mgt','ref','vit','bnd']),n=Math.min(ap,ri(1,5));G.at[k]+=n;ap-=n}
     const act=G.sk.map((v,i)=>v&&CLS[cls].sk[i].a?i:-1).filter(i=>i>=0).sort((a,b)=>G.sk[b]-G.sk[a]);G.slots=[0,1,2].map(i=>act[i]===undefined?-1:act[i])}
   G.sp=sp;G.ap=ap;G.form=null;G.formDt=null;G.formT=0;G.page=0;W.allies=[];P.buff=P.mech=P.stealth=P.crunch=0;P.castWait=0;calc();G.hp=S.maxHp;G.en=S.maxEn;setSkillButtons();save(true);sfx('unique');
   $('sheet').hidden=true;$('pop').hidden=true;
@@ -3698,7 +3701,7 @@ function pvpLifeMul(){
   if(typeof S==='undefined'||!S||!(S.chHp>0)||!(S.preHp>0))return 1;
   const over=S.chHp-S.preHp*.2;if(over<=0)return 1;const eff=S.maxHp-over;return eff>1?S.maxHp/eff:1}
 
-const skipPick=it=>!it.charm&&G.eq[it.slot]&&(OPT['pk'+it.q]===false||(OPT.pkBetter&&it.id&&G.lvl>=it.req&&!(itemDelta(it)>.01)));
+const skipPick=it=>!it.charm&&G.eq[it.slot]&&(OPT['pk'+it.q]===false||(OPT.pkBetter&&(typeof canWear==='function'?canWear(it):it.id&&G.lvl>=it.req)&&!(itemDelta(it)>.01)));
 
 /* the machines read the fight: one-shot kills push them up, repeated deaths in a district ease it */
 let osWin=[];
@@ -3935,9 +3938,160 @@ function famify(it){const mine=Object.keys(FAM).find(k=>FAM[k].cls===G.cls),k=Ma
 function classWeapon(il){const mine=Object.keys(FAM).find(k=>FAM[k].cls===G.cls);if(!mine)return null;const it=makeItem(Math.max(1,il|0),Math.random()<.35?2:1,'weapon');
   if(it.fam&&it.fam!==mine&&FAM[it.fam]){const old=FAM[it.fam];it.dmin=Math.max(1,Math.round(it.dmin/old.dm));it.dmax=Math.max(it.dmin+1,Math.round(it.dmax/old.dm));it.spd=(it.spd||0)-old.sp;it.fam=null}
   if(it.fam!==mine){const F=FAM[mine],nb=F.bases[tierOf(it.il)];it.name=nb;it.base=nb;it.fam=mine;it.dmin=Math.max(1,Math.round(it.dmin*F.dm));it.dmax=Math.max(it.dmin+1,Math.round(it.dmax*F.dm));it.spd=(it.spd||0)+F.sp}
-  it.id=true;return it}
-function famBonus(s){const w=G.eq.weapon;if(!w||!w.fam)return;const F=FAM[w.fam];if(F.cls!==G.cls)return;s.skills+=1;for(const k in F.st)s[k]=(s[k]||0)+F.st[k]}
+  it.id=true;stampReq(it);return it}
+function famBonus(s){const w=G.eq.weapon;if(!w||!w.fam)return;if(typeof gearQuiet==='function'&&gearQuiet(w))return;const F=FAM[w.fam];if(F.cls!==G.cls)return;s.skills+=1;for(const k in F.st)s[k]=(s[k]||0)+F.st[k]}
 ITEM_HOOKS.push(function(it,il){if(it.slot==='weapon'&&it.q<4&&il>2&&G&&Math.random()<.4)famify(it);return it});
+/* Stat requirements. Missing fields stay 0, so an old save is not restamped. */
+const HEAVY_BODY={ 'Flak Coat':1,'Exo Plate':1,'Seraph Plate':1 };
+const LIGHT_BOOT={ 'Worn Sneakers':1,'Skywalkers':1 };
+const HEAVY_BOOT={ 'Steel-Toes':1,'Mag Greaves':1 };
+function reqRound(n){n=Math.round(n);return n<1?0:n}
+function reqBump(n,q){n=reqRound(n);if((q||0)>=3)n=reqRound(n*1.1);return n}
+function famKeyOf(it){
+  if(!it)return '';
+  if(it.fam&&FAM[it.fam])return it.fam;
+  if(it.slot!=='weapon')return '';
+  const name=it.base||'';
+  for(const k in FAM)if(FAM[k].bases.indexOf(name)>=0)return k;
+  return ''}
+function weaponRole(it){
+  const fam=famKeyOf(it);
+  if(fam==='sign')return 'heavy';
+  if(fam==='deck')return 'deck';
+  if(fam==='pager')return 'pager';
+  if(fam==='sling')return 'fast';
+  if(fam==='shiv')return 'shiv';
+  if(fam==='graft')return 'graft';
+  if(fam==='notebook')return 'notebook';
+  const spd=it.spd||0;
+  if(spd<=-15)return 'heavy';
+  if(spd>=15)return 'fast';
+  return 'neutral'}
+function stampReq(it){
+  if(!it||it.charm)return it;
+  if(it.loan||it.slot==='ring'||it.slot==='amulet'){it.reqMgt=0;it.reqRef=0;it.reqBnd=0;return it}
+  const il=+it.il||0,q=it.q||0;let m=0,r=0,b=0;
+  if(it.slot==='weapon'){const role=weaponRole(it);
+    if(role==='heavy')m=8+il*1.6;
+    else if(role==='neutral'||role==='graft')m=4+il*.9;
+    else if(role==='fast')r=6+il*1.35;
+    else if(role==='shiv')r=4+il*.7;
+    else if(role==='deck'||role==='pager')b=4+il*.9;
+    else if(role==='notebook')m=(4+il*.9)/2}
+  else if(it.slot==='armor'){m=HEAVY_BODY[it.base]?6+il*1.15:il*.45}
+  else if(it.slot==='helm')m=(6+il*1.15)*.6;
+  else if(it.slot==='gloves'||it.slot==='belt')m=(4+il*.9)*.4;
+  else if(it.slot==='boots'){if(LIGHT_BOOT[it.base])r=il*.35;else m=(8+il*1.6)*.4}
+  it.reqMgt=reqBump(m,q);it.reqRef=reqBump(r,q);it.reqBnd=reqBump(b,q);return it}
+ITEM_HOOKS.push(function(it){return stampReq(it)});
+const STATN=['mgt','ref','vit','bnd'];
+function itemOwnStats(it){
+  const o={mgt:0,ref:0,vit:0,bnd:0};
+  if(!it||itemBroken(it))return o;
+  for(const a of it.aff||[])if(o[a.k]!=null)o[a.k]+=+a.v||0;
+  if(it.uid&&typeof UNIK!=='undefined'&&UNIK[it.uid]&&UNIK[it.uid].per&&uOk(it)){const lv=(G&&G.lvl)||1;const per=UNIK[it.uid].per;for(const k of STATN)if(per[k])o[k]+=per[k]*lv}
+  return o}
+function charmPool(excludeSlot){
+  const o={mgt:0,ref:0,vit:0,bnd:0};
+  const belt=G&&G.eq&&G.eq.belt;
+  if(excludeSlot!=='belt'&&belt&&itemBroken(belt))return o;
+  for(const it of (G&&G.cslots)||[]){if(!it||!it.aff||(it.req||1)>(G.lvl||1))continue;
+    for(const a of it.aff)if(a&&o[a.k]!=null)o[a.k]+=+a.v||0}
+  return o}
+function poolMeets(pool,it,own){
+  own=own||{mgt:0,ref:0,vit:0,bnd:0};
+  return (pool.mgt+(own.mgt||0))>=((it&&it.reqMgt)||0)&&(pool.ref+(own.ref||0))>=((it&&it.reqRef)||0)&&(pool.bnd+(own.bnd||0))>=((it&&it.reqBnd)||0)}
+function gearLive(excludeSlot){
+  const pool={mgt:(G.at&&G.at.mgt)||0,ref:(G.at&&G.at.ref)||0,vit:(G.at&&G.at.vit)||0,bnd:(G.at&&G.at.bnd)||0};
+  const ch=charmPool(excludeSlot);for(const k of STATN)pool[k]+=ch[k];
+  const live={};let changed=true;
+  while(changed){changed=false;for(const sl of SLOTS){if(sl===excludeSlot||live[sl])continue;const it=G.eq&&G.eq[sl];if(!it||itemBroken(it))continue;const own=itemOwnStats(it);if(!poolMeets(pool,it,own))continue;live[sl]=1;for(const k of STATN)pool[k]+=own[k];changed=true}}
+  return {live,pool}}
+function gearQuiet(it){
+  if(!it||!G||!G.eq||itemBroken(it))return false;
+  let slot='';for(const sl of SLOTS)if(G.eq[sl]===it)slot=sl;
+  if(!slot)return false;
+  return !gearLive(null).live[slot]}
+function reqOk(it,slot){if(!it)return false;return poolMeets(gearLive(slot).pool,it,itemOwnStats(it))}
+function reqShortfall(it){
+  const out=[];if(!it||it.charm)return out;
+  const pool=gearLive(it.slot).pool,own=itemOwnStats(it);
+  const rows=[['Might','mgt','reqMgt'],['Reflex','ref','reqRef'],['Bandwidth','bnd','reqBnd']];
+  for(const row of rows){const need=it[row[2]]||0;if(!need)continue;const have=(pool[row[1]]||0)+(own[row[1]]||0);if(have<need)out.push({name:row[0],key:row[1],need:need,have:have,short:need-have})}
+  return out}
+function cantEquipText(it){
+  const lvl=!!(it&&G.lvl<(it.req||0)),sh=reqShortfall(it);
+  if(lvl&&!sh.length)return 'Needs level '+(it.req||1);
+  const bits=[];if(lvl)bits.push('Needs level '+(it.req||1));
+  for(const f of sh)bits.push('Need +'+f.short+' '+f.name);
+  return bits.length?"Can't equip. "+bits.join('. ')+'.':"Can't equip."}
+function reqLineHTML(it){
+  if(!it||it.charm)return '';
+  const sh=reqShortfall(it),bad={};for(const f of sh)bad[f.name]=f;
+  const rows=[['Might','reqMgt'],['Reflex','reqRef'],['Bandwidth','reqBnd']];let h='';
+  for(const row of rows){const n=it[row[1]]||0;if(!n)continue;const fail=bad[row[0]];
+    h+=`<div class="ln${fail?' red':''}">Required ${row[0]}: ${n}${fail?' · need +'+fail.short:''}</div>`}
+  return h}
+function reqBadgeText(it){
+  if(!it||!it.id||it.charm||!it.slot)return '';
+  if(G&&G.merc&&['weapon','helm','armor'].some(sl=>G.merc[sl]===it))return '';
+  if(typeof canWear==='function'&&canWear(it))return '';
+  const sh=reqShortfall(it),lvl=G.lvl<(it.req||0);
+  if(lvl&&!sh.length)return 'need level '+(it.req||1);
+  if(!sh.length)return '';
+  let t='need '+sh.map(f=>'+'+f.short+' '+f.name).join(', ');
+  if(lvl)t='need level '+(it.req||1)+', '+sh.map(f=>'+'+f.short+' '+f.name).join(', ');
+  return t}
+function driveStat(cls){
+  if(cls==='hacker'||cls==='founder')return 'bnd';
+  if(cls==='courier')return 'ref';
+  if(cls==='witness')return 'vit';
+  return 'mgt'}
+function liveWeaponRole(){
+  const w=G&&G.eq&&G.eq.weapon;
+  if(!w||itemBroken(w)||gearQuiet(w))return '';
+  return weaponRole(w)}
+function weaponStatKey(role,cls){
+  if(role==='heavy'||role==='neutral'||role==='graft'||role==='notebook')return 'mgt';
+  if(role==='fast'||role==='shiv')return 'ref';
+  if(role==='pager'&&cls==='founder')return 'bnd';
+  return ''}
+function attrSum(k,s){s=s||S;return ((G.at&&G.at[k])||0)+((s&&s[k])||0)}
+function blowSpec(){
+  const cls=G&&G.cls,sk=(P&&P.hitSk>=0)?P.hitSk:-1,ally=!!(P&&P.allySwing),area=!!(P&&P.areaTick),body=P&&P.swingBody;
+  if(cls==='scrapper'||cls==='maxi')return {k:'mgt',rate:1.5};
+  if(cls==='hacker')return {k:'bnd',rate:1.5};
+  if(cls==='anon'){
+    const mine=(P&&P.blowForce==='mgt')||(body&&(body.k==='mine'||body.k==='blast'||body.k==='decoy'));
+    if(mine||sk===0||sk===3||sk===6||sk===8)return {k:'mgt',rate:1.5};
+    return {k:'ref',rate:1.5}}
+  if(cls==='founder'){
+    if(ally||sk===8||sk===14)return {k:'bnd',rate:.7};
+    return {k:weaponStatKey(liveWeaponRole(),cls)||'mgt',rate:1.5}}
+  if(cls==='homesteader'){
+    const flock=body&&(body.flock||body.kind==='stray'||body.kind==='bull');
+    if(area||flock||sk===12)return {k:'vit',rate:.4};
+    return {k:weaponStatKey(liveWeaponRole(),cls)||'mgt',rate:1.5}}
+  if(cls==='courier'){const w=weaponStatKey(liveWeaponRole(),cls);return {k:w||'ref',rate:1.5}}
+  if(cls==='witness')return {k:weaponStatKey(liveWeaponRole(),cls)||'mgt',rate:1.5};
+  return {k:'mgt',rate:1.5}}
+function blowPct(s){const sp=blowSpec();return attrSum(sp.k,s)*sp.rate}
+function swingBlow(s){
+  if(!P)return blowPct(s);
+  const prev=P.hitSk,ally=P.allySwing,area=P.areaTick,force=P.blowForce,body=P.swingBody;
+  P.hitSk=-1;P.allySwing=0;P.areaTick=0;P.blowForce=null;P.swingBody=null;
+  try{return blowPct(s)}finally{P.hitSk=prev;P.allySwing=ally;P.areaTick=area;P.blowForce=force;P.swingBody=body}}
+const ATTR_TIP={
+  scrapper:{mgt:'+1.5% damage per point. Heavy weapons and plate ask for Might.',ref:'+0.3% deadly strike and +1 armor per point.',vit:'+4 life per point.',bnd:'+3 energy per point.'},
+  hacker:{mgt:'A mantle asks for a little Might. It does not add spell damage.',ref:'+0.3% deadly strike and +1 armor per point.',vit:'+4 life per point.',bnd:'+3 energy per point, and +1.5% spell damage.'},
+  courier:{mgt:'A maul makes throws read Might. Plate asks for it too.',ref:'+0.3% deadly strike, +1 armor, and +1.5% on a throw.',vit:'+4 life per point.',bnd:'+3 energy per point.'},
+  anon:{mgt:'+1.5% on mines, Zip Bomb, the honeypot, and Legion.',ref:'+0.3% deadly strike, +1 armor, and +1.5% on the knife, the hop, and Rehearsal.',vit:'+4 life per point.',bnd:'+3 energy per point.'},
+  founder:{mgt:'The personal bolt and the mech read the weapon. A maul reads Might.',ref:'+0.3% deadly strike and +1 armor per point.',vit:'+4 life per point.',bnd:'+3 energy per point, and +0.7% on the workforce.'},
+  homesteader:{mgt:'+1.5% on the shot, the hull, and the hound.',ref:'+0.3% deadly strike and +1 armor per point.',vit:'+4 life per point, and +0.4% on plots, frost, salt, and the flock.',bnd:'+3 energy per point.'},
+  witness:{mgt:'+1.5% on the swing. A notebook asks for a little Might.',ref:'+0.3% deadly strike and +1 armor per point.',vit:'+4 life per point, and +0.6% on Thread, Publish, and Cross-reference.',bnd:'+3 energy per point.'},
+  maxi:{mgt:'+1.5% damage per point, including the hammers.',ref:'+0.3% deadly strike and +1 armor per point.',vit:'+4 life per point.',bnd:'+3 energy per point.'}};
+function attrTip(k){const row=ATTR_TIP[G&&G.cls];return (row&&row[k])||ATTR[k][1]}
+
 /* ================= class uniques: items that only wake up in the right hands ================= */
 UNI.push(
  {id:'unioncard',cls:'scrapper',n:'Union Card',slot:'amulet',il:8,base:'Dog Tag',mods:{hp:[30,50],dmg:[15,25]},grant:[8,3],sp:'Scrapper only. Grants Solidarity at rank 3 without using a passive slot',fl:'Laminated. Dues paid through 2051.'},
@@ -3987,16 +4141,16 @@ const BUILDS={
   {k:'wall',n:'Immovable Object',p:'Armor, life, and a horn that stuns the room. You win by still being there.',doc:'picket',at:[20,25,55,0],pr:[[2,10],[5,8],[0,6],[3,4],[11,6],[14,5],[10,4],[6,4]],sl:[0,5,14],pa:[2,11,10,8],web:[1,2],fk:['ward','siphon','stun','lean']},
   {k:'thrower',n:'Scrap Thrower',p:'Stay at arm’s length. Rusty scrap through the whole line, seniority on the weapon in your hands, then a rush to finish.',doc:'mutual',at:[45,10,30,15],pr:[[1,10],[4,8],[7,6],[0,3],[12,5],[10,5],[9,3],[2,4],[8,3]],sl:[1,4,12],pa:[10,2,8],web:[0,5],fk:['mark','echo','over','lean']}],
  hacker:[
-  {k:'chain',n:'Chain Reaction',p:'Prime with Spark Lance, then Arc Chain through the pack. Deadly strikes do the rest. Schema is Surge, so the chain and the barrier agree.',schema:'surge',doc:'rootkit',at:[50,0,20,30],pr:[[0,10],[1,6],[2,1],[5,5],[8,8],[3,4],[11,5],[13,4],[10,3],[6,3]],sl:[0,1,3],pa:[8,5,11,13],web:[0,3],fk:['over','echo','mark','refund']},
-  {k:'admin',n:'Sysadmin',p:'Let the machines do it: a Watchdog, a Botnet and a storm overhead while you keep your distance.',schema:'surge',doc:'firewall',at:[20,0,35,45],pr:[[4,10],[7,10],[6,8],[5,6],[2,4],[11,5],[13,4],[1,1],[0,1]],sl:[4,7,6],pa:[5,2,11,13],web:[4,1],fk:['lean','echo','refund','surge']},
-  {k:'rod',n:'Control Rod',p:'Null Nova on a short fuse. A Packet Storm arrives where you marked it and slows what is left. Step Back is how you leave.',schema:'noise',doc:'throttle',at:[30,0,30,40],pr:[[3,10],[0,6],[5,8],[2,4],[10,6],[9,4],[12,5],[11,5]],sl:[3,10,12],pa:[5,11,2],web:[4,7],fk:['stun','lean','chill','burst']}],
+  {k:'chain',n:'Chain Reaction',p:'Prime with Spark Lance, then Arc Chain through the pack. Deadly strikes do the rest. Schema is Surge, so the chain and the barrier agree.',schema:'surge',doc:'rootkit',at:[15,5,30,50],pr:[[0,10],[1,6],[2,1],[5,5],[8,8],[3,4],[11,5],[13,4],[10,3],[6,3]],sl:[0,1,3],pa:[8,5,11,13],web:[0,3],fk:['over','echo','mark','refund']},
+  {k:'admin',n:'Sysadmin',p:'Let the machines do it: a Watchdog, a Botnet and a storm overhead while you keep your distance.',schema:'surge',doc:'firewall',at:[10,5,40,45],pr:[[4,10],[7,10],[6,8],[5,6],[2,4],[11,5],[13,4],[1,1],[0,1]],sl:[4,7,6],pa:[5,2,11,13],web:[4,1],fk:['lean','echo','refund','surge']},
+  {k:'rod',n:'Control Rod',p:'Null Nova on a short fuse. A Packet Storm arrives where you marked it and slows what is left. Step Back is how you leave.',schema:'noise',doc:'throttle',at:[15,5,30,50],pr:[[3,10],[0,6],[5,8],[2,4],[10,6],[9,4],[12,5],[11,5]],sl:[3,10,12],pa:[5,11,2],web:[4,7],fk:['stun','lean','chill','burst']}],
  courier:[
-  {k:'rush',n:'Rush Hour',p:'A wall of blades. Scatter Shot up close, Rush Order at range, and Return to Sender comes back through the same line.',doc:'express',at:[50,30,20,0],pr:[[0,10],[6,10],[9,6],[12,5],[8,8],[1,4],[2,3],[13,4],[5,1]],sl:[0,6,9],pa:[8,13,2,5],web:[0,5],fk:['over','echo','mark','surge']},
-  {k:'pirate',n:'Porch Pirate',p:'Never fight fair. Lure them onto a Tack Strip, mark one with Missed Connection, and blink to where it falls.',doc:'insured',at:[30,20,40,10],pr:[[3,10],[4,10],[1,6],[7,4],[14,5],[11,3],[8,4],[2,6],[10,4]],sl:[3,4,14],pa:[2,10,8,5],web:[1,3],fk:['burn','chill','mark','lean']},
-  {k:'tips',n:'Tip Jar',p:'You are here for the loot. Hazard Pay pays when a throw kills. A dash does not.',doc:'cod',at:[35,30,35,0],pr:[[5,10],[13,8],[0,8],[9,5],[2,6],[1,4],[8,4]],sl:[0,9,1],pa:[5,13,2,8],web:[6,5],fk:['lean','echo','surge','refund']}],
+  {k:'rush',n:'Rush Hour',p:'A wall of blades. Scatter Shot up close, Rush Order at range, and Return to Sender comes back through the same line.',doc:'express',at:[15,50,30,5],pr:[[0,10],[6,10],[9,6],[12,5],[8,8],[1,4],[2,3],[13,4],[5,1]],sl:[0,6,9],pa:[8,13,2,5],web:[0,5],fk:['over','echo','mark','surge']},
+  {k:'pirate',n:'Porch Pirate',p:'Never fight fair. Lure them onto a Tack Strip, mark one with Missed Connection, and blink to where it falls.',doc:'insured',at:[15,40,35,10],pr:[[3,10],[4,10],[1,6],[7,4],[14,5],[11,3],[8,4],[2,6],[10,4]],sl:[3,4,14],pa:[2,10,8,5],web:[1,3],fk:['burn','chill','mark','lean']},
+  {k:'tips',n:'Tip Jar',p:'You are here for the loot. Hazard Pay pays when a throw kills. A dash does not.',doc:'cod',at:[15,45,35,5],pr:[[5,10],[13,8],[0,8],[9,5],[2,6],[1,4],[8,4]],sl:[0,9,1],pa:[5,13,2,8],web:[6,5],fk:['lean','echo','surge','refund']}],
  anon:[
   {k:'demo',n:'Demolition',p:'Honeypot to gather them, Logic Bomb under their feet, Zip Bomb on top. All Heat. A mine laid while you are hidden arms faster.',doc:'nologs',at:[50,20,20,10],pr:[[0,8],[3,10],[6,10],[2,5],[11,4],[13,4],[4,3]],sl:[0,3,6],pa:[2,11,13],web:[0,3],fk:['over','burn','echo','mark']},
-  {k:'ghost',n:'Ghost',p:'Rehearse the strike, hop in, vanish. The Dump spends what you banked.',doc:'burner',at:[45,35,20,0],pr:[[1,10],[4,8],[9,6],[10,5],[2,6],[11,4],[13,3],[5,4]],sl:[1,4,9],pa:[2,11,13],web:[3,5],fk:['over','mark','surge','lean']},
+  {k:'ghost',n:'Ghost',p:'Rehearse the strike, hop in, vanish. The Dump spends what you banked.',doc:'burner',at:[20,50,25,5],pr:[[1,10],[4,8],[9,6],[10,5],[2,6],[11,4],[13,3],[5,4]],sl:[1,4,9],pa:[2,11,13],web:[3,5],fk:['over','mark','surge','lean']},
   {k:'legion',n:'We Are Legion',p:'Sockpuppets take the hits. When it is time to leave, We Were Never Here sends them off as a silence and you are gone.',doc:'collective',at:[25,15,40,20],pr:[[7,10],[8,8],[14,5],[13,4],[11,4],[2,6],[4,3],[0,3]],sl:[7,8,14],pa:[2,13,11],web:[1,7],fk:['lean','echo','refund','ward']}],
  founder:[
   {k:'head',n:'Headcount',p:'Hire everyone. They vest while they live, and Org Debt is what the headcount costs you. Term Sheet is the one officer.',doc:'venture',at:[20,0,35,45],pr:[[0,10],[3,10],[6,8],[12,4],[2,8],[11,6],[13,5],[4,4],[1,1]],sl:[0,3,12],pa:[2,11,13],web:[4,1],fk:['lean','refund','echo','surge']},
@@ -4059,7 +4213,7 @@ function recKill(e){if(!e.su||e.q!=='q8'||G.rec)return;G.rec=1;setTimeout(()=>{i
 const TAGK={whirl:'aoe',nova:'aoe',horn:'aoe',boom:'aoe',thunder:'aoe',swing2:'aoe',scatter:'aoe',buff:'aid',mend:'aid',summon:'aid',deploy:'aid'};
 function tagCost(l){return 3+Math.floor(l/15)}
 function tagG(n){if(n===SLOT)return null;const i=slotInfo(n);if(!i)return null;try{return i.loc?i.loc.G:JSON.parse(i.cloud.s).G}catch(e){return null}}
-function tagStats(og){const g0=G,keep=S;let r=null;try{G=JSON.parse(JSON.stringify(og));ensureG();calc();r={dmg:(S.dmin+S.dmax)/2*(1+S.dmg/100),max:S.maxHp,arm:S.armor||0}}catch(e){}G=g0;S=keep;calc();return r}
+function tagStats(og){const g0=G,keep=S;let r=null;try{G=JSON.parse(JSON.stringify(og));ensureG();calc();r={dmg:(S.dmin+S.dmax)/2*(1+(S.dmg||0)/100)*(1+((S.blow||0)/100)),max:S.maxHp,arm:S.armor||0}}catch(e){}G=g0;S=keep;calc();return r}
 function tagRender(n){const og=tagG(n);if(!og||!CLS[og.cls])return;const c=tagCost(og.lvl);if(satsFree()<c){toast(tradeReserved()?'Those sats are on the table.':'You need '+c+' sats');sfx('err');return}const st=tagStats(og);if(!st){toast('The rig could not read that character');sfx('err');return}
   if(!spendSats(c))return;const k=Math.min(1,(G.lvl+5)/og.lvl),sk=CLS[og.cls].sk,act=(og.slots||[]).filter(i=>i>=0&&sk[i]&&sk[i].a&&og.sk[i]);
   G.tag={slot:n,cls:og.cls,lvl:og.lvl,name:'Level '+og.lvl+' '+CLS[og.cls].n,dmg:Math.max(st.dmg*k,(4+2.2*G.lvl)*.9),max:Math.round(Math.max(st.max*k,60+22*G.lvl)),red:100/(100+st.arm*k),sk:act.map(i=>[i,og.sk[i]]),down:k<1,eq:og.eq||{}};
@@ -5272,9 +5426,9 @@ basics:[
  {art:'wanderer',title:'Your hands',mouse:'On a desk, left click walks. Hold it and you keep following the pointer. Left click on a machine walks you in and uses the left skill, which starts as Attack. Right click casts the right skill where you point, and holding it casts again. Shift with a click does either one without a step. The two slots beside the life and energy orbs open the list. Hover a skill there and press F1 to F8 to bind it. Those keys, and the wheel, put a binding on the right slot. WASD and the arrows still walk. Space swings.',touch:'On a phone, the stick walks, and Attack, three skills, a stim and Dodge sit under the right thumb. A quick tap on a ground skill hits the nearest machine you can see, or the open ground in front of you when none is in reach. Hold a ground skill for a fifth of a second and the aim appears. Drag it, then let go. Drag away from the button and the area moves that way from you. Further from the button puts it further out, and back toward the button brings it in. Drag it back onto the button and let go, or onto Cancel, and it costs nothing. A blink, a leap or a teleport hops a short way along your facing, or along the stick while you walk, and it will not land on a machine. Hold that button and a marker shows where you arrive, inside its reach and on ground you can walk. Tap Dodge to step out of an orange circle. Tap the stim to drink.'},
  {art:'feed',title:'The swing',mouse:'On a desk, hold the left button on a machine and you keep swinging. Space does that swing too. Shift dodges. The orange circles on the ground are the ones to leave. E uses what you are standing on. Left click walks you up to a person, a drop, a door or a portal and uses it. Alt, held, puts a name on everything on the ground.',touch:'Hold Attack and you keep swinging. Tap Dodge to spend a little energy and step out of a telegraph. The orange circles on the ground are the ones to leave. Stand on something and tap the button that appears.'},
  {art:'ticker',title:'What the screen is saying',mouse:'The left orb is life. The right is energy. A skill slot sits outside each one: left click and right click. Between them: the district, a bar for the next level, and your credits. Credits rot. I or B opens the pack, C opens the hero, and H opens this guide. Esc closes a panel. Tab is the map. T opens a portal home, and it will not open with a machine in your face.',touch:'The left orb is life. The right is energy. Between them: the district, a bar for the next level, and your credits. Credits rot. Menu is the bottom left. It opens the pack, the hero, and this guide.'},
- {art:'dawn',title:'A level',mouse:'When the bar fills you gain a level, and points. Hero spends attribute points: Might, Reflex, Vitality, Bandwidth. Skills spends skill points. C opens Hero, and Skills is on the menu too. Rows open as you level. A point you have not spent does nothing.',touch:'When the bar fills you gain a level, and points. Tap Menu, then Hero, to spend attribute points: Might, Reflex, Vitality, Bandwidth. Skills spends skill points, on that same menu. Rows open as you level. A point you have not spent does nothing.'},
+ {art:'dawn',title:'A level',mouse:'When the bar fills you gain a level, and points. Hero spends attribute points: Might, Reflex, Vitality, Bandwidth. Skills spends skill points. C opens Hero, and Skills is on the menu too. Rows open as you level. A point you have not spent does nothing. Might lifts a heavy weapon and plate, and it is what a Scrapper hits with. Reflex lifts a fast weapon, and a Runner’s throw. Bandwidth lifts a Deck or an Instrument, and a Technomancer’s spells. Vitality is life, and a Witness’s Thread.',touch:'When the bar fills you gain a level, and points. Tap Menu, then Hero, to spend attribute points: Might, Reflex, Vitality, Bandwidth. Skills spends skill points, on that same menu. Rows open as you level. A point you have not spent does nothing. Might lifts a heavy weapon and plate, and it is what a Scrapper hits with. Reflex lifts a fast weapon, and a Runner’s throw. Bandwidth lifts a Deck or an Instrument, and a Technomancer’s spells. Vitality is life, and a Witness’s Thread.'},
  {art:'cage',title:'Where a skill sits',mouse:'The two slots beside the orbs are what left and right click do. The left slot takes Attack and the blows, throws and shots. F1 to F8 bind a skill onto the right slot. Passives live on the Skills sheet. Only the ones you switch on are real, and in town you can swap them.',touch:'Attack is the big button. Three more skills sit on the thumb buttons. Passives live on the Skills sheet. Only the ones you switch on are real, and in town you can swap them.'},
- {art:'letters',title:'What they drop',mouse:'On a desk, a drop shows its name. Hover the name to compare it. Left click it and you walk over and pick it up. Hold Alt to show every name. E takes what you are standing on. Items wears it. A charm goes on the belt; in the pack it only takes space. A stronger piece says so before you put it on. Unidentified gear is a guess until Marrow names it for nothing, or Brenda appraises it for a fee. Weapons and armor wear down. Yellow on the doll means a piece is close to breaking. Red means it is broken and gives nothing. Brenda, Nonce or Wren repairs one piece, or all of them, at the counter, for whole sats.',touch:'Tap the name for Pick up and Compare. Hold Names to show every name. Walking over gear picks it up if it fits, and no description opens. Sats and credits are still picked up. Items wears it. A charm goes on the belt; in the pack it only takes space. Double-tap a charm, or tap it and then an empty belt slot. A stronger piece says so before you put it on. Unidentified gear is a guess until Marrow names it for nothing, or Brenda appraises it for a fee. Weapons and armor wear down. Yellow on the doll means a piece is close to breaking. Red means it is broken and gives nothing. Brenda, Nonce or Wren repairs one piece, or all of them, at the counter, for whole sats.'},
+ {art:'letters',title:'What they drop',mouse:'On a desk, a drop shows its name. Hover the name to compare it. Left click it and you walk over and pick it up. Hold Alt to show every name. E takes what you are standing on. Items wears it. A charm goes on the belt; in the pack it only takes space. A stronger piece says so before you put it on. Unidentified gear is a guess until Marrow names it for nothing, or Brenda appraises it for a fee. Weapons and armor wear down. Yellow on the doll means a piece is close to breaking. Red means it is broken and gives nothing. A red wash across the tile means a requirement you do not meet: the piece stays worn and grants nothing. Yellow still means it is close to breaking. Brenda, Nonce or Wren repairs one piece, or all of them, at the counter, for whole sats.',touch:'Tap the name for Pick up and Compare. Hold Names to show every name. Walking over gear picks it up if it fits, and no description opens. Sats and credits are still picked up. Items wears it. A charm goes on the belt; in the pack it only takes space. Double-tap a charm, or tap it and then an empty belt slot. A stronger piece says so before you put it on. Unidentified gear is a guess until Marrow names it for nothing, or Brenda appraises it for a fee. Weapons and armor wear down. Yellow on the doll means a piece is close to breaking. Red means it is broken and gives nothing. A red wash across the tile means a requirement you do not meet: the piece stays worn and grants nothing. Yellow still means it is close to breaking. Brenda, Nonce or Wren repairs one piece, or all of them, at the counter, for whole sats.'},
  {art:'board',title:'The work',mouse:'Quests sit on the left. Click the line to tuck it away. Gramps, on the bench in Stillwater, is where Act I starts. The Quests tab is the whole list. Story is the same events, written down as you would have heard them.',touch:'Quests sit on the left. Tap the line to tuck it away. Gramps, on the bench in Stillwater, is where Act I starts. The Quests tab is the whole list. Story is the same events, written down as you would have heard them.'},
  {art:'skyline',title:'Town',text:'Town fills your life and your energy, and it takes off a shape you were wearing. Brenda sells. Wren sells boxes. Nonce deals in sats. Brenda, Nonce and Wren each repair what you wear, for whole sats. Kestrel hires, and she will have a body walked back. The Transit Gate is the way out to a district. In the square, nothing is hunting you.'},
  {art:'clock',title:'When you fall',text:'Die, and you wake in the town of that act without what you were wearing. A portal in the square opens at the start of that district. The belt and the charms on it are on your body, where you fell, and the map marks it. The pack, your stims, and the lockbox stay. A share of the credits you were carrying is on the body and comes back when you do. Sats do not fall. A plain loaner stays in your hands, so the walk is not empty. Machines standing on the body step back when you return. Stand on the body and take your gear. Die again before that and there is a second body; each one keeps what it had. In town, Kestrel will have a body walked in for a few sats, so leaving does not lose it. A duel in the rig still costs nothing, and nobody drops an ear. Hardcore is a different promise, and it is switched on in Options, not here.'}
@@ -5439,7 +5593,7 @@ function mktChart(){const s=mktSeries(),n=s.p.length;if(n<2)return '';
 const hireCost=()=>80+8*G.lvl,reviveCost=()=>cause()?0:40+4*G.lvl;
 function openSheet(t,c){c=c||{};if(t!=='vend'){const only=c.only;const gamble=t==='gamble'||(!!only&&only.indexOf('gamble')>=0&&only.indexOf('shop')<0);const shop=t==='shop'||(!!only&&only.indexOf('shop')>=0&&only.indexOf('sats')<0);if(gamble||shop)return openVend(gamble?'gamble':'brenda')}if(mode!=='play'&&mode!=='title')return;cmpHide();if(typeof lootShut==='function')lootShut();sheetCtx=c||{};sheetCtx.from=mode;if(t==='web')webVB=null;tab=t;sel=null;mode='sheet';$('sheet').hidden=false;$('sheet').scrollTop=0;J.x=J.y=0;atkHeld=false;MO=null;const pk=$('mPick');if(pk)pk.hidden=true;$('stick').hidden=true;drawSheet()}
 function closeSheet(){$('sheet').hidden=true;$('pop').hidden=true;if(sheetCtx.from==='title'){mode='title';return}mode='play';calc();setSkillButtons();save(true)}
-function pscore(s){return{dps:((s.dmin+s.dmax)/2*(1+s.dmg/100)+s.shock)*(1+Math.max(-50,s.aspd)/100)*(1+Math.min(100,s.crit)/100*(s.critM-1)),ehp:s.maxHp*(1+s.armor/100)/(1-Math.min(.6,(s.dodge||0)/100))}}
+function hitFactor(s){return (1+(s.dmg||0)/100)*(1+((s&&s.blow)||0)/100)}function pscore(s){const f=hitFactor(s);return{dps:((s.dmin+s.dmax)/2*f+s.shock)*(1+Math.max(-50,s.aspd)/100)*(1+Math.min(100,s.crit)/100*(s.critM-1)),ehp:s.maxHp*(1+s.armor/100)/(1-Math.min(.6,(s.dodge||0)/100))}}
 /* how much stronger (+) or weaker (-) the hero gets by equipping this, as a fraction; null when it cannot be judged */
 function itemDelta(it){if(!it||!it.id||it.charm)return null;const A=S,B=statsWith(it.slot,it),a=pscore(A),b=pscore(B);
   return (b.dps/a.dps-1)+(b.ehp/a.ehp-1)+(B.maxEn-A.maxEn)/A.maxEn*.2+(B.mspd-A.mspd)*.004+(B.leech-A.leech)*.02+(B.skills-A.skills)*.15+(B.mf-A.mf)*.001+(B.gold-A.gold)*.0005+(B.regen-A.regen)*.02+(B.regenH-A.regenH)*.01+(B.stun-A.stun)*.005+(B.thorns-A.thorns)*.003+(Object.keys(B.sp).length-Object.keys(A.sp).length)*.12+(B.cap-A.cap)*.01}
@@ -5447,15 +5601,15 @@ const dPct=d=>(d>0?'+':'−')+Math.min(999,Math.round(Math.abs(d)*100))+'%';
 function cell(it,attr,isSel,slot,d,price){if(!it){const hot=attr&&/data-packempty|data-csocket/.test(attr);return `<button class="cell empty" ${attr||''}${hot?'':' disabled'}>${slot?svgIcon(slot):''}</button>`}
   const arrow=!!(OPT.cmpArrow&&d!=null&&it.id&&!it.charm&&strictUp(it));
   const ch=it.charm?' ch'+(charmCost(it)>=3?' grand':charmCost(it)>=2?' wide':''):'',drag=it.charm&&!uiTouch()&&!(attr&&attr.indexOf('data-vbag')>=0)?' draggable="true"':'',num=it.charm?charmCost(it):it.il;
-  const dw=it.duraMax>0?(it.dura<=0?' brk':it.dura<=it.duraMax*.25?' thin':''):'';
+  const dw=it.duraMax>0?(it.dura<=0?' brk':it.dura<=it.duraMax*.25?' thin':''):'';const rq=(!it.charm&&typeof reqBadgeText==='function')?reqBadgeText(it):'';
   const tag=price!=null?`<u class="vp">${price} sat${price===1?'':'s'}</u>`:'';
   const lk=it.lock?'<svg class="lk" viewBox="0 0 24 24"><path d="M7 11V8a5 5 0 0110 0v3h1v10H6V11h1zm2 0h6V8a3 3 0 00-6 0v3z"/></svg>':'';
-  return `<button class="cell q${it.q}${isSel?' sel':''}${it.id?'':' unid'}${arrow?' arr':''}${it.junk?' junk':''}${it.lock?' seal':''}${ch}${dw}" ${attr}${drag}>${svgIcon(it.charm?'charm':it.slot)}<small>${num}</small>${dw?`<i class="dw">${it.dura<=0?'!':'·'}</i>`:''}${arrow?'<em>↑</em>':''}${lk}${tag}${it.junk?'<u>JUNK</u>':''}</button>`}function equipFromBag(i){const it=G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.charm)return charmSocket(i);if(!it.id){toast('Identify it first');sfx('err');return false}if(G.lvl<it.req){toast('Needs level '+it.req);sfx('err');return false}
+  return `<button class="cell q${it.q}${isSel?' sel':''}${it.id?'':' unid'}${arrow?' arr':''}${it.junk?' junk':''}${it.lock?' seal':''}${ch}${dw}${rq?' req':''}" ${attr}${drag}>${svgIcon(it.charm?'charm':it.slot)}<small>${num}</small>${dw?`<i class="dw">${it.dura<=0?'!':'·'}</i>`:''}${arrow?'<em>↑</em>':''}${rq?`<u class="rq">${esc(rq)}</u>`:''}${lk}${tag}${it.junk?'<u>JUNK</u>':''}</button>`}function equipFromBag(i){const it=G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.charm)return charmSocket(i);if(!it.id){toast('Identify it first');sfx('err');return false}if(!canWear(it)){toast(typeof cantEquipText==='function'?cantEquipText(it):'Needs level '+it.req);sfx('err');return false}
   const old=G.eq[it.slot];G.eq[it.slot]=it;it.junk=false;G.bag.splice(i,1);if(old){if(bagCan(old))G.bag.push(old);else addDrop({it:old},P.x,P.y)}if(it.slot==='belt')charmRefit();calc();sfx('equip');return true}
-function equipBest(){let n=0;for(const slot of SLOTS){let best=-1,bd=.01;G.bag.forEach((it,i)=>{if(it.slot!==slot||!it.id||G.lvl<it.req)return;const d=itemDelta(it);if(d>bd){bd=d;best=i}});if(best>=0&&equipFromBag(best))n++}return n}
-function gearNow(s){return{lo:Math.round(s.dmin*(1+s.dmg/100)+s.shock),hi:Math.round(s.dmax*(1+s.dmg/100)+s.shock),arm:s.armor}}
+function equipBest(){let n=0;for(const slot of SLOTS){let best=-1,bd=.01;G.bag.forEach((it,i)=>{if(it.slot!==slot||!canWear(it))return;const d=itemDelta(it);if(d>bd){bd=d;best=i}});if(best>=0&&equipFromBag(best))n++}return n}
+function gearNow(s){const f=hitFactor(s);return{lo:Math.round(s.dmin*f+s.shock),hi:Math.round(s.dmax*f+s.shock),arm:s.armor}}
 function planBest(){const before=gearNow(S);const bag0=G.bag.slice();const eq0={};for(const k in G.eq)eq0[k]=G.eq[k];const cs0=(G.cslots||[]).slice();const hp=G.hp,en=G.en,st=G.stims;const moves=[];
-  for(const slot of SLOTS){let best=-1,bd=.01;G.bag.forEach((it,i)=>{if(it.slot!==slot||!it.id||G.lvl<it.req)return;const d=itemDelta(it);if(d!=null&&d>bd){bd=d;best=i}});if(best<0)continue;const it=G.bag[best];moves.push(it.name);const old=G.eq[slot];G.eq[slot]=it;G.bag.splice(best,1);if(old)G.bag.push(old);if(slot==='belt'){const max=beltBudget(it).slots;let used=0;const keep=[];for(const c of G.cslots||[]){const n=charmCost(c);if(c&&used+n<=max){keep.push(c);used+=n}}G.cslots=keep}calc()}
+  for(const slot of SLOTS){let best=-1,bd=.01;G.bag.forEach((it,i)=>{if(it.slot!==slot||!canWear(it))return;const d=itemDelta(it);if(d!=null&&d>bd){bd=d;best=i}});if(best<0)continue;const it=G.bag[best];moves.push(it.name);const old=G.eq[slot];G.eq[slot]=it;G.bag.splice(best,1);if(old)G.bag.push(old);if(slot==='belt'){const max=beltBudget(it).slots;let used=0;const keep=[];for(const c of G.cslots||[]){const n=charmCost(c);if(c&&used+n<=max){keep.push(c);used+=n}}G.cslots=keep}calc()}
   const after=gearNow(S);for(const k in eq0)G.eq[k]=eq0[k];G.bag.splice(0,G.bag.length);for(let i=0;i<bag0.length;i++)G.bag.push(bag0[i]);G.cslots=cs0;G.hp=hp;G.en=en;G.stims=st;calc();return{before,after,moves}}
 function bestAsk(){const p=planBest();if(!p.moves.length){toast('Nothing better in your pack');return}const A=p.before,B=p.after;const cls=(a,b)=>b>a?'up':b<a?'dn':'';const avg=x=>(x.lo+x.hi)/2;const dlt=(a,b)=>a===b?'same':(b>a?'+':'')+(b-a);
   const pop=`<div class="card"><div class="nm q4">Equip best</div><div class="ln off">${p.moves.map(esc).join(' · ')}</div><table class="dt"><tr><td>Damage</td><td>${A.lo}–${A.hi}</td><td>→ ${B.lo}–${B.hi}</td><td class="${cls(avg(A),avg(B))}">${dlt(Math.round(avg(A)),Math.round(avg(B)))}</td></tr><tr><td>Armor</td><td>${A.arm}</td><td>→ ${B.arm}</td><td class="${cls(A.arm,B.arm)}">${dlt(A.arm,B.arm)}</td></tr></table><div class="row" style="margin-top:6px"><button class="big" data-bestok="1">Equip these</button></div><div class="row"><button class="ghost" data-popx="1">Leave them</button></div></div>`;
@@ -5466,7 +5620,7 @@ function itemLines(it){let h='';
   if(it.dmin)h+=`<div class="ln">Damage: ${it.dmin} to ${it.dmax}</div><div class="ln">${it.spd>0?'Fast':it.spd<0?'Slow':'Normal'} attack speed</div>`;
   if(it.arm)h+=`<div class="ln">Armor: ${it.arm}</div>`;if(it.slot==='belt'){const b=beltBudget(it);h+=`<div class="ln">Holds ${b.stims} stims · ${b.slots} charm slot${b.slots===1?'':'s'}</div>`}else if(it.cap)h+=`<div class="ln">Holds ${it.cap} stims</div>`;if(it.indestruct)h+=`<div class="ln">Indestructible</div>`;else if(it.duraMax){const thin=it.dura>0&&it.dura<=it.duraMax*.25;h+=`<div class="ln${it.dura<=0?' red':''}"${thin?' style="color:#e0b03a"':''}>Durability: ${it.dura|0} of ${it.duraMax}${it.dura<=0?' · broken. It gives nothing until it is repaired.':(it.aff&&it.aff.some(a=>a&&a.k==='patch')?' · self-patching':'')}</div>`}if(it.loan)h+=`<div class="ln">A loaner. It stays in your hands when you fall, until your own weapon is back.</div>`
   if(it.charm){const word=it.sz==='filing'?'Filing':it.sz==='notice'?'Notice':'Slip',worn=(G.cslots||[]).indexOf(it)>=0;h+=`<div class="ln">${word} · ${charmCost(it)} belt slot${charmCost(it)===1?'':'s'} · ${charmCells(it)} pack cell${charmCells(it)===1?'':'s'}</div><div class="ln">${worn?'On the belt. It applies.':'Off the belt. It grants nothing until it is worn, and it does not stack.'}</div>`}
-  h+=`<div class="ln${G.lvl<it.req?' red':''}">Required Level: ${it.req}</div>`;
+  h+=`<div class="ln${G.lvl<it.req?' red':''}">Required Level: ${it.req}</div>`;if(typeof reqLineHTML==='function')h+=reqLineHTML(it);
   if(it.fam){const F=FAM[it.fam],mine=F.cls===G.cls;h+=`<div class="ln" style="color:${mine?'#7be495':'var(--dim)'}">${CLS[F.cls].n} ${F.n.toLowerCase()}${it.id?': in a '+CLS[F.cls].n+'’s hands, +1 to all skills, '+F.perk+(mine?'':' (not your class)'):''}</div>`}
   if(it.dt&&it.id)h+=`<div class="ln" style="color:${DTY[it.dt].c}">Infused: your attacks deal ${DTY[it.dt].n} damage</div>`;
   if(it.soc)h+=`<div class="ln" style="color:#f7931a">Sockets: ${Array.from({length:it.soc},(_,i)=>it.words[i]?'['+it.words[i]+']':'[ empty ]').join(' ')}</div>`;
@@ -5517,8 +5671,8 @@ function cmpPick(it,key){
   if(!cur)cur=ts[0]||null;
   if(cur)CMP_KEY=cur.key;
   return {targets:ts,target:cur}}
-function canWear(it){return !!(it&&it.id&&!it.charm&&it.slot&&G.lvl>=(it.req||0))}
-function sheetAvg(s){return ((s.dmin+s.dmax)/2)*(1+(s.dmg||0)/100)+(s.shock||0)}
+function canWear(it){return !!(it&&it.id&&!it.charm&&it.slot&&G.lvl>=(it.req||0)&&(typeof reqOk!=='function'||reqOk(it,it.slot)))}
+function sheetAvg(s){return ((s.dmin+s.dmax)/2)*hitFactor(s)+(s.shock||0)}
 function strictUp(it){
   if(!canWear(it))return false;
   const A=S,B=statsWith(it.slot,it);
@@ -5660,6 +5814,17 @@ function cmpCharmEval(it,off){
   const B=sheetSwap([{charm:1,cslots:plan.next}]);
   out.ok=true;out.rows=cmpRows(S,B,[],[]);
   return out}
+function shiftQuietNote(cls,key){
+  if(!key||key==='?'||key==='0')return 'Attributes come back unspent. Gear you no longer meet stays on and grants nothing until you spend.';
+  const B=BUILDS[cls]&&BUILDS[cls].find(b=>b.k===key);if(!B||typeof gearLive!=='function')return '';
+  const ap=(G.ap||0)+(G.at.mgt||0)+(G.at.ref||0)+(G.at.vit||0)+(G.at.bnd||0);
+  const ks=['mgt','ref','vit','bnd'],at={mgt:0,ref:0,vit:0,bnd:0};let left=ap;
+  ks.forEach((k,j)=>{const n=Math.floor(ap*B.at[j]/100);at[k]=n;left-=n});
+  at[ks[B.at.indexOf(Math.max(...B.at))]]+=left;
+  const old=G.at;G.at=at;const names=[];
+  try{const g=gearLive(null);for(const sl of SLOTS){const it=G.eq[sl];if(!it||itemBroken(it)||g.live[sl])continue;if(!(it.reqMgt||it.reqRef||it.reqBnd)&&G.lvl>=(it.req||0))continue;const sh=reqShortfall(it);const bit=sh.map(f=>'Need +'+f.short+' '+f.name).join(', ');names.push((it.name||it.base)+' will go quiet'+(bit?'. '+bit:''))}}finally{G.at=old}
+  return names.join('. ')}
+function shiftQuietHTML(cls,key){const q=shiftQuietNote(cls,key);return q?`<span style="color:var(--bad)">${esc(q)}</span>`:''}
 function cmpEval(it,opt){
   opt=opt||{};
   if(it&&it.charm)return cmpCharmEval(it,!!(opt&&opt.off));
@@ -5682,7 +5847,7 @@ function cmpEval(it,opt){
     out.merc=true;out.ok=true;
     const m=mercRows(it);out.rows=m.rows;out.before=m.before;out.after=m.after;
     return out}
-  if(!canWear(it)){out.blocked='level';out.ok=false;return out}
+  if(!canWear(it)){const sh=typeof reqShortfall==='function'?reqShortfall(it):[];out.blocked=(G.lvl<(it.req||0)&&!sh.length)?'level':'req';out.why=typeof cantEquipText==='function'?cantEquipText(it):'';out.ok=false;return out}
   const plan=pick.target.plan||[{slot:it.slot,it:it}];
   const skA=itemSkillNames(eqNow()),skB=itemSkillNames(eqPlanned(plan));
   const B=sheetSwap(plan);
@@ -5731,6 +5896,7 @@ function cmpHTML(it,opt){
   let note='';
   if(ev.blocked==='unid')note='<div class="ln off">Unidentified. Nothing here is a guess.</div>';
   else if(ev.blocked==='level')note=`<div class="ln red">Needs level ${it.req}. Your sheet does not change.</div>`;
+  else if(ev.blocked==='req')note=`<div class="ln red">${esc(ev.why||"Can't equip.")} Your sheet does not change.</div>`;
   else if(ev.merc)note='<div class="ln off">Companion life, damage, and how much of a hit they take.</div>';
   else note=`<div class="ln off">Resists are after the difficulty cut of ${resPen()}.</div>`;
   const alts=opt.off?'':cmpAltsHTML(ev.targets,ev.target&&ev.target.key);
@@ -6255,20 +6421,20 @@ function drawSheet(){
   if(tab==='char'){const c=CLS[G.cls];
     let points='',people='',standing='';
     points+=`<h2>${c.n} · Level ${G.lvl}</h2><p>${G.lvl>=lvlCap()?(G.act5?'You have reached the level limit.':((G.bankXp||0)>0?'Level limit reached. '+Math.floor(G.bankXp)+' experience is banked, one level at most, until Act III.':'Level limit reached. It rises when you enter the next act.')):Math.floor(G.xp)+' / '+xpNext(G.lvl)+' experience.'} ${G.kills} machines scrapped. Simulator best: wave ${G.simBest||0}.</p><h3>Attributes · ${G.ap} point${G.ap===1?'':'s'} to spend</h3><div class="list">`;
-    for(const k in ATTR)points+=`<button class="li" data-at="${k}" ${G.ap?'':'disabled'}><div><b>${ATTR[k][0]} · ${G.at[k]}</b><span>${ATTR[k][1]}</span></div><span class="pr">${G.ap?'+ ADD':''}</span></button>`;
+    for(const k in ATTR)points+=`<button class="li" data-at="${k}" ${G.ap?'':'disabled'}><div><b>${ATTR[k][0]} · ${G.at[k]}</b><span>${typeof attrTip==='function'?attrTip(k):ATTR[k][1]}</span></div><span class="pr">${G.ap?'+ ADD':''}</span></button>`;
     points+=`</div>`;if(G.merc){const m=G.merc,ms=mercStats();people+=`<h3>Companion</h3><div class="li"><div><b>${esc(m.name)} · ${MERCS[m.k].n}${m.dead?' · fallen':''}</b><span>${m.dead?'Kestrel can bring them back for a fee.':'Life '+Math.round(m.hp||ms.max)+' / '+ms.max+' · damage '+Math.round(ms.dmg)+' · strikes with '+DTY[MERCS[m.k].dt].n+' · takes '+Math.round(ms.red*100)+'% of each hit'}</span><span>Give them a weapon or armor from the Items tab. Their resistances are on Kestrel’s page.</span></div></div><div class="grid eq">${['weapon','armor'].map(sl=>m[sl]?`<button class="cell q${m[sl].q}" data-mtake="${sl}">${svgIcon(sl)}<small>${m[sl].il}</small><u style="color:var(--dim)">TAKE</u></button>`:`<button class="cell empty" disabled>${svgIcon(sl)}</button>`).join('')}</div>`}
     points+=`<h3>This quarter</h3><div class="list"><div class="li on"><div><b>${SEA.n}</b><span>${SEA.d} The rule changes each week.</span></div></div>${G.act3?`<div class="li"><div><b>Tenure ${G.para||0}</b><span>The first costs half a level.</span><span>Each one after costs seven percent of that half more than the last.</span><span>+1% damage and life, one web point, and the machines strengthen a little.</span></div></div>`:''}${G.debt>0?`<div class="li"><div><b>Debt to Mr. Float · ${fmt(G.debt)}</b><span>About ${Math.round(G.debt/G.cpi/(G.debt0/G.debtCpi)*100)}% of what you borrowed, in real terms.</span></div></div>`:''}</div>`;
     people+=`<h3>Allegiances</h3><details class="memo"><summary>Social credit · ${scs()} · ${scsWord()}</summary><p>Unity scores what you say. Fiat answers and collecting the Stipend raise it; bitcoiner answers lower it a little, and insults lower it a lot. Below 500 Brenda will not serve you, the Stipend is halved and Mr. Float charges 35%. Below 350 he will not lend at all, and below 300 the Stipend stops. Bitcoiners answer in kind: below 500 Nonce sells at a quarter off and stocks Brenda’s goods at 30% off, Kestrel revives for nothing, and nodes are lit for free.</p></details><details class="memo"><summary>How people read you · ${leanWord()}</summary><p>What you say about money in conversation moves this. People greet you by it. Mr. Float overcharges plain bitcoiners, and Nonce overcharges the plainly fiat-minded.</p></details>`;for(const f in REP){const r=repRank(f),R=REP[f],nx=REPT[r];people+=`<details class="memo"><summary>${R.n} · ${r?R.ranks[r-1]:'Unknown to them'}</summary><p>${R.how} ${G.rep[f]} standing${nx?', '+nx+' for '+R.ranks[r]+' — '+R.perks[r]:''}.</p></details>`}
     people+=`<details class="memo"><summary>Bitcoin adoption · ${Math.floor(G.adopt)}%</summary><p>${fateWord()}. ${G.camp?'Unity’s campaign “'+CAMPS[G.camp.k].n+'” is draining it: '+CAMPS[G.camp.k].d+' ':''}${G.adopt>=100?'Bitcoin is the world’s reserve currency. Prices have stopped rising.':'It rises when you light nodes, pay in sats, prove work, win people over in conversation and bring down executives. It falls when you sell sats, borrow, buy shitcoins, insult people or take MANDATE’s offers. Where it stands when MANDATE falls decides how the money story ends: 60% or more and bitcoin becomes the reserve, under 25% and it fails.'}</p></details>`;
     standing+=`<h3>Resistances · difficulty cut ${resPen()}</h3><div class="stats">${RTK.map(k=>`<div style="color:${DTY[k].c}">${DTY[k].n}<b>${resOf(k)}%</b></div>`).join('')}</div><p style="font-size:13px">These are the numbers after the difficulty cut, and each one applies before armor. Normal cuts 0, Hard cuts 20, Brutal cuts 50. They cannot rise above 75% or fall below -100%, and a negative number means that type hurts more. Of Proofing rolls one type on armor, helms, boots, belts, rings and amulets. Of Coverage rolls all five on armor, helms, belts, rings and amulets, and it will not share an item with Of Proofing.</p>`;
-    standing+=`<h3>Standing</h3><div class="stats"><div>Damage<b>${Math.round(S.dmin*(1+S.dmg/100))}–${Math.round(S.dmax*(1+S.dmg/100))}</b></div><div>Armor<b>${S.armor}</b></div><div>Life<b>${S.maxHp}</b></div><div>Energy<b>${S.maxEn}</b></div><div>Deadly strike<b>${S.crit}%</b></div><div>Attack speed<b>${S.aspd>=0?'+':''}${S.aspd}%</b></div><div>Run speed<b>+${S.mspd}%</b></div><div>Life steal<b>${S.leech}%</b></div><div>Magic find<b>${S.mf}%</b></div><div>Extra credits<b>${S.gold}%</b></div><div>Shock damage<b>${S.shock}</b></div><div>Damage blocked<b>${Math.round(100-10000/(100+S.armor))}%</b></div><div>Damage reduced<b>${Math.min(50,S.pdr||0)}%</b></div><div>Faster cast<b>${Math.round(Math.min(60,(S.cdr||0)*100))}%${(S.cdr||0)>=.45?' · quick':(S.cdr||0)>=.3?' · ready':(S.cdr||0)>=.15?' · slow':''}</b></div></div>`;
+    standing+=`<h3>Standing</h3><div class="stats"><div>Damage<b>${Math.round(S.dmin*hitFactor(S))}–${Math.round(S.dmax*hitFactor(S))}</b></div><div>Armor<b>${S.armor}</b></div><div>Life<b>${S.maxHp}</b></div><div>Energy<b>${S.maxEn}</b></div><div>Deadly strike<b>${S.crit}%</b></div><div>Attack speed<b>${S.aspd>=0?'+':''}${S.aspd}%</b></div><div>Run speed<b>+${S.mspd}%</b></div><div>Life steal<b>${S.leech}%</b></div><div>Magic find<b>${S.mf}%</b></div><div>Extra credits<b>${S.gold}%</b></div><div>Shock damage<b>${S.shock}</b></div><div>Damage blocked<b>${Math.round(100-10000/(100+S.armor))}%</b></div><div>Damage reduced<b>${Math.min(50,S.pdr||0)}%</b></div><div>Faster cast<b>${Math.round(Math.min(60,(S.cdr||0)*100))}%${(S.cdr||0)>=.45?' · quick':(S.cdr||0)>=.3?' · ready':(S.cdr||0)>=.15?' · slow':''}</b></div></div>`;
     h+=menuBar('char',[['points','Points'],['standing','Standing'],['people','People']],'points');
     h+=menuPane('char','points',points)+menuPane('char','standing',standing)+menuPane('char','people',people);
     if(devOn())h+=itemTryRow()}
   if(tab==='items'){
-    const ds=G.bag.map(itemDelta),ups=new Set(G.bag.filter((it,i)=>ds[i]>.01&&G.lvl>=it.req).map(it=>it.slot)).size,downs=ds.filter((d,i)=>d!==null&&d<-.01&&!G.bag[i].junk).length;
+    const ds=G.bag.map(itemDelta),ups=new Set(G.bag.filter((it,i)=>ds[i]>.01&&canWear(it)).map(it=>it.slot)).size,downs=ds.filter((d,i)=>d!==null&&d<-.01&&!G.bag[i].junk).length;
     h+=`<div class="dollw" style="${selling()?'order:50':''}"><div class="doll"><svg class="fig" viewBox="0 0 60 120"><circle cx="30" cy="14" r="10"/><path d="M14 30h32l8 40h-9l-3-22v26l4 44H34l-4-36-4 36H14l4-44V48l-3 22H6z"/></svg>${SLOTS.map(sl=>`<div style="grid-area:${DOLL[sl].split('/')[1]}/${DOLL[sl].split('/')[0]}">${cell(G.eq[sl],`data-eq="${sl}"`,sel&&sel.eq===sl,sl)}</div>`).join('')}</div>
-      <div class="dstat"><div>Damage<b>${Math.round(S.dmin*(1+S.dmg/100)+S.shock)}–${Math.round(S.dmax*(1+S.dmg/100)+S.shock)}</b></div><div>Armor<b>${S.armor}</b></div><div>Life<b>${S.maxHp}</b></div><div>Energy<b>${S.maxEn}</b></div><div>Deadly strike<b>${S.crit}%</b></div><div>Credits<b>${fmt(G.credits)}</b></div></div></div>`;
+      <div class="dstat"><div>Damage<b>${Math.round(S.dmin*hitFactor(S)+S.shock)}–${Math.round(S.dmax*hitFactor(S)+S.shock)}</b></div><div>Armor<b>${S.armor}</b></div><div>Life<b>${S.maxHp}</b></div><div>Energy<b>${S.maxEn}</b></div><div>Deadly strike<b>${S.crit}%</b></div><div>Credits<b>${fmt(G.credits)}</b></div></div></div>`;
     h+=beltRowHTML();if(W&&W.z&&W.z.town&&G.corpses&&G.corpses.length)h+=G.corpses.map(c=>`<button class="li" data-corpse="${c.id}"><div><b>Body in ${esc((ZONES[c.zi]&&ZONES[c.zi].n)||'a district')}</b><span>${fmt(c.credits||0)} of credits on it, with the belt and its charms. The pack stayed with you.</span></div><span class="pr" style="color:#f7931a">${corpseFee(c)} sats</span></button>`).join('');
     h+=`<div class="row"><button class="${ups?'big':'ghost'}" data-best="1" ${ups?'':'disabled'}>${ups?'Equip best · '+ups+' upgrade'+(ups>1?'s':''):'Nothing better in pack'}</button><button class="ghost" data-markjunk="1" ${downs?'':'disabled'}>Mark ${downs||''} weaker as junk</button></div><button class="tog${OPT.autoEq?' on':''}" data-opt="autoEq"><span>Equip stronger gear as you pick it up</span><i>${OPT.autoEq?'ON':'OFF'}</i></button>`;if(!selling())h+=pkRow();
     if(G.merc&&!G.merc.dead&&!selling()){const m=G.merc,ms=mercStats();h+=`<h3>${esc(m.name)} · ${MERCS[m.k].n}</h3><div class="dollw"><div class="grid eq" style="grid-template-columns:repeat(3,1fr);flex:0 0 46%">${MSL.map(sl=>cell(m[sl],`data-msel="${sl}"`,sel&&sel.m===sl,sl)).join('')}</div><div class="dstat"><div>Life<b>${ms.max}</b></div><div>Damage<b>${Math.round(ms.dmg)}</b></div><div>Takes<b>${Math.round(ms.red*100)}%</b></div></div></div><div class="row"><button class="ghost" data-mbest="1">Give them the best of what I am not using</button></div><p class="hint" style="font-size:13px">${uiSay('Click one of their pieces to take it back. Click a weapon, helm or armor in your pack and choose Give to hand it over; whatever they were holding comes back to you.','Tap one of their pieces to take it back. Tap a weapon, helm or armor in your pack and choose Give to hand it over; whatever they were holding comes back to you.')}</p>`}
@@ -6277,7 +6443,7 @@ function drawSheet(){
     const it=sel&&(sel.cs!==undefined?(G.cslots||[])[sel.cs]:sel.m?G.merc&&G.merc[sel.m]:sel.eq?G.eq[sel.eq]:G.bag[sel.bag]);
     if(it&&sel.sock){const own=WK.filter(w=>G.words[w]);pop=`<div class="card"><div class="nm" style="color:#f7931a">Socket a word</div><div class="ln off">${esc(it.name)} · ${it.soc-it.words.length} empty. A word cannot be removed once set. Phrases need the right words in the right order: see the Codex.</div><div class="list">${own.length?own.map(w=>`<button class="li" data-word="${w}"><div><b>${w} ×${G.words[w]}</b><span>${AFK[WORDS[w][0]].t.replace('{v}',WORDS[w][1])}</span></div></button>`).join(''):'<div class="ln off">You hold no words. They turn up on torn notes dropped by machines.</div>'}</div><div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`}
     else 
-    if(it){let b='';if(sel.cs!==undefined){b=`<button class="big" data-csdo="off">Take off</button>`+(selling()?`<button class="ghost" data-csdo="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-csdo="drop">Drop</button>`)+`<button class="ghost" data-csdo="scrap">Scrap · ${charmParts(it)} parts</button>`}else if(sel.m){b=`<button class="big" data-mtake="${sel.m}">Take it back</button>`}else if(sel.eq){b=`<button class="ghost" data-do="unequip">Take off</button>`;if(W&&W.z&&W.z.town&&repairQuote(it))b+=`<button class="ghost" data-repair="one" ${G.sats<repairQuote(it)?'disabled':''}>Repair · ${repairQuote(it)} sat${repairQuote(it)===1?'':'s'}</button>`;if(it.soc&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`}else{b=`<button class="big" data-do="equip" ${it.id&&G.lvl>=it.req?'':'disabled'}>${it.charm?'Put on the belt':'Equip'}</button>`;b+=selling()?`<button class="ghost" data-do="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-do="drop">Drop</button>`;b+=`<button class="ghost" data-do="junk">${it.junk?'Not junk':'Junk'}</button><button class="ghost" data-do="lock">${it.lock?'Unlock':'Lock'}</button>`;if(it.soc&&it.id&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`;if(it.charm)b+=`<button class="ghost" data-do="scrap">Scrap · ${charmParts(it)} parts</button>`;if(it.id&&!it.charm){b+=`<button class="ghost" data-do="scrap">Scrap · ${[1,2,4,8,15][it.q]||1} parts</button>`;if(it.aff.length)b+=`<button class="ghost" data-do="reroll" ${(G.parts||0)<rerollCost(it)?'disabled':''}>Reroll a modifier · ${rerollCost(it)} parts</button>`;if(canSoc(it))b+=`<button class="ghost" data-do="addsoc" ${(G.parts||0)<12?'disabled':''}>Cut a socket · 12 parts</button>`}if(G.merc&&!G.merc.dead&&it.id&&MSL.includes(it.slot))b+=`<button class="ghost" data-do="mgive">Give to ${esc(G.merc.name)}</button>`}pop=itemCard(it,b,!!sel.eq,!!sel.m)}
+    if(it){let b='';if(sel.cs!==undefined){b=`<button class="big" data-csdo="off">Take off</button>`+(selling()?`<button class="ghost" data-csdo="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-csdo="drop">Drop</button>`)+`<button class="ghost" data-csdo="scrap">Scrap · ${charmParts(it)} parts</button>`}else if(sel.m){b=`<button class="big" data-mtake="${sel.m}">Take it back</button>`}else if(sel.eq){b=`<button class="ghost" data-do="unequip">Take off</button>`;if(W&&W.z&&W.z.town&&repairQuote(it))b+=`<button class="ghost" data-repair="one" ${G.sats<repairQuote(it)?'disabled':''}>Repair · ${repairQuote(it)} sat${repairQuote(it)===1?'':'s'}</button>`;if(it.soc&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`}else{b=`<button class="big" data-do="equip" ${(it.charm?it.id&&G.lvl>=(it.req||0):canWear(it))?'':'disabled'}>${it.charm?'Put on the belt':'Equip'}</button>`;b+=selling()?`<button class="ghost" data-do="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-do="drop">Drop</button>`;b+=`<button class="ghost" data-do="junk">${it.junk?'Not junk':'Junk'}</button><button class="ghost" data-do="lock">${it.lock?'Unlock':'Lock'}</button>`;if(it.soc&&it.id&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`;if(it.charm)b+=`<button class="ghost" data-do="scrap">Scrap · ${charmParts(it)} parts</button>`;if(it.id&&!it.charm){b+=`<button class="ghost" data-do="scrap">Scrap · ${[1,2,4,8,15][it.q]||1} parts</button>`;if(it.aff.length)b+=`<button class="ghost" data-do="reroll" ${(G.parts||0)<rerollCost(it)?'disabled':''}>Reroll a modifier · ${rerollCost(it)} parts</button>`;if(canSoc(it))b+=`<button class="ghost" data-do="addsoc" ${(G.parts||0)<12?'disabled':''}>Cut a socket · 12 parts</button>`}if(G.merc&&!G.merc.dead&&it.id&&MSL.includes(it.slot))b+=`<button class="ghost" data-do="mgive">Give to ${esc(G.merc.name)}</button>`}pop=itemCard(it,b,!!sel.eq,!!sel.m)}
     const jn=G.bag.filter(i=>i.junk).length;
     if(!selling()&&jn)h+=`<button class="ghost" data-dropjunk="1">Drop ${jn} junk item${jn>1?'s':''}</button>`;
     if(selling()&&G.bag.length){const sum=q=>G.bag.filter(i=>i&&(q<0||i.q===q)).reduce((a,i)=>a+sellValue(i),0),cnt=q=>G.bag.filter(i=>i&&i.q===q).length;h+=`<h3>Sell in bulk</h3>`;
@@ -6336,7 +6502,7 @@ function drawSheet(){
       drops+=`<tr><td>${t.n}</td><td>${t.picks}</td><td>${p(t.no)}</td><td>${p(t.gold)}</td><td>${p(t.item)}</td><td>${p(t.stim)}</td><td class="q1">${o(c.m)}</td><td class="q2">${o(c.r)}</td><td class="q3">${o(c.s)}</td><td class="q4">${o(c.u)}</td></tr>`}
     drops+=`</table></div><h2>Charms</h2><p>A charm works only while it sits on your belt. In the pack or the lockbox it takes space and grants nothing, and it never stacks. A slip is 1 belt slot and 1 pack cell. A notice is 2 slots and 2 cells. A filing is 3 slots and 4 cells. A white belt keeps its stims and adds charm slots: a sash has 1, a tool belt 2, a power girdle 3, an orbit girdle 4. A magic belt can trade four stims for one slot, or one slot for four stims. Against another player, charm life above 20% of your other life does not count, and charm skills stop at +2.</p><p><strong style="color:#f7931a">Satoshis</strong> drop on their own roll: 3% from ordinary machines (1–2), 35% from champions (3–6), always from lieutenants (8–12), from executives other than Vale (21), and from Vale (42), and 30% from a lockbox you open in a district (2–5). Nonce in Stillwater sells rare, set and unique gear for them.</p><p>${Object.values(TC).filter(t=>t.note).map(t=>t.n+': '+t.note.toLowerCase()).join('. ')}. Items drop at the machine’s level or up to two above. Exit Interview drops only from Pryce.</p>`;
     fight+=`<h2>Damage types</h2><p>Every hit has a type. Your plain attacks are ${DTY[baseType()].n} right now (an infused weapon changes that); each skill names its own. Machines are built of different things, so some types tear through them and some do nothing. They hit you with types of their own: Surge drains your energy, Rust keeps eating for three seconds, Noise slows you, and explosions are Heat. Champions with the Arc or Volatile modifier deal Surge or Heat whatever they are. Your resistances are on the Hero tab. Hard cuts them by 20 and Brutal by 50, down to -100, and they still stop at 75.</p><div class="list">${DTK.map(k=>`<div class="li"><div><b style="color:${DTY[k].c}">${DTY[k].n}</b><span>${DTY[k].d}</span></div></div>`).join('')}</div><div class="tw"><table><tr><th>Machine</th><th>Deals</th><th style="text-align:left">What breaks it, and what does not</th></tr>${Object.keys(RES).map(k=>`<tr><td>${ET[k].n}</td><td style="color:${DTY[ETY[k]||'impact'].c}">${dealTxt(k)}</td><td style="text-align:left">${resTxt(k)}</td></tr>`).join('')}</table></div>`;
-    fight+=`<h2>Class weapons</h2><p>About four weapons in ten belong to a family made for one class. Anyone can swing them, but only their own class gets the bonus.</p><div class="list">${Object.keys(FAM).map(k=>`<div class="li${FAM[k].cls===G.cls?' on':''}"><div><b>${FAM[k].n}s · ${CLS[FAM[k].cls].n}</b><span>${FAM[k].bases.join(', ')}</span><span>+1 to all skills, ${FAM[k].perk}. ${FAM[k].dm>1?'Hits harder, swings slower.':FAM[k].sp>0?'Lighter hits, faster hands.':'Lighter hits.'}</span></div></div>`).join('')}</div>`;
+    fight+=`<h2>Class weapons</h2><p>About four weapons in ten belong to a family made for one class. Anyone can swing them, but only their own class gets the bonus. A maul and plate ask for Might. A razor and a launcher ask for Reflex. A Deck and an Instrument ask for Bandwidth. A notebook asks for a little Might. Magic and rare pieces inherit the base. Uniques and set pieces ask ten percent more. One stat adds damage on a blow: Might for a Scrapper and a Maximalist, Reflex for a Runner’s throw, Bandwidth for a Technomancer, a smaller Bandwidth for a Founder’s staff, and Vitality for a Witness’s Thread.</p><div class="list">${Object.keys(FAM).map(k=>`<div class="li${FAM[k].cls===G.cls?' on':''}"><div><b>${FAM[k].n}s · ${CLS[FAM[k].cls].n}</b><span>${FAM[k].bases.join(', ')}</span><span>+1 to all skills, ${FAM[k].perk}. ${FAM[k].dm>1?'Hits harder, swings slower.':FAM[k].sp>0?'Lighter hits, faster hands.':'Lighter hits.'}</span></div></div>`).join('')}</div>`;
     money+=`<h2>Money</h2><p>Unity creates credits without limit, so every price in credits climbs: ${G.cpi<100?'×'+G.cpi.toFixed(2):'×'+fmt(G.cpi).slice(1)} since you arrived. The Stipend has not moved. Satoshis cannot be created by anyone, so prices in sats stay roughly where they were. Credits are for spending today. What you want to still have tomorrow is a different question, and Nonce in Stillwater will exchange one for the other. Adoption stands at ${Math.floor(G.adopt)}%; at 100% prices stop rising altogether.</p>`;
     words+=`<h2>Seed words</h2><p>Torn notes, one word each. White and some blue weapons, helms and armor have sockets; a word set in a socket gives its bonus for good. Fill every socket with the right words in the right order and the item becomes a phrase. Find all twelve and speak to Nonce. The notes do not have to still be in your pack.</p><div class="tw"><table><tr><th>Word</th><th>Held</th><th>Bonus</th></tr>${WK.map(w=>`<tr><td style="color:${G.st.wf[w]?'#f7931a':'var(--dim)'}">${G.st.wf[w]?w:'· · ·'}</td><td>${G.words[w]||0}</td><td style="text-align:left">${G.st.wf[w]?AFK[WORDS[w][0]].t.replace('{v}',WORDS[w][1]):'not yet found'}</td></tr>`).join('')}</table></div>
       <div class="list">${PHRASES.map(p=>`<div class="li"><div><b style="color:#f7931a">${p.n} · ${SNAME[p.slot]} with ${p.w.length} sockets</b><span>${p.w.join(' → ')}</span><span>${Object.keys(p.mods).map(k=>AFK[k].t.replace('{v}',p.mods[k])).join(' · ')}</span></div></div>`).join('')}</div>`;
@@ -6367,10 +6533,10 @@ function drawSheet(){
     <h3>Sats · ${ACC.sats} in the box · ${G.sats} on you</h3><div class="row"><button class="ghost" data-acc="si10" ${satsFree()<10?'disabled':''}>Deposit 10</button><button class="ghost" data-acc="siall" ${satsFree()<1?'disabled':''}>Deposit all</button><button class="ghost" data-acc="so10" ${ACC.sats<10?'disabled':''}>Take 10</button><button class="ghost" data-acc="soall" ${ACC.sats<1?'disabled':''}>Take all</button></div>
     <h3>Credits · ${fmt(real)} in the box · ${fmt(G.credits)} on you</h3><div class="row"><button class="ghost" data-acc="cihalf" ${G.credits<1?'disabled':''}>Deposit half</button><button class="ghost" data-acc="ciall" ${G.credits<1?'disabled':''}>Deposit all</button><button class="ghost" data-acc="coall" ${real<1?'disabled':''}>Take all</button></div>
     <p style="font-size:13px">Sats are kept exactly as you leave them. Credits are held by what they could buy on the day, less Unity’s 10% custody fee, so a fortune from a late act is not a fortune to a hero just starting out.</p>${stashMoveHTML()}`}
-  if(tab==='shift'){h+=`<h2>Hack the simulation</h2><p>The rig can convince the world you were always someone else. Your level, gear and quests stay. Every skill and attribute point you spent comes back, two for each rank from 6 to 10, to be spent again: by you, or by the rig following a build you choose. It costs <strong style="color:#f7931a">${SHIFT_COST} sats</strong>; you hold ${G.sats}.</p>`;
+  if(tab==='shift'){h+=`<h2>Hack the simulation</h2><p>The rig can convince the world you were always someone else. Your level, gear and quests stay. Every skill and attribute point you spent comes back, two for each rank from 6 to 10, to be spent again: by you, or by the rig following a build you choose. It costs <strong style="color:#f7931a">${SHIFT_COST} sats</strong>; you hold ${G.sats}. Gear you no longer meet stays equipped and grants nothing until the new points cover it.</p>`;
     const stab=[];for(const k in CLS)stab.push([k,CLS[k].n.replace(/^The /,'')]);h+=menuBar('shift',stab,G.cls);
     for(const k in CLS){const c=CLS[k],cur=k===G.cls;h+=menuPane('shift',k,`<div class="li${cur?' on':''}"><div><b>${c.n}${cur?' · you now':''}</b><span>${c.tag}</span><div class="row" style="margin-top:8px"><button class="ghost" data-shiftp="${k}" ${G.sats<SHIFT_COST?'disabled':''}>Choose a build</button><button class="ghost" data-shift="${k}|0" ${G.sats<SHIFT_COST?'disabled':''}>I will assign</button></div></div></div>`)}
-    if(sel&&sel.shp){const k=sel.shp,sk=CLS[k].sk;pop=`<div class="card" style="text-align:left"><div class="nm q4">${CLS[k].n} builds</div><div class="ln off">Each is a full plan: skills that feed each other, the three on your buttons, passives, a doctrine and attributes. Pick one and the rig spends your points to fit. ${SHIFT_COST} sats.</div><div class="list">${BUILDS[k].map(b=>`<button class="li" data-shift="${k}|${b.k}"><div><b>${b.n}</b><span>${b.p}</span><span style="color:var(--gold)">${b.sl.map(i=>sk[i].n).join(' · ')}</span><span>Doctrine: ${DOCS[k].find(d=>d[0]===b.doc)[1]} · leans on ${['Might','Reflex','Vitality','Bandwidth'][b.at.indexOf(Math.max(...b.at))]}</span></div></button>`).join('')}<button class="li" data-shift="${k}|?"><div><b>Surprise me</b><span>One of the three, chosen for you.</span></div></button></div><div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`}
+    if(sel&&sel.shp){const k=sel.shp,sk=CLS[k].sk;pop=`<div class="card" style="text-align:left"><div class="nm q4">${CLS[k].n} builds</div><div class="ln off">Each is a full plan: skills that feed each other, the three on your buttons, passives, a doctrine and attributes. Pick one and the rig spends your points to fit. ${SHIFT_COST} sats.</div><div class="list">${BUILDS[k].map(b=>`<button class="li" data-shift="${k}|${b.k}"><div><b>${b.n}</b><span>${b.p}</span><span style="color:var(--gold)">${b.sl.map(i=>sk[i].n).join(' · ')}</span><span>Doctrine: ${DOCS[k].find(d=>d[0]===b.doc)[1]} · leans on ${['Might','Reflex','Vitality','Bandwidth'][b.at.indexOf(Math.max(...b.at))]}</span>${shiftQuietHTML(k,b.k)}</div></button>`).join('')}<button class="li" data-shift="${k}|?"><div><b>Surprise me</b><span>One of the three, chosen for you.</span></div></button></div><div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`}
     h+=`<p>Choosing your own class again is allowed: it is a full re-roll or respec for ${SHIFT_COST} sats.</p>`}
   if(tab==='merc'){h+=`<h2>Kestrel’s people</h2><p>One companion at a time. They level with you, fight beside you and can carry a weapon and armor you give them. You have <strong>${fmt(G.credits)}</strong>.</p>`;
     if(G.merc&&G.merc.dead)h+=`<button class="big" data-revive="1" ${G.credits<payTag(reviveCost())?'disabled':''}>Revive ${esc(G.merc.name)} · ${fmt(payTag(reviveCost()))}</button>`;
@@ -6851,7 +7017,7 @@ uiBoot();
 showDisc();
 cloudInit();
 function devOn(){try{if(window.__DEBUG)return true;var h=location.hostname;if(h==='localhost'||h==='127.0.0.1'||h==='::1')return true;if(location.protocol==='file:'||location.protocol==='about:')return true}catch(e){}return false}
-if(devOn())window.__g={migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},set satShop(v){satShop=v},get shop(){return shop},set shop(v){shop=v},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith,openVend,vendAsk,vendBid,vendBuy,vendSell,vendBuyback,vendBuyStim,vendIdentify,vendBox,vendTabOf,buyPrice,sellValue,satCost,satPrice,boxPrice,get VEND(){return VEND},get BUYBACK(){return BUYBACK},get shopVia(){return shopVia},setShopVia(v){shopVia=+v||0},vendFlipLock,vendSellPlan,vendSellCommit,vendSellOpen,sellFilters,vendQuest,lootPasses,lootAuto,lootMigrate,lootLayout,lootName,lootPickup,lootOpen,lootCompare,lootPrefs,lootSave,lootLoad,layCorpse,reclaimCorpse,buyCorpse,corpseFee,repairQuote,repairOne,repairAll,repairList,wearWeapon,wearArmor,wearSlot,itemBroken,stampDura,migrateDurability,placeCorpses,deathCreditPct,encW,loanerWeapon,calmNearCorpse,resetZones};
+if(devOn())window.__g={migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},set satShop(v){satShop=v},get shop(){return shop},set shop(v){shop=v},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith,openVend,vendAsk,vendBid,vendBuy,vendSell,vendBuyback,vendBuyStim,vendIdentify,vendBox,vendTabOf,buyPrice,sellValue,satCost,satPrice,boxPrice,get VEND(){return VEND},get BUYBACK(){return BUYBACK},get shopVia(){return shopVia},setShopVia(v){shopVia=+v||0},vendFlipLock,vendSellPlan,vendSellCommit,vendSellOpen,sellFilters,vendQuest,lootPasses,lootAuto,lootMigrate,lootLayout,lootName,lootPickup,lootOpen,lootCompare,lootPrefs,lootSave,lootLoad,layCorpse,reclaimCorpse,buyCorpse,corpseFee,repairQuote,repairOne,repairAll,repairList,wearWeapon,wearArmor,wearSlot,itemBroken,stampDura,migrateDurability,placeCorpses,deathCreditPct,encW,loanerWeapon,calmNearCorpse,resetZones,stampReq,canWear,blowPct,blowSpec,swingBlow,gearLive,gearQuiet,reqShortfall,cantEquipText,attrTip,driveStat,witImpact,pdmg,classWeapon,weaponRole};
 /* late additions that need the dialogue tables */
 QRW.push(
  ['q16','gramps','“I do not remember the nine years after I clicked.” You gain 1 skill point.',()=>G.sp++,'Gramps'],
@@ -7040,7 +7206,7 @@ function gearPerLevel(s){
   let U;try{U=UNIK}catch(e){return}
   if(!U||!G||!G.eq||!s)return;
   const lv=G.lvl||1;
-  for(const sl of SLOTS){const it=G.eq[sl];if(!it||!it.uid||!uOk(it))continue;const u=U[it.uid];if(!u||!u.per)continue;for(const k in u.per)s[k]=(s[k]||0)+u.per[k]*lv}}
+  for(const sl of SLOTS){const it=G.eq[sl];if(!it||!it.uid||!uOk(it))continue;if(typeof gearQuiet==='function'&&gearQuiet(it))continue;const u=U[it.uid];if(!u||!u.per)continue;for(const k in u.per)s[k]=(s[k]||0)+u.per[k]*lv}}
 function scrubItemBinds(){
   if(!itemSkillsReady||!G)return;
   ensureMouse();
