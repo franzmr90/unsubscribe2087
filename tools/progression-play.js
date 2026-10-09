@@ -535,7 +535,8 @@ async function install(page, cls, seed) {
           else fight(b, true);
         } else if (hereJob()) {
           const gp = jobPoint();
-          const threat = nearest(6.2, e => !(W.zi === 14 && e.su && ((G.qt && G.qt.motion) || 0) < 4));
+          const age = prog.zoneT0 != null ? G.time - prog.zoneT0 : 0;
+          const threat = nearest(age > 40 ? 2.2 : 6.2, e => !(W.zi === 14 && e.su && ((G.qt && G.qt.motion) || 0) < 4));
           if (threat) fight(threat.e, true);
           else if (gp) {
             if (hypot(gp, P) < 1.35) {
