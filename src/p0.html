@@ -228,6 +228,8 @@ th:first-child,td:first-child{text-align:left}
 th{font:700 10px var(--display);letter-spacing:.06em;color:var(--dim);text-transform:uppercase}
 .tw{overflow-x:auto;border:1px solid var(--edge);background:var(--stone);padding:4px 8px}
 .memo{background:var(--stone);border-left:3px solid var(--edge);padding:8px 12px}
+details.memo summary{cursor:pointer;list-style:none}
+details.memo summary::-webkit-details-marker{display:none}
 .memo b{font:700 13px var(--display);color:var(--gold);display:block;margin-bottom:3px}
 .memo.sdxnew{border-left-color:#59e0e6}.memo.sdxnew b{color:#59e0e6}
 .memo.sdxlock{opacity:.42}.memo.sdxlock b{color:var(--dim)}
@@ -435,6 +437,12 @@ html[data-ui="touch"] .stashToggle button,html[data-ui="touch"] .stashFoot butto
   .stashBody{flex-direction:column}
   .stashBody[data-side="box"] [data-spanel="pack"],.stashBody[data-side="pack"] [data-spanel="box"]{display:none}
 }
+.menuTabs{flex-wrap:wrap;position:sticky;top:0;z-index:3;background:rgba(11,9,16,.96);padding:2px 0 6px;margin:0}
+.menuTabs button{flex:1 1 30%}
+html[data-ui="touch"] .menuTabs button{min-height:44px}
+.menuPane.off{max-height:0!important;overflow:hidden!important;margin:0!important;padding:0!important;border:0!important;pointer-events:none}
+.menuFoot{margin-top:auto;position:sticky;bottom:0;z-index:2;background:rgba(11,9,16,.96);padding:6px 0}
+html[data-ui="touch"] .menuFoot button{min-height:44px}
 
 </style>
 
