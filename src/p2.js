@@ -341,10 +341,11 @@ function simTick(dt){const s=W.sim;if(s.rush)return rushTick(dt);if(W.ents.lengt
   });
   toast('Wave '+n+(n%5===0?' · a lieutenant joins':''));sfx('warn');$('zone').textContent='The Simulator · Wave '+n;
   if(n>1){heal(S.maxHp*.3);G.en=S.maxEn;addDrop({cr:(3+W.ml*2)*(2+n)*Math.pow(G.cpi,.9)},P.x,P.y);if((n-1)%5===0)dropFrom('chest',P.x,P.y,W.ml)}}
-/* the Humming Fields must always hold Marrow's cage until she is freed, including in districts saved before a fix */
-function ensureCage(){if(W.zi!==3||G.marrow||W.objs.some(o=>o.k==='cage'&&!o.used))return;const N=W.N,c=W.suAt||W.goal||W.start,cx=Math.round(c.x),cy=Math.round(c.y);
+/* the Humming Fields must hold Marrow's cage until that quest is done, even if a
+   previous difficulty already set the freed flag */
+function ensureCage(){if(W.zi!==3||(G.q.q3||0)>=2||W.objs.some(o=>o.k==='cage'&&!o.used))return;const N=W.N,c=W.suAt||W.goal||W.start,cx=Math.round(c.x),cy=Math.round(c.y);
   for(let r=2;r<12;r++)for(let y=cy-r;y<=cy+r;y++)for(let x=cx-r;x<=cx+r;x++){if(Math.max(Math.abs(x-cx),Math.abs(y-cy))!==r||x<2||y<2||x>N-3||y>N-3)continue;let ok=true;for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++)if(W.map[(y+j)*N+x+i]!==1)ok=false;if(ok){solid('cage',x,y);return}}}
-function goalPt(){if(W&&W.z.pre)return preGoal();if(!W||W.z.town||W.z.sim||W.hold)return null;const lg=W.objs.find(o=>o.k==='leg');if(lg)return lg;const qo=W.objs.find(o=>o.k==='qobj'&&!o.used);if(qo)return qo;const pg=W.objs.find(o=>o.k==='page'&&!o.used);if(pg&&(G.q.q8||0)<2)return pg;const su=W.ents.find(e=>e.su&&e.q&&G.q[e.q]<2);if(su)return su;const mn=W.objs.find(o=>o.k==='minute'&&!o.used);if(mn)return mn;const cg=W.objs.find(o=>o.k==='cage'&&!o.used);if(cg&&!G.marrow)return cg;return W.goal}
+function goalPt(){if(W&&W.z.pre)return preGoal();if(!W||W.z.town||W.z.sim||W.hold)return null;const lg=W.objs.find(o=>o.k==='leg');if(lg)return lg;const qo=W.objs.find(o=>o.k==='qobj'&&!o.used);if(qo)return qo;const pg=W.objs.find(o=>o.k==='page'&&!o.used);if(pg&&(G.q.q8||0)<2)return pg;const su=W.ents.find(e=>e.su&&e.q&&G.q[e.q]<2);if(su)return su;const mn=W.objs.find(o=>o.k==='minute'&&!o.used);if(mn)return mn;const cg=W.objs.find(o=>o.k==='cage'&&!o.used);if(cg&&(G.q.q3||0)<2)return cg;return W.goal}
 const lvlCap=()=>G.act5?100:G.act4?90:G.act3?75:G.act2?50:25;
 /* Act I stays written. Later districts use campaignLevel, then twelve per tier.
    Hard and Brutal lift that ladder. They do not rise to the character.

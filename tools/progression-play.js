@@ -752,6 +752,7 @@ async function install(page, cls, seed) {
       G.diffGate = Math.max(G.diffGate || 0, G.diff);
       for (const k in __g.QUESTS) G.q[k] = 0;
       G.q3open = 0; G.q8page = 0; G.q8down = 0; G.q12down = 0; G.qt = {};
+      G.marrow = false;
       G.unlocked = 0;
       G.portal = null;
       if (__g.resetZones) __g.resetZones();
