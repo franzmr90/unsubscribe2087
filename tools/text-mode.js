@@ -9,6 +9,7 @@ const cases = [
   ['F1 through F8, while that list is open.', null, 'mouse'],
   ['On a phone, the stick walks, and Attack swings.', null, 'touch'],
   ['Tap the stim to drink. Drag it, then let go.', null, 'touch'],
+  ['Drag away from the button. Further from the button puts the area further from you.', null, 'touch'],
   ['On a desk, left click walks. On a phone, the stick walks.', null, 'both'],
   ['Bread costs a million credits.', null, 'both'],
   ['Anything at all.', 'touch', 'touch'],

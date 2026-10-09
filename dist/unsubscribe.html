@@ -83,6 +83,15 @@ button:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
 #mPick .hint{font-size:12px;color:var(--dim);text-align:center;margin:6px 0 0}
 #bAct{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(232px + env(safe-area-inset-bottom,0px));background:linear-gradient(#e0bd6e,#9c7a34);color:#1a1200;font:700 13px var(--display);letter-spacing:.05em;padding:12px 18px;max-width:calc(100% - 32px);border:1px solid #000;box-shadow:0 0 0 2px var(--edge),0 4px 10px #000}
 #aimCancel{position:absolute;right:16px;bottom:calc(228px + env(safe-area-inset-bottom,0px));z-index:6;pointer-events:auto;min-width:108px;padding:12px 16px;border-radius:12px;border:1px solid #c9b6ff;background:rgba(12,10,18,.92);color:#e6e2d6;font:700 13px var(--display);letter-spacing:.06em}
+#aimStick{position:fixed;left:0;top:0;width:0;height:0;z-index:8;pointer-events:none}
+#aimStick i,#aimStick b{position:absolute;box-sizing:border-box}
+#aimStick .ring{border:1.5px dashed rgba(230,226,214,.5);border-radius:50%}
+#aimStick .dead{border:1.5px solid rgba(230,226,214,.45);border-radius:50%;background:rgba(230,226,214,.06)}
+#aimStick.cancel .dead{border-color:#ff8d82;background:rgba(255,90,70,.28)}
+#aimStick .line{height:2px;border-radius:1px;background:rgba(230,226,214,.8);transform-origin:0 50%}
+#aimStick .knob{width:16px;height:16px;border-radius:50%;background:#f3efe4;border:1px solid #1a1208;box-shadow:0 0 0 2px rgba(201,168,90,.45)}
+#aimStick .cap{display:none;transform:translate(-50%,-170%);font:700 12px var(--display);letter-spacing:.04em;color:#ffb0a8;white-space:nowrap;text-shadow:0 1px 2px #000}
+#aimStick.cancel .cap{display:block}
 
 #hud{z-index:1;isolation:isolate}
 #bSwap{position:absolute;left:auto;right:8px;top:auto;bottom:calc(222px + env(safe-area-inset-bottom,0px));width:132px;margin:0;background:rgba(8,26,12,.92);border:1px solid var(--q3);color:var(--q3);font:700 9.5px/1.25 var(--display);letter-spacing:.02em;padding:5px 7px;text-align:left;white-space:pre-line;box-shadow:0 0 8px rgba(63,224,106,.35);z-index:3}
@@ -378,6 +387,7 @@ html[data-ui="touch"] .cls{min-height:44px}
     <button id="bSwap" hidden></button>
     <button id="bAct" hidden></button>
     <button id="aimCancel" hidden type="button">Cancel</button>
+    <div id="aimStick" hidden><i class="ring"></i><i class="dead"></i><i class="line"></i><i class="knob"></i><b class="cap">Release to cancel</b></div>
     <div id="pad">
       <button id="bDodge" title="Shift">DODGE<br><span id="dgn">2</span></button>
       <button id="bPot" title="Q">STIM<br><span id="potn">3</span></button>
@@ -406,7 +416,7 @@ html[data-ui="touch"] .cls{min-height:44px}
       <button class="ghost" id="bTryGear">Test gear</button>
       <button class="ghost" id="bLoadCode">Load from a save code</button>
       <p data-ui-copy="mouse" style="font-size:13px;text-align:center">On a desk the mouse leads: left click walks and strikes, right click casts. The slots beside the orbs pick those skills. F1–F8 bind them. WASD still walks. Space swings. Q is the stim. E uses what you stand on. T is the portal. Tab is the map. I opens the pack. C opens the hero. H opens help.</p>
-      <p data-ui-copy="touch" style="font-size:13px;text-align:center">On a phone, the stick walks, and Attack, three skills, Stim and Dodge sit under the right thumb. Hold a ground skill and drag its area, then let go. Tap Menu for the pack, the hero, and help.</p>
+      <p data-ui-copy="touch" style="font-size:13px;text-align:center">On a phone, the stick walks, and Attack, three skills, Stim and Dodge sit under the right thumb. Hold a ground skill and drag it, then let go. Drag away from the button to push the area out from you. Tap Menu for the pack, the hero, and help.</p>
     </div>
   </div>
 
@@ -1893,7 +1903,10 @@ Object.assign(SKF,{
 /* Drag-to-aim. aim 'auto' drags on a finger and casts at once from a mouse or a key.
    'drag' always shows the reticle. 'quick' never does. A right click on a foe walks
    into range, then mouseFire aims that cast. It does not open the reticle, so the
-   held-button retry and the button drag are untouched. */
+   held-button retry and the button drag are untouched.
+   A finger measures from the skill button: the direction from the button is the
+   direction from the hero, and a longer drag pushes the area out to the skill's
+   reach. A mouse or a key still aims where the pointer sits. */
 let AIMING=null,lastPtr=null;
 const AIM={
   scrapper:{
@@ -1966,12 +1979,73 @@ function aimDefault(spec){
   const sgn=spec.back?-1:1;
   const dist=spec.reach?Math.min(spec.def!=null?spec.def:Math.min(3,spec.reach),spec.reach):0;
   return {x:P.x+dir.x*sgn*dist,y:P.y+dir.y*sgn*dist}}
-function aimShow(on){const b=document.getElementById('aimCancel');if(b)b.hidden=!on}
+/* Full cast range maps to a thumb travel that fits on the screen. The ring is
+   the same in every direction, and it shrinks when the button sits near an edge
+   so the far side of the skill is still reachable. */
+function aimStickMetrics(ox,oy){
+  const vw=window.innerWidth||800,vh=window.innerHeight||600,short=Math.min(vw,vh);
+  const want=Math.max(70,Math.min(150,short*.22));
+  const room=Math.max(0,Math.min(ox,oy,vw-ox,vh-oy)-10);
+  const reach=room>=32?Math.min(want,room):Math.min(want,Math.max(24,room));
+  let dead=Math.min(26,Math.max(14,reach*.3));
+  if(dead>reach*.45)dead=reach*.4;
+  return {reach:reach,dead:dead}}
+function aimScreenDir(sx,sy){
+  const z=ZM||1,A=(sx/z)/32,B=(sy/z)/16;
+  let wx=(A+B)/2,wy=(B-A)/2,d=Math.hypot(wx,wy)||1;
+  return {x:wx/d,y:wy/d}}
+function aimThumbWorld(ox,oy,cx,cy,spec){
+  const stick=aimStickMetrics(ox,oy);
+  const dx=cx-ox,dy=cy-oy,dist=Math.hypot(dx,dy);
+  if(!(dist>stick.dead))return {dead:1,t:0,x:P.x,y:P.y,stick:stick};
+  const dir=aimScreenDir(dx,dy);
+  const t=Math.min(1,(dist-stick.dead)/Math.max(1,stick.reach-stick.dead));
+  const cap=spec&&spec.reach>0?spec.reach:0;
+  return {dead:0,t:t,x:P.x+dir.x*t*cap,y:P.y+dir.y*t*cap,dir:dir,stick:stick}}
+function aimOrigin(slot,cx,cy){
+  let el=null;
+  if(slot!=null&&typeof sbtn!=='undefined'&&sbtn[slot])el=sbtn[slot];
+  if(!el&&slot!=null)el=document.querySelector('.sk[data-i="'+slot+'"]');
+  if(el){const r=el.getBoundingClientRect();if(r.width>8&&r.height>8)return {x:r.left+r.width/2,y:r.top+r.height/2}}
+  if(cx!=null&&cy!=null)return {x:cx,y:cy};
+  return {x:(window.innerWidth||800)/2,y:(window.innerHeight||600)/2}}
+function aimThumb(cx,cy){
+  if(!AIMING||!AIMING.thumb||!P)return null;
+  const spec=aimSpec(AIMING.i);if(!spec)return null;
+  AIMING.fx=cx;AIMING.fy=cy;
+  const w=aimThumbWorld(AIMING.ox,AIMING.oy,cx,cy,spec);
+  AIMING.reachPx=w.stick.reach;AIMING.deadPx=w.stick.dead;AIMING.dead=w.dead?1:0;
+  if(w.dead){
+    if(AIMING.armed){AIMING.x=P.x;AIMING.y=P.y}
+    else{const d=aimDefault(spec);AIMING.x=d.x;AIMING.y=d.y}
+  }else{AIMING.armed=1;const c=aimClamp(spec,w.x,w.y);AIMING.x=c.x;AIMING.y=c.y}
+  return {x:AIMING.x,y:AIMING.y}}
+function aimStickPaint(){
+  const el=document.getElementById('aimStick');if(!el)return;
+  if(!AIMING||!AIMING.thumb){el.hidden=true;return}
+  el.hidden=false;el.classList.toggle('cancel',!!AIMING.cancel);
+  const reach=AIMING.reachPx||70,dead=AIMING.deadPx||16,ox=AIMING.ox,oy=AIMING.oy;
+  const ring=el.querySelector('.ring'),hole=el.querySelector('.dead'),line=el.querySelector('.line'),knob=el.querySelector('.knob'),cap=el.querySelector('.cap');
+  ring.style.width=ring.style.height=(reach*2)+'px';ring.style.left=(ox-reach)+'px';ring.style.top=(oy-reach)+'px';
+  hole.style.width=hole.style.height=(dead*2)+'px';hole.style.left=(ox-dead)+'px';hole.style.top=(oy-dead)+'px';
+  if(cap){cap.style.left=ox+'px';cap.style.top=oy+'px'}
+  let dx=(AIMING.fx||ox)-ox,dy=(AIMING.fy||oy)-oy,dist=Math.hypot(dx,dy);
+  if(!(dist>dead)){line.hidden=true;knob.hidden=true;return}
+  const shown=Math.min(dist,reach),ang=Math.atan2(dy,dx);
+  line.hidden=false;knob.hidden=false;
+  line.style.left=ox+'px';line.style.top=(oy-1)+'px';line.style.width=shown+'px';line.style.transform='rotate('+ang+'rad)';
+  knob.style.left=(ox+Math.cos(ang)*shown-8)+'px';knob.style.top=(oy+Math.sin(ang)*shown-8)+'px'}
+function aimShow(on){const b=document.getElementById('aimCancel');if(b)b.hidden=!on;aimStickPaint()}
 function beginAim(i,slot,pt,cx,cy,fkey){
   const spec=aimSpec(i);if(!spec||!P||mode!=='play')return null;
   const d=aimDefault(spec);
-  AIMING={i:i,slot:slot,pt:pt||'',x:d.x,y:d.y,left:0,cancel:0,fkey:fkey||''};
-  if(cx!=null&&cy!=null){const w=worldAt(cx,cy),c=aimClamp(spec,w.x,w.y);AIMING.x=c.x;AIMING.y=c.y;AIMING.left=1}
+  const thumb=pt==='touch'||pt==='pen';
+  AIMING={i:i,slot:slot,pt:pt||'',x:d.x,y:d.y,left:0,cancel:0,fkey:fkey||'',thumb:thumb?1:0,armed:0,dead:0,ox:0,oy:0,fx:0,fy:0,reachPx:0,deadPx:0};
+  if(thumb){
+    const o=aimOrigin(slot,cx,cy),stick=aimStickMetrics(o.x,o.y);
+    AIMING.ox=o.x;AIMING.oy=o.y;AIMING.fx=cx!=null?cx:o.x;AIMING.fy=cy!=null?cy:o.y;AIMING.reachPx=stick.reach;AIMING.deadPx=stick.dead;
+    if(cx!=null&&cy!=null)aimThumb(cx,cy);
+  }else if(cx!=null&&cy!=null){const w=worldAt(cx,cy),c=aimClamp(spec,w.x,w.y);AIMING.x=c.x;AIMING.y=c.y;AIMING.left=1}
   aimShow(true);return {i:AIMING.i,x:AIMING.x,y:AIMING.y}}
 function aimSet(x,y){
   if(!AIMING||!P)return null;
@@ -1987,9 +2061,11 @@ function aimShouldCancel(cx,cy){
   return false}
 function aimTrack(cx,cy){
   if(!AIMING)return;
-  aimMove(cx,cy);
+  if(AIMING.thumb)aimThumb(cx,cy);else aimMove(cx,cy);
   if(AIMING.pt!=='key'&&AIMING.slot!=null&&typeof sbtn!=='undefined'){const b=sbtn[AIMING.slot];const el=document.elementFromPoint(cx,cy);if(!(b&&el&&b.contains(el)))AIMING.left=1}
-  AIMING.cancel=aimShouldCancel(cx,cy)?1:0}
+  const back=aimShouldCancel(cx,cy);
+  AIMING.cancel=AIMING.thumb?((back||(AIMING.dead&&AIMING.armed))?1:0):(back?1:0);
+  aimStickPaint()}
 function aimCancel(){AIMING=null;aimShow(false)}
 function aimRelease(cx,cy){
   if(!AIMING||!P)return false;
@@ -4730,13 +4806,13 @@ function noteInput(kind){if(kind!=='touch'&&kind!=='mouse')return;if(OPT&&OPT.ui
 function uiWatch(e){if(!e)return;if(e.type==='keydown'){if(e.repeat)return;const tag=e.target&&e.target.tagName;if(tag==='TEXTAREA'||tag==='INPUT')return;noteInput('mouse');return}const pt=e.pointerType||(e.touches?'touch':'');if(pt==='touch'||pt==='pen'){uiTouchAt=performance.now();noteInput('touch');return}if(pt==='mouse'){if(performance.now()-uiTouchAt<800)return;if(e.type==='pointermove'&&!e.movementX&&!e.movementY)return;noteInput('mouse')}}
 function uiPad(){try{const pads=navigator.getGamepads?navigator.getGamepads():null;if(!pads)return;for(const g of pads){if(g&&g.buttons&&[...g.buttons].some(b=>b&&b.pressed)){noteInput('mouse');return}}}catch(e){}}
 const CTRL={
-mouse:'On a desk the mouse leads. Left click walks, and left click on a machine walks you into range and uses the left skill, which starts as Attack. Right click casts the right skill at the pointer. Ground skills show that area when Options is set to Drag to aim. Auto drags on a touch screen and casts at once on a desk. A right click on a machine walks you into range. A right click on the ground stays where you point. Hold either button to keep at it. Shift and a click swings or casts without a step. The two slots beside the orbs open the skill list. The left list is Attack and the blows, throws and shots. F1 through F8, while that list is open and a skill is under the pointer, bind it. Those same keys in a fight put the binding on the right button. The wheel cycles those bindings. WASD and the arrows still walk. Space swings. Q is the stim. Shift dodges. E uses what you are standing on. T is the portal. Tab is the map. I or B opens the pack. C is the hero. H is this guide. Esc closes a list or a panel. Alt, held, names every item on the ground. There is no second weapon set, and no walk toggle: you run.',
-touch:'On a phone, the stick walks. Attack, three skills, a stim and Dodge sit under the right thumb. Tap a machine, or hold Attack, and you walk in and swing. Hold a ground skill and its area appears in front of you. Drag it, then let go. Drag it back onto the button, or onto Cancel, and it costs nothing. Tap Dodge to step out of an orange circle. Tap the stim to drink. Stand on a drop, a person, a door or a portal and tap the button that appears. Menu, at the bottom left, opens the pack, the hero, skills, and this guide.'
+mouse:'On a desk the mouse leads. Left click walks, and left click on a machine walks you into range and uses the left skill, which starts as Attack. Right click casts the right skill at the pointer. Ground skills show that area when Options is set to Drag to aim, and on a desk the area follows the pointer. Auto drags on a touch screen and casts at once on a desk. A right click on a machine walks you into range. A right click on the ground stays where you point. Hold either button to keep at it. Shift and a click swings or casts without a step. The two slots beside the orbs open the skill list. The left list is Attack and the blows, throws and shots. F1 through F8, while that list is open and a skill is under the pointer, bind it. Those same keys in a fight put the binding on the right button. The wheel cycles those bindings. WASD and the arrows still walk. Space swings. Q is the stim. Shift dodges. E uses what you are standing on. T is the portal. Tab is the map. I or B opens the pack. C is the hero. H is this guide. Esc closes a list or a panel. Alt, held, names every item on the ground. There is no second weapon set, and no walk toggle: you run.',
+touch:'On a phone, the stick walks. Attack, three skills, a stim and Dodge sit under the right thumb. Tap a machine, or hold Attack, and you walk in and swing. Hold a ground skill and the area sits in front of you. Drag it, then let go. Drag away from the button and the area moves that way from you: further from the button puts it further out, up to its reach, and back toward the button brings it in. A ring around the button shows that drag. Drag it back onto the button and let go, or onto Cancel, and it costs nothing. Tap Dodge to step out of an orange circle. Tap the stim to drink. Stand on a drop, a person, a door or a portal and tap the button that appears. Menu, at the bottom left, opens the pack, the hero, skills, and this guide.'
 };
 
 const WALK={
 basics:[
- {art:'wanderer',title:'Your hands',mouse:'On a desk, left click walks. Hold it and you keep following the pointer. Left click on a machine walks you in and uses the left skill, which starts as Attack. Right click casts the right skill where you point, and holding it casts again. Shift with a click does either one without a step. The two slots beside the life and energy orbs open the list. Hover a skill there and press F1 to F8 to bind it. Those keys, and the wheel, put a binding on the right slot. WASD and the arrows still walk. Space swings.',touch:'On a phone, the stick walks, and Attack, three skills, a stim and Dodge sit under the right thumb. Hold a ground skill and drag its area, then let go. Drag it back onto the button, or onto Cancel, and it costs nothing. Tap Dodge to step out of an orange circle. Tap the stim to drink.'},
+ {art:'wanderer',title:'Your hands',mouse:'On a desk, left click walks. Hold it and you keep following the pointer. Left click on a machine walks you in and uses the left skill, which starts as Attack. Right click casts the right skill where you point, and holding it casts again. Shift with a click does either one without a step. The two slots beside the life and energy orbs open the list. Hover a skill there and press F1 to F8 to bind it. Those keys, and the wheel, put a binding on the right slot. WASD and the arrows still walk. Space swings.',touch:'On a phone, the stick walks, and Attack, three skills, a stim and Dodge sit under the right thumb. Hold a ground skill and the area sits in front of you. Drag it, then let go. Drag away from the button and the area moves that way from you. Further from the button puts it further out, and back toward the button brings it in. Drag it back onto the button and let go, or onto Cancel, and it costs nothing. Tap Dodge to step out of an orange circle. Tap the stim to drink.'},
  {art:'feed',title:'The swing',mouse:'On a desk, hold the left button on a machine and you keep swinging. Space does that swing too. Shift dodges. The orange circles on the ground are the ones to leave. E uses what you are standing on. Left click walks you up to a person, a drop, a door or a portal and uses it. Alt, held, puts a name on everything on the ground.',touch:'Hold Attack and you keep swinging. Tap Dodge to spend a little energy and step out of a telegraph. The orange circles on the ground are the ones to leave. Stand on something and tap the button that appears.'},
  {art:'ticker',title:'What the screen is saying',mouse:'The left orb is life. The right is energy. A skill slot sits outside each one: left click and right click. Between them: the district, a bar for the next level, and your credits. Credits rot. I or B opens the pack, C opens the hero, and H opens this guide. Esc closes a panel. Tab is the map. T opens a portal home, and it will not open with a machine in your face.',touch:'The left orb is life. The right is energy. Between them: the district, a bar for the next level, and your credits. Credits rot. Menu is the bottom left. It opens the pack, the hero, and this guide.'},
  {art:'dawn',title:'A level',mouse:'When the bar fills you gain a level, and points. Hero spends attribute points: Might, Reflex, Vitality, Bandwidth. Skills spends skill points. C opens Hero, and Skills is on the menu too. Rows open as you level. A point you have not spent does nothing.',touch:'When the bar fills you gain a level, and points. Tap Menu, then Hero, to spend attribute points: Might, Reflex, Vitality, Bandwidth. Skills spends skill points, on that same menu. Rows open as you level. A point you have not spent does nothing.'},
@@ -5032,7 +5108,7 @@ function drawSheet(){
     h+=`<h2>Feats · ${Object.keys(G.ach).length}/${ACH.length}</h2><div class="list">${ACH.map(a=>`<div class="li${G.ach[a[0]]?' on':''}"><div><b>${G.ach[a[0]]?'✓ ':''}${a[1]}</b><span>${a[2]}</span></div></div>`).join('')}</div>`;
     h+=`<h2>Memos · ${G.memos.length}/${MEMOS.length}</h2>`;if(!G.memos.length)h+=`<p>Papers lie about the districts. Read them and they are kept here.</p>`;
     for(const i of G.memos)h+=`<div class="memo"><b>${esc(MEMOS[i][0])}</b><p>${esc(MEMOS[i][1])}</p></div>`}
-  if(tab==='opts'){h+=`<h2>Options</h2><button class="ghost" data-walk="1">Walkthrough</button><h3>Characters</h3><div class="list">${[0,1,2].slice(0,NSLOT).map(n=>{const i=n===SLOT?{lvl:G.lvl,cls:G.cls,act:heroAct(G),dead:heroDead(G)}:slotInfo(n);return i&&CLS[i.cls]?`<button class="li${n===SLOT?' on':''}" ${n===SLOT?'':`data-swslot="${n}"`}><i style="background:${CLS[i.cls].col}"></i><div><b>${i.dead?'Hardcore · fallen':'Level '+i.lvl+' '+CLS[i.cls].n}${n===SLOT?' · playing now':''}</b><span>Slot ${n+1} · Act ${actRoman(i.act)}${i.dead?' · begins again':n===SLOT?'':' · '+uiSay('click','tap')+' to switch'}</span></div></button>${n===SLOT?'':`<button class="ghost" data-delslot="${n}" style="margin:-4px 0 8px auto;display:block;font-size:10px;padding:5px 10px;min-height:0">Delete slot ${n+1}</button>`}`:`<button class="li" data-newslot="${n}"><div><b>Slot ${n+1} · empty</b><span>${uiSay('Click to create a new character here','Tap to create a new character here')}</span></div></button>`}).join('')}</div><p class="hint" style="font-size:13.5px">Your current character is saved before you switch. The town lockbox is shared between them.</p>`;h+=`<h3>Difficulty</h3><div class="row">${DIFFS.map((f,i)=>`<button class="${(G.diff||0)===i?'big':'ghost'}" data-diff="${i}" ${diffUnlocked(i)?'':'disabled'}>${f.n}</button>`).join('')}</div><p class="hint" id="diffHint" style="font-size:13.5px">Hard and Brutal machines have more life and hit harder, and pay more experience to match: every machine’s experience scales with how tough it is. ${diffUnlocked(1)?'':'Hard opens after you clear Act V on Normal. '}${diffUnlocked(2)?'':'Brutal opens after you clear Act V on Hard. '}A change applies to machines that spawn from now on.</p><button class="tog${G.hc?' on':''}" data-hc="1"><span>Hardcore: one life. If this hero dies, they are gone and a new wanderer starts from nothing. +25% experience and magic find.</span><i>${G.hc?'ON':'OFF'}</i></button>${pkRow()}<div class="list optg">`;for(const k in OPT_LBL)h+=`<button class="tog${OPT[k]?' on':''}" data-opt="${k}"><span>${OPT_LBL[k]}</span><i>${OPT[k]?'ON':'OFF'}</i></button>`;h+=`<button class="tog${OPT.fx==='thin'?'':' on'}" data-opt="fx"><span>Combat effects. Thin keeps your own telegraphs and marks, and drops particles, extra lights, and other players' casts.</span><i>${OPT.fx==='full'?'Full':OPT.fx==='thin'?'Thin':'Normal'}</i></button><button class="tog on" data-opt="aim"><span>Ground skills. Auto drags on a phone and casts at once on a desk. Drag to aim shows the area and casts when you let go. Quick cast never shows it. ${uiSay('A right click still casts at the pointer.','Letting go on the button casts where the area started.')}</span><i>${OPT.aim==='drag'?'Drag to aim':OPT.aim==='quick'?'Quick cast':'Auto'}</i></button><button class="tog on" data-opt="ui"><span>Layout. Auto follows the last touch, or a real mouse move or key. Touch keeps the stick and the buttons. Mouse &amp; keyboard keeps the hotbar.</span><i>${OPT.ui==='touch'?'Touch':OPT.ui==='mouse'?'Mouse & keyboard':'Auto'}</i></button>`;
+  if(tab==='opts'){h+=`<h2>Options</h2><button class="ghost" data-walk="1">Walkthrough</button><h3>Characters</h3><div class="list">${[0,1,2].slice(0,NSLOT).map(n=>{const i=n===SLOT?{lvl:G.lvl,cls:G.cls,act:heroAct(G),dead:heroDead(G)}:slotInfo(n);return i&&CLS[i.cls]?`<button class="li${n===SLOT?' on':''}" ${n===SLOT?'':`data-swslot="${n}"`}><i style="background:${CLS[i.cls].col}"></i><div><b>${i.dead?'Hardcore · fallen':'Level '+i.lvl+' '+CLS[i.cls].n}${n===SLOT?' · playing now':''}</b><span>Slot ${n+1} · Act ${actRoman(i.act)}${i.dead?' · begins again':n===SLOT?'':' · '+uiSay('click','tap')+' to switch'}</span></div></button>${n===SLOT?'':`<button class="ghost" data-delslot="${n}" style="margin:-4px 0 8px auto;display:block;font-size:10px;padding:5px 10px;min-height:0">Delete slot ${n+1}</button>`}`:`<button class="li" data-newslot="${n}"><div><b>Slot ${n+1} · empty</b><span>${uiSay('Click to create a new character here','Tap to create a new character here')}</span></div></button>`}).join('')}</div><p class="hint" style="font-size:13.5px">Your current character is saved before you switch. The town lockbox is shared between them.</p>`;h+=`<h3>Difficulty</h3><div class="row">${DIFFS.map((f,i)=>`<button class="${(G.diff||0)===i?'big':'ghost'}" data-diff="${i}" ${diffUnlocked(i)?'':'disabled'}>${f.n}</button>`).join('')}</div><p class="hint" id="diffHint" style="font-size:13.5px">Hard and Brutal machines have more life and hit harder, and pay more experience to match: every machine’s experience scales with how tough it is. ${diffUnlocked(1)?'':'Hard opens after you clear Act V on Normal. '}${diffUnlocked(2)?'':'Brutal opens after you clear Act V on Hard. '}A change applies to machines that spawn from now on.</p><button class="tog${G.hc?' on':''}" data-hc="1"><span>Hardcore: one life. If this hero dies, they are gone and a new wanderer starts from nothing. +25% experience and magic find.</span><i>${G.hc?'ON':'OFF'}</i></button>${pkRow()}<div class="list optg">`;for(const k in OPT_LBL)h+=`<button class="tog${OPT[k]?' on':''}" data-opt="${k}"><span>${OPT_LBL[k]}</span><i>${OPT[k]?'ON':'OFF'}</i></button>`;h+=`<button class="tog${OPT.fx==='thin'?'':' on'}" data-opt="fx"><span>Combat effects. Thin keeps your own telegraphs and marks, and drops particles, extra lights, and other players' casts.</span><i>${OPT.fx==='full'?'Full':OPT.fx==='thin'?'Thin':'Normal'}</i></button><button class="tog on" data-opt="aim"><span>Ground skills. Auto drags on a phone and casts at once on a desk. Drag to aim shows the area and casts when you let go. Quick cast never shows it. ${uiSay('On a desk the area follows the pointer. A right click still casts at the pointer.','Drag away from the button. Further from the button puts the area further from you, and back toward the button brings it in. Let go on the button after a drag, or on Cancel, and it costs nothing.')}</span><i>${OPT.aim==='drag'?'Drag to aim':OPT.aim==='quick'?'Quick cast':'Auto'}</i></button><button class="tog on" data-opt="ui"><span>Layout. Auto follows the last touch, or a real mouse move or key. Touch keeps the stick and the buttons. Mouse &amp; keyboard keeps the hotbar.</span><i>${OPT.ui==='touch'?'Touch':OPT.ui==='mouse'?'Mouse & keyboard':'Auto'}</i></button>`;
     h+=`</div><h3>Saving</h3><p>${CL?(clState==='err'?'The last save to your account failed and will be retried. A copy is kept in this browser.':'Saved to your account every ten seconds, on every zone change and when you close this menu. Closing the page mid-zone brings you back to the same spot.'):'Account saving is not available in this view. The game saves in this browser every few seconds.'}</p><div class="row"><button class="big" data-save="1">Save now</button><button class="ghost" data-code="1">Copy save code</button></div><textarea id="codeOut" hidden readonly></textarea><button class="ghost" data-title="1">Save and return to title</button>`;
     if(devOn())h+=`<h3>Testing tools</h3><div class="row"><button class="ghost" data-dev="lvl">+1 level</button><button class="ghost" data-dev="cr">+credits</button><button class="ghost" data-dev="loot">Loot pile</button></div><div class="row"><button class="ghost" data-dev="zones">Unlock zones</button><button class="ghost" data-dev="god">Untouchable ${G.god?'ON':'OFF'}</button><button class="ghost" data-dev="reset">Respawn machines</button></div>`}
   if(tab==='shop'){h+=`<h2>${shopVia?'Nonce · Brenda’s goods':'Brenda’s'}</h2><p>“Prices are up ${G.cpi<100?((G.cpi-1)*100).toFixed(0)+'%':'beyond counting'} since you arrived.” You carry <strong>${fmt(G.credits)}</strong>. Sell from the Items tab.</p>${shopVia?'<p>Thirty percent off her price.</p>':''}<div class="list">`;
@@ -5445,7 +5521,7 @@ uiBoot();
 showDisc();
 cloudInit();
 function devOn(){try{if(window.__DEBUG)return true;var h=location.hostname;if(h==='localhost'||h==='127.0.0.1'||h==='::1')return true;if(location.protocol==='file:'||location.protocol==='about:')return true}catch(e){}return false}
-if(devOn())window.__g={migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},get shop(){return shop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay};
+if(devOn())window.__g={migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},get shop(){return shop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay};
 /* late additions that need the dialogue tables */
 QRW.push(
  ['q16','gramps','“I do not remember the nine years after I clicked.” You gain 1 skill point.',()=>G.sp++,'Gramps'],
