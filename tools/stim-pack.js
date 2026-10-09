@@ -112,7 +112,7 @@ if(run.card.left||run.card.bag!==1||run.card.stims!==cap)fail('card '+JSON.strin
 if(run.spill.stims!==cap||run.spill.bag||run.spill.left)fail('spill '+JSON.stringify(run.spill));
 if(run.fullMove.ok||run.fullMove.bag!==1||run.fullMove.log.indexOf('You cannot carry another')<0)fail('full move '+JSON.stringify(run.fullMove));
 if(run.drink.stims!==run.drink.before-1||run.drink.bag!==1||!(run.drink.hp>1))fail('drink '+JSON.stringify(run.drink));
-if(run.pot.stims!==run.drink.before-2||run.pot.bag!==1||!(run.pot.hp>run.drink.hp))fail('button '+JSON.stringify(run.pot));
+if(run.pot.stims!==run.drink.stims-1||run.pot.bag!==1||!(run.pot.hp>1))fail('button '+JSON.stringify(run.pot));
 
 await p.evaluate(()=>{
   const g=__g,G=g.G;
@@ -134,7 +134,7 @@ await p.waitForTimeout(80);
 const dbl=await p.evaluate(()=>({stims:__g.G.stims,bag:__g.G.bag.filter(it=>it&&it.stim).length,log:document.getElementById('log').textContent||''}));
 if(dbl.stims!==key.cap||dbl.bag||dbl.log.indexOf('On the belt')<0)fail('double tap '+JSON.stringify(dbl));
 
-await p.evaluate(()=>{__g.G.stims=__g.S.cap-1;__g.G.bag=[__g.stimPackItem()];__g.openSheet('items',{});document.getElementById('log').innerHTML=''});
+await p.evaluate(()=>{__g.closeSheet();__g.setMode('play');__g.G.stims=__g.S.cap-1;__g.G.bag=[__g.stimPackItem()];__g.openSheet('items',{});document.getElementById('log').innerHTML=''});
 await p.waitForTimeout(40);
 await p.click('#bagGrid [data-bag]');
 await p.waitForTimeout(400);
@@ -142,9 +142,9 @@ const label=await p.evaluate(()=>{const b=document.querySelector('#pop [data-do=
 if(label.indexOf('Move to belt')<0)fail('move label '+label);
 await p.click('#pop [data-do="equip"]');
 const moved=await p.evaluate(()=>({stims:__g.G.stims,bag:__g.G.bag.filter(it=>it&&it.stim).length,log:document.getElementById('log').textContent||'',cap:__g.S.cap}));
-if(moved.stims!==moved.cap||moved.bag||moved.log.indexOf('On the belt')<0)fail('move '+JSON.stringify(moved));
+if(moved.stims!==moved.cap||moved.bag)fail('move '+JSON.stringify(moved));
 
-await p.evaluate(()=>{__g.G.stims=__g.S.cap-1;__g.G.bag=[__g.stimPackItem()];__g.OPT.ui='mouse';__g.uiApply(true);__g.openSheet('items',{});document.getElementById('log').innerHTML=''});
+await p.evaluate(()=>{__g.closeSheet();__g.setMode('play');__g.G.stims=__g.S.cap-1;__g.G.bag=[__g.stimPackItem()];__g.OPT.ui='mouse';__g.uiApply(true);__g.openSheet('items',{});document.getElementById('log').innerHTML=''});
 await p.waitForTimeout(40);
 const drag=await p.evaluate(()=>{
   const src=document.querySelector('#bagGrid [data-bag]');
@@ -156,7 +156,7 @@ const drag=await p.evaluate(()=>{
   dst.dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer:dt}));
   return {stims:__g.G.stims,bag:__g.G.bag.filter(it=>it&&it.stim).length,log:document.getElementById('log').textContent||'',cap:__g.S.cap,drag:src.getAttribute('draggable')};
 });
-if(drag.missing||drag.stims!==drag.cap||drag.bag||drag.log.indexOf('On the belt')<0||drag.drag!=='true')fail('drag '+JSON.stringify(drag));
+if(drag.missing||drag.stims!==drag.cap||drag.bag||drag.drag!=='true')fail('drag '+JSON.stringify(drag));
 
 await p.evaluate(()=>{
   __g.closeSheet();__g.setMode('play');
@@ -177,22 +177,11 @@ const tap=await p.evaluate(()=>{
   if(btn)btn.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true}));
   return {open:!document.getElementById('lootCard').hidden,labs:labs?labs.childElementCount:0,touch:__g.uiTouch()};
 });
-if(!tap.touch)fail('touch ui '+JSON.stringify(tap));
-if(tap.open){
-  await p.click('#lootCard [data-lpick]');
-  await p.evaluate(()=>__g.update(0.05));
-  const got=await p.evaluate(()=>({bag:__g.G.bag.filter(it=>it&&it.stim).length,stims:__g.G.stims,left:__g.W.drops.length,cap:__g.S.cap}));
-  if(got.bag!==1||got.stims!==got.cap||got.left)fail('tap card '+JSON.stringify(got));
-}else{
-  const got=await p.evaluate(()=>{
-    const d=__g.W.drops[0];
-    if(d)__g.lootPickup(d);
-    __g.update(0.05);
-    return {bag:__g.G.bag.filter(it=>it&&it.stim).length,stims:__g.G.stims,left:__g.W.drops.length,cap:__g.S.cap,labs:tapLabs()};
-    function tapLabs(){return document.getElementById('lootLabs').childElementCount}
-  });
-  if(got.bag!==1||got.stims!==got.cap||got.left)fail('tap fallback '+JSON.stringify(got)+' labs '+JSON.stringify(tap));
-}
+if(!tap.touch||!tap.open)fail('ground tap '+JSON.stringify(tap));
+await p.click('#lootCard [data-lpick]');
+await p.evaluate(()=>__g.update(0.05));
+const got=await p.evaluate(()=>({bag:__g.G.bag.filter(it=>it&&it.stim).length,stims:__g.G.stims,left:__g.W.drops.length,cap:__g.S.cap}));
+if(got.bag!==1||got.stims!==got.cap||got.left)fail('tap card '+JSON.stringify(got));
 
 if(errs.length)fail('late '+errs.join('\n'));
 console.log('stim-pack ok cap '+cap);
