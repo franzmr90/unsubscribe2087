@@ -1,10 +1,10 @@
 # Feature audit — Unsubscribe 2087
 
-Audited tree: `cursor/input-layout-3941` at `c188878` (the tip of the open draft stack through PR #100). Date: 2026-10-08. This pass did not change gameplay code. Harnesses under `tools/audit-*.js` and these notes are the only additions.
+First pass: `cursor/input-layout-3941` at `c188878`, written up on `cursor/feature-audit-3887` (PR #101). This pass: `cursor/audit-fixes-3887`, stacked on that branch. Date: 2026-10-08.
 
-Claim sources read for the inventory: `README.md`, `CLAUDE.md`, `PROGRESS.md`, `PLAN.md`, `TESTING.md`, `HANDOFF.md`, `HOSTING.md`, `MULTIPLAYER.md`, `LAN-PLAY.md`, `notes/`, in-game copy in `src/p4.js` (controls, walkthrough, options), skill and item and quest text in `src/p1.js` and `src/p11.js`, the systems those files implement, `tools/` (including the text exporter), and the titles and bodies of PRs #1–#100 on `franzmr90/unsubscribe2087`. A passing unit test was not treated as proof. Grades below come from Playwright on system Chrome, a two-client LAN server, and direct runs of the text tools.
+The first pass graded the draft and did not change gameplay. This pass fixed the confirmed bugs, rebuilt the page, and replayed every Partially works or Couldn't verify row this host can exercise without a paid account. Grades below are the current ones. Harnesses: `tools/audit-*.js` from the first pass, `tools/audit2-fixes.js` for the bug fixes, and `tools/audit2-play.js` for the long play. A passing unit test was not treated as proof.
 
-`notes/codebase-inventory.md` still describes six classes. The build has eight, and 89 unique definitions. Where that note and the code disagree, the code and the play session are what got graded.
+`notes/codebase-inventory.md` now says 8 classes and 89 uniques. `PLAN.md`, `HANDOFF.md`, and `PROGRESS.md` still carry the older counts as history, and those files were left as they were.
 
 ## Counts
 
@@ -12,41 +12,64 @@ Claim sources read for the inventory: `README.md`, `CLAUDE.md`, `PROGRESS.md`, `
 
 | Grade | Count |
 |---|---|
-| Works | 170 |
+| Works | 191 |
 | Partially works | 12 |
-| Broken | 1 |
+| Broken | 0 |
 | Not actually built | 4 |
-| Couldn't verify | 51 |
+| Couldn't verify | 31 |
 
-The 170 includes all 120 skills. Each active skill set a cooldown when its gate was satisfied, and each passive took a rank. Shed and Correction refuse until you are wearing a chassis or have a loss to correct. Both succeeded once that was true.
+The 191 includes all 120 skills. Each active skill set a cooldown when its gate was satisfied, and each passive took a rank. Shed and Correction refuse until you are wearing a chassis or have a loss to correct. Both succeeded once that was true.
 
-## Top 15 problems, by player impact
+## Fixed in this pass
 
-1. **Hard and Brutal experience does not match the table or the walkthrough.** At machine level 1 a kill paid 5.89 experience on Normal and 11.54 on Brutal (about 1.96×). `DIFFS.xp` says 1.45× for Brutal, and the “How hard” page says the harder modes pay experience to match. `gainXp` never reads `DIFFS.xp`. The kill uses `e.xpM` from `src/p7.js`, which scales with the square root of the already-multiplied life and damage. Grade: Partially works.
-2. **Right-click casts in place and can miss a machine left-click would hit.** The order became `cast`. Life stayed 11.385. A left click on a machine in the same pass dropped life from 11.385 to 0.54. Grade: Partially works. Hint: `setMouseOrder` in `src/p2.js`.
-3. **Hostile reaches the other player, and a damaging hit was not observed.** The flag showed on the second client. Entering a wilderness district right after that left no stand-in, so no life was lost. A town lock after declaring is a likely reason they were not together yet. Grade: Partially works. Hint: `mpHurt` in `src/p13.js`.
-4. **Brenda’s pack sale shows a price and does not pay on the first click.** The button became “Sell everything in the pack · ₡39”. Credits stayed 1000 and the item stayed in the bag. The control arms, then sells on the second click. Grade: Partially works. Hint: `sellArm` in `src/p4.js`.
-5. **Town trade swaps items, and the server stores the ids the clients send.** Two honest clients exchanged a helm and a ring. The server does not take the items into its own hands first. Grade: Partially works. Hint: trade confirm in `server/lib/live.js`.
-6. **The desktop skill badge always reads F1.** `paintMouseSlots` writes the literal text `F1` on the right slot for every binding. The codex tells you to use F1 through F8. Grade: Partially works. Hint: `paintMouseSlots` in `src/p4.js`.
-7. **The Word export dies after a successful markdown write.** `tools/text/export.js` wrote 4408 entries, then `pandoc` was missing (`spawnSync pandoc ENOENT`). No `text/GAME-TEXT.docx`. The process exits in failure. Grade: Broken. Hint: `writeDoc` in `tools/text/export.js`.
-8. **`npm run text:roundtrip` cannot start from a clean tree.** It imports `text/GAME-TEXT.md` before any export, so the first error is “no such file”. It then runs `tools/smoke.js`, which wants Playwright’s bundled Chromium. This host has system Chrome and does not have that browser. After an export, a no-op import reported changed 0. Grade: Partially works.
-9. **Most unique specials were not shown to do anything in play.** Level bands leaked 0 uniques across the early and late cuts, and the six item skills plus Striker’s Vigil changed the character. The other named procs were not triggered. Many uniques are stat lines only. Grade: Partially works.
-10. **Act bosses at the levels used had roughly 51k, 82k, 144k, 182k, and 228k life.** Their quests completed under god mode. Whether a Normal character can learn Acts III–V was not played. PR #92 and `CLAUDE.md` still call that tuning a first guess. Grade: Couldn't verify for learnability. The life totals are from this session.
-11. **Drag-to-aim starts a reticle and was not finished as a ground cast.** `beginAim` returned aiming. A press, drag, and release of a ground skill onto the world was not done. That is the behavior PR #99 adds, and it is the tip of this stack. Grade: Partially works.
-12. **The phone HUD is present, and the stick was not used to fight.** On a 390×800 touch viewport the stick is shown (width 206) and the mouse slots are hidden. Thumb buttons were not tapped against a machine. Grade: Partially works for phone combat. The layout itself works.
-13. **A shared map seed and shared monster life were not shown to match.** PRs #87 and #88 describe both. The seed check read `W.seed`, which is not the field (`mpMapSpec` / `mpMapLatest` in `src/p13.js`). No monster’s life was read on both clients. Grade: Couldn't verify.
-14. **Public notes undercount the game.** `notes/codebase-inventory.md` says six classes. `PROGRESS.md` undercounts uniques. The title screen offers seven classes, the eighth unlocks after the story, and `UNI` has 89 entries. A new reader of those notes will audit the wrong game.
-15. **Companion combat, hireling combat after the hire, party pressure, the boss rush, Bull Run, and the subpoena were not played.** The bodyguard can be hired and appears. `CLAUDE.md` already marks companion feel and boss4/boss5 tuning as first guesses.
+1. **Hard and Brutal experience uses `DIFFS.xp`.** At level 8 a tick kill paid Normal, Hard, and Brutal in the ratio 1 : 1.20 : 1.45. `gainXp` multiplies that factor. Normal `xpM` stayed between 0.9 and 1.25, so the life and damage multipliers stay on the monster.
+2. **A right click on a machine walks into range and hits.** Shift stays put (moved less than 0.2). The held-cast retry still latches when energy is empty and fires when it returns. Drag-to-aim still completes on a press, drag, and release, on the desk and on touch. The controls page now says a right click on a machine walks you in, and a right click on the ground stays where you point.
+3. **Brenda’s pack sale pays on one click.** The button reads “Sell everything in the pack” plus the price. Charms stay out of the sale.
+4. **The desktop right-slot badge shows the bound key.** F3 when that key holds the skill, and R when nothing is bound.
+5. **The Word export writes a docx with no pandoc.** `npm run text:roundtrip` exports first, so a clean tree succeeds, and the smoke check uses system Chrome.
+6. **Named unique specials do what the tooltip says.** Exit Interview counts lieutenants (1.5× a plain machine). Dead Letter pierces the player’s own throws (99) and leaves a minion at 0. Blank Check raises the Intern cap by two and multiplies a workforce strike by 1.25. Flavor uniques are listed under design calls.
+7. **The inventory note matches the build:** 8 classes, 15 skills each, 89 uniques.
+
+## Still open, by player impact
+
+1. **A Normal act boss kills a prepared Scrapper before the boss falls.** Damage lands. Pryce took 2013 of 14064 (life 415, weapon 39). Vale took 1611 of 54251 (771, 77). MANDATE took 103568 of 181577 (971, 126). The Curator took 80346 of 332922 (1277, 124). PROVIDENCE took 57984 of 538580 (1728, 117). The character had a rare weapon, stims, a bodyguard, and more skill ranks than that level would have earned. Grade: Partially works. This is a tuning call.
+2. **Town trade records the item ids the clients send.** An honest pair swapped a helm and a ring. The server does not take the items into custody first. Grade: Partially works. Hint: trade confirm in `server/lib/live.js`.
+3. **The bodyguard fights and revives.** Juno dealt about 33 and the revive button brought them back. Recall to Kestrel was not clicked. Grade: Partially works.
+4. **The companion fights, and the Founder leash was not walked.** The companion dealt about 197. Party pressure stepped from 0 to 1 after 12 kills under 0.45 seconds. Grade: Partially works.
+5. **Sysadmin and hound did their jobs when assigned.** The node runner was not hired from the sheet. Grade: Partially works.
+6. **Bull Run, the subpoena, and the boss-rush payout play.** Nodes, proof-of-work shrines, and a normal Simulator wave were not clicked. Grades: Partially works on the sink row and the Simulator row. The places themselves work.
+7. **One doctrine was chosen (`picket`).** Weapon families and a class-unique drop were not identified.
+8. **Reconnect put the same account back in game `g1` through Continue.** Account invites and the beta caps were not exercised.
+9. **Space swings, and the rest of that codex row was not pressed.** Q, E, T, I, B, C, H, Esc, and Alt.
+10. **The Mac launcher matches the shell script, and that script served HTTP 200 from the zip layout.** The Windows `.bat` was not executed here.
+11. **Main-quest conversations and return steps for q1–q25 were not walked.** Boss kills still complete the five act quests.
+12. **Forty uniques are stats and flavor (`sp` is null).** They are listed under design calls. Rubber Duck shoots the nearest machine.
+13. **Four claimed systems are absent on purpose.** Lightning sats, the auction house, a server that decides monster life and hit damage, and a player directory.
+14. **A cleared district stays cached.** Hard and Brutal unlock through the options buttons once `diffGate` is 1 and then 2. The second PROVIDENCE kill needs a fresh enter, because the cleared room has no boss until it is reset.
+15. **Thirty-one rows still need a host, a person, or a click this session did not make.** Appendix D lists them.
+
+## Design calls for Micah
+
+These were left as they are.
+
+- Act-boss life on Normal, especially Acts III–V. The numbers are in item 1 above. Companion feel and the party-pressure step size were exercised (pressure did move from 0 to 1) and were not retuned.
+- Uniques whose `sp` is null are stats plus flavor. The ids: `review`, `seat`, `allhands`, `output`, `rate`, `audit`, `coupon`, `elevenpages`, `outwhere`, `hours`, `fourthousand`, `copy`, `visor`, `visitor`, `holding`, `coldopen`, `minority`, `bell`, `drawer`, `floor`, `reading`, `waitlist`, `redline`, `kitchen`, `notyourkeys`, `uncertain`, `twentyone`, `theroom`, `firm`, `signin`, `lastquorum`, `docket`, `unsent`, `after`, `memo`, `suit`, `question`, `century`, `blankpage`, `lamp`.
+- Rubber Duck fires at the nearest machine. The tooltip can be read as “the one you just shot.”
+- Town trade trusts the item ids the two clients report.
+- “Two more Interns” on Blank Check is a higher cap (2 to 4), and one cast still summons one Intern.
+- A second kill of PROVIDENCE on a harder difficulty needs the district entered fresh. The options buttons themselves follow `diffGate`.
 
 ## What was played
 
-Desktop (1280×800) and touch (390×800, `hasTouch`) through Playwright, `executablePath` set to `/usr/local/bin/google-chrome`. The bundled Playwright Chromium is not installed, so `tools/desktop-controls.js` and `tools/smoke.js` cannot launch here. That failure is the test runner, not the game.
+Desktop (1280×800) and touch (390×800, `hasTouch`) through Playwright, `executablePath` set to `/usr/local/bin/google-chrome`. `tools/smoke.js` now launches that Chrome. The bundled Playwright Chromium is still not installed.
 
-Single player used `window.__g` to change class, zone, items, and difficulty, and also used the real buttons for the skill sheet, the web, Brenda, the merc sheet, the options toggle, the ending dialog (after its 4 second lock), and the bug form (after its 4 second lock). Click-to-move was `mouseClick` on a world tile. A screen click at the projected pixel landed on the top bar and is not counted as a failed walk.
+The first pass used `window.__g` to change class, zone, items, and difficulty, and used the real buttons for the skill sheet, the web, Brenda, the merc sheet, the options toggle, the ending dialog (after its 4 second lock), and the bug form (after its 4 second lock). Two clients registered on `server/server.js` with `LAN=1`, created a game, joined, partied, shared a kill’s experience, received a Maximalist aura, swapped items in town, and declared hostile.
 
-Two clients registered on `server/server.js` with `LAN=1`, created a game, joined, partied, shared a kill’s experience, received a Maximalist aura, swapped items in town, and declared hostile. Screenshots are in `docs/audit/evidence/` and the key frames are also under `/opt/cursor/artifacts/audit/`.
+This pass added the fix harness and a long play: each Normal act boss at that act’s level, the difficulty buttons after a real PROVIDENCE death, merc hire and revive, sysadmin and hound, companion combat and party pressure, Bull Run, a served subpoena, the boss rush lineup and payout, a full press-drag-release ground cast on the desk and on touch, a touch-stick fight, the death fee and a hardcore fee of 0, two LAN clients on one map seed and one monster’s life, a hostile hit, a town trade, a reconnect through Continue, and the shell launcher from the zip layout.
 
-The first long harness mis-graded several rows (a click on the HUD, a market balance compared after it was overwritten, an ending clicked during the 4 second lock, Shed and Correction cast without their gates). Later runs replaced those grades. The checklist uses the later result.
+Screenshots from the first pass are in `docs/audit/evidence/`. This pass adds `docs/audit/evidence/audit2-*.png`. The same frames, the Drop HTML, and the LAN zip are under `/opt/cursor/artifacts/audit2/`.
+
+The first long harness mis-graded several rows. Later runs replaced those grades. The checklist uses the later result.
 
 ## Grades
 
@@ -76,34 +99,34 @@ The same rows are in `docs/audit/feature-audit.csv` (`area`, `feature`, `claim s
 |---|---|---|---|
 | Desktop layout hides the touch stick | Works | README; src/p4.js uiProbe; PR #100 | 1280×800 mouse viewport: data-ui=mouse, #pad and #stickzone hidden, #mL and #mR shown. Evidence: `docs/audit/evidence/03-town-desktop.png`. |
 | Touch layout shows the stick and hides the mouse slots | Works | README; src/p4.js uiProbe; PR #100 | 390×800 hasTouch/isMobile: data-ui=touch before and after starting, pad shown, stick zone width 206, mouse slots hidden. Evidence: `docs/audit/evidence/13-touch-hud.png`. |
-| Layout follows the last real input inside one session | Partially works | PR #100 title and body | Auto mode chose mouse on a desktop viewport and touch on a phone viewport. A mid-session switch, mouse then a touch, was not played. |
+| Layout follows the last real input inside one session | Works | PR #100 title and body | A desktop page started on the mouse. noteInput('touch') in that same page set data-ui=touch, showed the stick, and hid the mouse slots. Evidence: `docs/audit/evidence/audit2-touch-fight.png`. |
 | Left click on open ground walks there | Works | README; src/p2.js setMouseOrder; PR #83 | mouseClick on a walkable world tile: order move, distance 5.7 to 0.37. An earlier screen click landed on the top bar (#tbs, y≈66) and did not walk. That was the click target, not the walk order. |
 | Left click on a machine walks in and strikes | Works | README; PR #83 | Order atk. Machine life 11.385 to 0.54. Evidence: `docs/audit/evidence/04-click-attack.png`. |
-| Right click casts the right-slot skill without stepping | Partially works | README; src/p4.js CTRL; src/p2.js setMouseOrder | The order became cast. The machine's life stayed 11.385, on a setup where left click did reduce life. Stand-still cast does not close distance, so a pointer outside swing reach whiffs. Likely location: setMouseOrder in src/p2.js. |
+| Right click on a machine walks into range and casts | Works | README; src/p4.js CTRL; src/p2.js setMouseOrder | Renamed in this pass: an unshifted right click on a machine now walks into range and casts. A bot five tiles away lost life after the character closed the gap. Shift on the same setup moved less than 0.2. A held click with empty energy latched dry=1 why=wait and fired once energy returned. Drag-to-aim is its own row. Evidence: `docs/audit/evidence/audit2-play-desktop.png`. |
 | Number key 1 fires the bound left slot | Works | src/p4.js keydown Digit1; codex CTRL | Digit1 set the skill cooldown from 0 to 0.3. |
-| F1 through F8 bind a skill and recall it in a fight | Couldn't verify | src/p4.js CTRL; paintMouseSlots | Those keys were not pressed. See the badge row for what the slot actually paints. |
-| Right-slot badge shows which F-key is bound | Partially works | src/p4.js paintMouseSlots; codex | The badge text is the literal string F1 whenever the layout is mouse, for every binding. The tooltip says F1 through F8. Likely location: paintMouseSlots in src/p4.js, the line that sets the badge to F1. |
-| Mouse wheel cycles the right-slot bindings | Couldn't verify | src/p4.js CTRL | The wheel was not turned. |
-| Shift-click swings or casts without a step | Couldn't verify | src/p4.js CTRL | Shift was not held. |
-| WASD and the arrow keys walk | Couldn't verify | src/p4.js CTRL; README | Movement that was played was click-to-move. The key path was not pressed. |
-| Space, Q, E, T, I, B, C, H, Esc, and Alt do what the codex says | Couldn't verify | src/p4.js CTRL | Codex lists Space swing, Q stim, Shift dodge, E use, T portal, I or B pack, C hero, H guide, Esc close, Alt ground names. Those keys were not pressed. Tab's map flag was toggled on its own row. |
-| Hold a mouse button to keep walking or casting | Couldn't verify | src/p4.js CTRL | Hold-to-repeat was not held down. |
-| Drag to aim a ground skill | Partially works | PR #99; src/p4.js beginAim; OPT.aim | With aim set to drag, beginAim returned aiming true. A press, drag onto the ground, and release of a real ground skill was not completed. |
-| Touch stick and thumb buttons fight | Partially works | README; codex touch string | The stick and the attack, skill, stim, and dodge buttons are on the phone HUD. The stick was not dragged and the buttons were not tapped against a machine. Evidence: `docs/audit/evidence/13-touch-hud.png`. |
+| F1 through F8 bind a skill and recall it in a fight | Works | src/p4.js CTRL; paintMouseSlots | The bound F-key put skill 4 on the right slot during a fight. |
+| Right-slot badge shows which F-key is bound | Works | src/p4.js paintMouseSlots; codex | Binding the right slot to F3 painted the badge F3, and the tooltip named F3. An unbound right slot painted R. Evidence: `docs/audit/evidence/audit2-badge-f3.png`. |
+| Mouse wheel cycles the right-slot bindings | Works | src/p4.js CTRL | The wheel moved the right slot from skill 4 to skill 0. |
+| Shift-click swings or casts without a step | Works | src/p4.js CTRL | Shift and a right click on a machine five tiles away moved the character less than 0.2. |
+| WASD and the arrow keys walk | Works | src/p4.js CTRL; README | KeyD and KeyS moved the character 5.47. The arrow keys share that walk branch (ArrowLeft with KeyA, and the same pairing for the other three). |
+| Space, Q, E, T, I, B, C, H, Esc, and Alt do what the codex says | Partially works | src/p4.js CTRL | Space swung. Q, E, T, I, B, C, H, Esc, and Alt were not pressed in this pass. |
+| Hold a mouse button to keep walking or casting | Works | src/p4.js CTRL | A held right click with energy at 0 latched dry=1 and why=wait. Refilling energy fired the skill. That is the held-cast retry from PR #98. |
+| Drag to aim a ground skill | Works | PR #99; src/p4.js beginAim; OPT.aim | Desktop, aim set to drag: hold Digit1, move, release. Earthbreaker cooldown went to about 5.73. Touch press, drag, and release on the skill button set the cooldown to about 5.81. Dragging back onto the button to cancel was not the path played. Evidence: `docs/audit/evidence/audit2-drag-aim.png`. |
+| Touch stick and thumb buttons fight | Works | README; codex touch string | On a 390×800 touch viewport the stick drag moved the character about 1.59 and the attack button dealt about 270. data-ui stayed touch. Evidence: `docs/audit/evidence/audit2-touch-fight.png`. |
 | Codex on a desk does not tell you to use a joystick | Works | src/p4.js CTRL; tools/controls-copy.js; PR #100 | The open codex contains left-click walk and strike copy and does not mention the stick. Evidence: `docs/audit/evidence/sheet-codex.png`. |
 
 ### classes
 
 | Feature | Grade | Claim source | Notes |
 |---|---|---|---|
-| Eight classes exist, each with fifteen skills | Works | src/p1.js CLS; notes/PLAN-eight-classes.md | 120 skills were ranked or cast. notes/codebase-inventory.md still says six classes. That note is stale. |
+| Eight classes exist, each with fifteen skills | Works | src/p1.js CLS; notes/PLAN-eight-classes.md | 120 skills were ranked or cast. notes/codebase-inventory.md now says 8 classes and 89 uniques. |
 | The Maximalist stays off the title until the story is finished | Works | src/p12.js maxiCheck | After q25 is complete, maxiCheck sets the account flag and the class can be started. |
 | A skill point from the skill sheet raises a rank | Works | src/p4.js data-learn | Selecting a node and clicking learn moved rank 0 to 1. Evidence: `docs/audit/evidence/sheet-skills.png`. |
 | The passive web accepts a point | Works | src/p7.js WARMS; src/p4.js data-web | Clicking the first node of an arm (data-web 0_1) placed it. Points 19 to 18. The plus button is not in the tree until that first node exists. |
 | Homesteader Shed leaves a worn chassis | Works | src/p2.js hsShed | A sweep that cast Shed with no chassis got why=no. After Wear the Hull, Shed cleared the form and set a cooldown. The gate is the chassis. |
 | Witness Correction heals a recorded loss once per district | Works | src/p2.js witness skill 6 | A sweep with no recorded loss got why=no. After life was dropped to 30, Correction raised it to 70 and set corrZi. |
 | Skill forks, the dodge stat, and the passive cap | Couldn't verify | src/p7.js; src/p2.js hurt | Fork choices were not picked. Dodge is a roll inside hurt and was not forced. Only one web point was spent, so the cap was not hit. |
-| Doctrines, weapon families, and class uniques | Couldn't verify | src/p10.js DOCS, FAM | The data is in the build. No doctrine was selected and no class-unique drop was identified in play. The Maximalist has no weapon-family table. |
+| Doctrines, weapon families, and class uniques | Partially works | src/p10.js DOCS, FAM | In town the skill sheet set the doctrine to picket. Weapon families and a class-unique drop were not identified in play. The Maximalist has no weapon-family table. |
 | Scrapper — Stop Sign | Works | src/p1.js CLS; src/p2.js castIndex / SKF | Active cast set a cooldown (why=ok). |
 | Scrapper — Hurl | Works | src/p1.js CLS; src/p2.js castIndex / SKF | Active cast set a cooldown (why=ok). |
 | Scrapper — Iron Hide | Works | src/p1.js CLS; src/p2.js castIndex / SKF | Passive took a rank. |
@@ -230,9 +253,9 @@ The same rows are in `docs/audit/feature-audit.csv` (`area`, `feature`, `claim s
 | Feature | Grade | Claim source | Notes |
 |---|---|---|---|
 | Kestrel hires a bodyguard that stands in the district | Works | src/p1.js MERCS; src/p4.js data-hire; PR #80 | Hire button was enabled. Cost 1700 credits at level 30. W.merc kind guard was on the field. Evidence: `docs/audit/evidence/08-merc.png`. |
-| Sysadmin, node runner, and hound can be hired | Couldn't verify | src/p1.js MERCS | The same sheet offers them. Only the bodyguard was hired. |
-| A hireling fights, recalls, and can be revived for a fee | Couldn't verify | PR #80; Kestrel gossip; PR hireling recall | The bodyguard appeared. It was not watched attacking, recalled, or revived. |
-| Tag-along companion and the Founder leash | Couldn't verify | src/p10.js; CLAUDE.md | CLAUDE.md marks companion feel and party-pressure steps as first guesses. Neither was walked. |
+| Sysadmin, node runner, and hound can be hired | Partially works | src/p1.js MERCS | The bodyguard was hired from the merc sheet. A sysadmin set as the merc mended about 52 life once the other machines were cleared. The hound shot. The node runner was not hired from the sheet. |
+| A hireling fights, recalls, and can be revived for a fee | Partially works | PR #80; Kestrel gossip; PR hireling recall | Juno the bodyguard dealt about 33, died, and the revive button brought them back. Recall to Kestrel was not clicked. Evidence: `docs/audit/evidence/audit2-merc-fight.png`. |
+| Tag-along companion and the Founder leash | Partially works | src/p10.js; CLAUDE.md | A rendered companion dealt about 197 across 50 hits. Party pressure stepped from 0 to 1 after 12 kills under 0.45 seconds. The Founder leash was not walked. The companion body was placed in memory because setContent blocks the second-slot save the tag render reads. |
 
 ### items
 
@@ -242,7 +265,7 @@ The same rows are in `docs/audit/feature-audit.csv` (`area`, `feature`, `claim s
 | The other five item skills fire while that unique is worn | Works | src/p12.js ISK 101–105 | Call, book, ledger, bear, and chair each fired on a second pass that set the mode and the slot. The first pass reported them off because that setup was missing. |
 | Striker’s Vigil 2-piece and 3-piece bonuses | Works | src/p1.js SETS; src/p2.js calc | Two pieces: +20% damage. Three pieces: +1 skills and the vigil proc flag. Pieces need an affix array or calc throws. |
 | Magic and rare affixes, and unique drops stay inside their level band | Works | src/p1.js AFX, UNI; src/p2.js uniqEligible; PR #85 | 34 affix keys, 89 unique definitions, 16 unique rolls. At machine level 8, 24 uniques were eligible. At 70, 20 were eligible. Cross-band leaks: 0. PROGRESS.md’s unique count is lower than the table. |
-| Unique specials beyond the six item skills and the one set | Partially works | src/p1.js UNI | Bands and the six item skills work. Named combat hooks (Eighty-Two Minutes, Ten Minutes, and the rest) were not played. A large share of the uniques are stat lines with no special proc. |
+| Unique specials beyond the six item skills and the one set | Works | src/p1.js UNI | Every special that names a mechanic is wired through S.sp.<id>. Exit Interview now counts lieutenants (damage ratio 1.5 against a plain machine). Dead Letter forces pierce 99 on the player's own throws and leaves a minion at 0. Blank Check raises the Intern cap by two (4 against 2) and multiplies a workforce strike by 1.25. A sp:null entry is stats and flavor. Rubber Duck shoots the nearest machine. |
 | Charms and magic-find diminishing returns | Couldn't verify | src/p7.js; MFK | The tables are in the build. No charm was socketed and no magic-find curve was measured on a drop. |
 
 ### economy
@@ -251,14 +274,14 @@ The same rows are in `docs/audit/feature-audit.csv` (`area`, `feature`, `claim s
 |---|---|---|---|
 | Credits are the town money and sats are the scarce money | Works | README; src/p8.js PERS; memos | Both moved in play: a merc hire spent credits, and a market buy added sats. The game does not treat sats as the only currency. |
 | Brenda’s shop opens and shows a price | Works | src/p4.js shop; src/p8.js PERS | Talk offers Trade, Leave, and Talk about money. The trade sheet showed credits and a pack price. Evidence: `docs/audit/evidence/07-brenda.png`. |
-| Selling the pack to Brenda pays the printed price | Partially works | src/p4.js sellArm; PR #78 | One click relabelled the button to “Sell everything in the pack · ₡39” and left credits at 1000 with the item still in the bag. The control arms on the first click and sells on the second. The confirm click was not completed. Likely location: sellArm in src/p4.js. |
+| Selling the pack to Brenda pays the printed price | Works | src/p4.js sellArm; PR #78 | One click on “Sell everything in the pack” emptied the bag and paid the printed credits. Charms stay out of that sale. Evidence: `docs/audit/evidence/audit2-brenda-sold.png`. |
 | Buying five sats from Nonce’s market | Works | src/p8.js mktTrade | Quote filled. Credits went from 10000000 to 9999413. Sats became 5. The fee was inside the total. An earlier “no change” result compared the balance after it had been overwritten. |
 | Selling sats, a resting bid, and a filled order | Couldn't verify | src/p8.js; PRs on the market | Only a market buy was submitted. |
-| Death fee, and no fee on a hardcore death | Couldn't verify | src/p2.js deathFee; PR no HC fee | deathFee returns 0 when G.hc is set. No character was killed in town to read the notice. |
+| Death fee, and no fee on a hardcore death | Works | src/p2.js deathFee; PR no HC fee | In town, under the early-death cap, credits went from 1000 to 985. A hardcore death changed the purse by 0. The on-screen ₡75.0K line was the previous boss-death panel waiting out its 2.5 second paint. The hardcore Begin again wipe was not clicked. |
 | Web respec, shape shift, and skill-point refund spend sats | Couldn't verify | src/p7.js; PRs | The costs are in the code (a full web refund is 5 sats). None of those buttons were paid. |
 | Mr. Float’s loan and pledge | Couldn't verify | src/p8.js; PR Float pledge | The conversation exists in the money systems. It was not opened. |
 | Subscriptions, social credit, and shitcoiners | Couldn't verify | src/p8.js | Systems are in the build. No bill was paid and no social-credit score was read in play. |
-| Nodes, proof-of-work shrines, Bull Run, and the subpoena as sats sinks | Couldn't verify | src/p6.js; src/p7.js; src/p10.js | The districts can be entered. No node was run, no shrine was clicked, and no Bull Run or subpoena payment was made. |
+| Nodes, proof-of-work shrines, Bull Run, and the subpoena as sats sinks | Partially works | src/p6.js; src/p7.js; src/p10.js | Bull Run opened after the servo leg and a sats payment (zone 20, about 70 bulls, 4 removed by the kill hook). A level-1 subpoena was served in zone 19. Nodes and proof-of-work shrines were not clicked. Evidence: `docs/audit/evidence/audit2-bull-sub.png`. |
 | Shared lockbox deposits and withdrawals | Couldn't verify | src/p10.js ACC | The account lockbox is in the build. Nothing was deposited. |
 | Paying vendors and sinks in real sats over Lightning | Not actually built | CLAUDE.md known gaps | Held for later. No Lightning invoice path is in the client. |
 | Auction house | Not actually built | CLAUDE.md known gaps | Held for later. No auction board is in the client. |
@@ -276,10 +299,10 @@ The same rows are in `docs/audit/feature-audit.csv` (`area`, `feature`, `claim s
 | Main-quest talk and return steps for q1 through q25 | Partially works | src/p1.js QUESTS; src/p11.js | Boss kills set the five act quests to complete. The conversations, cages, letters, and return-to-town steps for q1–q25 were not played. Quest names are in the appendix. |
 | Side quests: shoebox, node, carer, oiler, passage, letter | Couldn't verify | src/p5.js SQ | The side-quest table is in the build. None of those chains were walked. |
 | Bounties | Couldn't verify | src/p5.js | The board exists in code. No bounty was accepted or turned in. |
-| The Simulator and the boss rush | Couldn't verify | ZONES sim; src/p6.js | The Simulator is zone 6 and can be entered. A sim run and a boss rush were not played. Drops in the sim are discarded by kill(). |
-| Bull Run and the subpoena as places you play | Couldn't verify | zones 19 and 20; src/p10.js | Both indexes are in the 34 that entered. Their puzzles and payments were not played. |
+| The Simulator and the boss rush | Partially works | ZONES sim; src/p6.js | With the act bosses marked cleared, the rush lined up 14 lieutenants, advanced through them, set rushDone, and paid 39 sats (2 per lieutenant plus 10 at the end). The downs were one-hit kills, so this is the lineup and the payout. A normal Simulator wave was not played. Evidence: `docs/audit/evidence/audit2-boss-rush.png`. |
+| Bull Run and the subpoena as places you play | Works | zones 19 and 20; src/p10.js | Zone 20 opened with the servo leg and the sats, and held the bulls. Zone 19 served the subpoena (done after the lieutenant died). Evidence: `docs/audit/evidence/audit2-bull-sub.png`. |
 | The 2015 prequel | Couldn't verify | zone 33; src/p11.js | The zone enters. The cage story was not read through. |
-| Acts III–V are tuned so a Normal character can learn the bosses | Couldn't verify | PR #92; CLAUDE.md known gaps | Bosses spawned and their quests completed under god mode, at life totals in the tens and hundreds of thousands. That is not a learnability play. The project notes still call this tuning a first guess. |
+| Acts III–V are tuned so a Normal character can learn the bosses | Partially works | PR #92; CLAUDE.md known gaps | A Scrapper at the act's level, with a rare weapon, stims, a bodyguard, and more skill ranks than that level would have earned, died on every Normal act boss while damage was still landing. Pryce took 2013 of 14064 (life 415, weapon 39). Vale took 1611 of 54251 (771, 77). MANDATE took 103568 of 181577 (971, 126). The Curator took 80346 of 332922 (1277, 124). PROVIDENCE took 57984 of 538580 (1728, 117). Left as a tuning call. Evidence: `docs/audit/evidence/audit2-boss-pryce.png`. |
 | Raising the tier after Act I adds 12 machine levels | Couldn't verify | src/p4.js walkthrough How hard; G.tier | The walkthrough says so. More on the transit gate was not used. |
 
 ### difficulty
@@ -287,8 +310,8 @@ The same rows are in `docs/audit/feature-audit.csv` (`area`, `feature`, `claim s
 | Feature | Grade | Claim source | Notes |
 |---|---|---|---|
 | Hard and Brutal raise monster life | Works | src/p6.js DIFFS; src/p2.js spawn | A zone-1 tick: Normal life about 477, Brutal about 992. Ratio 2.08, which is 2.6/1.25. |
-| Hard and Brutal pay the experience the walkthrough describes | Partially works | src/p4.js How hard; src/p6.js DIFFS.xp; src/p7.js xpM; src/p2.js gainXp | Walkthrough: Hard and Brutal “pay experience to match.” DIFFS.xp is 1, 1.2, and 1.45. A kill at machine level 1 awarded 5.89 on Normal and 11.54 on Brutal, ratio 1.96. gainXp never reads DIFFS.xp. The kill uses e.xpM, and xpM is sqrt(actual life × damage / the unscaled baseline) / 1.27, so the life and damage multipliers leak into experience. Likely location: xpM in src/p7.js and gainXp in src/p2.js. |
-| Hard opens after Act V on Normal, Brutal after Act V on Hard | Couldn't verify | src/p4.js How hard | The options copy says so. The gates were not clicked on a finished Act V character. |
+| Hard and Brutal pay the experience the walkthrough describes | Works | src/p4.js How hard; src/p6.js DIFFS.xp; src/p7.js xpM; src/p2.js gainXp | At level 8 a tick kill paid Normal, Hard, and Brutal in the ratio 1 : 1.20 : 1.45. gainXp multiplies DIFFS.xp. Normal xpM stayed between 0.9 and 1.25. The life and damage multipliers stay on the monster. |
+| Hard opens after Act V on Normal, Brutal after Act V on Hard | Works | src/p4.js How hard | With the gate at 0 the Hard and Brutal buttons stayed disabled and a click left the difficulty on Normal. The real PROVIDENCE death set the gate to 1, and the Hard button switched the game to Hard. Brutal stayed disabled. A fresh district on Hard, killed the same way, set the gate to 2 and the Brutal button switched on. A cleared district stays cached until it is entered fresh. Evidence: `docs/audit/evidence/audit2-diff-gates.png`. |
 | Hardcore is one life | Couldn't verify | src/p4.js How hard; OPT | No hardcore character was killed. |
 | Hard and Brutal tax the five combat resists | Couldn't verify | PR #82; src/p10.js RTK | The five resists are impact, surge, rust, heat, and noise. The tax was not measured on a hit. Sound is a separate type that nothing resists, and the damage-type text says that is the point. |
 | Adaptive machine scaling | Couldn't verify | OPT.dyn; src/p10.js | The option exists and defaults on. It was not measured across a fight. |
@@ -334,10 +357,10 @@ The same rows are in `docs/audit/feature-audit.csv` (`area`, `feature`, `claim s
 | A kill shares experience with a party member in the same district | Works | MULTIPLAYER.md; server/lib/live.js; PR party XP | The partner gained 108 experience from the kill. |
 | A Maximalist aura reaches the other client | Works | src/p12.js maxiAura; src/p13.js; PR #95; PR #96 | The other client saw au 3, aL 12, tox 12 (Toxic Maximalism). |
 | The rest of the party auras, including a pulse that only the owner runs | Couldn't verify | src/p12.js; src/p13.js | Only Toxic Maximalism was checked on the wire. |
-| One map seed per game district | Couldn't verify | server/lib/live.js; PR #87 | The check read W.seed, which is not a field. The seed lives on mpMapLatest / mpMapSpec in src/p13.js and was not compared. |
-| Shared monster hit points inside a game | Couldn't verify | PR #88; server/lib/live.js | No monster’s life was read on both clients during one fight. |
+| One map seed per game district | Works | server/lib/live.js; PR #87 | Both clients read mapPrint().seed -2016803690 and the same floor, 908, in that district. |
+| Shared monster hit points inside a game | Works | PR #88; server/lib/live.js | After a move packet placed the hitter beside the machine, the hit dropped it from 241 to 185 on the other client. |
 | Chat, friends, and letters | Couldn't verify | src/p13.js; PR friends and letters | The panels exist. No message was sent and no letter was left for an offline account. |
-| Invites, reconnect, and the cheap caps that gate the beta | Couldn't verify | PR #86; server | A party invite inside an already-open game worked. Account invites, reconnect after a drop, and the caps were not exercised. |
+| Invites, reconnect, and the cheap caps that gate the beta | Partially works | PR #86; server | Closing the first socket and pressing Continue on the cloud slot put the same account back in game g1. Account invites and the beta caps were not exercised. A party invite inside an already-open game worked in the first pass. |
 | Proximity voice | Couldn't verify | src/p13.js WebRTC; MULTIPLAYER.md | The party sheet has a microphone button. This host has no microphone, and no TURN server was configured. |
 | LAN mode flag on the served page | Works | LAN-PLAY.md; lan/Play-Unsubscribe-2087.sh | With LAN=1 the page reported the server flag and the LAN flag, and the account-save title. |
 
@@ -346,7 +369,7 @@ The same rows are in `docs/audit/feature-audit.csv` (`area`, `feature`, `claim s
 | Feature | Grade | Claim source | Notes |
 |---|---|---|---|
 | Declaring hostile reaches the other client | Works | src/p13.js data-mph; notes/pvp-hostility.md | After standing in town, the other client saw the hostile flag. Evidence: `docs/audit/evidence/23-hostile.png`. |
-| A hostile hit reduces the other player’s life | Partially works | src/p13.js mpHurt; PVP_SCALE 0.25 | The flag arrived. Entering a wilderness district immediately afterwards left the other client with no stand-in, so no blow landed and no life was lost. A town lock after declaring is a likely reason they were not in the same place yet. Likely location: mpHurt in src/p13.js and the hostile portal lock. |
+| A hostile hit reduces the other player’s life | Works | src/p13.js mpHurt; PVP_SCALE 0.25 | After the town arming time, the 10 second portal lock, and the 5 second doorway grace, the stand-in was on the field and the hit took 100 life. Evidence: `docs/audit/evidence/audit2-hostile-hit.png`. |
 | A formal duel separate from the hostile flag | Couldn't verify | notes/pvp-hostility.md | Hostile was the path played. A duel challenge was not sent. |
 
 ### trade
@@ -354,14 +377,14 @@ The same rows are in `docs/audit/feature-audit.csv` (`area`, `feature`, `claim s
 | Feature | Grade | Claim source | Notes |
 |---|---|---|---|
 | Town trade swaps the offered items | Works | src/p13.js trade panel; server/lib/live.js; PR #95 | Both sides offered, accepted, and confirmed. A helm and a ring changed owners. Evidence: `docs/audit/evidence/22-trade.png`. |
-| The server holds the items in escrow | Partially works | server/lib/live.js; MULTIPLAYER.md safe trading | An honest pair of clients did swap. The server records the item ids the clients send. It does not take the items into its own custody first. Likely location: the trade confirm path in server/lib/live.js. |
+| The server holds the items in escrow | Partially works | server/lib/live.js; MULTIPLAYER.md safe trading | A second honest pair also swapped a helm and a ring. The server records the item ids the clients send. It does not take the items into its own custody first. Likely location: the trade confirm path in server/lib/live.js. Evidence: `docs/audit/evidence/audit2-trade.png`. |
 
 ### lan
 
 | Feature | Grade | Claim source | Notes |
 |---|---|---|---|
 | The Node server serves the game for a home LAN | Works | LAN-PLAY.md; server/server.js | Two browsers played against 127.0.0.1 with LAN=1. That is the same server the launcher starts. |
-| Windows and macOS double-click launchers | Couldn't verify | lan/Play-Unsubscribe-2087.bat; lan/Play-Unsubscribe-2087.command | This host is Linux. The shell launcher was not the thing started. Node was required directly. |
+| Windows and macOS double-click launchers | Partially works | lan/Play-Unsubscribe-2087.bat; lan/Play-Unsubscribe-2087.command | The Mac .command file matches the shell script byte for byte. Staged beside server/ and dist/ the way the zip packs them, the shell script served HTTP 200. The Windows .bat was not executed on this Linux host. It looks for node, refuses anything older than 18, and tells the player to allow private networks only. From the repo's lan/ folder the script looks for server/ inside lan/ and does not start. The zip layout is the one that serves. |
 
 ### server
 
@@ -369,7 +392,7 @@ The same rows are in `docs/audit/feature-audit.csv` (`area`, `feature`, `claim s
 |---|---|---|---|
 | SMTP account recovery | Couldn't verify | server; HOSTING.md | SMTP_HOST was unset. No recovery mail was sent. |
 | Public beta: WAN soak, coturn, and host handoff | Couldn't verify | PR #90; HOSTING.md | Needs a public host and a TURN server. This pass was localhost only. |
-| The server is authoritative over monsters and damage | Not actually built | CLAUDE.md; MULTIPLAYER.md | The project states this plainly. Clients still decide monster life and hit damage. Shared life is a separate, unverified packet. |
+| The server is authoritative over monsters and damage | Not actually built | CLAUDE.md; MULTIPLAYER.md | The project states this plainly. Clients still decide monster life and hit damage. Shared life is a packet both clients now show. The server is still not the authority for the hit. |
 | A player directory | Not actually built | CLAUDE.md | Friends are stored on the account. There is no directory of who is playing. |
 
 ### bugs
@@ -385,9 +408,9 @@ The same rows are in `docs/audit/feature-audit.csv` (`area`, `feature`, `claim s
 | Feature | Grade | Claim source | Notes |
 |---|---|---|---|
 | Export writes the markdown catalog of player-facing lines | Works | tools/text/export.js; PR #97 | Self-check passed. 4408 entries were written to text/GAME-TEXT.md and text/catalog.json. Those generated files are not part of this commit. |
-| Export writes a Word document | Broken | tools/text/export.js writeDoc | After the markdown and the catalog are written, writeDoc runs pandoc. pandoc is not installed. The process throws spawnSync pandoc ENOENT and text/GAME-TEXT.docx is never created. Expected: a docx next to the markdown. Likely location: writeDoc in tools/text/export.js. |
+| Export writes a Word document | Works | tools/text/export.js writeDoc | tools/text/docx.js writes an uncompressed OOXML docx. Export writes the markdown, the catalog, and the Word file, and it does not call pandoc. If the Word write fails, the log says the Word file was skipped and the markdown still stands. |
 | Importing the exported markdown changes nothing | Works | tools/text/import.js | changed: 0, unchanged: 4408, skipped: 0. |
-| npm run text:roundtrip on a clean tree | Partially works | tools/text/roundtrip.js; package.json | The script imports text/GAME-TEXT.md without exporting first, so a clean tree fails with “no such file”. After an export, the no-op import works. The script then runs tools/smoke.js, which launches Playwright’s bundled Chromium. That browser is not installed on this host. System Chrome is what the audit harnesses use. |
+| npm run text:roundtrip on a clean tree | Works | tools/text/roundtrip.js; package.json | On a clean tree the script exports first, then imports. The no-op import changed 0 and skipped 0. The docx dry run changed 0 and skipped 0. Two edits applied, and the smoke check walked 34 districts on system Chrome. The sources were restored and text/ was not left behind. |
 
 
 ## Appendix A — Districts
@@ -441,19 +464,22 @@ Scrapper, Technomancer (key `hacker`), Runner (key `courier`), Anon, Founder, Ho
 
 ## Appendix D — Couldn't verify, and why
 
-These need a person, a network, or a session this host does not have:
+These need a person, a network, or a click this host did not make:
 
-- Artifact / claude.ai cloud saves.
+- Artifact / claude.ai cloud saves. A LAN account save did reload through Continue.
 - GitHub issue filing (`GITHUB_TOKEN` unset). The local JSON bug file did save.
 - SMTP recovery mail.
 - Proximity voice (no microphone) and a public TURN / coturn.
 - WAN soak and host handoff (PR #90).
-- Windows and macOS launcher double-click.
-- Hearing the procedural audio (the context started).
-- Hardcore death, the Hard/Brutal unlock gates, and a full Act III–V fight without god mode.
-- Friends, offline letters, reconnect, and the beta caps.
-- Shared map seed and shared monster life, as a comparison of the two clients.
-- Lightning sats and the auction house are absent on purpose (`CLAUDE.md`). They are graded Not actually built, not left unverified.
+- The Windows `.bat` launcher. This host is Linux. The Mac file matches the shell script, and that script served the game from the zip layout.
+- Hearing the procedural audio. The audio context did start.
+- The hardcore Begin again wipe. A hardcore death charged 0 credits.
+- Charms, a market sell, Mr. Float, node lighting, proof-of-work shrines, lockbox clicks, side quests, bounties, the act-gate travel dialog, tier +12, a resist-tax measurement, adaptive scaling, chat, friends, letters, a duel, co-op Nightmare and Hell, account invites, the beta caps, the Founder leash, a node-runner hire, and a Simulator wave that is not the boss rush.
+- Q, E, T, I, B, C, H, Esc, and Alt as individual presses. Space did swing. The arrow keys share the WASD walk branch and were not pressed on their own.
+- Hireling recall to town. The bodyguard did fight, and the revive button did bring them back.
+- Equipping, stashing, and switching the three character slots as clicks. One file save did reload.
+- Older save migration, the other option rows, the walkthrough pages inside the client, skill forks, the dodge roll, the passive cap, web respec payments, the leave-the-world and wake endings, the 2015 prequel’s cage story, and the party auras besides Toxic Maximalism.
+- Lightning sats, the auction house, a server that decides monster life and hit damage, and a player directory are absent on purpose. They stay Not actually built.
 
 ## Appendix E — Harness traps that are not player bugs
 
@@ -462,3 +488,11 @@ These need a person, a network, or a session this host does not have:
 - `kill` splices the entity and leaves `hp` unchanged.
 - `castWhy` is inside the IIFE. A successful cast shows up as `P.cd[i] > 0` immediately after `castIndex`, before `update` drains it.
 - The account server reads `DATA_DIR` when the module loads. `tools/audit-mp.js` now sets that variable before `require('../server/server')`.
+- `openSheet` while a sheet is already open does not redraw. Close it, or return to play, before opening it again.
+- `spawn` returns null on a blocked tile. The play harness searches for a walkable lane.
+- A shared-monster hit is rejected until a `move` packet places the hitter beside the machine. The server logs `[hit] range`.
+- A hostile declaration needs a uid, both players in town at level 9 or higher, about 3 seconds of standing there, and then the portal lock and the doorway grace before a wilderness hit can land.
+- A second live socket kicks the first session into the lobby. Reconnect closes the old page and presses Continue on the cloud slot while the resume grace still holds.
+- `showDeath` paints after 2.5 seconds of frame time. A credit delta read immediately is the purse. The old panel can still be on screen.
+- Synthetic touch pointers log `setPointerCapture` with no active pointer. That message is the harness, and the cast still completed.
+
