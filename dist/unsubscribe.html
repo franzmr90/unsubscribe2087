@@ -2141,7 +2141,7 @@ function pathFind(tx,ty){
   const start=key(sx,sy);gsc[start]=0;
   const heap=[start],dirs=[[1,0],[-1,0],[0,1],[0,-1]];
   let n=0,found=false;
-  while(heap.length&&n<480){
+  while(heap.length&&n<3200){
     n++;
     let bi=0;for(let i=1;i<heap.length;i++)if(gsc[heap[i]]<gsc[heap[bi]])bi=i;
     const k=heap.splice(bi,1)[0];
