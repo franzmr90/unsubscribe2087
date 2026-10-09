@@ -432,6 +432,7 @@ async function install(page, cls, seed) {
           continue;
         }
         if (prog.order === 'next') {
+          if (W.portals.some(p => p.cast)) W.portals = W.portals.filter(p => !p.cast);
           const p = W.portals.find(p => p.kind === 'next');
           const block = nearest(1.7);
           const hp = G.hp / __g.S.maxHp;
@@ -701,7 +702,7 @@ async function townEconomy(page) {
       }
     }
     if (click('[data-revive="1"]')) window.__prog.log.spend.revives = (window.__prog.log.spend.revives || 0) + 1;
-    if (click('[data-hire="guard"]')) window.__prog.log.spend.hires = (window.__prog.log.spend.hires || 0) + 1;
+    click('[data-hire="guard"]');
     click('[data-mab="g"]');
     __g.closeSheet();
   });
