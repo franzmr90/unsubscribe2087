@@ -1,5 +1,6 @@
-/* Drag-to-aim: reticle radius matches the hit, range clamps, cancel is free,
-   touch and mouse both cast at the release point, and a right click stays instant.
+/* Drag-to-aim: reticle radius matches the hit, range clamps, cancel is free.
+   A finger aims from the skill button. A mouse still casts where the pointer sits.
+   A right click stays instant.
    node tools/drag-aim.js */
 const {chromium}=require('playwright');
 const fs=require('fs');
@@ -118,14 +119,20 @@ const cancel=await p.evaluate(()=>{
   g.G.en=400;P.cd[6]=0;P.castWait=0;
   const en=g.G.en;
   g.OPT.aim='drag';
+  g.noteInput('touch');
   g.beginAim(6,0,'mouse');
   g.aimSet(P.x+3,P.y);
   const b=document.querySelector('.sk[data-i="0"]');
   const r=b.getBoundingClientRect();
   const fired=g.aimRelease(r.left+r.width/2,r.top+r.height/2);
-  return {fired,en:g.G.en,was:en,cd:P.cd[6]||0,n:W.allies.filter(a=>a.k==='storm').length,aim:!!g.AIMING};
+  const x=document.getElementById('aimCancel');
+  g.beginAim(6,0,'mouse');
+  g.aimSet(P.x+2,P.y);
+  const xr=x.getBoundingClientRect();
+  const firedX=g.aimRelease(xr.left+xr.width/2,xr.top+xr.height/2);
+  return {fired,firedX,en:g.G.en,was:en,cd:P.cd[6]||0,n:W.allies.filter(a=>a.k==='storm').length,aim:!!g.AIMING,bw:r.width};
 });
-if(cancel.fired||cancel.n||cancel.cd||cancel.en!==cancel.was)fail.push('cancel spent '+JSON.stringify(cancel));
+if(cancel.fired||cancel.firedX||cancel.n||cancel.cd||cancel.en!==cancel.was||!(cancel.bw>8))fail.push('cancel spent '+JSON.stringify(cancel));
 
 const paths=await p.evaluate(()=>{
   const g=__g,W=g.W,P=g.P;
@@ -140,28 +147,99 @@ const paths=await p.evaluate(()=>{
     const storm=W.allies.find(a=>a.k==='storm');
     return {aiming,storm:storm&&{x:storm.x,y:storm.y},left:g.AIMING};
   }
+  g.noteInput('touch');g.render();
   const btn=document.querySelector('.sk[data-i="0"]').getBoundingClientRect();
-  const home={x:btn.left+12,y:btn.top+12};
+  const home={x:btn.left+btn.width/2,y:btn.top+btn.height/2};
+  const stick=g.aimStickMetrics(home.x,home.y);
+  const spec6=g.aimSpec(6);
+  function spot(dx,dy){
+    const w=g.aimThumbWorld(home.x,home.y,home.x+dx,home.y+dy,spec6);
+    return g.aimClamp(spec6,w.x,w.y);
+  }
+  const span=Math.max(8,stick.reach-stick.dead);
+  const backPx=stick.dead+span*0.22,midPx=stick.dead+span*0.55,farPx=Math.min(stick.reach-1,stick.dead+span*0.92);
+  const midAt=spot(0,-midPx);
+  const farAt=spot(0,-farPx);
+  const backAt=spot(0,-backPx);
   g.render();
   wipe();g.OPT.aim='auto';
-  const touch=press('touch',home,g.screenAt(P.x+2.5,P.y),g.screenAt(P.x+2.5,P.y));
-  const want=g.worldAt(g.screenAt(P.x+2.5,P.y).x,g.screenAt(P.x+2.5,P.y).y);
+  const touch=press('touch',home,{x:home.x,y:home.y-midPx},{x:home.x,y:home.y-midPx});
   wipe();g.OPT.aim='drag';
+  g.noteInput('mouse');
   const mouse=press('mouse',home,g.screenAt(P.x+2,P.y+1),g.screenAt(P.x+2,P.y+1));
   const wantM=g.worldAt(g.screenAt(P.x+2,P.y+1).x,g.screenAt(P.x+2,P.y+1).y);
+  g.noteInput('touch');
   wipe();g.OPT.aim='auto';
   const quick=press('mouse',home,null,null);
   wipe();g.OPT.aim='quick';
   const noTouch=press('touch',home,null,null);
   g.OPT.aim='auto';
-  return {touch,want,mouse,wantM,quick:!!quick.storm&&!quick.aiming,noTouch:!!noTouch.storm&&!noTouch.aiming,quickAim:quick.aiming};
+  return {touch,midAt,farAt,backAt,stick,mouse,wantM,quick:!!quick.storm&&!quick.aiming,noTouch:!!noTouch.storm&&!noTouch.aiming,quickAim:quick.aiming};
 });
 if(!paths.touch.aiming||!paths.touch.storm)fail.push('touch drag did not aim '+JSON.stringify(paths.touch));
-else if(!near(paths.touch.storm.x,paths.want.x)||!near(paths.touch.storm.y,paths.want.y))fail.push('touch release '+JSON.stringify(paths.touch.storm)+' want '+JSON.stringify(paths.want));
+else if(!near(paths.touch.storm.x,paths.midAt.x)||!near(paths.touch.storm.y,paths.midAt.y))fail.push('touch release '+JSON.stringify(paths.touch.storm)+' want '+JSON.stringify(paths.midAt));
+const farH=Math.hypot(paths.farAt.x-spec.hero.x,paths.farAt.y-spec.hero.y);
+const midH=Math.hypot(paths.midAt.x-spec.hero.x,paths.midAt.y-spec.hero.y);
+const backH=Math.hypot(paths.backAt.x-spec.hero.x,paths.backAt.y-spec.hero.y);
+if(!(farH>midH+0.2)||!(midH>backH+0.15))fail.push('thumb distance '+JSON.stringify({farH,midH,backH,stick:paths.stick}));
 if(!paths.mouse.aiming||!paths.mouse.storm)fail.push('mouse drag did not aim '+JSON.stringify(paths.mouse));
 else if(!near(paths.mouse.storm.x,paths.wantM.x)||!near(paths.mouse.storm.y,paths.wantM.y))fail.push('mouse release '+JSON.stringify(paths.mouse.storm)+' want '+JSON.stringify(paths.wantM));
 if(!paths.quick)fail.push('desktop quick cast did not fire at once');
 if(!paths.noTouch)fail.push('quick-cast option still dragged on touch');
+
+const thumb=await p.evaluate(()=>{
+  const g=__g,W=g.W,P=g.P;
+  g.noteInput('touch');g.OPT.aim='auto';g.render();
+  const b=document.querySelector('.sk[data-i="0"]');
+  const r=b.getBoundingClientRect();
+  const home={x:r.left+r.width/2,y:r.top+r.height/2};
+  const stick=g.aimStickMetrics(home.x,home.y);
+  const spec=g.aimSpec(6);
+  function press(move,up){
+    const ev=(name,x,y)=>b.dispatchEvent(new PointerEvent(name,{bubbles:true,cancelable:true,pointerType:'touch',pointerId:7,button:0,clientX:x,clientY:y}));
+    W.allies.length=0;g.G.en=800;P.cd[6]=0;P.castWait=0;P.dir={x:1,y:0};
+    ev('pointerdown',home.x,home.y);
+    const ring=document.getElementById('aimStick');
+    const ringOn=ring&&!ring.hidden;
+    const reach=ring&&ring.querySelector('.ring').getBoundingClientRect();
+    ev('pointermove',move.x,move.y);
+    const armed=g.AIMING&&{x:g.AIMING.x,y:g.AIMING.y,cancel:g.AIMING.cancel,thumb:g.AIMING.thumb,dead:g.AIMING.dead};
+    const hero=g.screenAt(P.x,P.y);
+    const spot=armed&&g.screenAt(armed.x,armed.y);
+    if(up)ev('pointerup',up.x,up.y);
+    const storm=W.allies.find(a=>a.k==='storm');
+    return {ringOn,reach:reach&&reach.width/2,stick,armed,hero,spot,storm:storm&&{x:storm.x,y:storm.y},en:g.G.en,aim:!!g.AIMING};
+  }
+  const span=Math.max(8,stick.reach-stick.dead);
+  const farPx=Math.min(stick.reach-1,stick.dead+span*0.92),backPx=stick.dead+span*0.22;
+  const far=press({x:home.x,y:home.y-farPx},{x:home.x,y:home.y-farPx});
+  const back=press({x:home.x,y:home.y-backPx},{x:home.x,y:home.y-backPx});
+  const cancel=press({x:home.x,y:home.y-farPx},home);
+  g.G.cls='homesteader';g.G.form=null;if(P.form)P.form=null;g.G.sk[6]=1;g.G.slots[0]=6;g.G.en=900;P.cd[6]=0;P.castWait=0;P.dir={x:1,y:0};
+  W.allies.length=0;
+  const ev=(name,x,y)=>b.dispatchEvent(new PointerEvent(name,{bubbles:true,cancelable:true,pointerType:'touch',pointerId:8,button:0,clientX:x,clientY:y}));
+  ev('pointerdown',home.x,home.y);
+  const spanH=Math.max(8,stick.reach-stick.dead);
+  const farH=Math.min(stick.reach-1,stick.dead+spanH*0.92);
+  ev('pointermove',home.x,home.y-farH);
+  const preview=g.AIMING&&{x:g.AIMING.x,y:g.AIMING.y};
+  ev('pointerup',home.x,home.y-farH);
+  const hedges=W.allies.filter(a=>a.k==='hedge');
+  let hx=0,hy=0;hedges.forEach(h=>{hx+=h.x;hy+=h.y});
+  if(hedges.length){hx/=hedges.length;hy/=hedges.length}
+  const hedgeScreen=hedges.length?g.screenAt(hx,hy):null;
+  const heroScreen=g.screenAt(P.x,P.y);
+  g.G.cls='hacker';
+  return {far,back,cancel,stick,hedges:hedges.length,preview,hedgeScreen,heroScreen};
+});
+if(!thumb.far.ringOn||!(thumb.far.armed&&thumb.far.armed.thumb)||thumb.far.armed.cancel)fail.push('ring or thumb state '+JSON.stringify(thumb.far));
+if(Math.abs(thumb.far.reach-thumb.stick.reach)>2)fail.push('ring radius '+thumb.far.reach+' want '+thumb.stick.reach);
+if(!(thumb.far.spot&&thumb.far.hero&&thumb.far.spot.y<thumb.far.hero.y-8))fail.push('up drag did not lift the reticle '+JSON.stringify({spot:thumb.far.spot,hero:thumb.far.hero}));
+const fDist=Math.hypot(thumb.far.storm.x-spec.hero.x,thumb.far.storm.y-spec.hero.y);
+const bDist=Math.hypot(thumb.back.storm.x-spec.hero.x,thumb.back.storm.y-spec.hero.y);
+if(!(fDist>bDist+0.2))fail.push('closer thumb did not pull the area in '+fDist+' '+bDist);
+if(thumb.cancel.storm||thumb.cancel.aim||thumb.cancel.en!==800)fail.push('return to the button still cast '+JSON.stringify(thumb.cancel));
+if(thumb.hedges!==5||!thumb.hedgeScreen||!(thumb.hedgeScreen.y<thumb.heroScreen.y-4))fail.push('hedgerow did not follow the drag '+JSON.stringify({n:thumb.hedges,h:thumb.hedgeScreen,p:thumb.heroScreen}));
 
 const desk=await p.evaluate(()=>{
   const g=__g,W=g.W,P=g.P;
@@ -186,11 +264,20 @@ const desk=await p.evaluate(()=>{
 });
 if(desk.afterKey!==6||desk.aimed||desk.storms)fail.push('F1 quick path changed '+JSON.stringify(desk));
 if(desk.hold!==6||!desk.fx||!near(desk.fx.x,3))fail.push('F1 drag cast '+JSON.stringify(desk.fx));
-if(!desk.right||desk.right.aim||!near(desk.right.dx,4))fail.push('right click was not instant at facing*4 '+JSON.stringify(desk.right));
+if(!desk.right||desk.right.aim||!near(desk.right.dx,2))fail.push('right click was not instant at the pointer '+JSON.stringify(desk.right));
 
 const placed=await p.evaluate(()=>{
+  try{
   const g=__g,W=g.W,P=g.P,bad=[];
   const N=W.N;
+  let best=null,bn=-1;
+  for(let y=4;y<N-4;y++)for(let x=4;x<N-4;x++){
+    if(W.map[y*N+x]!==1)continue;
+    let n=0;
+    for(let dy=-6;dy<=6;dy++)for(let dx=-6;dx<=6;dx++)if(y+dy>=1&&x+dx>=1&&y+dy<N-1&&x+dx<N-1&&W.map[(y+dy)*N+(x+dx)]===1)n++;
+    if(n>bn){bn=n;best={x:x+.5,y:y+.5}}
+  }
+  if(best){P.x=best.x;P.y=best.y}
   const floor=(x,y)=>x>=1&&y>=1&&x<N-1&&y<N-1&&W.map[(y|0)*N+(x|0)]===1;
   function prep(cls,i){
     g.G.cls=cls;g.G.form=null;if(P.form)P.form=null;
@@ -236,6 +323,7 @@ const placed=await p.evaluate(()=>{
   const foe=g.spawn('tick',P.x+3,P.y);foe.stun=0;foe.aggro=false;const foeHp=foe.hp;
   g.beginAim(1,0,'touch');g.aimSet(foe.x,foe.y);g.aimRelease(null,null);
   if(!(foe.stun>1)||!(foe.hp<foeHp))bad.push('cease stun '+foe.stun+' hp '+(foeHp-foe.hp));
+  if(best){P.x=best.x;P.y=best.y;P.dir={x:1,y:0}}
   prep('anon',5);
   const dox=g.spawn('tick',P.x+3,P.y);const far=g.spawn('tick',P.x+3,P.y+4);dox.stun=99;far.stun=99;
   g.beginAim(5,0,'touch');g.aimSet(dox.x,dox.y);g.aimRelease(null,null);
@@ -257,6 +345,7 @@ const placed=await p.evaluate(()=>{
   if(!(half.hp<h0)||farH.hp<f0)bad.push('halving');
   g.G.cls='hacker';
   return bad;
+  }catch(e){return ['threw '+e.message+' @ '+String(e.stack).split('\n')[1]]}
 });
 placed.forEach(s=>fail.push(s));
 
