@@ -1154,7 +1154,8 @@ function mpTradeApply(m) {
   G.sats = (G.sats | 0) - (give.sats | 0) + (take.sats | 0);
   for (const it of take.items || []) {
     if (!it || !it.tid || seen[it.tid]) continue;
-    if (bag.length >= 24) { toast('Your pack is full. The rest of the trade did not fit.'); break; }
+    if (it.charm) charmNormalize(it);
+    if (!gridCan(bag, it, 6, 4)) { toast('Your pack is full. The rest of the trade did not fit.'); break; }
     bag.push(it); seen[it.tid] = 1;
   }
   G.bag = bag;
@@ -1213,7 +1214,11 @@ function mpTradePanel() {
   for (const it of (G && G.bag) || []) {
     if (!it || it.test) continue;
     if (!it.tid) it.tid = Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 6);
-    h += '<button class="li' + (offered[it.tid] ? ' on' : '') + '" data-mpti="' + esc(it.tid) + '"><div><b>' + esc(it.name || it.base || 'Item') + '</b><span>' + (offered[it.tid] ? 'On the table' : 'In your pack') + '</span></div></button>';
+    h += '<button class="li' + (offered[it.tid] ? ' on' : '') + '" data-mpti="' + esc(it.tid) + '"><div><b>' + esc(it.name || it.base || 'Item') + '</b><span>' + (offered[it.tid] ? 'On the table' : (it.charm ? 'Charm in your pack' : 'In your pack')) + '</span></div></button>';
+  }
+  if (G && G.cslots && G.cslots.some(it => it)) {
+    h += '</div><p style="font-size:13px">On your belt, not offered. Take a charm off to put it on the table.</p><div class="list">';
+    for (const it of G.cslots) if (it) h += '<div class="ln off">' + esc(it.name || it.base || 'Charm') + '</div>';
   }
   h += '</div><div class="row"><button class="ghost" data-mpto="1">' + (frozen ? 'Change the offer' : 'Set the offer') + '</button><button class="big" data-mptc="1"' + (you.ok || t.phase === 'check' ? ' disabled' : '') + '>Confirm</button><button class="ghost" data-mptx="1">Cancel</button></div>';
   return h;

@@ -1,4 +1,4 @@
-/* A subscription bill's whole credits are what the purse pays.
+/* The per-minute subscription bill is gone. A charm on the belt is the whole bonus.
    node tools/sub-bill.js */
 const {chromium}=require('playwright');
 const fs=require('fs');
@@ -25,37 +25,27 @@ await p.waitForTimeout(150);
 await p.evaluate(()=>{const d=document.getElementById('dlg');if(d&&!d.hidden){const x=d.querySelector('#dBtns button:not([disabled])');x&&x.click()};__g.setMode('play')});
 
 const one=await p.evaluate(()=>{
-  const g=__g;
-  g.G.cpi=1.073;g.G.adopt=100;g.G.credits=12;g.G.charmOff=0;
-  const c=g.mkCharm(1);c.on=true;g.G.charms=[c];
+  const g=__g,G=g.G;
+  G.cpi=1.073;G.adopt=100;G.credits=12;G.web={};G.doc=null;G.para=0;G.at={mgt:0,ref:0,vit:0,bnd:0};G.sk=Array(15).fill(0);
+  const belt={slot:'belt',base:'Tool Belt',name:'Tool Belt',id:true,req:1,il:8,q:0,cap:8,csl:2,aff:[]};
+  G.eq.belt=belt;G.cslots=[];G.bag=[];
+  const c=g.mkCharm(8,{aff:[{k:'dmg',v:4}],req:1,name:'Bill Slip'});
+  c.qty=99;G.bag=[c];
+  g.charmNormalize(c);
+  g.charmSocket(0);
+  g.calc();
+  const worn=g.S.dmg;
   g.openSheet('items');
-  const line=[...document.querySelectorAll('#sheet h3')].map(n=>n.textContent).find(t=>/billing/.test(t))||'';
-  g.G.chT=0;g.W.drops=[];
-  g.update(0.05);
-  return {line,credits:g.G.credits,off:!!g.G.charmOff,on:g.G.charms.filter(x=>x.on).length};
-});
-check('a bill of 12 is covered by 12', /₡12/.test(one.line)&&!/LAPSED/.test(one.line)&&one.credits===0&&!one.off&&one.on===1, JSON.stringify(one));
-
-const short=await p.evaluate(()=>{
-  const g=__g;
-  g.G.cpi=1.073;g.G.adopt=100;g.G.credits=11;g.G.charmOff=0;g.G.chT=0;g.W.drops=[];
-  g.update(0.05);
-  return {credits:g.G.credits,off:!!g.G.charmOff,log:document.getElementById('log').textContent};
-});
-check('11 does not cover a bill of 12', short.credits===11&&short.off&&/cannot cover/.test(short.log), JSON.stringify(short));
-
-const two=await p.evaluate(()=>{
-  const g=__g;
+  const text=document.getElementById('sheet').innerText;
+  const cred=G.credits;
   g.closeSheet();g.setMode('play');
-  g.G.cpi=1.073;g.G.adopt=100;g.G.credits=25;g.G.charmOff=0;
-  const a=g.mkCharm(1),c=g.mkCharm(1);a.on=c.on=true;g.G.charms=[a,c];
-  g.openSheet('items');
-  const line=[...document.querySelectorAll('#sheet h3')].map(n=>n.textContent).find(t=>/billing/.test(t))||'';
-  g.G.chT=0;g.W.drops=[];
-  g.update(0.05);
-  return {line,credits:g.G.credits,off:!!g.G.charmOff};
+  g.update(2);
+  g.charmTakeOff(0);g.calc();
+  return {worn,off:g.S.dmg,credits:G.credits,cred,text:/billing|a minute|LAPSED/i.test(text),qty:c.qty,belt:/charms/.test(text),n:G.cslots.length+G.bag.filter(i=>i&&i.charm).length};
 });
-check('two running bill 25 and 25 covers them', /₡25/.test(two.line)&&two.credits===0&&!two.off, JSON.stringify(two));
+check('the sheet has belt slots and no minute bill', one.belt&&!one.text, JSON.stringify(one));
+check('two seconds do not charge the purse', one.credits===one.cred&&one.credits===12, JSON.stringify(one));
+check('the charm adds its roll only while worn, and a quantity does not multiply it', one.worn===one.off+4&&one.qty===undefined&&one.n===1, JSON.stringify(one));
 
 check('no page errors', !errs.length, errs.join('; '));
 await b.close();

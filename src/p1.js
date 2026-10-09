@@ -276,6 +276,8 @@ const AFX=[
  {k:'regen',t:'+{v} Energy per Second',sl:['helm','ring','amulet','belt'],tiers:[['of the Spark',1,1,1],['of the Current',7,2,3]]},
  {k:'stun',t:'{v}% Chance to Stun on Hit',sl:['weapon','gloves'],tiers:[['of the Jolt',4,4,8],['of Thunder',11,9,14]]},
  {k:'gold',t:'{v}% Extra Credits from Machines',sl:['helm','gloves','boots','belt','ring','amulet'],tiers:[['of Thrift',1,15,30],['of Greed',6,31,60],['of Avarice',12,61,100]]},
+ {k:'courier',pre:0,grp:'lean',w:.8,t:'+4 stims and −1 charm slot',sl:['belt'],tiers:[['of the Courier',1,1,1]]},
+ {k:'collection',pre:0,grp:'lean',w:.8,t:'+1 charm slot and −4 stims',sl:['belt'],tiers:[['of the Collection',1,1,1]]},
  {k:'armor',t:'+{v} Armor',sl:JEW,tiers:[['of Warding',1,3,8],['of the Bastion',8,9,20]]}
 ];
 const AFX2=[];
@@ -296,7 +298,7 @@ const UNI=[
  {id:'hoodie',n:'The Founder’s Hoodie',slot:'armor',il:4,base:'Padded Hoodie',bi:1,mods:{en:[25,40],regen:[2,3]},sp:'Skills cost 25% less energy',fl:'Still warm. That is the unsettling part.'},
  {id:'review',n:'Last Honest Review',slot:'ring',il:3,base:'Copper Band',mods:{crit:[6,10],mf:[30,45]},sp:null,fl:'One star. Removed for violating community standards.'},
  {id:'intern',n:'Unpaid Intern',slot:'gloves',il:4,base:'Work Gloves',mods:{aspd:[15,22],hp:[10,20]},sp:'20% chance on hit to cast Arc Chain',fl:'Paid in exposure. To voltage.'},
- {id:'repair',n:'Right to Repair',slot:'belt',il:3,base:'Tool Belt',mods:{regenH:[3,5],hp:[20,30]},sp:'Holds 4 more stims, and stims also refill your energy',fl:'Banned in forty territories. Works in all of them.'},
+ {id:'repair',n:'Right to Repair',slot:'belt',il:3,base:'Tool Belt',mods:{regenH:[3,5],hp:[20,30]},sp:'Stims also refill your energy',fl:'Banned in forty territories. Works in all of them.'},
  {id:'hedge',n:'Inflation Hedge',slot:'ring',il:6,base:'Signet Chip',mods:{gold:[60,90],armor:[5,10]},sp:'Credits you carry grow as fast as prices rise',fl:'The rich were never holding cash.'},
  {id:'deadline',n:'Deadline',slot:'boots',il:5,base:'Steel-Toes',mods:{mspd:[20,25],armorP:[30,50]},sp:'+25% damage while moving',fl:'It was due yesterday. So were you.'},
  {id:'whistle',n:'The Whistle',slot:'helm',il:7,base:'Riot Helm',mods:{armorP:[30,50],shock:[4,8]},sp:'Slain machines explode, wounding others nearby',fl:'She blew it once. The echo is still going.'},

@@ -129,7 +129,7 @@ async function clearUI(p) {
     catch (e) { threw = e.message; }
     check('startPlay migrates a partial save', !threw, threw);
     check('the homesteader ring survived the migration', g.G.bag.some(it => it && it.name === 'Home Ring') || (g.G.charms || []).some(it => it && it.name === 'Home Ring'));
-    check('the charm left the pack for the rack', (g.G.charms || []).some(it => it && it.name === 'Old Charm') && !g.G.bag.some(it => it && it.charm));
+    check('a charm with no belt stays in the pack as a slip', !(g.G.charms || []).length && g.G.bag.some(it => it && it.charm && it.aff && it.aff.some(a => a.k === 'dmg' && a.v === 3)));
     check('an old sound resist on that ring migrated', !(g.G.bag.find(it => it && it.name === 'Home Ring') || { aff: [] }).aff.some(a => a.k === 'r_sound'));
     check('a boss-5 save keeps a difficulty gate', (g.G.diffGate || 0) >= 1, String(g.G.diffGate));
     note.push('diffGate ' + g.G.diffGate + ' charms ' + (g.G.charms || []).length);

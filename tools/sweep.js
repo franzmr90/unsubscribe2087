@@ -125,60 +125,45 @@ async function click(p, sel) {
   check('refund stays shut under 5 sats', web.refundLocked);
   check('refund costs 5 and gives the points back', web.sats === 4 && web.left === 0 && web.ptsBack === 11, web.sats + ' pts ' + web.ptsBack);
 
-  /* ---------- charms ---------- */
+  /* ---------- charms on the belt ---------- */
   const charms = await page.evaluate(() => {
     const g = __g, G = g.G, P = g.P;
     g.closeSheet(); g.setMode('play');
-    G.adopt = 100; G.cpi = 1; G.charms = []; G.charmOff = 0; G.credits = 5000; G.web = {};
-    G.bag = [];
-    for (let i = 0; i < 7; i++) {
-      const it = g.mkCharm(8); it.aff = [{k: 'dmg', v: 4}];
-      g.W.drops.push({x: P.x, y: P.y, it, t: 1});
-    }
+    G.adopt = 100; G.cpi = 1; G.credits = 5000; G.web = {}; G.cslots = []; G.bag = [];
+    delete G.charms; delete G.charmOff; delete G.chT;
+    const belt = g.makeItem(8, 0, 'belt'); belt.id = true; belt.req = 1; G.eq.belt = belt; g.calc();
+    const bare = g.S.dmg;
+    const a = g.mkCharm(8, {aff: [{k: 'dmg', v: 4}], name: 'Same Slip'});
+    const b = g.mkCharm(8, {aff: [{k: 'dmg', v: 4}], name: 'Same Slip'});
+    b.qty = 99; b.stack = 99;
+    g.W.drops.push({x: P.x, y: P.y, it: a, t: 1});
+    g.W.drops.push({x: P.x, y: P.y, it: b, t: 1});
     g.update(0.5);
+    const picked = G.bag.filter(it => it && it.charm).length;
+    const stacked = !!(b.qty || b.stack);
+    g.charmSocket(G.bag.indexOf(a));
     g.calc();
-    const on = G.charms.filter(c => c.on).length;
-    const rack = G.charms.length;
-    const withCharm = g.S.dmg;
-    g.openSheet('items');
-    const head = [...document.querySelectorAll('h3')].map(e => e.textContent).find(t => /billing/.test(t)) || '';
-    const m = head.match(/billing\D*(\d+)/);
-    const printed = m ? +m[1] : null;
-    G.chT = 0.01;
+    const worn = g.S.dmg;
     const cred0 = G.credits;
-    g.closeSheet();
-    g.setMode('play');
-    g.update(0.05);
-    const paid = cred0 - G.credits;
-    G.credits = 0; G.chT = 0.01;
-    g.update(0.05);
-    const lapsed = G.charmOff === 1;
+    g.update(2);
+    const billed = cred0 - G.credits;
+    g.openSheet('items');
+    const head = [...document.querySelectorAll('h3')].map(e => e.textContent).join(' | ');
+    const beltText = head.includes('/') && /charms/.test(head);
+    g.charmTakeOff(0);
     g.calc();
-    const lapsedDmg = g.S.dmg;
-    G.credits = 5000; G.chT = 0.01;
-    g.update(0.05);
-    const back = G.charmOff === 0;
-    /* a thirteenth is refused. Pick the rest up one at a time so a full rack stops the loop. */
-    let refused = 0;
-    let guard = 0;
-    while (G.charms.length < 12 && guard < 20) {
-      const it = g.mkCharm(4); it.aff = [{k: 'hp', v: 5}];
-      g.W.drops.push({x: P.x, y: P.y, it, t: 1});
-      g.update(0.5);
-      guard++;
-    }
-    const full = G.charms.length;
-    const extra = g.mkCharm(4);
+    const off = g.S.dmg;
+    G.bag = Array.from({length: 24}, () => g.makeItem(2, 0, 'ring'));
+    const extra = g.mkCharm(4, {aff: [{k: 'hp', v: 5}]});
     g.W.drops.push({x: P.x, y: P.y, it: extra, t: 1});
     g.update(0.5);
-    if (G.charms.length === full) refused = 1;
-    return {on, rack, withCharm, printed, paid, lapsed, lapsedDmg, back, full, refused, dmgBack: g.S.dmg};
+    const refused = g.W.drops.some(d => d.it === extra);
+    return {picked, stacked, bare, worn, off, billed, beltText, refused, billing: /billing/.test(head)};
   });
-  check('seven subscriptions, six running', charms.rack === 7 && charms.on === 6, charms.rack + '/' + charms.on);
-  check('the bill on the sheet is what the minute charges', charms.printed === charms.paid && charms.paid === 12 * 6, charms.printed + ' vs ' + charms.paid);
-  check('an unpaid minute lapses the bonuses', charms.lapsed && charms.lapsedDmg < charms.withCharm, charms.lapsedDmg + ' < ' + charms.withCharm);
-  check('the next paid minute turns them back on', charms.back);
-  check('the thirteenth subscription stays on the ground', charms.full === 12 && charms.refused === 1, charms.full);
+  check('two identical charms stay two objects and a quantity is ignored', charms.picked === 2 && charms.stacked === false, JSON.stringify(charms));
+  check('a charm adds damage only while it is on the belt', charms.worn === charms.bare + 4 && charms.off === charms.bare, JSON.stringify(charms));
+  check('the minute no longer bills, and the sheet shows belt slots', charms.billed === 0 && charms.beltText && !charms.billing, JSON.stringify(charms));
+  check('a charm that does not fit the pack stays on the ground', charms.refused === true);
 
   /* ---------- crafting and phrases ---------- */
   const craft = await page.evaluate(() => {
@@ -690,7 +675,7 @@ async function click(p, sel) {
   });
   await clearUI(page);
   check('an old save without the new fields loads', !old.threw && old.web && old.diff === 0 && old.hp, old.threw || JSON.stringify(old));
-  check('a charm left in the old pack moves onto the rack', old.charms === 1 && old.bagCharm === false, JSON.stringify(old));
+  check('a charm left in the old pack becomes a slip, with no belt to wear it', old.charms === 0 && old.bagCharm === true, JSON.stringify(old));
   check('an Act I clear on an old save still unlocks a tier', old.maxTier >= 1, old.maxTier);
 
   const comp = await page.evaluate(() => {

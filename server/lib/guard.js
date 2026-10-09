@@ -62,6 +62,7 @@ function parseG(data) {
 function itemsOf(g) {
   const out = [];
   if (Array.isArray(g.bag)) out.push.apply(out, g.bag);
+  if (Array.isArray(g.cslots)) out.push.apply(out, g.cslots);
   if (Array.isArray(g.stash)) out.push.apply(out, g.stash);
   if (g.eq && typeof g.eq === 'object') {
     for (const k in g.eq) if (g.eq[k]) out.push(g.eq[k]);
