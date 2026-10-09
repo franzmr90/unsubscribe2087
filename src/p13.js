@@ -973,7 +973,7 @@ function mpFriendBtns(r) {
   h += '<button class="ghost" data-mpfr="' + u + '">Remove</button><button class="ghost" data-mpfb="' + u + '">Block</button>';
   return h;
 }
-function mpFriendSection() {
+function mpFriendSection(opts) {
   let h = '<h3>Friends</h3>';
   h += '<p style="font-size:13px">A person you accept can see your class, your level, and the name of the game you are standing in, and they can walk into it. You can see the same of them. Friends and asks stop at twenty-five. People you block sit past that.</p>';
   h += '<button class="tog' + (MP.closed ? ' on' : '') + '" data-mpfq="1"><span>Not taking messages</span><i>' + (MP.closed ? 'ON' : 'OFF') + '</i></button>';
@@ -993,15 +993,24 @@ function mpFriendSection() {
     h += '</div>';
   }
   h += mpWhisperPane();
-  h += mpMailPane();
+  if (!opts || opts.mail !== false) h += mpMailPane();
   return h;
 }
 
 /* ---------- the panel: a lobby, then the game you are in ---------- */
+function menuParty(friends, mail, game) {
+  const tabs = [['game', 'Games'], ['friends', 'Friends'], ['mail', 'Letters']];
+  let h = menuBar('party', tabs, mpOn() ? 'game' : 'friends');
+  h += menuPane('party', 'game', game);
+  h += menuPane('party', 'friends', friends);
+  h += menuPane('party', 'mail', mail);
+  return h;
+}
 function mpPanel() {
-  if (MP.note && !mpOn()) return '<p>' + esc(MP.note) + '</p><p>Your character is saved and nothing is lost by waiting. Reload to try again.</p>' + mpFriendNote();
-  if (!mpOn()) return mpFriendNote();
-  return mpFriendSection() + (MP.game ? mpGamePanel() : mpLobbyPanel());
+  let head = '';
+  if (MP.note && !mpOn()) head = '<p>' + esc(MP.note) + '</p><p>Your character is saved and nothing is lost by waiting. Reload to try again.</p>';
+  if (!mpOn()) return head + menuParty(mpFriendNote(), '<h3>Letters</h3><p>Not connected. A whisper that arrives while they are off needs the account server.</p>', '<h3>Open games</h3><p>Not connected. Playing together needs the account server.</p>');
+  return head + menuParty(mpFriendSection({ mail: false }), mpMailPane(), MP.game ? mpGamePanel() : mpLobbyPanel());
 }
 
 function mpLobbyPanel() {
