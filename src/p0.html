@@ -82,6 +82,9 @@ button:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
 #mPick button.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
 #mPick .hint{font-size:12px;color:var(--dim);text-align:center;margin:6px 0 0}
 #bAct{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(232px + env(safe-area-inset-bottom,0px));background:linear-gradient(#e0bd6e,#9c7a34);color:#1a1200;font:700 13px var(--display);letter-spacing:.05em;padding:12px 18px;max-width:calc(100% - 32px);border:1px solid #000;box-shadow:0 0 0 2px var(--edge),0 4px 10px #000}
+#bNames{position:absolute;left:8px;bottom:calc(48px + env(safe-area-inset-bottom,0px));z-index:6;min-height:44px;min-width:84px;padding:10px 14px;background:rgba(8,7,12,.92);border:1px solid var(--gold);color:var(--gold);font:700 13px var(--display);letter-spacing:.08em;text-transform:uppercase}
+#bNames.on{background:var(--gold);color:#1a1200}
+html[data-ui="mouse"] #bNames{display:none!important}
 #aimCancel{position:absolute;right:16px;bottom:calc(228px + env(safe-area-inset-bottom,0px));z-index:6;pointer-events:auto;min-width:108px;padding:12px 16px;border-radius:12px;border:1px solid #c9b6ff;background:rgba(12,10,18,.92);color:#e6e2d6;font:700 13px var(--display);letter-spacing:.06em}
 #aimStick{position:fixed;left:0;top:0;width:0;height:0;z-index:8;pointer-events:none}
 #aimStick i,#aimStick b{position:absolute;box-sizing:border-box}
@@ -380,6 +383,13 @@ html[data-ui="touch"] .cls{min-height:44px}
   html[data-ui="touch"] #log{bottom:calc(188px + env(safe-area-inset-bottom,0px))}
 }
 
+#lootLabs{position:absolute;inset:0;z-index:5;pointer-events:none}
+#lootLabs button{position:absolute;pointer-events:auto;margin:0;padding:0 4px;background:rgba(5,4,9,.88);border:1px solid rgba(255,255,255,.2);font:700 11px var(--display);line-height:1.1;text-align:center;text-shadow:0 1px 2px #000;color:var(--q0)}
+#lootLabs button.q0{color:var(--q0)}#lootLabs button.q1{color:var(--q1)}#lootLabs button.q2{color:var(--q2)}#lootLabs button.q3{color:var(--q3)}#lootLabs button.q4{color:var(--q4)}
+#lootCard{position:absolute;z-index:7;width:min(260px,88vw);background:rgba(8,7,12,.96);border:1px solid var(--gold);padding:8px 8px 10px;box-shadow:0 10px 28px #000}
+#lootCard .nm{display:block;font:700 14px var(--display);margin:0 0 8px;text-align:center}
+#lootCard .row{display:flex;gap:8px}
+#lootCard button{flex:1;min-height:44px}
 #cmpTip{position:absolute;z-index:8;left:8px;top:8px;width:min(640px,calc(100% - 16px));max-height:min(70vh,520px);overflow:auto;background:rgba(8,7,12,.96);border:1px solid var(--gold);box-shadow:0 10px 40px #000;padding:8px 10px;pointer-events:auto;touch-action:pan-y}
 #cmpTip.dock{left:8px;right:8px;width:auto;top:calc(78px + env(safe-area-inset-top,0px));max-height:46vh}
 .cmpBox{display:flex;gap:8px;align-items:flex-start}
@@ -439,6 +449,7 @@ html[data-ui="touch"] .vendTabs button,html[data-ui="touch"] .vendToggle button,
     <div id="bbs"><button class="tb" id="bMenu">Menu</button><button class="tb" id="bChars">Characters</button></div>
     <button id="bSwap" hidden></button>
     <button id="bAct" hidden></button>
+    <button id="bNames" type="button" hidden>Names</button>
     <button id="aimCancel" hidden type="button">Cancel</button>
     <div id="aimStick" hidden><i class="ring"></i><i class="dead"></i><i class="line"></i><i class="knob"></i><b class="cap">Release to cancel</b></div>
     <div id="pad">
@@ -475,6 +486,8 @@ html[data-ui="touch"] .vendTabs button,html[data-ui="touch"] .vendToggle button,
 
   <div id="sheet" hidden><div class="wrap" id="sheetIn"></div></div>
   <div id="pop" hidden><div id="popIn"></div></div>
+  <div id="lootLabs"></div>
+  <div id="lootCard" hidden><b class="nm"></b><div class="row"><button type="button" class="big" data-lpick="1">Pick up</button><button type="button" class="ghost" data-lcmp="1">Compare</button></div></div>
   <div id="cmpTip" hidden></div>
   <div id="scene" hidden><canvas id="sc"></canvas><div id="scBox"><div id="scTitle"></div><div id="scText"></div><div class="row"><button class="ghost" id="scBack" hidden>Back</button><button class="ghost" id="scSkip">Skip</button><button class="big" id="scNext">Next</button></div></div></div>
   <div id="death" hidden><div class="wrap"><div class="kicker">Notice of closure</div><h1>You have died</h1><p id="deathP"></p><div class="stats" id="deathS"></div><p id="deathNote" style="font-size:14px;color:var(--dim)">The machines have not moved. A portal back to the start of the district will wait in the square.</p><button class="big" id="bRise">Rise in town</button></div></div>

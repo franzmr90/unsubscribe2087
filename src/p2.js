@@ -1281,7 +1281,7 @@ function usePortal(p){if(mpPortalBlocked())return;if(p.kind==='back'&&!(G.portal
 function findAct(){for(const o of W.objs)if(o.k==='qobj'&&!o.used&&Math.hypot(o.x-P.x,o.y-P.y)<1.9){const st=sqStep(o.q);if(st)return{label:st.label,fn:()=>sqUse(o)}}
   let best=null,bd=1.8;const chk=(x,y,label,fn)=>{const d=Math.hypot(x-P.x,y-P.y);if(d<bd){bd=d;best={label,fn}}};
   for(const p of W.portals)chk(p.x,p.y,portalLabel(p),()=>usePortal(p));
-  for(const d of W.drops)if(d.it&&skipPick(d.it))chk(d.x,d.y,'Pick up '+(d.it.id?d.it.name:d.it.base),()=>{d.force=1});
+  /* Gear, notes and stims stay until you take them. Standing on one does not open a card. */
   if(W.z.town){if(G.portal&&!W.z.pre)chk(12.5,11.5,portalLabel({kind:'back'}),()=>usePortal({kind:'back'}));
     const rs=resStep();if(rs)for(const n of W.npcs)if(n.id==='res'&&!n.got)chk(n.x,n.y,rs.label,()=>sqRes(n));
     if(!rs)for(const n of W.npcs)if(n.id==='res')chk(n.x,n.y,'Talk to a Resident',()=>convo('res'));
@@ -1595,7 +1595,7 @@ function drawHover(){
   ctx.beginPath();ctx.ellipse(X,Y,18,8,0,0,6.283);ctx.stroke();
   if(h.max){const w=40,yy=Y-48;ctx.fillStyle='#050409';ctx.fillRect(X-w/2-1,yy-1,w+2,5);ctx.fillStyle='#b3261e';ctx.fillRect(X-w/2,yy,w*clamp(h.hp/h.max,0,1),3);
     label(X,yy-8,h.name,'#ffb4a8','700 11px Cinzel,serif')}
-  else label(X,Y-36,h.name,h.kind==='item'?'#ffe36b':'#e0bd6e','700 11px Cinzel,serif');
+  else if(h.kind!=='item')label(X,Y-36,h.name,'#e0bd6e','700 11px Cinzel,serif');
   ctx.restore()}
 
 /* ================= update ================= */
@@ -1677,7 +1677,7 @@ function update(dt){
     if(gone){W.projs.splice(W.projs.indexOf(p),1);parts(p.x,p.y,2,[p.col],1.5)}}
   // pickups
   const magn=W.merc&&W.merc.hp>0&&G.merc.k==='hound';
-  for(let _di=W.drops.length-1;_di>=0;_di--){const d=W.drops[_di];if(!d)continue;d.t+=dt;if(d.t<.35||dist(d,P)>((d.cr||d.sat||d.word)?(magn?5:2.2):.9))continue;
+  for(let _di=W.drops.length-1;_di>=0;_di--){const d=W.drops[_di];if(!d)continue;d.t+=dt;const purse=!!(d.cr||d.sat);if(d.t<.35||(!purse&&!d.force))continue;if(dist(d,P)>(purse?(magn?5:2.2):.9))continue;
     if(d.word){gotWord(d.word);float(P.x,P.y,'“'+d.word+'”','#f7931a');toast('A torn note with one word on it: '+d.word);sfx('page');W.drops.splice(W.drops.indexOf(d),1);continue}
     if(d.sat){const n=Math.ceil(d.sat*(W.merc&&W.merc.hp>0&&G.merc.k==='node'?1.5:1)*(repRank('btc')>=2?1.25:1)*(S.sp.coldwallet?1.25:1));G.sats+=n;float(P.x,P.y,'+'+n+' sats','#f7931a');sfx('coin');W.drops.splice(W.drops.indexOf(d),1);continue}
     /* The pickup line prints whole credits, so the purse gains that floor. */

@@ -136,8 +136,8 @@ async function click(p, sel) {
     const a = g.mkCharm(8, {aff: [{k: 'dmg', v: 4}], name: 'Same Slip'});
     const b = g.mkCharm(8, {aff: [{k: 'dmg', v: 4}], name: 'Same Slip'});
     b.qty = 99; b.stack = 99;
-    g.W.drops.push({x: P.x, y: P.y, it: a, t: 1});
-    g.W.drops.push({x: P.x, y: P.y, it: b, t: 1});
+    g.W.drops.push({x: P.x, y: P.y, it: a, t: 1, force: 1});
+    g.W.drops.push({x: P.x, y: P.y, it: b, t: 1, force: 1});
     g.update(0.5);
     const picked = G.bag.filter(it => it && it.charm).length;
     const stacked = !!(b.qty || b.stack);
@@ -155,7 +155,7 @@ async function click(p, sel) {
     const off = g.S.dmg;
     G.bag = Array.from({length: 24}, () => g.makeItem(2, 0, 'ring'));
     const extra = g.mkCharm(4, {aff: [{k: 'hp', v: 5}]});
-    g.W.drops.push({x: P.x, y: P.y, it: extra, t: 1});
+    g.W.drops.push({x: P.x, y: P.y, it: extra, t: 1, force: 1});
     g.update(0.5);
     const refused = g.W.drops.some(d => d.it === extra);
     return {picked, stacked, bare, worn, off, billed, beltText, refused, billing: /billing/.test(head)};
