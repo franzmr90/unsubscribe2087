@@ -265,6 +265,13 @@ async function install(page, cls, seed) {
       __g.mouseClick('left', tx, ty, { hover: null });
       if (prog.dodgeT <= 0) { prog.dodgeT = 1.4; __g.dodge(); }
     }
+    function goHome() {
+      const W = __g.W, P = __g.P;
+      if (!W.portals.some(p => p.kind === 'home')) __g.openPortal();
+      const home = W.portals.find(p => p.kind === 'home');
+      if (home && hypot(home, P) < 1.4) __g.usePortal(home);
+      else if (home) toward(home.x, home.y);
+    }
     function toward(x, y) {
       if (prog.moveT > 0) { prog.moveT -= 1 / 20; return; }
       const P = __g.P;
@@ -466,14 +473,28 @@ async function install(page, cls, seed) {
         if (bodies.length) {
           bodies.sort((a, b) => hypot(a, P) - hypot(b, P));
           const body = bodies[0];
-          if (hypot(body, P) < 1.7) {
+          if (prog.corpseId !== body.id || prog.corpseZi !== W.zi) {
+            prog.corpseId = body.id; prog.corpseZi = W.zi; prog.corpseT0 = G.time;
+          }
+          const age = G.time - (prog.corpseT0 || G.time);
+          const threat = nearest(2.3);
+          const hp = G.hp / __g.S.maxHp;
+          if (age > 40) {
+            if (prog.corpseBail !== body.id) {
+              prog.corpseBail = body.id;
+              prog.log.notes.push('gave up the walk in ' + W.z.n + ' and went back to town');
+            }
+            goHome();
+          } else if (hypot(body, P) < 1.7) {
             const before = (G.corpses || []).length;
             __g.useObj(body);
             if ((G.corpses || []).length < before) {
               prog.log.corpseWalks = (prog.log.corpseWalks || 0) + 1;
               prog.log.notes.push('walked body ' + body.id + ' in ' + (W.z && W.z.n));
             }
-          } else toward(body.x, body.y);
+          } else if (threat && hp > 0.28) fight(threat.e, true);
+          else if (threat && hp <= 0.28) goHome();
+          else toward(body.x, body.y);
           if (__g.mode !== 'play') break;
           __g.update(dt); steps++;
           continue;
@@ -522,8 +543,15 @@ async function install(page, cls, seed) {
           else fight(b, true);
         } else if (hereJob()) {
           const gp = jobPoint();
-          const threat = nearest(6.2, e => !(W.zi === 14 && e.su && ((G.qt && G.qt.motion) || 0) < 4));
-          if (threat) fight(threat.e, true);
+          const age = prog.zoneT0 != null ? G.time - prog.zoneT0 : 0;
+          if (age > 200 && prog.zoneBail !== W.zi) {
+            prog.zoneBail = W.zi;
+            prog.wantFarm = true;
+            prog.log.notes.push('left ' + W.z.n + ' after a long fight');
+            goHome();
+          }
+          const threat = nearest(age > 45 ? 2.3 : 6.2, e => !(W.zi === 14 && e.su && ((G.qt && G.qt.motion) || 0) < 4));
+          if (age <= 200 && threat) fight(threat.e, true);
           else if (gp) {
             if (hypot(gp, P) < 1.35) {
               if (!useNear(o => o.k === 'cage' || o.k === 'page' || o.k === 'minute' || o.k === 'qobj', 'obj')) toward(gp.x, gp.y);
@@ -712,17 +740,30 @@ async function townEconomy(page) {
     window.__prog._eco0 = { c: snap.credits, s: snap.sats, st: snap.stims, merc: snap.merc };
     const bodies = (__g.G.corpses || []).slice();
     const seen = window.__prog.corpseSeen || {};
+    const buys = [];
     for (const c of bodies) {
       if (!c) continue;
       if (seen[c.id]) {
         const fee = __g.corpseFee(c);
         if ((__g.G.sats | 0) >= fee) {
           const ok = __g.buyCorpse(c.id);
-          if (ok) window.__prog.log.notes.push('bought body ' + c.id + ' after a failed walk');
+          if (ok) {
+            buys.push(c.id);
+            window.__prog.log.notes.push('bought body ' + c.id + ' after a failed walk');
+          }
         } else window.__prog.log.notes.push('could not buy body ' + c.id + ' for ' + fee + ' sats');
       } else seen[c.id] = 1;
     }
     window.__prog.corpseSeen = seen;
+    const deathZi = __g.G.portal && __g.G.portal.zi;
+    const deathName = deathZi != null && __g.ZONES[deathZi] && __g.ZONES[deathZi].n;
+    const deathsHere = deathName ? (window.__prog.log.fell[deathName] || 0) : 0;
+    if (deathsHere >= (window.__prog.fellMark || 0) + 3) {
+      window.__prog.wantFarm = true;
+      window.__prog.fellMark = deathsHere;
+      window.__prog.log.notes.push('farming after ' + deathsHere + ' deaths in ' + deathName);
+    }
+    snap.buys = buys;
     if (__g.repairAll) { const spent = __g.repairAll(); if (spent) window.__prog.log.notes.push('repaired for ' + spent + ' sats'); }
     const v = window.__prog.log.vendors;
     const last = v[v.length - 1];
@@ -730,6 +771,7 @@ async function townEconomy(page) {
     if (window.__prog.log.bag.length < 24) window.__prog.log.bag.push(snap.bag);
     return snap;
   });
+  if (before.buys && before.buys.length) console.log('bought bodies', before.buys.join(','));
   if (before.unid && before.marrow) await say(page, 'marrow');
   else if (before.unid) {
     const opened = await say(page, 'brenda', '^Trade$');
