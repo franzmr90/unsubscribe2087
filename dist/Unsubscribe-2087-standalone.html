@@ -5380,12 +5380,14 @@ function sheetSwap(plan){
   const slots=G.slots?G.slots.slice():null;
   const hot=G.hot?G.hot.slice():null;
   const pas=G.pas?G.pas.slice():null;
-  let r=S0;
+  const cs0=G.cslots?G.cslots.slice():[];
+  let csSet=false,r=S0;
   try{
-    for(const p of plan||[]){if(!p||!p.slot)continue;eq0[p.slot]=G.eq[p.slot];G.eq[p.slot]=p.it}
+    for(const p of plan||[]){if(!p)continue;if(p.charm){G.cslots=(p.cslots||[]).slice();csSet=true;continue}if(!p.slot)continue;eq0[p.slot]=G.eq[p.slot];G.eq[p.slot]=p.it}
     calc();r=S
   }finally{
     for(const k in eq0)G.eq[k]=eq0[k];
+    if(csSet)G.cslots=cs0;
     S=S0;G.hp=hp;G.en=en;G.stims=st;
     if(mouse&&G.mouse){G.mouse.L=mouse.L;G.mouse.R=mouse.R}
     if(slots&&G.slots)for(let i=0;i<slots.length&&i<G.slots.length;i++)G.slots[i]=slots[i];
@@ -5539,10 +5541,28 @@ function mercRows(it){
   add('Damage',Math.round(A.dmg*10)/10,Math.round(B.dmg*10)/10,'');
   add('Damage taken',Math.round(A.red*1000)/10,Math.round(B.red*1000)/10,'%',true);
   return {rows:rows,before:A,after:B}}
+function charmNext(it,off){
+  const cur=(G.cslots||[]).slice(),on=cur.indexOf(it)>=0;
+  if(off||on)return{next:cur.filter(c=>c!==it),worn:on,blocked:null,why:''};
+  const why=charmWhy(it);
+  if(why)return{next:cur,worn:false,blocked:'fit',why:why};
+  return{next:cur.concat([it]),worn:false,blocked:null,why:''}}
+function cmpCharmEval(it,off){
+  const out={ok:false,blocked:null,rows:[],why:'',worn:false,charm:true};
+  if(!it||!it.charm){out.blocked='no';return out}
+  if(!it.id){out.blocked='unid';return out}
+  if(G.lvl<(it.req||1)){out.blocked='level';return out}
+  const plan=charmNext(it,off);
+  out.worn=plan.worn;out.why=plan.why;
+  if(plan.blocked){out.blocked=plan.blocked;return out}
+  const B=sheetSwap([{charm:1,cslots:plan.next}]);
+  out.ok=true;out.rows=cmpRows(S,B,[],[]);
+  return out}
 function cmpEval(it,opt){
   opt=opt||{};
+  if(it&&it.charm)return cmpCharmEval(it,!!(opt&&opt.off));
   const out={ok:false,blocked:null,rows:[],before:S,after:null,target:null,targets:[],merc:false,gain:[],loss:[]};
-  if(!it||it.charm||!it.slot){out.blocked='no';return out}
+  if(!it||!it.slot){out.blocked='no';return out}
   if(!it.id){out.blocked='unid';return out}
   if(opt.off){
     const plan=[{slot:it.slot,it:null}];
@@ -5582,8 +5602,24 @@ function cmpCol(it,kicker){
 function cmpAltsHTML(ts,cur){
   if(!ts||ts.length<2)return '';
   return `<div class="cmpAlts"><span>Compare with</span>${ts.map(t=>`<button type="button" class="ghost${t.key===cur?' on':''}" data-cmpk="${esc(t.key)}">${esc(t.label)}</button>`).join('')}</div>`}
+function beltLoadHTML(){
+  const cs=G.cslots||[];
+  if(!cs.length)return '<div class="ln off">Nothing on the belt</div>';
+  return cs.map(c=>`<div class="ln q${c.q||0}">${esc(c.id?c.name:c.base)} · ${charmCost(c)} slot${charmCost(c)===1?'':'s'}</div>`).join('')}
+function cmpCharmHTML(it,opt){
+  opt=opt||{};
+  const worn=(G.cslots||[]).indexOf(it)>=0;
+  const ev=cmpCharmEval(it,!!opt.off||worn);
+  let note='';
+  if(ev.blocked==='unid')note='<div class="ln off">Unidentified. Nothing here is a guess.</div>';
+  else if(ev.blocked==='level')note=`<div class="ln red">Needs level ${it.req}. Your sheet does not change.</div>`;
+  else if(ev.blocked==='fit')note=`<div class="ln red">${esc(ev.why)} Your sheet does not change.</div>`;
+  else note='<div class="ln off">A charm applies only while it sits on the belt.</div>';
+  const right=`<div class="card cmpCol"><div class="kicker">On the belt</div>${beltLoadHTML()}</div>`;
+  return `<div class="cmpView"><div class="cmpBox">${cmpCol(it,'This')}${right}</div><div class="cmpFoot"><div class="kicker">What changes</div>${note}${ev.blocked?'':cmpRowsHTML(ev.rows)}</div></div>`}
 function cmpHTML(it,opt){
   opt=opt||{};
+  if(it&&it.charm)return cmpCharmHTML(it,opt);
   const ev=cmpEval(it,opt);
   const wornK=opt.off?'With it off':(ev.target&&ev.target.who==='merc'?'On '+(ev.target.label||'them'):'Wearing');
   const wornIt=opt.off?null:(ev.target?ev.target.worn:(G.eq&&it&&it.slot?G.eq[it.slot]||null:null));
@@ -5597,22 +5633,22 @@ function cmpHTML(it,opt){
 function itemCard(it,btns,worn,nocmp){
   let body;
   if(!it)body='';
-  else if(nocmp||it.charm||!it.slot)body=`<div class="card"><div class="nm q${it.q}">${esc(it.id?it.name:it.base)}</div><div class="ln off">${QN[it.q]} ${it.id&&it.name!==it.base?esc(it.base):SNAME[it.slot]||''} · item level ${it.il}</div>${itemLines(it)}</div>`;
+  else if(nocmp||(!it.charm&&!it.slot))body=`<div class="card"><div class="nm q${it.q}">${esc(it.id?it.name:it.base)}</div><div class="ln off">${QN[it.q]} ${it.id&&it.name!==it.base?esc(it.base):SNAME[it.slot]||''} · item level ${it.il}</div>${itemLines(it)}</div>`;
   else body=cmpHTML(it,{off:!!worn});
   return `<div class="cmpHost">${body}<div class="row cmpActs" style="margin-top:6px">${btns||''}</div><div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`}
 function cmpSheetPop(){
   if(tab==='stash'&&sel){
-    if(sel.st!=null){const it=ACC.stash[sel.st];if(it)return itemCard(it,`<button class="big" data-stmv="${sel.st}">Move to pack</button>`,false,!!(it.charm||!it.slot))}
-    if(sel.sb!=null){const it=G.bag[sel.sb];if(it)return itemCard(it,`<button class="big" data-sbmv="${sel.sb}">Move to lockbox</button>`,false,!!(it.charm||!it.slot))}}
+    if(sel.st!=null){const it=ACC.stash[sel.st];if(it)return itemCard(it,`<button class="big" data-stmv="${sel.st}">Move to pack</button>`,false,!!(!it.charm&&!it.slot))}
+    if(sel.sb!=null){const it=G.bag[sel.sb];if(it)return itemCard(it,`<button class="big" data-sbmv="${sel.sb}">Move to lockbox</button>`,false,!!(!it.charm&&!it.slot))}}
   if(tab==='party'&&sel&&typeof MP!=='undefined'&&MP){
-    if(sel.tid){const it=(G.bag||[]).find(x=>x&&x.tid===sel.tid);if(it){const on=MP.tradePick&&MP.tradePick[it.tid];return itemCard(it,`<button class="big" data-mptigo="${esc(it.tid)}">${on?'Take it off the table':'Put it on the table'}</button>`,false,!!(it.charm||!it.slot))}}
-    if(sel.theirs!=null&&MP.trade&&MP.trade.them&&MP.trade.them.items){const it=MP.trade.them.items[sel.theirs];if(it)return itemCard(it,'',false,!!(it.charm||!it.slot))}}
+    if(sel.tid){const it=(G.bag||[]).find(x=>x&&x.tid===sel.tid);if(it){const on=MP.tradePick&&MP.tradePick[it.tid];return itemCard(it,`<button class="big" data-mptigo="${esc(it.tid)}">${on?'Take it off the table':'Put it on the table'}</button>`,false,!!(!it.charm&&!it.slot))}}
+    if(sel.theirs!=null&&MP.trade&&MP.trade.them&&MP.trade.them.items){const it=MP.trade.them.items[sel.theirs];if(it)return itemCard(it,'',false,!!(!it.charm&&!it.slot))}}
   return ''}
 let cmpSig='',cmpSrc='',cmpIt=null,cmpOpt=null,cmpDrop=null,cmpMuteDrop=null,cmpLeave=null,cmpXY=null;
 function cmpHide(){const el=$('cmpTip');if(el){el.hidden=true;el.innerHTML='';el.classList.remove('dock');el.style.left='';el.style.top=''}cmpSig='';cmpSrc='';cmpIt=null;cmpDrop=null}
 function cmpSigOf(it,opt){
   const w=it&&it.slot&&G&&G.eq?G.eq[it.slot]:null,mw=G&&G.merc&&it?G.merc[it.slot]:null;
-  return [CMP_KEY,opt&&opt.off?1:0,G&&G.diff|0,G&&G.lvl|0,it&&(it.uid||it.name||''),it&&it.il,it&&(it.id?1:0),w&&(w.uid||w.name||'1'),mw&&(mw.uid||mw.name||''),S&&S.maxHp,S&&S.armor,S&&S.dmin,S&&S.dmax,P&&P.bear|0,P&&P.orders|0,P&&P.book|0,P&&P.two&&P.two.n|0,G&&G.mouse&&G.mouse.L,G&&G.slots&&G.slots[0]].join('|')}
+  return [CMP_KEY,opt&&opt.off?1:0,G&&G.diff|0,G&&G.lvl|0,it&&(it.uid||it.name||''),it&&it.il,it&&(it.id?1:0),w&&(w.uid||w.name||'1'),mw&&(mw.uid||mw.name||''),(G&&G.cslots||[]).map(c=>c&&(c.uid||c.name||'1')).join(','),S&&S.maxHp,S&&S.armor,S&&S.dmin,S&&S.dmax,P&&P.bear|0,P&&P.orders|0,P&&P.book|0,P&&P.two&&P.two.n|0,G&&G.mouse&&G.mouse.L,G&&G.slots&&G.slots[0]].join('|')}
 function cmpPlace(el){
   if(!cmpXY||!el)return;const app=$('app');if(!app)return;const r=app.getBoundingClientRect();
   el.style.left='8px';el.style.top='8px';
@@ -5622,7 +5658,7 @@ function cmpPlace(el){
   if(top+h>r.height-8)top=Math.max(8,r.height-h-8);
   el.style.left=left+'px';el.style.top=top+'px'}
 function cmpShow(it,opt,src,drop){
-  if(!it||it.charm||!it.slot){if(cmpSrc===src)cmpHide();return}
+  if(!it||(!it.charm&&!it.slot)){if(cmpSrc===src)cmpHide();return}
   const pop=$('pop');if(pop&&!pop.hidden)return;
   const el=$('cmpTip');if(!el||!G)return;
   opt=opt||{};const sig=cmpSigOf(it,opt);
@@ -5638,6 +5674,7 @@ function cmpFromEl(el){
   if(d.sat!==undefined)return (typeof satShop!=='undefined'&&satShop[+d.sat]&&satShop[+d.sat].it)||null;
   if(d.st!==undefined)return (ACC&&ACC.stash&&ACC.stash[+d.st])||null;
   if(d.sb!==undefined)return (G.bag&&G.bag[+d.sb])||null;
+  if(d.cs!==undefined)return (G.cslots&&G.cslots[+d.cs])||null;
   if(d.mpti&&typeof MP!=='undefined')return (G.bag||[]).find(x=>x&&x.tid===d.mpti)||null;
   if(d.tsee!==undefined&&typeof MP!=='undefined'&&MP.trade&&MP.trade.them)return (MP.trade.them.items||[])[+d.tsee]||null;
   return null}
@@ -5645,14 +5682,14 @@ function cmpDock(){
   if(!uiTouch()||mode!=='play'||!$('sheet')||!$('sheet').hidden){if(cmpSrc==='dock')cmpHide();return}
   if(!W||!P){if(cmpSrc==='dock')cmpHide();return}
   let best=null,bd=1.8;
-  for(const d of W.drops){if(!d||!d.it||d.it.charm||!d.it.slot)continue;const dist=Math.hypot(d.x-P.x,d.y-P.y);if(dist<bd){bd=dist;best=d}}
+  for(const d of W.drops){if(!d||!d.it||(!d.it.charm&&!d.it.slot))continue;const dist=Math.hypot(d.x-P.x,d.y-P.y);if(dist<bd){bd=dist;best=d}}
   if(!best||best===cmpMuteDrop){if(cmpSrc==='dock')cmpHide();return}
   cmpShow(best.it,{},'dock',best)}
 function cmpGround(){
   if(uiTouch()){if(cmpSrc==='ground')cmpHide();return}
   if(mode!=='play'||!$('sheet').hidden){if(cmpSrc==='ground')cmpHide();return}
   const pop=$('pop');if(pop&&!pop.hidden){if(cmpSrc==='ground')cmpHide();return}
-  if(HOVER&&HOVER.kind==='item'&&HOVER.o&&HOVER.o.it&&!HOVER.o.it.charm&&HOVER.o.it.slot){
+  if(HOVER&&HOVER.kind==='item'&&HOVER.o&&HOVER.o.it&&(HOVER.o.it.charm||HOVER.o.it.slot)){
     if(HOVER.o===cmpMuteDrop){if(cmpSrc==='ground')cmpHide();return}
     cmpShow(HOVER.o.it,{},'ground',HOVER.o);return}
   if(cmpSrc==='ground'){const tip=$('cmpTip');if(tip&&tip.matches(':hover'))return;cmpHide()}}
@@ -5660,9 +5697,9 @@ function cmpGround(){
 $('sheet').addEventListener('pointerover',e=>{
   if(e.pointerType&&e.pointerType!=='mouse')return;
   if(uiTouch())return;
-  const el=e.target.closest&&e.target.closest('[data-bag],[data-eq],[data-shop],[data-sat],[data-st],[data-sb],[data-mpti],[data-tsee]');
+  const el=e.target.closest&&e.target.closest('[data-bag],[data-eq],[data-shop],[data-sat],[data-st],[data-sb],[data-mpti],[data-tsee],[data-cs]');
   if(!el)return;
-  const it=cmpFromEl(el);if(!it||it.charm||!it.slot)return;
+  const it=cmpFromEl(el);if(!it||(!it.charm&&!it.slot))return;
   if(e.clientX!=null)cmpXY={x:e.clientX,y:e.clientY};
   clearTimeout(cmpLeave);
   cmpShow(it,{off:!!el.dataset.eq},'sheet')});
@@ -5721,7 +5758,7 @@ function drawSheet(){
     const it=sel&&(sel.cs!==undefined?(G.cslots||[])[sel.cs]:sel.m?G.merc&&G.merc[sel.m]:sel.eq?G.eq[sel.eq]:G.bag[sel.bag]);
     if(it&&sel.sock){const own=WK.filter(w=>G.words[w]);pop=`<div class="card"><div class="nm" style="color:#f7931a">Socket a word</div><div class="ln off">${esc(it.name)} · ${it.soc-it.words.length} empty. A word cannot be removed once set. Phrases need the right words in the right order: see the Codex.</div><div class="list">${own.length?own.map(w=>`<button class="li" data-word="${w}"><div><b>${w} ×${G.words[w]}</b><span>${AFK[WORDS[w][0]].t.replace('{v}',WORDS[w][1])}</span></div></button>`).join(''):'<div class="ln off">You hold no words. They turn up on torn notes dropped by machines.</div>'}</div><div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`}
     else 
-    if(it){let b='';if(sel.cs!==undefined){b=`<button class="big" data-csdo="off">Take off</button>`+(selling()?`<button class="ghost" data-csdo="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-csdo="drop">Drop</button>`)+`<button class="ghost" data-csdo="scrap">Scrap · ${charmParts(it)} parts</button>`}else if(sel.m){b=`<button class="big" data-mtake="${sel.m}">Take it back</button>`}else if(sel.eq){b=`<button class="ghost" data-do="unequip">Take off</button>`;if(it.soc&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`}else{b=`<button class="big" data-do="equip" ${it.id&&G.lvl>=it.req?'':'disabled'}>${it.charm?'Put on the belt':'Equip'}</button>`;b+=selling()?`<button class="ghost" data-do="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-do="drop">Drop</button>`;b+=`<button class="ghost" data-do="junk">${it.junk?'Not junk':'Junk'}</button>`;if(it.soc&&it.id&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`;if(it.charm)b+=`<button class="ghost" data-do="scrap">Scrap · ${charmParts(it)} parts</button>`;if(it.id&&!it.charm){b+=`<button class="ghost" data-do="scrap">Scrap · ${[1,2,4,8,15][it.q]||1} parts</button>`;if(it.aff.length)b+=`<button class="ghost" data-do="reroll" ${(G.parts||0)<rerollCost(it)?'disabled':''}>Reroll a modifier · ${rerollCost(it)} parts</button>`;if(canSoc(it))b+=`<button class="ghost" data-do="addsoc" ${(G.parts||0)<12?'disabled':''}>Cut a socket · 12 parts</button>`}if(G.merc&&!G.merc.dead&&it.id&&MSL.includes(it.slot))b+=`<button class="ghost" data-do="mgive">Give to ${esc(G.merc.name)}</button>`}pop=itemCard(it,b,!!sel.eq,!!sel.m||sel.cs!==undefined||!!it.charm)}
+    if(it){let b='';if(sel.cs!==undefined){b=`<button class="big" data-csdo="off">Take off</button>`+(selling()?`<button class="ghost" data-csdo="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-csdo="drop">Drop</button>`)+`<button class="ghost" data-csdo="scrap">Scrap · ${charmParts(it)} parts</button>`}else if(sel.m){b=`<button class="big" data-mtake="${sel.m}">Take it back</button>`}else if(sel.eq){b=`<button class="ghost" data-do="unequip">Take off</button>`;if(it.soc&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`}else{b=`<button class="big" data-do="equip" ${it.id&&G.lvl>=it.req?'':'disabled'}>${it.charm?'Put on the belt':'Equip'}</button>`;b+=selling()?`<button class="ghost" data-do="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-do="drop">Drop</button>`;b+=`<button class="ghost" data-do="junk">${it.junk?'Not junk':'Junk'}</button>`;if(it.soc&&it.id&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`;if(it.charm)b+=`<button class="ghost" data-do="scrap">Scrap · ${charmParts(it)} parts</button>`;if(it.id&&!it.charm){b+=`<button class="ghost" data-do="scrap">Scrap · ${[1,2,4,8,15][it.q]||1} parts</button>`;if(it.aff.length)b+=`<button class="ghost" data-do="reroll" ${(G.parts||0)<rerollCost(it)?'disabled':''}>Reroll a modifier · ${rerollCost(it)} parts</button>`;if(canSoc(it))b+=`<button class="ghost" data-do="addsoc" ${(G.parts||0)<12?'disabled':''}>Cut a socket · 12 parts</button>`}if(G.merc&&!G.merc.dead&&it.id&&MSL.includes(it.slot))b+=`<button class="ghost" data-do="mgive">Give to ${esc(G.merc.name)}</button>`}pop=itemCard(it,b,!!sel.eq,!!sel.m)}
     const jn=G.bag.filter(i=>i.junk).length;
     if(!selling()&&jn)h+=`<button class="ghost" data-dropjunk="1">Drop ${jn} junk item${jn>1?'s':''}</button>`;
     if(selling()&&G.bag.length){const sum=q=>G.bag.filter(i=>i&&(q<0||i.q===q)).reduce((a,i)=>a+sellValue(i),0),cnt=q=>G.bag.filter(i=>i&&i.q===q).length;h+=`<h3>Sell in bulk</h3>`;
