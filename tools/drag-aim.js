@@ -199,10 +199,10 @@ const thumb=await p.evaluate(()=>{
     const ev=(name,x,y)=>b.dispatchEvent(new PointerEvent(name,{bubbles:true,cancelable:true,pointerType:'touch',pointerId:7,button:0,clientX:x,clientY:y}));
     W.allies.length=0;g.G.en=800;P.cd[6]=0;P.castWait=0;P.dir={x:1,y:0};
     ev('pointerdown',home.x,home.y);
+    ev('pointermove',move.x,move.y);
     const ring=document.getElementById('aimStick');
     const ringOn=ring&&!ring.hidden;
     const reach=ring&&ring.querySelector('.ring').getBoundingClientRect();
-    ev('pointermove',move.x,move.y);
     const armed=g.AIMING&&{x:g.AIMING.x,y:g.AIMING.y,cancel:g.AIMING.cancel,thumb:g.AIMING.thumb,dead:g.AIMING.dead};
     const hero=g.screenAt(P.x,P.y);
     const spot=armed&&g.screenAt(armed.x,armed.y);

@@ -10,6 +10,8 @@ const cases = [
   ['On a phone, the stick walks, and Attack swings.', null, 'touch'],
   ['Tap the stim to drink. Drag it, then let go.', null, 'touch'],
   ['Drag away from the button. Further from the button puts the area further from you.', null, 'touch'],
+  ['A quick tap on a ground skill hits the nearest machine you can see.', null, 'touch'],
+  ['A blink hops a short way and will not land on a machine.', null, 'touch'],
   ['On a desk, left click walks. On a phone, the stick walks.', null, 'both'],
   ['Bread costs a million credits.', null, 'both'],
   ['Anything at all.', 'touch', 'touch'],

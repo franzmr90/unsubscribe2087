@@ -526,9 +526,9 @@ function drawStormTop(a){
     ctx.fillRect(-1.15,-9,2.3,12);ctx.restore()}
   ctx.restore()}
 function drawAim(){
-  if(!AIMING||!P||!W)return;
+  if(!AIMING||!AIMING.live||!P||!W)return;
   const spec=aimSpec(AIMING.i);if(!spec)return;
-  const c=aimClamp(spec,AIMING.x,AIMING.y);AIMING.x=c.x;AIMING.y=c.y;
+  const c=aimPlace(spec,AIMING.x,AIMING.y);AIMING.x=c.x;AIMING.y=c.y;
   const col=spec.col||(CLS[G.cls]&&CLS[G.cls].col)||'#e6e2d6';
   const x=AIMING.x,y=AIMING.y,X=SX(x,y),Y=SY(x,y);
   ctx.save();
@@ -562,7 +562,8 @@ function drawAim(){
     const Y0=SY(P.x,P.y)-16;
     ctx.strokeStyle=col;ctx.globalAlpha=.9;ctx.lineWidth=2;
     ctx.beginPath();ctx.moveTo(SX(P.x,P.y),Y0);ctx.lineTo(X,Y-16);ctx.stroke();
-    ctx.beginPath();ctx.arc(X,Y-16,5,0,6.283);ctx.stroke()}
+    if(spec.move){ctx.setLineDash([4,5]);ctx.beginPath();ctx.ellipse(X,Y,.55*45.25,.55*22.63,0,0,6.283);ctx.stroke();ctx.setLineDash([])}
+    else{ctx.beginPath();ctx.arc(X,Y-16,5,0,6.283);ctx.stroke()}}
   ctx.restore()}
 function render(){
   ctx.setTransform(DPR*ZM,0,0,DPR*ZM,0,0);if(W&&P)backdrop();else{ctx.fillStyle='#050409';ctx.fillRect(0,0,VW,VH)}

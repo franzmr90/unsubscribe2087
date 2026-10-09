@@ -772,10 +772,10 @@ const SKF={
   0:(L,m)=>{W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.22,w:1.5,reach:2.4});const hits=arcHits(2.4,-.15);for(const e of hits){hit(e,(1.3+.15*L)*m*scrapWeight(hits,e));if(Math.random()*100<15+2*L)e.stun=Math.max(e.stun,.5)}smash(2.2)},
   1:(L,m)=>shoot(P.dir,(1.2+.2*L)*m,99,{big:1,col:'#b08a58'}),
   3:(L,m)=>{P.spin=.35;burst(P.x,P.y,2.5,0,0,'#ff9a3c');sfx('boom');const hits=arcHits(2.5,-1);for(const e of hits)hit(e,(1.5+.22*L)*m*scrapWeight(hits,e))},
-  4:(L,m)=>dash(20,.25,(1.2+.3*L)*m,null,skvOf(G.cls,4).col),
+  4:(L,m)=>{const s=castSpot(5);let t=.25;if(s){const d=Math.hypot(s.x-P.x,s.y-P.y);t=Math.max(.05,Math.min(.25,d/20))}dash(20,t,(1.2+.3*L)*m,null,skvOf(G.cls,4).col)},
   5:(L,m)=>{burst(P.x,P.y,4,0,1+.2*L,'#ffe36b');P.guard=8},
   6:(L,m)=>{P.buff=6+L;P.buffL=6+L},
-  7:(L,m)=>{const mm=(2.2+.35*L)*m,end=()=>{burst(P.x,P.y,3,0,.6,'#ff5d4d');sfx('boom');const hits=arcHits(3,-1);for(const e of hits)hit(e,mm*scrapWeight(hits,e))};const s=castSpot(7);if(s&&Math.hypot(s.x-P.x,s.y-P.y)>.2){const d=Math.hypot(s.x-P.x,s.y-P.y);P.dir={x:(s.x-P.x)/d,y:(s.y-P.y)/d};dash(26,Math.max(.06,d/26),0,end)}else{const t=nearest(7);if(t){face(t);dash(26,Math.max(.06,(dist(t,P)-1)/26),0,end)}else end()}},
+  7:(L,m)=>{const mm=(2.2+.35*L)*m,end=()=>{burst(P.x,P.y,3,0,.6,'#ff5d4d');sfx('boom');const hits=arcHits(3,-1);for(const e of hits)hit(e,mm*scrapWeight(hits,e))};if(P.spot){const s=castSpot(7),d=s?Math.hypot(s.x-P.x,s.y-P.y):0;if(d>.2){P.dir={x:(s.x-P.x)/d,y:(s.y-P.y)/d};dash(26,Math.max(.06,d/26),0,end)}else end()}else{const t=nearest(7);if(t){face(t);dash(26,Math.max(.06,(dist(t,P)-1)/26),0,end)}else end()}},
   9:(L)=>{const s=castSpot(3);let x,y;if(s){x=s.x;y=s.y}else{x=P.x+P.dir.x*.7;y=P.y+P.dir.y*.7;if(!free(x,y,.2)){x=P.x;y=P.y}}const pool=S.maxHp*(.28+.06*L);fxAim('patch',x,y,2.6);W.allies.push({k:'pail',x,y,life:1e9,hp:pool,max:pool,rate:.02+.004*L,r:.3,L:L||1})},
   12:(L,m)=>{for(const e of W.ents.slice()){if(dist(e,P)>4.2+e.r)continue;shove(e,(e.champ||e.su||isBoss(e.k))?-1.2:2.2);hit(e,(.55+.08*L)*m)}},
   13:()=>{P.two={n:3};float(P.x,P.y,'Two-handed','#d9822b',0)},
@@ -789,11 +789,11 @@ const SKF={
   7:(L,m)=>{for(let i=0;i<3;i++)W.allies.push({k:'minion',x:P.x+rnd(-.6,.6),y:P.y+rnd(-.6,.6),r:.2,life:15+L,m:(.4+.07*L)*m,cd:0,ph:rnd(0,6)})},
   9:(L,m)=>{const s=castSpot(4.5);const dx=s?s.x-P.x:P.dir.x,dy=s?s.y-P.y:P.dir.y;const pts=faultPts(dx,dy,s?Math.hypot(dx,dy):4.5);if(!pts.length){toast('No floor for the fault');return}P.castWait=.45;const mid=pts[pts.length>>1];W.allies.push({k:'fault',x:mid.x,y:mid.y,pts,life:3.2+.15*L,pulse:0,m:(.4+.06*L)*m,r:.75,dt:'heat'})},
   10:(L,m)=>{const s=castSpot(8),t=s?null:nearest(8),x=s?s.x:t?t.x:P.x+P.dir.x*4,y=s?s.y:t?t.y:P.y+P.dir.y*4;fxAim('patch',x,y,2.2);W.allies.push({k:'pstorm',x,y,life:4.6,arm:1.6,pulse:0,m:(.5+.08*L)*m,r:2.2,dt:'noise'})},
-  12:()=>{let bx=P.x,by=P.y,n=0;const ox=P.x,oy=P.y;for(let i=1;i<=8;i++){const x=P.x-P.dir.x*i*.5,y=P.y-P.dir.y*i*.5;if(!free(x,y,P.r))break;bx=x;by=y;n=i}if(!n){toast('Nowhere to step');return}parts(P.x,P.y,8,['#9a6cff','#fff'],2);P.x=bx;P.y=by;P.inv=Math.max(P.inv,.15);parts(P.x,P.y,8,['#9a6cff','#fff'],2);fxTrail(ox,oy,P.x,P.y,skvOf(G.cls,12).col,.45)},
+  12:()=>{let bx=P.x,by=P.y,n=0;const ox=P.x,oy=P.y;const s=P.spot?castSpot(4):null;if(s){let dx=s.x-P.x,dy=s.y-P.y,len=Math.hypot(dx,dy);if(len>4){dx*=4/len;dy*=4/len;len=4}if(len>.05){const ux=dx/len,uy=dy/len,steps=Math.max(1,Math.round(len/.5));for(let i=1;i<=steps;i++){if(i*.5>len+1e-4)break;const x=P.x+ux*i*.5,y=P.y+uy*i*.5;if(!free(x,y,P.r))break;bx=x;by=y;n=i}}}else{for(let i=1;i<=8;i++){const x=P.x-P.dir.x*i*.5,y=P.y-P.dir.y*i*.5;if(!free(x,y,P.r))break;bx=x;by=y;n=i}}if(!n){toast('Nowhere to step');return}parts(P.x,P.y,8,['#9a6cff','#fff'],2);P.x=bx;P.y=by;P.inv=Math.max(P.inv,.15);parts(P.x,P.y,8,['#9a6cff','#fff'],2);fxTrail(ox,oy,P.x,P.y,skvOf(G.cls,12).col,.45)},
   14:(L,m)=>{const t=nearest(8);if(!t){toast('No machine in reach');return}P.castWait=.75;face(t);const ty=G.schema||'surge';P.k9=ty;if(P.fm)P.fm.dt=ty;W.fx.push({k:'bolt',x:P.x,y:P.y,x2:t.x,y2:t.y,t:0,life:.25,col:DTY[ty].c});hit(t,(2.8+.4*L)*m)}},
  courier:{
   0:(L,m)=>{const n=3+Math.floor(L/2)+(S.sp.pod?2:0),a0=Math.atan2(P.dir.y,P.dir.x);for(let i=0;i<n;i++){const a=a0+(i-(n-1)/2)*.16;shoot({x:Math.cos(a),y:Math.sin(a)},(.9+.1*L)*m,S.sp.deadletter||Math.random()*100<S.pierce?99:0)}for(const e of W.ents.slice())if(dist(e,P)<2+e.r)hit(e,(.5+.06*L)*m)},
-  1:(L,m)=>{dash(22,.24,0,null,skvOf(G.cls,1).col);P.haste=2+.3*L},
+  1:(L,m)=>{const s=castSpot(5.3);let t=.24;if(s){const d=Math.hypot(s.x-P.x,s.y-P.y);t=Math.max(.05,Math.min(.24,d/22))}dash(22,t,0,null,skvOf(G.cls,1).col);P.haste=2+.3*L},
   3:(L,m)=>{const s=castSpot(6);W.allies.push({k:'decoy',x:s?s.x:P.x,y:s?s.y:P.y,life:3,m:(2.5+.4*L)*m})},
   4:(L,m)=>{const s=castSpot(6);W.allies.push({k:'trops',x:s?s.x:P.x,y:s?s.y:P.y,life:6,m:(.25+.05*L)*m,cd:0})},
   6:(L,m)=>{P.volley={t:1.5,cd:0,m:(.5+.07*L)*m}},
@@ -819,7 +819,7 @@ Object.assign(SKF,{
   /* Orange Pill, and what survives has seen the chart. */
   5:(L,m)=>{const mm=(1.6+.3*L)*m;
     const end=()=>{for(const e of W.ents)if(dist(e,P)<2.2+e.r)e.mark=Math.max(e.mark,6+.3*L)};
-    const s=castSpot(8);if(s&&Math.hypot(s.x-P.x,s.y-P.y)>.25){const d=Math.hypot(s.x-P.x,s.y-P.y);dash(24,Math.max(.08,d/24),mm,end,skvOf(G.cls,5).col)}
+    if(P.spot){const s=castSpot(8),d=s?Math.hypot(s.x-P.x,s.y-P.y):0;if(d>.2)dash(24,Math.max(.06,d/24),mm,end,skvOf(G.cls,5).col);else end()}
     else{const t=nearest(8);if(t){face(t);dash(24,Math.max(.08,(dist(t,P)-1)/24),mm,end,skvOf(G.cls,5).col)}else dash(24,.22,mm,end,skvOf(G.cls,5).col)}},
   /* Five hammers, a full turn, the first along your facing. P.ph was never set, so the old angle was NaN and no hammer moved. */
   6:(L,m)=>{const n=5,a0=Math.atan2(P.dir.y,P.dir.x);for(let i=0;i<n;i++){const a=a0+(i/n)*6.283;
@@ -833,8 +833,7 @@ Object.assign(SKF,{
   13:()=>{P.dip=1}},
  anon:{
   0:(L,m)=>{const s=castSpot(6);W.allies.push({k:'decoy',x:s?s.x:P.x,y:s?s.y:P.y,life:3,m:(2.2+.35*L)*m,stun:.8})},
-  1:(L,m)=>{const s=castSpot(8);let t=null;if(s){let bd=1.5;for(const e of W.ents){if(!(e.hp>0))continue;const d=Math.hypot(e.x-s.x,e.y-s.y);if(d<bd){bd=d;t=e}}}else t=nearest(8);const ox=P.x,oy=P.y;parts(P.x,P.y,10,['#3f3f4c','#e6e2d6'],2);if(t){const d=dist(t,P)||1,nx=t.x+(t.x-P.x)/d*.9,ny=t.y+(t.y-P.y)/d*.9;if(free(nx,ny,P.r)){P.x=nx;P.y=ny}else{P.x=t.x-(t.x-P.x)/d*.8;P.y=t.y-(t.y-P.y)/d*.8}face(t);P.inv=Math.max(P.inv,.4);P.ambM=Math.max(1,S.critM);P.ambT=.05;hit(t,(1.6+.25*L)*m);P.swing=.18;if(ox!==P.x||oy!==P.y)fxTrail(ox,oy,P.x,P.y,skvOf(G.cls,1).col,.45)}
-    else for(let i=0;i<8;i++){if(free(P.x+P.dir.x*.5,P.y+P.dir.y*.5,P.r)){P.x+=P.dir.x*.5;P.y+=P.dir.y*.5}}if(ox!==P.x||oy!==P.y)fxTrail(ox,oy,P.x,P.y,skvOf(G.cls,1).col,.4)},
+  1:(L,m)=>{const s=castSpot(8);const ox=P.x,oy=P.y;parts(P.x,P.y,10,['#3f3f4c','#e6e2d6'],2);if(P.moveLand&&s){const end=blinkEnd(s.x,s.y);if(end&&Math.hypot(end.x-P.x,end.y-P.y)>=.2){P.x=end.x;P.y=end.y;P.dir={x:end.ux,y:end.uy};P.inv=Math.max(P.inv,.25)}}else{let t=null;if(s){let bd=1.5;for(const e of W.ents){if(!(e.hp>0))continue;const d=Math.hypot(e.x-s.x,e.y-s.y);if(d<bd){bd=d;t=e}}}else t=nearest(8);if(t){const d=dist(t,P)||1,nx=t.x+(t.x-P.x)/d*.9,ny=t.y+(t.y-P.y)/d*.9;if(free(nx,ny,P.r)){P.x=nx;P.y=ny}else{P.x=t.x-(t.x-P.x)/d*.8;P.y=t.y-(t.y-P.y)/d*.8}face(t);P.inv=Math.max(P.inv,.4);P.ambM=Math.max(1,S.critM);P.ambT=.05;hit(t,(1.6+.25*L)*m);P.swing=.18}else for(let i=0;i<8;i++){if(free(P.x+P.dir.x*.5,P.y+P.dir.y*.5,P.r)){P.x+=P.dir.x*.5;P.y+=P.dir.y*.5}}}if(ox!==P.x||oy!==P.y)fxTrail(ox,oy,P.x,P.y,skvOf(G.cls,1).col,.45)},
   3:(L,m)=>{const ms=W.allies.filter(a=>a.k==='mine');if(ms.length>=4)W.allies.splice(W.allies.indexOf(ms[0]),1);const fast=P.stealth>0&&sl(11)&&!boonOn(11);const s=castSpot(5);W.allies.push({k:'mine',x:s?s.x:P.x,y:s?s.y:P.y,life:12,arm:fast?0.22:0.6,m:(3+.5*L)*m,r:2.4})},
   4:(L,m)=>{P.stealth=3+.3*L;P.haste=P.stealth;parts(P.x,P.y,14,['#3f3f4c','#888'],2)},
   5:(L,m)=>{const s=castSpot(8);let t=null,c=s;if(!s){t=nearest(8);if(!t){toast('No target in reach');return}c={x:t.x,y:t.y}}else{let bd=3;for(const e of W.ents){if(!(e.hp>0))continue;const d=Math.hypot(e.x-s.x,e.y-s.y);if(d<bd){bd=d;t=e}}}if(t)face(t);fxAim('patch',c.x,c.y,3);if(t)hit(t,(1+.2*L)*m);for(const e of W.ents)if(dist(e,c)<3)e.mark=8+L},
@@ -897,13 +896,18 @@ Object.assign(SKF,{
    held-button retry and the button drag are untouched.
    A finger measures from the skill button: the direction from the button is the
    direction from the hero, and a longer drag pushes the area out to the skill's
-   reach. A mouse or a key still aims where the pointer sits. */
+   reach. A mouse or a key still aims where the pointer sits.
+   On a touch screen, with tap-to-target on, a press under AIM_TAP_MS that barely
+   moves casts at once: a splash at the nearest machine in sight, or the ground
+   in front when none qualifies, and a blink or leap a short hop that way, never
+   onto a machine. Holding past that, or dragging off the button, opens the aim. */
 let AIMING=null,lastPtr=null;
+const AIM_TAP_MS=200,AIM_TAP_PX=18;
 const AIM={
   scrapper:{
     1:{kind:'dir',reach:8,def:5},
-    4:{kind:'dir',reach:5,def:5},
-    7:{kind:'blob',r:3,reach:7,def:4},
+    4:{kind:'dir',reach:5,def:2.5,move:1},
+    7:{kind:'blob',r:3,reach:7,def:3.5,move:1},
     9:{kind:'blob',r:2.6,reach:3,def:.7},
     12:{kind:'blob',r:4.2,reach:0}},
   hacker:{
@@ -912,10 +916,10 @@ const AIM={
     6:{kind:'blob',r:3.5,reach:7,def:4,col:'#d5e8f6'},
     9:{kind:'line',r:.75,len:4.5,reach:4.5,def:4.5,col:'#ff7a3c'},
     10:{kind:'blob',r:2.2,reach:8,def:4},
-    12:{kind:'dir',reach:4,def:4,back:1}},
+    12:{kind:'dir',reach:4,def:2,back:1,move:1}},
   courier:{
     0:{kind:'dir',reach:7,def:4},
-    1:{kind:'dir',reach:5.3,def:5},
+    1:{kind:'dir',reach:5.3,def:2.6,move:1},
     3:{kind:'blob',r:2.6,reach:6,def:2.2},
     4:{kind:'blob',r:2.6,reach:6,def:2},
     9:{kind:'dir',reach:8,def:5},
@@ -923,7 +927,7 @@ const AIM={
     12:{kind:'dir',reach:8,def:5}},
   anon:{
     0:{kind:'blob',r:2.6,reach:6,def:2.2},
-    1:{kind:'dir',reach:8,def:4},
+    1:{kind:'dir',reach:8,def:4,move:1},
     3:{kind:'blob',r:2.4,reach:5,def:1.4},
     5:{kind:'blob',r:3,reach:8,def:4},
     6:{kind:'blob',r:2.2,reach:7,def:4}},
@@ -934,10 +938,10 @@ const AIM={
     6:{kind:'wall',r:.42,reach:4,def:1.2,col:'#6a8f62'},
     9:{kind:'blob',r:3.4,reach:4,def:0,col:'#9fd0c8'}},
   maxi:{
-    5:{kind:'dir',reach:8,def:4},
+    5:{kind:'dir',reach:8,def:4,move:1},
     9:{kind:'blob',r:4.2,reach:0,col:'#f7931a'}},
   item:{
-    100:{kind:'path',reach:6.5,def:4,col:'#c9b6ff'}}
+    100:{kind:'path',reach:6.5,def:3.25,move:1,col:'#c9b6ff'}}
 };
 function aimSpec(i){
   if(!(i>=0)||!G)return null;
@@ -973,6 +977,81 @@ function aimDefault(spec){
 /* Full cast range maps to a thumb travel that fits on the screen. The ring is
    the same in every direction, and it shrinks when the button sits near an edge
    so the far side of the skill is still reachable. */
+
+function aimIsMove(spec){return !!(spec&&(spec.move||spec.kind==='path'))}
+function aimPlace(spec,x,y){
+  const c=aimClamp(spec,x,y);
+  if(!aimIsMove(spec)||!P||!W)return c;
+  let dx=c.x-P.x,dy=c.y-P.y,len=Math.hypot(dx,dy);
+  if(!(len>.12))return {x:P.x,y:P.y};
+  const ux=dx/len,uy=dy/len;let last=null;
+  for(let s=.25;s<=len+1e-4;s+=.25){
+    const nx=P.x+ux*Math.min(s,len),ny=P.y+uy*Math.min(s,len);
+    if(!walk(nx,ny)||!free(nx,ny,P.r||.32)||hedgeAt(nx,ny,P))break;
+    last={x:nx,y:ny}}
+  return last||{x:P.x,y:P.y}}
+function aimLos(x,y){
+  if(!P||!W||!W.map)return false;
+  const town=W.z&&(W.z.town||W.z.sim);
+  const dx=x-P.x,dy=y-P.y,len=Math.hypot(dx,dy);
+  if(!(len>.2))return true;
+  const n=Math.max(1,Math.ceil(len/.4));
+  for(let i=1;i<=n;i++){
+    const nx=P.x+dx*(i/n),ny=P.y+dy*(i/n);
+    if(!walk(nx,ny))return false;
+    if(!town&&W.seen){const ix=nx|0,iy=ny|0;if(ix<0||iy<0||ix>=W.N||iy>=W.N||!W.seen[iy*W.N+ix])return false}}
+  return true}
+function aimHostile(e){return !!(e&&e.hp>0&&!e.mp)}
+function aimAcquire(spec){
+  if(!P||!W||!spec||aimIsMove(spec)||!(spec.reach>0))return null;
+  const reach=spec.reach;let best=null,bd=reach+0.01;
+  for(const e of W.ents){
+    if(!aimHostile(e))continue;
+    const d=Math.hypot(e.x-P.x,e.y-P.y);
+    if(d>reach+(e.r||0))continue;
+    if(!aimLos(e.x,e.y))continue;
+    if(d<bd){bd=d;best=e}}
+  if(!best)return null;
+  const cluster=[best];
+  for(const e of W.ents){
+    if(e===best||!aimHostile(e))continue;
+    if(Math.hypot(e.x-best.x,e.y-best.y)>1.6)continue;
+    if(Math.hypot(e.x-P.x,e.y-P.y)>reach+(e.r||0))continue;
+    if(!aimLos(e.x,e.y))continue;
+    cluster.push(e)}
+  if(cluster.length<2)return {x:best.x,y:best.y};
+  let sx=0,sy=0;for(const e of cluster){sx+=e.x;sy+=e.y}
+  const cx=sx/cluster.length,cy=sy/cluster.length;
+  if(Math.hypot(cx-P.x,cy-P.y)<=reach&&aimLos(cx,cy))return {x:cx,y:cy};
+  return {x:best.x,y:best.y}}
+function aimHopDir(spec){
+  let dx=(P.dir&&P.dir.x)||1,dy=(P.dir&&P.dir.y)||0;
+  if(typeof J!=='undefined'&&J&&Math.hypot(J.x||0,J.y||0)>.2){const d=aimScreenDir(J.x,J.y);dx=d.x;dy=d.y}
+  const sgn=spec&&spec.back?-1:1,len=Math.hypot(dx,dy)||1;
+  return {x:dx/len*sgn,y:dy/len*sgn}}
+function aimHopPoint(spec){
+  const dir=aimHopDir(spec);
+  const dist=spec&&spec.reach?Math.min(spec.def!=null?spec.def:Math.min(3,spec.reach),spec.reach):0;
+  return aimPlace(spec,P.x+dir.x*dist,P.y+dir.y*dist)}
+function aimNearFoe(x,y){
+  if(!W)return false;
+  for(const e of W.ents){if(!aimHostile(e))continue;if(Math.hypot(e.x-x,e.y-y)<.9)return true}
+  return false}
+function aimClearOf(x,y,spec){
+  let px=x,py=y;
+  for(let n=0;n<16;n++){
+    if(!aimNearFoe(px,py))return {x:px,y:py};
+    let dx=P.x-px,dy=P.y-py,len=Math.hypot(dx,dy);
+    if(!(len>.25))return {x:P.x,y:P.y};
+    const step=Math.min(.45,len),g=aimPlace(spec,px+dx/len*step,py+dy/len*step);
+    if(Math.hypot(g.x-px,g.y-py)<.02)return {x:P.x,y:P.y};
+    px=g.x;py=g.y}
+  return {x:px,y:py}}
+function aimTapPoint(spec){
+  if(aimIsMove(spec))return aimClearOf(aimHopPoint(spec).x,aimHopPoint(spec).y,spec);
+  const got=(OPT&&OPT.tapTarget===false)?null:aimAcquire(spec);
+  if(got)return aimClamp(spec,got.x,got.y);
+  const d=aimDefault(spec);return aimClamp(spec,d.x,d.y)}
 function aimStickMetrics(ox,oy){
   const vw=window.innerWidth||800,vh=window.innerHeight||600,short=Math.min(vw,vh);
   const want=Math.max(70,Math.min(150,short*.22));
@@ -1008,12 +1087,12 @@ function aimThumb(cx,cy){
   AIMING.reachPx=w.stick.reach;AIMING.deadPx=w.stick.dead;AIMING.dead=w.dead?1:0;
   if(w.dead){
     if(AIMING.armed){AIMING.x=P.x;AIMING.y=P.y}
-    else{const d=aimDefault(spec);AIMING.x=d.x;AIMING.y=d.y}
-  }else{AIMING.armed=1;const c=aimClamp(spec,w.x,w.y);AIMING.x=c.x;AIMING.y=c.y}
+    else{const d=aimPlace(spec,aimDefault(spec).x,aimDefault(spec).y);AIMING.x=d.x;AIMING.y=d.y}
+  }else{AIMING.armed=1;const c=aimPlace(spec,w.x,w.y);AIMING.x=c.x;AIMING.y=c.y}
   return {x:AIMING.x,y:AIMING.y}}
 function aimStickPaint(){
   const el=document.getElementById('aimStick');if(!el)return;
-  if(!AIMING||!AIMING.thumb){el.hidden=true;return}
+  if(!AIMING||!AIMING.thumb||!AIMING.live){el.hidden=true;return}
   el.hidden=false;el.classList.toggle('cancel',!!AIMING.cancel);
   const reach=AIMING.reachPx||70,dead=AIMING.deadPx||16,ox=AIMING.ox,oy=AIMING.oy;
   const ring=el.querySelector('.ring'),hole=el.querySelector('.dead'),line=el.querySelector('.line'),knob=el.querySelector('.knob'),cap=el.querySelector('.cap');
@@ -1027,21 +1106,29 @@ function aimStickPaint(){
   line.style.left=ox+'px';line.style.top=(oy-1)+'px';line.style.width=shown+'px';line.style.transform='rotate('+ang+'rad)';
   knob.style.left=(ox+Math.cos(ang)*shown-8)+'px';knob.style.top=(oy+Math.sin(ang)*shown-8)+'px'}
 function aimShow(on){const b=document.getElementById('aimCancel');if(b)b.hidden=!on;aimStickPaint()}
-function beginAim(i,slot,pt,cx,cy,fkey){
+function beginAim(i,slot,pt,cx,cy,fkey,quiet){
   const spec=aimSpec(i);if(!spec||!P||mode!=='play')return null;
-  const d=aimDefault(spec);
+  if(AIMING&&AIMING.timer)clearTimeout(AIMING.timer);
+  const d=aimPlace(spec,aimDefault(spec).x,aimDefault(spec).y);
   const thumb=pt==='touch'||pt==='pen';
-  AIMING={i:i,slot:slot,pt:pt||'',x:d.x,y:d.y,left:0,cancel:0,fkey:fkey||'',thumb:thumb?1:0,armed:0,dead:0,ox:0,oy:0,fx:0,fy:0,reachPx:0,deadPx:0};
+  AIMING={i:i,slot:slot,pt:pt||'',x:d.x,y:d.y,left:0,cancel:0,fkey:fkey||'',thumb:thumb?1:0,armed:0,dead:0,ox:0,oy:0,fx:0,fy:0,reachPx:0,deadPx:0,live:quiet?0:1,timer:0,downX:cx,downY:cy};
   if(thumb){
     const o=aimOrigin(slot,cx,cy),stick=aimStickMetrics(o.x,o.y);
     AIMING.ox=o.x;AIMING.oy=o.y;AIMING.fx=cx!=null?cx:o.x;AIMING.fy=cy!=null?cy:o.y;AIMING.reachPx=stick.reach;AIMING.deadPx=stick.dead;
-    if(cx!=null&&cy!=null)aimThumb(cx,cy);
-  }else if(cx!=null&&cy!=null){const w=worldAt(cx,cy),c=aimClamp(spec,w.x,w.y);AIMING.x=c.x;AIMING.y=c.y;AIMING.left=1}
-  aimShow(true);return {i:AIMING.i,x:AIMING.x,y:AIMING.y}}
+    if(!quiet&&cx!=null&&cy!=null)aimThumb(cx,cy);
+  }else if(!quiet&&cx!=null&&cy!=null){const w=worldAt(cx,cy),c=aimPlace(spec,w.x,w.y);AIMING.x=c.x;AIMING.y=c.y;AIMING.left=1}
+  if(!quiet)aimShow(true);
+  return {i:AIMING.i,x:AIMING.x,y:AIMING.y,live:AIMING.live}}
+function aimCommit(){
+  if(!AIMING||AIMING.live)return;
+  AIMING.live=1;
+  if(AIMING.timer){clearTimeout(AIMING.timer);AIMING.timer=0}
+  if(AIMING.thumb)aimThumb(AIMING.fx,AIMING.fy);
+  aimShow(true)}
 function aimSet(x,y){
   if(!AIMING||!P)return null;
   const spec=aimSpec(AIMING.i);if(!spec)return null;
-  const c=aimClamp(spec,x,y);AIMING.x=c.x;AIMING.y=c.y;AIMING.left=1;return {x:c.x,y:c.y}}
+  const c=aimPlace(spec,x,y);AIMING.x=c.x;AIMING.y=c.y;AIMING.left=1;return {x:c.x,y:c.y}}
 function aimMove(cx,cy){if(cx==null||cy==null)return null;const w=worldAt(cx,cy);return aimSet(w.x,w.y)}
 function aimShouldCancel(cx,cy){
   if(!AIMING||cx==null||cy==null)return false;
@@ -1052,34 +1139,53 @@ function aimShouldCancel(cx,cy){
   return false}
 function aimTrack(cx,cy){
   if(!AIMING)return;
+  if(!AIMING.live){
+    AIMING.fx=cx;AIMING.fy=cy;
+    const ox=AIMING.downX!=null?AIMING.downX:AIMING.ox,oy=AIMING.downY!=null?AIMING.downY:AIMING.oy;
+    if(Math.hypot((cx||0)-ox,(cy||0)-oy)<AIM_TAP_PX)return;
+    aimCommit()}
   if(AIMING.thumb)aimThumb(cx,cy);else aimMove(cx,cy);
   if(AIMING.pt!=='key'&&AIMING.slot!=null&&typeof sbtn!=='undefined'){const b=sbtn[AIMING.slot];const el=document.elementFromPoint(cx,cy);if(!(b&&el&&b.contains(el)))AIMING.left=1}
   const back=aimShouldCancel(cx,cy);
   AIMING.cancel=AIMING.thumb?((back||(AIMING.dead&&AIMING.armed))?1:0):(back?1:0);
   aimStickPaint()}
-function aimCancel(){AIMING=null;aimShow(false)}
-function aimRelease(cx,cy){
-  if(!AIMING||!P)return false;
-  const a=AIMING;
-  if((cx!=null&&aimShouldCancel(cx,cy))||(a.cancel&&a.pt!=='key'&&cx!=null)){aimCancel();return false}
-  if(a.pt==='key'&&a.cancel){aimCancel();return false}
-  const spec=aimSpec(a.i);AIMING=null;aimShow(false);if(!spec)return false;
-  const c=aimClamp(spec,a.x,a.y);
+function aimCancel(){if(AIMING&&AIMING.timer)clearTimeout(AIMING.timer);AIMING=null;aimShow(false)}
+function aimSpend(a,x,y){
+  const spec=aimSpec(a.i);if(!spec||!P)return false;
+  const c=aimPlace(spec,x,y);
   P.spot={x:c.x,y:c.y};
+  if(aimIsMove(spec))P.moveLand=1;
   try{
     if(a.i>=100){P.blinkAt={x:c.x,y:c.y};castIndex(a.i);P.blinkAt=null}
     else if(a.slot!=null&&G.slots&&G.slots[a.slot]===a.i)cast(a.slot);
     else castIndex(a.i);
-  }finally{P.spot=null;P.aim=null;if(P.blinkAt)P.blinkAt=null}
+  }finally{P.spot=null;P.aim=null;P.moveLand=0;if(P.blinkAt)P.blinkAt=null}
   return true}
+function aimRelease(cx,cy){
+  if(!AIMING||!P)return false;
+  const a=AIMING;
+  if(a.timer){clearTimeout(a.timer);a.timer=0}
+  if(!a.live){
+    const spec=aimSpec(a.i);AIMING=null;aimShow(false);if(!spec)return false;
+    const p=aimTapPoint(spec);return aimSpend(a,p.x,p.y)}
+  if((cx!=null&&aimShouldCancel(cx,cy))||(a.cancel&&a.pt!=='key'&&cx!=null)){aimCancel();return false}
+  if(a.pt==='key'&&a.cancel){aimCancel();return false}
+  const spec=aimSpec(a.i);AIMING=null;aimShow(false);if(!spec)return false;
+  return aimSpend(a,a.x,a.y)}
 function aimPointerDown(e,slot){
   if(!G||!P||mode!=='play'||!e)return false;
   const k=G.slots[slot];
-  if(!aimSpec(k)||!wantDrag(e.pointerType))return false;
+  const spec=aimSpec(k);
+  if(!spec||!wantDrag(e.pointerType))return false;
+  if(!(spec.reach>0))return false;
   if(k>=100){if(typeof itemSkillOn!=='function'||!itemSkillOn(k))return false}
   else{if(!sl(k))return false;if(G.cls==='homesteader'&&hsBlocked(k))return false;if(G.cls==='witness'&&witBlock(k))return false}
   e.preventDefault();e.stopPropagation();
-  beginAim(k,slot,e.pointerType||'mouse');
+  const touch=e.pointerType==='touch'||e.pointerType==='pen';
+  const quiet=touch&&!(OPT&&OPT.tapTarget===false);
+  if(touch)beginAim(k,slot,e.pointerType,e.clientX,e.clientY,'',quiet?1:0);
+  else beginAim(k,slot,e.pointerType||'mouse');
+  if(AIMING&&quiet)AIMING.timer=setTimeout(aimCommit,AIM_TAP_MS);
   try{e.currentTarget.setPointerCapture(e.pointerId)}catch(err){}
   return true}
 function keyCast(slot,e){
