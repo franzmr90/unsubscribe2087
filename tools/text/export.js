@@ -12,7 +12,7 @@
 */
 const fs = require('fs');
 const path = require('path');
-const { execFileSync } = require('child_process');
+const docx = require('./docx');
 const E = require('./engine');
 
 const ROOT = path.join(__dirname, '..', '..');
@@ -1835,9 +1835,15 @@ function writeDoc() {
     lines.push('');
   }
   fs.mkdirSync(path.dirname(OUT_MD), { recursive: true });
-  fs.writeFileSync(OUT_MD, lines.join('\n'));
+  const md = lines.join('\n');
+  fs.writeFileSync(OUT_MD, md);
   fs.writeFileSync(OUT_CAT, JSON.stringify({ generated: new Date().toISOString(), count: entries.length, entries }, null, 0));
-  execFileSync('pandoc', ['-f', 'markdown-smart-tex_math_dollars-tex_math_single_backslash', '-t', 'docx', '--wrap=none', '-o', OUT_DOCX, OUT_MD], { stdio: 'inherit' });
+  try {
+    docx.writeDocx(md, OUT_DOCX);
+  } catch (e) {
+    console.error('Word file skipped: ' + (e && e.message ? e.message : e));
+    console.error('text/GAME-TEXT.md and text/catalog.json were written. This export does not use pandoc.');
+  }
 }
 
 function selfCheck() {
