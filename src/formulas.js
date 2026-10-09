@@ -48,7 +48,7 @@ const FORMULAS = {
      (`ladder`), then Hard and Brutal lift that reading. A full clear is aimed at the low
      40s, the mid-60s, and about 80. Pay falls off once you are more than `ahead` levels
      above the machine. */
-  xp: { base: 58, pow: 1.85, ahead: 5, fade: 0.08, floor: 0.2, act1: 1.6, after: 0.54 },
+  xp: { base: 58, pow: 1.85, ahead: 5, fade: 0.08, floor: 0.2, act1: 1.6, after: 0.41 },
   /* Written 1–12 stay. Written 12–72 is read as 12–38. Hard adds `hard`, Brutal adds `brutal`. */
   ladder: { act1: 12, top: 72, end: 38, hard: 22, brutal: 38 },
   /* Experience past the act cap, paid in one write on entering Act III. */
