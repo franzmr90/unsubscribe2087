@@ -218,6 +218,7 @@ function charmMigrate(){
   if(box)accSave()}
 function charmApply(s){
   s.chAll=0;s.csk={};s.chFlat=0;s.gearSkills=s.skills||0;
+  if(s.beltBroken)return;
   for(const it of (G&&G.cslots)||[]){if(!it||!it.aff||(it.req||1)>G.lvl)continue;charmNormalize(it);
     for(const a of it.aff){if(!a)continue;
       if(a.k==='csk'){if(!a.cls||a.cls===G.cls)s.csk[a.i]=(s.csk[a.i]||0)+(a.v||1);continue}
@@ -490,7 +491,7 @@ UNI.push(
  {id:'check',cls:'founder',n:'Blank Check',slot:'belt',il:12,base:'Tool Belt',mods:{en:[25,40],hp:[30,45]},sp:'Founder only. Two more Interns answer the call, and the whole workforce hits 25% harder',fl:'Signed. Undated. Dangerous.'},
  {id:'orgchart',cls:'founder',n:'Org Chart',slot:'amulet',il:26,base:'Sigil Core',mods:{skills:[1,1],hp:[50,70]},sp:'Founder only. A Chief of Staff stands with you at all times, at no cost',fl:'Every line reports to you. Eventually.'},
  {id:'orangepill',n:'Orange Pill',slot:'ring',il:9,base:'Signet Chip',mods:{mf:[15,25],gold:[20,35]},sp:'Champions drop a sat, and each one you break nudges adoption upward',fl:'You cannot untake it.'},
- {id:'coldwallet',n:'Cold Wallet',slot:'belt',il:16,base:'Tool Belt',mods:{hp:[40,60],armorP:[30,45]},sp:'You pay no fee when you die, and sats you pick up count for a quarter more',fl:'Never been online. Never will be.'},
+ {id:'coldwallet',n:'Cold Wallet',slot:'belt',il:16,base:'Tool Belt',ind:1,mods:{hp:[40,60],armorP:[30,45]},sp:'You pay no fee when you die, and sats you pick up count for a quarter more',fl:'Never been online. Never will be.'},
  {id:'hashrate',n:'Hash Rate',slot:'gloves',il:28,base:'Servo Fists',mods:{aspd:[10,15],dmg:[20,35]},sp:'+1% damage for every kill in your streak, up to 40',fl:'More work, more weight.'},
  {id:'soaker',cls:'homesteader',n:'Soaker Hose',slot:'belt',il:12,base:'Tool Belt',mods:{hp:[30,50]},sp:'Homesteader only. Plots you place last half again as long',fl:'It weeps. That is the point.'},
  {id:'collar',cls:'homesteader',n:'One Collar',slot:'amulet',il:10,base:'Dog Tag',mods:{hp:[20,35]},sp:'Homesteader only. A single stray is already with you',fl:'You did not name it. It did not ask.'},

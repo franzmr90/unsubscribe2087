@@ -476,7 +476,7 @@ async function ready(page) {
     const rise = (document.getElementById('bRise') && document.getElementById('bRise').textContent) || '';
     return { before, after, fee: before - after, picked, docId, town: !!(g.W && g.W.z && g.W.z.town), hcDelta: hcBefore - g.G.credits, notice: notice.replace(/\s+/g, ' ').slice(0, 120), rise, mode: g.mode };
   });
-  row('economy', 'A normal death charges the re-onboarding fee', odds.fee > 0 && odds.after === odds.before - odds.fee && odds.hcDelta === 0 ? 'Works' : 'Partially works', JSON.stringify(odds));
+  row('economy', 'A normal death sets carried credits on the body', odds.fee > 0 && odds.after === odds.before - odds.fee && odds.hcDelta === 0 ? 'Works' : 'Partially works', JSON.stringify(odds));
   row('classes', 'A doctrine can be chosen from the skill sheet', odds.picked && odds.picked === odds.docId ? 'Works' : 'Partially works', 'doc=' + odds.picked);
 
   await shot(page, 'play-desktop');

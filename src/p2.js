@@ -154,7 +154,7 @@ function mkFixed(u,il,q,set){il=Math.max(il,u.il);let b=null,tr=0;BASE[u.slot].f
   const sc=1+(il-u.il)*.04,scale=['dmg','hp','shock','thorns','armor','en','armorP'];
   for(const k in u.mods){const m=u.mods[k];let v=modRoll(m);if(v>0&&scale.includes(k))v=Math.round(v*sc);it.aff.push({k,v})}
   if(u.sp){it.sp=u.id;it.spT=u.sp}if(set)it.set=set;
-  it.val=(8+il*5)*(q===4?8:6);it.req=Math.max(1,Math.floor(u.il*.75));beltStamp(it);return it}
+  it.val=(8+il*5)*(q===4?8:6);it.req=Math.max(1,Math.floor(u.il*.75));if(u.ind)it.indestruct=1;if(u.patch)it.aff.push({k:'patch',v:1,nm:'of the Patch'});beltStamp(it);stampDura(it);return it}
 const ITEM_HOOKS=[];
 function makeItem(il,q,slot){let it=makeItemCore(il,q,slot);for(const h of ITEM_HOOKS)it=h(it,il,q,slot);return it}
 function moorsBlade(){
@@ -176,7 +176,7 @@ function makeItemCore(il,q,slot){
   else it.name=b.n;
   if(slot==='weapon'&&q>=1&&q<4&&Math.random()<.3)it.dt=pick(['surge','rust','heat','noise']);
   if(['weapon','helm','armor'].includes(slot)){const mx=slot==='helm'?2:3;if(q===0&&Math.random()<.4){it.soc=ri(1,mx);it.words=[]}else if(q===1&&Math.random()<.15){it.soc=1;it.words=[]}}
-  it.val=(8+il*5)*[1,2,4][q];it.req=Math.max(1,Math.floor(il*.75));return it}
+  it.val=(8+il*5)*[1,2,4][q];it.req=Math.max(1,Math.floor(il*.75));stampDura(it);return it}
 const mfNow=()=>S.mf+(P&&P.shr&&P.shr.k==='luck'?100:0)+(P&&P.hazMf||0);
 function rollQ(tc,minQ){const c=qChance(tc,mfNow());const q=Math.random()<c.u?4:Math.random()<c.s?3:Math.random()<c.r?2:Math.random()<c.m?1:0;return Math.max(q,minQ||0)}
 function addDrop(d,x,y){let dx=x+rnd(-.9,.9),dy=y+rnd(-.9,.9);if(!walk(dx,dy)){dx=x;dy=y}d.x=dx;d.y=dy;d.t=0;W.drops.push(d);
@@ -204,7 +204,7 @@ const stimPrice=()=>25*G.cpi*(1+G.lvl*.2)*(G.disc?.85:1);
 function calc(){
   const c=CLS[G.cls],s={dmin:2,dmax:4,wspd:0,barm:0,sp:{},set:{},cap:4,cdr:0,dodge:0,pierce:0,critM:2,enc:0,grant:{}};
   for(const k of STATK)s[k]=0;
-  for(const slot of SLOTS){const it=G.eq[slot];if(!it)continue;if(it.dmin){s.dmin=it.dmin;s.dmax=it.dmax;s.wspd=it.spd||0}if(it.arm)s.barm+=it.arm;if(it.slot==='belt'){const b=beltBudget(it);s.cap=b.stims;s.csl=b.slots}else if(it.cap)s.cap=it.cap;
+  for(const slot of SLOTS){const it=G.eq[slot];if(!it)continue;if(itemBroken(it)){if(slot==='belt')s.beltBroken=1;continue}if(it.dmin){s.dmin=it.dmin;s.dmax=it.dmax;s.wspd=it.spd||0}if(it.arm)s.barm+=it.arm;if(it.slot==='belt'){const b=beltBudget(it);s.cap=b.stims;s.csl=b.slots}else if(it.cap)s.cap=it.cap;
     for(const a of it.aff){let v=a.v;if(a.k==='cdr'&&v>1)v=v/100;s[a.k]=(s[a.k]||0)+v}if(it.sp&&uOk(it))s.sp[it.sp]=1;if(it.uid&&UNIK[it.uid]&&UNIK[it.uid].grant&&uOk(it))s.grant[UNIK[it.uid].grant[0]]=UNIK[it.uid].grant[1];if(it.set)s.set[it.set]=(s.set[it.set]||0)+1}
   if(G.cls==='hacker')s.skills+=(s.sk_hacker||0);if(G.cls==='courier')s.skills+=(s.sk_courier||0);gearPerLevel(s);famBonus(s);if(s.set.striker>=2)s.dmg+=20;if(s.set.striker>=3){s.skills+=1;s.sp.vigil=1}charmApply(s);s.skills=Math.min(4,s.skills||0)
   fixPas();const L=i=>{const b=G.sk[i]&&pon(i)?G.sk[i]+charmBonus(s,i)+mast(i):0,g=s.grant[i]||0;return g?Math.max(b,g+(G.sk[i]||0)):b};let hpM=1,armM=1;
@@ -242,7 +242,7 @@ function newGame(cls){
 /* ================= save ================= */
 const b64=u=>{let s='';for(let i=0;i<u.length;i+=4096)s+=String.fromCharCode.apply(null,u.subarray(i,i+4096));return btoa(s)};
 const unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
-function encW(w){return{zi:w.zi,N:w.N,ml:w.ml,tier:w.tier,map:b64(w.map),wh:b64(w.wh),seen:b64(w.seen),leftT:w.leftT,sub:w.sub,suAt:w.suAt,ents:w.ents.filter(e=>!e.mp),objs:w.objs,drops:(w.drops||[]).filter(d=>!(d.it&&d.it.test)),decals:w.decals.slice(-40),portals:w.portals,goal:w.goal,start:w.start}}
+function encW(w){return{zi:w.zi,N:w.N,ml:w.ml,tier:w.tier,map:b64(w.map),wh:b64(w.wh),seen:b64(w.seen),leftT:w.leftT,sub:w.sub,suAt:w.suAt,ents:w.ents.filter(e=>!e.mp),objs:(w.objs||[]).filter(o=>!o||o.k!=='corpse'),drops:(w.drops||[]).filter(d=>!(d.it&&d.it.test)),decals:w.decals.slice(-40),portals:w.portals,goal:w.goal,start:w.start}}
 function decW(o){if(!o||typeof o!=='object')return null;try{const w=Object.assign({},o);w.map=unb64(o.map);w.wh=unb64(o.wh);w.seen=unb64(o.seen);return w}catch(e){return null}}
 function keepGround(o){if(!o||!G)return;if(!Array.isArray(G.bag))G.bag=[];if(!Array.isArray(G.stash))G.stash=[];
   for(const d of (Array.isArray(o.drops)?o.drops:[])){if(!d)continue;if(d.it){if(bagCan(d.it))G.bag.push(d.it);else G.stash.push(d.it)}
@@ -439,7 +439,7 @@ function enter(zi,o){setTimeout(mpBeat,0);
   else if(act===2&&!G.act2){G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO2,()=>{mode='play';dlg('Act II · The Cloud','Level limit 50, and a fourth skill row opens. The fourth row is yours. Vale does not get a vote on it.',[['Begin']])}),50)}
   else if(!z.town&&!G['in'+zi]&&z.intro){G['in'+zi]=1;dlg(z.n,z.intro,[['Go on']])}
   else toast(z.town?z.n:'Entering '+z.n);
-  if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}if(o.after)o.after();if(typeof mpMobCatch==='function')mpMobCatch();seenT=0;music(zoneMusic());save(true)}
+  if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}if(o.after)o.after();if(typeof mpMobCatch==='function')mpMobCatch();placeCorpses();seenT=0;music(zoneMusic());save(true)}
 /* A cast portal lives on this character: zone and the exact spot. A new cast forgets the last one, in this district and in any district already saved. */
 function dropCastPortals(){const strip=w=>{if(w&&w.portals)w.portals=w.portals.filter(q=>!q.cast)};strip(W);for(const k in ZS)if(ZS[k]!==W)strip(ZS[k])}
 function openPortal(){if(mode!=='play'||W.z.town)return;if(mpPortalBlocked())return;if(W.z.sim){sfx('portal');enter(HT());return}if(nearest(4)){toast('Machines are too close to open a portal');return}
@@ -575,8 +575,31 @@ function kill(e,opt){
     setTimeout(()=>{if(rep){toast(ET[e.k].n+' falls again.');return}if(b3)playScene(ENDING3.concat(CLOCK3),()=>{mode='play';actDone(3)});else playScene(b2?ENDING2:endingSlides(),()=>{mode='play';actDone(b2?2:1)})},1400)}}
 function gainXp(v,fromParty,ml){if(fromParty!=='bank'&&G.act3&&(G.bankXp||0)>0)flushBank();if(fromParty!=='share'&&fromParty!=='bank'){if(P&&P.shr&&P.shr.k==='xp')v*=1.5;v*=(G.hc?1.25:1)*(SEA.k==='over'?1.2:1)*(DF().xp||1)*(ml?xpPace(G.lvl,ml):1);if(!fromParty&&mpShareXp(v,ml))return}
   if(G.lvl>=lvlCap()){paraXp(v);return}G.xp+=v;while(G.xp>=xpNext(G.lvl)&&G.lvl<lvlCap()){G.xp-=xpNext(G.lvl);G.lvl++;G.sp++;G.ap+=5;calc();G.hp=S.maxHp;G.en=S.maxEn;sfx('level');toast('Level '+G.lvl+'. One skill point, five attribute points, and a point for the web.');if(W&&W.fx&&P){W.fx.push({k:'ring',x:P.x,y:P.y,r:2.8,t:0,life:.7,col:'#ffe36b'});parts(P.x,P.y,24,['#ffe36b','#fff'],2,1.6)}}if(G.lvl>=lvlCap()&&G.xp>0){const left=G.xp;G.xp=0;paraXp(left)}}
-/* Hardcore does not re-onboard. Begin again throws this hero away, so a fee here would be a number that never lands. The notice prints whole credits, so the charge is the floor of the rate. */
-function deathFee(){if(G.hc)return 0;if(S.sp&&S.sp.coldwallet)return 0;if(G.act2)return Math.floor(G.credits*.15);const early=(G.deaths||0)<10,rate=early?.05:.08,cap=early?15:hireCost()*.08;return Math.floor(Math.min(G.credits*rate,cap))}
+/* Credits on you are the purse Brenda spends. Sats, and anything in the lockbox, stay.
+   A share of carried credits is set on the body and comes back with it. The belt and the charms worn on it go too. The pack stays. */
+const DURA_ON={weapon:1,helm:1,armor:1,gloves:1,boots:1,belt:1};
+let lastLaid=false;
+function duraMaxFor(it){if(!it||it.charm||it.indestruct||!DURA_ON[it.slot])return 0;const q=it.q|0,bonus=[0,8,16,28,40][q]||0;return (it.slot==='weapon'?56:42)+(it.il|0)+bonus}
+function uniqueFlags(it){if(!it||!it.uid||typeof UNIK==='undefined'||!UNIK[it.uid])return;const u=UNIK[it.uid];if(u.ind)it.indestruct=1;if(u.patch&&it.aff&&!it.aff.some(a=>a&&a.k==='patch'))it.aff.push({k:'patch',v:1,nm:'of the Patch'})}
+function stampDura(it){if(!it||it.charm)return it;uniqueFlags(it);if(it.indestruct){delete it.dura;delete it.duraMax;return it}const mx=duraMaxFor(it);if(!(mx>0))return it;if(!(it.duraMax>0)){it.duraMax=mx;it.dura=mx}else if(it.dura==null||!isFinite(it.dura))it.dura=it.duraMax;if(it.dura>it.duraMax)it.dura=it.duraMax;if(it.dura<0)it.dura=0;return it}
+function itemBroken(it){return !!(it&&it.duraMax>0&&(it.dura|0)<=0)}
+function migrateDurability(){if(!G)return;const touch=it=>{if(it)stampDura(it)};if(G.eq)for(const k in G.eq)touch(G.eq[k]);for(const it of G.bag||[])touch(it);for(const it of G.stash||[])touch(it);for(const it of G.cslots||[])touch(it);if(typeof ACC!=='undefined'&&ACC&&ACC.stash)for(const it of ACC.stash)touch(it);for(const c of G.corpses||[]){if(!c)continue;if(c.eq)for(const k in c.eq)touch(c.eq[k]);for(const it of c.cslots||[])touch(it)}if(!Array.isArray(G.corpses))G.corpses=[];G.duraMig=1}
+function deathCreditPct(){if(!G||G.hc)return 0;if(S&&S.sp&&S.sp.coldwallet)return 0;const diff=G.diff|0,cap=[.2,.35,.5][diff]||.2,floor=[.04,.08,.12][diff]||.04,t=Math.min(1,Math.max(0,((G.lvl||1)-1)/39));return floor+(cap-floor)*t}
+function deathFee(){return Math.floor((G&&G.credits||0)*deathCreditPct())}
+function layCorpse(x,y){lastLaid=false;if(!G||G.hc)return 0;if(W&&W.z&&W.z.sim)return 0;const eq={};let any=false;for(const sl of SLOTS){const it=G.eq[sl];eq[sl]=it||null;if(it)any=true;G.eq[sl]=null}const cslots=(G.cslots||[]).slice();if(cslots.length)any=true;G.cslots=[];const credits=deathFee();if(credits>0)any=true;G.credits=Math.max(0,(G.credits||0)-credits);if(!any){calc();return 0}const id=(G.corpseN=(G.corpseN||0)+1);G.corpses=G.corpses||[];G.corpses.push({id,zi:W?W.zi:0,x,y,tier:G.tier|0,eq,cslots,credits,t:G.time||0});lastLaid=true;calc();placeCorpses();return credits}
+function placeCorpses(){if(!W||!W.objs||!G)return;W.objs=W.objs.filter(o=>o.k!=='corpse');for(const c of G.corpses||[]){if(!c||c.zi!==W.zi||(c.tier|0)!==(G.tier|0))continue;let x=c.x,y=c.y;if(typeof free==='function'&&!free(x,y,.3)&&typeof nearFree==='function'){const n=nearFree({x,y},1.4);x=n.x;y=n.y;c.x=x;c.y=y}W.objs.push({k:'corpse',id:c.id,x,y})}}
+function giveBack(it){if(!it)return;if(it.charm){const max=beltBudget(G.eq&&G.eq.belt).slots;if(charmUsed()+charmCost(it)<=max){G.cslots=G.cslots||[];G.cslots.push(it);return}}else if(it.slot&&G.eq&&!G.eq[it.slot]){G.eq[it.slot]=it;return}if(bagCan(it)){G.bag.push(it);return}if(P)addDrop({it},P.x,P.y)}
+function reclaimCorpse(id){const list=G.corpses||[],i=list.findIndex(c=>c&&c.id===id);if(i<0)return false;const c=list[i];for(const sl of SLOTS)giveBack(c.eq&&c.eq[sl]);for(const ch of c.cslots||[])giveBack(ch);G.credits=(G.credits||0)+(c.credits||0);list.splice(i,1);if(W&&W.objs)W.objs=W.objs.filter(o=>!(o.k==='corpse'&&o.id===id));if(typeof charmRefit==='function')charmRefit();calc();sfx('pick');toast('Your gear is back on you');return true}
+function corpseFee(c){const mul=[1,2,3][G.diff|0]||1;return Math.max(1,Math.round((G.lvl||1)/6)*mul)}
+function buyCorpse(id){if(!W||!W.z||!W.z.town){toast('That can be done in town');sfx('err');return false}const c=(G.corpses||[]).find(x=>x&&x.id===id);if(!c)return false;const fee=corpseFee(c);if(!spendSats(fee,'Walking a body back costs '+fee+' sats'))return false;G.corpseBought=(G.corpseBought||0)+fee;return reclaimCorpse(id)}
+function repairQuote(it){if(!it)return 0;stampDura(it);if(it.indestruct||!(it.duraMax>0)||it.dura>=it.duraMax)return 0;return Math.max(1,Math.ceil((it.duraMax-it.dura)/12))}
+function repairOne(it){if(!W||!W.z||!W.z.town){toast('Brenda, Nonce or Wren repairs gear');sfx('err');return 0}const cost=repairQuote(it);if(!cost)return 0;if(!spendSats(cost))return 0;it.dura=it.duraMax;it.chip=0;G.repairSpent=(G.repairSpent||0)+cost;calc();return cost}
+function repairList(){const out=[];if(!G)return out;for(const sl of SLOTS){const it=G.eq&&G.eq[sl];if(repairQuote(it))out.push(it)}for(const it of G.bag||[])if(repairQuote(it))out.push(it);return out}
+function repairAll(){if(!W||!W.z||!W.z.town){toast('Brenda, Nonce or Wren repairs gear');sfx('err');return 0}const items=repairList();let total=0;for(const it of items)total+=repairQuote(it);if(!total)return 0;if(!spendSats(total))return 0;for(const it of items){it.dura=it.duraMax;it.chip=0}G.repairSpent=(G.repairSpent||0)+total;calc();return total}
+function wearSlot(slot){const it=G.eq&&G.eq[slot];if(!it||it.indestruct||!(it.duraMax>0)||(it.dura|0)<=0)return;const before=it.dura;it.dura--;if(it.dura<=0){it.dura=0;calc();toast((it.id?it.name:it.base)+' is broken');sfx('err')}else if(before>it.duraMax*.25&&it.dura<=it.duraMax*.25)toast((it.id?it.name:it.base)+' is wearing thin')}
+function wearWeapon(){const it=G.eq&&G.eq.weapon;if(!it||it.indestruct||!(it.duraMax>0)||(it.dura|0)<=0)return;it.chip=(it.chip||0)+1;if(it.chip<8)return;it.chip=0;wearSlot('weapon')}
+function wearArmor(){if(!G||!G.eq)return;const slots=['helm','armor','gloves','boots','belt'].filter(sl=>G.eq[sl]&&G.eq[sl].duraMax>0&&!G.eq[sl].indestruct&&(G.eq[sl].dura|0)>0);if(!slots.length)return;G.armHits=(G.armHits||0)+1;if(G.armHits%2)return;wearSlot(slots[(G.armHits>>1)%slots.length])}
+function patchTick(dt){if(!G||!G.eq)return;G.patchT=(G.patchT||0)+dt;if(G.patchT<8)return;G.patchT-=8;let broke=false;for(const sl of SLOTS){const it=G.eq[sl];if(!it||!(it.duraMax>0)||it.dura>=it.duraMax)continue;if(it.aff&&it.aff.some(a=>a&&a.k==='patch')){const was=it.dura|0;it.dura=Math.min(it.duraMax,(it.dura|0)+1);if(was<=0&&it.dura>0)broke=true}}if(broke)calc()}
 /* Act I Defrag (quest q3, before the Cloud). Impact, 70% of his damage, and a 2.5% siphon.
    A notebook at the Fields hits for about 30, and the old 15% (even the later 5%) put back more than the page took off.
    Later acts keep the old numbers. */
@@ -595,14 +618,14 @@ function hurt(d,slow,src){const pv=src&&src.pvp,wasStun=P.hitStun>0;if(mode==='d
   if(G.cls==='maxi'&&sl(2)&&W){let c=0;for(const o of W.ents)if(o.hp>0&&!o.mp&&dist(o,P)<6&&++c>=5)break;if(c)d*=1-Math.min(FORMULAS.brace.few.cap,FORMULAS.brace.few.per*c)}
   if(G.cls==='founder'&&W&&W.allies){const n=W.allies.filter(a=>a.per&&a.hp>0).length;if(n)d*=1-Math.min(FORMULAS.brace.intern.cap,FORMULAS.brace.intern.per*n)}
   if(G.cls==='homesteader'&&W&&W.allies){const n=W.allies.filter(a=>a.plot&&a.life>0).length;if(n)d*=1-Math.min(FORMULAS.brace.cold.cap,FORMULAS.brace.cold.base+FORMULAS.brace.cold.extra*(n-1))}
-  if(d>0)P.hitStun=.45;G.hp-=d;if(G.hp>0&&S.sp.remote&&!wasStun&&!(P.remoteCd>0)&&Math.random()<.25){P.remoteCd=pv?6:2;remoteStep()}if(d>0)P.lastLoss=d;P.flash=.15;sfx('hurt');float(P.x,P.y,'-'+Math.max(1,Math.round(d)),'#ff5a4d',1);if(slow&&!S.sp.offer&&!(P.lastShift>0)&&!(P.two&&P.two.n>0))P.slow=1.6;if(S.sp.clock&&G.hp>0&&G.hp<S.maxHp*.3&&!(G.clockT>0)){G.clockT=60;for(const o of W.ents)if(dist(o,P)<9){o.slow=4;o.stun=Math.max(o.stun,.6)}sfx('warn');toast('The dead alarm rings. Time drags for the machines.')}if(OPT.shake)shake=Math.max(shake,3);
+  if(d>0){P.hitStun=.45;wearArmor()}G.hp-=d;if(G.hp>0&&S.sp.remote&&!wasStun&&!(P.remoteCd>0)&&Math.random()<.25){P.remoteCd=pv?6:2;remoteStep()}if(d>0)P.lastLoss=d;P.flash=.15;sfx('hurt');float(P.x,P.y,'-'+Math.max(1,Math.round(d)),'#ff5a4d',1);if(slow&&!S.sp.offer&&!(P.lastShift>0)&&!(P.two&&P.two.n>0))P.slow=1.6;if(S.sp.clock&&G.hp>0&&G.hp<S.maxHp*.3&&!(G.clockT>0)){G.clockT=60;for(const o of W.ents)if(dist(o,P)<9){o.slow=4;o.stun=Math.max(o.stun,.6)}sfx('warn');toast('The dead alarm rings. Time drags for the machines.')}if(OPT.shake)shake=Math.max(shake,3);
   if(src&&src.hp>0){if(src.mods&&src.mods.leech&&!(src.noheal>0))src.hp=Math.min(src.max,src.hp+src.max*(defragAct1(src)?.025:.15));if(S.sp.terms)src.stun=Math.max(src.stun,1);if(S.thorns){const prev=DT;DT='impact';P.holdTy=1;const out=typed(src,S.thorns);P.holdTy=0;DT=prev;dmgEnemy(src,out,false)}}
   if(G.hp<=0&&S.sp.still&&!(G.stillT>0)){G.stillT=90;G.hp=S.maxHp;P.inv=2;for(const o of W.ents)o.stun=Math.max(o.stun,2.5);sfx('shrine');toast('Still Water: the room holds its breath.');return}
   if(G.hp<=0&&G.cls==='maxi'&&sl(14)&&!(G.keyT>0)){const sac=(W.merc&&W.merc.hp>0)?W.merc:(W.tag&&W.tag.hp>0)?W.tag:null;if(sac){G.keyT=60;G.hp+=d;hurtAlly(sac,1e9);float(P.x,P.y,'Not your keys','#f7931a',1);toast('Not your keys.');return}}
   if(G.hp<=0&&G.cls==='witness'&&!(P&&P.tag)&&sl(14)&&recGet()>80&&!(G.retractT>0)){G.hp=1;recSet(0);G.retractT=90/(1+(S.retr||0)/100);float(P.x,P.y,'Retraction','#e6dcc8',1);sfx('mend');return}
   if(G.hp<=0){if(S.sp.parachute&&G.chuteT<=0){G.chuteT=120;G.hp=S.maxHp*.5;P.inv=1.5;toast('The Golden Parachute opens.');return}
     if(W.z.sim){const n=W.sim.wave;if(W.sim.rush){G.hp=1;P.inv=9;sfx('death');dlg('Boss rush ended','You fell to number '+(W.sim.i+1)+' of '+W.sim.list.length+'. Nothing in here was real, so nothing was lost.',[['Unplug',()=>{G.hp=S.maxHp;enter(HT())}]]);return}G.simBest=Math.max(G.simBest||0,n-1);G.hp=1;P.inv=9;sfx('death');dlg('Simulation ended','You fell on wave '+n+'. Waves cleared: '+(n-1)+'. Your best: '+G.simBest+'. Nothing in here was real, so nothing was lost.',[['Unplug',()=>{G.hp=S.maxHp;enter(HT())}]]);return}
-    /* The portal home is part of the death, so a save during the notice still has it. */adaptDeath();G.form=null;G.formDt=null;G.formT=0;G.hp=0;const fee=deathFee();G.credits-=fee;G.deaths=(G.deaths||0)+1;if(!G.hc&&W.start)G.portal={zi:W.zi,x:W.start.x,y:W.start.y};mode='dying';DY={t:0,fee,by:src&&src.name?src.name:'the machines',zi:W.zi,st:W.start,shown:0};if(G.hc)save(true);sfx('death');music(null);parts(P.x,P.y,30,['#b3261e','#7a0f0c','#e2473a'],3,1.4);bloodSplat(14);shake=10;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;return}
+    /* The portal home is part of the death, so a save during the notice still has it. */adaptDeath();G.form=null;G.formDt=null;G.formT=0;G.hp=0;const fee=layCorpse(P.x,P.y);G.deaths=(G.deaths||0)+1;if(!G.hc&&W.start)G.portal={zi:W.zi,x:W.start.x,y:W.start.y};mode='dying';DY={t:0,fee,by:src&&src.name?src.name:'the machines',zi:W.zi,st:W.start,shown:0,pvp:!!(src&&src.pvp)};if(G.hc)save(true);sfx('death');music(null);parts(P.x,P.y,30,['#b3261e','#7a0f0c','#e2473a'],3,1.4);bloodSplat(14);shake=10;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;return}
   const band=Math.ceil(G.hp/S.maxHp*10);if(band<P.band&&band<=4){bloodSplat((5-band)*3)}P.band=band}
 function attack(){
   if(P.atk>0||P.dash)return;const c=CLS[G.cls];unstealth();if(G.cls==='witness')P.witHold=1;
@@ -614,9 +637,9 @@ function attack(){
   const t=nearest(two?3.1:(mel?2.4:6.5));if(t)face(t);
   if(mel){mpNoteSwing();const reach=two?2.45:1.75,arc=two?-.35:.15;W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:two?2.1:1,reach:reach});
     const dump1=G.cls==='anon'&&P.reh>0&&sl(10)&&!boonOn(10);if(dump1){P.reh--;if(P.reh<=0){P.reh=0;P.rehT=0}DT='rust';dumpSpent('rust')}
-    P.swinging=1;{const hits=arcHits(reach,arc);for(const e of hits)hit(e,c.mult*scrapWeight(hits,e))}if(dump1)DT=null;P.swinging=0;
+    P.swinging=1;{const hits=arcHits(reach,arc);for(const e of hits)hit(e,c.mult*scrapWeight(hits,e));if(hits.length)wearWeapon()}if(dump1)DT=null;P.swinging=0;
     if(two){P.two.n--;if(P.two.n<=0)P.two=null}smash(two?2.3:1.7)}
-  else shoot(P.dir,c.mult,S.sp.deadletter||Math.random()*100<S.pierce?99:0);if(snd)DT=null}
+  else{shoot(P.dir,c.mult,S.sp.deadletter||Math.random()*100<S.pierce?99:0);wearWeapon()}if(snd)DT=null}
 function smash(r){for(const o of W.objs)if(o.k==='crate'&&!o.used&&dist(o,P)<r)breakCrate(o)}
 function breakCrate(o){o.used=1;W.map[(o.y|0)*W.N+(o.x|0)]=1;sfx('crate');parts(o.x,o.y,10,['#9a7a4a','#6a5030','#c9a868'],2.5);dropFrom('crate',o.x,o.y,W.ml)}
 function shoot(d,m,pierce,o){o=o||{};if(S&&S.sp&&S.sp.deadletter&&!(o.from&&(o.from.k==='minion'||o.from.k==='turret')))pierce=99;const col=o.col||(G.cls==='hacker'?'#59e0e6':G.cls==='courier'||G.cls==='founder'?'#e6e2d6':'#c9a868'),dt=o.dt||DT||(P.fm&&P.fm.t>0&&P.fm.dt)||null,life=o.life||.7,spd=o.spd||11;
@@ -1233,7 +1256,7 @@ function useObj(o){
   else if(o.k==='stray'){W.objs.splice(W.objs.indexOf(o),1);let gave;if(G.stims>0){G.stims--;gave='a stim'}else{const c=Math.floor(G.credits*.15);G.credits-=c;gave=fmt(c)}G.unseen=(G.unseen||0)+1;
     dlg('A stranger',pick(['A Resident with her visor in her hand, shaking. ','An old man who took his visor off this morning and cannot find his street. ','A boy, no visor, hiding from the drones. '])+'You give up '+gave+' and point the way to Stillwater. No name is asked. Nobody saw.',[['Walk on']])}
   else if(o.k==='page'){o.used=1;G.q8page=1;sfx('page');if(G.q8down){G.q.q8=2;mpShareQuest('q8',2);sfx('quest');toast('Quest complete: return to Marrow')}else toast('Lethe is still drowning the rest. Follow the arrow.')}else if(o.k==='minute'){o.used=1;G.q.q12=2;mpShareQuest('q12',2);sfx('page');sfx('quest');toast('Quest complete: return to Marrow')}else if(o.k==='qobj')sqUse(o);
-  else if(o.k==='cage'){if(W.ents.some(e=>e.su)){toast('The cage is sealed while Defrag stands');return}o.used=1;G.marrow=true;G.q.q3=2;sfx('cage');sfx('quest');
+  else if(o.k==='corpse'){reclaimCorpse(o.id)}else if(o.k==='cage'){if(W.ents.some(e=>e.su)){toast('The cage is sealed while Defrag stands');return}o.used=1;G.marrow=true;G.q.q3=2;sfx('cage');sfx('quest');
     playScene(RESCUE,()=>{mode='play';toast('Quest complete: return to Gramps')})}}
 function portalLabel(p){const zi=W.zi;return p.kind==='home'?'Return to '+ZONES[HT()].n:p.kind==='exit'?'Walk out to '+ZONES[FIRST[W.z.act||1]].n:p.kind==='town'||p.kind==='prev'?'Walk back to '+ZONES[zi===FIRST[actOf(zi)]?townOf(zi):zi-1].n:p.kind==='next'?'Go on to '+ZONES[zi+1].n:'Portal to '+ZONES[G.portal.zi].n}
 function usePortal(p){if(mpPortalBlocked())return;if(p.kind==='back'&&!(G.portal&&G.portal.zi!=null))return;const zi=W.zi;
@@ -1254,7 +1277,7 @@ function findAct(){for(const o of W.objs)if(o.k==='qobj'&&!o.used&&Math.hypot(o.
     const rs=resStep();if(rs)for(const n of W.npcs)if(n.id==='res'&&!n.got)chk(n.x,n.y,rs.label,()=>sqRes(n));
     if(!rs)for(const n of W.npcs)if(n.id==='res')chk(n.x,n.y,'Talk to a Resident',()=>convo('res'));
     for(const n of W.npcs)if(n.id!=='res')chk(n.x,n.y,n.id==='gate'?'Use the Transit Gate':n.id==='vr'?'Use the VR rig':n.id==='board'?'Read the bounty board':n.id==='stash'?'Open your lockbox':n.id==='ubi'?'Collect the Stipend':n.act||'Talk to '+n.name,()=>talkTo(n.id))}
-  for(const o of W.objs){if(o.used)continue;if(o.k==='chest')chk(o.x,o.y,'Open lockbox',()=>useObj(o));else if(o.k==='shrine')chk(o.x,o.y,SHR[o.sk][0],()=>useObj(o));else if(o.k==='memo')chk(o.x,o.y,'Read the memo',()=>useObj(o));else if(o.k==='cage')chk(o.x,o.y,'Open the cage',()=>useObj(o));else if(o.k==='page')chk(o.x,o.y,'Read the letter',()=>useObj(o));else if(o.k==='minute')chk(o.x,o.y,'Strike the minutes',()=>useObj(o));else if(o.k==='stray')chk(o.x,o.y,'Help the stranger',()=>useObj(o));else if(o.k==='qobj'){const st=sqStep(o.q);if(st)chk(o.x,o.y,st.label,()=>sqUse(o))}else if(o.k==='dnode'&&!G.nodes[W.zi])chk(o.x,o.y,cause()?'Bring this node online (free)':'Bring this node online (5 sats)',()=>lightNode(o));else if(o.k==='leg')chk(o.x,o.y,'Pick up the servo leg',()=>legTake(o));else if(o.k==='pow'&&!W.pow)chk(o.x,o.y,'Begin proof of work (hold 60 seconds)',()=>powStart(o))}
+  for(const o of W.objs){if(o.used)continue;if(o.k==='chest')chk(o.x,o.y,'Open lockbox',()=>useObj(o));else if(o.k==='shrine')chk(o.x,o.y,SHR[o.sk][0],()=>useObj(o));else if(o.k==='memo')chk(o.x,o.y,'Read the memo',()=>useObj(o));else if(o.k==='cage')chk(o.x,o.y,'Open the cage',()=>useObj(o));else if(o.k==='page')chk(o.x,o.y,'Read the letter',()=>useObj(o));else if(o.k==='minute')chk(o.x,o.y,'Strike the minutes',()=>useObj(o));else if(o.k==='stray')chk(o.x,o.y,'Help the stranger',()=>useObj(o));else if(o.k==='qobj'){const st=sqStep(o.q);if(st)chk(o.x,o.y,st.label,()=>sqUse(o))}else if(o.k==='dnode'&&!G.nodes[W.zi])chk(o.x,o.y,cause()?'Bring this node online (free)':'Bring this node online (5 sats)',()=>lightNode(o));else if(o.k==='leg')chk(o.x,o.y,'Pick up the servo leg',()=>legTake(o));else if(o.k==='pow'&&!W.pow)chk(o.x,o.y,'Begin proof of work (hold 60 seconds)',()=>powStart(o));else if(o.k==='corpse')chk(o.x,o.y,'Take your gear',()=>useObj(o))}
   return best}
 
 
@@ -1568,7 +1591,7 @@ function drawHover(){
 
 /* ================= update ================= */
 function update(dt){
-  mpTick(dt);maxiAura(dt);
+  mpTick(dt);patchTick(dt);maxiAura(dt);
   G.time+=dt;const gr=G.adopt>=100?1:Math.pow(SEA.k==='stim'?1.005:1.0025,(dt/60)*(1.45-G.adopt/100)*(G.fate==='fail'?1.4:1));G.cpi*=gr;if(S.sp.hedge)G.credits*=gr;G.ubiT=Math.max(0,G.ubiT-dt);G.chuteT=Math.max(0,G.chuteT-dt);
   const c=CLS[G.cls];
   for(const k of['atk','swing','flash','inv','slow','buff','haste','guard','warn','movedT','spin','stealth','ambT','mech','crunch','streakT','silence','oc'])P[k]=Math.max(0,P[k]-dt);if(P.paper>0)P.paper-=dt;if(P.maxiBlock>0)P.maxiBlock-=dt;if(P.ward>0)P.ward-=dt;
