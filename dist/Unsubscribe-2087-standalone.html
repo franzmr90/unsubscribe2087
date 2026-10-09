@@ -374,6 +374,27 @@ html[data-ui="touch"] .cls{min-height:44px}
   html[data-ui="touch"] #pad{transform:scale(.82);transform-origin:bottom right}
   html[data-ui="touch"] #log{bottom:calc(188px + env(safe-area-inset-bottom,0px))}
 }
+
+#cmpTip{position:absolute;z-index:8;left:8px;top:8px;width:min(640px,calc(100% - 16px));max-height:min(70vh,520px);overflow:auto;background:rgba(8,7,12,.96);border:1px solid var(--gold);box-shadow:0 10px 40px #000;padding:8px 10px;pointer-events:auto;touch-action:pan-y}
+#cmpTip.dock{left:8px;right:8px;width:auto;top:calc(78px + env(safe-area-inset-top,0px));max-height:46vh}
+.cmpBox{display:flex;gap:8px;align-items:flex-start}
+.cmpCol{flex:1;min-width:0;text-align:left}
+.cmpFoot{margin-top:8px}
+.cmpDelta{max-height:220px;overflow:auto;touch-action:pan-y}
+.dln{display:flex;gap:8px;justify-content:space-between;align-items:baseline;font-size:13.5px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.dln span{color:var(--dim)}
+.dln em{color:var(--dim);font-style:normal;font-size:12px}
+.dln b{font-variant-numeric:tabular-nums}
+.cmpAlts{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px}
+.cmpAlts span{font:700 11px var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.cell.arr{box-shadow:none}
+.cell.arr em{color:var(--gold)}
+html[data-ui="touch"] .cmpActs button,html[data-ui="touch"] .cmpAlts button,html[data-ui="touch"] #cmpTip .ghost{min-height:44px}
+#popIn:has(.cmpBox){max-width:min(680px,100%)}
+@media (max-width:720px){
+  .cmpBox{flex-direction:column}
+  .cmpDelta{max-height:38vh}
+}
 </style>
 
 <div id="app">
@@ -436,6 +457,7 @@ html[data-ui="touch"] .cls{min-height:44px}
 
   <div id="sheet" hidden><div class="wrap" id="sheetIn"></div></div>
   <div id="pop" hidden><div id="popIn"></div></div>
+  <div id="cmpTip" hidden></div>
   <div id="scene" hidden><canvas id="sc"></canvas><div id="scBox"><div id="scTitle"></div><div id="scText"></div><div class="row"><button class="ghost" id="scBack" hidden>Back</button><button class="ghost" id="scSkip">Skip</button><button class="big" id="scNext">Next</button></div></div></div>
   <div id="death" hidden><div class="wrap"><div class="kicker">Notice of closure</div><h1>You have died</h1><p id="deathP"></p><div class="stats" id="deathS"></div><p id="deathNote" style="font-size:14px;color:var(--dim)">The machines have not moved. A portal back to the start of the district will wait in the square.</p><button class="big" id="bRise">Rise in town</button></div></div>
   <div id="dlg" hidden><div class="card"><h2 id="dT"></h2><p id="dP"></p><div id="dBtns"></div></div></div>
@@ -1042,8 +1064,8 @@ GOSSIP.nonce=['Credits are a story Unity tells. Sats are arithmetic. I only take
 GOSSIP.kestrel=['Nobody walks the districts alone twice. I know people. Some of them are even people.','My rates go up with the prices. Blame the Board.','If your hire goes down, bring me the fee and they will be on their feet before you finish counting it.'];
 /*MEMOS.push(['The Timechain','Before the Merger there was a ledger no one owned. Twenty-one million coins, each cut into a hundred million satoshis, and not one more could be printed by anyone, for any reason. The Board called it a fad, then a threat, then stopped saying its name.'],['Scratched on a Node','Not your keys, not your coins. Not your visor, not your eyes.']);*/
 const BOSSBARK=['Name your number.','Everyone has a price. I am patient.','I can make all of this difficulty go away.','Let’s take this offline.','You are not a culture fit.','I will need you to stop existing by Friday.','Per my last memo.','This meeting could have been a laser.','Let’s circle back to your termination.'];
-const OPT_DEF={dmgOut:true,dmgIn:true,enemyBars:true,orbNums:true,selfBars:false,labels:true,minimap:true,shake:true,sound:true,music:true,dyn:true,auto:false,obj:true,autoEq:false,pk0:true,pk1:true,pk2:true,pk3:true,pk4:true,pkBetter:false,autoStim:false,fx:'normal',noWalk:false,aim:'auto',ui:'auto',uiSeen:'',tapTarget:true};
-const OPT_LBL={dmgOut:'Show damage you deal',dmgIn:'Show damage you take',enemyBars:'Show enemy life bars',orbNums:'Show numbers on life and energy orbs',selfBars:'Show life and energy bars over your head',labels:'Show item names on the ground',minimap:'Show the map',shake:'Screen shake',sound:'Sound effects',music:'Music',dyn:'Scale machines to your strength, and adapt as you fight',auto:'Attack on your own when a machine is in reach',obj:'Show objectives on screen',autoEq:'Equip stronger gear as you pick it up',autoStim:'Use a stim on your own below 30% life',tapTarget:'A quick tap on a ground skill hits the nearest machine'};
+const OPT_DEF={dmgOut:true,dmgIn:true,enemyBars:true,orbNums:true,selfBars:false,labels:true,minimap:true,shake:true,sound:true,music:true,dyn:true,auto:false,obj:true,autoEq:false,pk0:true,pk1:true,pk2:true,pk3:true,pk4:true,pkBetter:false,autoStim:false,fx:'normal',noWalk:false,aim:'auto',ui:'auto',uiSeen:'',tapTarget:true,cmpArrow:false};
+const OPT_LBL={dmgOut:'Show damage you deal',dmgIn:'Show damage you take',enemyBars:'Show enemy life bars',orbNums:'Show numbers on life and energy orbs',selfBars:'Show life and energy bars over your head',labels:'Show item names on the ground',minimap:'Show the map',shake:'Screen shake',sound:'Sound effects',music:'Music',dyn:'Scale machines to your strength, and adapt as you fight',auto:'Attack on your own when a machine is in reach',obj:'Show objectives on screen',autoEq:'Equip stronger gear as you pick it up',autoStim:'Use a stim on your own below 30% life',tapTarget:'A quick tap on a ground skill hits the nearest machine',cmpArrow:'Mark a piece when damage, armor and life are all higher'};
 /* ================= state ================= */
 let G=null,S={},W=null,P=null,ZS={},mode='title',tNow=0,saveT=0,actTarget=null,shop=[],OPT=Object.assign({},OPT_DEF),shake=0,seenT=0;
 const J={x:0,y:0},keys={};let atkHeld=false,hitStop=0;
@@ -5267,7 +5289,8 @@ function hud(){objHud();if(P&&P.dg)setT('dgn',P.dg.n);
   setT('hpT',OPT.orbNums?Math.ceil(G.hp):'');setT('enT',OPT.orbNums?Math.floor(G.en):'');setT('cr',fmt(G.credits)+(G.sats?' · '+G.sats+' sats':''));setT('cpi','prices ×'+(G.cpi<100?G.cpi.toFixed(2):fmt(G.cpi).slice(1)));setT('potn',G.stims);
   sbtn.forEach((b,i)=>{const k=G.slots[i];if(k<0||k===undefined||(k>=100?!itemSkillOn(k):!G.sk[k])){b.classList.add('off');return}const s=k>=100?ISK[k]:CLS[G.cls].sk[k];const blank=k>=100?false:!!witBlock(k);b.classList.toggle('off',(k<100&&!!hsBlocked(k))||blank);b.classList.toggle('low',!blank&&!(k<100&&G.cls==='homesteader'&&G.form&&(k===7||(k===1&&G.form==='hound')||(k===4&&G.form==='hull')))&&G.en<s.cost*(S.sp.hoodie?.75:1));const em=b.querySelector('em'),sc='scaleY('+clamp((P.cd[k]||0)/(s.cd*(1-Math.min(.6,S.cdr||0))),0,1)+')';if(em&&em._sc!==sc){em._sc=sc;em.style.transform=sc}});
   $('bMenu').classList.toggle('pip',G.sp>0||G.ap>0);$('bRecall').hidden=W.z.town;$('bMap').hidden=W.z.town;
-  const sw=$('bSwap');if(SWAP&&(SWAP.t-=1/60)>0&&G.bag.includes(SWAP.it)){sw.hidden=false;setT('bSwap','▲ '+SWAP.it.name+'\n'+dPct(SWAP.d)+' · tap or click')}else{sw.hidden=true;SWAP=null}
+  const sw=$('bSwap');if(SWAP&&(SWAP.t-=1/60)>0&&G.bag.includes(SWAP.it)){sw.hidden=false;setT('bSwap',uiSay('Click to equip','Tap to equip')+'\n'+SWAP.it.name)}else{sw.hidden=true;SWAP=null}
+  cmpDock();
   const a=$('bAct');if(actTarget){a.hidden=false;setT('bAct',actTarget.label)}else a.hidden=true;
   if(W.boss&&W.boss.aggro){$('boss').hidden=false;setT('bossn',ET[W.boss.k].n+' · deals '+dealTxt(W.boss.k)+(resTxt(W.boss.k)?' · '+resTxt(W.boss.k):''));hudSet($('bossb'),'width',Math.max(0,W.boss.hp/W.boss.max*100)+'%')}
   const bf=[];if(!G.act3&&(G.bankXp||0)>0)bf.push('Banked experience '+Math.floor(G.bankXp));if(P.ward>0)bf.push('Ward '+Math.ceil(P.ward)+'s');const au=maxiBuff();if(au)bf.push('\u25c6 '+au);if(P.shr)bf.push(P.shr.n+' '+Math.ceil(P.shr.t)+'s');if(P.buff>0)bf.push('Frenzy '+Math.ceil(P.buff)+'s');if(P.guard>0)bf.push('War Horn '+Math.ceil(P.guard)+'s');if(P.slow>0)bf.push('Slowed');if(G.cls==='homesteader'&&G.form)bf.push(G.form==='hound'?'Hound':G.form==='hull'?'Hull':'Wearing a machine');if(G.god)bf.push('Untouchable (testing)');if(EV)bf.push(EVS[EV.k].n+' '+Math.ceil(EV.t)+'s');if(P.silence>0)bf.push('Silenced');if(W.pow)bf.push('Proof of work '+Math.ceil(W.pow.t)+'s');if(G.tpT>0)bf.push('On credit '+Math.ceil(G.tpT)+'s');if(W.sub)bf.push(W.sub.mods.map(m=>SUBM[m]).join(' · '));if(W.esc)bf.push(W.esc.name+' is with you');if(W.hold)bf.push('Node syncing '+Math.ceil(W.hold.t)+'s');if(P.streakT>0&&P.streak>=3)bf.push('Streak ×'+P.streak+' · +'+Math.round(Math.min(.5,.02*P.streak)*100)+'% experience');
@@ -5314,7 +5337,7 @@ function mktChart(){const s=mktSeries(),n=s.p.length;if(n<2)return '';
     <text x="${(L+iw).toFixed(1)}" y="${H-3}" fill="${MKC.ink}" font-size="8.5" font-family="Spectral,serif" text-anchor="end">ratio scale · the last few minutes</text>
   </svg></div>`}
 const hireCost=()=>80+8*G.lvl,reviveCost=()=>cause()?0:40+4*G.lvl;
-function openSheet(t,c){if(mode!=='play'&&mode!=='title')return;sheetCtx=c||{};sheetCtx.from=mode;if(t==='web')webVB=null;tab=t;sel=null;mode='sheet';$('sheet').hidden=false;$('sheet').scrollTop=0;J.x=J.y=0;atkHeld=false;MO=null;const pk=$('mPick');if(pk)pk.hidden=true;$('stick').hidden=true;drawSheet()}
+function openSheet(t,c){if(mode!=='play'&&mode!=='title')return;cmpHide();sheetCtx=c||{};sheetCtx.from=mode;if(t==='web')webVB=null;tab=t;sel=null;mode='sheet';$('sheet').hidden=false;$('sheet').scrollTop=0;J.x=J.y=0;atkHeld=false;MO=null;const pk=$('mPick');if(pk)pk.hidden=true;$('stick').hidden=true;drawSheet()}
 function closeSheet(){$('sheet').hidden=true;$('pop').hidden=true;if(sheetCtx.from==='title'){mode='title';return}mode='play';calc();setSkillButtons();save(true)}
 function pscore(s){return{dps:((s.dmin+s.dmax)/2*(1+s.dmg/100)+s.shock)*(1+Math.max(-50,s.aspd)/100)*(1+Math.min(100,s.crit)/100*(s.critM-1)),ehp:s.maxHp*(1+s.armor/100)/(1-Math.min(.6,(s.dodge||0)/100))}}
 /* how much stronger (+) or weaker (-) the hero gets by equipping this, as a fraction; null when it cannot be judged */
@@ -5322,9 +5345,9 @@ function itemDelta(it){if(!it||!it.id||it.charm)return null;const A=S,B=statsWit
   return (b.dps/a.dps-1)+(b.ehp/a.ehp-1)+(B.maxEn-A.maxEn)/A.maxEn*.2+(B.mspd-A.mspd)*.004+(B.leech-A.leech)*.02+(B.skills-A.skills)*.15+(B.mf-A.mf)*.001+(B.gold-A.gold)*.0005+(B.regen-A.regen)*.02+(B.regenH-A.regenH)*.01+(B.stun-A.stun)*.005+(B.thorns-A.thorns)*.003+(Object.keys(B.sp).length-Object.keys(A.sp).length)*.12+(B.cap-A.cap)*.01}
 const dPct=d=>(d>0?'+':'−')+Math.min(999,Math.round(Math.abs(d)*100))+'%';
 function cell(it,attr,isSel,slot,d){if(!it){const hot=attr&&/data-packempty|data-csocket/.test(attr);return `<button class="cell empty" ${attr||''}${hot?'':' disabled'}>${slot?svgIcon(slot):''}</button>`}
-  const can=it.id&&G.lvl>=it.req,v=d==null||d===undefined?'':d>.01?(can?' better':' locked'):d<-.01?' worse':'';
+  const arrow=!!(OPT.cmpArrow&&d!=null&&it.id&&!it.charm&&strictUp(it));
   const ch=it.charm?' ch'+(charmCost(it)>=3?' grand':charmCost(it)>=2?' wide':''):'',drag=it.charm&&!uiTouch()?' draggable="true"':'',num=it.charm?charmCost(it):it.il;
-  return `<button class="cell q${it.q}${isSel?' sel':''}${it.id?'':' unid'}${v}${it.junk?' junk':''}${ch}" ${attr}${drag}>${svgIcon(it.charm?'charm':it.slot)}<small>${num}</small>${v&&d!=null?`<em>${dPct(d)}</em>`:''}${it.junk?'<u>JUNK</u>':''}</button>`}
+  return `<button class="cell q${it.q}${isSel?' sel':''}${it.id?'':' unid'}${arrow?' arr':''}${it.junk?' junk':''}${ch}" ${attr}${drag}>${svgIcon(it.charm?'charm':it.slot)}<small>${num}</small>${arrow?'<em>↑</em>':''}${it.junk?'<u>JUNK</u>':''}</button>`}
 function equipFromBag(i){const it=G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.charm)return charmSocket(i);if(!it.id){toast('Identify it first');sfx('err');return false}if(G.lvl<it.req){toast('Needs level '+it.req);sfx('err');return false}
   const old=G.eq[it.slot];G.eq[it.slot]=it;it.junk=false;G.bag.splice(i,1);if(old){if(bagCan(old))G.bag.push(old);else addDrop({it:old},P.x,P.y)}if(it.slot==='belt')charmRefit();calc();sfx('equip');return true}
 function equipBest(){let n=0;for(const slot of SLOTS){let best=-1,bd=.01;G.bag.forEach((it,i)=>{if(it.slot!==slot||!it.id||G.lvl<it.req)return;const d=itemDelta(it);if(d>bd){bd=d;best=i}});if(best>=0&&equipFromBag(best))n++}return n}
@@ -5351,15 +5374,310 @@ function itemLines(it){let h='';
   if(it.spT)h+=`<div class="ln spc"${uOk(it)?'':' style="opacity:.5"'}>${esc(it.spT)}${uOk(it)?'':' (dormant: not your class)'}</div>`;
   if(it.set){const s=SETS[it.set],n=S.set&&S.set[it.set]||0;h+=`<div class="ln setl" style="margin-top:4px">${esc(s.n)}</div>`+s.items.map(x=>`<div class="ln ${Object.values(G.eq).some(e=>e&&e.uid===x.id)?'setl':'off'}">${esc(x.n)}</div>`).join('')+`<div class="ln ${n>=2?'setl':'off'}">${s.b2}</div><div class="ln ${n>=3?'setl':'off'}">${s.b3}</div>`}
   if(it.fl)h+=`<div class="fl">${esc(it.fl)}</div>`;return h}
-function statsWith(slot,it){const o=G.eq[slot],hp=G.hp,en=G.en,st=G.stims,S0=S;G.eq[slot]=it;calc();const r=S;G.eq[slot]=o;S=S0;G.hp=hp;G.en=en;G.stims=st;return r}
-const DROWS=[['Damage',s=>Math.round(((s.dmin+s.dmax)/2*(1+s.dmg/100)+s.shock)*10)/10,''],['Armor',s=>s.armor,''],['Life',s=>s.maxHp,''],['Energy',s=>s.maxEn,''],['Deadly strike',s=>s.crit,'%'],['Attack speed',s=>s.aspd,'%'],['Run speed',s=>s.mspd,'%'],['Life steal',s=>s.leech,'%'],['Stun chance',s=>s.stun,'%'],['Magic find',s=>s.mf,'%'],['Extra credits',s=>s.gold,'%'],['Skill levels',s=>s.skills,''],['Stim capacity',s=>s.cap,''],['Impact resist',s=>resEff(s,'impact'),'%'],['Surge resist',s=>resEff(s,'surge'),'%'],['Rust resist',s=>resEff(s,'rust'),'%'],['Heat resist',s=>resEff(s,'heat'),'%'],['Noise resist',s=>resEff(s,'noise'),'%'],['Damage reduced',s=>Math.min(50,s.pdr||0),'%'],['Faster cast',s=>Math.round(Math.min(60,(s.cdr||0)*100)),'%']];
-function deltaHTML(slot,it,title){const A=S,B=statsWith(slot,it);let h='';
-  for(const[n,f,u]of DROWS){const a=f(A),b=f(B),d=Math.round((b-a)*10)/10;if(!d)continue;const p=a?' , '+(d>0?'+':'')+Math.round(d/a*100)+'%':'';h+=`<tr><td>${n}</td><td>${a}${u}</td><td>→ ${b}${u}</td><td class="${d>0?'up':'dn'}">${d>0?'+':''}${d}${u}${p.replace(' , ',' · ')}</td></tr>`}
-  const sa=Object.keys(A.sp).join(),sb=Object.keys(B.sp).join();if(sa!==sb)h+=`<tr><td colspan="4" class="spc">Special properties change</td></tr>`;
-  return `<div class="cmp"><div class="ln off">${title}</div>${h?`<table class="dt">${h}</table>`:'<div class="ln off">No change to your stats.</div>'}</div>`}
-function itemCard(it,btns,worn,nocmp){const eq=G.eq[it.slot];let cmp='';
-  if(it.id&&!nocmp){if(worn)cmp=deltaHTML(it.slot,null,'If you take this off');else cmp=deltaHTML(it.slot,it,eq?'If you swap this for <span class="q'+eq.q+'">'+esc(eq.name)+'</span>':'If you equip this')}
-  return `<div class="card"><div class="nm q${it.q}">${esc(it.id?it.name:it.base)}</div><div class="ln off">${QN[it.q]} ${it.id&&it.name!==it.base?esc(it.base):SNAME[it.slot]} · item level ${it.il}</div>${itemLines(it)}${cmp}<div class="row" style="margin-top:6px">${btns}</div><div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`}
+function sheetSwap(plan){
+  const eq0={},hp=G.hp,en=G.en,st=G.stims,S0=S;
+  const mouse=G.mouse?{L:G.mouse.L,R:G.mouse.R}:null;
+  const slots=G.slots?G.slots.slice():null;
+  const hot=G.hot?G.hot.slice():null;
+  const pas=G.pas?G.pas.slice():null;
+  let r=S0;
+  try{
+    for(const p of plan||[]){if(!p||!p.slot)continue;eq0[p.slot]=G.eq[p.slot];G.eq[p.slot]=p.it}
+    calc();r=S
+  }finally{
+    for(const k in eq0)G.eq[k]=eq0[k];
+    S=S0;G.hp=hp;G.en=en;G.stims=st;
+    if(mouse&&G.mouse){G.mouse.L=mouse.L;G.mouse.R=mouse.R}
+    if(slots&&G.slots)for(let i=0;i<slots.length&&i<G.slots.length;i++)G.slots[i]=slots[i];
+    if(hot&&G.hot)for(let i=0;i<hot.length&&i<G.hot.length;i++)G.hot[i]=hot[i];
+    if(pas)G.pas=pas.slice()
+  }
+  return r}
+function statsWith(slot,it){return sheetSwap([{slot:slot,it:it}])}
+/* A slow weapon is two-handed. A quick one is a single hand. There is one weapon slot and one ring slot. */
+function itemHands(it){if(!it||it.slot!=='weapon')return 1;return (it.spd||0)<=-15?2:1}
+function cmpTargets(it){
+  const t=[];
+  if(!it||it.charm||!it.slot||!SLOTS.includes(it.slot))return t;
+  const hands=itemHands(it);
+  const plan=[{slot:it.slot,it:it}];
+  if(hands===2&&G.eq&&G.eq.offhand)plan.push({slot:'offhand',it:null});
+  t.push({key:'you',who:'you',slot:it.slot,hands:hands,label:hands===2?'Two-handed':(SNAME[it.slot]||'You'),worn:G.eq?G.eq[it.slot]||null:null,plan:plan});
+  if(G.merc&&!G.merc.dead&&MSL.includes(it.slot))t.push({key:'merc',who:'merc',slot:it.slot,hands:1,label:G.merc.name||'Companion',worn:G.merc[it.slot]||null,plan:null});
+  return t}
+let CMP_KEY='you';
+function cmpPick(it,key){
+  if(key)CMP_KEY=key;
+  const ts=cmpTargets(it);
+  let cur=ts.find(x=>x.key===CMP_KEY);
+  if(!cur)cur=ts[0]||null;
+  if(cur)CMP_KEY=cur.key;
+  return {targets:ts,target:cur}}
+function canWear(it){return !!(it&&it.id&&!it.charm&&it.slot&&G.lvl>=(it.req||0))}
+function sheetAvg(s){return ((s.dmin+s.dmax)/2)*(1+(s.dmg||0)/100)+(s.shock||0)}
+function strictUp(it){
+  if(!canWear(it))return false;
+  const A=S,B=statsWith(it.slot,it);
+  return sheetAvg(B)>sheetAvg(A)&&B.armor>A.armor&&B.maxHp>A.maxHp}
+/* Primary blow of the bound skill. A coefficient that already counts a volley keeps the count. Splashes that are a fraction of the same blow are the one blow. */
+const SKHIT={
+  scrapper:{0:L=>1.3+.15*L,1:L=>1.2+.2*L,3:L=>1.5+.22*L,4:L=>1.2+.3*L,7:L=>2.2+.35*L,12:L=>.55+.08*L},
+  hacker:{0:L=>1.2+.18*L,1:L=>1.4+.2*L,3:L=>.9+.2*L,14:L=>2.8+.4*L},
+  courier:{0:(L,s)=>(3+Math.floor(L/2)+((s.sp&&s.sp.pod)?2:0))*(.9+.1*L),7:L=>3+.5*L,9:L=>1.1+.16*L,12:L=>1+.14*L},
+  maxi:{1:L=>1.4+.25*L,5:L=>1.6+.3*L,6:L=>(1.1+.22*L)*5},
+  anon:{1:L=>1.6+.25*L,5:L=>1+.2*L,6:L=>1.4+.2*L,9:L=>.7+.1*L},
+  founder:{1:L=>.8+.15*L,8:L=>2+.4*L}};
+function boundIndex(){
+  if(G.mouse&&G.mouse.L>=0&&G.mouse.L<100&&G.sk&&G.sk[G.mouse.L])return G.mouse.L;
+  if(G.slots&&G.slots[0]>=0&&G.slots[0]<100&&G.sk&&G.sk[G.slots[0]])return G.slots[0];
+  return -1}
+function skillRank(i,s){
+  const sk=(G.sk&&G.sk[i])||0,skl=CLS[G.cls]&&CLS[G.cls].sk&&CLS[G.cls].sk[i];
+  const on=!!(skl&&(skl.a||(G.pas||[]).includes(i)));
+  const b=sk&&on?sk+(s.skills||0)+(sk>=10?2:0):0,g=(s.grant&&s.grant[i])||0;
+  return g?Math.max(b,g+sk):b}
+function strikeInfo(s){
+  const c=CLS[G.cls]||{mult:1,ivl:1,melee:false,sk:[]};
+  const crit=Math.min(100,s.crit||0)/100,factor=1+crit*((s.critM||2)-1);
+  let aura=1;if(P&&P.bear>0)aura*=1.28;if(P&&(P.book>0||P.rBook>0))aura*=1.08;
+  const mid=((s.dmin+s.dmax)/2)*(1+(s.dmg||0)/100),shock=s.shock||0;
+  const idx=boundIndex(),table=SKHIT[G.cls],fn=idx>=0&&table&&table[idx];
+  if(fn){
+    const L=skillRank(idx,s),mul=fn(L,s);
+    if(mul>0){
+      const hit=(mid*mul+shock*Math.max(.5,mul))*aura*factor;
+      const sk=c.sk[idx],cd=(sk&&sk.cd||1)*(1-Math.min(.6,s.cdr||0))*((G.sk[idx]||0)>=10?.8:1);
+      return {name:(sk&&sk.n||'Skill')+', per second',dps:Math.round((cd>0?hit/cd:0)*10)/10,kind:'skill',mul:mul,L:L}}
+  }
+  const two=!!(c.melee&&P&&P.two&&P.two.n>0);
+  const ivl=two?c.ivl*1.75:(c.ivl/(1+Math.max(-50,s.aspd||0)/100));
+  const hit=(mid+shock)*(c.mult||1)*aura*factor;
+  return {name:(two?'Two-handed attack':'Attack')+', per second',dps:Math.round((ivl>0?hit/ivl:0)*10)/10,kind:'attack',ivl:ivl}}
+function swingHit(s){
+  const c=CLS[G.cls]||{mult:1};
+  const mid=((s.dmin+s.dmax)/2)*(1+(s.dmg||0)/100)+(s.shock||0);
+  let aura=1;if(P&&P.bear>0)aura*=1.28;if(P&&(P.book>0||P.rBook>0))aura*=1.08;
+  const crit=Math.min(100,s.crit||0)/100;
+  return mid*(c.mult||1)*aura*(1+crit*((s.critM||2)-1))}
+function itemSkillNames(eq){
+  const names=[];
+  if(!eq)return names;
+  for(const sl of SLOTS){
+    const it=eq[sl];if(!it||!it.uid)continue;
+    const u=UNIK[it.uid];if(!u||!u.isk||!uOk(it))continue;
+    const sk=typeof ISK!=='undefined'&&ISK[u.isk];
+    names.push(sk&&sk.n?sk.n:('Item skill '+u.isk))}
+  return names}
+function eqNow(){const o={};for(const sl of SLOTS)o[sl]=G.eq[sl]||null;return o}
+function eqPlanned(plan){const o=eqNow();for(const p of plan||[])if(p&&p.slot&&SLOTS.includes(p.slot))o[p.slot]=p.it||null;return o}
+function spText(k){
+  if(UNIK[k]&&UNIK[k].sp)return UNIK[k].sp;
+  if(k==='vigil')return 'Kills restore 3% life';
+  return k}
+function cmpRows(A,B,skA,skB){
+  const rows=[],add=(name,a,b,unit,goodDown)=>{
+    const d=Math.round((b-a)*10)/10;if(!d)return;
+    rows.push({name:name,d:d,unit:unit||'',good:goodDown?d<0:d>0})};
+  const rng=s=>{const lo=Math.round(s.dmin*(1+s.dmg/100)+s.shock),hi=Math.round(s.dmax*(1+s.dmg/100)+s.shock);return {lo:lo,hi:hi,avg:(lo+hi)/2}};
+  const ra=rng(A),rb=rng(B);
+  if(ra.lo!==rb.lo||ra.hi!==rb.hi)rows.push({name:'Damage',d:Math.round((rb.avg-ra.avg)*10)/10,unit:'',good:rb.avg>ra.avg,range:1,from:ra.lo+'–'+ra.hi,to:rb.lo+'–'+rb.hi});
+  add('Attack',Math.round(swingHit(A)*10)/10,Math.round(swingHit(B)*10)/10,'');
+  const sa=strikeInfo(A),sb=strikeInfo(B);
+  if(sa.name===sb.name)add(sa.name,sa.dps,sb.dps,'');
+  else{if(sa.dps)rows.push({name:sa.name,d:-sa.dps,unit:'',good:false,text:'lost'});if(sb.dps)rows.push({name:sb.name,d:sb.dps,unit:'',good:true,text:'gained'})}
+  add('Armor',A.armor,B.armor,'');
+  add('Life',A.maxHp,B.maxHp,'');
+  add('Energy',A.maxEn,B.maxEn,'');
+  for(const k of RTK)add((DTY[k]?DTY[k].n:k)+' resist',resEff(A,k),resEff(B,k),'%');
+  add('Faster cast',Math.round(Math.min(60,(A.cdr||0)*100)),Math.round(Math.min(60,(B.cdr||0)*100)),'%');
+  add('Run speed',A.mspd||0,B.mspd||0,'%');
+  add('Damage reduced',Math.min(50,A.pdr||0),Math.min(50,B.pdr||0),'%');
+  add('Might',A.mgt||0,B.mgt||0,'');
+  add('Reflex',A.ref||0,B.ref||0,'');
+  add('Vitality',A.vit||0,B.vit||0,'');
+  add('Bandwidth',A.bnd||0,B.bnd||0,'');
+  add('All skills',A.skills||0,B.skills||0,'');
+  const seen={};for(const src of [A.grant||{},B.grant||{}])for(const i in src)seen[i]=1;
+  for(const i in seen){
+    const a=(A.grant&&A.grant[i])||0,b=(B.grant&&B.grant[i])||0;if(a===b)continue;
+    const nm=CLS[G.cls]&&CLS[G.cls].sk[i]?CLS[G.cls].sk[i].n:('Skill '+i);
+    add(nm,a,b,'')}
+  const skn=CLS[G.cls]&&CLS[G.cls].sk||[];
+  for(let i=0;i<skn.length;i++){
+    const a=skillRank(i,A),b=skillRank(i,B);if(a===b)continue;
+    const ga=(A.grant&&A.grant[i])||0,gb=(B.grant&&B.grant[i])||0;
+    if(ga!==gb&&(b-a)===(gb-ga))continue;
+    add((skn[i].n||('Skill '+i))+' rank',a,b,'')}
+  add('Deadly strike',A.crit||0,B.crit||0,'%');
+  add('Attack speed',A.aspd||0,B.aspd||0,'%');
+  add('Life steal',A.leech||0,B.leech||0,'%');
+  add('Energy stolen',A.enleech||0,B.enleech||0,'%');
+  add('Stun chance',A.stun||0,B.stun||0,'%');
+  add('Magic find',A.mf||0,B.mf||0,'%');
+  add('Extra credits',A.gold||0,B.gold||0,'%');
+  add('Stim capacity',A.cap||0,B.cap||0,'');
+  add('Shock',A.shock||0,B.shock||0,'');
+  add('Dodge',A.dodge||0,B.dodge||0,'%');
+  add('Thorns',A.thorns||0,B.thorns||0,'');
+  add('Energy per second',A.regen||0,B.regen||0,'');
+  add('Life per second',A.regenH||0,B.regenH||0,'');
+  add('Damage blocked',Math.round(100-10000/(100+(A.armor||0))),Math.round(100-10000/(100+(B.armor||0))),'%');
+  for(const k of RTK.concat(['sound'])){const nm=(DTY[k]&&DTY[k].n||k)+' damage';add(nm,A['t_'+k]||0,B['t_'+k]||0,'%')}
+  const have=new Set(skA||[]),next=new Set(skB||[]);
+  for(const n of next)if(!have.has(n))rows.push({name:n,d:1,unit:'',good:true,text:'gained'});
+  for(const n of have)if(!next.has(n))rows.push({name:n,d:-1,unit:'',good:false,text:'lost'});
+  const pa=A.sp||{},pb=B.sp||{};
+  for(const k in pb)if(!pa[k])rows.push({name:spText(k),d:1,unit:'',good:true,text:'gained'});
+  for(const k in pa)if(!pb[k])rows.push({name:spText(k),d:-1,unit:'',good:false,text:'lost'});
+  return rows}
+function mercRows(it){
+  const m=G.merc,slot=it.slot,old=m[slot];
+  const A=mercStats();let B=A;
+  try{m[slot]=it;B=mercStats()}finally{m[slot]=old}
+  const rows=[],add=(name,a,b,unit,goodDown)=>{const d=Math.round((b-a)*10)/10;if(!d)return;rows.push({name:name,d:d,unit:unit||'',good:goodDown?d<0:d>0})};
+  add('Life',A.max,B.max,'');
+  add('Damage',Math.round(A.dmg*10)/10,Math.round(B.dmg*10)/10,'');
+  add('Damage taken',Math.round(A.red*1000)/10,Math.round(B.red*1000)/10,'%',true);
+  return {rows:rows,before:A,after:B}}
+function cmpEval(it,opt){
+  opt=opt||{};
+  const out={ok:false,blocked:null,rows:[],before:S,after:null,target:null,targets:[],merc:false,gain:[],loss:[]};
+  if(!it||it.charm||!it.slot){out.blocked='no';return out}
+  if(!it.id){out.blocked='unid';return out}
+  if(opt.off){
+    const plan=[{slot:it.slot,it:null}];
+    const B=sheetSwap(plan);
+    const skA=itemSkillNames(eqNow()),skB=itemSkillNames(eqPlanned(plan));
+    out.ok=true;out.after=B;out.rows=cmpRows(S,B,skA,skB);
+    out.gain=skB.filter(n=>skA.indexOf(n)<0);out.loss=skA.filter(n=>skB.indexOf(n)<0);
+    out.target={key:'you',who:'you',worn:null,label:'With it off'};
+    return out}
+  const pick=cmpPick(it,opt.key);
+  out.targets=pick.targets;out.target=pick.target;
+  if(!pick.target){out.blocked='no';return out}
+  if(pick.target.who==='merc'){
+    out.merc=true;out.ok=true;
+    const m=mercRows(it);out.rows=m.rows;out.before=m.before;out.after=m.after;
+    return out}
+  if(!canWear(it)){out.blocked='level';out.ok=false;return out}
+  const plan=pick.target.plan||[{slot:it.slot,it:it}];
+  const skA=itemSkillNames(eqNow()),skB=itemSkillNames(eqPlanned(plan));
+  const B=sheetSwap(plan);
+  out.ok=true;out.after=B;out.rows=cmpRows(S,B,skA,skB);
+  out.gain=skB.filter(n=>skA.indexOf(n)<0);out.loss=skA.filter(n=>skB.indexOf(n)<0);
+  return out}
+function sgn(n,unit){const v=Math.round(n*10)/10,sign=v>0?'+':v<0?'−':'';return sign+Math.abs(v)+(unit||'')}
+function cmpRowsHTML(rows){
+  if(!rows||!rows.length)return '<div class="ln off">No change to your stats.</div>';
+  return '<div class="cmpDelta">'+rows.map(r=>{
+    const cls=r.good?'up':'dn';
+    const val=r.text||sgn(r.d,r.unit);
+    const range=r.range?`<em>${esc(r.from)} → ${esc(r.to)}</em>`:'';
+    return `<div class="dln ${cls}"><span>${esc(r.name)}</span>${range}<b>${esc(val)}</b></div>`}).join('')+'</div>'}
+function cmpCol(it,kicker){
+  if(!it)return `<div class="card cmpCol"><div class="kicker">${esc(kicker)}</div><div class="ln off">Nothing in this slot</div></div>`;
+  if(!it.aff)it.aff=[];
+  const hand=itemHands(it)===2?'<div class="ln">Two-handed</div>':(it.slot==='weapon'&&(it.spd||0)>=20?'<div class="ln">One hand</div>':'');
+  return `<div class="card cmpCol"><div class="kicker">${esc(kicker)}</div><div class="nm q${it.q||0}">${esc(it.id?it.name:it.base)}</div><div class="ln off">${QN[it.q]||''} ${esc(SNAME[it.slot]||it.slot)} · item level ${it.il||0}</div>${itemLines(it)}${hand}</div>`}
+function cmpAltsHTML(ts,cur){
+  if(!ts||ts.length<2)return '';
+  return `<div class="cmpAlts"><span>Compare with</span>${ts.map(t=>`<button type="button" class="ghost${t.key===cur?' on':''}" data-cmpk="${esc(t.key)}">${esc(t.label)}</button>`).join('')}</div>`}
+function cmpHTML(it,opt){
+  opt=opt||{};
+  const ev=cmpEval(it,opt);
+  const wornK=opt.off?'With it off':(ev.target&&ev.target.who==='merc'?'On '+(ev.target.label||'them'):'Wearing');
+  const wornIt=opt.off?null:(ev.target?ev.target.worn:(G.eq&&it&&it.slot?G.eq[it.slot]||null:null));
+  let note='';
+  if(ev.blocked==='unid')note='<div class="ln off">Unidentified. Nothing here is a guess.</div>';
+  else if(ev.blocked==='level')note=`<div class="ln red">Needs level ${it.req}. Your sheet does not change.</div>`;
+  else if(ev.merc)note='<div class="ln off">Companion life, damage, and how much of a hit they take.</div>';
+  else note=`<div class="ln off">Resists are after the difficulty cut of ${resPen()}.</div>`;
+  const alts=opt.off?'':cmpAltsHTML(ev.targets,ev.target&&ev.target.key);
+  return `<div class="cmpView">${alts}<div class="cmpBox">${cmpCol(it,'This')}${cmpCol(wornIt,wornK)}</div><div class="cmpFoot"><div class="kicker">What changes</div>${note}${ev.blocked?'':cmpRowsHTML(ev.rows)}</div></div>`}
+function itemCard(it,btns,worn,nocmp){
+  let body;
+  if(!it)body='';
+  else if(nocmp||it.charm||!it.slot)body=`<div class="card"><div class="nm q${it.q}">${esc(it.id?it.name:it.base)}</div><div class="ln off">${QN[it.q]} ${it.id&&it.name!==it.base?esc(it.base):SNAME[it.slot]||''} · item level ${it.il}</div>${itemLines(it)}</div>`;
+  else body=cmpHTML(it,{off:!!worn});
+  return `<div class="cmpHost">${body}<div class="row cmpActs" style="margin-top:6px">${btns||''}</div><div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`}
+function cmpSheetPop(){
+  if(tab==='stash'&&sel){
+    if(sel.st!=null){const it=ACC.stash[sel.st];if(it)return itemCard(it,`<button class="big" data-stmv="${sel.st}">Move to pack</button>`,false,!!(it.charm||!it.slot))}
+    if(sel.sb!=null){const it=G.bag[sel.sb];if(it)return itemCard(it,`<button class="big" data-sbmv="${sel.sb}">Move to lockbox</button>`,false,!!(it.charm||!it.slot))}}
+  if(tab==='party'&&sel&&typeof MP!=='undefined'&&MP){
+    if(sel.tid){const it=(G.bag||[]).find(x=>x&&x.tid===sel.tid);if(it){const on=MP.tradePick&&MP.tradePick[it.tid];return itemCard(it,`<button class="big" data-mptigo="${esc(it.tid)}">${on?'Take it off the table':'Put it on the table'}</button>`,false,!!(it.charm||!it.slot))}}
+    if(sel.theirs!=null&&MP.trade&&MP.trade.them&&MP.trade.them.items){const it=MP.trade.them.items[sel.theirs];if(it)return itemCard(it,'',false,!!(it.charm||!it.slot))}}
+  return ''}
+let cmpSig='',cmpSrc='',cmpIt=null,cmpOpt=null,cmpDrop=null,cmpMuteDrop=null,cmpLeave=null,cmpXY=null;
+function cmpHide(){const el=$('cmpTip');if(el){el.hidden=true;el.innerHTML='';el.classList.remove('dock');el.style.left='';el.style.top=''}cmpSig='';cmpSrc='';cmpIt=null;cmpDrop=null}
+function cmpSigOf(it,opt){
+  const w=it&&it.slot&&G&&G.eq?G.eq[it.slot]:null,mw=G&&G.merc&&it?G.merc[it.slot]:null;
+  return [CMP_KEY,opt&&opt.off?1:0,G&&G.diff|0,G&&G.lvl|0,it&&(it.uid||it.name||''),it&&it.il,it&&(it.id?1:0),w&&(w.uid||w.name||'1'),mw&&(mw.uid||mw.name||''),S&&S.maxHp,S&&S.armor,S&&S.dmin,S&&S.dmax,P&&P.bear|0,P&&P.orders|0,P&&P.book|0,P&&P.two&&P.two.n|0,G&&G.mouse&&G.mouse.L,G&&G.slots&&G.slots[0]].join('|')}
+function cmpPlace(el){
+  if(!cmpXY||!el)return;const app=$('app');if(!app)return;const r=app.getBoundingClientRect();
+  el.style.left='8px';el.style.top='8px';
+  const w=el.offsetWidth||360,h=el.offsetHeight||220;
+  let left=cmpXY.x-r.left+14,top=cmpXY.y-r.top+14;
+  if(left+w>r.width-8)left=Math.max(8,cmpXY.x-r.left-w-14);
+  if(top+h>r.height-8)top=Math.max(8,r.height-h-8);
+  el.style.left=left+'px';el.style.top=top+'px'}
+function cmpShow(it,opt,src,drop){
+  if(!it||it.charm||!it.slot){if(cmpSrc===src)cmpHide();return}
+  const pop=$('pop');if(pop&&!pop.hidden)return;
+  const el=$('cmpTip');if(!el||!G)return;
+  opt=opt||{};const sig=cmpSigOf(it,opt);
+  cmpIt=it;cmpOpt=opt;cmpSrc=src||'';cmpDrop=drop||null;
+  if(sig!==cmpSig||el.hidden){cmpSig=sig;el.innerHTML=cmpHTML(it,opt)+'<div class="row"><button type="button" class="ghost" data-cmphide="1">Hide</button></div>';if(src!=='dock')cmpPlace(el)}
+  el.hidden=false;
+  if(src==='dock'){el.classList.add('dock');el.style.left='';el.style.top=''}else el.classList.remove('dock')}
+function cmpFromEl(el){
+  if(!el||!el.dataset||!G)return null;const d=el.dataset;
+  if(d.bag!==undefined)return G.bag[+d.bag]||null;
+  if(d.eq)return (G.eq&&G.eq[d.eq])||null;
+  if(d.shop!==undefined)return (typeof shop!=='undefined'&&shop[+d.shop])||null;
+  if(d.sat!==undefined)return (typeof satShop!=='undefined'&&satShop[+d.sat]&&satShop[+d.sat].it)||null;
+  if(d.st!==undefined)return (ACC&&ACC.stash&&ACC.stash[+d.st])||null;
+  if(d.sb!==undefined)return (G.bag&&G.bag[+d.sb])||null;
+  if(d.mpti&&typeof MP!=='undefined')return (G.bag||[]).find(x=>x&&x.tid===d.mpti)||null;
+  if(d.tsee!==undefined&&typeof MP!=='undefined'&&MP.trade&&MP.trade.them)return (MP.trade.them.items||[])[+d.tsee]||null;
+  return null}
+function cmpDock(){
+  if(!uiTouch()||mode!=='play'||!$('sheet')||!$('sheet').hidden){if(cmpSrc==='dock')cmpHide();return}
+  if(!W||!P){if(cmpSrc==='dock')cmpHide();return}
+  let best=null,bd=1.8;
+  for(const d of W.drops){if(!d||!d.it||d.it.charm||!d.it.slot)continue;const dist=Math.hypot(d.x-P.x,d.y-P.y);if(dist<bd){bd=dist;best=d}}
+  if(!best||best===cmpMuteDrop){if(cmpSrc==='dock')cmpHide();return}
+  cmpShow(best.it,{},'dock',best)}
+function cmpGround(){
+  if(uiTouch()){if(cmpSrc==='ground')cmpHide();return}
+  if(mode!=='play'||!$('sheet').hidden){if(cmpSrc==='ground')cmpHide();return}
+  const pop=$('pop');if(pop&&!pop.hidden){if(cmpSrc==='ground')cmpHide();return}
+  if(HOVER&&HOVER.kind==='item'&&HOVER.o&&HOVER.o.it&&!HOVER.o.it.charm&&HOVER.o.it.slot){
+    if(HOVER.o===cmpMuteDrop){if(cmpSrc==='ground')cmpHide();return}
+    cmpShow(HOVER.o.it,{},'ground',HOVER.o);return}
+  if(cmpSrc==='ground'){const tip=$('cmpTip');if(tip&&tip.matches(':hover'))return;cmpHide()}}
+
+$('sheet').addEventListener('pointerover',e=>{
+  if(e.pointerType&&e.pointerType!=='mouse')return;
+  if(uiTouch())return;
+  const el=e.target.closest&&e.target.closest('[data-bag],[data-eq],[data-shop],[data-sat],[data-st],[data-sb],[data-mpti],[data-tsee]');
+  if(!el)return;
+  const it=cmpFromEl(el);if(!it||it.charm||!it.slot)return;
+  if(e.clientX!=null)cmpXY={x:e.clientX,y:e.clientY};
+  clearTimeout(cmpLeave);
+  cmpShow(it,{off:!!el.dataset.eq},'sheet')});
+$('sheet').addEventListener('pointerout',e=>{
+  if(e.pointerType&&e.pointerType!=='mouse')return;
+  const rel=e.relatedTarget;
+  if(rel&&$('cmpTip')&&$('cmpTip').contains(rel))return;
+  if(cmpSrc!=='sheet')return;
+  clearTimeout(cmpLeave);
+  cmpLeave=setTimeout(()=>{const tip=$('cmpTip');if(tip&&tip.matches(':hover'))return;if(cmpSrc==='sheet')cmpHide()},200)});
+const cmpTipEl=$('cmpTip');
+if(cmpTipEl){cmpTipEl.addEventListener('pointerover',()=>clearTimeout(cmpLeave));
+  cmpTipEl.addEventListener('click',ev=>{const b=ev.target.closest&&ev.target.closest('button');if(!b)return;ev.preventDefault();ev.stopPropagation();sfx('ui');
+    if(b.dataset.cmphide){if(cmpDrop)cmpMuteDrop=cmpDrop;cmpHide();return}
+    if(b.dataset.cmpk){CMP_KEY=b.dataset.cmpk;cmpSig='';cmpShow(cmpIt,cmpOpt,cmpSrc,cmpDrop)}})}
 const MSL=['weapon','helm','armor'];const mScore=it=>it?(it.dmin?(it.dmin+it.dmax)/2:it.arm||0):0;
 function mercBest(){let n=0;const m=G.merc;for(const sl of MSL){let b=-1,bs=mScore(m[sl]);G.bag.forEach((it,i)=>{if(typeof tradeHeld==='function'&&tradeHeld(it))return;if(it.slot===sl&&it.id&&!it.junk&&mScore(it)>bs&&!(itemDelta(it)>.01)){bs=mScore(it);b=i}});if(b>=0){const it=G.bag[b],old=m[sl];m[sl]=it;G.bag.splice(b,1);if(old)G.bag.push(old);n++}}return n}
 const pkRow=()=>`<h3>Pick up on your own</h3><div class="row">${['Normal','Magic','Rare','Set','Unique'].map((n,q)=>`<button class="ghost q${q}" data-opt="pk${q}" style="padding:10px 2px;font-size:10px;${OPT['pk'+q]===false?'opacity:.35;text-decoration:line-through':''}">${n}</button>`).join('')}</div><button class="tog${OPT.pkBetter?' on':''}" data-opt="pkBetter"><span>Only pick up gear better than what I am wearing</span><i>${OPT.pkBetter?'ON':'OFF'}</i></button><p class="hint" style="font-size:13px">Struck-out tiers stay on the ground, named or not. Better-only leaves identified gear that is not an upgrade, and still picks up unidentified gear, which it cannot judge. Charms are picked up anyway. ${uiSay('On a desk, left click a piece you left. E does the same.','Stand on a piece you left and tap the button that appears.')} A piece for an empty slot is always picked up.</p>`;
@@ -5399,7 +5717,7 @@ function drawSheet(){
     h+=`<div class="row"><button class="${ups?'big':'ghost'}" data-best="1" ${ups?'':'disabled'}>${ups?'Equip best · '+ups+' upgrade'+(ups>1?'s':''):'Nothing better in pack'}</button><button class="ghost" data-markjunk="1" ${downs?'':'disabled'}>Mark ${downs||''} weaker as junk</button></div><button class="tog${OPT.autoEq?' on':''}" data-opt="autoEq"><span>Equip stronger gear as you pick it up</span><i>${OPT.autoEq?'ON':'OFF'}</i></button>`;if(!selling())h+=pkRow();
     if(G.merc&&!G.merc.dead&&!selling()){const m=G.merc,ms=mercStats();h+=`<h3>${esc(m.name)} · ${MERCS[m.k].n}</h3><div class="dollw"><div class="grid eq" style="grid-template-columns:repeat(3,1fr);flex:0 0 46%">${MSL.map(sl=>cell(m[sl],`data-msel="${sl}"`,sel&&sel.m===sl,sl)).join('')}</div><div class="dstat"><div>Life<b>${ms.max}</b></div><div>Damage<b>${Math.round(ms.dmg)}</b></div><div>Takes<b>${Math.round(ms.red*100)}%</b></div></div></div><div class="row"><button class="ghost" data-mbest="1">Give them the best of what I am not using</button></div><p class="hint" style="font-size:13px">${uiSay('Click one of their pieces to take it back. Click a weapon, helm or armor in your pack and choose Give to hand it over; whatever they were holding comes back to you.','Tap one of their pieces to take it back. Tap a weapon, helm or armor in your pack and choose Give to hand it over; whatever they were holding comes back to you.')}</p>`}
     h+=`<h3>Pack ${gridCells(G.bag)}/24 · ${G.parts||0} parts</h3><div class="grid" id="bagGrid">${gridPack(G.bag,6,4,'bag')}</div>`;
-    h+=`<p style="font-size:13.5px"><span class="up">Glowing</span> items make you stronger, faded ones make you weaker. ${uiSay('Click to inspect, <strong>double-click to equip</strong>, <strong>hold to','Tap to inspect, <strong>double-tap to equip</strong>, <strong>hold to')} ${selling()?'sell':'mark as junk'}</strong>.</p>`;
+    h+=`<p style="font-size:13.5px">${uiSay('Hover a piece, or click it, to set it beside what you wear. Shift-hover does the same. <strong>Double-click to equip</strong>, <strong>hold to','Tap a piece to set it beside what you wear. <strong>Double-tap to equip</strong>, <strong>hold to')} ${selling()?'sell':'mark as junk'}</strong>.</p>`;
     const it=sel&&(sel.cs!==undefined?(G.cslots||[])[sel.cs]:sel.m?G.merc&&G.merc[sel.m]:sel.eq?G.eq[sel.eq]:G.bag[sel.bag]);
     if(it&&sel.sock){const own=WK.filter(w=>G.words[w]);pop=`<div class="card"><div class="nm" style="color:#f7931a">Socket a word</div><div class="ln off">${esc(it.name)} · ${it.soc-it.words.length} empty. A word cannot be removed once set. Phrases need the right words in the right order: see the Codex.</div><div class="list">${own.length?own.map(w=>`<button class="li" data-word="${w}"><div><b>${w} ×${G.words[w]}</b><span>${AFK[WORDS[w][0]].t.replace('{v}',WORDS[w][1])}</span></div></button>`).join(''):'<div class="ln off">You hold no words. They turn up on torn notes dropped by machines.</div>'}</div><div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`}
     else 
@@ -5477,7 +5795,7 @@ function drawSheet(){
     <h3>Sats · ${ACC.sats} in the box · ${G.sats} on you</h3><div class="row"><button class="ghost" data-acc="si10" ${satsFree()<10?'disabled':''}>Deposit 10</button><button class="ghost" data-acc="siall" ${satsFree()<1?'disabled':''}>Deposit all</button><button class="ghost" data-acc="so10" ${ACC.sats<10?'disabled':''}>Take 10</button><button class="ghost" data-acc="soall" ${ACC.sats<1?'disabled':''}>Take all</button></div>
     <h3>Credits · ${fmt(real)} in the box · ${fmt(G.credits)} on you</h3><div class="row"><button class="ghost" data-acc="cihalf" ${G.credits<1?'disabled':''}>Deposit half</button><button class="ghost" data-acc="ciall" ${G.credits<1?'disabled':''}>Deposit all</button><button class="ghost" data-acc="coall" ${real<1?'disabled':''}>Take all</button></div>
     <p style="font-size:13px">Sats are kept exactly as you leave them. Credits are held by what they could buy on the day, less Unity’s 10% custody fee, so a fortune from a late act is not a fortune to a hero just starting out.</p>
-    <h3>Gear ${gridCells(ACC.stash)}/36</h3><div class="grid">${gridPack(ACC.stash,6,6,'st')}</div><h3>Pack ${gridCells(G.bag)}/24</h3><div class="grid">${gridPack(G.bag,6,4,'sb')}</div><p style="font-size:13px">${uiSay('Click an item to move it across.','Tap an item to move it across.')} Wearing it still needs the level printed on it.</p>`}
+    <h3>Gear ${gridCells(ACC.stash)}/36</h3><div class="grid">${gridPack(ACC.stash,6,6,'st')}</div><h3>Pack ${gridCells(G.bag)}/24</h3><div class="grid">${gridPack(G.bag,6,4,'sb')}</div><p style="font-size:13px">${uiSay('Click an item to move it across. Shift-click, or hover, to compare it with what you wear.','Tap an item to compare it with what you wear. Move sends it across.')} Wearing it still needs the level printed on it.</p>`}
   if(tab==='shift'){h+=`<h2>Hack the simulation</h2><p>The rig can convince the world you were always someone else. Your level, gear and quests stay. Every skill and attribute point you spent comes back, two for each rank from 6 to 10, to be spent again: by you, or by the rig following a build you choose. It costs <strong style="color:#f7931a">${SHIFT_COST} sats</strong>; you hold ${G.sats}.</p><div class="list">`;
     for(const k in CLS){const c=CLS[k],cur=k===G.cls;h+=`<div class="li${cur?' on':''}"><div><b>${c.n}${cur?' · you now':''}</b><span>${c.tag}</span><div class="row" style="margin-top:8px"><button class="ghost" data-shiftp="${k}" ${G.sats<SHIFT_COST?'disabled':''}>Choose a build</button><button class="ghost" data-shift="${k}|0" ${G.sats<SHIFT_COST?'disabled':''}>I will assign</button></div></div></div>`}
     if(sel&&sel.shp){const k=sel.shp,sk=CLS[k].sk;pop=`<div class="card" style="text-align:left"><div class="nm q4">${CLS[k].n} builds</div><div class="ln off">Each is a full plan: skills that feed each other, the three on your buttons, passives, a doctrine and attributes. Pick one and the rig spends your points to fit. ${SHIFT_COST} sats.</div><div class="list">${BUILDS[k].map(b=>`<button class="li" data-shift="${k}|${b.k}"><div><b>${b.n}</b><span>${b.p}</span><span style="color:var(--gold)">${b.sl.map(i=>sk[i].n).join(' · ')}</span><span>Doctrine: ${DOCS[k].find(d=>d[0]===b.doc)[1]} · leans on ${['Might','Reflex','Vitality','Bandwidth'][b.at.indexOf(Math.max(...b.at))]}</span></div></button>`).join('')}<button class="li" data-shift="${k}|?"><div><b>Surprise me</b><span>One of the three, chosen for you.</span></div></button></div><div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`}
@@ -5557,7 +5875,7 @@ function drawSheet(){
     }
     h+=`</div>`;if(gateAct===6&&devOn())h+=`<button class="ghost" data-dev="reset">Respawn all machines</button>`;
     if(G.maxTier>0&&gateAct===6)h+=`<h3>Tier</h3><div class="row"><button class="ghost" data-tier="-1" ${G.tier<=0?'disabled':''}>Easier</button><button class="ghost" disabled>Tier ${G.tier}</button><button class="ghost" data-tier="1" ${G.tier>=G.maxTier?'disabled':''}>Harder</button></div><p>Each tier adds 12 machine levels and raises item levels to match. Changing tier respawns every district.</p>`}
-  h+=`</div>`;$('sheetIn').innerHTML=h;if(G&&G.charmShake)G.charmShake=0;paintGlyphs($('sheetIn'));if($('webStage'))webBind();if(pop){$('popIn').innerHTML=pop;paintGlyphs($('popIn'));$('pop').hidden=false;$('pop').scrollTop=0}}
+  h+=`</div>`;if(!pop){const extra=cmpSheetPop();if(extra)pop=extra}$('sheetIn').innerHTML=h;if(G&&G.charmShake)G.charmShake=0;paintGlyphs($('sheetIn'));if($('webStage'))webBind();if(pop){cmpHide();$('popIn').innerHTML=pop;paintGlyphs($('popIn'));$('pop').hidden=false;$('pop').scrollTop=0}}
 const satsOk=()=>G.adopt>=60||(G.wonF&&G.wonF.brenda===1)||shopVia,satCost=it=>Math.max(1,Math.ceil(buyPrice(it)/satRate()));let shopVia=0;const buyPrice=it=>{const her=payTag(it.val*2.5*G.cpi*(G.disc?.85:1)*(repRank('norm')>=3?.8:repRank('norm')>=1?.9:1));return shopVia?payTag(her*.7):her};
 const boxPrice=()=>payTag((8+G.lvl*5)*9*G.cpi);
 /* The sell line prints whole credits, so the purse gains the floor of two fifths. */
@@ -5611,8 +5929,11 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.msel){sel=G.merc&&G.merc[d.msel]?{m:d.msel}:null}
   if(d.mbest){const n=mercBest();toast(n?G.merc.name+' takes '+n+' piece'+(n>1?'s':''):'Nothing spare is better for them. Pieces that would improve you are left alone.');sfx(n?'equip':'ui')}
   if(d.claim!==undefined){const b=G.bounties[+d.claim];if(b&&b.c>=b.n){const m=repRank('anon')>=1?1.25:1;b.sats=Math.ceil(b.sats*m);b.cr*=m;addRep('anon',6);if(repRank('anon')>=3){const w=pick(WK);gotWord(w);toast('A note is pinned to the payment: '+w)}G.sats+=b.sats;/* The board and the paid line print whole credits, so the purse gains that floor. */const pay=Math.floor(b.cr*G.cpi);G.credits+=pay;G.bounties.splice(+d.claim,1);sfx('quest');toast('Paid: '+b.sats+' sats and '+fmt(pay))}}
-  if(d.st!==undefined){const it=ACC.stash[+d.st];if(it){if(!bagCan(it))toast('Your pack is full');else{ACC.stash.splice(+d.st,1);G.bag.push(it);sfx('equip');accSave();save(true)}}}
-  if(d.sb!==undefined){const it=G.bag[+d.sb];if(it){if(typeof tradeLocked==='function'&&tradeLocked(it))return;if(it.test)toast('Test gear does not go in the lockbox');else if(!gridCan(ACC.stash,it,6,6))toast('The lockbox is full');else{G.bag.splice(+d.sb,1);it.junk=false;ACC.stash.push(it);sfx('equip');accSave();save(true)}}}
+  if(d.cmpk)CMP_KEY=d.cmpk;
+  if(d.stmv!==undefined){const it=ACC.stash[+d.stmv];if(it){if(!bagCan(it))toast('Your pack is full');else{ACC.stash.splice(+d.stmv,1);G.bag.push(it);sel=null;sfx('equip');accSave();save(true)}}}
+  if(d.sbmv!==undefined){const it=G.bag[+d.sbmv];if(it){if(typeof tradeLocked==='function'&&tradeLocked(it))return;if(it.test)toast('Test gear does not go in the lockbox');else if(!gridCan(ACC.stash,it,6,6))toast('The lockbox is full');else{G.bag.splice(+d.sbmv,1);it.junk=false;ACC.stash.push(it);sel=null;sfx('equip');accSave();save(true)}}}
+  if(d.st!==undefined){const it=ACC.stash[+d.st];if(it){if(ev.shiftKey||uiTouch())sel={st:+d.st};else if(!bagCan(it))toast('Your pack is full');else{ACC.stash.splice(+d.st,1);G.bag.push(it);sfx('equip');accSave();save(true)}}}
+  if(d.sb!==undefined){const it=G.bag[+d.sb];if(it){if(ev.shiftKey||uiTouch())sel={sb:+d.sb};else if(typeof tradeLocked==='function'&&tradeLocked(it))return;else if(it.test)toast('Test gear does not go in the lockbox');else if(!gridCan(ACC.stash,it,6,6))toast('The lockbox is full');else{G.bag.splice(+d.sb,1);it.junk=false;ACC.stash.push(it);sfx('equip');accSave();save(true)}}}
   if(d.acc){const k=d.acc;if(k[0]==='s'){if(k==='si10'||k==='siall'){const n=k==='si10'?10:satsFree();if(n>0&&spendSats(n))ACC.sats+=n}else{const n=k==='so10'?Math.min(10,ACC.sats|0):(ACC.sats|0);if(n>0){G.sats=(G.sats|0)+n;ACC.sats-=n}}}else if(k==='coall'){/* The box line prints whole credits, so take-all pays that floor. */const pay=Math.floor(ACC.cr*G.cpi);G.credits+=pay;ACC.cr=0}else{/* Half and all move whole credits. The fee is still a tenth of that. */const a=k==='cihalf'?Math.floor(G.credits/2):Math.floor(G.credits);if(a>0){G.credits-=a;ACC.cr+=a/G.cpi*.9}}sfx('coin');accSave();save(true)}
   if(d.bull){closeSheet();bullStart();return}
   if(d.shiftp){sel={shp:d.shiftp};drawSheet();return}
@@ -5751,7 +6072,7 @@ function assignMouse(side,i){
   G.mouse[side]=i;paintMouseSlots();paintPick()}
 function uiEats(t){
   if(!t||!t.closest)return false;
-  if(t.closest('#mPick,#sheet,#pop,#dlg,#scene,#death,#title,#disc,#pad,#bbs,#obj,#bAct,#bSwap,#top'))return true;
+  if(t.closest('#mPick,#sheet,#pop,#dlg,#scene,#death,#title,#disc,#pad,#bbs,#obj,#bAct,#bSwap,#top,#cmpTip'))return true;
   if(t.id==='cv'||t.id==='stickzone'||t.id==='stick'||t.id==='app'||t.id==='hud')return false;
   if(t.closest('button,input,textarea,a,label'))return true;
   return false}
@@ -5767,15 +6088,15 @@ function worldPointer(e){
   if(!W||!P||mode!=='play')return null;
   return worldAt(e.clientX,e.clientY)}
 function syncHover(e){
-  if(e&&e.clientX!=null)lastPtr={x:e.clientX,y:e.clientY};
+  if(e&&e.clientX!=null){lastPtr={x:e.clientX,y:e.clientY};cmpXY={x:e.clientX,y:e.clientY}}
   if(typeof AIMING!=='undefined'&&AIMING&&AIMING.pt==='key')aimTrack(e.clientX,e.clientY);
   const w=worldPointer(e);
-  if(!w){if(mode!=='play'){HOVER=null;const app=$('app');if(app)app.style.cursor=''}return}
+  if(!w){if(mode!=='play'){HOVER=null;const app=$('app');if(app)app.style.cursor='';if(cmpSrc==='ground')cmpHide()}return}
   HOVER=pickScreen(w.vx,w.vy);
   const app=$('app'),k=HOVER&&HOVER.kind;
   if(app)app.style.cursor=k==='foe'?'crosshair':(k==='npc'||k==='use')?'pointer':k==='item'?'grab':'default';
   if(MBTN.l)setMouseOrder('left',w.x,w.y,!!(e.shiftKey||keys.ShiftLeft||keys.ShiftRight),HOVER,true);
-  else if(MBTN.r)setMouseOrder('right',w.x,w.y,!!(e.shiftKey||keys.ShiftLeft||keys.ShiftRight),HOVER,true)}
+  else if(MBTN.r)setMouseOrder('right',w.x,w.y,!!(e.shiftKey||keys.ShiftLeft||keys.ShiftRight),HOVER,true);cmpGround()}
 
 /* ================= input ================= */
 const sz=$('stickzone');let sid=null,so={x:0,y:0};
@@ -5877,7 +6198,7 @@ uiBoot();
 showDisc();
 cloudInit();
 function devOn(){try{if(window.__DEBUG)return true;var h=location.hostname;if(h==='localhost'||h==='127.0.0.1'||h==='::1')return true;if(location.protocol==='file:'||location.protocol==='about:')return true}catch(e){}return false}
-if(devOn())window.__g={migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},get shop(){return shop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts};
+if(devOn())window.__g={migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},get shop(){return shop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith};
 /* late additions that need the dialogue tables */
 QRW.push(
  ['q16','gramps','“I do not remember the nine years after I clicked.” You gain 1 skill point.',()=>G.sp++,'Gramps'],
@@ -7360,7 +7681,10 @@ function mpTradePanel() {
   h += '<p>You offer ' + (you.sats | 0) + ' sats' + (you.ok ? ' · confirmed' : '') + '. They offer ' + (them.sats | 0) + ' sats' + (them.ok ? ' · confirmed' : '') + '.</p>';
   h += '<div class="ln off">Theirs</div>';
   if (!(them.items || []).length && !(them.sats > 0)) h += '<p>Nothing yet.</p>';
-  else for (const it of them.items || []) h += '<div class="ln">' + esc(it.name || it.base || 'An item') + '</div>';
+  else (them.items || []).forEach(function (it, i) {
+    h += '<button type="button" class="li" data-tsee="' + i + '"><div><b>' + esc(it.name || it.base || 'An item') + '</b><span>' + esc((typeof SNAME !== 'undefined' && SNAME[it.slot]) || it.slot || '') + '</span></div></button>';
+  });
+  h += '<p style="font-size:13px">' + (typeof uiSay === 'function' ? uiSay('Hover a piece to set it beside what you wear. Click one of yours to put it on the table.', 'Tap a piece to set it beside what you wear. Put it on the table sends yours across.') : '') + '</p>';
   h += '<div class="row"><input id="mpSats" inputmode="numeric" maxlength="9" value="' + (you.sats | 0) + '"' + (frozen ? ' readonly' : '') + ' style="width:8em;background:#0a0912;border:1px solid #3a3350;color:#e8e2d4;border-radius:6px;padding:10px;font:15px Georgia,serif"></div>';
   h += '<div class="list">';
   const offered = {};
@@ -7520,8 +7844,16 @@ function mpClick(d) {
     if (MP.trade) mpSend('trade.cancel', {});
     MP.trade = null; MP.tradeAsk = null; MP.tradeLock = null; MP.tradePick = null; drawSheet(); return true;
   }
+  if (d.tsee !== undefined) { sel = { theirs: +d.tsee }; drawSheet(); return true; }
+  if (d.mptigo) {
+    if (mpTradeFrozen()) { toast('The table is locked. Change the offer to unlock it.'); sfx('err'); return true; }
+    MP.tradePick = MP.tradePick || {};
+    if (MP.tradePick[d.mptigo]) delete MP.tradePick[d.mptigo]; else MP.tradePick[d.mptigo] = 1;
+    drawSheet(); return true;
+  }
   if (d.mpti) {
     if (mpTradeFrozen()) { toast('The table is locked. Change the offer to unlock it.'); sfx('err'); return true; }
+    if (typeof uiTouch === 'function' && uiTouch()) { sel = { tid: d.mpti }; drawSheet(); return true; }
     MP.tradePick = MP.tradePick || {};
     if (MP.tradePick[d.mpti]) delete MP.tradePick[d.mpti]; else MP.tradePick[d.mpti] = 1;
     drawSheet(); return true;

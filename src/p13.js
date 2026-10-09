@@ -1206,7 +1206,10 @@ function mpTradePanel() {
   h += '<p>You offer ' + (you.sats | 0) + ' sats' + (you.ok ? ' · confirmed' : '') + '. They offer ' + (them.sats | 0) + ' sats' + (them.ok ? ' · confirmed' : '') + '.</p>';
   h += '<div class="ln off">Theirs</div>';
   if (!(them.items || []).length && !(them.sats > 0)) h += '<p>Nothing yet.</p>';
-  else for (const it of them.items || []) h += '<div class="ln">' + esc(it.name || it.base || 'An item') + '</div>';
+  else (them.items || []).forEach(function (it, i) {
+    h += '<button type="button" class="li" data-tsee="' + i + '"><div><b>' + esc(it.name || it.base || 'An item') + '</b><span>' + esc((typeof SNAME !== 'undefined' && SNAME[it.slot]) || it.slot || '') + '</span></div></button>';
+  });
+  h += '<p style="font-size:13px">' + (typeof uiSay === 'function' ? uiSay('Hover a piece to set it beside what you wear. Click one of yours to put it on the table.', 'Tap a piece to set it beside what you wear. Put it on the table sends yours across.') : '') + '</p>';
   h += '<div class="row"><input id="mpSats" inputmode="numeric" maxlength="9" value="' + (you.sats | 0) + '"' + (frozen ? ' readonly' : '') + ' style="width:8em;background:#0a0912;border:1px solid #3a3350;color:#e8e2d4;border-radius:6px;padding:10px;font:15px Georgia,serif"></div>';
   h += '<div class="list">';
   const offered = {};
@@ -1366,8 +1369,16 @@ function mpClick(d) {
     if (MP.trade) mpSend('trade.cancel', {});
     MP.trade = null; MP.tradeAsk = null; MP.tradeLock = null; MP.tradePick = null; drawSheet(); return true;
   }
+  if (d.tsee !== undefined) { sel = { theirs: +d.tsee }; drawSheet(); return true; }
+  if (d.mptigo) {
+    if (mpTradeFrozen()) { toast('The table is locked. Change the offer to unlock it.'); sfx('err'); return true; }
+    MP.tradePick = MP.tradePick || {};
+    if (MP.tradePick[d.mptigo]) delete MP.tradePick[d.mptigo]; else MP.tradePick[d.mptigo] = 1;
+    drawSheet(); return true;
+  }
   if (d.mpti) {
     if (mpTradeFrozen()) { toast('The table is locked. Change the offer to unlock it.'); sfx('err'); return true; }
+    if (typeof uiTouch === 'function' && uiTouch()) { sel = { tid: d.mpti }; drawSheet(); return true; }
     MP.tradePick = MP.tradePick || {};
     if (MP.tradePick[d.mpti]) delete MP.tradePick[d.mpti]; else MP.tradePick[d.mpti] = 1;
     drawSheet(); return true;
