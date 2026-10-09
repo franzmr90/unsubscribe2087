@@ -244,8 +244,10 @@ const ICON={
  belt:'M2 9h20v6H2zM9 7h6v10H9zM11 10h2v4h-2z',
  ring:'M12 7a7 7 0 100 14 7 7 0 000-14zm0 3a4 4 0 110 8 4 4 0 010-8zM9 2h6l1 4H8z',
  amulet:'M5 3c0 7 4 9 7 10 3-1 7-3 7-10h-2c0 5-3 7-5 8-2-1-5-3-5-8zM12 13l3.5 4-3.5 5-3.5-5z',
- charm:'M6 2h12v5H6zM4 8h16v13H4zM8 11h8v2H8zM8 15h5v2H8z'};
+ charm:'M6 2h12v5H6zM4 8h16v13H4zM8 11h8v2H8zM8 15h5v2H8z',
+ stim:'M9 2h6v3l2 3v11a3 3 0 01-3 3h-4a3 3 0 01-3-3V8l2-3zm1 2h4v2h-4z'};
 const svgIcon=s=>`<svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="${ICON[s]}"/></svg>`;
+const STIM={pack:'A stim. The belt drinks it. The pack only carries the extra.',move:'Move to belt',keep:'A stim stays until the belt has room.',pick:'Choose a stim in the pack.',belt:'A stim in the pack moves here when the belt has room: drag it, double-tap it, or choose Move.'};
 // three tiers per slot: ilvl 1-6, 7-14, 15+. Weapons carry a damage factor and a speed bonus.
 const BASE={
  weapon:[[{n:'Bent Rebar',d:1,s:0},{n:'Stop Sign',d:1.35,s:-20},{n:'Box Cutter',d:.75,s:25}],[{n:'Signal Baton',d:1,s:0},{n:'Girder Maul',d:1.35,s:-20},{n:'Mono Blade',d:.75,s:25}],[{n:'Arc Sceptre',d:1,s:0},{n:'Wrecking Hammer',d:1.35,s:-20},{n:'Phase Razor',d:.75,s:25}],[{n:'Null Sceptre',d:1,s:0},{n:'Titan Maul',d:1.35,s:-20},{n:'Void Razor',d:.75,s:25}]],

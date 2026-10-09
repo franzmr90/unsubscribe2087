@@ -1257,6 +1257,10 @@ function castIndex(i){castWhy='';if(mode!=='play'||!(i>=0)){castWhy='wait';retur
   const fk=forkOf(i);let cost=s.cost*(S.sp.hoodie?.75:1)*(fk.cost||1);if(P.freeThrow&&G.cls==='courier'&&(i===0||i===6||i===9||i===12)){cost=0;P.freeThrow=0}if(G.en<cost){if(leaving)cost=0;else{castWhy='wait';toast('Not enough energy');sfx('err');return}}
   if(P.spot){let dx=P.spot.x-P.x,dy=P.spot.y-P.y;const d=Math.hypot(dx,dy)||.001;if(d>.05){const spec=aimSpec(i);if(spec&&spec.back){dx=-dx;dy=-dy}P.dir={x:dx/d,y:dy/d}}}else{const t=nearest(6.5);if(t)face(t)}G.en-=cost;P.cd[i]=s.cd*(1-Math.min(.6,S.cdr))*(fk.cd||1)*(G.sk[i]>=10?.8:1);skvPlay(G.cls,i,P.x,P.y,P.dir);mpNoteCast(i);if(!(G.cls==='anon'&&i===3&&P.stealth>0&&sl(11)&&!boonOn(11)))unstealth();sfx(SKS[G.cls][i]||'cast');if(G.cls==='witness'){P.witHold=1;P.witCast=1}P.fm={m:fk.dm||1,t:(G.fork||{})[i]==='refund'?2:1.2,k:(G.fork||{})[i],dt:skType(G.cls,i)};forkCast((G.fork||{})[i]);const na=W.allies.length;P.hitSk=i;try{SKF[G.cls][i](L,syn(i))}finally{P.hitSk=-1}for(let k=na;k<W.allies.length;k++)if(!W.allies[k].holdDt)W.allies[k].dt=skType(G.cls,i);for(const a of W.allies)if(a.per&&!a.dt)a.dt=skType(G.cls,i);forkAfter(i,L);castWhy='ok'}
 function stim(){if(mode!=='play')return;if(W.sub&&W.sub.mods.includes('dry')){toast('Stims do not work in these proceedings');sfx('err');return}if(G.stims<1){toast('No stims. Brenda sells them.');return}if(G.hp>=S.maxHp&&!(S.sp.repair&&G.en<S.maxEn))return;G.stims--;heal(S.maxHp*.45);if(S.sp.repair)G.en=S.maxEn;sfx('stim');float(P.x,P.y,'+stim','#7be495');parts(P.x,P.y,10,['#7be495','#fff'],1.5,1.5)}
+function stimPackItem(){const it={name:'Stim',base:'Stim',q:1,il:1,stim:1,free:1,req:1,reqMgt:0,reqRef:0,reqBnd:0,aff:[],id:true,val:0,fl:STIM.pack};if(typeof stampReq==='function')stampReq(it);return it}
+function beltHasRoom(){return (G.stims||0)<((S&&S.cap)||0)}
+function giveStim(){if(beltHasRoom()){G.stims=(G.stims||0)+1;return 'belt'}const it=stimPackItem();if(typeof bagCan==='function'&&bagCan(it)){G.bag.push(it);return 'pack'}if(typeof packFullCue==='function')packFullCue();return 'full'}
+function stimToBelt(i){const it=G.bag&&G.bag[i];if(!it||!it.stim)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(!beltHasRoom()){toast('You cannot carry another');sfx('err');return false}G.bag.splice(i,1);G.stims=(G.stims||0)+1;sfx('equip');return true}
 
 /* ================= interaction ================= */
 function useObj(o){
@@ -1685,7 +1689,7 @@ function update(dt){
     if(d.sat){const n=Math.ceil(d.sat*(W.merc&&W.merc.hp>0&&G.merc.k==='node'?1.5:1)*(repRank('btc')>=2?1.25:1)*(S.sp.coldwallet?1.25:1));G.sats+=n;float(P.x,P.y,'+'+n+' sats','#f7931a');sfx('coin');W.drops.splice(W.drops.indexOf(d),1);continue}
     /* The pickup line prints whole credits, so the purse gains that floor. */
     if(d.cr){const v=Math.floor(d.cr*(1+S.gold/100));G.credits+=v;if(v){float(P.x,P.y,'+'+fmt(v),'#ffe36b');sfx('coin')}}
-    else if(d.pot){if(G.stims>=S.cap)continue;G.stims++;float(P.x,P.y,'+stim','#7be495');toast('Stim');sfx('pick')}
+    else if(d.pot||(d.it&&d.it.stim)){const where=giveStim();if(where==='full')continue;float(P.x,P.y,'+stim','#7be495');toast('Stim');sfx('pick')}
     else if(d.it.charm){charmNormalize(d.it);if(!bagCan(d.it)){packFullCue();continue}G.bag.push(d.it);sfx('pick');float(P.x,P.y,lootName(d),lootCol(d));toast(lootName(d))}
     else{if(!d.force&&skipPick(d.it))continue;if(!bagCan(d.it)){packFullCue();continue}G.bag.push(d.it);sfx('pick');float(P.x,P.y,lootName(d),lootCol(d));if(typeof canWear==='function'?canWear(d.it):(d.it.id&&G.lvl>=d.it.req&&!d.it.charm)){const dl=itemDelta(d.it),emp=!G.eq[d.it.slot];if(emp||(OPT.autoEq&&dl>.01)){equipFromBag(G.bag.indexOf(d.it));toast('Equipped '+d.it.name);W.drops.splice(W.drops.indexOf(d),1);continue}if(dl>.2&&(!SWAP||dl>SWAP.d))SWAP={it:d.it,d:dl,t:8}}toast(d.it.id?d.it.name:'Unidentified '+d.it.base)}
     W.drops.splice(W.drops.indexOf(d),1)}
