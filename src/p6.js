@@ -104,10 +104,13 @@ function actRoman(n){return ['I','II','III','IV','V'][(n||1)-1]||'I'}
 const townOf=zi=>{const a=actOf(zi);return a===5?27:a===4?21:a===3?18:a===2?17:a===1?0:(G.town||0)};
 const HT=()=>G.town||0;
 function nearFree(p,d){for(let i=0;i<24;i++){const a=i*.8,r=d||1.3,x=p.x+Math.cos(a)*r,y=p.y+Math.sin(a)*r;if(free(x,y,.35))return{x,y}}return{x:p.x,y:p.y}}
+/* A lieutenant whose kill step is already done stays down. Bringing Defrag back
+   seals Marrow's cage while the tracker still says to open it. */
+function suStepDone(z){const su=z&&z.su;if(!su||!su.q)return false;const q=su.q,st=(G.q&&G.q[q])||0;if(st>=2)return true;if(q==='q3'&&G.q3open)return true;if(q==='q8'&&G.q8down)return true;if(q==='q12'&&G.q12down)return true;return false}
 /* machines drift back into a district you have been away from */
 function repop(){const z=W.z,N=W.N,base=z.boss?24:46,have=W.ents.filter(e=>!isBoss(e.k)&&!e.su).length,need=base-have,away=G.time-W.leftT;let back=0;
-  if(away>600&&z.su&&!W.ents.some(e=>e.su)){const p=W.suAt||W.goal;if(spawn(z.su.k,p.x+.5,p.y+.5,{su:z.su}))back++}
-  if(away>900&&z.boss&&!W.boss&&W.goal){if(spawn(z.bossK||'boss',W.goal.x,W.goal.y)){back++;W.portals=W.portals.filter(p=>p.kind!=='home')}}
+  if(away>600&&z.su&&!suStepDone(z)&&!W.ents.some(e=>e.su)){const p=W.suAt||W.goal;if(spawn(z.su.k,p.x+.5,p.y+.5,{su:z.su}))back++}
+  if(away>900&&z.boss&&!W.boss&&W.goal&&!(z.bq&&(G.q[z.bq]||0)>=2)){if(spawn(z.bossK||'boss',W.goal.x,W.goal.y)){back++;W.portals=W.portals.filter(p=>p.kind!=='home')}}
   if(need<6)return back;
   W.ml=zoneLevel(z);W.dyn=dynFor(W.ml);let n=0;
   for(let t=0;t<600&&n<need;t++){const x=ri(2,N-3)+.5,y=ri(2,N-3)+.5;if(W.map[(y|0)*N+(x|0)]!==1||Math.hypot(x-P.x,y-P.y)<13||Math.hypot(x-W.start.x,y-W.start.y)<8||(z.boss&&W.goal&&Math.hypot(x-W.goal.x,y-W.goal.y)<10))continue;

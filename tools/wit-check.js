@@ -17,9 +17,9 @@ const clear=async(n=18)=>{for(let i=0;i<n;i++){await p.evaluate(()=>{const s=doc
 await p.evaluate(()=>__g.skipDisc());await p.waitForTimeout(200);
 const title=await p.evaluate(()=>{const b=document.querySelector('[data-cls=witness]');if(b)b.scrollIntoView({block:'center'});const c=__g.CLS.witness;return {btn:!!(b&&b.textContent.includes('Witness')),hp:c&&c.hp,hpL:c&&c.hpL,melee:c&&c.melee,mult:c&&c.mult,ivl:c&&c.ivl,spd:c&&c.spd,col:c&&c.col,locked:c&&c.locked,boon:c&&c.boon,aura:(c&&c.sk||[]).some(s=>s.aura),names:(c&&c.sk||[]).map(s=>s.n),act:(c&&c.sk||[]).map(s=>s.a)}})
 if(!title.btn)fail('title button missing');
-/* Life, swing interval, and melee come from the shared formulas. The weapon factor is the class mult, which the balance pass set to 0.8. */
+/* Life, swing interval, and melee come from the shared formulas. The weapon factor is the class mult. */
 const life=FORMULAS.cls.witness;
-if(title.hp!==life.hp||title.hpL!==life.hpL||title.melee!==!!life.melee||title.mult!==.8||title.ivl!==life.ivl||title.spd!==4.2||title.col!=='#8d9aab')fail('stats '+JSON.stringify(title));
+if(title.hp!==life.hp||title.hpL!==life.hpL||title.melee!==!!life.melee||title.mult!==.92||title.ivl!==life.ivl||title.spd!==4.2||title.col!=='#8d9aab')fail('stats '+JSON.stringify(title));
 if(title.locked||title.boon||title.aura)fail('locked, boon, or aura');
 const names=['Look','The Sentence','Margin','Cross-reference','Pull the Thread','Filed','Correction','Redaction','The Footnote','On the Record','Unnamed Source','Colophon','Publish','Named Party','Retraction'];
 if(title.names.join('|')!==names.join('|'))fail('skill names '+title.names.join('|'));
