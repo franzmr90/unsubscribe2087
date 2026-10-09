@@ -116,11 +116,15 @@ fs.mkdirSync(OUT, { recursive: true });
       __g.openVend(k);
     }, kind);
     await p.waitForTimeout(80);
-    counters[kind] = await p.evaluate(() => document.getElementById('sheetIn').innerText);
+    counters[kind] = await p.evaluate(() => ({
+      who: (document.querySelector('.vendHead h2') || {}).textContent || '',
+      all: !!document.querySelector('[data-repair="all"]'),
+      piece: document.querySelectorAll('[data-vrepair]').length
+    }));
   }
-  check('Brenda lists Repair all', /Repair all/.test(counters.brenda) && /Brenda/.test(counters.brenda), counters.brenda.slice(0, 400));
-  check('Nonce lists Repair all', /Repair all/.test(counters.sat) && /Nonce/.test(counters.sat), counters.sat.slice(0, 400));
-  check('Wren lists Repair all', /Repair all/.test(counters.gamble) && /Wren/.test(counters.gamble), counters.gamble.slice(0, 400));
+  check('Brenda lists Repair all', counters.brenda.all && counters.brenda.piece >= 1 && /Brenda/.test(counters.brenda.who), JSON.stringify(counters.brenda));
+  check('Nonce lists Repair all', counters.sat.all && counters.sat.piece >= 1 && /Nonce/.test(counters.sat.who), JSON.stringify(counters.sat));
+  check('Wren lists Repair all', counters.gamble.all && counters.gamble.piece >= 1 && /Wren/.test(counters.gamble.who), JSON.stringify(counters.gamble));
   await p.screenshot({ path: path.join(OUT, 'screenshot_repair_all.png') });
   const beforeAll = await p.evaluate(() => __g.G.sats);
   await p.click('[data-repair="all"]');
@@ -155,8 +159,8 @@ fs.mkdirSync(OUT, { recursive: true });
     const g = __g;
     const worn = g.G.eq.weapon;
     const saved = worn.dura;
-    const fresh = g.makeItem(6, 1, 'weapon');
-    fresh.id = true; fresh.dmin = 18; fresh.dmax = 28; fresh.name = 'Spare Fang';
+    const fresh = g.makeItem(1, 1, 'weapon');
+    fresh.id = true; fresh.dmin = 18; fresh.dmax = 28; fresh.name = 'Spare Fang'; fresh.req = 1;
     fresh.dura = 0; worn.dura = 0; g.calc();
     const ev = g.cmpEval(fresh);
     const html = g.cmpHTML(fresh);
@@ -166,6 +170,7 @@ fs.mkdirSync(OUT, { recursive: true });
     const evH = g.cmpEval(fresh);
     worn.dura = saved; g.calc();
     return {
+      blocked: ev.blocked, ok: ev.ok,
       tip: /Durability:/.test(html),
       rows: names,
       thisBroken: names.some(n => /This piece/.test(n) && /broken/.test(n)),
