@@ -105,6 +105,8 @@ button:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
 .cell.thin{box-shadow:inset 0 0 0 2px #e0b03a}
 .cell.brk{box-shadow:inset 0 0 0 2px #e23b32}
 .cell .dw{position:absolute;top:0;left:3px;font:700 12px var(--display);font-style:normal;color:#e0b03a;text-shadow:0 1px 1px #000}
+.cell .lk{position:absolute;top:1px;right:2px;width:12px;height:12px;fill:var(--gold);pointer-events:none}
+.cell.seal{box-shadow:inset 0 0 0 1px var(--gold)}
 .cell.brk .dw{color:#e23b32}
 .cell.sel{opacity:1}
 .dollw{display:flex;gap:12px;align-items:stretch}
@@ -5411,7 +5413,8 @@ function cell(it,attr,isSel,slot,d,price){if(!it){const hot=attr&&/data-packempt
   const ch=it.charm?' ch'+(charmCost(it)>=3?' grand':charmCost(it)>=2?' wide':''):'',drag=it.charm&&!uiTouch()&&!(attr&&attr.indexOf('data-vbag')>=0)?' draggable="true"':'',num=it.charm?charmCost(it):it.il;
   const dw=it.duraMax>0?(it.dura<=0?' brk':it.dura<=it.duraMax*.25?' thin':''):'';
   const tag=price!=null?`<u class="vp">${price} sat${price===1?'':'s'}</u>`:'';
-  return `<button class="cell q${it.q}${isSel?' sel':''}${it.id?'':' unid'}${arrow?' arr':''}${it.junk?' junk':''}${ch}${dw}" ${attr}${drag}>${svgIcon(it.charm?'charm':it.slot)}<small>${num}</small>${dw?`<i class="dw">${it.dura<=0?'!':'·'}</i>`:''}${arrow?'<em>↑</em>':''}${tag}${it.junk?'<u>JUNK</u>':''}</button>`}function equipFromBag(i){const it=G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.charm)return charmSocket(i);if(!it.id){toast('Identify it first');sfx('err');return false}if(G.lvl<it.req){toast('Needs level '+it.req);sfx('err');return false}
+  const lk=it.lock?'<svg class="lk" viewBox="0 0 24 24"><path d="M7 11V8a5 5 0 0110 0v3h1v10H6V11h1zm2 0h6V8a3 3 0 00-6 0v3z"/></svg>':'';
+  return `<button class="cell q${it.q}${isSel?' sel':''}${it.id?'':' unid'}${arrow?' arr':''}${it.junk?' junk':''}${it.lock?' seal':''}${ch}${dw}" ${attr}${drag}>${svgIcon(it.charm?'charm':it.slot)}<small>${num}</small>${dw?`<i class="dw">${it.dura<=0?'!':'·'}</i>`:''}${arrow?'<em>↑</em>':''}${lk}${tag}${it.junk?'<u>JUNK</u>':''}</button>`}function equipFromBag(i){const it=G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.charm)return charmSocket(i);if(!it.id){toast('Identify it first');sfx('err');return false}if(G.lvl<it.req){toast('Needs level '+it.req);sfx('err');return false}
   const old=G.eq[it.slot];G.eq[it.slot]=it;it.junk=false;G.bag.splice(i,1);if(old){if(bagCan(old))G.bag.push(old);else addDrop({it:old},P.x,P.y)}if(it.slot==='belt')charmRefit();calc();sfx('equip');return true}
 function equipBest(){let n=0;for(const slot of SLOTS){let best=-1,bd=.01;G.bag.forEach((it,i)=>{if(it.slot!==slot||!it.id||G.lvl<it.req)return;const d=itemDelta(it);if(d>bd){bd=d;best=i}});if(best>=0&&equipFromBag(best))n++}return n}
 function gearNow(s){return{lo:Math.round(s.dmin*(1+s.dmg/100)+s.shock),hi:Math.round(s.dmax*(1+s.dmg/100)+s.shock),arm:s.armor}}
@@ -5920,18 +5923,63 @@ function vendBox(slot){
     if(mode==='sheet')drawSheet();
   });
 }
-function vendSell(i){
+function vendSell(i,quiet){
   if(!vendBuys()){toast('Wren does not buy gear');sfx('err');return false}
   const it=G.bag&&G.bag[i];if(!it)return false;
   if(typeof tradeLocked==='function'&&tradeLocked(it))return false;
+  if(it.lock){toast('That piece is locked');sfx('err');return false}
+  if(vendQuest(it)){toast('A quest piece stays');sfx('err');return false}
   const paid=vendBid(it);
   if(!(paid>0)){toast(it.test?'Test gear has no price':'That has no price');sfx('err');return false}
   const ask=Math.max(paid,vendAsk(it));
   G.bag.splice(i,1);
   G.sats=(G.sats|0)+paid;
   BUYBACK.push({it:it,paid:paid,ask:ask,kind:vendKind()});
-  sel=null;sfx('coin');toast('Sold for '+paid+' sats');
+  sel=null;if(!quiet){sfx('coin');toast('Sold for '+paid+' sats')}
   return true;
+}
+function vendQuest(it){return !!(it&&(it.quest||it.sq||it.key))}
+function sellFilters(){if(!G.sellF)G.sellF={norm:1,magic:0,rare:0};if(G.sellF.norm==null)G.sellF.norm=1;if(G.sellF.magic==null)G.sellF.magic=0;if(G.sellF.rare==null)G.sellF.rare=0;return G.sellF}
+function vendGrey(it){return !!(it&&it.junk&&(it.q|0)<3&&!it.charm)}
+function vendSellKey(it){
+  if(!it||it.charm||vendQuest(it)||it.lock)return '';
+  if(typeof tradeHeld==='function'&&tradeHeld(it))return '';
+  if((it.q|0)>=3||it.test)return '';
+  if((it.q|0)<=0||vendGrey(it))return 'norm';
+  if((it.q|0)===1)return 'magic';
+  if((it.q|0)===2)return 'rare';
+  return '';
+}
+function vendSellPlan(which){
+  const f=sellFilters(),rows=[];
+  (G.bag||[]).forEach((it,i)=>{const k=vendSellKey(it);if(!k)return;if(which==='junk'?k!=='norm':!f[k])return;const paid=vendBid(it);if(!(paid>0))return;rows.push({i:i,it:it,paid:paid,k:k})});
+  return {n:rows.length,sats:rows.reduce((a,r)=>a+r.paid,0),rows:rows};
+}
+function vendSellCommit(which){
+  if(!vendBuys()){toast('Wren does not buy gear');sfx('err');return {n:0,sats:0}}
+  const rows=vendSellPlan(which).rows.slice().sort((a,b)=>b.i-a.i);
+  let n=0,sats=0;
+  for(const r of rows){if(G.bag[r.i]!==r.it)continue;if(!vendSell(r.i,true))continue;n++;sats+=r.paid}
+  if(n){sfx('coin');toast('Sold '+n+' for '+sats+' sats')}
+  return {n:n,sats:sats};
+}
+function vendFlipLock(i){const it=G.bag&&G.bag[i];if(!it)return false;it.lock=it.lock?0:1;sfx('ui');toast(it.lock?'Locked':'Unlocked');try{navigator.vibrate&&navigator.vibrate(15)}catch(e){}return !!it.lock}
+function vendSellShut(prev){$('dlg').hidden=true;mode=prev==='title'||prev==='scene'?'play':(prev||'sheet');if(mode==='sheet')drawSheet()}
+function vendSellOpen(which){
+  if(!vendBuys()){toast('Wren does not buy gear');sfx('err');return}
+  const prev=mode==='dlg'?(dlgPrev||'sheet'):mode;
+  dlgPrev=prev;mode='dlg';$('dlg').hidden=false;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;
+  const paint=()=>{
+    const plan=vendSellPlan(which),kept='Uniques, sets, charms, quest items, and locked pieces stay.';
+    $('dT').textContent=which==='junk'?'Sell junk':'Sell the pack';
+    $('dP').textContent=plan.n?('Sell '+plan.n+' piece'+(plan.n===1?'':'s')+' for '+plan.sats+' sat'+(plan.sats===1?'':'s')+'. '+kept):(which==='junk'?'No whites or greys to sell. '+kept:'Nothing in the pack matches these filters. '+kept);
+    const b=$('dBtns');b.innerHTML='';
+    if(which!=='junk'){const f=sellFilters();[['norm','Whites and greys'],['magic','Magic'],['rare','Rares']].forEach(([k,label])=>{const el=document.createElement('button');el.type='button';el.className=f[k]?'big':'ghost';el.dataset.sfilt=k;el.textContent=label+(f[k]?' · on':' · off');el.onclick=()=>{f[k]=f[k]?0:1;paint()};b.appendChild(el)})}
+    const go=document.createElement('button');go.type='button';go.className='big';go.textContent='Sell';go.disabled=!plan.n;go.onclick=()=>{vendSellCommit(which);vendSellShut(prev)};
+    const leave=document.createElement('button');leave.type='button';leave.className='ghost';leave.textContent='Leave';leave.onclick=()=>vendSellShut(prev);
+    b.appendChild(go);b.appendChild(leave);
+  };
+  paint();sfx('talk');
 }
 function vendBuyback(i){
   const row=BUYBACK[i];
@@ -6024,7 +6072,8 @@ function vendHTML(){
     h+=rows.length?'<p>'+uiSay('Right-click a piece to buy it. Hover shows it beside what you wear, and the price in sats.','Tap a piece, then Buy. A purchase of 12 sats or more asks first.')+'</p>':'<p>Nothing in this bin. The counter changes when you leave town and come back.</p>';
   }
   h+='</div><div class="youSide" data-vpanel="you"><h3>Pack '+gridCells(G.bag)+'/24</h3><div class="grid" id="bagGrid">'+gridPack(G.bag,6,4,'vbag')+'</div>';
-  h+='<p>'+(vendBuys()?uiSay('Right-click a piece of yours, or drag it onto the counter, to sell it.','Tap a piece of yours, then Sell.'):'What you buy lands in the pack. This counter does not buy gear.')+'</p></div></div>';
+  h+='<p>'+(vendBuys()?uiSay('Right-click a piece to lock it. Drag it onto the counter to sell it.','Hold a piece to lock it. Tap it, then Sell.'):'What you buy lands in the pack. This counter does not buy gear.')+'</p></div></div>';
+  if(vendBuys())h+='<div class="row vendFoot"><button type="button" class="big" data-vsellall="1">Sell all</button><button type="button" class="ghost" data-vselljunk="1">Sell junk</button></div>';
   if(k==='brenda'&&!G.marrow&&unidCount()){
     const ask=vendIdSats(),n=unidCount();
     h+='<div class="row vendFoot"><button type="button" class="big" data-vid="1" '+(satsFree()<ask?'disabled':'')+'>Appraise '+n+' item'+(n>1?'s':'')+' · '+ask+' sats</button></div>';
@@ -6041,7 +6090,8 @@ function vendHTML(){
       const bid=vendBid(it);
       const q=repairQuote(it);
       const fix=W&&W.z&&W.z.town&&q?'<button type="button" class="ghost" data-repair="one" '+(satsFree()<q?'disabled':'')+'>Repair · '+q+' sat'+(q===1?'':'s')+'</button>':'';
-      const btn=(vendBuys()&&bid>0?'<button type="button" class="big" data-vsell="'+sel.vbag+'">Sell for '+bid+' sats</button>':'')+fix;
+      const lockBtn='<button type="button" class="ghost" data-vlock="'+sel.vbag+'">'+(it.lock?'Unlock':'Lock')+'</button>';
+      const btn=(vendBuys()&&bid>0&&!it.lock?'<button type="button" class="big" data-vsell="'+sel.vbag+'">Sell for '+bid+' sats</button>':'')+lockBtn+fix;
       pop=itemCard(it,btn,false,false);
     }
   }else if(sel&&sel.vback!==undefined){
@@ -6082,7 +6132,7 @@ function drawSheet(){
     const it=sel&&(sel.cs!==undefined?(G.cslots||[])[sel.cs]:sel.m?G.merc&&G.merc[sel.m]:sel.eq?G.eq[sel.eq]:G.bag[sel.bag]);
     if(it&&sel.sock){const own=WK.filter(w=>G.words[w]);pop=`<div class="card"><div class="nm" style="color:#f7931a">Socket a word</div><div class="ln off">${esc(it.name)} · ${it.soc-it.words.length} empty. A word cannot be removed once set. Phrases need the right words in the right order: see the Codex.</div><div class="list">${own.length?own.map(w=>`<button class="li" data-word="${w}"><div><b>${w} ×${G.words[w]}</b><span>${AFK[WORDS[w][0]].t.replace('{v}',WORDS[w][1])}</span></div></button>`).join(''):'<div class="ln off">You hold no words. They turn up on torn notes dropped by machines.</div>'}</div><div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`}
     else 
-    if(it){let b='';if(sel.cs!==undefined){b=`<button class="big" data-csdo="off">Take off</button>`+(selling()?`<button class="ghost" data-csdo="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-csdo="drop">Drop</button>`)+`<button class="ghost" data-csdo="scrap">Scrap · ${charmParts(it)} parts</button>`}else if(sel.m){b=`<button class="big" data-mtake="${sel.m}">Take it back</button>`}else if(sel.eq){b=`<button class="ghost" data-do="unequip">Take off</button>`;if(W&&W.z&&W.z.town&&repairQuote(it))b+=`<button class="ghost" data-repair="one" ${G.sats<repairQuote(it)?'disabled':''}>Repair · ${repairQuote(it)} sat${repairQuote(it)===1?'':'s'}</button>`;if(it.soc&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`}else{b=`<button class="big" data-do="equip" ${it.id&&G.lvl>=it.req?'':'disabled'}>${it.charm?'Put on the belt':'Equip'}</button>`;b+=selling()?`<button class="ghost" data-do="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-do="drop">Drop</button>`;b+=`<button class="ghost" data-do="junk">${it.junk?'Not junk':'Junk'}</button>`;if(it.soc&&it.id&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`;if(it.charm)b+=`<button class="ghost" data-do="scrap">Scrap · ${charmParts(it)} parts</button>`;if(it.id&&!it.charm){b+=`<button class="ghost" data-do="scrap">Scrap · ${[1,2,4,8,15][it.q]||1} parts</button>`;if(it.aff.length)b+=`<button class="ghost" data-do="reroll" ${(G.parts||0)<rerollCost(it)?'disabled':''}>Reroll a modifier · ${rerollCost(it)} parts</button>`;if(canSoc(it))b+=`<button class="ghost" data-do="addsoc" ${(G.parts||0)<12?'disabled':''}>Cut a socket · 12 parts</button>`}if(G.merc&&!G.merc.dead&&it.id&&MSL.includes(it.slot))b+=`<button class="ghost" data-do="mgive">Give to ${esc(G.merc.name)}</button>`}pop=itemCard(it,b,!!sel.eq,!!sel.m)}
+    if(it){let b='';if(sel.cs!==undefined){b=`<button class="big" data-csdo="off">Take off</button>`+(selling()?`<button class="ghost" data-csdo="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-csdo="drop">Drop</button>`)+`<button class="ghost" data-csdo="scrap">Scrap · ${charmParts(it)} parts</button>`}else if(sel.m){b=`<button class="big" data-mtake="${sel.m}">Take it back</button>`}else if(sel.eq){b=`<button class="ghost" data-do="unequip">Take off</button>`;if(W&&W.z&&W.z.town&&repairQuote(it))b+=`<button class="ghost" data-repair="one" ${G.sats<repairQuote(it)?'disabled':''}>Repair · ${repairQuote(it)} sat${repairQuote(it)===1?'':'s'}</button>`;if(it.soc&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`}else{b=`<button class="big" data-do="equip" ${it.id&&G.lvl>=it.req?'':'disabled'}>${it.charm?'Put on the belt':'Equip'}</button>`;b+=selling()?`<button class="ghost" data-do="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-do="drop">Drop</button>`;b+=`<button class="ghost" data-do="junk">${it.junk?'Not junk':'Junk'}</button><button class="ghost" data-do="lock">${it.lock?'Unlock':'Lock'}</button>`;if(it.soc&&it.id&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`;if(it.charm)b+=`<button class="ghost" data-do="scrap">Scrap · ${charmParts(it)} parts</button>`;if(it.id&&!it.charm){b+=`<button class="ghost" data-do="scrap">Scrap · ${[1,2,4,8,15][it.q]||1} parts</button>`;if(it.aff.length)b+=`<button class="ghost" data-do="reroll" ${(G.parts||0)<rerollCost(it)?'disabled':''}>Reroll a modifier · ${rerollCost(it)} parts</button>`;if(canSoc(it))b+=`<button class="ghost" data-do="addsoc" ${(G.parts||0)<12?'disabled':''}>Cut a socket · 12 parts</button>`}if(G.merc&&!G.merc.dead&&it.id&&MSL.includes(it.slot))b+=`<button class="ghost" data-do="mgive">Give to ${esc(G.merc.name)}</button>`}pop=itemCard(it,b,!!sel.eq,!!sel.m)}
     const jn=G.bag.filter(i=>i.junk).length;
     if(!selling()&&jn)h+=`<button class="ghost" data-dropjunk="1">Drop ${jn} junk item${jn>1?'s':''}</button>`;
     if(selling()&&G.bag.length){const sum=q=>G.bag.filter(i=>i&&(q<0||i.q===q)).reduce((a,i)=>a+sellValue(i),0),cnt=q=>G.bag.filter(i=>i&&i.q===q).length;h+=`<h3>Sell in bulk</h3>`;
@@ -6237,13 +6287,13 @@ for(const n of['pointerup','pointercancel','pointerleave'])$('sheetIn').addEvent
 $('sheetIn').addEventListener('dragstart',e=>{if(e.target.closest&&e.target.closest('[data-vbag]')){e.preventDefault();return}const c=e.target.closest&&e.target.closest('[data-bag]');if(!c||!e.dataTransfer)return;const it=G.bag[+c.dataset.bag];if(!it||!it.charm){e.preventDefault();return}e.dataTransfer.setData('text/plain',String(+c.dataset.bag));e.dataTransfer.effectAllowed='move'});
 $('sheetIn').addEventListener('dragover',e=>{if(e.target.closest&&e.target.closest('[data-csocket]')){e.preventDefault();if(e.dataTransfer)e.dataTransfer.dropEffect='move'}});
 $('sheetIn').addEventListener('drop',e=>{const slot=e.target.closest&&e.target.closest('[data-csocket]');if(!slot)return;e.preventDefault();const i=+(e.dataTransfer&&e.dataTransfer.getData('text/plain'));if(!(i>=0)||!G.bag[i])return;if(charmSocket(i)){toast('On the belt');sel=null}drawSheet()});
-const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],[data-webadd]');if(!b||b.disabled)return;const d=b.dataset;sfx('ui');
+const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.target.closest('button,[data-track],[data-web],[data-webadd]');if(!b||b.disabled)return;const d=b.dataset;sfx('ui');
   if(d.try){if(!devOn())return;tryGear(d.try);toast('Test gear. It will not be saved.');drawSheet();return}
   if(d.isk!==undefined){sel={isk:+d.isk};drawSheet();return}
   if(d.iskkey!==undefined){const k=+d.iskkey,i=sel&&sel.isk;if(i>=100&&itemSkillOn(i)){const o=G.slots.indexOf(i);if(o>=0)G.slots[o]=-1;G.slots[k]=i;setSkillButtons()}drawSheet();return}
   if(d.iskside){const i=sel&&sel.isk;if(i>=100)assignMouse(d.iskside,i);drawSheet();return}
   if(d.popx)sel=null;
-  if(d.sellq!==undefined){const q=+d.sellq;let t=0,held=false;G.bag=G.bag.filter(i=>{if(typeof tradeHeld==='function'&&tradeHeld(i)){held=true;return true}if(i&&(q===9?i.junk:(q<0||i.q===q))){t+=sellValue(i);return false}return true});G.credits+=t;sel=null;sfx('coin');toast((held?'What is on the table stays. ':'')+'Sold for '+fmt(t))}
+  if(d.sellq!==undefined){const q=+d.sellq;let t=0,held=false;G.bag=G.bag.filter(i=>{if(typeof tradeHeld==='function'&&tradeHeld(i)){held=true;return true}if(i&&i.lock)return true;if(i&&vendQuest(i))return true;if(i&&(q===9?i.junk:(q<0||i.q===q))){t+=sellValue(i);return false}return true});G.credits+=t;sel=null;sfx('coin');toast((held?'What is on the table stays. ':'')+'Sold for '+fmt(t))}
   if(d.close)return closeSheet();
   if(d.loadcode){const v=$('codeIn').value;if(!loadCode(v)){const p=document.createElement('p');p.className='red';p.textContent='That code could not be read. Check that all of it was pasted.';$('sheetIn').appendChild(p)}return}
   if(d.tab){if(d.tab==='web')webVB=null;tab=d.tab;sel=null}
@@ -6261,11 +6311,12 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.do){const it=sel.eq?G.eq[sel.eq]:G.bag[sel.bag];
     if(d.do==='equip'){equipFromBag(sel.bag);sel=null}
     if(d.do==='junk'){it.junk=!it.junk;sel=null}
+    if(d.do==='lock'){it.lock=it.lock?0:1;toast(it.lock?'Locked':'Unlocked')}
     if(d.do==='scrap'||d.do==='reroll'||d.do==='addsoc'){if(craft(it,d.do))sel=null;drawSheet();return}
     if(d.do==='sock'){sel.sock=true;drawSheet();return}
     if(d.do==='mgive'){if(typeof tradeLocked==='function'&&tradeLocked(it))return;const old=G.merc[it.slot];G.merc[it.slot]=it;it.junk=false;G.bag.splice(sel.bag,1);if(old)G.bag.push(old);sel=null;sfx('equip');toast(G.merc.name+' takes the '+it.base)}
     if(d.do==='unequip'){if(!bagCan(it))toast('Your pack is full');else{const sl=sel.eq;G.bag.push(it);G.eq[sl]=null;if(sl==='belt')charmRefit();sel=null;sfx('equip')}}
-    if(d.do==='sell'){if(it.test){toast('Test gear has no price');return}if(typeof tradeLocked==='function'&&tradeLocked(it))return;G.credits+=sellValue(it);G.bag.splice(sel.bag,1);sel=null;sfx('coin')}
+    if(d.do==='sell'){if(it.lock){toast('That piece is locked');return}if(vendQuest(it)){toast('A quest piece stays');return}if(it.test){toast('Test gear has no price');return}if(typeof tradeLocked==='function'&&tradeLocked(it))return;G.credits+=sellValue(it);G.bag.splice(sel.bag,1);sel=null;sfx('coin')}
     if(d.do==='drop'){if(typeof tradeLocked==='function'&&tradeLocked(it))return;G.bag.splice(sel.bag,1);W.drops.push({x:P.x+1.1,y:P.y+1.1,it,t:1});sel=null}
     calc()}
   if(d.word){const it=sel.eq?G.eq[sel.eq]:G.bag[sel.bag];socketWord(it,d.word);sel.sock=it.words.length<it.soc&&!it.pw}
@@ -6349,7 +6400,10 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.vsell!==undefined){vendSell(+d.vsell);sel=null}
   if(d.vbb!==undefined){if(vendBuyback(+d.vbb)==='dlg')return}
   if(d.vend!==undefined)sel={vend:+d.vend};
-  if(d.vbag!==undefined){if(vendDragged){vendDragged=false;return}sel={vbag:+d.vbag}}
+  if(d.vsellall){vendSellOpen('all');return}
+  if(d.vselljunk){vendSellOpen('junk');return}
+  if(d.vlock!==undefined)vendFlipLock(+d.vlock);
+  if(d.vbag!==undefined){if(vendDragged||vendLockFired){vendDragged=false;vendLockFired=false;return}sel={vbag:+d.vbag}}
   if(d.vback!==undefined)sel={vback:+d.vback};
   if(d.go){if(mpPortalBlocked())return;if(actBriefHold(+d.go)){actBriefDeny();return}closeSheet();enter(+d.go);return}
   if(d.tier){G.tier=clamp(G.tier+ +d.tier,0,G.maxTier);resetZones()}
@@ -6357,31 +6411,39 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
 $('sheet').addEventListener('click',ev=>{if(webPanMoved){webPanMoved=0;if(ev.target.closest&&ev.target.closest('#webStage'))return}sheetClick(ev)});
 
 $('sheet').addEventListener('contextmenu',e=>{
+  const bag=e.target.closest&&e.target.closest('[data-bag]');
+  if(bag){e.preventDefault();if(uiTouch())return;vendLockFired=true;vendFlipLock(+bag.dataset.bag);if(mode==='sheet')drawSheet();return}
   const el=e.target.closest&&e.target.closest('[data-vend],[data-vbag],[data-vstim],[data-vbox],[data-vback]');
   if(!el)return;
   e.preventDefault();
   if(uiTouch())return;
   if(el.dataset.vend!==undefined){vendBuy(+el.dataset.vend);return}
-  if(el.dataset.vbag!==undefined){if(vendSell(+el.dataset.vbag)&&mode==='sheet')drawSheet();return}
+  if(el.dataset.vbag!==undefined){vendLockFired=true;vendFlipLock(+el.dataset.vbag);if(mode==='sheet')drawSheet();return}
   if(el.dataset.vstim!==undefined){vendBuyStim();return}
   if(el.dataset.vbox!==undefined){vendBox(el.dataset.vbox);return}
   if(el.dataset.vback!==undefined){vendBuyback(+el.dataset.vback);return}
 });
-let vendPtr=null;
+let vendPtr=null,vendHold=null,vendLockFired=false;
 $('sheetIn').addEventListener('pointerdown',e=>{
   const c=e.target.closest&&e.target.closest('[data-vbag]');
-  if(!c||c.disabled||uiTouch()||!vendBuys())return;
-  vendPtr={i:+c.dataset.vbag,x:e.clientX,y:e.clientY,id:e.pointerId,moved:false};
+  if(!c||c.disabled)return;
+  const i=+c.dataset.vbag;
+  if(vendHold&&vendHold.t)clearTimeout(vendHold.t);
+  vendHold={i:i,x:e.clientX,y:e.clientY,id:e.pointerId,fired:false,t:setTimeout(()=>{if(!vendHold||vendHold.i!==i)return;vendHold.fired=true;vendLockFired=true;vendFlipLock(i);if(mode==='sheet')drawSheet()},480)};
+  if(uiTouch()||!vendBuys())return;
+  vendPtr={i:i,x:e.clientX,y:e.clientY,id:e.pointerId,moved:false};
   try{c.setPointerCapture(e.pointerId)}catch(err){}
 });
 addEventListener('pointermove',e=>{
+  if(vendHold&&e.pointerId===vendHold.id&&Math.hypot(e.clientX-vendHold.x,e.clientY-vendHold.y)>10){clearTimeout(vendHold.t);vendHold.t=null}
   if(!vendPtr||e.pointerId!==vendPtr.id)return;
   if(Math.hypot(e.clientX-vendPtr.x,e.clientY-vendPtr.y)>8)vendPtr.moved=true;
 });
 addEventListener('pointerup',e=>{
+  if(vendHold&&e.pointerId===vendHold.id){clearTimeout(vendHold.t);if(vendHold.fired)vendLockFired=true;vendHold=null}
   if(!vendPtr||e.pointerId!==vendPtr.id)return;
   const p=vendPtr;vendPtr=null;
-  if(!p.moved)return;
+  if(!p.moved||vendLockFired)return;
   const stack=document.elementsFromPoint(e.clientX,e.clientY)||[];
   if(!stack.some(n=>n.closest&&n.closest('.vendSide')))return;
   vendDragged=true;
@@ -6581,7 +6643,7 @@ uiBoot();
 showDisc();
 cloudInit();
 function devOn(){try{if(window.__DEBUG)return true;var h=location.hostname;if(h==='localhost'||h==='127.0.0.1'||h==='::1')return true;if(location.protocol==='file:'||location.protocol==='about:')return true}catch(e){}return false}
-if(devOn())window.__g={migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},set satShop(v){satShop=v},get shop(){return shop},set shop(v){shop=v},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith,openVend,vendAsk,vendBid,vendBuy,vendSell,vendBuyback,vendBuyStim,vendIdentify,vendBox,vendTabOf,buyPrice,sellValue,satCost,satPrice,boxPrice,get VEND(){return VEND},get BUYBACK(){return BUYBACK},get shopVia(){return shopVia},setShopVia(v){shopVia=+v||0},layCorpse,reclaimCorpse,buyCorpse,corpseFee,repairQuote,repairOne,repairAll,repairList,wearWeapon,wearArmor,wearSlot,itemBroken,stampDura,migrateDurability,placeCorpses,deathCreditPct,encW,loanerWeapon,calmNearCorpse,resetZones};/* late additions that need the dialogue tables */
+if(devOn())window.__g={migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},set satShop(v){satShop=v},get shop(){return shop},set shop(v){shop=v},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith,openVend,vendAsk,vendBid,vendBuy,vendSell,vendBuyback,vendBuyStim,vendIdentify,vendBox,vendTabOf,buyPrice,sellValue,satCost,satPrice,boxPrice,get VEND(){return VEND},get BUYBACK(){return BUYBACK},get shopVia(){return shopVia},setShopVia(v){shopVia=+v||0},vendFlipLock,vendSellPlan,vendSellCommit,vendSellOpen,sellFilters,vendQuest,layCorpse,reclaimCorpse,buyCorpse,corpseFee,repairQuote,repairOne,repairAll,repairList,wearWeapon,wearArmor,wearSlot,itemBroken,stampDura,migrateDurability,placeCorpses,deathCreditPct,encW,loanerWeapon,calmNearCorpse,resetZones};/* late additions that need the dialogue tables */
 QRW.push(
  ['q16','gramps','“I do not remember the nine years after I clicked.” You gain 1 skill point.',()=>G.sp++,'Gramps'],
  ['q17','null','“Finished. That is the word.” You gain 5 attribute points.',()=>G.ap+=5,'Sister Null'],
