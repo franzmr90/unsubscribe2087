@@ -55,7 +55,7 @@ const act1=await p.evaluate(()=>({
   stats:document.getElementById('deathS').textContent
 }));
 check('Act I rises in Stillwater Commons', act1.btn==='Rise in Stillwater Commons', act1.btn);
-check('the portal is the district entrance', /start of the district/.test(act1.note), act1.note);
+check('the portal is the district entrance', /start of that district/.test(act1.note), act1.note);
 check('the slain line names the district', /The Parcel Moors/.test(act1.line), act1.line);
 check('softcore names the credits left on the body', /Credits on the body/.test(act1.stats)&&/₡/.test(act1.stats), act1.stats);
 check('Act I sets four percent of carried credits on the body', fee1.before-fee1.after===3&&act1.stats.endsWith('Credits on the body₡3'), JSON.stringify({fee1,stats:act1.stats}));
