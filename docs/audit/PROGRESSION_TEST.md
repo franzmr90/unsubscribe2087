@@ -1,8 +1,82 @@
 # Normal progression test — Unsubscribe 2087
 
-Date: 2026-10-09. Branch `cursor/progression-test-3887`, stacked on `cursor/audit-fixes-3887` (PR #102). Harness: `tools/progression-play.js`. Season for every run: **bull** (+15% monster damage). God mode stayed off. No character was handed a level or a piece of gear.
+## After the ladder
 
-## Verdict
+Date: 2026-10-09. Branch `cursor/normal-tuning-3887`, stacked on `cursor/progression-test-3887` (PR #103). Same harness, same two seeds, bull week, god mode off, nothing handed out. The sections under **Before** are the diagnosis this tuning started from.
+
+### Verdict
+
+A straightforward clear now finishes Normal in the low 40s, a few levels over each boss. Both Scrappers ended at 43. One Runner ended at 42. The other Runner, who recleared a lot, ended at 48. The clean Technomancer ended at 49. That is the top of what these runs actually did: the aim was 40–45, and the melee clears sit in it. Pulling experience down until the Technomancer also lands at 45 would put the Scrappers under 40.
+
+Hard and Brutal were not played through. Rescaling the first Scrapper’s zone experience onto those ladders, with the 1.2× and 1.45× multipliers and the fade for being ahead of the machine, lands Hard at 63 and Brutal at 80. That is a model of one clear, not a second campaign. Machine levels were checked in the client: Normal bosses are 12 / 19 / 25 / 32 / 38, Hard’s last district is 60, Brutal’s is 76.
+
+### What changed
+
+Act I stays at the level it was written. Written 12–72 is walked as 12–38. Hard adds 22. Brutal adds 38. Tier still adds 12 after that. A district does not rise to the character. Adaptive difficulty stays at 1× on Normal, and on Hard and Brutal it still only toughens a district when the gear is ahead.
+
+Experience to the next level is `58 × level^1.85`. A kill in Act I pays 1.6×. A kill in a district written above 12 pays 0.41×. More than five levels above the machine, pay falls 8% per extra level, down to 20%. Hard and Brutal still multiply whatever is left. Banked experience is still one level and still pays on entering Act III.
+
+The first Scrapper on the folded ladder, before that 1.6× / 0.41× pay, finished at 40 and met every boss at its machine level. The pay is what opened the few levels of room.
+
+The credit index, the bodyguard (`80 + 8 × level` to hire, `40 + 4 × level` to revive), the 1-sat stim, and Nonce’s class weapon at item level `character + 3` are on this branch as well. Three hours from a fresh arrival is about 1.92× on the credit index.
+
+### Arrivals
+
+Machine level is the level the district was fought at. The number before the slash is the character.
+
+| Class | Seed | End | Deaths | Pryce | Vale | MANDATE | Curator | PROVIDENCE |
+|---|---|---|---|---|---|---|---|---|
+| Scrapper | 12648430 | 43 | 19 | 17/12, won | 23/19, won | 30/25, won | 36/32, won | 42/38, won |
+| Scrapper | 8675309 | 43 | 14 | 17/12, won | 22/19, won | 28/25, won | 35/32, won | 42/38, won |
+| Runner | 8675309 | 42 | 18 | 18/12, won | 23/19, won | 29/25, won | 35/32, won | 41/38, won |
+| Runner | 12648430 | 48 | 37 | 17/12, won | 23/19, won | 29/25, won | 38/32, won | 47/38, won |
+| Technomancer | 8675309 | 49 | 10 | 16/12, won | 23/19, won | 29/25, won | 35/32, won | 44/38, won |
+| Technomancer | 12648430 | 49 | 30 | 16/12, won | 24/19, won | 32/25, won | 38/32, won | 46/38, not killed |
+| Witness | 12648430 | 29 | 97 | 19/12, won | 26/19, won | clock ended in Act III | | |
+| Witness | 8675309 | 20 | 147 | 20/12, not killed | | | | |
+
+Dyn was 1.00 / 1.00 on every pull. Fought life, bull week, for the first Scrapper: Pryce 17,054 / 126, Vale 45,056 / 222, MANDATE 106,418 / 172, the Curator 149,313 / 235, PROVIDENCE 233,214 / 299. The second Scrapper’s PROVIDENCE was 323,895 / 357 and took two pulls. The clean Technomancer’s PROVIDENCE was 470,150 and took three pulls, the last one from 31% to 0. The other Technomancer had the bar from 100% down to 16% across six deaths and then the clock ended while the bot was stuck in the room. That is a pathing stall, not a boss that cannot die.
+
+The first Scrapper hired once, revived 14 times, and bought 23 sat pieces. The weapon at PROVIDENCE was still the rare item level 29 maul from Act III (84–138). The second Scrapper replaced it with a set item level 43 (121–199). Credit index at the end of the fast clears was about 1.2. The slow Witness, who stood in districts for the whole clock, finished that index at 242.
+
+Screenshots of the pulls are in `/opt/cursor/artifacts/progression-ladder/`.
+
+### Hard and Brutal, modeled
+
+Take the first Scrapper’s experience per district and move it onto the higher ladder. A kill pays in proportion to `1 + 0.8 × (machine level − 1)`, then the difficulty multiplier, then the fade once the character is more than five levels up.
+
+| | Enter | Pryce | PROVIDENCE, on arrival | End |
+|---|---|---|---|---|
+| Normal, played | 1 | 17 against 12 | 42 against 38 | 43 |
+| Hard, modeled | 43 | 43 against 34 | 61 against 60 | 63 |
+| Brutal, modeled | 63 | 64 against 50 | 78 against 76 | 80 |
+
+Hard opens a few levels over the early bosses and meets the last one about even. Brutal finishes near 80, inside 75–85, with the last boss a couple of levels under the character. Confidence is moderate: the Normal end of this same model matches the played 43, and the two Scrappers agreed with each other. It has not been walked. Early Hard is a victory lap on purpose. Matching the district to the character again would put the finish back in the 80s and 90s, which is the result this ladder was changed to avoid.
+
+### Witness and Defrag
+
+The diagnosis below still holds, and the fix on this branch is unchanged. Act I Defrag is Impact, 70% of his damage, and a 2.5% siphon. Pull the Thread does not spend an empty page, the Record keeps filling during a swing at 45%, and the hit thickens 42% per level after the first. Player-versus-player damage is still quartered and capped.
+
+A scripted level-8 Witness with a strong shop notebook (28–47) kills him in about 89 seconds. A weak roll off the same tab (15–26) left about a quarter of the bar after 150 seconds. The harness is between those. Seed 12648430 killed Defrag, Pryce, and Vale, then the clock ended in the Hall of Minutes at level 29, ahead of that district. Seed 8675309 killed Defrag (`q3` done) and was still dying to Pryce, level 20, 147 deaths, when the clock ended. The bot left several Act I districts after 12 minutes without a pull. A player who can see the lieutenant does not play that stall.
+
+### Two players
+
+A second player on Normal multiplies monster life by 1.5 and experience by 1.5. Monster damage stays at the difficulty's own figure. The client then divides the damage you land by that life factor. `PROG_PARTY=1` turns the multipliers on by joining a game in the page: life 1.875× (the Normal 1.25× and the second player), damage 1.3×, experience 1.5×.
+
+Joining is also what makes a district wait for the server's map, and what sends each hit to the server instead of taking it off the bar in the page. The stub has no server. The Scrapper stayed at level 1 with no district loaded, and the clock stayed at 0. A second browser was not opened, so the arrival table above is solo. The double count of party life, once in `spawn` and again in the server scale, is unchanged.
+
+### Design calls left open
+
+- Hard and Brutal do not rise to the character. The end-level target requires that.
+- A unique’s drop band follows monster level. Act IV and Act V names in the high band (item level 35–60) show up on Hard, when those districts are in the 40s and 50s. Names above item level 60 wait for Brutal or a tier. On Normal the last district is machine level 38, so that band does not open.
+- A second player still multiplies monster life in `spawn` and again in the server’s party scale. That double count was not changed.
+- Pull the Thread’s 42% per level is strong late in a long campaign. Against another player it still stops at the existing cap.
+
+## Before
+
+Date: 2026-10-09. Branch `cursor/progression-test-3887`, stacked on `cursor/audit-fixes-3887` (PR #102). Harness: `tools/progression-play.js`. Season for every run: **bull** (+15% monster damage). God mode stayed off. No character was handed a level or a piece of gear. No tuning had been applied yet.
+
+### Verdict
 
 A sensibly built character can kill the act bosses. The authored boss, the one you get when the district stays at its written level and adaptive difficulty stays at 1×, is a tense corpse-run on Act I and a long, winnable fight later. What the full clears actually fought was much larger, because a character who clears every district hits the act level cap, the district is then built at that cap, and adaptive difficulty multiplies life and damage by as much as 12. Potions and the mercenary fall off along the way. Experience is fast. Drop item levels kept up for the Scrapper and the Technomancer. The Runner's weapon stalled. The Witness never reached a boss.
 

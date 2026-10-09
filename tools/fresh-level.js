@@ -31,13 +31,12 @@ const scaled=await p.evaluate(()=>{
   const more=document.getElementById('sheetIn').innerText;
   document.querySelector('[data-gact="1"]').click();
   const row=n=>[...document.querySelectorAll('[data-go]')].find(e=>e.querySelector('b').textContent===n).innerText;
-  const para=[...document.querySelectorAll('#sheetIn p')].find(e=>/fresh district/.test(e.textContent));
+  const para=[...document.querySelectorAll('#sheetIn p')].find(e=>/12 to 38/.test(e.textContent));
   if(para)para.scrollIntoView({block:'center'});
   return {more,moors:row('The Parcel Moors'),cathedral:row('The Glass Cathedral')};
 });
-check('More says a fresh district is never below your level', /never below your level/.test(scaled.more)&&!/two levels/.test(scaled.more), scaled.more);
-check('a level 1 district shows your level', /Machine level 8/.test(scaled.moors), scaled.moors);
-check('a higher district keeps its own level', /Machine level 12/.test(scaled.cathedral), scaled.cathedral);
+check('More names the shorter ladder', /12 to 38/.test(scaled.more)&&/chases your level/.test(scaled.more), scaled.more);
+check('Act I stays at the written level', /Machine level 1/.test(scaled.moors)&&/Machine level 12/.test(scaled.cathedral), scaled.moors+' | '+scaled.cathedral);
 
 const off=await p.evaluate(()=>{
   __g.OPT.dyn=false;__g.drawSheet();
@@ -45,13 +44,13 @@ const off=await p.evaluate(()=>{
   const more=document.getElementById('sheetIn').innerText;
   document.querySelector('[data-gact="1"]').click();
   const moors=[...document.querySelectorAll('[data-go]')].find(e=>e.querySelector('b').textContent==='The Parcel Moors').innerText;
-  const para=[...document.querySelectorAll('#sheetIn p')].find(e=>/fresh district/.test(e.textContent));
+  const para=[...document.querySelectorAll('#sheetIn p')].find(e=>/12 to 38/.test(e.textContent));
   if(para)para.scrollIntoView({block:'center'});
   return {more,moors};
 });
-check('scaling off shows the zone level and drops the sentence', /Machine level 1/.test(off.moors)&&!/fresh district/.test(off.more), JSON.stringify(off));
+check('scaling off keeps the written level and drops the ladder sentence', /Machine level 1/.test(off.moors)&&!/12 to 38/.test(off.more), JSON.stringify(off));
 
-await p.evaluate(()=>{__g.OPT.dyn=true;__g.drawSheet();document.querySelector('[data-gact="6"]').click();const para=[...document.querySelectorAll('#sheetIn p')].find(e=>/fresh district/.test(e.textContent));para.scrollIntoView({block:'center'})});
+await p.evaluate(()=>{__g.OPT.dyn=true;__g.drawSheet();document.querySelector('[data-gact="6"]').click();const para=[...document.querySelectorAll('#sheetIn p')].find(e=>/12 to 38/.test(e.textContent));if(para)para.scrollIntoView({block:'center'})});
 await p.screenshot({path:'/opt/cursor/artifacts/screenshot_fresh_level.png'});
 
 check('no page errors', !errs.length, errs.join('; '));

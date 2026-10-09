@@ -42,8 +42,15 @@ const FORMULAS = {
     cipher: { per: 0.06, cap: 0.60 },
     ward: { sec: 1.7, pct: 0.30, cap: 0.70 }
   },
-  /* One level of experience, the same curve the client uses. */
-  xp: { base: 60, pow: 1.75 },
+  /* One level of experience, the same curve the client uses.
+     Act I pays `act1` of a kill and still uses the written levels, so Pryce is met a few up.
+     Districts written above 12 pay `after`. The ladder folds 12–72 into 12–38 on Normal
+     (`ladder`), then Hard and Brutal lift that reading. A full clear is aimed at the low
+     40s, the mid-60s, and about 80. Pay falls off once you are more than `ahead` levels
+     above the machine. */
+  xp: { base: 58, pow: 1.85, ahead: 5, fade: 0.08, floor: 0.2, act1: 1.6, after: 0.41 },
+  /* Written 1–12 stay. Written 12–72 is read as 12–38. Hard adds `hard`, Brutal adds `brutal`. */
+  ladder: { act1: 12, top: 72, end: 38, hard: 22, brutal: 38 },
   /* Experience past the act cap, paid in one write on entering Act III. */
   bank: { levels: 1 },
   /* Maximalist auras, and the item skills that already name a radius.
@@ -80,6 +87,27 @@ function braceKeep(cls) {
 function xpNext(lvl) {
   const l = Math.max(1, +lvl || 1);
   return Math.round(FORMULAS.xp.base * Math.pow(l, FORMULAS.xp.pow));
+}
+
+/* The machine level a district is actually built at, before tier.
+   Subpoenas and the Simulator do not come through here. */
+function campaignLevel(written, diff) {
+  const L = FORMULAS.ladder;
+  const w = Math.max(1, Math.round(+written || 1));
+  const span = (L.end - L.act1) / (L.top - L.act1);
+  const base = w <= L.act1 ? w : Math.round(L.act1 + (Math.min(L.top, w) - L.act1) * span);
+  const d = diff | 0;
+  return base + (d >= 2 ? L.brutal : d === 1 ? L.hard : 0);
+}
+
+/* 1 while the character is within `ahead` levels of the machine.
+   Past that, each extra level keeps less, down to `floor`.
+   Hard and Brutal multiply whatever this leaves. */
+function xpPace(lvl, ml) {
+  const gap = Math.max(1, +lvl || 1) - Math.max(1, +ml || 1);
+  const x = FORMULAS.xp;
+  if (gap <= x.ahead) return 1;
+  return Math.max(x.floor, 1 - (gap - x.ahead) * x.fade);
 }
 
 /* 1..20, or 0 when the packet is not a rank. */
@@ -121,4 +149,4 @@ function pailRate(L) {
   return f.rate + f.rateL * n;
 }
 
-if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep, xpNext, auraRank, auraRadius, toxicSwingMul, pailMax, pailRate };
+if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep, xpNext, xpPace, campaignLevel, auraRank, auraRadius, toxicSwingMul, pailMax, pailRate };

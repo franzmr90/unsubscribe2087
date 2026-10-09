@@ -20,7 +20,7 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 const PROFILES = {
   scrapper: { build: 'crew', kite: false, back: 0.36, stim: 0.42, reach: 2.35 },
   courier: { build: 'rush', kite: true, near: 2.7, far: 6.2, stim: 0.45, reach: 6.4 },
-  witness: { build: 'page', kite: false, back: 0.55, stim: 0.5, reach: 2.5, heal: 6, healAt: 0.72 },
+  witness: { build: 'page', kite: false, back: 0.34, stim: 0.48, reach: 2.5, heal: 6, healAt: 0.72 },
   hacker: { build: 'chain', kite: true, near: 3.0, far: 6.4, stim: 0.48, reach: 6.6 }
 };
 const CLASS_LIST = (process.env.PROG_CLASSES || 'scrapper,courier,witness,hacker').split(',').filter(Boolean);
@@ -123,7 +123,7 @@ async function shot(page, name) {
 }
 
 async function install(page, cls, seed) {
-  await page.evaluate(({ cls, seed, prof }) => {
+  await page.evaluate(({ cls, seed, prof, party }) => {
     function mulberry32(a) {
       return function () {
         a |= 0; a = a + 0x6D2B79F5 | 0;
@@ -153,6 +153,16 @@ async function install(page, cls, seed) {
       }
     };
     __g.newGame(cls);
+    if (party && window.__mp) {
+      const MP = window.__mp.MP;
+      MP.on = true;
+      MP.conn = { readyState: 1, send() {} };
+      MP.game = { n: 2, diff: 'normal' };
+      MP.scale = { players: 2, diff: 'normal', diffName: 'Normal', hp: 1.25 * 1.5, dmg: 1.3, xp: 1.5 };
+      prog.log.party = { hp: MP.scale.hp, xp: MP.scale.xp, dmg: MP.scale.dmg };
+      prog.log.notes.push('two-player Normal scale: damage dealt is divided by ' + MP.scale.hp + ', experience ×' + MP.scale.xp);
+      prog.log.notes.push('a joined game waits on the server for the district map, and a hit waits on the server to come off the bar');
+    }
     function hypot(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
     function gearSnap() {
       const G = __g.G, S = __g.S, eq = {};
@@ -217,7 +227,20 @@ async function install(page, cls, seed) {
       };
       if (prof.heal != null && G.hp < __g.S.maxHp * prof.healAt) cast(prof.heal);
       const slots = (G.slots || []).filter(i => i >= 0 && G.sk[i]);
-      if (d <= prof.reach + e.r) {
+      if (G.cls === 'witness' && d <= prof.reach + e.r + 1.5) {
+        const tes = e.tes || 0, rec = G.page || 0;
+        if (tes < 3 && G.sk[0]) cast(0);
+        if (tes < 2 && rec < 30) {
+          prog.watchT = (prog.watchT || 0) + 1 / 20;
+          if (prog.watchT < 0.9) {
+            prog.atkT = 0.3;
+            __g.mouseClick('left', P.x, P.y, { hover: null });
+            return;
+          }
+        } else prog.watchT = 0;
+        if (tes >= 2 && rec >= 12) cast(4);
+        else if (tes >= 1 && G.hp < __g.S.maxHp * 0.62) cast(1);
+      } else if (d <= prof.reach + e.r) {
         for (const i of slots) if (i !== prof.heal && cast(i)) break;
       }
       prog.atkT -= 1 / 20;
@@ -484,9 +507,10 @@ async function install(page, cls, seed) {
         if (__g.mode === 'dying' && prog.attempt) endAttempt(false, bossEnt());
         if (!W.z.town && !W.z.pre) {
           if (prog.zoneZi !== W.zi) { prog.zoneZi = W.zi; prog.zoneT0 = G.time; prog.zoneNoted = false; }
-          if (!prog.zoneNoted && prog.zoneT0 != null && G.time - prog.zoneT0 > 420 && !prog.attempt && !nearest(4.2)) {
+          const suLive = W.ents.some(e => e.hp > 0 && e.su && e.q && (G.q[e.q] || 0) < 2);
+          if (!prog.zoneNoted && prog.zoneT0 != null && G.time - prog.zoneT0 > (suLive ? 720 : 420) && !prog.attempt && !nearest(suLive ? 8 : 4.2)) {
             prog.zoneNoted = true;
-            prog.log.notes.push('left ' + W.z.n + ' after 7 minutes without a boss pull');
+            prog.log.notes.push('left ' + W.z.n + ' after ' + (suLive ? '12' : '7') + ' minutes without a pull');
             __g.openPortal();
             const p = W.portals.find(p => p.kind === 'home');
             if (p) __g.usePortal(p);
@@ -576,7 +600,7 @@ async function install(page, cls, seed) {
       }
       return { n: items.length, unid: items.filter(i => !i.id).length, by, gear: gearSnap() };
     };
-  }, { cls, seed, prof: PROFILES[cls] });
+  }, { cls, seed, prof: PROFILES[cls], party: process.env.PROG_PARTY === '1' });
 }
 
 async function transit(page, zi) {
@@ -671,7 +695,12 @@ async function townEconomy(page) {
       return;
     }
     click('[data-tab="sats"]');
-    const list = (__g.satShop || []).map((o, i) => ({ i, d: __g.itemDelta(o.it), price: o.price }));
+    let stims = 0;
+    while (stims++ < 4 && __g.G.sats >= 1 && __g.G.stims < Math.min(4, __g.S.cap)) {
+      if (!click('[data-satstim="1"]')) break;
+      __g.drawSheet();
+    }
+    const list = (__g.satShop || []).map((o, i) => ({ i, d: __g.itemDelta(o.it), price: o.price, fam: o.it && o.it.fam }));
     list.sort((a, b) => (b.d || 0) - (a.d || 0));
     const pick = list.find(o => o.d > 0.03 && __g.G.sats >= o.price + 2);
     if (pick && click('[data-sat="' + pick.i + '"]')) {
@@ -810,6 +839,15 @@ async function runClass(browser, cls, seed, deadline) {
       if (sig !== lastSig) {
         lastSig = sig;
         console.log(cls, st.zone, 'L' + st.lvl, 'hp' + st.hp, 'd' + st.deaths, 't' + st.time, st.order || '', 'steps', st.steps);
+      }
+      if (process.env.PROG_PARTY === '1' && !st.zi && st.steps === 0 && spins > 2) {
+        console.log(cls, 'no district: a joined game waits on the server map');
+        await page.evaluate(() => {
+          window.__prog.giveUp = true;
+          window.__prog.giveReason = 'party stub never entered a district';
+          window.__prog.log.notes.push('joined game waited on a server map; no district loaded');
+        });
+        break;
       }
       if (st.shot) {
         try { await shot(page, st.shot); console.log('shot', st.shot); } catch (e) { console.log('shot fail', e.message); }

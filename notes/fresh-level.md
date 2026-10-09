@@ -1,5 +1,5 @@
-# A fresh district is never below your level
+# A district does not rise to meet you
 
-More on the Transit Gate said a fresh district is never more than two levels below yours. With scaling on, a fresh district’s machine level is the zone’s own level or yours, whichever is higher.
+Act I is the level it was written. From the Cloud on, written 12 to 72 is walked as 12 to 38. Hard adds 22. Brutal adds 38. Tier still adds 12 after that.
 
-At level 8 the Parcel Moors, a level 1 district, show machine level 8. The Glass Cathedral is level 12, so it stays 12. With scaling off, the Moors show machine level 1 and that sentence is gone.
+At level 8 on Normal the Parcel Moors show machine level 1, and the Glass Cathedral shows 12. Adaptive difficulty, when it is on, only toughens Hard and Brutal if your gear is ahead. It does not raise the district to your level.
