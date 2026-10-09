@@ -245,9 +245,23 @@ fs.mkdirSync(OUT, { recursive: true });
     g.P.inv = 0; g.G.god = false; g.G.hp = hp; g.setMode('play');
     g.hurt(50000, 0, { name: 'a Tick' });
     const c = (g.G.corpses || [])[0];
-    const eqEmpty = ['weapon', 'helm', 'armor', 'gloves', 'boots', 'belt', 'ring', 'amulet'].every(sl => !g.G.eq[sl]);
+    const bare = ['helm', 'armor', 'gloves', 'boots', 'belt', 'ring', 'amulet'].every(sl => !g.G.eq[sl]);
+    const loan = g.G.eq.weapon;
+    const obj0 = (g.W.objs || []).find(o => o.k === 'corpse');
+    let calm = null;
+    if (obj0) {
+      let e = null;
+      for (let a = 0; a < 8 && !e; a++) e = g.spawn('tick', obj0.x + Math.cos(a) * 0.6, obj0.y + Math.sin(a) * 0.6, null);
+      if (!e) e = g.spawn('tick', obj0.x + 2, obj0.y, null);
+      g.calmNearCorpse();
+      if (e) {
+        calm = { calm: e.calm || 0, aggro: !!e.aggro, far: +Math.hypot(e.x - obj0.x, e.y - obj0.y).toFixed(2) };
+        e.hp = 0;
+      }
+    }
     return {
-      eqEmpty, cslots: (g.G.cslots || []).length, bag: g.G.bag.length && g.G.bag[0].name,
+      bare, loan: !!(loan && loan.loan && /loaner/.test(loan.name)), cslots: (g.G.cslots || []).length, bag: g.G.bag.length && g.G.bag[0].name,
+      calm,
       credits: g.G.credits, sats: g.G.sats, stims: g.G.stims, accS: g.ACC.sats, accC: g.ACC.cr,
       n: (g.G.corpses || []).length,
       held: c && { w: c.eq.weapon && c.eq.weapon.name, h: c.eq.helm && c.eq.helm.name, b: c.eq.belt && c.eq.belt.name, charms: (c.cslots || []).length, credits: c.credits },
@@ -256,7 +270,8 @@ fs.mkdirSync(OUT, { recursive: true });
       fee: g.G.credits
     };
   });
-  check('equipped gear, the belt, and its charms leave the body', died.eqEmpty && died.cslots === 0 && died.held && died.held.w === 'Kept Fang' && died.held.b === 'Kept Belt' && died.held.charms === 1, JSON.stringify(died));
+  check('equipped gear, the belt, and its charms leave the body', died.bare && died.loan && died.cslots === 0 && died.held && died.held.w === 'Kept Fang' && died.held.b === 'Kept Belt' && died.held.charms === 1, JSON.stringify(died));
+  check('a machine on the body steps back and goes quiet', died.calm && died.calm.calm > 0 && died.calm.aggro === false && died.calm.far > 6, JSON.stringify(died.calm));
   check('the pack, stims, sats, and the lockbox stay', died.bag === 'Pack Ring' && died.stims === 3 && died.sats === 50 && died.accS === 11 && died.accC === 77, JSON.stringify(died));
   check('four percent of carried credits sits on the body', died.credits === 960 && died.held && died.held.credits === 40, JSON.stringify(died));
   check('the body is in the world and not in the shared zone blob', died.obj && died.packed === false && died.n === 1, JSON.stringify(died));
@@ -438,6 +453,7 @@ fs.mkdirSync(OUT, { recursive: true });
   const help = await p.evaluate(() => document.documentElement.innerHTML);
   check('the guide says the belt and charms are on the body', /belt and the charms on it are on your body/.test(help));
   check('the guide says sats do not fall and the rig drops no ear', /Sats do not fall/.test(help) && /nobody drops an ear/.test(help));
+  check('the guide says a loaner stays in your hands', /plain loaner stays in your hands/.test(help));
 
   check('no page errors', !errs.length, errs.join(' | '));
   await b.close();
