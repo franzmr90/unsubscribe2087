@@ -164,6 +164,25 @@ const report=await p.evaluate(()=>{
   check('damage, armor and life together are a strict upgrade',g.strictUp(gear('amulet',{name:'All Three',aff:[{k:'dmg',v:10},{k:'hp',v:20},{k:'armor',v:10}]}))===true);
   const shop=g.cmpHTML(gear('helm',{name:'Shop Helm',arm:6,aff:[{k:'hp',v:8}]}));
   check('shop cards are the side-by-side compare',shop.indexOf('cmpBox')>=0&&shop.indexOf('What changes')>=0);
+  wipe();
+  G.eq.belt={slot:'belt',id:true,req:1,name:'Tool Belt',base:'Tool Belt',q:0,il:1,aff:[],cap:8,csl:2};
+  G.cslots=[];
+  const slip=g.mkCharm(1,{sz:'slip',aff:[{k:'hp',v:40}],name:'Living Slip'});
+  s=snap();
+  ev=g.cmpEval(slip);
+  life=row(ev,'Life');
+  check('a belt charm adds its life beside an empty loadout',life&&life.d===40&&!ev.blocked,{d:life&&life.d,blocked:ev.blocked,rows:ev.rows.map(r=>r.name+':'+r.d)});
+  held(s,'charm add');
+  const charmCard=g.cmpHTML(slip);
+  check('the charm card names the belt loadout',charmCard.indexOf('On the belt')>=0&&charmCard.indexOf('Nothing on the belt')>=0&&charmCard.indexOf('Living Slip')>=0);
+  G.cslots=[slip];g.calc();
+  ev=g.cmpEval(slip);
+  life=row(ev,'Life');
+  check('taking a worn charm off removes its life',life&&life.d===-40,{d:life&&life.d,rows:ev.rows.map(r=>r.name+':'+r.d)});
+  const fat=g.mkCharm(1,{sz:'filing',aff:[{k:'hp',v:10}],name:'Big Filing'});
+  ev=g.cmpEval(fat);
+  check('a filing that does not fit leaves the sheet',ev.blocked==='fit'&&!(ev.rows&&ev.rows.length),{blocked:ev.blocked,why:ev.why});
+  check('the belt is still the one we set',G.eq.belt&&G.eq.belt.csl===2&&G.cslots.length===1&&G.cslots[0]===slip);
   return {fail,note:note.length,errs:fail.length};
 });
 if(errs.length){console.log('PAGE',errs);process.exit(1)}
