@@ -19,11 +19,15 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 
 const PROFILES = {
   scrapper: { build: 'crew', kite: false, back: 0.36, stim: 0.42, reach: 2.35 },
+  hacker: { build: 'chain', kite: true, near: 3.0, far: 6.4, stim: 0.48, reach: 6.6 },
   courier: { build: 'rush', kite: true, near: 2.7, far: 6.2, stim: 0.45, reach: 6.4 },
+  anon: { build: 'demo', kite: false, back: 0.4, stim: 0.45, reach: 3.4 },
+  founder: { build: 'head', kite: true, near: 3.2, far: 6.5, stim: 0.5, reach: 6.8 },
+  homesteader: { build: 'bed', kite: false, back: 0.38, stim: 0.46, reach: 4.2 },
   witness: { build: 'page', kite: false, back: 0.34, stim: 0.48, reach: 2.5, heal: 6, healAt: 0.72 },
-  hacker: { build: 'chain', kite: true, near: 3.0, far: 6.4, stim: 0.48, reach: 6.6 }
+  maxi: { build: 'orange', kite: false, back: 0.36, stim: 0.42, reach: 2.5 }
 };
-const CLASS_LIST = (process.env.PROG_CLASSES || 'scrapper,courier,witness,hacker').split(',').filter(Boolean);
+const CLASS_LIST = (process.env.PROG_CLASSES || 'scrapper,hacker,courier,anon,founder,homesteader,witness,maxi').split(',').filter(Boolean);
 const SEEDS = (process.env.PROG_SEEDS || '12648430').split(',').map(s => parseInt(s, 10));
 
 function boot(page, errs) {
@@ -123,7 +127,7 @@ async function shot(page, name) {
 }
 
 async function install(page, cls, seed) {
-  await page.evaluate(({ cls, seed, prof, party }) => {
+  await page.evaluate(({ cls, seed, prof, party, climb }) => {
     function mulberry32(a) {
       return function () {
         a |= 0; a = a + 0x6D2B79F5 | 0;
@@ -144,11 +148,13 @@ async function install(page, cls, seed) {
     const prog = window.__prog = {
       cls, seed, prof, order: null, orderZi: null, townDone: false, wantFarm: false, farmed: false,
       giveUp: false, giveReason: '', farmUntil: 0, farmKills: 0, shotN: 0, shots: {},
+      climbOn: climb !== false, climbN: 0, corpseSeen: {}, deathSeen: 0, aimTried: false,
       attempt: null, atkT: 0, moveT: 0, dodgeT: 0, lastZi: null, stuckT: 0, stuckX: 0, stuckY: 0,
       log: {
         cls, seed, name: __g.CLS[cls].n, build: prof.build, god: false,
         season: ['stim', 'bull', 'over'][Math.floor(Date.now() / 6048e5) % 3],
-        zones: [], acts: {}, spend: { creditsOut: 0, creditsIn: 0, satsOut: 0, satsIn: 0, stimsBought: 0, hires: 0, bought: [] },
+        zones: [], acts: {}, fell: {}, ladder: [], corpseWalks: 0,
+        spend: { creditsOut: 0, creditsIn: 0, satsOut: 0, satsIn: 0, stimsBought: 0, hires: 0, charmsWorn: 0, bought: [] },
         vendors: [], bag: [], notes: []
       }
     };
@@ -377,6 +383,7 @@ async function install(page, cls, seed) {
       const book = actBook(__g.W.zi);
       book.attempts.push(row);
       book.won = book.won || !!win;
+      if (win && __g.W && __g.W.z && __g.W.z.boss) { book.clearLvl = __g.G.lvl; book.clearDiff = __g.G.diff | 0; }
       const lost = book.attempts.filter(x => !x.win).length;
       const left = hp / max;
       if (!win && !prog.farmed && lost >= 3 && left > 0.55) prog.wantFarm = true;
@@ -416,9 +423,31 @@ async function install(page, cls, seed) {
           prog.stuckNote = null;
           if (prog.order === 'next' && left === prog.orderZi) prog.order = null;
           if (prog.order === 'exit' || prog.order === 'back') prog.order = null;
-          prog.log.zones.push({ zi: W.zi, n: W.z.n, lvl: G.lvl, zlvl: W.z.lvl || 0, ml: W.ml, dyn: W.dyn, t: +G.time.toFixed(1), town: !!W.z.town, boss: !!W.z.boss });
+          prog.log.zones.push({ zi: W.zi, n: W.z.n, lvl: G.lvl, diff: G.diff | 0, zlvl: W.z.lvl || 0, ml: W.ml, dyn: W.dyn, t: +G.time.toFixed(1), town: !!W.z.town, boss: !!W.z.boss });
         }
         if (!W.z.town) prog.townDone = false;
+        if ((G.deaths | 0) !== (prog.deathSeen | 0)) {
+          const add = (G.deaths | 0) - (prog.deathSeen | 0);
+          prog.deathSeen = G.deaths | 0;
+          if (add > 0) {
+            const zn = (W.z && W.z.n) || 'unknown';
+            prog.log.fell[zn] = (prog.log.fell[zn] || 0) + add;
+          }
+        }
+        if (!prog.aimTried && P) {
+          prog.aimTried = true;
+          try {
+            const spec = __g.aimSpec(0) || { reach: 6 };
+            const thumb = __g.aimThumbWorld(80, 520, 150, 430, spec);
+            const tap = __g.aimTapPoint(spec);
+            prog.log.aim = { thumb: !!(thumb && typeof thumb.x === 'number'), tap: !!(tap && typeof tap.x === 'number'), t: thumb && +(+thumb.t).toFixed(2) };
+          } catch (err) { prog.log.aim = { err: String(err && err.message || err).slice(0, 160) }; }
+        }
+        const charmN = (G.bag || []).filter(it => it && it.charm).length + (G.cslots || []).length;
+        if (charmN > (prog.charmPeak || 0)) {
+          prog.log.charmsFound = (prog.log.charmsFound || 0) + (charmN - (prog.charmPeak || 0));
+          prog.charmPeak = charmN;
+        }
         spendPoints();
         prog.dodgeT -= dt;
         if (W.z.pre) {
@@ -437,8 +466,14 @@ async function install(page, cls, seed) {
         if (bodies.length) {
           bodies.sort((a, b) => hypot(a, P) - hypot(b, P));
           const body = bodies[0];
-          if (hypot(body, P) < 1.7) __g.useObj(body);
-          else toward(body.x, body.y);
+          if (hypot(body, P) < 1.7) {
+            const before = (G.corpses || []).length;
+            __g.useObj(body);
+            if ((G.corpses || []).length < before) {
+              prog.log.corpseWalks = (prog.log.corpseWalks || 0) + 1;
+              prog.log.notes.push('walked body ' + body.id + ' in ' + (W.z && W.z.n));
+            }
+          } else toward(body.x, body.y);
           if (__g.mode !== 'play') break;
           __g.update(dt); steps++;
           continue;
@@ -610,7 +645,41 @@ async function install(page, cls, seed) {
       }
       return { n: items.length, unid: items.filter(i => !i.id).length, by, gear: gearSnap() };
     };
-  }, { cls, seed, prof: PROFILES[cls], party: process.env.PROG_PARTY === '1' });
+    prog.tryClimb = function () {
+      if (!prog.climbOn || prog.climbN >= 2) return false;
+      const G = __g.G;
+      const names = ['Normal', 'Hard', 'Brutal'];
+      prog.log.ladder.push({
+        diff: G.diff | 0, name: names[G.diff | 0] || String(G.diff),
+        lvl: G.lvl, deaths: G.deaths || 0, repair: G.repairSpent || 0,
+        bought: G.corpseBought || 0, walks: prog.log.corpseWalks || 0,
+        sats: G.sats | 0, credits: Math.round(G.credits || 0),
+        kills: G.kills || 0, time: +((G.time || 0).toFixed(1)),
+        corpsesLeft: (G.corpses || []).length,
+        charmsFound: prog.log.charmsFound || 0,
+        charmsWorn: (G.cslots || []).length,
+        fell: Object.assign({}, prog.log.fell)
+      });
+      prog.climbN++;
+      G.diff = prog.climbN;
+      G.diffGate = Math.max(G.diffGate || 0, G.diff);
+      for (const k in __g.QUESTS) G.q[k] = 0;
+      G.q3open = 0; G.q8page = 0; G.q8down = 0; G.q12down = 0; G.qt = {};
+      G.unlocked = 0;
+      G.portal = null;
+      if (__g.resetZones) __g.resetZones();
+      prog.order = null; prog.townDone = false; prog.corpseSeen = {};
+      prog.giveUp = false; prog.giveReason = '';
+      prog.wantFarm = false; prog.farmed = false; prog.attempt = null;
+      const note = 'climbed to ' + (names[G.diff] || G.diff) + ' at level ' + G.lvl;
+      prog.log.notes.push(note);
+      if (__g.mode === 'sheet' && __g.closeSheet) __g.closeSheet();
+      __g.setMode('play');
+      __g.enter(0);
+      __g.setMode('play');
+      return names[G.diff] || String(G.diff);
+    };
+  }, { cls, seed, prof: PROFILES[cls], party: process.env.PROG_PARTY === '1', climb: process.env.PROG_CLIMB !== '0' });
 }
 
 async function transit(page, zi) {
@@ -641,6 +710,19 @@ async function townEconomy(page) {
       shop: window.__prog.shopSnap(), bag: window.__prog.bagSnap()
     };
     window.__prog._eco0 = { c: snap.credits, s: snap.sats, st: snap.stims, merc: snap.merc };
+    const bodies = (__g.G.corpses || []).slice();
+    const seen = window.__prog.corpseSeen || {};
+    for (const c of bodies) {
+      if (!c) continue;
+      if (seen[c.id]) {
+        const fee = __g.corpseFee(c);
+        if ((__g.G.sats | 0) >= fee) {
+          const ok = __g.buyCorpse(c.id);
+          if (ok) window.__prog.log.notes.push('bought body ' + c.id + ' after a failed walk');
+        } else window.__prog.log.notes.push('could not buy body ' + c.id + ' for ' + fee + ' sats');
+      } else seen[c.id] = 1;
+    }
+    window.__prog.corpseSeen = seen;
     if (__g.repairAll) { const spent = __g.repairAll(); if (spent) window.__prog.log.notes.push('repaired for ' + spent + ' sats'); }
     const v = window.__prog.log.vendors;
     const last = v[v.length - 1];
@@ -671,6 +753,14 @@ async function townEconomy(page) {
     click('[data-best="1"]');
     click('[data-bestok="1"]');
     g.drawSheet();
+    let sock = 0, cguard = 0;
+    while (cguard++ < 12) {
+      const i = g.G.bag.findIndex(it => it && it.charm && it.id);
+      if (i < 0) break;
+      if (!g.charmSocket(i)) break;
+      sock++;
+    }
+    if (sock) window.__prog.log.spend.charmsWorn = (window.__prog.log.spend.charmsWorn || 0) + sock;
     click('[data-markjunk="1"]');
     g.closeSheet();
     g.setMode('play');
@@ -814,6 +904,10 @@ async function runClass(browser, cls, seed, deadline) {
       if (where === 'town') {
         const plan = await page.evaluate(() => window.__prog.planTown());
         if (plan.kind === 'giveup' || plan.kind === 'done') {
+          if (plan.kind === 'done') {
+            const climbed = await page.evaluate(() => window.__prog.tryClimb());
+            if (climbed) { console.log(cls, 'climbed', climbed); continue; }
+          }
           console.log(cls, plan.kind, plan.reason || plan.blob);
           break;
         }
@@ -840,7 +934,13 @@ async function runClass(browser, cls, seed, deadline) {
         const plan2 = await page.evaluate(() => window.__prog.planTown());
         console.log(cls, 'nav', plan2.kind, plan2.zi || '', (plan2.blob || '').slice(0, 80));
         if (plan2.kind === 'talk') { await say(page, plan2.who); continue; }
-        if (plan2.kind === 'giveup' || plan2.kind === 'done') break;
+        if (plan2.kind === 'giveup' || plan2.kind === 'done') {
+          if (plan2.kind === 'done') {
+            const climbed = await page.evaluate(() => window.__prog.tryClimb());
+            if (climbed) { console.log(cls, 'climbed', climbed); continue; }
+          }
+          break;
+        }
         if (plan2.kind === 'travel') {
           const tr = await transit(page, plan2.zi);
           if (!tr.ok) await page.evaluate(tr => window.__prog.log.notes.push('transit failed ' + JSON.stringify(tr)), tr);
@@ -882,6 +982,10 @@ async function runClass(browser, cls, seed, deadline) {
         try { await shot(page, st.shot); console.log('shot', st.shot); } catch (e) { console.log('shot fail', e.message); }
       }
       if (st.giveUp || st.won) {
+        if (st.won) {
+          const climbed = await page.evaluate(() => window.__prog.tryClimb());
+          if (climbed) { console.log(cls, 'climbed', climbed); continue; }
+        }
         console.log(cls, st.giveUp ? st.reason : 'cleared q25');
         break;
       }
@@ -904,6 +1008,11 @@ async function runClass(browser, cls, seed, deadline) {
       L.corpsesLeft = (__g.G.corpses || []).length;
       L.sats = __g.G.sats | 0;
       L.credits = Math.round(__g.G.credits || 0);
+      L.diff = __g.G.diff | 0;
+      L.charms = {
+        worn: (__g.G.cslots || []).filter(Boolean).map(c => c.name || c.base),
+        bag: (__g.G.bag || []).filter(c => c && c.charm).map(c => c.name || c.base)
+      };
       L.wallMs = 0;
       return L;
     });
