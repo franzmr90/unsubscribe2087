@@ -301,7 +301,7 @@ async function install(page, cls, seed) {
       }
       if (allowKite && prof.kite && d < prof.near) { retreat(e); return; }
       if (allowKite && !prof.kite && hp < prof.back && d < prof.reach + 1.2) { retreat(e); return; }
-      if (prof.kite && d > prof.far + 0.4) { toward(e.x, e.y); return; }
+      if (allowKite && prof.kite && d > prof.far + 0.4) { toward(e.x, e.y); return; }
       strike(e);
     }
     function useNear(pred, kind, reach) {
@@ -570,9 +570,9 @@ async function install(page, cls, seed) {
             if (trash) fight(trash.e, true);
             else { prog.focus = suNow; fight(suNow, true); }
           } else if (jobKind && !suUp) {
-            const block = nearest(1.45, e => !skipMotion(e));
-            if (block) fight(block.e, true);
-            else goGoal();
+            // The lieutenant is down. Walk to the object. A swing here kites off it,
+            // and a saved Hard field is dense enough that something is always in reach.
+            goGoal();
           } else if (commit) {
             const su = W.ents.find(e => e.hp > 0 && e.su && e.q && (G.q[e.q] || 0) < 2 && !skipMotion(e));
             const onJob = prog.focus && su && prog.focus === su;
