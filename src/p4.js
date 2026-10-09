@@ -939,7 +939,7 @@ function vendSell(i,quiet){
   G.bag.splice(i,1);
   G.sats=(G.sats|0)+paid;
   BUYBACK.push({it:it,paid:paid,ask:ask,kind:vendKind()});
-  sel=null;if(!quiet){sfx('coin');toast('Sold for '+paid+' sats')}
+  sel=null;if(!quiet){sfx('coin');toast('Sold for '+paid+' sats');save(true)}
   return true;
 }
 function vendQuest(it){return !!(it&&(it.quest||it.sq||it.key))}
@@ -964,13 +964,26 @@ function vendSellCommit(which){
   const rows=vendSellPlan(which).rows.slice().sort((a,b)=>b.i-a.i);
   let n=0,sats=0;
   for(const r of rows){if(G.bag[r.i]!==r.it)continue;if(!vendSell(r.i,true))continue;n++;sats+=r.paid}
-  if(n){sfx('coin');toast('Sold '+n+' for '+sats+' sats')}
+  if(n){sfx('coin');toast('Sold '+n+' for '+sats+' sats');save(true)}
   return {n:n,sats:sats};
 }
 function vendFlipLock(i){const it=G.bag&&G.bag[i];if(!it)return false;it.lock=it.lock?0:1;sfx('ui');toast(it.lock?'Locked':'Unlocked');try{navigator.vibrate&&navigator.vibrate(15)}catch(e){}return !!it.lock}
 function vendSellShut(prev){$('dlg').hidden=true;mode=prev==='title'||prev==='scene'?'play':(prev||'sheet');if(mode==='sheet')drawSheet()}
+function vendFootLift(){
+  const pop=$('pop');if(!pop)return;
+  pop.classList.remove('aboveFoot');pop.style.removeProperty('--vend-foot');
+  if(pop.hidden)return;
+  const feet=[...document.querySelectorAll('#sheet .vendFoot')];
+  if(!feet.length)return;
+  const vh=window.innerHeight||0;let top=vh;
+  for(const f of feet){const r=f.getBoundingClientRect();if(r.height<8||r.bottom<=0||r.top>=vh)continue;if(r.top<top)top=r.top}
+  const lift=Math.max(0,Math.round(vh-top));
+  if(lift>8){pop.classList.add('aboveFoot');pop.style.setProperty('--vend-foot',Math.min(lift,Math.round(vh*.42))+'px')}
+}
 function vendSellOpen(which){
   if(!vendBuys()){toast('Wren does not buy gear');sfx('err');return}
+  const pop=$('pop');if(pop){pop.hidden=true;pop.classList.remove('aboveFoot')}
+  cmpHide();
   const prev=mode==='dlg'?(dlgPrev||'sheet'):mode;
   dlgPrev=prev;mode='dlg';$('dlg').hidden=false;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;
   const paint=()=>{
@@ -982,6 +995,7 @@ function vendSellOpen(which){
     const go=document.createElement('button');go.type='button';go.className='big';go.textContent='Sell';go.disabled=!plan.n;go.onclick=()=>{vendSellCommit(which);vendSellShut(prev)};
     const leave=document.createElement('button');leave.type='button';leave.className='ghost';leave.textContent='Leave';leave.onclick=()=>vendSellShut(prev);
     b.appendChild(go);b.appendChild(leave);
+    try{leave.scrollIntoView({block:'nearest'})}catch(e){}
   };
   paint();sfx('talk');
 }
@@ -996,7 +1010,7 @@ function vendBuyback(i){
     if(!spendSats(row.ask))return;
     G.bag.push(row.it);
     BUYBACK.splice(i,1);
-    sel=null;sfx('coin');toast('Bought back for '+row.ask+' sats');
+    sel=null;sfx('coin');toast('Bought back for '+row.ask+' sats');save(true);
     if(mode==='sheet')drawSheet();
   });
 }
@@ -1110,7 +1124,7 @@ function vendHTML(){
 }
 function vendRepairHTML(){const items=typeof repairList==='function'?repairList():[];if(!items.length)return '';const n=items.reduce((s,it)=>s+repairQuote(it),0);const worn=['weapon','helm','armor','gloves','boots','belt'].filter(sl=>G.eq&&G.eq[sl]&&repairQuote(G.eq[sl]));const rows=worn.map(sl=>{const it=G.eq[sl],q=repairQuote(it);return '<button type="button" class="ghost" data-vrepair="'+sl+'" '+(satsFree()<q?'disabled':'')+'>'+esc(it.id?it.name:it.base)+' · '+q+' sat'+(q===1?'':'s')+'</button>'}).join('');return '<div class="row vendFoot"><button type="button" class="big" data-repair="all" '+(satsFree()<n?'disabled':'')+'>Repair all · '+n+' sat'+(n===1?'':'s')+'</button>'+rows+'</div>'}
 function drawSheet(){
-  const only=sheetCtx.only||(mpOn()?['char','items','skills','web','party','quests','story','codex','opts']:['char','items','skills','web','quests','story','codex','opts']);let pop='';$('pop').hidden=true;
+  const only=sheetCtx.only||(mpOn()?['char','items','skills','web','party','quests','story','codex','opts']:['char','items','skills','web','quests','story','codex','opts']);let pop='';$('pop').hidden=true;$('pop').classList.remove('aboveFoot');
   const sheetFit=tab==='char'||tab==='items'||tab==='skills'||tab==='quests'||tab==='opts';
   let h=`<div class="shead">${only.map(t=>`<button class="tab${tab===t?' on':''}" data-tab="${t}">${TABS[t]}${t==='skills'&&G&&G.sp?' •':t==='char'&&G&&G.ap?' •':t==='story'&&sdxUnseen()?' •':''}</button>`).join('')}<button class="tab x" data-close="1">Close</button></div><div class="sheetBody${sheetFit?' fit':tab==='web'?' web':' canScroll'}${tab==='items'?' items':''}">`;
   if(tab==='load'){h+=`<h2>Load a save code</h2><p>Paste a code copied from the Options tab. This replaces the saved wanderer on this device.</p><textarea id="codeIn" placeholder="Paste here"></textarea><button class="big" data-loadcode="1">Load</button></div>`;$('sheetIn').innerHTML=h;return}
@@ -1274,7 +1288,7 @@ function drawSheet(){
     }
     h+=`</div>`;if(gateAct===6&&devOn())h+=`<button class="ghost" data-dev="reset">Respawn all machines</button>`;
     if(G.maxTier>0&&gateAct===6)h+=`<h3>Tier</h3><div class="row"><button class="ghost" data-tier="-1" ${G.tier<=0?'disabled':''}>Easier</button><button class="ghost" disabled>Tier ${G.tier}</button><button class="ghost" data-tier="1" ${G.tier>=G.maxTier?'disabled':''}>Harder</button></div><p>Each tier adds 12 machine levels and raises item levels to match. Changing tier respawns every district.</p>`}
-  h+=`</div>`;if(!pop){const extra=cmpSheetPop();if(extra)pop=extra}$('sheetIn').innerHTML=h;if(G&&G.charmShake)G.charmShake=0;paintGlyphs($('sheetIn'));if($('webStage'))webBind();if(pop){cmpHide();$('popIn').innerHTML=pop;paintGlyphs($('popIn'));$('pop').hidden=false;$('pop').scrollTop=0}}
+  h+=`</div>`;if(!pop){const extra=cmpSheetPop();if(extra)pop=extra}$('sheetIn').innerHTML=h;if(G&&G.charmShake)G.charmShake=0;paintGlyphs($('sheetIn'));if($('webStage'))webBind();if(pop){cmpHide();$('popIn').innerHTML=pop;paintGlyphs($('popIn'));$('pop').hidden=false;$('pop').scrollTop=0;vendFootLift()}}
 const satsOk=()=>G.adopt>=60||(G.wonF&&G.wonF.brenda===1)||shopVia,satCost=it=>Math.max(1,Math.ceil(buyPrice(it)/satRate()));let shopVia=0;const buyPrice=it=>{const her=payTag(it.val*2.5*G.cpi*(G.disc?.85:1)*(repRank('norm')>=3?.8:repRank('norm')>=1?.9:1));return shopVia?payTag(her*.7):her};
 const boxPrice=()=>payTag((8+G.lvl*5)*9*G.cpi);
 /* The sell line prints whole credits, so the purse gains the floor of two fifths. */
@@ -1459,6 +1473,7 @@ addEventListener('pointerup',e=>{
 });
 
 $('pop').addEventListener('click',ev=>{if(ev.target.id==='pop'){sel=null;sfx('ui');drawSheet();return}sheetClick(ev)});
+$('sheet').addEventListener('scroll',()=>{if(!$('pop').hidden)vendFootLift()},true);
 
 function showDeath(){const town=ZONES[HT()]||{n:'town'};const onBody=!G.hc&&lastLaid;const gear=onBody?' What you were wearing is on your body, belt and charms included. The pack stayed with you.':'';const pvp=onBody&&DY.pvp?' Nobody else can pick it up, and nothing was cut from you as a trophy.':'';
   $('deathP').textContent='Slain by '+DY.by+' in '+ZONES[DY.zi].n+', with '+DTY[P.lastTy||'impact'].n+' damage.'+(G.hc?' This was a hardcore hero. They are gone, and a new wanderer will take the road.':gear+pvp);
