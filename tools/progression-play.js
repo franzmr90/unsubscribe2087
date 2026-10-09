@@ -412,6 +412,15 @@ async function install(page, cls, seed) {
       prog.pendingShot = null;
       let steps = 0;
       for (let i = 0; i < n; i++) {
+        const Gd = __g.G, Wd = __g.W;
+        if (Gd && Wd && Wd.z && (Gd.deaths | 0) !== (prog.deathSeen | 0)) {
+          const add = (Gd.deaths | 0) - (prog.deathSeen | 0);
+          prog.deathSeen = Gd.deaths | 0;
+          if (add > 0) {
+            const zn = Wd.z.n || 'unknown';
+            prog.log.fell[zn] = (prog.log.fell[zn] || 0) + add;
+          }
+        }
         if (__g.mode !== 'play') break;
         const G = __g.G, W = __g.W, P = __g.P;
         if (!W || !P) break;
@@ -426,14 +435,6 @@ async function install(page, cls, seed) {
           prog.log.zones.push({ zi: W.zi, n: W.z.n, lvl: G.lvl, diff: G.diff | 0, zlvl: W.z.lvl || 0, ml: W.ml, dyn: W.dyn, t: +G.time.toFixed(1), town: !!W.z.town, boss: !!W.z.boss });
         }
         if (!W.z.town) prog.townDone = false;
-        if ((G.deaths | 0) !== (prog.deathSeen | 0)) {
-          const add = (G.deaths | 0) - (prog.deathSeen | 0);
-          prog.deathSeen = G.deaths | 0;
-          if (add > 0) {
-            const zn = (W.z && W.z.n) || 'unknown';
-            prog.log.fell[zn] = (prog.log.fell[zn] || 0) + add;
-          }
-        }
         if (!prog.aimTried && P) {
           prog.aimTried = true;
           try {
