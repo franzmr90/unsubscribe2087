@@ -248,6 +248,26 @@ const ICON={
  stim:'M9 2h6v3l2 3v11a3 3 0 01-3 3h-4a3 3 0 01-3-3V8l2-3zm1 2h4v2h-4z'};
 const svgIcon=s=>`<svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="${ICON[s]}"/></svg>`;
 const STIM={pack:'A stim. The belt drinks it. The pack only carries the extra.',move:'Move to belt',keep:'A stim stays until the belt has room.',pick:'Choose a stim in the pack.',belt:'A stim in the pack moves here when the belt has room: drag it, double-tap it, or choose Move.'};
+const SCE={
+ relay:'You must subscribe additional relays. The free tier covers four.',
+ stim:'Stimpacks.',
+ pack:'That was the pack.',
+ sats:'Need more sats.',
+ vapour:'Not enough vapour.',
+ hello:'En tariff.',
+ helloBtc:'En tariff, executor.',
+ spread:'En tariff, and mind the spread.',
+ wait:'Wait',
+ leave:'Leave',
+ who:'A man in a coat',
+ seen:'The stipend has seen you.',
+ early:'You are early, which is a kind of fast.',
+ say:'Say it',
+ hint:'A line for the machine',
+ stipend:'show me the stipend',
+ note:'operation crawl',
+ short:'Not enough sats'};
+
 // three tiers per slot: ilvl 1-6, 7-14, 15+. Weapons carry a damage factor and a speed bonus.
 const BASE={
  weapon:[[{n:'Bent Rebar',d:1,s:0},{n:'Stop Sign',d:1.35,s:-20},{n:'Box Cutter',d:.75,s:25}],[{n:'Signal Baton',d:1,s:0},{n:'Girder Maul',d:1.35,s:-20},{n:'Mono Blade',d:.75,s:25}],[{n:'Arc Sceptre',d:1,s:0},{n:'Wrecking Hammer',d:1.35,s:-20},{n:'Phase Razor',d:.75,s:25}],[{n:'Null Sceptre',d:1,s:0},{n:'Titan Maul',d:1.35,s:-20},{n:'Void Razor',d:.75,s:25}]],

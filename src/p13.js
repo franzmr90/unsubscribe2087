@@ -1099,7 +1099,7 @@ function spendSats(n, why) {
   if (!(n > 0) || typeof G === 'undefined' || !G) return false;
   if (satsFree() < n) {
     const reserved = tradeReserved();
-    toast(reserved > 0 && (G.sats | 0) >= n ? 'Those sats are on the table.' : (why || 'Not enough sats'));
+    if(reserved > 0 && (G.sats | 0) >= n)toast('Those sats are on the table.');else scBroke(why);
     if (typeof sfx === 'function') sfx('err');
     return false;
   }
