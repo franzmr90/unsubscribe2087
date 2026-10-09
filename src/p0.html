@@ -424,6 +424,17 @@ html[data-ui="touch"] .vendTabs button,html[data-ui="touch"] .vendToggle button,
   .vendBody{flex-direction:column}
   .vendBody[data-side="them"] .youSide,.vendBody[data-side="you"] .vendSide{display:none}
 }
+.stashBody{display:flex;gap:10px;align-items:flex-start}
+.stashPane{flex:1;min-width:0}
+.stashToggle{display:none}
+.stashToggle button{flex:1}
+.stashFoot{margin-top:auto;position:sticky;bottom:0;z-index:2;background:rgba(11,9,16,.96);padding:6px 0}
+html[data-ui="touch"] .stashToggle button,html[data-ui="touch"] .stashFoot button{min-height:44px}
+@media (max-width:720px){
+  .stashToggle{display:flex}
+  .stashBody{flex-direction:column}
+  .stashBody[data-side="box"] [data-spanel="pack"],.stashBody[data-side="pack"] [data-spanel="box"]{display:none}
+}
 
 </style>
 

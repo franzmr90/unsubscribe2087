@@ -425,6 +425,17 @@ html[data-ui="touch"] .vendTabs button,html[data-ui="touch"] .vendToggle button,
   .vendBody{flex-direction:column}
   .vendBody[data-side="them"] .youSide,.vendBody[data-side="you"] .vendSide{display:none}
 }
+.stashBody{display:flex;gap:10px;align-items:flex-start}
+.stashPane{flex:1;min-width:0}
+.stashToggle{display:none}
+.stashToggle button{flex:1}
+.stashFoot{margin-top:auto;position:sticky;bottom:0;z-index:2;background:rgba(11,9,16,.96);padding:6px 0}
+html[data-ui="touch"] .stashToggle button,html[data-ui="touch"] .stashFoot button{min-height:44px}
+@media (max-width:720px){
+  .stashToggle{display:flex}
+  .stashBody{flex-direction:column}
+  .stashBody[data-side="box"] [data-spanel="pack"],.stashBody[data-side="pack"] [data-spanel="box"]{display:none}
+}
 
 </style>
 
@@ -5378,7 +5389,7 @@ function hud(){objHud();if(P&&P.dg)setT('dgn',P.dg.n);
   setT('buffs',bf.join('\n'));const bu=$('buffs');if(bu&&!bu._ws){bu._ws=1;bu.style.whiteSpace='pre'}paintMouseSlots()}
 
 /* ================= sheets ================= */
-let tab='items',sel=null,sheetCtx={},lastBox=null,VEND={kind:'brenda',tab:'weapons',who:'Brenda',side:'both'},BUYBACK=[],vendDragged=false;
+let tab='items',sel=null,sheetCtx={},lastBox=null,VEND={kind:'brenda',tab:'weapons',who:'Brenda',side:'both'},STASHV={side:'box'},BUYBACK=[],vendDragged=false,stashDragged=false;
 const TABS={party:'Party',web:'Web',char:'Hero',items:'Items',skills:'Skills',quests:'Quests',story:'Story',codex:'Codex',opts:'Options',shop:'Trade',gamble:'Boxes',travel:'Travel',load:'Load',merc:'Hire',sats:'Sats',vend:'Trade',bounty:'Bounties',stash:'Lockbox',shift:'Shape shift'};
 const satPrice=o=>Math.ceil(o.price*(cause()?.75:1)*(repRank('btc')>=1?.9:1)*((G.lean||0)<-50?1.15:1));
 const satRate=()=>mktMid();
@@ -5909,6 +5920,7 @@ function beltRowHTML(){const belt=G.eq&&G.eq.belt,bud=beltBudget(belt),used=char
   return `<h3>${esc(nm)} · ${used}/${bud.slots} charms · ${G.stims||0}/${bud.stims} stims</h3><div class="beltRow${G.charmShake?' shake':''}">${cells}</div><p class="beltNote">${uiSay('Click a charm in the pack, then an empty belt slot. Double-click puts it on. On a desk you can drag it.','Tap a charm in the pack, then an empty belt slot. Double-tap puts it on.')} Off the belt a charm does nothing, and charms do not stack.</p>${G.charmWhy?`<p class="beltNote">${esc(G.charmWhy)}</p>`:''}`}
 function gridPack(list,cols,rows,key){list=list||[];const placed=gridPlace(list,cols,rows),occ=Array(cols*rows).fill(0);let h='';const ds=(key==='bag'||key==='vbag')?list.map(it=>it?itemDelta(it):null):null;
   const draw=(it,i,x,y,w,ht)=>{const style=`style="grid-column:${x+1} / span ${w};grid-row:${y+1} / span ${ht}"`;let attr=style;if(key==='bag')attr=`data-bag="${i}" ${style}`;else if(key==='st')attr=`data-st="${i}" ${style}`;else if(key==='sb')attr=`data-sb="${i}" ${style}`;else if(key==='vbag')attr=`data-vbag="${i}" ${style}`;
+    if((key==='st'||key==='sb')&&!uiTouch())attr+=' draggable="true"';
     h+=cell(it,attr,sel&&((key==='bag'&&sel.bag===i)||(key==='st'&&sel.st===i)||(key==='sb'&&sel.sb===i)||(key==='vbag'&&sel.vbag===i)),null,ds?ds[i]:undefined)};
   if(placed){for(const p of placed){for(let dy=0;dy<p.h;dy++)for(let dx=0;dx<p.w;dx++)occ[(p.y+dy)*cols+p.x+dx]=1;draw(p.it,p.i,p.x,p.y,p.w,p.h)}}
   else{let n=0;for(let i=0;i<list.length&&n<cols*rows;i++){const it=list[i];if(!it)continue;occ[n]=1;draw(it,i,n%cols,(n/cols)|0,1,1);n++}}
@@ -6072,7 +6084,7 @@ function vendFootLift(){
   const pop=$('pop');if(!pop)return;
   pop.classList.remove('aboveFoot');pop.style.removeProperty('--vend-foot');
   if(pop.hidden)return;
-  const feet=[...document.querySelectorAll('#sheet .vendFoot')];
+  const feet=[...document.querySelectorAll('#sheet .vendFoot,#sheet .stashFoot')];
   if(!feet.length)return;
   const vh=window.innerHeight||0;let top=vh;
   for(const f of feet){const r=f.getBoundingClientRect();if(r.height<8||r.bottom<=0||r.top>=vh)continue;if(r.top<top)top=r.top}
@@ -6311,10 +6323,10 @@ function drawSheet(){
   if(tab==='vend'){const v=vendHTML();h+=v.h;if(v.pop)pop=v.pop}  if(tab==='bounty'){const rows=bounties(),bump=repRank('anon')>=1?1.25:1;h+=`<h2>Bounty board</h2><p>Posted by anons, paid on proof. ${rows.length} contract${rows.length===1?'':'s'} at a time; a new one is pinned up when you claim one. You hold <strong style="color:#f7931a">${G.sats} sats</strong>.</p><div class="list">`;
     rows.forEach((b,i)=>{const dn=b.c>=b.n,sats=Math.ceil(b.sats*bump),pay=Math.floor(b.cr*bump*G.cpi);h+=`<button class="li${dn?' on':''}" data-claim="${i}" ${dn?'':'disabled'}><div><b>${b.n} × ${ET[b.k].n}</b><span>${ZONES[b.zi].n} · ${b.c}/${b.n}${dn?' · tap to claim':''}</span></div><span class="pr" style="color:#f7931a">${sats} sats<br>${fmt(pay)}</span></button>`});h+=`</div>`}
   if(tab==='stash'){const real=Math.floor(ACC.cr*G.cpi);h+=`<h2>Your lockbox</h2><p>One lockbox for every wanderer you play. Leave gear, credits or sats here and any of your heroes can take them out, in any slot.</p>
+    ${stashGearHTML()}<p style="font-size:13px">${uiSay('Click an item to move it across. Shift-click, or hover, to compare it with what you wear. Drag it onto the other side.','Tap Pack or Lockbox. Tap an item, then Move, to send it across.')} Wearing it still needs the level printed on it.</p>
     <h3>Sats · ${ACC.sats} in the box · ${G.sats} on you</h3><div class="row"><button class="ghost" data-acc="si10" ${satsFree()<10?'disabled':''}>Deposit 10</button><button class="ghost" data-acc="siall" ${satsFree()<1?'disabled':''}>Deposit all</button><button class="ghost" data-acc="so10" ${ACC.sats<10?'disabled':''}>Take 10</button><button class="ghost" data-acc="soall" ${ACC.sats<1?'disabled':''}>Take all</button></div>
     <h3>Credits · ${fmt(real)} in the box · ${fmt(G.credits)} on you</h3><div class="row"><button class="ghost" data-acc="cihalf" ${G.credits<1?'disabled':''}>Deposit half</button><button class="ghost" data-acc="ciall" ${G.credits<1?'disabled':''}>Deposit all</button><button class="ghost" data-acc="coall" ${real<1?'disabled':''}>Take all</button></div>
-    <p style="font-size:13px">Sats are kept exactly as you leave them. Credits are held by what they could buy on the day, less Unity’s 10% custody fee, so a fortune from a late act is not a fortune to a hero just starting out.</p>
-    <h3>Gear ${gridCells(ACC.stash)}/36</h3><div class="grid">${gridPack(ACC.stash,6,6,'st')}</div><h3>Pack ${gridCells(G.bag)}/24</h3><div class="grid">${gridPack(G.bag,6,4,'sb')}</div><p style="font-size:13px">${uiSay('Click an item to move it across. Shift-click, or hover, to compare it with what you wear.','Tap an item to compare it with what you wear. Move sends it across.')} Wearing it still needs the level printed on it.</p>`}
+    <p style="font-size:13px">Sats are kept exactly as you leave them. Credits are held by what they could buy on the day, less Unity’s 10% custody fee, so a fortune from a late act is not a fortune to a hero just starting out.</p>${stashMoveHTML()}`}
   if(tab==='shift'){h+=`<h2>Hack the simulation</h2><p>The rig can convince the world you were always someone else. Your level, gear and quests stay. Every skill and attribute point you spent comes back, two for each rank from 6 to 10, to be spent again: by you, or by the rig following a build you choose. It costs <strong style="color:#f7931a">${SHIFT_COST} sats</strong>; you hold ${G.sats}.</p><div class="list">`;
     for(const k in CLS){const c=CLS[k],cur=k===G.cls;h+=`<div class="li${cur?' on':''}"><div><b>${c.n}${cur?' · you now':''}</b><span>${c.tag}</span><div class="row" style="margin-top:8px"><button class="ghost" data-shiftp="${k}" ${G.sats<SHIFT_COST?'disabled':''}>Choose a build</button><button class="ghost" data-shift="${k}|0" ${G.sats<SHIFT_COST?'disabled':''}>I will assign</button></div></div></div>`}
     if(sel&&sel.shp){const k=sel.shp,sk=CLS[k].sk;pop=`<div class="card" style="text-align:left"><div class="nm q4">${CLS[k].n} builds</div><div class="ln off">Each is a full plan: skills that feed each other, the three on your buttons, passives, a doctrine and attributes. Pick one and the rig spends your points to fit. ${SHIFT_COST} sats.</div><div class="list">${BUILDS[k].map(b=>`<button class="li" data-shift="${k}|${b.k}"><div><b>${b.n}</b><span>${b.p}</span><span style="color:var(--gold)">${b.sl.map(i=>sk[i].n).join(' · ')}</span><span>Doctrine: ${DOCS[k].find(d=>d[0]===b.doc)[1]} · leans on ${['Might','Reflex','Vitality','Bandwidth'][b.at.indexOf(Math.max(...b.at))]}</span></div></button>`).join('')}<button class="li" data-shift="${k}|?"><div><b>Surprise me</b><span>One of the three, chosen for you.</span></div></button></div><div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`}
@@ -6401,9 +6413,21 @@ function longPress(i){const it=G.bag[i];if(!it)return;lpFired=true;clearTimeout(
 $('sheetIn').addEventListener('pointerdown',e=>{const c=e.target.closest('[data-bag]');lpFired=false;clearTimeout(lpT);if(!c||c.disabled)return;const i=+c.dataset.bag;lpXY=[e.clientX,e.clientY];lpT=setTimeout(()=>longPress(i),480)});
 $('sheetIn').addEventListener('pointermove',e=>{if(lpXY&&Math.hypot(e.clientX-lpXY[0],e.clientY-lpXY[1])>10)clearTimeout(lpT)});
 for(const n of['pointerup','pointercancel','pointerleave'])$('sheetIn').addEventListener(n,()=>clearTimeout(lpT));
-$('sheetIn').addEventListener('dragstart',e=>{if(e.target.closest&&e.target.closest('[data-vbag]')){e.preventDefault();return}const c=e.target.closest&&e.target.closest('[data-bag]');if(!c||!e.dataTransfer)return;const it=G.bag[+c.dataset.bag];if(!it||!it.charm){e.preventDefault();return}e.dataTransfer.setData('text/plain',String(+c.dataset.bag));e.dataTransfer.effectAllowed='move'});
-$('sheetIn').addEventListener('dragover',e=>{if(e.target.closest&&e.target.closest('[data-csocket]')){e.preventDefault();if(e.dataTransfer)e.dataTransfer.dropEffect='move'}});
-$('sheetIn').addEventListener('drop',e=>{const slot=e.target.closest&&e.target.closest('[data-csocket]');if(!slot)return;e.preventDefault();const i=+(e.dataTransfer&&e.dataTransfer.getData('text/plain'));if(!(i>=0)||!G.bag[i])return;if(charmSocket(i)){toast('On the belt');sel=null}drawSheet()});
+function stashView(){return (window.innerWidth||800)<=720?(STASHV.side==='pack'?'pack':'box'):'both'}
+function stashToPack(i){const it=ACC&&ACC.stash&&ACC.stash[i];if(!it)return false;if(!bagCan(it)){toast('Your pack is full');return false}ACC.stash.splice(i,1);G.bag.push(it);sel=null;sfx('equip');accSave();save(true);return true}
+function packToStash(i){const it=G.bag&&G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.test){toast('Test gear does not go in the lockbox');return false}if(!gridCan(ACC.stash,it,6,6)){toast('The lockbox is full');return false}G.bag.splice(i,1);it.junk=false;ACC.stash.push(it);sel=null;sfx('equip');accSave();save(true);return true}
+function stashGearHTML(){
+  const side=stashView();
+  return `<div class="row stashToggle"><button type="button" class="${side!=='pack'?'big':'ghost'}" data-sside="box">Lockbox</button><button type="button" class="${side==='pack'?'big':'ghost'}" data-sside="pack">Pack</button></div><div class="stashBody" data-side="${side}"><div class="stashPane" data-spanel="box"><h3>Gear ${gridCells(ACC.stash)}/36</h3><div class="grid" id="stashGrid">${gridPack(ACC.stash,6,6,'st')}</div></div><div class="stashPane" data-spanel="pack"><h3>Pack ${gridCells(G.bag)}/24</h3><div class="grid" id="stashPack">${gridPack(G.bag,6,4,'sb')}</div></div></div>`;
+}
+function stashMoveHTML(){
+  const mv=sel&&sel.sb!=null?'Move to lockbox':sel&&sel.st!=null?'Move to pack':'Move across';
+  const on=sel&&(sel.st!=null||sel.sb!=null);
+  return `<div class="row stashFoot"><button type="button" class="big" data-smove="1" ${on?'':'disabled'}>${mv}</button></div>`;
+}
+$('sheetIn').addEventListener('dragstart',e=>{if(e.target.closest&&e.target.closest('[data-vbag]')){e.preventDefault();return}const box=e.target.closest&&e.target.closest('[data-st],[data-sb]');if(box&&e.dataTransfer&&!uiTouch()){const kind=box.dataset.st!==undefined?'st':'sb';const i=kind==='st'?+box.dataset.st:+box.dataset.sb;e.dataTransfer.setData('text/plain','box:'+kind+':'+i);e.dataTransfer.effectAllowed='move';return}const c=e.target.closest&&e.target.closest('[data-bag]');if(!c||!e.dataTransfer)return;const it=G.bag[+c.dataset.bag];if(!it||!it.charm){e.preventDefault();return}e.dataTransfer.setData('text/plain',String(+c.dataset.bag));e.dataTransfer.effectAllowed='move'});
+$('sheetIn').addEventListener('dragover',e=>{if(e.target.closest&&(e.target.closest('[data-csocket]')||e.target.closest('.stashPane'))){e.preventDefault();if(e.dataTransfer)e.dataTransfer.dropEffect='move'}});
+$('sheetIn').addEventListener('drop',e=>{const raw=e.dataTransfer&&e.dataTransfer.getData('text/plain')||'';if(raw.indexOf('box:')===0){const pane=e.target.closest&&e.target.closest('.stashPane');if(!pane)return;e.preventDefault();const p=raw.split(':'),kind=p[1],i=+p[2],onto=pane.dataset.spanel;stashDragged=true;if(kind==='sb'&&onto==='box')packToStash(i);else if(kind==='st'&&onto==='pack')stashToPack(i);if(mode==='sheet')drawSheet();return}const slot=e.target.closest&&e.target.closest('[data-csocket]');if(!slot)return;e.preventDefault();const i=+(e.dataTransfer&&e.dataTransfer.getData('text/plain'));if(!(i>=0)||!G.bag[i])return;if(charmSocket(i)){toast('On the belt');sel=null}drawSheet()});
 const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.target.closest('button,[data-track],[data-web],[data-webadd]');if(!b||b.disabled)return;const d=b.dataset;sfx('ui');
   if(d.try){if(!devOn())return;tryGear(d.try);toast('Test gear. It will not be saved.');drawSheet();return}
   if(d.isk!==undefined){sel={isk:+d.isk};drawSheet();return}
@@ -6443,10 +6467,12 @@ const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.ta
   if(d.mbest){const n=mercBest();toast(n?G.merc.name+' takes '+n+' piece'+(n>1?'s':''):'Nothing spare is better for them. Pieces that would improve you are left alone.');sfx(n?'equip':'ui')}
   if(d.claim!==undefined){const b=G.bounties[+d.claim];if(b&&b.c>=b.n){const m=repRank('anon')>=1?1.25:1;b.sats=Math.ceil(b.sats*m);b.cr*=m;addRep('anon',6);if(repRank('anon')>=3){const w=pick(WK);gotWord(w);toast('A note is pinned to the payment: '+w)}G.sats+=b.sats;/* The board and the paid line print whole credits, so the purse gains that floor. */const pay=Math.floor(b.cr*G.cpi);G.credits+=pay;G.bounties.splice(+d.claim,1);sfx('quest');toast('Paid: '+b.sats+' sats and '+fmt(pay))}}
   if(d.cmpk)CMP_KEY=d.cmpk;
-  if(d.stmv!==undefined){const it=ACC.stash[+d.stmv];if(it){if(!bagCan(it))toast('Your pack is full');else{ACC.stash.splice(+d.stmv,1);G.bag.push(it);sel=null;sfx('equip');accSave();save(true)}}}
-  if(d.sbmv!==undefined){const it=G.bag[+d.sbmv];if(it){if(typeof tradeLocked==='function'&&tradeLocked(it))return;if(it.test)toast('Test gear does not go in the lockbox');else if(!gridCan(ACC.stash,it,6,6))toast('The lockbox is full');else{G.bag.splice(+d.sbmv,1);it.junk=false;ACC.stash.push(it);sel=null;sfx('equip');accSave();save(true)}}}
-  if(d.st!==undefined){const it=ACC.stash[+d.st];if(it){if(ev.shiftKey||uiTouch())sel={st:+d.st};else if(!bagCan(it))toast('Your pack is full');else{ACC.stash.splice(+d.st,1);G.bag.push(it);sfx('equip');accSave();save(true)}}}
-  if(d.sb!==undefined){const it=G.bag[+d.sb];if(it){if(ev.shiftKey||uiTouch())sel={sb:+d.sb};else if(typeof tradeLocked==='function'&&tradeLocked(it))return;else if(it.test)toast('Test gear does not go in the lockbox');else if(!gridCan(ACC.stash,it,6,6))toast('The lockbox is full');else{G.bag.splice(+d.sb,1);it.junk=false;ACC.stash.push(it);sfx('equip');accSave();save(true)}}}
+  if(d.sside){STASHV.side=d.sside==='pack'?'pack':'box'}
+  if(d.smove!==undefined){if(sel&&sel.st!=null)stashToPack(+sel.st);else if(sel&&sel.sb!=null)packToStash(+sel.sb)}
+  if(d.stmv!==undefined)stashToPack(+d.stmv);
+  if(d.sbmv!==undefined)packToStash(+d.sbmv);
+  if(d.st!==undefined){if(stashDragged){stashDragged=false;return}const it=ACC.stash[+d.st];if(it){if(ev.shiftKey||uiTouch())sel={st:+d.st};else stashToPack(+d.st)}}
+  if(d.sb!==undefined){if(stashDragged){stashDragged=false;return}const it=G.bag[+d.sb];if(it){if(ev.shiftKey||uiTouch())sel={sb:+d.sb};else packToStash(+d.sb)}}
   if(d.acc){const k=d.acc;if(k[0]==='s'){if(k==='si10'||k==='siall'){const n=k==='si10'?10:satsFree();if(n>0&&spendSats(n))ACC.sats+=n}else{const n=k==='so10'?Math.min(10,ACC.sats|0):(ACC.sats|0);if(n>0){G.sats=(G.sats|0)+n;ACC.sats-=n}}}else if(k==='coall'){/* The box line prints whole credits, so take-all pays that floor. */const pay=Math.floor(ACC.cr*G.cpi);G.credits+=pay;ACC.cr=0}else{/* Half and all move whole credits. The fee is still a tenth of that. */const a=k==='cihalf'?Math.floor(G.credits/2):Math.floor(G.credits);if(a>0){G.credits-=a;ACC.cr+=a/G.cpi*.9}}sfx('coin');accSave();save(true)}
   if(d.bull){closeSheet();bullStart();return}
   if(d.shiftp){sel={shp:d.shiftp};drawSheet();return}
