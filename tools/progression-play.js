@@ -35,7 +35,7 @@ async function pumpUI(page, n) {
   const clicked = [];
   for (let i = 0; i < (n || 36); i++) {
     const st = await page.evaluate(() => {
-      const mode = __g.mode();
+      const mode = __g.mode;
       if (mode === 'intro') { __g.ltEnd(); return { k: 'intro' }; }
       const scene = document.getElementById('scene');
       if (scene && !scene.hidden) {
@@ -84,8 +84,8 @@ async function pumpUI(page, n) {
 
 async function say(page, id, want) {
   await page.evaluate(id => {
-    if (__g.mode() === 'sheet') __g.closeSheet();
-    if (__g.mode() !== 'play') __g.setMode('play');
+    if (__g.mode === 'sheet') __g.closeSheet();
+    if (__g.mode !== 'play') __g.setMode('play');
     __g.talkTo(id);
   }, id);
   if (want) {
@@ -106,6 +106,15 @@ async function say(page, id, want) {
   return pumpUI(page, 28);
 }
 
+async function clearDlg(page) {
+  for (let i = 0; i < 8; i++) {
+    const mode = await page.evaluate(() => __g.mode);
+    if (mode !== 'dlg' && mode !== 'scene' && mode !== 'intro') return mode;
+    await pumpUI(page, 10);
+  }
+  return page.evaluate(() => __g.mode);
+}
+
 async function shot(page, name) {
   const file = path.join(SHOT, name + '.png');
   await page.evaluate(() => { try { __g.render(); __g.hud(); } catch (e) {} });
@@ -123,6 +132,7 @@ async function install(page, cls, seed) {
         return ((t ^ t >>> 14) >>> 0) / 4294967296;
       };
     }
+    window.requestAnimationFrame = function () { return 0; };
     Math.random = mulberry32(seed >>> 0);
     __g.OPT.noWalk = 1;
     __g.OPT.auto = false;
@@ -227,10 +237,24 @@ async function install(page, cls, seed) {
       if (prog.dodgeT <= 0) { prog.dodgeT = 1.4; __g.dodge(); }
     }
     function toward(x, y) {
-      prog.moveT -= 1 / 20;
-      if (prog.moveT > 0) return;
-      prog.moveT = 0.45;
-      __g.mouseClick('left', x, y, { hover: null });
+      if (prog.moveT > 0) { prog.moveT -= 1 / 20; return; }
+      const P = __g.P;
+      const L = Math.hypot(x - P.x, y - P.y);
+      if (L < 0.85) return;
+      prog.moveT = 0.5;
+      const path = __g.pathFind(x, y);
+      if (path && path.length) {
+        const hop = path[Math.min(10, path.length - 1)];
+        __g.mouseClick('left', hop.x, hop.y, { hover: null });
+        return;
+      }
+      const ang = Math.atan2(y - P.y, x - P.x);
+      for (let k = 0; k < 10; k++) {
+        const th = ang + (k === 0 ? 0 : (k % 2 ? 1 : -1) * Math.ceil(k / 2) * 0.4);
+        const tx = P.x + Math.cos(th) * 4, ty = P.y + Math.sin(th) * 4;
+        const p = __g.pathFind(tx, ty);
+        if (p && p.length) { __g.mouseClick('left', tx, ty, { hover: null }); return; }
+      }
     }
     function fight(e, allowKite) {
       const P = __g.P, G = __g.G, S = __g.S, d = hypot(e, P);
@@ -358,7 +382,7 @@ async function install(page, cls, seed) {
       prog.pendingShot = null;
       let steps = 0;
       for (let i = 0; i < n; i++) {
-        if (__g.mode() !== 'play') break;
+        if (__g.mode !== 'play') break;
         const G = __g.G, W = __g.W, P = __g.P;
         if (!W || !P) break;
         const dt = 1 / 20;
@@ -374,6 +398,17 @@ async function install(page, cls, seed) {
         if (!W.z.town) prog.townDone = false;
         spendPoints();
         prog.dodgeT -= dt;
+        if (W.z.pre) {
+          const g = __g.goalPt();
+          if (g && hypot(g, P) < 1.35) {
+            const n = W.npcs.find(npc => hypot(npc, g) < 1.2);
+            if (n) __g.talkTo(n.id);
+            break;
+          }
+          if (g) toward(g.x, g.y);
+          __g.update(dt); steps++;
+          continue;
+        }
         if (W.z.town && !prog.order) break;
         if (prog.order === 'farm') {
           const foe = nearest(7.5);
@@ -384,17 +419,6 @@ async function install(page, cls, seed) {
           continue;
         }
         const foeClose = nearest(prog.order === 'next' ? 4.2 : 6.8);
-        if (W.z.pre) {
-          const g = __g.goalPt();
-          if (g && hypot(g, P) < 1.35) {
-            const n = W.npcs.find(n => hypot(n, g) < 1.2);
-            if (n) __g.talkTo(n.id);
-            break;
-          }
-          if (g) toward(g.x, g.y);
-          __g.update(dt); steps++;
-          continue;
-        }
         if (prog.order === 'exit' || prog.order === 'back') {
           if (foeClose && foeClose.d < 2.2) fight(foeClose.e, true);
           else if (prog.order === 'back') {
@@ -408,14 +432,17 @@ async function install(page, cls, seed) {
           continue;
         }
         if (prog.order === 'next') {
-          if (foeClose) fight(foeClose.e, true);
-          else if (!useNear(p => p.kind === 'next', 'portal')) {
-            const p = W.portals.find(p => p.kind === 'next');
-            if (p) toward(p.x, p.y);
-            else { prog.order = null; }
-          }
+          const p = W.portals.find(p => p.kind === 'next');
+          const block = nearest(1.7);
+          const hp = G.hp / __g.S.maxHp;
+          if (hp < prof.stim && G.stims > 0) __g.stim();
+          if (block && hp > 0.28) fight(block.e, true);
+          else if (p && hypot(p, P) < 1.4) __g.usePortal(p);
+          else if (p) {
+            if (block && hp <= 0.28) retreat(block.e);
+            toward(p.x, p.y);
+          } else prog.order = null;
           __g.update(dt); steps++;
-          noteStuck(dt);
           continue;
         }
         watchBoss();
@@ -447,26 +474,37 @@ async function install(page, cls, seed) {
           } else if (foeClose && foeClose.d < 4.5) fight(foeClose.e, true);
           else useNear(p => p.kind === 'next', 'portal') || toward((W.portals.find(p => p.kind === 'next') || P).x, (W.portals.find(p => p.kind === 'next') || P).y);
         }
-        if (__g.mode() !== 'play') break;
+        if (__g.mode !== 'play') break;
         __g.update(dt); steps++;
         if (prog.attempt) {
           const e = bossEnt();
           if (!e) endAttempt(true, null);
         }
-        if (__g.mode() === 'dying' && prog.attempt) endAttempt(false, bossEnt());
-        if (noteStuck(dt) && !W.z.boss && prog.order == null && prog.stuckNote !== W.zi) {
+        if (__g.mode === 'dying' && prog.attempt) endAttempt(false, bossEnt());
+        if (!W.z.town && !W.z.pre) {
+          if (prog.zoneZi !== W.zi) { prog.zoneZi = W.zi; prog.zoneT0 = G.time; prog.zoneNoted = false; }
+          if (!prog.zoneNoted && prog.zoneT0 != null && G.time - prog.zoneT0 > 420 && !prog.attempt && !nearest(4.2)) {
+            prog.zoneNoted = true;
+            prog.log.notes.push('left ' + W.z.n + ' after 7 minutes without a boss pull');
+            __g.openPortal();
+            const p = W.portals.find(p => p.kind === 'home');
+            if (p) __g.usePortal(p);
+          }
+        }
+        if (noteStuck(dt) && prog.stuckNote !== W.zi) {
           prog.stuckNote = W.zi;
           prog.log.notes.push('stuck in ' + W.z.n + ' at ' + P.x.toFixed(1) + ',' + P.y.toFixed(1));
-          if (!nearest(4.2)) { __g.openPortal(); const p = W.portals.find(p => p.kind === 'home'); if (p) __g.usePortal(p); }
-          prog.stuckT = 0;
+          toward(P.x + 5, P.y - 4);
+          prog.moveT = 0;
+          prog.stuckT = 3;
         }
       }
       const G = __g.G, W = __g.W;
       return {
-        mode: __g.mode(), steps, zi: W && W.zi, zone: W && W.z && W.z.n, town: !!(W && W.z && W.z.town),
+        mode: __g.mode, steps, zi: W && W.zi, zone: W && W.z && W.z.n, town: !!(W && W.z && W.z.town),
         lvl: G && G.lvl, hp: G && __g.S ? Math.round(100 * G.hp / __g.S.maxHp) : 0,
         order: prog.order, giveUp: prog.giveUp, reason: prog.giveReason, shot: prog.pendingShot,
-        q: G && G.q && G.q.q5, deaths: G && G.deaths, time: G && +G.time.toFixed(1),
+        q: G && G.q && G.q.q5, deaths: G && G.deaths, kills: G && G.kills, time: G && +G.time.toFixed(1),
         wantFarm: prog.wantFarm, won: G && (G.q.q25 || 0) === 3
       };
     };
@@ -542,8 +580,8 @@ async function install(page, cls, seed) {
 
 async function transit(page, zi) {
   const r = await page.evaluate(zi => {
-    if (__g.mode() === 'sheet') __g.closeSheet();
-    if (__g.mode() !== 'play') __g.setMode('play');
+    if (__g.mode === 'sheet') __g.closeSheet();
+    if (__g.mode !== 'play') __g.setMode('play');
     const towns = { 0: 1, 17: 2, 18: 3, 21: 4, 27: 5 };
     let act = towns[zi] || __g.actOf(zi) || 1;
     __g.openSheet('travel', { only: ['travel'], gFresh: 1 });
@@ -568,8 +606,10 @@ async function townEconomy(page) {
       shop: window.__prog.shopSnap(), bag: window.__prog.bagSnap()
     };
     window.__prog._eco0 = { c: snap.credits, s: snap.sats, st: snap.stims, merc: snap.merc };
-    window.__prog.log.vendors.push({ when: 'stock', lvl: snap.shop.lvl, zi: snap.shop.zi, credits: snap.shop.credits, sats: snap.shop.sats });
-    window.__prog.log.bag.push(snap.bag);
+    const v = window.__prog.log.vendors;
+    const last = v[v.length - 1];
+    if (!last || last.lvl !== snap.shop.lvl || (v.length < 12)) v.push({ when: 'stock', lvl: snap.shop.lvl, zi: snap.shop.zi, credits: snap.shop.credits, sats: snap.shop.sats });
+    if (window.__prog.log.bag.length < 24) window.__prog.log.bag.push(snap.bag);
     return snap;
   });
   if (before.unid && before.marrow) await say(page, 'marrow');
@@ -579,85 +619,100 @@ async function townEconomy(page) {
       await page.evaluate(() => { const b = document.querySelector('[data-buy="id"]'); if (b && !b.disabled) b.click(); });
     }
   }
+  await say(page, 'brenda', '^Trade$');
   await page.evaluate(() => {
-    if (__g.mode() === 'dlg') return;
-    if (__g.mode() !== 'play' && __g.mode() !== 'sheet') __g.setMode('play');
-    if (__g.mode() === 'play') __g.talkTo('brenda');
-  });
-  await say(page, 'brenda', '^Trade$').catch(() => {});
-  await page.evaluate(() => {
+    const note = s => window.__prog.log.notes.push(s);
     const click = sel => { const b = document.querySelector(sel); if (b && !b.disabled) { b.click(); return true; } return false; };
-    if (__g.mode() !== 'sheet') {
-      if (__g.mode() !== 'play') return;
+    if (__g.mode !== 'sheet') {
+      if (__g.mode !== 'play') { note('brenda sheet stayed ' + __g.mode); return; }
       __g.openSheet('items', { only: ['items', 'shop'] });
     }
+    click('[data-tab="items"]');
     click('[data-best="1"]');
     click('[data-bestok="1"]');
     __g.drawSheet();
     click('[data-markjunk="1"]');
     __g.drawSheet();
-    click('[data-sellq="9"]');
+    if (click('[data-sellq="9"]')) window.__prog.log.spend.junkSales = (window.__prog.log.spend.junkSales || 0) + 1;
     __g.drawSheet();
-    let guard = 0;
-    while (guard++ < 8 && __g.G.stims < Math.min(6, __g.S.cap) && __g.G.credits > 80) {
-      const b = document.querySelector('[data-buy="stim"]');
-      if (!b || b.disabled) break;
-      b.click();
+    click('[data-tab="shop"]');
+    if (!__g.G.marrow && click('[data-buy="id"]')) window.__prog.log.spend.idBuys = (window.__prog.log.spend.idBuys || 0) + 1;
+    let guard = 0, bought = 0;
+    while (guard++ < 8 && __g.G.stims < Math.min(8, __g.S.cap)) {
+      if (!click('[data-buy="stim"]')) break;
+      bought++;
       __g.drawSheet();
     }
+    window.__prog.log.spend.stimClicks = (window.__prog.log.spend.stimClicks || 0) + bought;
     const shop = __g.shop || [];
-    let best = -1, bd = 0.08;
-    shop.forEach((it, i) => {
-      const d = __g.itemDelta(it);
-      if (d > bd) { bd = d; best = i; }
-    });
-    if (best >= 0) {
-      const btn = document.querySelector('[data-shop="' + best + '"]');
-      if (btn) btn.click();
+    let best = -1, bd = 0.05;
+    shop.forEach((it, i) => { const d = __g.itemDelta(it); if (d > bd) { bd = d; best = i; } });
+    if (best >= 0 && click('[data-shop="' + best + '"]')) {
       __g.drawSheet();
-      const buy = document.querySelector('[data-buy="item"]');
-      if (buy && !buy.disabled) buy.click();
+      if (click('[data-buy="item"]')) window.__prog.log.spend.creditBuys = (window.__prog.log.spend.creditBuys || 0) + 1;
     }
+    click('[data-tab="items"]');
     click('[data-mbest="1"]');
     __g.closeSheet();
   });
-  await page.evaluate(() => { if (__g.mode() === 'sheet') __g.closeSheet(); if (__g.mode() !== 'play') __g.setMode('play'); });
+  await page.evaluate(() => { if (__g.mode === 'sheet') __g.closeSheet(); if (__g.mode !== 'play') __g.setMode('play'); });
+  await clearDlg(page);
   await say(page, 'nonce', 'Trade for sats');
+  await clearDlg(page);
   await page.evaluate(() => {
-    if (__g.mode() !== 'sheet') return { bought: null };
-    let bought = null;
-    const list = (__g.satShop || []).map((o, i) => ({ i, d: __g.itemDelta(o.it), price: o.price, name: o.it.name }));
-    list.sort((a, b) => b.d - a.d);
-    const pick = list.find(o => o.d > 0.03 && __g.G.sats >= o.price + 4);
-    if (pick) {
-      const b = document.querySelector('[data-sat="' + pick.i + '"]');
-      if (b) b.click();
+    const click = sel => { const b = document.querySelector(sel); if (b && !b.disabled) { b.click(); return true; } return false; };
+    if (__g.mode !== 'sheet') {
+      if (__g.mode === 'play') __g.openSheet('items', { only: ['items', 'sats'] });
+    }
+    if (__g.mode !== 'sheet') {
+      const n = window.__prog.log.notes;
+      if (n.filter(x => String(x).indexOf('sat shop stayed') === 0).length < 3) n.push('sat shop stayed ' + __g.mode);
+      return;
+    }
+    click('[data-tab="sats"]');
+    const list = (__g.satShop || []).map((o, i) => ({ i, d: __g.itemDelta(o.it), price: o.price }));
+    list.sort((a, b) => (b.d || 0) - (a.d || 0));
+    const pick = list.find(o => o.d > 0.03 && __g.G.sats >= o.price + 2);
+    if (pick && click('[data-sat="' + pick.i + '"]')) {
       __g.drawSheet();
-      const buy = document.querySelector('[data-satbuy="1"]');
-      if (buy && !buy.disabled) { buy.click(); bought = pick; }
+      if (click('[data-satbuy="1"]')) window.__prog.log.spend.satBuys = (window.__prog.log.spend.satBuys || 0) + 1;
     }
     __g.closeSheet();
-    return bought;
   });
-  await page.evaluate(() => { if (__g.mode() !== 'play') __g.setMode('play'); __g.talkTo('kestrel'); });
+  await page.evaluate(() => { if (__g.mode === 'sheet') __g.closeSheet(); if (__g.mode !== 'play') __g.setMode('play'); });
+  await clearDlg(page);
   await say(page, 'kestrel', 'Hire a companion|Revive|Change your hire');
+  await clearDlg(page);
   await page.evaluate(() => {
-    if (__g.mode() !== 'sheet') return;
-    const revive = document.querySelector('[data-revive="1"]');
-    if (revive && !revive.disabled) revive.click();
+    const click = sel => { const b = document.querySelector(sel); if (b && !b.disabled) { b.click(); return true; } return false; };
+    if (__g.mode !== 'sheet') {
+      if (__g.mode === 'play') __g.openSheet('merc', { only: ['merc'] });
+    }
+    if (__g.mode !== 'sheet') {
+      const n = window.__prog.log.notes;
+      if (n.filter(x => String(x).indexOf('merc sheet stayed') === 0).length < 3) n.push('merc sheet stayed ' + __g.mode);
+      return;
+    }
     const hire = document.querySelector('[data-hire="guard"]');
-    if (hire && !hire.disabled) hire.click();
-    const train = document.querySelector('[data-mab="g"]');
-    if (train && !train.disabled) train.click();
-    __g.drawSheet();
+    if (hire && hire.disabled && !__g.G.merc) {
+      const n = window.__prog.log.notes;
+      if (n.filter(x => String(x).indexOf('hire refused') === 0).length < 4) {
+        n.push('hire refused credits ' + Math.round(__g.G.credits) + ' cpi ' + (+__g.G.cpi).toFixed(3) + ' lvl ' + __g.G.lvl + ' ' + hire.innerText.replace(/\s+/g, ' ').slice(0, 90));
+      }
+    }
+    if (click('[data-revive="1"]')) window.__prog.log.spend.revives = (window.__prog.log.spend.revives || 0) + 1;
+    if (click('[data-hire="guard"]')) window.__prog.log.spend.hires = (window.__prog.log.spend.hires || 0) + 1;
+    click('[data-mab="g"]');
     __g.closeSheet();
   });
   await page.evaluate(() => {
     const a = window.__prog._eco0 || { c: 0, s: 0, st: 0, merc: null };
     const G = __g.G, sp = window.__prog.log.spend;
     const c = Math.round(G.credits), s = G.sats | 0, st = G.stims | 0;
-    sp.creditsOut += Math.max(0, a.c - c);
-    sp.creditsIn += Math.max(0, c - a.c);
+    if (Number.isFinite(c) && Number.isFinite(a.c) && Math.abs(c) < 1e12 && Math.abs(a.c) < 1e12) {
+      sp.creditsOut += Math.max(0, a.c - c);
+      sp.creditsIn += Math.max(0, c - a.c);
+    }
     sp.satsOut += Math.max(0, a.s - s);
     sp.satsIn += Math.max(0, s - a.s);
     sp.stimsBought += Math.max(0, st - a.st);
@@ -681,7 +736,7 @@ async function runClass(browser, cls, seed, deadline) {
     let idleTown = 0, lastSig = '', spins = 0;
     while (Date.now() < until) {
       spins++;
-      const mode = await page.evaluate(() => __g.mode());
+      const mode = await page.evaluate(() => __g.mode);
       if (mode !== 'play') {
         const ui = await pumpUI(page, 24);
         if (ui.st && ui.st.k === 'no-safe') {
@@ -750,7 +805,7 @@ async function runClass(browser, cls, seed, deadline) {
         continue;
       }
       const st = await page.evaluate(() => window.__prog.step(220));
-      const sig = [st.zi, st.lvl, st.order, st.hp, st.deaths, st.time | 0].join(':');
+      const sig = [st.zi, st.lvl, st.order, st.deaths].join(':');
       if (sig !== lastSig) {
         lastSig = sig;
         console.log(cls, st.zone, 'L' + st.lvl, 'hp' + st.hp, 'd' + st.deaths, 't' + st.time, st.order || '', 'steps', st.steps);
