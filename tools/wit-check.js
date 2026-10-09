@@ -1,10 +1,11 @@
 /* Witness milestone 2. Usage: node tools/wit-check.js
-   Loads dist/unsubscribe.html under setContent. The Record fills only while a
-   machine is on screen and the Witness is not attacking or casting. */
+   Loads dist/unsubscribe.html under setContent. The Record fills while a
+   machine is on screen. A cast stops it. A swing keeps 45% of the standing rate. */
 const {chromium}=require('playwright');const fs=require('fs');const path=require('path');
 const {FORMULAS}=require(path.join(__dirname,'../src/formulas'));
 (async()=>{
-const b=await chromium.launch();
+const CHROME=process.env.PW_CHROMIUM||'';
+const b=await chromium.launch(CHROME?{executablePath:CHROME,args:['--no-sandbox','--disable-dev-shm-usage']}:{});
 const p=await b.newPage({viewport:{width:390,height:844}});
 const errs=[];p.on('pageerror',e=>errs.push('page: '+e.message));
 const root=path.join(__dirname,'..');
@@ -17,9 +18,9 @@ const clear=async(n=18)=>{for(let i=0;i<n;i++){await p.evaluate(()=>{const s=doc
 await p.evaluate(()=>__g.skipDisc());await p.waitForTimeout(200);
 const title=await p.evaluate(()=>{const b=document.querySelector('[data-cls=witness]');if(b)b.scrollIntoView({block:'center'});const c=__g.CLS.witness;return {btn:!!(b&&b.textContent.includes('Witness')),hp:c&&c.hp,hpL:c&&c.hpL,melee:c&&c.melee,mult:c&&c.mult,ivl:c&&c.ivl,spd:c&&c.spd,col:c&&c.col,locked:c&&c.locked,boon:c&&c.boon,aura:(c&&c.sk||[]).some(s=>s.aura),names:(c&&c.sk||[]).map(s=>s.n),act:(c&&c.sk||[]).map(s=>s.a)}})
 if(!title.btn)fail('title button missing');
-/* Life, swing interval, and melee come from the shared formulas. The weapon factor is the class mult, which the balance pass set to 0.8. */
+/* Life, swing interval, and melee come from the shared formulas. The weapon factor is the class mult. */
 const life=FORMULAS.cls.witness;
-if(title.hp!==life.hp||title.hpL!==life.hpL||title.melee!==!!life.melee||title.mult!==.8||title.ivl!==life.ivl||title.spd!==4.2||title.col!=='#8d9aab')fail('stats '+JSON.stringify(title));
+if(title.hp!==life.hp||title.hpL!==life.hpL||title.melee!==!!life.melee||title.mult!==.92||title.ivl!==life.ivl||title.spd!==4.2||title.col!=='#8d9aab')fail('stats '+JSON.stringify(title));
 if(title.locked||title.boon||title.aura)fail('locked, boon, or aura');
 const names=['Look','The Sentence','Margin','Cross-reference','Pull the Thread','Filed','Correction','Redaction','The Footnote','On the Record','Unnamed Source','Colophon','Publish','Named Party','Retraction'];
 if(title.names.join('|')!==names.join('|'))fail('skill names '+title.names.join('|'));
@@ -85,7 +86,7 @@ const fight=await p.evaluate(()=>{
   return out});
 const want={idle:0,spawned:true,look:true,blankHp:true,blankCd:true,blankLog:true,onRec:true,second:true,namedSelf:true,namedShow:true,saved:true,died:true,granted:true,plotIgnored:true,ownSound:false,allySound:true,spentSwing:true,flockSound:true,flockSpent:true,flockOnce:true,tagSpent:true};
 if(!(fight.rose>1))fail('record did not rise '+JSON.stringify(fight));
-if(!(fight.atkDelta<0.05))fail('attack did not stop the rise '+JSON.stringify(fight));
+if(!(fight.atkDelta>0.15&&fight.atkDelta<0.45))fail('a swing should keep a share of the rise '+JSON.stringify(fight));
 if(!(fight.castDelta<0.05))fail('cast did not stop the rise '+JSON.stringify(fight));
 for(const k in want)if(fight[k]!==want[k])fail(k+' got '+JSON.stringify(fight[k])+' want '+JSON.stringify(want[k]));
 await p.evaluate(()=>{const s=document.getElementById('scene');if(s)s.hidden=true;const d=document.getElementById('dlg');if(d)d.hidden=true;__g.G.god=true;__g.G.page=72;__g.W.ents.splice(0);__g.setMode('play');__g.render()});

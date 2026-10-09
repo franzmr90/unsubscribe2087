@@ -233,19 +233,14 @@ async function install(page, cls, seed) {
       };
       if (prof.heal != null && G.hp < __g.S.maxHp * prof.healAt) cast(prof.heal);
       const slots = (G.slots || []).filter(i => i >= 0 && G.sk[i]);
-      if (G.cls === 'witness' && d <= prof.reach + e.r + 1.5) {
+      if (G.cls === 'witness') {
         const tes = e.tes || 0, rec = G.page || 0;
-        if (tes < 3 && G.sk[0]) cast(0);
-        if (tes < 2 && rec < 30) {
-          prog.watchT = (prog.watchT || 0) + 1 / 20;
-          if (prog.watchT < 0.9) {
-            prog.atkT = 0.3;
-            __g.mouseClick('left', P.x, P.y, { hover: null });
-            return;
-          }
-        } else prog.watchT = 0;
-        if (tes >= 2 && rec >= 12) cast(4);
-        else if (tes >= 1 && G.hp < __g.S.maxHp * 0.62) cast(1);
+        if (d <= 8.2) {
+          if (tes < 3 && G.sk[0]) cast(0);
+          if (tes >= 1 && rec >= 4 && G.sk[4] && d <= 6.5 + (e.r || 0)) cast(4);
+          else if (tes >= 1 && G.sk[1] && G.hp < __g.S.maxHp * 0.7 && d <= 7.2) cast(1);
+        }
+        if (d > prof.reach + (e.r || 0.4) + 0.2) { toward(e.x, e.y); return; }
       } else if (d <= prof.reach + e.r) {
         for (const i of slots) if (i !== prof.heal && cast(i)) break;
       }
@@ -285,8 +280,20 @@ async function install(page, cls, seed) {
         if (p && p.length) { __g.mouseClick('left', tx, ty, { hover: null }); return; }
       }
     }
+    function boomHere() {
+      const P = __g.P, W = __g.W;
+      let best = null, bd = 99;
+      for (const f of (W.fx || [])) {
+        if (f.k !== 'warn' || !f.boom) continue;
+        const d = hypot(f, P);
+        if (d < (f.r || 1) + 0.55 && d < bd) { bd = d; best = f; }
+      }
+      return best;
+    }
     function fight(e, allowKite) {
       const P = __g.P, G = __g.G, S = __g.S, d = hypot(e, P);
+      const warn = boomHere();
+      if (warn) { retreat(warn); return; }
       const hp = G.hp / S.maxHp;
       if (hp < prof.stim && G.stims > 0 && G.hp < S.maxHp * 0.92) __g.stim();
       if (prof.heal != null && hp < prof.healAt) {
@@ -294,12 +301,12 @@ async function install(page, cls, seed) {
       }
       if (allowKite && prof.kite && d < prof.near) { retreat(e); return; }
       if (allowKite && !prof.kite && hp < prof.back && d < prof.reach + 1.2) { retreat(e); return; }
-      if (prof.kite && d > prof.far + 0.4) { toward(e.x, e.y); return; }
+      if (allowKite && prof.kite && d > prof.far + 0.4) { toward(e.x, e.y); return; }
       strike(e);
     }
-    function useNear(pred, kind) {
+    function useNear(pred, kind, reach) {
       const W = __g.W, P = __g.P;
-      let best = null, bd = 1.45;
+      let best = null, bd = reach || 1.45;
       const list = kind === 'portal' ? W.portals : W.objs;
       for (const o of list) {
         if (kind !== 'portal' && o.used) continue;
@@ -337,6 +344,18 @@ async function install(page, cls, seed) {
       if (W.zi === 14 && (G.q.q13 || 0) < 2 && ((G.qt && G.qt.motion) || 0) < 4) {
         const d = nearest(80, e => e.k === 'director' && !e.su);
         if (d) return d.e;
+      }
+      if (G.q3open && (G.q.q3 || 0) < 2) {
+        const cg = W.objs.find(o => !o.used && o.k === 'cage');
+        if (cg) return cg;
+      }
+      if (G.q8down && !G.q8page && (G.q.q8 || 0) < 2) {
+        const pg = W.objs.find(o => !o.used && o.k === 'page');
+        if (pg) return pg;
+      }
+      if (G.q12down && (G.q.q12 || 0) < 2) {
+        const mn = W.objs.find(o => !o.used && o.k === 'minute');
+        if (mn) return mn;
       }
       return __g.goalPt();
     }
@@ -539,15 +558,42 @@ async function install(page, cls, seed) {
           if (!prog.zoneLived) prog.zoneLived = {};
           prog.zoneLived[W.zi] = (prog.zoneLived[W.zi] || 0) + dt;
           const skipMotion = e => W.zi === 14 && e.su && ((G.qt && G.qt.motion) || 0) < 4;
-          const suUp = W.ents.some(e => e.hp > 0 && e.su && e.q && (G.q[e.q] || 0) < 2 && !skipMotion(e));
+          const suNow = W.ents.find(e => e.hp > 0 && e.su && e.q && (G.q[e.q] || 0) < 2 && !skipMotion(e));
+          const suUp = !!suNow;
           const commit = prog.zoneLived[W.zi] > (suUp ? 180 : 25);
+          const jobKind = (W.objs.some(o => !o.used && o.k === 'cage') && G.q3open && (G.q.q3 || 0) < 2) ? 'cage'
+            : (W.objs.some(o => !o.used && o.k === 'page') && G.q8down && !G.q8page) ? 'page'
+            : (W.objs.some(o => !o.used && o.k === 'minute') && G.q12down && (G.q.q12 || 0) < 2) ? 'minute' : '';
           const goGoal = () => {
             if (!gp) return;
-            if (hypot(gp, P) < 1.35) {
-              if (!useNear(o => o.k === 'cage' || o.k === 'page' || o.k === 'minute' || o.k === 'qobj', 'obj')) toward(gp.x, gp.y);
+            const reach = jobKind ? 1.95 : 1.35;
+            if (hypot(gp, P) < reach) {
+              const sealed = jobKind && W.objs.some(o => !o.used && o.k === jobKind);
+              useNear(o => o.k === 'cage' || o.k === 'page' || o.k === 'minute' || o.k === 'qobj', 'obj', reach + 0.2);
+              if (sealed && W.objs.some(o => !o.used && o.k === jobKind)) {
+                const su = W.ents.find(e => e.hp > 0 && e.su);
+                if (su) {
+                  prog.focus = su;
+                  if (hypot(su, P) > (prof.kite ? prof.far : prof.reach) + (su.r || 0.4)) toward(su.x, su.y);
+                  else fight(su, false);
+                  return;
+                }
+              }
+              if (hypot(gp, P) >= 0.85) toward(gp.x, gp.y);
             } else toward(gp.x, gp.y);
           };
-          if (commit) {
+          if (jobKind && suNow) {
+            const trash = nearest(1.05, e => !e.su && !skipMotion(e));
+            if (trash) fight(trash.e, false);
+            else if (hypot(suNow, P) > (prof.kite ? prof.far : prof.reach) + (suNow.r || 0.4)) toward(suNow.x, suNow.y);
+            else fight(suNow, false);
+          } else if (jobKind) {
+            goGoal();
+          } else if (suNow && hypot(suNow, P) < 12) {
+            const trash = nearest(Math.min(3.1, hypot(suNow, P) - 0.4), e => !e.su && !skipMotion(e));
+            if (trash) fight(trash.e, true);
+            else { prog.focus = suNow; fight(suNow, true); }
+          } else if (commit) {
             const su = W.ents.find(e => e.hp > 0 && e.su && e.q && (G.q[e.q] || 0) < 2 && !skipMotion(e));
             const onJob = prog.focus && su && prog.focus === su;
             const hold = onJob ? (prof.kite ? prof.far + 1 : 9) : (prof.kite ? prof.far + 0.8 : prof.reach + 1.6);
@@ -706,6 +752,7 @@ async function install(page, cls, seed) {
       G.diffGate = Math.max(G.diffGate || 0, G.diff);
       for (const k in __g.QUESTS) G.q[k] = 0;
       G.q3open = 0; G.q8page = 0; G.q8down = 0; G.q12down = 0; G.qt = {};
+      G.marrow = false;
       G.unlocked = 0;
       G.portal = null;
       if (__g.resetZones) __g.resetZones();

@@ -1,8 +1,8 @@
 # All eight classes — Unsubscribe 2087
 
-Date: 2026-10-09. Seed 12648430. Bull week. God mode off, nothing handed out, each character started at level 1. Branch `cursor/allclass-run-3887`, on the integrated tip: Normal tuning, thumb aim, tap-to-target, belt charms, item compare, the merchant counter, and corpse runs.
+Date: 2026-10-09. Seed 12648430. Bull week. God mode off, nothing handed out, each character started at level 1. Branch `cursor/cage-witness-maxi-3887`, on the #112 tip plus this pass: Marrow’s cage, the Witness page, Tick Tock on game time, and saved Hard districts easing to the gear you are wearing.
 
-The names in the earlier corpse table were the internal ids. The people are:
+The names:
 
 | Id | Name |
 |---|---|
@@ -15,84 +15,114 @@ The names in the earlier corpse table were the internal ids. The people are:
 | witness | Witness |
 | maxi | The Maximalist |
 
-Experience is still `58 × level^1.85`. Act I pays 1.6×. Districts written above 12 pay 0.41×. Machine levels on Normal are Pryce 12, Vale 19, MANDATE 25, the Curator 32, PROVIDENCE 38. Hard’s last district is 60. Brutal’s is 76. Nothing here retunes that.
+Experience is still `58 × level^1.85`. Act I pays 1.6×. Districts written above 12 pay 0.41×. Nothing here retunes that.
 
-## What a clear looks like
+Machine levels on this run, read off the district when the character walked in:
 
-Six of the eight finished Normal. The clean clears land at 41–43, a few levels over the machine they just fought. Two finished hot because the clock was spent clearing the same district: the Technomancer’s PROVIDENCE fight itself carried them from 45 to 52, and the Homesteader’s first pass recleared on the way to 47.
+| | Pryce | Vale | MANDATE | Curator | PROVIDENCE |
+|---|---|---|---|---|---|
+| Normal | 12 | 19 | 25 | 32 | 38 |
+| Hard | 34 | 41 | 47 | 54 | 60 |
+| Brutal | 50 | — | — | — | — |
 
-Hard was started by everyone who finished Normal. Every one of those runs then stopped on the same job: open Marrow’s cage in the Humming Fields. The character level kept rising while they did that, into the 60s and the 80s, which is the grind, not a Hard clear. Brutal was not reached. The mid-60s and 75–85 targets are still the ladder’s plan. This run did not walk them.
+Hard Defrag Prime, in Rack Nine, was machine level 46. Brutal did not reach him. The character targets stay 40–45 after Normal, the mid-60s after Hard, and 75–85 after Brutal.
 
-The number under each boss is the level when that boss died, then the machine level.
+The number under a boss is the character’s level when that boss died. A dash means that boss was still standing when the clock ended.
 
-| Class | Normal | Pryce | Vale | MANDATE | Curator | PROVIDENCE | Deaths | Hard |
+## Normal
+
+| Class | End | Pryce | Vale | MANDATE | Curator | PROVIDENCE | Deaths |
+|---|---|---|---|---|---|---|---|
+| Scrapper | 25, in the fields | — | — | — | — | — | 46 |
+| Technomancer | 48 | 14 | 21 | 29 | 38 | 46 | 13 |
+| Runner | 16, in the moors | — | — | — | — | — | 4 |
+| Anon | 41 | 19 | 24 | 29 | 34 | 41 | 1 |
+| Founder | 43 | 15 | 22 | 29 | 35 | 43 | 2 |
+| Homesteader | 36, in the minutes | 17 | 23 | — | — | — | 38 |
+| Witness | 13, Pryce alive | — | — | — | — | — | 27 |
+| The Maximalist | 47 | 17 | 22 | 29 | 37 | 46 | 1 |
+
+Anon and the Founder land in the 40–45 band. The Technomancer and the Maximalist finish one fight hot, at 48 and 47, the same shape as the last Room on the previous run. Four classes did not finish Normal. Two of those were standing still, not losing a fight. That is below.
+
+## Hard
+
+Deaths here are only the deaths after the climb. The ladder row is the character’s level when Hard started.
+
+| Class | Climbed | End | Pryce | Vale | MANDATE | Curator | PROVIDENCE | Deaths |
 |---|---|---|---|---|---|---|---|---|
-| Scrapper | 41 | 18 / 12 | 23 / 19 | 28 / 25 | 34 / 32 | 41 / 38 | 21 | stalled, level 87 |
-| Technomancer | 52 | 19 / 12 | 23 / 19 | 28 / 25 | 36 / 32 | 52 / 38 | 11 | stalled, level 69 |
-| Runner | 41 | 17 / 12 | 22 / 19 | 30 / 25 | 34 / 32 | 41 / 38 | 27 | stalled, level 63 |
-| Anon | 43 | 21 / 12 | 26 / 19 | 31 / 25 | 36 / 32 | 43 / 38 | 3 | stalled, level 66 |
-| Founder | 42 | 19 / 12 | 23 / 19 | 29 / 25 | 36 / 32 | 42 / 38 | 2 | stalled, level 86 |
-| Homesteader | 47 | 25 / 12 | 29 / 19 | 34 / 25 | 41 / 32 | 47 / 38 | 56 | stalled, level 82 |
-| Witness | — | — | — | — | — | — | 38 | not opened |
-| The Maximalist | — | 18 / 12 | 22 / 19 | — | — | — | 56 | not opened |
+| Technomancer | 48 | 65, Defrag Prime | 51 | 53 | — | — | — | 169 |
+| Anon | 41 | 89, Pryce alive | — | — | — | — | — | 8 |
+| Founder | 43 | 67, Concierge Sterling | 48 | — | — | — | — | 47 |
+| The Maximalist | 47 | 72, clear | 50 | 53 | 58 | 65 | 71 | 15 |
+
+The Maximalist is the Hard clear. 72 is above the mid-60s. The Room was entered at 70 and died at 71, against a machine at 60. The other three opened Marrow’s cage and then stopped on one lieutenant. Scrapper, Runner, Homesteader, and Witness never opened Hard.
+
+## Brutal
+
+The Maximalist climbed at 72 and walked into the Glass Cathedral at 74, machine level 50. Pryce was still alive at the level cap, 100. Four deaths on Brutal. Nobody else opened it. 75–85 was not walked.
 
 ## Each class
 
-**Scrapper.** Finished Normal at 41, inside the 40–45 band, with 21 deaths. Pryce and Vale took two deaths each. The later three bosses died on the first pull. They walked 15 bodies and paid Kestrel for 21. Repair had cost 298 sats, with 342 sats still in hand. Twelve charms had been found and four were on the belt. Hard then sat in the Humming Fields until the clock, and the level ran up to 87 without another death.
+**Scrapper.** Never left Act I. The Humming Fields took 44 of 46 deaths, from level 6 to 25, and the quest was still The Last Librarian. Fifty-four times the run reported itself stuck on one tile, and it left the district after twelve minutes with nothing in reach. Eighty-one bodies were bought. That clock is a path that does not arrive, not a measured wall. Repair 824 sats, 6,848 still in hand. Seventeen charms found, two worn at the end. Thumb and tap both returned a point.
 
-**Technomancer.** Arrived at PROVIDENCE at 45 and left at 52, because that fight took five pulls and four deaths. The four bosses before it were on the band: 19, 23, 28, 36. Eleven deaths on the whole Normal walk. Repair 170 sats, 311 sats in hand, nine charms found, four worn, nine bodies bought, seven walked. The Room is what hurt. Hard stalled in the fields at 69, and the town fee was paid 255 times across the whole run, almost all of it on that cage.
+**Technomancer.** Normal ended at 48. Pryce 14, Vale 21, MANDATE 29, the Curator 38, PROVIDENCE 46, with the climb at 48 after three deaths in the Room. Thirteen deaths on Normal. Repair 148 sats against 310 in hand at the climb, about a third of that pair, higher than the other clean clears. Hard opened the cage, killed Pryce at 51 and Vale at 53, and then died 148 times in Rack Nine. Defrag Prime was machine level 46. The level only moved from 55 to 65. The town fee was paid on the order of a thousand times across the whole run (1,210 buys, 14 of them before Hard). The ease-down on a saved district did not make that lieutenant killable for this kit.
 
-**Runner.** The cleanest pace of the kite classes: Pryce 17, Vale 22, MANDATE 30, the Curator 34, PROVIDENCE 41. Twenty-seven deaths. Vale’s district and Pryce’s district took four falls each, and Vale’s own fight was four of the five pulls. Repair 220 sats, 754 in hand. Fifteen walks, 23 buys on Normal. Hard then bought the body over and over (471 buys by the end of the clock) and stopped at 63, still on Marrow’s cage.
+**Runner.** Four deaths, all in the Parcel Moors, level 16 when the clock ended. The Gatewarden was never reached. Four stuck notes, and one leave after twelve minutes with nothing in reach. Same failure as the Scrapper: the body was not in a fight. Repair 32 sats, 4,259 in hand. One charm worn.
 
-**Anon.** Three deaths on all of Normal, and the end is 43. Pryce 21, Vale 26, MANDATE 31, the Curator 36, PROVIDENCE 43. Vale was the only boss that got a second pull. Repair 133 sats against 652 still in hand, which is the one clear sitting in the 10–20% repair band without any argument about the denominator. Twelve charms, four worn, one walk, eight buys. Hard stalled at 66 on the same cage, with 32 of the later deaths in the Humming Fields.
+**Anon.** The clean Normal. One death, end at 41. Pryce 19, Vale 24, MANDATE 29, the Curator 34, PROVIDENCE 41. Repair 133 sats against 692 in hand, about a sixth. Hard opened the cage and stood in the Glass Cathedral from 45 to 89. Pryce, machine level 34, was still alive. Eight deaths on Hard, a hundred buys by the end. This one did not spiral. The boss did not fall, and the level ran away under him.
 
-**Founder.** Two deaths on Normal, and every boss died on the first pull: 19, 23, 29, 36, 42. Repair 89 sats, 337 in hand, two walks, Kestrel was not needed, 13 charms found and four worn. Hard climbed to 86 in the fields. That pass was on the earlier bot, which wrote deaths down after the character had already woken up in town, so the death map for this one names Stillwater.
+**Founder.** Normal at 43, two deaths, every boss on the first pull: 15, 22, 29, 35, 43. Repair 66 sats against 343 in hand, about a sixth. Hard opened the cage and killed Pryce at 48. Concierge Sterling on the Boardwalk then took 45 deaths, and the level went from 50 to 67. Vale was never reached on Hard. One hundred and two buys, almost all of them on that lieutenant.
 
-**Homesteader.** The finished pass ended at 47. Every boss died on the first pull, at 25, 29, 34, 41 and 47. That is over the 40–45 band because the bot recleared districts on the way; the bosses themselves were not the grind. Fifty-six deaths, none of them on a boss attempt, 56 walks, no buy, repair 1,148 sats with 4,623 still in hand, 10 charms and four worn. A second pass, on the later bot, died only six times, killed Pryce at 19, and then stood in the Sky Gardens until level 31 when the clock ended. The table uses the pass that actually reached PROVIDENCE.
+**Homesteader.** Pryce at 17, Vale at 23, then the Hall of Minutes from 23 to 36. Thirty of 38 deaths were in that district. MANDATE was not reached. The Recording Secretary is the stop, on Normal, before any Hard climb. Repair 723 sats, 8,503 in hand. Nine charms found, four worn.
 
-**Witness.** Did not reach Pryce. The Parcel Moors fell at level 9, after seven deaths. Hollow Galleria then took the rest of the clock: level 18, 31 deaths in that district, Marla the Greeter still on her shift. They found 11 charms and wore three, spent 1,396 credits and bought 25 sat pieces, repaired for 360 sats, walked two bodies and paid for 27. A few early buys failed because the fee was 1 sat and the wallet was empty. After that, Kestrel was paid. The loaner was in the build they were playing. This is no longer the naked thousand-death loop. It is a slow class that cannot close on Marla.
+**Witness.** Marla is no longer where the run ends. Hollow Galleria took four deaths and was left at level 9. The cage was opened. Tribunal Row took nine. Pryce was reached at 13 and was still alive at 13, after seven deaths in the cathedral and two pulls that did not finish. Twenty-seven deaths on the clock. The wallet ended at 0 sats. Nine bodies were bought and a long list of later buys failed because the fee was 2 sats and the wallet was empty. Four charms found, none worn at the end. The page plan and the early numbers did what they were for: Act I’s greeter dies. They did not carry a level-13 Witness through Pryce inside this clock, so the 40–45 finish is not met.
 
-**The Maximalist.** Pryce died at 18, Vale at 22 (two deaths on that fight). Act III then stuck on Defrag Prime in Rack Nine: 28 of 56 deaths, level 37 when the clock ended, MANDATE never reached. Eleven walks, 79 buys, six charms and four worn, repair 563 sats. Same shape as the Witness, one act later: the walk and the shop are working, and one lieutenant is where the run stops.
+**The Maximalist.** The Tick Tock fix holds. Defrag Prime died on Normal (Rack Nine was entered at 27 and left at 29, MANDATE at 29) and again on Hard (entered at 56, MANDATE at 58). One death on all of Normal. Pryce 17, Vale 22, MANDATE 29, the Curator 37, PROVIDENCE 46, climb at 47. Hard then cleared the book: Pryce 50, Vale 53, MANDATE 58, the Curator 65, PROVIDENCE 71, climb at 72. Fifteen deaths on Hard, 56 buys. Brutal started at 72. The Glass Cathedral was entered at 74. Pryce, machine level 50, was alive at level 100. Four deaths on Brutal. Fifteen charms found, none worn at the end. Repair across the whole run was 338 sats, with 11,933 still in hand. The Normal slice was 144 sats repaired against 674 in hand, about a sixth.
 
-## Corpses, repair, charms, the shop, the thumb
+## The cage
 
-The corpse defaults are unchanged. Credits dropped on the body come back when the body is recovered. Sats do not fall. The town fee stays the cheap one (`level / 6`, times 1, 2 or 3 by difficulty). Nobody drops an ear. A plain indestructible loaner stays in the weapon hand across a death and is thrown away when the real weapon comes back. Machines that can see the body lose interest, go quiet for 20 seconds, and are moved out of sight. Coming back into that district does this again.
+On Hard the tracker said to open Marrow’s cage, and the district did not have one. Normal had already set the freed flag. The climb replayed the quest and left that flag set, and the field refuses to grow a cage while the flag is set. Killing Defrag was a separate bug: a long absence put him back, and a living Defrag seals the cage. A lieutenant whose kill step is done stays down, including on a fresh map. The cage is placed whenever that quest is still open. The climb clears the freed flag. The harness walks to the cage once he is down, and chases him without kiting if the click is refused.
 
-The thousand deaths in the Galleria were both the bot and the game. The bot walked back into a saved district whose pack was still standing on the body, and the weapon was on the body. The loaner and the step-back are the game side of that. The bot now pays Kestrel when the same body is still there on the next visit to town, and it stops walking at a body after twenty-five seconds or three deaths and gets on with the quest. On this run the Witness did pay, and still could not kill Marla.
+Four classes opened it on the Hard replay: the Technomancer, Anon, the Founder, and the Maximalist. The stall after that is a lieutenant, not the cage.
 
-Repair prices are still the first guess. On the Normal snapshots, repair against the sats still in hand plus the repair itself runs from about a sixth (Anon) to about half (Scrapper). The real share of income is lower than that, because stims and the sat counter also spend sats and are not in that pair of numbers. Nobody’s repair bill was a rounding error, and nobody was repaired into poverty on a clear that finished. Left alone.
+## Saved districts
 
-Charms were found and socketed on every class, including the two that did not finish. The belt and the charms on it go with the body. The pack stays.
+A saved Hard or Brutal district still remembers who it spawned. Those numbers used to stay at the geared multipliers after a death had stripped the kit, so the walk back was a different fight from the one that killed them. They now ease down to the body you are wearing, and they come back up when the gear is on, never past the multipliers they were born with. Normal does not scale.
 
-Every class opened the merchant counter: junk was sold, credits and sats were spent, a guard was hired once. The Runner’s 471 buys and the Technomancer’s 255 are the Hard cage, not the Normal walk. Normal buys were in the tens.
+That is the death-spiral change. It did not decide the Hard stops. The Technomancer still bought the body on the order of a thousand times against Defrag Prime. Anon’s eight Hard deaths and the Founder’s forty-five on Sterling are a lieutenant the kit did not kill, with the level climbing underneath. The ease-down is the behavior in this build. A district that should stay frozen at the geared multipliers can be put back.
 
-The thumb and the tap were asked once per character through the same aiming code the touch tests use. All eight came back with a real point. The fight itself is still driven by clicks. The five-device thumb test and the tap-target test were already green on this tip.
+## Corpses, repair, the shop, the thumb
 
-## Bugs fixed on this branch
+The corpse defaults are unchanged. Credits on the body come back in full. Sats do not fall. The town fee stays the cheap one. Nobody drops an ear. The loaner stays in the weapon hand and is thrown away when the real weapon comes back. A pack that can see the body loses interest, goes quiet, and is moved out of sight.
 
-- A death no longer empties the weapon hand. The loaner stays until the real weapon is back.
-- A pack standing on the body is pushed out of sight and stays quiet long enough to walk up.
-- The bot records a death in the district where it happened, before the rise back to town.
-- A repeated failed walk pays the town fee. The first walk is still on foot.
-- A kite class no longer backs out of every swing. Anything close enough to count as a threat used to sit inside the retreat range, so the Runner and the Technomancer never reached the lieutenant.
-- A boss that is already losing hit points no longer ends the run after six deaths.
-- After a few minutes of clearing, the run walks to the lieutenant instead of chasing the pack. Two deaths used to flip that switch immediately, and the Witness then never arrived at the Gatewarden.
+Repair prices are still the first guess. On the Normal snapshots, repair against the sats still in hand plus the repair itself is about a sixth for Anon, the Founder, and the Maximalist, and about a third for the Technomancer. The real share of income is lower, because stims and the sat counter also spend. Left alone.
+
+Every class opened the merchant counter. Charms were found on every class. The belt and the charms on it go with the body.
+
+The thumb and the tap were asked once per character. All eight came back with a real point. The fight itself is still driven by clicks.
 
 ## For Micah
 
-These stayed as they were. Each one is a one-line change if you want the other behavior.
+These stayed as they were, except the saved-district line, which this pass changed.
 
 - Sats do not fall. Credits on the body still come back in full.
-- The town fee stays cheap. This run is the argument: the Runner paid it 471 times and was still dead in the fields. The price is not what ends a death spiral. The walk back is.
+- The town fee stays cheap. The Technomancer paid it about a thousand times and was still dying in Rack Nine. The price is not what ends that spiral.
 - No ear. No ethereal.
-- The loaner is new. It is there so a naked walk can still swing. Take it out if the walk is supposed to be empty-handed.
-- The Witness page plan is still the slow one. At level 18, with shop gear and charms, Marla was alive. That was left as written.
+- The loaner stays. It is there so a naked walk can still swing.
 - Repair prices are still the first guess.
-- A saved Hard district keeps the monsters it spawned while the character was geared. Coming back in a loaner, or even after paying Kestrel, is a different fight from the one that killed them. Not changed.
+- A saved Hard or Brutal district eases its machines down to the gear you are wearing, and back up when you put it on, never past the numbers they were born with. That is new. Freeze them at the geared multipliers if the district should not notice the corpse.
+
+Still open, and not changed by this pass:
+
+- The Witness can kill Marla and open the cage, and cannot finish Pryce at 13 with an empty wallet. The 40–45 Act I finish was not measured for this class.
+- The Scrapper and the Runner spent the clock standing on a tile with nothing in reach. That is the harness, not a district.
+- The Homesteader stops in the Hall of Minutes.
+- Hard stops that are a lieutenant, not the cage: Sterling for the Founder, Pryce for Anon, Defrag Prime for the Technomancer. The Maximalist killed Prime on Normal and on Hard.
+- Brutal Pryce, machine level 50, was alive at the level cap.
 
 ## Drop and LAN
 
-Built from this branch. The page bytes match the corpse-run game; the build stamp is the parent of the report commit.
+Built from this branch. The build stamp is the parent of the report commit.
 
-- Drop: `Unsubscribe-2087-standalone.html`, sha256 `f738f05f176102fd7c2bf82c69558b24a636fc9e7ce818a580752b33504d04d7`
-- LAN zip: `unsubscribe-2087-lan.zip`, sha256 `96d442c535890ee218c0da5a42fe1daf3bda38093d2e4e55c82ad7ce85fe3532`
+- Drop: `Unsubscribe-2087-standalone.html`, sha256 `9f1b46ed3bb324264f6a3cf4283c844f28e556831cf694ad644939ccfad4acd6`
+- LAN zip: `unsubscribe-2087-lan.zip`, sha256 `561000f3876a279834d72071ff93f3a80047dde9a0cc7f9385ef777a241549cd`

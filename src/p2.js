@@ -341,10 +341,11 @@ function simTick(dt){const s=W.sim;if(s.rush)return rushTick(dt);if(W.ents.lengt
   });
   toast('Wave '+n+(n%5===0?' · a lieutenant joins':''));sfx('warn');$('zone').textContent='The Simulator · Wave '+n;
   if(n>1){heal(S.maxHp*.3);G.en=S.maxEn;addDrop({cr:(3+W.ml*2)*(2+n)*Math.pow(G.cpi,.9)},P.x,P.y);if((n-1)%5===0)dropFrom('chest',P.x,P.y,W.ml)}}
-/* the Humming Fields must always hold Marrow's cage until she is freed, including in districts saved before a fix */
-function ensureCage(){if(W.zi!==3||G.marrow||W.objs.some(o=>o.k==='cage'&&!o.used))return;const N=W.N,c=W.suAt||W.goal||W.start,cx=Math.round(c.x),cy=Math.round(c.y);
+/* the Humming Fields must hold Marrow's cage until that quest is done, even if a
+   previous difficulty already set the freed flag */
+function ensureCage(){if(W.zi!==3||(G.q.q3||0)>=2||W.objs.some(o=>o.k==='cage'&&!o.used))return;const N=W.N,c=W.suAt||W.goal||W.start,cx=Math.round(c.x),cy=Math.round(c.y);
   for(let r=2;r<12;r++)for(let y=cy-r;y<=cy+r;y++)for(let x=cx-r;x<=cx+r;x++){if(Math.max(Math.abs(x-cx),Math.abs(y-cy))!==r||x<2||y<2||x>N-3||y>N-3)continue;let ok=true;for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++)if(W.map[(y+j)*N+x+i]!==1)ok=false;if(ok){solid('cage',x,y);return}}}
-function goalPt(){if(W&&W.z.pre)return preGoal();if(!W||W.z.town||W.z.sim||W.hold)return null;const lg=W.objs.find(o=>o.k==='leg');if(lg)return lg;const qo=W.objs.find(o=>o.k==='qobj'&&!o.used);if(qo)return qo;const pg=W.objs.find(o=>o.k==='page'&&!o.used);if(pg&&(G.q.q8||0)<2)return pg;const su=W.ents.find(e=>e.su&&e.q&&G.q[e.q]<2);if(su)return su;const mn=W.objs.find(o=>o.k==='minute'&&!o.used);if(mn)return mn;const cg=W.objs.find(o=>o.k==='cage'&&!o.used);if(cg&&!G.marrow)return cg;return W.goal}
+function goalPt(){if(W&&W.z.pre)return preGoal();if(!W||W.z.town||W.z.sim||W.hold)return null;const lg=W.objs.find(o=>o.k==='leg');if(lg)return lg;const qo=W.objs.find(o=>o.k==='qobj'&&!o.used);if(qo)return qo;const pg=W.objs.find(o=>o.k==='page'&&!o.used);if(pg&&(G.q.q8||0)<2)return pg;const su=W.ents.find(e=>e.su&&e.q&&G.q[e.q]<2);if(su)return su;const mn=W.objs.find(o=>o.k==='minute'&&!o.used);if(mn)return mn;const cg=W.objs.find(o=>o.k==='cage'&&!o.used);if(cg&&(G.q.q3||0)<2)return cg;return W.goal}
 const lvlCap=()=>G.act5?100:G.act4?90:G.act3?75:G.act2?50:25;
 /* Act I stays written. Later districts use campaignLevel, then twelve per tier.
    Hard and Brutal lift that ladder. They do not rise to the character.
@@ -354,6 +355,13 @@ function zoneLevel(z){const written=z.lvl||1;const ml=(z.sub||z.sim)?written:cam
    The Simulator, a subpoena, and the Bull Run pay the card as written. */
 function xpRest(){if(!W||!W.z||W.z.sim||W.z.sub||W.z.secret)return 1;return (W.z.lvl||1)>12?FORMULAS.xp.after:FORMULAS.xp.act1}
 function dynFor(ml){if(!OPT.dyn||!(G.diff>0))return{hp:1,dmg:1};const p=pscore(S),f=r=>clamp(r<1?1:1+(r-1)*.8,1,12);return{hp:f(p.dps*2.4/(30*(1+.42*(ml-1)))),dmg:f(p.ehp/16/(7*(1+.22*(ml-1))))}}
+/* A saved district keeps the machines it spawned. Hard and Brutal bake dyn into them.
+   Dying strips the gear and used to leave that baked multiplier in place, so a loaner
+   walked back into a fight scaled for a full kit. Ease them down to the body you are
+   wearing, and bring them back up when the gear is on, never past the multipliers
+   they were born with. Normal does not scale. */
+function dynResync(){if(!W||!W.ents||!W.z||W.z.town||W.z.sim||!(G.diff>0)||!OPT.dyn)return;W.ml=zoneLevel(W.z);W.dyn=dynFor(W.ml);const df=DF(),dy=W.dyn||{hp:1,dmg:1},nowH=(dy.hp||1)*(df.hp||1),nowD=(dy.dmg||1)*(df.dmg||1);
+  for(const e of W.ents){if(!e||e.mp||!(e.max>0))continue;if(!(e.bornHp>0)){const t=ET[e.k];if(!t)continue;const ml=W.ml||1;let hp0=t.hp*(1+.42*(ml-1))*(e.su?5:e.champ?2.8:1)*(isBoss(e.k)?2.5:1),dmg0=t.dmg*(1+.22*(ml-1))*(e.champ?1.3:1)*(isBoss(e.k)?1.35:1)*(ml>25?1+.008*(ml-25):1);if(e.mods&&e.mods.strong)dmg0*=1.6;if(e.minion&&W.boss&&(W.boss.k==='boss3'||W.boss.k==='boss4'||W.boss.k==='boss5')){hp0*=.75;dmg0*=.55}if(typeof defragAct1==='function'&&defragAct1(e))dmg0*=.7;if(!(hp0>0)||!(dmg0>0))continue;e.bornHp=e.max/hp0;e.bornDmg=Math.max(.05,e.dmg/dmg0);e.dynHp=e.bornHp;e.dynDmg=e.bornDmg}const tgtH=Math.min(e.bornHp,nowH),tgtD=Math.min(e.bornDmg,nowD),curH=e.dynHp||e.bornHp,curD=e.dynDmg||e.bornDmg;if(curH>0&&Math.abs(tgtH-curH)/curH>.04){const r=tgtH/curH,pct=e.hp>0?e.hp/e.max:0;e.max*=r;if(e.hp>0)e.hp=e.max*pct;e.dynHp=tgtH}if(curD>0&&Math.abs(tgtD-curD)/curD>.04){e.dmg*=tgtD/curD;e.dynDmg=tgtD}}}
 function fillRoom(r,z,zi,i){
   if(i===1&&zi>=1&&zi<=4){const hot=zi>=3,pool=z.mix.filter(m=>m[0]!=='tick'&&!(zi===4&&m[0]==='mech')),n=hot?2:ri(3,4),mul=zi===4?.55:.7;
     for(let k=0;k<n;k++){const e=spawn(wpick(pool),r.x+rnd(-r.w+1,r.w-1)+.5,r.y+rnd(-r.h+1,r.h-1)+.5);if(e){e.gate=1;if(hot)e.dmg*=mul}}
@@ -390,7 +398,7 @@ function genZone(zi){
     if(i===n-1&&z.boss){spawn(z.bossK||'boss',L.x+.5,L.y+.5);for(let k=0;k<4;k++)spawn(z.guard||'mech',r.x+rnd(-6,6),r.y+rnd(-6,6));continue}
     fillRoom(r,z,zi,i);
     if(i===gobRoom)spawn('gob',r.x+.5,r.y-1.5);
-    if(z.su&&i===n-2){const e=spawn(z.su.k,r.x+.5,r.y+.5,{su:z.su});for(let k=0;k<3;k++)spawn(z.su.k==='mech'?'bot':z.su.k,r.x+rnd(-2,2),r.y+rnd(-2,2));
+    if(z.su&&i===n-2&&!suStepDone(z)){const e=spawn(z.su.k,r.x+.5,r.y+.5,{su:z.su});for(let k=0;k<3;k++)spawn(z.su.k==='mech'?'bot':z.su.k,r.x+rnd(-2,2),r.y+rnd(-2,2));
       W.suAt={x:r.x,y:r.y}}
   }
   if(!z.boss)W.portals.push({x:L.x+.5,y:L.y+.5,kind:'next'});
@@ -406,6 +414,7 @@ function spawn(k,x,y,o){
   if(e.mods.fast)e.spd*=1.5;if(e.mods.strong)e.dmg*=1.6;
   if(o.minion&&W.boss&&(W.boss.k==='boss3'||W.boss.k==='boss4'||W.boss.k==='boss5')){e.dmg*=.55;e.hp*=.75;e.max=e.hp}
   if(defragAct1(e)){e.dty='impact';e.dmg*=.7}
+  e.bornHp=dy.hp;e.bornDmg=dy.dmg;e.dynHp=dy.hp;e.dynDmg=dy.dmg;
   if(W&&(mapShared||(typeof mpMobHost==='function'&&mpMobHost()))){W.mobSeq=(W.mobSeq||0)+1;e.mid=W.mobSeq}
   p7Spawn(e);W.ents.push(e);if(isBoss(k))W.boss=e;return e}
 function zoneBag(zi){if(typeof mpZoneBag==='function'){const w=mpZoneBag(zi);if(w)return w}const w=ZS[zi];return w&&w.tier===G.tier?w:null}
@@ -439,7 +448,7 @@ function enter(zi,o){setTimeout(mpBeat,0);
   else if(act===2&&!G.act2){G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO2,()=>{mode='play';dlg('Act II · The Cloud','Level limit 50, and a fourth skill row opens. The fourth row is yours. Vale does not get a vote on it.',[['Begin']])}),50)}
   else if(!z.town&&!G['in'+zi]&&z.intro){G['in'+zi]=1;dlg(z.n,z.intro,[['Go on']])}
   else toast(z.town?z.n:'Entering '+z.n);
-  if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}if(o.after)o.after();if(typeof mpMobCatch==='function')mpMobCatch();placeCorpses();calmNearCorpse();seenT=0;music(zoneMusic());save(true)}
+  if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}if(o.after)o.after();if(typeof mpMobCatch==='function')mpMobCatch();placeCorpses();calmNearCorpse();dynResync();seenT=0;music(zoneMusic());save(true)}
 /* A cast portal lives on this character: zone and the exact spot. A new cast forgets the last one, in this district and in any district already saved. */
 function dropCastPortals(){const strip=w=>{if(w&&w.portals)w.portals=w.portals.filter(q=>!q.cast)};strip(W);for(const k in ZS)if(ZS[k]!==W)strip(ZS[k])}
 function openPortal(){if(mode!=='play'||W.z.town)return;if(mpPortalBlocked())return;if(W.z.sim){sfx('portal');enter(HT());return}if(nearest(4)){toast('Machines are too close to open a portal');return}
@@ -591,7 +600,7 @@ function layCorpse(x,y){lastLaid=false;if(!G||G.hc)return 0;if(W&&W.z&&W.z.sim)r
 function placeCorpses(){if(!W||!W.objs||!G)return;W.objs=W.objs.filter(o=>o.k!=='corpse');for(const c of G.corpses||[]){if(!c||c.zi!==W.zi||(c.tier|0)!==(G.tier|0))continue;let x=c.x,y=c.y;if(typeof free==='function'&&!free(x,y,.3)&&typeof nearFree==='function'){const n=nearFree({x,y},1.4);x=n.x;y=n.y;c.x=x;c.y=y}W.objs.push({k:'corpse',id:c.id,x,y})}}
 function calmNearCorpse(){if(!W||!W.ents||(W.z&&W.z.town))return;const bodies=(W.objs||[]).filter(o=>o&&o.k==='corpse');if(!bodies.length)return;for(const e of W.ents){if(!e||e.hp<=0||e.mp)continue;let near=null;for(const b of bodies)if(Math.hypot(e.x-b.x,e.y-b.y)<14)near=b;if(!near)continue;e.aggro=false;e.calm=20;e.wind=0;let dx=e.x-near.x,dy=e.y-near.y,d=Math.hypot(dx,dy);if(d<0.4){const a=(e.ph||0)+1.7;dx=Math.cos(a);dy=Math.sin(a);d=1}const nx=near.x+dx/d*16,ny=near.y+dy/d*16;if(typeof free==='function'&&free(nx,ny,.35)){e.x=nx;e.y=ny}else if(typeof nearFree==='function'){const n=nearFree({x:near.x+dx/d*14,y:near.y+dy/d*14},5);if(n){e.x=n.x;e.y=n.y}}}}
 function giveBack(it){if(!it)return;if(it.charm){const max=beltBudget(G.eq&&G.eq.belt).slots;if(charmUsed()+charmCost(it)<=max){G.cslots=G.cslots||[];G.cslots.push(it);return}}else if(it.slot&&G.eq){const cur=G.eq[it.slot];if(!cur||(it.slot==='weapon'&&cur.loan&&!it.loan)){G.eq[it.slot]=it;return}}if(bagCan(it)){G.bag.push(it);return}if(P)addDrop({it},P.x,P.y)}
-function reclaimCorpse(id){const list=G.corpses||[],i=list.findIndex(c=>c&&c.id===id);if(i<0)return false;const c=list[i];for(const sl of SLOTS)giveBack(c.eq&&c.eq[sl]);for(const ch of c.cslots||[])giveBack(ch);G.credits=(G.credits||0)+(c.credits||0);list.splice(i,1);if(W&&W.objs)W.objs=W.objs.filter(o=>!(o.k==='corpse'&&o.id===id));if(typeof charmRefit==='function')charmRefit();calc();sfx('pick');toast('Your gear is back on you');return true}
+function reclaimCorpse(id){const list=G.corpses||[],i=list.findIndex(c=>c&&c.id===id);if(i<0)return false;const c=list[i];for(const sl of SLOTS)giveBack(c.eq&&c.eq[sl]);for(const ch of c.cslots||[])giveBack(ch);G.credits=(G.credits||0)+(c.credits||0);list.splice(i,1);if(W&&W.objs)W.objs=W.objs.filter(o=>!(o.k==='corpse'&&o.id===id));if(typeof charmRefit==='function')charmRefit();calc();dynResync();sfx('pick');toast('Your gear is back on you');return true}
 function corpseFee(c){const mul=[1,2,3][G.diff|0]||1;return Math.max(1,Math.round((G.lvl||1)/6)*mul)}
 function buyCorpse(id){if(!W||!W.z||!W.z.town){toast('That can be done in town');sfx('err');return false}const c=(G.corpses||[]).find(x=>x&&x.id===id);if(!c)return false;const fee=corpseFee(c);if(!spendSats(fee,'Walking a body back costs '+fee+' sats'))return false;G.corpseBought=(G.corpseBought||0)+fee;return reclaimCorpse(id)}
 function repairQuote(it){if(!it)return 0;stampDura(it);if(it.indestruct||!(it.duraMax>0)||it.dura>=it.duraMax)return 0;return Math.max(1,Math.ceil((it.duraMax-it.dura)/12))}
@@ -705,7 +714,7 @@ function founderTick(dt){if(P.grave&&P.grave.t>0){P.grave.t-=dt;if(P.grave.t<=0)
 function orgMul(ally){if(G.cls!=='founder'||!sl(13)||boonOn(13))return 1;const n=W.allies.filter(a=>a.per).length;if(!n)return 1;return ally?1+n*(.08+.01*sl(13)):Math.max(0,1-n*(.04+.01*sl(13)))}
 function vestMul(a){if(!a||!a.per||!sl(11)||boonOn(11))return 1;return 1+(.04+.01*sl(11))*(a.vest||0)}
 function nodeMul(self){if(G.cls!=='maxi'||!sl(10)||!P.aura)return 1;const b=.06+.02*sl(10);return 1+(self?b/2:b)}
-function maxiTick(dt){if(G.keyT>0)G.keyT=Math.max(0,G.keyT-dt);const c=P.cite;if(!c)return;c.cd-=dt;if(c.cd>0)return;c.cd=c.gap;c.n--;const t=nearest(7);if(t)face(t);DT='sound';shoot(P.dir,c.m,0,{dt:'sound',col:'#f7931a'});DT=null;if(c.n<=0)P.cite=null}
+function maxiTick(dt){if(G.keyT>0)G.keyT=Math.max(0,G.keyT-dt);const tk=P.tick;if(tk){if(mode!=='play'||G.hp<=0)P.tick=null;else{tk.cd-=dt;if(tk.cd<=0){if(tk.n>0){const o=nearest(2.6);if(o)hit(o,tk.m);tk.n--;tk.cd=tk.n>0?.07:.1}else{const o=nearest(2.8)||P;sfx('boom');float(o.x,o.y,'BLOCK','#f7931a',1);P.maxiBlock=2.2;burst(o.x,o.y,2.4,tk.block,.4,'#f7931a');P.tick=null}}}}const c=P.cite;if(!c)return;c.cd-=dt;if(c.cd>0)return;c.cd=c.gap;c.n--;const t=nearest(7);if(t)face(t);DT='sound';shoot(P.dir,c.m,0,{dt:'sound',col:'#f7931a'});DT=null;if(c.n<=0)P.cite=null}
 function openTarget(range,from){let b=null,bd=range;from=from||P;for(const e of W.ents){if(e.nc>0)continue;const d=dist(e,from);if(d<bd){bd=d;b=e}}return b}
 function founderLiq(L,m){const cs=(P.corpses||[]).filter(c=>c.t>0&&Math.hypot(c.x-P.x,c.y-P.y)<5);if(!cs.length){toast('No corpses to liquidate');return}for(const c of cs){c.t=0;burst(c.x,c.y,2.2,(1.1+.15*L)*m,0,'#e0bd6e')}P.corpses=P.corpses.filter(c=>c.t>0)}
 function skillTick(dt){if(P.dump&&P.dump.t>0){P.dump.t-=dt;if(P.dump.t<=0)P.dump=null}if(P.castWait>0)P.castWait=Math.max(0,P.castWait-dt);if(G.cls==='scrapper')scrTick(dt);else if(G.cls==='hacker')hackTick(dt);else if(G.cls==='courier')runTick(dt);else if(G.cls==='anon')anonTick(dt);else if(G.cls==='founder')founderTick(dt);else if(G.cls==='maxi')maxiTick(dt);else if(G.cls==='homesteader')hsTick(dt);else if(G.cls==='witness')witTick(dt)}
@@ -771,7 +780,7 @@ function hsTick(dt){
   if(P.corpses){for(const c of P.corpses)c.t-=dt;P.corpses=P.corpses.filter(c=>c.t>0)}
   if(G.form==='hull'){const prev=Math.floor((G.formT||0)/HS.bigStep);G.formT=(G.formT||0)+dt;if(Math.floor(G.formT/HS.bigStep)!==prev)calc()}}
 /* Draft magnitudes for the Witness. The plan fixed the meter and the life total; these coefficients sit near a row-3 hit and are called out as draft. */
-const WIT={fill:8,still:1.6,swing:.45,book:1.22,carbon:1.3,cap:6,stack:1.15,decay:1,high:4,onRec:8,thread:.7,sentMax:25,pressStack:2};
+const WIT={fill:8,still:1.6,swing:.45,book:1.22,carbon:1.3,cap:6,stack:.9,decay:1,high:4,onRec:8,thread:.55,sentMax:25,pressStack:2};
 const WITMIN={1:1,3:20,4:1,6:1,7:30,9:25,10:20,12:1};
 function recBag(){return (P&&P.tag)?P:G}
 function recGet(){const b=recBag();return Math.max(0,Math.min(100,+b.page||0))}
@@ -834,11 +843,9 @@ const SKF={
 Object.assign(SKF,{
  maxi:{
   /* Tick Tock Next Block: nine swings and then a block. It arrives when it arrives. */
-  0:(L,m)=>{const t=nearest(6);if(t)face(t);P.maxiBlock=3;
-    for(let i=0;i<9;i++)setTimeout(()=>{if(mode!=='play'||G.hp<=0)return;
-      const o=nearest(2.6);if(!o)return;hit(o,(.5+.08*L)*m)},i*70);
-    setTimeout(()=>{if(mode!=='play'||G.hp<=0)return;const o=nearest(2.8)||P;
-      sfx('boom');float(o.x,o.y,'BLOCK','#f7931a',1);P.maxiBlock=2.2;burst(o.x,o.y,2.4,(4+.8*L)*m,.4,'#f7931a')},660)},
+  /* Nine strikes, then the block, on game time. A wall-clock timer lands after a
+     fast sim has already left the fight, so the tenth hit never arrives. */
+  0:(L,m)=>{const t=nearest(6);if(t)face(t);P.maxiBlock=3;P.tick={n:9,cd:0,m:(.5+.08*L)*m,block:(4+.8*L)*m}},
   /* Have Fun Staying Poor: close range, cannot miss, and it stuns. */
   1:(L,m)=>{const t=nearest(2.6);
     W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.22,w:1.2,reach:2.6});
@@ -910,7 +917,7 @@ Object.assign(SKF,{
   0:()=>{const t=nearest(8);if(!t){toast('Nothing in view');return}const n=(S.sp&&S.sp.press)?WIT.pressStack:1;t.tes=Math.min(witCap(),(t.tes||0)+n);face(t);float(t.x,t.y,'Look','#e6dcc8',0);fxAim('mark',t.x,t.y)},
   1:(L)=>{if(recGet()<witNeed(1)){witBlank();return}const t=nearest(7);if(!t){toast('Nobody to sentence');return}const cap=Math.max(1,Math.ceil(WIT.sentMax*(1+((S&&S.recCost)||0)/100))),spend=Math.min(recGet(),cap);if(!witPay(spend)){witBlank();return}const delay=(.4+.08*L)*(spend/WIT.sentMax);t.cd=(t.cd||0)+delay;t.wind=(t.wind||0)+delay*.5;P.paper=2.4;face(t);float(t.x,t.y,'Sentenced','#e6dcc8',0)},
   3:(L)=>{if(recGet()<witNeed(3)){witBlank();return}const src=nearest(8);if(!src){toast('Nothing in view');return}if(!(src.lastAtk>0)){toast('They have not swung');return}let dst=null,best=-1,bd=99;for(const e of W.ents){if(e===src||e.hp<=0||e.mp||!(e.tes>0))continue;const d=dist(e,P);if(e.tes>best||(e.tes===best&&d<bd)){best=e.tes;dst=e;bd=d}}if(!dst){toast('Nothing else is on the record');return}if(!witPay(witNeed(3))){witBlank();return}face(dst);W.fx.push({k:'bolt',x:src.x,y:src.y,x2:dst.x,y2:dst.y,t:0,life:.28,col:'#e6dcc8'});witImpact(dst,src.lastAtk*(.75+.05*L))},
-  4:(L)=>{if(recGet()<witNeed(4)){witBlank();return}const t=nearest(6);if(!t){toast('Nothing in view');return}if(!(t.tes>0)){float(t.x,t.y,'the page is blank','#e6dcc8',0);return}const spend=Math.max(1,Math.ceil(recGet()*WIT.thread));if(!witPay(spend)){witBlank();return}const d=(t.tes||0)*(3.5+.45*L)*(1+((G.lvl||1)-1)*.42);face(t);if(!(d>0)){float(t.x,t.y,'the page is blank','#e6dcc8',0);return}witImpact(t,d)},
+  4:(L)=>{if(recGet()<witNeed(4)){witBlank();return}const t=nearest(6);if(!t){toast('Nothing in view');return}if(!(t.tes>0)){float(t.x,t.y,'the page is blank','#e6dcc8',0);return}const spend=Math.max(1,Math.ceil(recGet()*WIT.thread));if(!witPay(spend)){witBlank();return}const page=1+Math.min(1,spend/40)*.28;const d=(t.tes||0)*(4.6+.5*L)*page*(1+((G.lvl||1)-1)*.42);face(t);if(!(d>0)){float(t.x,t.y,'the page is blank','#e6dcc8',0);return}witImpact(t,d)},
   6:()=>{if(!(P&&P.tag)&&G.corrZi===W.zi){toast('Already corrected in this district');return}if(recGet()<1){witBlank();return}const loss=P.lastLoss||0;if(!(loss>0)){toast('Nothing to correct');return}recSet(0);let h=loss;if(S.retr)h*=1+S.retr/100;if(P&&P.tag)P.hp=Math.min(P.max||P.hp,(P.hp||0)+h);else{heal(h);G.corrZi=W.zi}float(P.x,P.y,'Corrected','#7be495',0)},
   7:()=>{if(recGet()<witNeed(7)){witBlank();return}if(!witPay(witNeed(7))){witBlank();return}P.redact=2;float(P.x,P.y,'Redacted','#e6dcc8',0)},
   9:(L)=>{if(recGet()<witNeed(9)){witBlank();return}let best=null,bt=-1;for(const e of W.ents){if(e.hp<=0||e.mp)continue;if((e.tes||0)>bt){bt=e.tes||0;best=e}}if(!best||bt<WIT.high){toast('The testimony is too thin');return}if(!witPay(witNeed(9))){witBlank();return}best.onRecT=WIT.onRec;best.onRecM=1+.12*L;if(typeof mpNoteCurse==='function')mpNoteCurse(best,'rec',best.onRecM,WIT.onRec);float(best.x,best.y,'On the record','#e6dcc8',0);fxAim('mark',best.x,best.y)},
@@ -1593,6 +1600,9 @@ function drawHover(){
 
 /* ================= update ================= */
 function update(dt){
+  /* The page decides what is on screen from the camera. Follow the body here, not
+     only when a frame is painted, so a fast sim still writes Testimony. */
+  if(P){cx=(P.x-P.y)*32;cy=(P.x+P.y)*16}
   mpTick(dt);patchTick(dt);maxiAura(dt);
   G.time+=dt;const gr=G.adopt>=100?1:Math.pow(SEA.k==='stim'?1.005:1.0025,(dt/60)*(1.45-G.adopt/100)*(G.fate==='fail'?1.4:1));G.cpi*=gr;if(S.sp.hedge)G.credits*=gr;G.ubiT=Math.max(0,G.ubiT-dt);G.chuteT=Math.max(0,G.chuteT-dt);
   const c=CLS[G.cls];
