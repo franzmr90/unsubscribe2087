@@ -43,9 +43,14 @@ const FORMULAS = {
     ward: { sec: 1.7, pct: 0.30, cap: 0.70 }
   },
   /* One level of experience, the same curve the client uses.
-     A full clear of the written districts lands a few levels over each boss.
-     Pay falls off once you are more than `ahead` levels above the machine. */
-  xp: { base: 58, pow: 1.68, ahead: 5, fade: 0.08, floor: 0.2 },
+     Act I still uses the written levels, and a clear of it lands a few levels over Pryce.
+     Districts written above 12 pay `after` of a kill. The ladder folds 12–72 into 12–38
+     on Normal (`ladder`), then Hard and Brutal lift that reading. A full clear is aimed
+     at the low 40s, the mid-60s, and about 80. Pay falls off once you are more than
+     `ahead` levels above the machine. */
+  xp: { base: 58, pow: 1.85, ahead: 5, fade: 0.08, floor: 0.2, after: 0.4 },
+  /* Written 1–12 stay. Written 12–72 is read as 12–38. Hard adds `hard`, Brutal adds `brutal`. */
+  ladder: { act1: 12, top: 72, end: 38, hard: 22, brutal: 38 },
   /* Experience past the act cap, paid in one write on entering Act III. */
   bank: { levels: 1 },
   /* Maximalist auras, and the item skills that already name a radius.
@@ -82,6 +87,17 @@ function braceKeep(cls) {
 function xpNext(lvl) {
   const l = Math.max(1, +lvl || 1);
   return Math.round(FORMULAS.xp.base * Math.pow(l, FORMULAS.xp.pow));
+}
+
+/* The machine level a district is actually built at, before tier.
+   Subpoenas and the Simulator do not come through here. */
+function campaignLevel(written, diff) {
+  const L = FORMULAS.ladder;
+  const w = Math.max(1, Math.round(+written || 1));
+  const span = (L.end - L.act1) / (L.top - L.act1);
+  const base = w <= L.act1 ? w : Math.round(L.act1 + (Math.min(L.top, w) - L.act1) * span);
+  const d = diff | 0;
+  return base + (d >= 2 ? L.brutal : d === 1 ? L.hard : 0);
 }
 
 /* 1 while the character is within `ahead` levels of the machine.
@@ -133,4 +149,4 @@ function pailRate(L) {
   return f.rate + f.rateL * n;
 }
 
-if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep, xpNext, xpPace, auraRank, auraRadius, toxicSwingMul, pailMax, pailRate };
+if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep, xpNext, xpPace, campaignLevel, auraRank, auraRadius, toxicSwingMul, pailMax, pailRate };

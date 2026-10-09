@@ -343,8 +343,12 @@ function ensureCage(){if(W.zi!==3||G.marrow||W.objs.some(o=>o.k==='cage'&&!o.use
   for(let r=2;r<12;r++)for(let y=cy-r;y<=cy+r;y++)for(let x=cx-r;x<=cx+r;x++){if(Math.max(Math.abs(x-cx),Math.abs(y-cy))!==r||x<2||y<2||x>N-3||y>N-3)continue;let ok=true;for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++)if(W.map[(y+j)*N+x+i]!==1)ok=false;if(ok){solid('cage',x,y);return}}}
 function goalPt(){if(W&&W.z.pre)return preGoal();if(!W||W.z.town||W.z.sim||W.hold)return null;const lg=W.objs.find(o=>o.k==='leg');if(lg)return lg;const qo=W.objs.find(o=>o.k==='qobj'&&!o.used);if(qo)return qo;const pg=W.objs.find(o=>o.k==='page'&&!o.used);if(pg&&(G.q.q8||0)<2)return pg;const su=W.ents.find(e=>e.su&&e.q&&G.q[e.q]<2);if(su)return su;const mn=W.objs.find(o=>o.k==='minute'&&!o.used);if(mn)return mn;const cg=W.objs.find(o=>o.k==='cage'&&!o.used);if(cg&&!G.marrow)return cg;return W.goal}
 const lvlCap=()=>G.act5?100:G.act4?90:G.act3?75:G.act2?50:25;
-/* Normal keeps the written level, plus twelve per tier. Hard and Brutal, when adaptive difficulty is on, also rise to the character, and match extra gear. */
-function zoneLevel(z){const b=(z.lvl||1)+(G.tier||0)*12;return (OPT.dyn&&(G.diff||0)>0)?Math.max(b,G.lvl||1):b}
+/* Act I stays written. Later districts use campaignLevel, then twelve per tier.
+   Hard and Brutal lift that ladder. They do not rise to the character.
+   A subpoena and the Simulator already name the level they want. */
+function zoneLevel(z){const written=z.lvl||1;const ml=(z.sub||z.sim)?written:campaignLevel(written,G.diff||0);return ml+(G.tier||0)*12}
+/* A kill in a district written above 12 pays FORMULAS.xp.after. Act I pays full. */
+function xpRest(){if(!W||!W.z||W.z.sim||W.z.sub||W.z.secret)return 1;return (W.z.lvl||1)>12?FORMULAS.xp.after:1}
 function dynFor(ml){if(!OPT.dyn||!(G.diff>0))return{hp:1,dmg:1};const p=pscore(S),f=r=>clamp(r<1?1:1+(r-1)*.8,1,12);return{hp:f(p.dps*2.4/(30*(1+.42*(ml-1)))),dmg:f(p.ehp/16/(7*(1+.22*(ml-1))))}}
 function fillRoom(r,z,zi,i){
   if(i===1&&zi>=1&&zi<=4){const hot=zi>=3,pool=z.mix.filter(m=>m[0]!=='tick'&&!(zi===4&&m[0]==='mech')),n=hot?2:ri(3,4),mul=zi===4?.55:.7;
@@ -541,7 +545,7 @@ function kill(e,opt){
   parts(e.x,e.y,isBoss(e.k)?40:e.champ?18:9,[t.pal[0],t.pal[1],'#2a2630','#ffb84a'],3.2);W.fx.push({k:'ring',x:e.x,y:e.y,r:.9*e.sz,t:0,life:.3,col:'#ffb238'});
   W.decals.push({x:e.x,y:e.y,r:e.r*1.6,a:rnd(0,3)});if(W.decals.length>70)W.decals.shift();if(OPT.shake)shake=Math.max(shake,e.champ?5:2);
   P.streak=(P.streakT>0?P.streak:0)+1;P.streakT=4;
-  if(!opt.noXp)gainXp(t.xp*(1+.8*(W.ml-1))*(e.su?10:e.champ?4:1)*(W.z.sim?.6:1)*(1+Math.min(.5,.02*P.streak))*(EV&&EV.k==='outage'?1.5:1)*(e.xpM||1)*mpXp(),0,W.ml);
+  if(!opt.noXp)gainXp(t.xp*(1+.8*(W.ml-1))*(e.su?10:e.champ?4:1)*(W.z.sim?.6:1)*(1+Math.min(.5,.02*P.streak))*(EV&&EV.k==='outage'?1.5:1)*(e.xpM||1)*xpRest()*mpXp(),0,W.ml);
   if(!W.z.sim)sqKill(e);if(!opt.noLoot&&e.k==='gob'){addDrop({sat:ri(3,6)},e.x,e.y);toast('The Dividend Drone pays out')}
   const boss=isBoss(e.k),b2=e.k==='boss2';
   if(!opt.noLoot&&!e.minion&&!W.z.sim){if(boss){dropFrom(e.k,e.x,e.y,W.ml,2,e.k==='boss3'?!G.boss3Kills:b2?!G.boss2Kills:G.bossKills===0);addDrop({cr:(3+W.ml*2)*40*Math.pow(G.cpi,.9)},e.x,e.y)}
@@ -1048,7 +1052,7 @@ function useObj(o){
   if(o.k==='chest'){o.used=1;sfx('chest');if(Math.random()<.3)addDrop({sat:ri(2,5)},o.x,o.y);if(Math.random()<.2)addDrop({word:pick(WK)},o.x,o.y);parts(o.x,o.y,14,['#c9a868','#ffe36b'],2.5);dropFrom('chest',o.x,o.y,W.ml)}
   else if(o.k==='shrine'){o.used=1;sfx('shrine');const s=SHR[o.sk];toast(s[0]+': '+s[1]);parts(o.x,o.y,24,['#59e0e6','#fff'],2,1.6);
     if(o.sk==='fill'){G.hp=S.maxHp;G.en=S.maxEn}else if(o.sk==='gold'){for(let i=0;i<7;i++)addDrop({cr:(3+W.ml*2)*rnd(1,2.5)*Math.pow(G.cpi,.9)},o.x,o.y)}else P.shr={k:o.sk,t:s[2],n:s[0]}}
-  else if(o.k==='memo'){W.objs.splice(W.objs.indexOf(o),1);if(!G.memos.includes(o.id))G.memos.push(o.id);sfx('page');const m=MEMOS[o.id];dlg(m[0],m[1],[['Keep it']]);gainXp(20*(1+.8*(W.ml-1)))}
+  else if(o.k==='memo'){W.objs.splice(W.objs.indexOf(o),1);if(!G.memos.includes(o.id))G.memos.push(o.id);sfx('page');const m=MEMOS[o.id];dlg(m[0],m[1],[['Keep it']]);gainXp(20*(1+.8*(W.ml-1))*xpRest())}
   /* The stranger's line prints whole credits, so the gift is the floor of fifteen percent. */
   else if(o.k==='stray'){W.objs.splice(W.objs.indexOf(o),1);let gave;if(G.stims>0){G.stims--;gave='a stim'}else{const c=Math.floor(G.credits*.15);G.credits-=c;gave=fmt(c)}G.unseen=(G.unseen||0)+1;
     dlg('A stranger',pick(['A Resident with her visor in her hand, shaking. ','An old man who took his visor off this morning and cannot find his street. ','A boy, no visor, hiding from the drones. '])+'You give up '+gave+' and point the way to Stillwater. No name is asked. Nobody saw.',[['Walk on']])}
@@ -1428,7 +1432,7 @@ function update(dt){
     if(e.lunge){e.lunge.t-=dt;mv(e,e.lunge.x*12*dt,e.lunge.y*12*dt);if(!e.lunge.hit&&dist(e,P)<.8&&T===P){e.lunge.hit=1;hurt(e.dmg*1.3,false,e)}if(e.lunge.t<=0)e.lunge=null;continue}
     if(e.wind>0){e.wind-=dt;if(e.wind<=0&&d<t.range+e.r+.5){if(T===P)hurt(e.dmg,false,e);else if(T.hp!==undefined)hurtAlly(T,e.dmg,e);if(typeof mpMobSplash==='function')mpMobSplash(e,e.dmg)}continue}
     if(e.k==='hr'&&!S.sp.lines){e.healCd-=dt;if(e.healCd<=0){e.healCd=4.5;let b=null,br=.95;for(const o of W.ents)if(o!==e&&!(o.noheal>0)&&!isBoss(o.k)&&dist(o,e)<5&&o.hp/o.max<br){br=o.hp/o.max;b=o}if(b){sfx('mend');b.hp=Math.min(b.max,b.hp+b.max*.25);W.fx.push({k:'bolt',x:e.x,y:e.y,x2:b.x,y2:b.y,t:0,life:.4,col:'#7be495'});float(b.x,b.y,'mended','#7be495')}}}
-    if(e.k==='tick'){if(d<.9&&(T===P||T.hp!==undefined)){if(typeof mpMobShared==='function'&&mpMobShared()&&e.mid){if(!e.pending){e.pending=1;if(typeof mpMobSplash==='function')mpMobSplash(e,e.dmg*1.5);mpMobHit(e,e.max||e.hp,{mob:1})}continue}W.ents.splice(W.ents.indexOf(e),1);W.fx.push({k:'ring',x:e.x,y:e.y,r:1.4,t:0,life:.3,col:'#ff9a3c'});parts(e.x,e.y,10,['#ff9a3c','#ffe36b','#333'],3);sfx('boom');if(T===P)hurt(e.dmg*1.5,false,null);else hurtAlly(T,e.dmg*1.5,e);G.kills++;gainXp(t.xp*(1+.8*(W.ml-1))*.5);continue}mv(e,dx/d*sp,dy/d*sp);continue}
+    if(e.k==='tick'){if(d<.9&&(T===P||T.hp!==undefined)){if(typeof mpMobShared==='function'&&mpMobShared()&&e.mid){if(!e.pending){e.pending=1;if(typeof mpMobSplash==='function')mpMobSplash(e,e.dmg*1.5);mpMobHit(e,e.max||e.hp,{mob:1})}continue}W.ents.splice(W.ents.indexOf(e),1);W.fx.push({k:'ring',x:e.x,y:e.y,r:1.4,t:0,life:.3,col:'#ff9a3c'});parts(e.x,e.y,10,['#ff9a3c','#ffe36b','#333'],3);sfx('boom');if(T===P)hurt(e.dmg*1.5,false,null);else hurtAlly(T,e.dmg*1.5,e);G.kills++;gainXp(t.xp*(1+.8*(W.ml-1))*.5*xpRest());continue}mv(e,dx/d*sp,dy/d*sp);continue}
     if((e.k==='hound'||e.k==='lancer')&&T===P&&d>2&&d<(e.k==='lancer'?6.5:5)&&e.cd<=0){e.cd=2.4;e.lunge={t:e.k==='lancer'?.52:.38,x:dx/d,y:dy/d,hit:0};sfx('growl');continue}
     if(t.ranged){if(d>t.range)mv(e,dx/d*sp,dy/d*sp);else if(d<t.range*.45)mv(e,-dx/d*sp,-dy/d*sp);
       if(!(e.quiet>0)&&d<=t.range+.8&&e.cd<=0){e.cd=t.atk*(e.mods.fast?.7:1);sfx('eshoot');if(typeof mpMobSplash==='function')mpMobSplash(e,e.dmg);W.projs.push({x:e.x,y:e.y,vx:dx/d*5.5,vy:dy/d*5.5,life:1.6,foe:true,dmg:e.dmg,slow:t.slow,drain:t.drain,sil:t.sil,src:e,col:t.sil?'#e6e2d6':t.drain?'#b48cff':t.slow?'#7be495':e.k==='aegis'?'#9fd0ff':'#ff5d9a'})}}

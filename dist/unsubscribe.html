@@ -470,9 +470,14 @@ const FORMULAS = {
     ward: { sec: 1.7, pct: 0.30, cap: 0.70 }
   },
   /* One level of experience, the same curve the client uses.
-     A full clear of the written districts lands a few levels over each boss.
-     Pay falls off once you are more than `ahead` levels above the machine. */
-  xp: { base: 58, pow: 1.68, ahead: 5, fade: 0.08, floor: 0.2 },
+     Act I still uses the written levels, and a clear of it lands a few levels over Pryce.
+     Districts written above 12 pay `after` of a kill. The ladder folds 12–72 into 12–38
+     on Normal (`ladder`), then Hard and Brutal lift that reading. A full clear is aimed
+     at the low 40s, the mid-60s, and about 80. Pay falls off once you are more than
+     `ahead` levels above the machine. */
+  xp: { base: 58, pow: 1.85, ahead: 5, fade: 0.08, floor: 0.2, after: 0.4 },
+  /* Written 1–12 stay. Written 12–72 is read as 12–38. Hard adds `hard`, Brutal adds `brutal`. */
+  ladder: { act1: 12, top: 72, end: 38, hard: 22, brutal: 38 },
   /* Experience past the act cap, paid in one write on entering Act III. */
   bank: { levels: 1 },
   /* Maximalist auras, and the item skills that already name a radius.
@@ -509,6 +514,17 @@ function braceKeep(cls) {
 function xpNext(lvl) {
   const l = Math.max(1, +lvl || 1);
   return Math.round(FORMULAS.xp.base * Math.pow(l, FORMULAS.xp.pow));
+}
+
+/* The machine level a district is actually built at, before tier.
+   Subpoenas and the Simulator do not come through here. */
+function campaignLevel(written, diff) {
+  const L = FORMULAS.ladder;
+  const w = Math.max(1, Math.round(+written || 1));
+  const span = (L.end - L.act1) / (L.top - L.act1);
+  const base = w <= L.act1 ? w : Math.round(L.act1 + (Math.min(L.top, w) - L.act1) * span);
+  const d = diff | 0;
+  return base + (d >= 2 ? L.brutal : d === 1 ? L.hard : 0);
 }
 
 /* 1 while the character is within `ahead` levels of the machine.
@@ -560,7 +576,7 @@ function pailRate(L) {
   return f.rate + f.rateL * n;
 }
 
-if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep, xpNext, xpPace, auraRank, auraRadius, toxicSwingMul, pailMax, pailRate };
+if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep, xpNext, xpPace, campaignLevel, auraRank, auraRadius, toxicSwingMul, pailMax, pailRate };
 /* ================= util ================= */
 const $=id=>document.getElementById(id);
 const rnd=(a,b)=>a+Math.random()*(b-a), ri=(a,b)=>Math.floor(rnd(a,b+1)), pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1347,8 +1363,12 @@ function ensureCage(){if(W.zi!==3||G.marrow||W.objs.some(o=>o.k==='cage'&&!o.use
   for(let r=2;r<12;r++)for(let y=cy-r;y<=cy+r;y++)for(let x=cx-r;x<=cx+r;x++){if(Math.max(Math.abs(x-cx),Math.abs(y-cy))!==r||x<2||y<2||x>N-3||y>N-3)continue;let ok=true;for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++)if(W.map[(y+j)*N+x+i]!==1)ok=false;if(ok){solid('cage',x,y);return}}}
 function goalPt(){if(W&&W.z.pre)return preGoal();if(!W||W.z.town||W.z.sim||W.hold)return null;const lg=W.objs.find(o=>o.k==='leg');if(lg)return lg;const qo=W.objs.find(o=>o.k==='qobj'&&!o.used);if(qo)return qo;const pg=W.objs.find(o=>o.k==='page'&&!o.used);if(pg&&(G.q.q8||0)<2)return pg;const su=W.ents.find(e=>e.su&&e.q&&G.q[e.q]<2);if(su)return su;const mn=W.objs.find(o=>o.k==='minute'&&!o.used);if(mn)return mn;const cg=W.objs.find(o=>o.k==='cage'&&!o.used);if(cg&&!G.marrow)return cg;return W.goal}
 const lvlCap=()=>G.act5?100:G.act4?90:G.act3?75:G.act2?50:25;
-/* Normal keeps the written level, plus twelve per tier. Hard and Brutal, when adaptive difficulty is on, also rise to the character, and match extra gear. */
-function zoneLevel(z){const b=(z.lvl||1)+(G.tier||0)*12;return (OPT.dyn&&(G.diff||0)>0)?Math.max(b,G.lvl||1):b}
+/* Act I stays written. Later districts use campaignLevel, then twelve per tier.
+   Hard and Brutal lift that ladder. They do not rise to the character.
+   A subpoena and the Simulator already name the level they want. */
+function zoneLevel(z){const written=z.lvl||1;const ml=(z.sub||z.sim)?written:campaignLevel(written,G.diff||0);return ml+(G.tier||0)*12}
+/* A kill in a district written above 12 pays FORMULAS.xp.after. Act I pays full. */
+function xpRest(){if(!W||!W.z||W.z.sim||W.z.sub||W.z.secret)return 1;return (W.z.lvl||1)>12?FORMULAS.xp.after:1}
 function dynFor(ml){if(!OPT.dyn||!(G.diff>0))return{hp:1,dmg:1};const p=pscore(S),f=r=>clamp(r<1?1:1+(r-1)*.8,1,12);return{hp:f(p.dps*2.4/(30*(1+.42*(ml-1)))),dmg:f(p.ehp/16/(7*(1+.22*(ml-1))))}}
 function fillRoom(r,z,zi,i){
   if(i===1&&zi>=1&&zi<=4){const hot=zi>=3,pool=z.mix.filter(m=>m[0]!=='tick'&&!(zi===4&&m[0]==='mech')),n=hot?2:ri(3,4),mul=zi===4?.55:.7;
@@ -1545,7 +1565,7 @@ function kill(e,opt){
   parts(e.x,e.y,isBoss(e.k)?40:e.champ?18:9,[t.pal[0],t.pal[1],'#2a2630','#ffb84a'],3.2);W.fx.push({k:'ring',x:e.x,y:e.y,r:.9*e.sz,t:0,life:.3,col:'#ffb238'});
   W.decals.push({x:e.x,y:e.y,r:e.r*1.6,a:rnd(0,3)});if(W.decals.length>70)W.decals.shift();if(OPT.shake)shake=Math.max(shake,e.champ?5:2);
   P.streak=(P.streakT>0?P.streak:0)+1;P.streakT=4;
-  if(!opt.noXp)gainXp(t.xp*(1+.8*(W.ml-1))*(e.su?10:e.champ?4:1)*(W.z.sim?.6:1)*(1+Math.min(.5,.02*P.streak))*(EV&&EV.k==='outage'?1.5:1)*(e.xpM||1)*mpXp(),0,W.ml);
+  if(!opt.noXp)gainXp(t.xp*(1+.8*(W.ml-1))*(e.su?10:e.champ?4:1)*(W.z.sim?.6:1)*(1+Math.min(.5,.02*P.streak))*(EV&&EV.k==='outage'?1.5:1)*(e.xpM||1)*xpRest()*mpXp(),0,W.ml);
   if(!W.z.sim)sqKill(e);if(!opt.noLoot&&e.k==='gob'){addDrop({sat:ri(3,6)},e.x,e.y);toast('The Dividend Drone pays out')}
   const boss=isBoss(e.k),b2=e.k==='boss2';
   if(!opt.noLoot&&!e.minion&&!W.z.sim){if(boss){dropFrom(e.k,e.x,e.y,W.ml,2,e.k==='boss3'?!G.boss3Kills:b2?!G.boss2Kills:G.bossKills===0);addDrop({cr:(3+W.ml*2)*40*Math.pow(G.cpi,.9)},e.x,e.y)}
@@ -2052,7 +2072,7 @@ function useObj(o){
   if(o.k==='chest'){o.used=1;sfx('chest');if(Math.random()<.3)addDrop({sat:ri(2,5)},o.x,o.y);if(Math.random()<.2)addDrop({word:pick(WK)},o.x,o.y);parts(o.x,o.y,14,['#c9a868','#ffe36b'],2.5);dropFrom('chest',o.x,o.y,W.ml)}
   else if(o.k==='shrine'){o.used=1;sfx('shrine');const s=SHR[o.sk];toast(s[0]+': '+s[1]);parts(o.x,o.y,24,['#59e0e6','#fff'],2,1.6);
     if(o.sk==='fill'){G.hp=S.maxHp;G.en=S.maxEn}else if(o.sk==='gold'){for(let i=0;i<7;i++)addDrop({cr:(3+W.ml*2)*rnd(1,2.5)*Math.pow(G.cpi,.9)},o.x,o.y)}else P.shr={k:o.sk,t:s[2],n:s[0]}}
-  else if(o.k==='memo'){W.objs.splice(W.objs.indexOf(o),1);if(!G.memos.includes(o.id))G.memos.push(o.id);sfx('page');const m=MEMOS[o.id];dlg(m[0],m[1],[['Keep it']]);gainXp(20*(1+.8*(W.ml-1)))}
+  else if(o.k==='memo'){W.objs.splice(W.objs.indexOf(o),1);if(!G.memos.includes(o.id))G.memos.push(o.id);sfx('page');const m=MEMOS[o.id];dlg(m[0],m[1],[['Keep it']]);gainXp(20*(1+.8*(W.ml-1))*xpRest())}
   /* The stranger's line prints whole credits, so the gift is the floor of fifteen percent. */
   else if(o.k==='stray'){W.objs.splice(W.objs.indexOf(o),1);let gave;if(G.stims>0){G.stims--;gave='a stim'}else{const c=Math.floor(G.credits*.15);G.credits-=c;gave=fmt(c)}G.unseen=(G.unseen||0)+1;
     dlg('A stranger',pick(['A Resident with her visor in her hand, shaking. ','An old man who took his visor off this morning and cannot find his street. ','A boy, no visor, hiding from the drones. '])+'You give up '+gave+' and point the way to Stillwater. No name is asked. Nobody saw.',[['Walk on']])}
@@ -2432,7 +2452,7 @@ function update(dt){
     if(e.lunge){e.lunge.t-=dt;mv(e,e.lunge.x*12*dt,e.lunge.y*12*dt);if(!e.lunge.hit&&dist(e,P)<.8&&T===P){e.lunge.hit=1;hurt(e.dmg*1.3,false,e)}if(e.lunge.t<=0)e.lunge=null;continue}
     if(e.wind>0){e.wind-=dt;if(e.wind<=0&&d<t.range+e.r+.5){if(T===P)hurt(e.dmg,false,e);else if(T.hp!==undefined)hurtAlly(T,e.dmg,e);if(typeof mpMobSplash==='function')mpMobSplash(e,e.dmg)}continue}
     if(e.k==='hr'&&!S.sp.lines){e.healCd-=dt;if(e.healCd<=0){e.healCd=4.5;let b=null,br=.95;for(const o of W.ents)if(o!==e&&!(o.noheal>0)&&!isBoss(o.k)&&dist(o,e)<5&&o.hp/o.max<br){br=o.hp/o.max;b=o}if(b){sfx('mend');b.hp=Math.min(b.max,b.hp+b.max*.25);W.fx.push({k:'bolt',x:e.x,y:e.y,x2:b.x,y2:b.y,t:0,life:.4,col:'#7be495'});float(b.x,b.y,'mended','#7be495')}}}
-    if(e.k==='tick'){if(d<.9&&(T===P||T.hp!==undefined)){if(typeof mpMobShared==='function'&&mpMobShared()&&e.mid){if(!e.pending){e.pending=1;if(typeof mpMobSplash==='function')mpMobSplash(e,e.dmg*1.5);mpMobHit(e,e.max||e.hp,{mob:1})}continue}W.ents.splice(W.ents.indexOf(e),1);W.fx.push({k:'ring',x:e.x,y:e.y,r:1.4,t:0,life:.3,col:'#ff9a3c'});parts(e.x,e.y,10,['#ff9a3c','#ffe36b','#333'],3);sfx('boom');if(T===P)hurt(e.dmg*1.5,false,null);else hurtAlly(T,e.dmg*1.5,e);G.kills++;gainXp(t.xp*(1+.8*(W.ml-1))*.5);continue}mv(e,dx/d*sp,dy/d*sp);continue}
+    if(e.k==='tick'){if(d<.9&&(T===P||T.hp!==undefined)){if(typeof mpMobShared==='function'&&mpMobShared()&&e.mid){if(!e.pending){e.pending=1;if(typeof mpMobSplash==='function')mpMobSplash(e,e.dmg*1.5);mpMobHit(e,e.max||e.hp,{mob:1})}continue}W.ents.splice(W.ents.indexOf(e),1);W.fx.push({k:'ring',x:e.x,y:e.y,r:1.4,t:0,life:.3,col:'#ff9a3c'});parts(e.x,e.y,10,['#ff9a3c','#ffe36b','#333'],3);sfx('boom');if(T===P)hurt(e.dmg*1.5,false,null);else hurtAlly(T,e.dmg*1.5,e);G.kills++;gainXp(t.xp*(1+.8*(W.ml-1))*.5*xpRest());continue}mv(e,dx/d*sp,dy/d*sp);continue}
     if((e.k==='hound'||e.k==='lancer')&&T===P&&d>2&&d<(e.k==='lancer'?6.5:5)&&e.cd<=0){e.cd=2.4;e.lunge={t:e.k==='lancer'?.52:.38,x:dx/d,y:dy/d,hit:0};sfx('growl');continue}
     if(t.ranged){if(d>t.range)mv(e,dx/d*sp,dy/d*sp);else if(d<t.range*.45)mv(e,-dx/d*sp,-dy/d*sp);
       if(!(e.quiet>0)&&d<=t.range+.8&&e.cd<=0){e.cd=t.atk*(e.mods.fast?.7:1);sfx('eshoot');if(typeof mpMobSplash==='function')mpMobSplash(e,e.dmg);W.projs.push({x:e.x,y:e.y,vx:dx/d*5.5,vy:dy/d*5.5,life:1.6,foe:true,dmg:e.dmg,slow:t.slow,drain:t.drain,sil:t.sil,src:e,col:t.sil?'#e6e2d6':t.drain?'#b48cff':t.slow?'#7be495':e.k==='aegis'?'#9fd0ff':'#ff5d9a'})}}
@@ -4755,7 +4775,7 @@ advanced:[
  {art:'wanderer',title:'A second pair of hands',text:'Kestrel hires one companion. They level with you, fight beside you, and can wear a weapon and armor you hand them. If they fall she will put them back on their feet, for a fee. One hire at a time. A rendered character from another slot is a different bargain, on the rig.'},
  {art:'cloud',title:'Other people',text:'The Party tab is on the menu only while this page is served by the account server. There you open a game, invite a party, and share one pool of experience. Hostility is declared in town, and it throws you out of the party. Standing down stops only your swings. Town stays safe, and the declaration holds you there for a moment. With no server there is no party. The hireling is still yours.'},
  {art:'board',title:'Doctrine, and the record',text:'On Skills, one doctrine. The first is free. Changing it costs 3 sats, and only in town. Story is what you have been told, filled in as you go. Codex is the numbers: drops, damage types, the twelve words. This guide is the short version. Those two are the long one.'},
- {art:'mono',title:'How hard',text:'Options holds the difficulty. Hard and Brutal machines have more life and hit harder, and they pay experience to match. Hard opens after you clear Act V on Normal. Brutal opens after you clear Act V on Hard. Hardcore is one life: if that hero dies, they are gone. Thin combat effects keeps your own telegraphs and marks, and drops the extra light. None of it changes until you say so. Once Act I is done, More on the Transit Gate raises the tier: each step adds 12 machine levels and puts the districts back.'}
+ {art:'mono',title:'How hard',text:'Options holds the difficulty. Hard and Brutal machines have more life and hit harder, and they pay experience to match. Act I is the level it was written. From the Cloud on, the old 12 to 72 is walked as 12 to 38. Hard adds 22 to that. Brutal adds 38. A district does not rise to meet you. Hard opens after you clear Act V on Normal. Brutal opens after you clear Act V on Hard. Hardcore is one life: if that hero dies, they are gone. Thin combat effects keeps your own telegraphs and marks, and drops the extra light. None of it changes until you say so. Once Act I is done, More on the Transit Gate raises the tier: each step adds 12 machine levels and puts the districts back.'}
 ]};
 let walkT=0;
 function walkArm(){if(walkT||!G||!G.walkNew)return;if(OPT.noWalk){G.walkNew=0;return}walkT=setInterval(()=>{if(!G||!G.walkNew||OPT.noWalk){if(G&&OPT.noWalk)G.walkNew=0;clearInterval(walkT);walkT=0;return}if(mode!=='play'||!$('dlg').hidden||!$('scene').hidden)return;if(!W||!W.z||!W.z.town||W.z.pre)return;clearInterval(walkT);walkT=0;walkOffer()},400)}
@@ -5123,8 +5143,8 @@ function drawSheet(){
     if(gateAct===6){
       h+=`<p style="font-size:13.5px">Each act has its own town, and you can walk out of its gate into the first district and on from one to the next. A district keeps what you have explored; its machines drift back if you stay away a few minutes.</p>`;
       h+=`<p style="font-size:13.5px">The VR rig in Stillwater runs the Simulator, which has no last wave, and a boss rush of lieutenants from districts you have left, plus any you have already broken, and the executives you have beaten. Difficulty and hardcore are in Options.</p>`;
-      if(OPT.dyn&&(G.diff||0)>0)h+=`<p style="font-size:13.5px">On Hard and Brutal, machines scale to you: a fresh district is never below your level, and they toughen as your gear improves. Turn this off in Options. On Normal a district stays at the level it was written.</p>`;
-      else if(OPT.dyn)h+=`<p style="font-size:13.5px">On Normal a district stays at the level it was written. Adaptive difficulty applies on Hard and Brutal, and it is on. Turn it off in Options.</p>`;
+      if(OPT.dyn&&(G.diff||0)>0)h+=`<p style="font-size:13.5px">Act I is the level it was written. From the Cloud on, the old 12 to 72 is walked as 12 to 38. Hard adds 22. Brutal adds 38. A district does not rise to meet you. On Hard and Brutal, machines still toughen when your gear is ahead. Turn that off in Options.</p>`;
+      else if(OPT.dyn)h+=`<p style="font-size:13.5px">Act I is the level it was written. From the Cloud on, the old 12 to 72 is walked as 12 to 38. Hard adds 22 and Brutal adds 38, and neither one chases your level. Adaptive difficulty is on for Hard and Brutal: machines toughen when your gear is ahead. Turn it off in Options.</p>`;
       if(G.leg)h+=`<button class="li" data-bull="1" ${G.sats<10?'disabled':''}><div><b style="color:#ffe36b">Jam the servo leg into the gate</b><span>The gate shudders and shows a field it is not supposed to know about. 10 sats to look the other way.</span></div></button>`;
       if(G.q.q5===3){const mx=G.subMax||1;h+=`<h3>Subpoenas</h3><p style="font-size:13.5px">A sealed district with two or three rules of its own, at your level and above. Break The Respondent to open the next level. 3 sats to serve.</p>`;for(let l=Math.max(1,mx-2);l<=mx;l++)h+=`<button class="li" data-sub="${l}" ${G.sats<3?'disabled':''}><div><b>Subpoena · Level ${l}</b><span>Machines +${15*l}% life, +${10*l}% damage. Pays ${5+3*l} sats and ${3*l} parts.</span></div></button>`}
     }
