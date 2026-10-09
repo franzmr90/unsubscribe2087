@@ -387,7 +387,7 @@ async function install(page, cls, seed) {
       const lost = book.attempts.filter(x => !x.win).length;
       const left = hp / max;
       if (!win && !prog.farmed && lost >= 3 && left > 0.55) prog.wantFarm = true;
-      if (!win && (lost >= 6 || (prog.farmed && lost >= 5 && left > 0.45))) {
+      if (!win && ((lost >= 8 && left > 0.8) || (lost >= 16 && left > 0.5))) {
         prog.giveUp = true;
         prog.giveReason = 'boss ' + __g.W.z.n + ' still at ' + Math.round(left * 100) + '% after ' + lost + ' attempts';
       }
