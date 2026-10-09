@@ -149,12 +149,15 @@ const reloaded=await p.evaluate(()=>{
   const snap=JSON.parse(JSON.stringify(g.saveObj()));
   const wrote=(snap.buyback||[]).some(r=>r.it&&r.it.test);
   const backNames=(snap.buyback||[]).map(r=>r.it.name).sort();
+  const snapBag=(snap.G.bag||[]).map(it=>it.name).sort();
+  const snapSats=snap.G.sats;
   G.bag=[];G.sats=0;G.words={};g.BUYBACK.length=0;delete G._buyback;
   const ok=g.applySave(snap);
   g.enter(0);
-  return {ok,wrote,snapBack:backNames,bag:G.bag.map(it=>it.name).sort(),sats:G.sats,back:g.BUYBACK.map(r=>r.it.name).sort(),words:G.words&&G.words.HODL,held:!!G._buyback,inG:Object.prototype.hasOwnProperty.call(snap.G,'_buyback')};
+  const live=g.G;
+  return {ok,wrote,snapBack:backNames,snapBag,snapSats,bag:live.bag.map(it=>it.name).sort(),sats:live.sats,back:g.BUYBACK.map(r=>r.it.name).sort(),words:live.words&&live.words.HODL,held:!!live._buyback,inG:Object.prototype.hasOwnProperty.call(snap.G,'_buyback')};
 });
-check('a reload restores the pack, the sats, the note and the counter', reloaded.ok && !reloaded.wrote && !reloaded.inG && !reloaded.held && reloaded.sats===192 && reloaded.words===2 && reloaded.bag.join(',')===sold.left.join(',') && reloaded.back.join(',')===sold.back.join(','), reloaded);
+check('a reload restores the pack, the sats, the note and the counter', reloaded.ok && !reloaded.wrote && !reloaded.inG && !reloaded.held && reloaded.snapSats===192 && reloaded.sats===192 && reloaded.words===2 && reloaded.snapBag.join(',')===sold.left.join(',') && reloaded.bag.join(',')===sold.left.join(',') && reloaded.back.join(',')===sold.back.join(','), reloaded);
 
 await p.evaluate(()=>{
   const g=__g,G=g.G;
