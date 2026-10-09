@@ -148,11 +148,12 @@ async function clearUI(p){
     const tab=[...document.querySelectorAll('[data-mside]')].find(x=>x.dataset.mside==='sats:counter');
     if(tab)tab.click();
     const b=document.querySelector('[data-mkt="b"]');
-    const lend=(document.querySelector('.menuPane:not(.off)')||document.body).innerText;
+    const pane=document.querySelector('.menuPane:not(.off)');
+    const lend=pane?pane.textContent:'';
     const r=b.getBoundingClientRect();
-    return {buy:b&&r.height>10, lend:lend.slice(0,80), side:document.querySelector('.menuPane:not(.off)').dataset.mpane};
+    return {buy:b&&r.height>10, loan:/Mr\. Float/.test(lend), side:pane&&pane.dataset.mpane};
   });
-  check('the counter still shows buy and the loan', buy.side==='sats:counter'&&buy.buy&&/Mr\. Float/.test(buy.lend), buy);
+  check('the counter still shows buy and the loan', buy.side==='sats:counter'&&buy.buy&&buy.loan, buy);
 
   for(const t of ['codex','story','quests','opts','sats','char']){
     await phone.p.evaluate(tab=>{__g.setMode('play');__g.openSheet(tab,{});}, t);
@@ -162,6 +163,10 @@ async function clearUI(p){
   }
   await phone.p.evaluate(()=>{__g.setMode('play');__g.openSheet('story',{});const b=[...document.querySelectorAll('[data-mside]')].find(x=>x.dataset.mside==='story:g2');if(b)b.click()});
   await phone.p.screenshot({path:'/opt/cursor/artifacts/menu-phone-story-money.png'});
+  await phone.p.evaluate(()=>{__g.setMode('play');__g.openSheet('codex',{});const b=[...document.querySelectorAll('[data-mside]')].find(x=>x.dataset.mside==='codex:memos');if(b)b.click()});
+  await phone.p.screenshot({path:'/opt/cursor/artifacts/menu-phone-codex-memos.png'});
+  await phone.p.evaluate(()=>{__g.setMode('play');__g.openSheet('char',{});const b=[...document.querySelectorAll('[data-mside]')].find(x=>x.dataset.mside==='char:people');if(b)b.click()});
+  await phone.p.screenshot({path:'/opt/cursor/artifacts/menu-phone-people.png'});
 
   const desk=await boot(1280,800,false);
   const deskOut={};
