@@ -248,8 +248,8 @@ function keepGround(o){if(!o||!G)return;if(!Array.isArray(G.bag))G.bag=[];if(!Ar
   for(const d of (Array.isArray(o.drops)?o.drops:[])){if(!d)continue;if(d.it){if(bagCan(d.it))G.bag.push(d.it);else G.stash.push(d.it)}
     else if(d.sat)G.sats=(G.sats||0)+(d.sat|0);else if(d.cr)G.credits=(G.credits||0)+Math.floor(+d.cr||0);else if(d.pot)G.stims=(G.stims||0)+1;
     else if(d.word){G.words=G.words||{};G.words[d.word]=(G.words[d.word]||0)+1}}}
-function packSave(G0,zs,cur){const G2=Object.assign({},G0);G2.eq=Object.assign({},G0.eq||{});for(const sl of SLOTS)if(G2.eq[sl]&&G2.eq[sl].test)G2.eq[sl]=null;G2.bag=(G0.bag||[]).filter(it=>!(it&&it.test));G2.stash=(G0.stash||[]).filter(it=>!(it&&it.test));G2.cslots=(G0.cslots||[]).filter(it=>!(it&&it.test));if(G0.merc){G2.merc=Object.assign({},G0.merc);for(const sl of ['weapon','helm','armor'])if(G2.merc[sl]&&G2.merc[sl].test)G2.merc[sl]=null}return{G:G2,zs,cur,opt:OPT,t:Date.now()}}
-function saveObj(){const zs={};for(const k in ZS)if(String(k).indexOf('g:')!==0)zs[k]=encW(ZS[k]);let cur=null;if(W&&P){if(!W.z.town&&!W.z.sim)zs[W.zi]=encW(W);cur={zi:W.zi,x:P.x,y:P.y};if(W.z.sim&&W.sim)cur.sim=W.sim.rush?{rush:1}:{wave:Math.max(1,W.sim.wave|0)}}return packSave(G,zs,cur)}
+function packSave(G0,zs,cur){const G2=Object.assign({},G0);G2.eq=Object.assign({},G0.eq||{});for(const sl of SLOTS)if(G2.eq[sl]&&G2.eq[sl].test)G2.eq[sl]=null;G2.bag=(G0.bag||[]).filter(it=>!(it&&it.test));G2.stash=(G0.stash||[]).filter(it=>!(it&&it.test));G2.cslots=(G0.cslots||[]).filter(it=>!(it&&it.test));if(G0.merc){G2.merc=Object.assign({},G0.merc);for(const sl of ['weapon','helm','armor'])if(G2.merc[sl]&&G2.merc[sl].test)G2.merc[sl]=null}delete G2._buyback;return{G:G2,zs,cur,opt:OPT,t:Date.now()}}
+function saveObj(){const zs={};for(const k in ZS)if(String(k).indexOf('g:')!==0)zs[k]=encW(ZS[k]);let cur=null;if(W&&P){if(!W.z.town&&!W.z.sim)zs[W.zi]=encW(W);cur={zi:W.zi,x:P.x,y:P.y};if(W.z.sim&&W.sim)cur.sim=W.sim.rush?{rush:1}:{wave:Math.max(1,W.sim.wave|0)}}const o=packSave(G,zs,cur);const bb=[];for(const r of BUYBACK)if(r&&r.it&&!r.it.test)bb.push({it:r.it,paid:r.paid|0,ask:r.ask|0,kind:r.kind||'brenda'});if(bb.length)o.buyback=bb;return o}
 function save(force){if(!G)return false;let ok=false;try{localStorage.setItem(skey(SLOT),JSON.stringify(saveObj()));localStorage.setItem(SAVEKEY+'_slot',SLOT);ok=true}catch(e){}
   if(CL&&(force||Date.now()-clAt>10000))cloudSave();return ok||!!CL}
 /* account save: the viewer's own private documents in this page's database, one for the hero and one per district */
@@ -257,7 +257,7 @@ const CLD={};let CL=null,clBusy=false,clPend=false,clDirty={},clAt=0,clState='lo
 async function cloudSave(){if(!CL||!G)return;if(clBusy){clPend=true;return}clBusy=true;clAt=Date.now();const sn=SLOT;
   try{const o=saveObj(),zk=Object.keys(o.zs);
     for(const k of zk)if(clDirty[k]||(o.cur&&String(o.cur.zi)===k)){await CL.doc(zdoc(sn,k)).set({s:JSON.stringify(o.zs[k])});delete clDirty[k]}
-    await CL.doc(mdoc(sn)).set({s:JSON.stringify({G:o.G,cur:o.cur,opt:o.opt,t:o.t}),zk,t:o.t,lv:o.G.lvl,cl:o.G.cls,ac:heroAct(o.G)});clState='ok'}catch(e){clState='err'}
+    await CL.doc(mdoc(sn)).set({s:JSON.stringify({G:o.G,cur:o.cur,opt:o.opt,t:o.t,buyback:o.buyback||[]}),zk,t:o.t,lv:o.G.lvl,cl:o.G.cls,ac:heroAct(o.G)});clState='ok'}catch(e){clState='err'}
   clBusy=false;if(clPend){clPend=false;cloudSave()}}
 async function cloudInit(){try{if(!window.claude||!window.claude.use){clState='off';cloudNote();return}
     const u=await window.claude.use('user'),db=await window.claude.use('db'),id=u&&await u.id();if(!db||!id){clState='off';cloudNote();return}
@@ -276,7 +276,7 @@ function applySave(o){if(!o||!o.G||!CLS[o.G.cls])return false;G=o.G;
   if(!Array.isArray(G.slots))G.slots=[0,-1,-1];
   if(typeof G.hp!=='number'||!isFinite(G.hp))G.hp=1;
   G.sats=G.sats||0;G.merc=G.merc||null;G.sq=(G.sq&&typeof G.sq==='object')?G.sq:{};
-  if(G.q.q10===3&&(G.unlocked||0)<12)G.unlocked=12;for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;if(G.q.q5===3&&(G.unlocked||0)<7)G.unlocked=7;actBriefMigrate();if(G.hp<=0){if(!G.hc)G.hp=9999;o.cur=null}ZS={};for(const k in (o.zs||{})){let z=null;try{z=decW(o.zs[k])}catch(e){z=null}if(z)ZS[k]=z;else keepGround(o.zs[k])}if(o.opt){const raw=o.opt;OPT=Object.assign({},OPT_DEF,raw);lootMigrate(raw)}G._cur=o.cur||null;boonRefund();return true}
+  if(G.q.q10===3&&(G.unlocked||0)<12)G.unlocked=12;for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;if(G.q.q5===3&&(G.unlocked||0)<7)G.unlocked=7;actBriefMigrate();if(G.hp<=0){if(!G.hc)G.hp=9999;o.cur=null}ZS={};for(const k in (o.zs||{})){let z=null;try{z=decW(o.zs[k])}catch(e){z=null}if(z)ZS[k]=z;else keepGround(o.zs[k])}if(o.opt){const raw=o.opt;OPT=Object.assign({},OPT_DEF,raw);lootMigrate(raw)}if(Array.isArray(o.buyback))G._buyback=o.buyback.filter(r=>r&&r.it&&!r.it.test);G._cur=o.cur||null;boonRefund();return true}
 function hcBegin(){const c=G&&CLS[G.cls]?G.cls:'scrapper';DY=null;const d=$('death');if(d)d.hidden=true;resetZones();newGame(c);G.hc=true;save(true)}
 function startPlay(){ensureG();if(G.hc&&G.hp<=0){hcBegin();return}mpConnect();mode='play';$('title').hidden=true;$('hud').hidden=false;calc();setSkillButtons();
   const c=G._cur;delete G._cur;const cz=c&&ZONES[c.zi];
@@ -322,7 +322,7 @@ function buildTown(zi){zi=zi||0;if(ZONES[zi].pre)return buildPre();const act=ZON
   {const posted=mkCharm((G.lvl||1)+(G.tier||0)*12+2,{sz:Math.random()<.34?'filing':'notice'});if(posted){if((posted.q|0)<2)posted.q=2;satShop.push({it:posted,price:posted.cells>=4?30:18})}}
   shop=[];for(let i=0;i<8;i++)shop.push(Object.assign(makeItem(G.lvl+G.tier*12+ri(0,2),Math.random()<.12?2:1),{id:true}));
   shop.push(mkCharm((G.lvl||1)+(G.tier||0)*12,{sz:'slip'}));if(Math.random()<.5)shop.push(mkCharm((G.lvl||1)+(G.tier||0)*12+1,{sz:'notice'}));
-  BUYBACK.length=0}
+  BUYBACK.length=0;if(Array.isArray(G._buyback)){for(const r of G._buyback)if(r&&r.it&&!r.it.test)BUYBACK.push({it:r.it,paid:r.paid|0,ask:r.ask|0,kind:r.kind||'brenda'});delete G._buyback}}
 /* the simulator: an arena outside the campaign. Waves grow in size, level and variety; nothing is saved and nothing is lost. */
 function buildSim(wave,rush){W=blankW(6,30);const N=30;for(let y=4;y<=25;y++)for(let x=4;x<=25;x++)W.map[y*N+x]=1;
   for(const[x,y]of[[10,10],[19,10],[10,19],[19,19]])solid('prop',x,y,{v:1});for(const[x,y]of[[5,5],[24,5],[5,24],[24,24],[14,4],[14,25]])solid('lamp',x,y);
