@@ -265,13 +265,6 @@ async function install(page, cls, seed) {
       __g.mouseClick('left', tx, ty, { hover: null });
       if (prog.dodgeT <= 0) { prog.dodgeT = 1.4; __g.dodge(); }
     }
-    function goHome() {
-      const W = __g.W, P = __g.P;
-      if (!W.portals.some(p => p.kind === 'home')) __g.openPortal();
-      const home = W.portals.find(p => p.kind === 'home');
-      if (home && hypot(home, P) < 1.4) __g.usePortal(home);
-      else if (home) toward(home.x, home.y);
-    }
     function toward(x, y) {
       if (prog.moveT > 0) { prog.moveT -= 1 / 20; return; }
       const P = __g.P;
@@ -469,47 +462,6 @@ async function install(page, cls, seed) {
           continue;
         }
         if (W.z.town && !prog.order) break;
-        const bodies = (W.objs || []).filter(o => o.k === 'corpse');
-        if (bodies.length) {
-          bodies.sort((a, b) => hypot(a, P) - hypot(b, P));
-          const body = bodies[0];
-          const giveUpWalk = prog.corpseBail === body.id;
-          if (!giveUpWalk) {
-            if (prog.corpseId !== body.id || prog.corpseZi !== W.zi) {
-              prog.corpseId = body.id; prog.corpseZi = W.zi; prog.corpseT0 = G.time;
-            }
-            const age = G.time - (prog.corpseT0 || G.time);
-            const threat = nearest(2.3);
-            const hp = G.hp / __g.S.maxHp;
-            if (age > 40) {
-              prog.corpseBail = body.id;
-              prog.log.notes.push('left the body in ' + W.z.n + ' and kept on');
-            } else if (hypot(body, P) < 1.7) {
-              const before = (G.corpses || []).length;
-              __g.useObj(body);
-              if ((G.corpses || []).length < before) {
-                prog.log.corpseWalks = (prog.log.corpseWalks || 0) + 1;
-                prog.corpseBail = null;
-                prog.log.notes.push('walked body ' + body.id + ' in ' + (W.z && W.z.n));
-              }
-            } else if (threat && hp > 0.28) fight(threat.e, true);
-            else if (threat && hp <= 0.28) goHome();
-            else toward(body.x, body.y);
-            if (prog.corpseBail !== body.id) {
-              if (__g.mode !== 'play') break;
-              __g.update(dt); steps++;
-              continue;
-            }
-          } else if (hypot(body, P) < 1.7) {
-            const before = (G.corpses || []).length;
-            __g.useObj(body);
-            if ((G.corpses || []).length < before) {
-              prog.log.corpseWalks = (prog.log.corpseWalks || 0) + 1;
-              prog.corpseBail = null;
-              prog.log.notes.push('walked body ' + body.id + ' in ' + (W.z && W.z.n));
-            }
-          }
-        }
         if (prog.order === 'farm') {
           const foe = nearest(7.5);
           if (foe) fight(foe.e, true);
@@ -517,6 +469,27 @@ async function install(page, cls, seed) {
           __g.update(dt); steps++;
           if (G.time >= prog.farmUntil || G.kills >= prog.farmKills) { prog.order = null; prog.farmed = true; break; }
           continue;
+        }
+        const bodies = (W.objs || []).filter(o => o.k === 'corpse');
+        const diedHere = (prog.log.fell[W.z.n] || 0) >= 3;
+        if (bodies.length && !diedHere) {
+          bodies.sort((a, b) => hypot(a, P) - hypot(b, P));
+          const body = bodies[0];
+          if (hypot(body, P) < 1.7) {
+            const before = (G.corpses || []).length;
+            __g.useObj(body);
+            if ((G.corpses || []).length < before) {
+              prog.log.corpseWalks = (prog.log.corpseWalks || 0) + 1;
+              prog.log.notes.push('walked body ' + body.id + ' in ' + (W.z && W.z.n));
+            }
+          } else toward(body.x, body.y);
+          if (__g.mode !== 'play') break;
+          __g.update(dt); steps++;
+          continue;
+        }
+        if (bodies.length) {
+          const body = bodies.slice().sort((a, b) => hypot(a, P) - hypot(b, P))[0];
+          if (body && hypot(body, P) < 1.7) __g.useObj(body);
         }
         const foeClose = nearest(prog.order === 'next' ? 4.2 : 6.8);
         if (prog.order === 'exit' || prog.order === 'back') {
@@ -554,15 +527,8 @@ async function install(page, cls, seed) {
           else fight(b, true);
         } else if (hereJob()) {
           const gp = jobPoint();
-          const age = prog.zoneT0 != null ? G.time - prog.zoneT0 : 0;
-          if (age > 200 && prog.zoneBail !== W.zi) {
-            prog.zoneBail = W.zi;
-            prog.wantFarm = true;
-            prog.log.notes.push('left ' + W.z.n + ' after a long fight');
-            goHome();
-          }
-          const threat = nearest(age > 45 ? 2.3 : 6.2, e => !(W.zi === 14 && e.su && ((G.qt && G.qt.motion) || 0) < 4));
-          if (age <= 200 && threat) fight(threat.e, true);
+          const threat = nearest(6.2, e => !(W.zi === 14 && e.su && ((G.qt && G.qt.motion) || 0) < 4));
+          if (threat) fight(threat.e, true);
           else if (gp) {
             if (hypot(gp, P) < 1.35) {
               if (!useNear(o => o.k === 'cage' || o.k === 'page' || o.k === 'minute' || o.k === 'qobj', 'obj')) toward(gp.x, gp.y);
