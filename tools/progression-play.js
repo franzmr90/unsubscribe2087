@@ -473,31 +473,42 @@ async function install(page, cls, seed) {
         if (bodies.length) {
           bodies.sort((a, b) => hypot(a, P) - hypot(b, P));
           const body = bodies[0];
-          if (prog.corpseId !== body.id || prog.corpseZi !== W.zi) {
-            prog.corpseId = body.id; prog.corpseZi = W.zi; prog.corpseT0 = G.time;
-          }
-          const age = G.time - (prog.corpseT0 || G.time);
-          const threat = nearest(2.3);
-          const hp = G.hp / __g.S.maxHp;
-          if (age > 40) {
-            if (prog.corpseBail !== body.id) {
-              prog.corpseBail = body.id;
-              prog.log.notes.push('gave up the walk in ' + W.z.n + ' and went back to town');
+          const giveUpWalk = prog.corpseBail === body.id;
+          if (!giveUpWalk) {
+            if (prog.corpseId !== body.id || prog.corpseZi !== W.zi) {
+              prog.corpseId = body.id; prog.corpseZi = W.zi; prog.corpseT0 = G.time;
             }
-            goHome();
+            const age = G.time - (prog.corpseT0 || G.time);
+            const threat = nearest(2.3);
+            const hp = G.hp / __g.S.maxHp;
+            if (age > 40) {
+              prog.corpseBail = body.id;
+              prog.log.notes.push('left the body in ' + W.z.n + ' and kept on');
+            } else if (hypot(body, P) < 1.7) {
+              const before = (G.corpses || []).length;
+              __g.useObj(body);
+              if ((G.corpses || []).length < before) {
+                prog.log.corpseWalks = (prog.log.corpseWalks || 0) + 1;
+                prog.corpseBail = null;
+                prog.log.notes.push('walked body ' + body.id + ' in ' + (W.z && W.z.n));
+              }
+            } else if (threat && hp > 0.28) fight(threat.e, true);
+            else if (threat && hp <= 0.28) goHome();
+            else toward(body.x, body.y);
+            if (prog.corpseBail !== body.id) {
+              if (__g.mode !== 'play') break;
+              __g.update(dt); steps++;
+              continue;
+            }
           } else if (hypot(body, P) < 1.7) {
             const before = (G.corpses || []).length;
             __g.useObj(body);
             if ((G.corpses || []).length < before) {
               prog.log.corpseWalks = (prog.log.corpseWalks || 0) + 1;
+              prog.corpseBail = null;
               prog.log.notes.push('walked body ' + body.id + ' in ' + (W.z && W.z.n));
             }
-          } else if (threat && hp > 0.28) fight(threat.e, true);
-          else if (threat && hp <= 0.28) goHome();
-          else toward(body.x, body.y);
-          if (__g.mode !== 'play') break;
-          __g.update(dt); steps++;
-          continue;
+          }
         }
         if (prog.order === 'farm') {
           const foe = nearest(7.5);
