@@ -428,6 +428,7 @@ async function install(page, cls, seed) {
         if (prog.lastZi !== W.zi) {
           const left = prog.lastZi;
           prog.lastZi = W.zi;
+          prog.focus = null;
           prog.stuckT = 0;
           prog.stuckNote = null;
           if (prog.order === 'next' && left === prog.orderZi) prog.order = null;
@@ -535,13 +536,32 @@ async function install(page, cls, seed) {
           else fight(b, true);
         } else if (hereJob()) {
           const gp = jobPoint();
-          const age = prog.zoneT0 != null ? G.time - prog.zoneT0 : 0;
-          const threat = nearest(age > 40 ? 2.2 : 6.2, e => !(W.zi === 14 && e.su && ((G.qt && G.qt.motion) || 0) < 4));
-          if (threat) fight(threat.e, true);
-          else if (gp) {
+          if (!prog.zoneLived) prog.zoneLived = {};
+          prog.zoneLived[W.zi] = (prog.zoneLived[W.zi] || 0) + dt;
+          const commit = prog.zoneLived[W.zi] > 40 || (prog.log.fell[W.z.n] || 0) >= 2;
+          const skipMotion = e => W.zi === 14 && e.su && ((G.qt && G.qt.motion) || 0) < 4;
+          const goGoal = () => {
+            if (!gp) return;
             if (hypot(gp, P) < 1.35) {
               if (!useNear(o => o.k === 'cage' || o.k === 'page' || o.k === 'minute' || o.k === 'qobj', 'obj')) toward(gp.x, gp.y);
             } else toward(gp.x, gp.y);
+          };
+          if (commit) {
+            const band = prof.kite ? prof.far + 1.4 : prof.reach + 2.2;
+            const focusOk = prog.focus && prog.focus.hp > 0 && hypot(prog.focus, P) < band && !skipMotion(prog.focus);
+            const su = W.ents.find(e => e.hp > 0 && e.su && e.q && (G.q[e.q] || 0) < 2 && !skipMotion(e));
+            const closeR = prof.kite ? Math.max(2.2, prof.near * 0.92) : Math.max(1.7, prof.reach * 0.85);
+            const close = nearest(closeR, e => !skipMotion(e));
+            let foe = null;
+            if (focusOk) foe = prog.focus;
+            else if (su && hypot(su, P) < (prof.kite ? prof.far + 0.5 : prof.reach + 1.3)) foe = su;
+            else if (close) foe = close.e;
+            if (foe) { prog.focus = foe; fight(foe, true); }
+            else { prog.focus = null; goGoal(); }
+          } else {
+            const threat = nearest(6.2, e => !skipMotion(e));
+            if (threat) fight(threat.e, true);
+            else goGoal();
           }
         } else {
           const s = __g.storyStep();
@@ -685,6 +705,7 @@ async function install(page, cls, seed) {
       prog.order = null; prog.townDone = false; prog.corpseSeen = {};
       prog.giveUp = false; prog.giveReason = '';
       prog.wantFarm = false; prog.farmed = false; prog.attempt = null;
+      prog.zoneLived = {}; prog.focus = null; prog.corpseBail = null;
       const note = 'climbed to ' + (names[G.diff] || G.diff) + ' at level ' + G.lvl;
       prog.log.notes.push(note);
       if (__g.mode === 'sheet' && __g.closeSheet) __g.closeSheet();
