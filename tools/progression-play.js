@@ -547,17 +547,23 @@ async function install(page, cls, seed) {
             } else toward(gp.x, gp.y);
           };
           if (commit) {
-            const band = prof.kite ? prof.far + 1.4 : prof.reach + 2.2;
-            const focusOk = prog.focus && prog.focus.hp > 0 && hypot(prog.focus, P) < band && !skipMotion(prog.focus);
             const su = W.ents.find(e => e.hp > 0 && e.su && e.q && (G.q[e.q] || 0) < 2 && !skipMotion(e));
-            const closeR = prof.kite ? Math.max(2.2, prof.near * 0.92) : Math.max(1.7, prof.reach * 0.85);
-            const close = nearest(closeR, e => !skipMotion(e));
-            let foe = null;
-            if (focusOk) foe = prog.focus;
-            else if (su && hypot(su, P) < (prof.kite ? prof.far + 0.5 : prof.reach + 1.3)) foe = su;
-            else if (close) foe = close.e;
-            if (foe) { prog.focus = foe; fight(foe, true); }
-            else { prog.focus = null; goGoal(); }
+            const onJob = prog.focus && su && prog.focus === su;
+            const hold = onJob ? (prof.kite ? prof.far + 1 : 9) : (prof.kite ? prof.far + 0.8 : prof.reach + 1.6);
+            const focusOk = prog.focus && prog.focus.hp > 0 && hypot(prog.focus, P) < hold && !skipMotion(prog.focus);
+            if (focusOk) fight(prog.focus, true);
+            else {
+              prog.focus = null;
+              const suD = su ? hypot(su, P) : 999;
+              const reach = prof.kite ? prof.far : prof.reach + (su && su.r || 0.4) + 0.35;
+              if (su && suD <= reach) { prog.focus = su; fight(su, true); }
+              else {
+                const acquire = prof.kite ? Math.max(prof.near, 2.6) : Math.max(1.8, prof.reach);
+                const near = nearest(acquire, e => !skipMotion(e));
+                if (near) { prog.focus = near.e; fight(near.e, true); }
+                else goGoal();
+              }
+            }
           } else {
             const threat = nearest(6.2, e => !skipMotion(e));
             if (threat) fight(threat.e, true);
