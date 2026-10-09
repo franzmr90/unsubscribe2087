@@ -433,6 +433,16 @@ async function install(page, cls, seed) {
           continue;
         }
         if (W.z.town && !prog.order) break;
+        const bodies = (W.objs || []).filter(o => o.k === 'corpse');
+        if (bodies.length) {
+          bodies.sort((a, b) => hypot(a, P) - hypot(b, P));
+          const body = bodies[0];
+          if (hypot(body, P) < 1.7) __g.useObj(body);
+          else toward(body.x, body.y);
+          if (__g.mode !== 'play') break;
+          __g.update(dt); steps++;
+          continue;
+        }
         if (prog.order === 'farm') {
           const foe = nearest(7.5);
           if (foe) fight(foe.e, true);
@@ -631,6 +641,7 @@ async function townEconomy(page) {
       shop: window.__prog.shopSnap(), bag: window.__prog.bagSnap()
     };
     window.__prog._eco0 = { c: snap.credits, s: snap.sats, st: snap.stims, merc: snap.merc };
+    if (__g.repairAll) { const spent = __g.repairAll(); if (spent) window.__prog.log.notes.push('repaired for ' + spent + ' sats'); }
     const v = window.__prog.log.vendors;
     const last = v[v.length - 1];
     if (!last || last.lvl !== snap.shop.lvl || (v.length < 12)) v.push({ when: 'stock', lvl: snap.shop.lvl, zi: snap.shop.zi, credits: snap.shop.credits, sats: snap.shop.sats });
@@ -888,6 +899,11 @@ async function runClass(browser, cls, seed, deadline) {
       L.kills = __g.G.kills || 0;
       L.time = +__g.G.time.toFixed(1);
       L.q = Object.assign({}, __g.G.q);
+      L.repairSpent = __g.G.repairSpent || 0;
+      L.corpseBought = __g.G.corpseBought || 0;
+      L.corpsesLeft = (__g.G.corpses || []).length;
+      L.sats = __g.G.sats | 0;
+      L.credits = Math.round(__g.G.credits || 0);
       L.wallMs = 0;
       return L;
     });

@@ -286,6 +286,7 @@ for(const[k,n]of[['impact','Impact'],['surge','Surge'],['rust','Rust'],['heat','
 AFX2.push({k:'t_sound',pre:1,t:'+{v}% Sound damage',tiers:[['Tuned',3,10,18],['Tuned',12,19,32],['Tuned',24,33,50],['Tuned',36,51,70]]});
 AFX.push({k:'t_x',pre:1,t:'+{v}% typed damage',sl:['weapon','gloves','ring','amulet','helm'],tiers:AFX2[0].tiers},{k:'r_x',pre:0,grp:'res',t:'+{v}% resistance',sl:['armor','helm','boots','belt','ring','amulet'],tiers:AFX2[1].tiers},{k:'r_all',pre:0,w:.3,grp:'res',t:'+{v}% to all resistances',sl:['armor','helm','belt','ring','amulet'],tiers:[['of Coverage',12,5,8],['of Coverage',24,9,15],['of Coverage',36,16,20]]});
 AFX.push({k:'cdr',t:'+{v}% Faster Cast Rate',sl:['gloves'],tiers:[['of the Quill',8,8,12]]},{k:'cdr',t:'+{v}% Faster Cast Rate',sl:['armor','weapon'],tiers:[['of the Quill',8,15,20]]},{k:'cdr',t:'+{v}% Faster Cast Rate',sl:['amulet'],tiers:[['of the Quill',8,8,12]]});
+AFX.push({k:'patch',pre:0,w:.4,t:'Self-patching',sl:['weapon','helm','armor','gloves','boots','belt'],tiers:[['of the Patch',8,1,1]]});
 const AFK={};for(const a of AFX.concat(AFX2))AFK[a.k]=a;
 Object.assign(AFK,{pdr:{k:'pdr',t:'Damage reduced by {v}%'},hpL:{k:'hpL',t:'+{v} Life per Level'},enL:{k:'enL',t:'+{v} Energy per Level'},enPct:{k:'enPct',t:'+{v}% to Maximum Energy'},enKill:{k:'enKill',t:'+{v} Energy after each Kill'},enleech:{k:'enleech',t:'{v}% Energy Stolen per Hit'},mgt:{k:'mgt',t:'+{v} to Might'},ref:{k:'ref',t:'+{v} to Reflex'},vit:{k:'vit',t:'+{v} to Vitality'},bnd:{k:'bnd',t:'+{v} to Bandwidth'},sk_hacker:{k:'sk_hacker',t:'+{v} to Technomancer Skills'},sk_courier:{k:'sk_courier',t:'+{v} to Runner Skills'}});
 const STATK=AFX.concat(AFX2).map(a=>a.k);
@@ -293,13 +294,13 @@ const RN1=['Rust','Ash','Grim','Hollow','Static','Wraith','Carrion','Dread','Nul
 const RN2={weapon:['Fang','Bite','Edge','Verdict','Ruin','Splitter','Thirst'],helm:['Crown','Cowl','Visage','Brow','Mask'],armor:['Shroud','Hide','Carapace','Mantle','Ward'],gloves:['Grasp','Clutch','Hand','Knuckle','Hold'],boots:['Tread','Stride','Spur','Track','Trample'],belt:['Cinch','Coil','Lash','Buckle','Clasp'],ring:['Loop','Circle','Band','Knot','Spiral'],amulet:['Token','Eye','Heart','Charm','Noose']};
 // uniques: fixed slot and base, rolled mods, one special property
 const UNI=[
- {id:'parachute',n:'The Golden Parachute',slot:'armor',il:6,base:'Flak Coat',mods:{hp:[40,60],armorP:[40,60]},sp:'When you would die, recover half your life instead (once every 2 minutes)',fl:'Pryce has four. He has never jumped.'},
+ {id:'parachute',n:'The Golden Parachute',slot:'armor',il:6,base:'Flak Coat',ind:1,mods:{hp:[40,60],armorP:[40,60]},sp:'When you would die, recover half your life instead (once every 2 minutes)',fl:'Pryce has four. He has never jumped.'},
  {id:'severance',n:'Severance',slot:'weapon',il:5,base:'Girder Maul',bi:1,mods:{dmg:[40,60],hp:[15,25]},sp:'15% chance to strike for triple damage',fl:'Two weeks’ notice, delivered all at once.'},
  {id:'terms',n:'Terms & Conditions',slot:'amulet',il:8,base:'Sigil Core',mods:{skills:[1,2],thorns:[20,35]},sp:'Machines that strike you are stunned for 1 second',fl:'Nobody has read it. Everybody agreed.'},
  {id:'hoodie',n:'The Founder’s Hoodie',slot:'armor',il:4,base:'Padded Hoodie',bi:1,mods:{en:[25,40],regen:[2,3]},sp:'Skills cost 25% less energy',fl:'Still warm. That is the unsettling part.'},
  {id:'review',n:'Last Honest Review',slot:'ring',il:3,base:'Copper Band',mods:{crit:[6,10],mf:[30,45]},sp:null,fl:'One star. Removed for violating community standards.'},
  {id:'intern',n:'Unpaid Intern',slot:'gloves',il:4,base:'Work Gloves',mods:{aspd:[15,22],hp:[10,20]},sp:'20% chance on hit to cast Arc Chain',fl:'Paid in exposure. To voltage.'},
- {id:'repair',n:'Right to Repair',slot:'belt',il:3,base:'Tool Belt',mods:{regenH:[3,5],hp:[20,30]},sp:'Stims also refill your energy',fl:'Banned in forty territories. Works in all of them.'},
+ {id:'repair',n:'Right to Repair',slot:'belt',il:3,base:'Tool Belt',patch:1,mods:{regenH:[3,5],hp:[20,30]},sp:'Stims also refill your energy',fl:'Banned in forty territories. Works in all of them.'},
  {id:'hedge',n:'Inflation Hedge',slot:'ring',il:6,base:'Signet Chip',mods:{gold:[60,90],armor:[5,10]},sp:'Credits you carry grow as fast as prices rise',fl:'The rich were never holding cash.'},
  {id:'deadline',n:'Deadline',slot:'boots',il:5,base:'Steel-Toes',mods:{mspd:[20,25],armorP:[30,50]},sp:'+25% damage while moving',fl:'It was due yesterday. So were you.'},
  {id:'whistle',n:'The Whistle',slot:'helm',il:7,base:'Riot Helm',mods:{armorP:[30,50],shock:[4,8]},sp:'Slain machines explode, wounding others nearby',fl:'She blew it once. The echo is still going.'},
