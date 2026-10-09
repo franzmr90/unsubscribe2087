@@ -228,7 +228,7 @@ function modeOf(text, explicit) {
   if (explicit === 'mouse' || explicit === 'touch' || explicit === 'both') return explicit;
   const s = String(text || '');
   const mouse = /\bon a desk\b|\bleft click\b|\bright click\b|\bright-click\b|\bF1 through F8\b|\bF1–F8\b|\bF1-F8\b|\bWASD\b|\bpress F1\b/i.test(s);
-  const touch = /\bon a phone\b|\bthe stick walks\b|\bthumb button\b|\bTap the\b|\btap the button\b|\bTap to\b|\bDrag it\b/i.test(s);
+  const touch = /\bon a phone\b|\bthe stick walks\b|\bthumb button\b|\bTap the\b|\btap the button\b|\bTap to\b|\bDrag it\b|\bdrag away from the button\b|\bfurther from the button\b/i.test(s);
   if (mouse && touch) return 'both';
   if (mouse) return 'mouse';
   if (touch) return 'touch';
@@ -1425,6 +1425,15 @@ function scanCalls(toks, fnAt) {
       emit(parseSpan(toks, args[2]), {
         id: base, section, groups: ['Speech bubbles'], sub: 4300,
         context: 'A speech bubble over a creature, from ' + fn + '.'
+      });
+    } else if (name === 'uiSay') {
+      emit(parseSpan(toks, args[0]), {
+        id: base + '.mouse', section, groups: ['Layout'], sub: 1500, mode: 'mouse',
+        context: 'Desk wording from ' + (fn || 'uiSay') + '. The touch wording is the next entry.'
+      });
+      emit(parseSpan(toks, args[1]), {
+        id: base + '.touch', section, groups: ['Layout'], sub: 1500, mode: 'touch',
+        context: 'Touch wording from ' + (fn || 'uiSay') + '. The desk wording is the previous entry.'
       });
     } else if (name === 'dlg') {
       const title = parseSpan(toks, args[0]);

@@ -894,7 +894,10 @@ Object.assign(SKF,{
 /* Drag-to-aim. aim 'auto' drags on a finger and casts at once from a mouse or a key.
    'drag' always shows the reticle. 'quick' never does. A right click on a foe walks
    into range, then mouseFire aims that cast. It does not open the reticle, so the
-   held-button retry and the button drag are untouched. */
+   held-button retry and the button drag are untouched.
+   A finger measures from the skill button: the direction from the button is the
+   direction from the hero, and a longer drag pushes the area out to the skill's
+   reach. A mouse or a key still aims where the pointer sits. */
 let AIMING=null,lastPtr=null;
 const AIM={
   scrapper:{
@@ -967,12 +970,73 @@ function aimDefault(spec){
   const sgn=spec.back?-1:1;
   const dist=spec.reach?Math.min(spec.def!=null?spec.def:Math.min(3,spec.reach),spec.reach):0;
   return {x:P.x+dir.x*sgn*dist,y:P.y+dir.y*sgn*dist}}
-function aimShow(on){const b=document.getElementById('aimCancel');if(b)b.hidden=!on}
+/* Full cast range maps to a thumb travel that fits on the screen. The ring is
+   the same in every direction, and it shrinks when the button sits near an edge
+   so the far side of the skill is still reachable. */
+function aimStickMetrics(ox,oy){
+  const vw=window.innerWidth||800,vh=window.innerHeight||600,short=Math.min(vw,vh);
+  const want=Math.max(70,Math.min(150,short*.22));
+  const room=Math.max(0,Math.min(ox,oy,vw-ox,vh-oy)-10);
+  const reach=room>=32?Math.min(want,room):Math.min(want,Math.max(24,room));
+  let dead=Math.min(26,Math.max(14,reach*.3));
+  if(dead>reach*.45)dead=reach*.4;
+  return {reach:reach,dead:dead}}
+function aimScreenDir(sx,sy){
+  const z=ZM||1,A=(sx/z)/32,B=(sy/z)/16;
+  let wx=(A+B)/2,wy=(B-A)/2,d=Math.hypot(wx,wy)||1;
+  return {x:wx/d,y:wy/d}}
+function aimThumbWorld(ox,oy,cx,cy,spec){
+  const stick=aimStickMetrics(ox,oy);
+  const dx=cx-ox,dy=cy-oy,dist=Math.hypot(dx,dy);
+  if(!(dist>stick.dead))return {dead:1,t:0,x:P.x,y:P.y,stick:stick};
+  const dir=aimScreenDir(dx,dy);
+  const t=Math.min(1,(dist-stick.dead)/Math.max(1,stick.reach-stick.dead));
+  const cap=spec&&spec.reach>0?spec.reach:0;
+  return {dead:0,t:t,x:P.x+dir.x*t*cap,y:P.y+dir.y*t*cap,dir:dir,stick:stick}}
+function aimOrigin(slot,cx,cy){
+  let el=null;
+  if(slot!=null&&typeof sbtn!=='undefined'&&sbtn[slot])el=sbtn[slot];
+  if(!el&&slot!=null)el=document.querySelector('.sk[data-i="'+slot+'"]');
+  if(el){const r=el.getBoundingClientRect();if(r.width>8&&r.height>8)return {x:r.left+r.width/2,y:r.top+r.height/2}}
+  if(cx!=null&&cy!=null)return {x:cx,y:cy};
+  return {x:(window.innerWidth||800)/2,y:(window.innerHeight||600)/2}}
+function aimThumb(cx,cy){
+  if(!AIMING||!AIMING.thumb||!P)return null;
+  const spec=aimSpec(AIMING.i);if(!spec)return null;
+  AIMING.fx=cx;AIMING.fy=cy;
+  const w=aimThumbWorld(AIMING.ox,AIMING.oy,cx,cy,spec);
+  AIMING.reachPx=w.stick.reach;AIMING.deadPx=w.stick.dead;AIMING.dead=w.dead?1:0;
+  if(w.dead){
+    if(AIMING.armed){AIMING.x=P.x;AIMING.y=P.y}
+    else{const d=aimDefault(spec);AIMING.x=d.x;AIMING.y=d.y}
+  }else{AIMING.armed=1;const c=aimClamp(spec,w.x,w.y);AIMING.x=c.x;AIMING.y=c.y}
+  return {x:AIMING.x,y:AIMING.y}}
+function aimStickPaint(){
+  const el=document.getElementById('aimStick');if(!el)return;
+  if(!AIMING||!AIMING.thumb){el.hidden=true;return}
+  el.hidden=false;el.classList.toggle('cancel',!!AIMING.cancel);
+  const reach=AIMING.reachPx||70,dead=AIMING.deadPx||16,ox=AIMING.ox,oy=AIMING.oy;
+  const ring=el.querySelector('.ring'),hole=el.querySelector('.dead'),line=el.querySelector('.line'),knob=el.querySelector('.knob'),cap=el.querySelector('.cap');
+  ring.style.width=ring.style.height=(reach*2)+'px';ring.style.left=(ox-reach)+'px';ring.style.top=(oy-reach)+'px';
+  hole.style.width=hole.style.height=(dead*2)+'px';hole.style.left=(ox-dead)+'px';hole.style.top=(oy-dead)+'px';
+  if(cap){cap.style.left=ox+'px';cap.style.top=oy+'px'}
+  let dx=(AIMING.fx||ox)-ox,dy=(AIMING.fy||oy)-oy,dist=Math.hypot(dx,dy);
+  if(!(dist>dead)){line.hidden=true;knob.hidden=true;return}
+  const shown=Math.min(dist,reach),ang=Math.atan2(dy,dx);
+  line.hidden=false;knob.hidden=false;
+  line.style.left=ox+'px';line.style.top=(oy-1)+'px';line.style.width=shown+'px';line.style.transform='rotate('+ang+'rad)';
+  knob.style.left=(ox+Math.cos(ang)*shown-8)+'px';knob.style.top=(oy+Math.sin(ang)*shown-8)+'px'}
+function aimShow(on){const b=document.getElementById('aimCancel');if(b)b.hidden=!on;aimStickPaint()}
 function beginAim(i,slot,pt,cx,cy,fkey){
   const spec=aimSpec(i);if(!spec||!P||mode!=='play')return null;
   const d=aimDefault(spec);
-  AIMING={i:i,slot:slot,pt:pt||'',x:d.x,y:d.y,left:0,cancel:0,fkey:fkey||''};
-  if(cx!=null&&cy!=null){const w=worldAt(cx,cy),c=aimClamp(spec,w.x,w.y);AIMING.x=c.x;AIMING.y=c.y;AIMING.left=1}
+  const thumb=pt==='touch'||pt==='pen';
+  AIMING={i:i,slot:slot,pt:pt||'',x:d.x,y:d.y,left:0,cancel:0,fkey:fkey||'',thumb:thumb?1:0,armed:0,dead:0,ox:0,oy:0,fx:0,fy:0,reachPx:0,deadPx:0};
+  if(thumb){
+    const o=aimOrigin(slot,cx,cy),stick=aimStickMetrics(o.x,o.y);
+    AIMING.ox=o.x;AIMING.oy=o.y;AIMING.fx=cx!=null?cx:o.x;AIMING.fy=cy!=null?cy:o.y;AIMING.reachPx=stick.reach;AIMING.deadPx=stick.dead;
+    if(cx!=null&&cy!=null)aimThumb(cx,cy);
+  }else if(cx!=null&&cy!=null){const w=worldAt(cx,cy),c=aimClamp(spec,w.x,w.y);AIMING.x=c.x;AIMING.y=c.y;AIMING.left=1}
   aimShow(true);return {i:AIMING.i,x:AIMING.x,y:AIMING.y}}
 function aimSet(x,y){
   if(!AIMING||!P)return null;
@@ -988,9 +1052,11 @@ function aimShouldCancel(cx,cy){
   return false}
 function aimTrack(cx,cy){
   if(!AIMING)return;
-  aimMove(cx,cy);
+  if(AIMING.thumb)aimThumb(cx,cy);else aimMove(cx,cy);
   if(AIMING.pt!=='key'&&AIMING.slot!=null&&typeof sbtn!=='undefined'){const b=sbtn[AIMING.slot];const el=document.elementFromPoint(cx,cy);if(!(b&&el&&b.contains(el)))AIMING.left=1}
-  AIMING.cancel=aimShouldCancel(cx,cy)?1:0}
+  const back=aimShouldCancel(cx,cy);
+  AIMING.cancel=AIMING.thumb?((back||(AIMING.dead&&AIMING.armed))?1:0):(back?1:0);
+  aimStickPaint()}
 function aimCancel(){AIMING=null;aimShow(false)}
 function aimRelease(cx,cy){
   if(!AIMING||!P)return false;

@@ -31,6 +31,8 @@ const need=[
   ['src/p4.js','Key ${k+1}'],
   ['src/p4.js','Tap the stim'],
   ['src/p4.js','Drag it, then let go'],
+  ['src/p4.js','Drag away from the button'],
+  ['src/p4.js','Further from the button'],
   ['src/p4.js','Buttons 1, 2 and 3 sit under your thumb'],
   ['src/p0.html','content:"1"'],
   ['src/p0.html','content:"Space"'],
@@ -39,7 +41,8 @@ const need=[
   ['README.md','left click walks and strikes'],
   ['notes/walkthrough.md','where a skill sits'],
   ['tools/text/export.js','MODE: '],
-  ['tools/text/export.js','mode: mode']
+  ['tools/text/export.js','mode: mode'],
+  ['tools/text/export.js',"name === 'uiSay'"]
 ];
 const fail=[];
 for(const rel of files){

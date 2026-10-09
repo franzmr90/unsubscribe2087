@@ -771,7 +771,7 @@ const COPY_KEYS = new Set([
   'n', 'd', 'tag', 'ab', 'fl', 'sp', 'base', 'b2', 'b3', 'rw', 'offer', 'label', 'how', 'perk',
   'note', 'say', 'intro', 'text', 'title', 'again', 'l', 'p'
 ]);
-const UI_CALLS = new Set(['toast', 'dlg', 'float', 'fillText', 'bubble', 'sys', 'fail']);
+const UI_CALLS = new Set(['toast', 'dlg', 'float', 'fillText', 'bubble', 'sys', 'fail', 'uiSay']);
 
 function decodeEntities(s) {
   return String(s).replace(/&mdash;|&ndash;|&amp;|&lt;|&gt;|&quot;|&#39;|&apos;|&nbsp;/g, m => ({
