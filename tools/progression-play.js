@@ -473,7 +473,13 @@ async function install(page, cls, seed) {
         }
         const bodies = (W.objs || []).filter(o => o.k === 'corpse');
         const diedHere = (prog.log.fell[W.z.n] || 0) >= 3;
-        if (bodies.length && !diedHere) {
+        if (bodies.length && prog.corpseZi !== W.zi) { prog.corpseZi = W.zi; prog.corpseT0 = G.time; prog.corpseBail = null; }
+        const walkTooLong = bodies.length && prog.corpseT0 != null && G.time - prog.corpseT0 > 25;
+        if (walkTooLong && prog.corpseBail !== W.zi) {
+          prog.corpseBail = W.zi;
+          prog.log.notes.push('stopped walking the body in ' + W.z.n + ' and went on');
+        }
+        if (bodies.length && !diedHere && prog.corpseBail !== W.zi) {
           bodies.sort((a, b) => hypot(a, P) - hypot(b, P));
           const body = bodies[0];
           if (hypot(body, P) < 1.7) {
@@ -481,6 +487,7 @@ async function install(page, cls, seed) {
             __g.useObj(body);
             if ((G.corpses || []).length < before) {
               prog.log.corpseWalks = (prog.log.corpseWalks || 0) + 1;
+              prog.corpseBail = W.zi;
               prog.log.notes.push('walked body ' + body.id + ' in ' + (W.z && W.z.n));
             }
           } else toward(body.x, body.y);
