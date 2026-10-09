@@ -395,6 +395,19 @@ html[data-ui="touch"] .cmpActs button,html[data-ui="touch"] .cmpAlts button,html
   .cmpBox{flex-direction:column}
   .cmpDelta{max-height:38vh}
 }
+.vendBody{display:flex;gap:10px;align-items:flex-start}
+.vendSide,.youSide{flex:1;min-width:0}
+.vendSide{background:rgba(0,0,0,.28);padding:6px;border:1px solid var(--edge)}
+.vendTabs,.vendToggle,.vendFoot{flex-wrap:wrap}
+.vendToggle{display:none}
+.cell u.vp{color:var(--gold);background:rgba(5,4,9,.85);letter-spacing:0}
+html[data-ui="touch"] .vendTabs button,html[data-ui="touch"] .vendToggle button,html[data-ui="touch"] .vendFoot button{min-height:44px}
+@media (max-width:720px){
+  .vendToggle{display:flex}
+  .vendBody{flex-direction:column}
+  .vendBody[data-side="them"] .youSide,.vendBody[data-side="you"] .vendSide{display:none}
+}
+
 </style>
 
 <div id="app">
@@ -868,7 +881,8 @@ const ICON={
  boots:'M8 3h6v10l6 4v4H6V3z',
  belt:'M2 9h20v6H2zM9 7h6v10H9zM11 10h2v4h-2z',
  ring:'M12 7a7 7 0 100 14 7 7 0 000-14zm0 3a4 4 0 110 8 4 4 0 010-8zM9 2h6l1 4H8z',
- amulet:'M5 3c0 7 4 9 7 10 3-1 7-3 7-10h-2c0 5-3 7-5 8-2-1-5-3-5-8zM12 13l3.5 4-3.5 5-3.5-5z'};
+ amulet:'M5 3c0 7 4 9 7 10 3-1 7-3 7-10h-2c0 5-3 7-5 8-2-1-5-3-5-8zM12 13l3.5 4-3.5 5-3.5-5z',
+ charm:'M6 2h12v5H6zM4 8h16v13H4zM8 11h8v2H8zM8 15h5v2H8z'};
 const svgIcon=s=>`<svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="${ICON[s]}"/></svg>`;
 // three tiers per slot: ilvl 1-6, 7-14, 15+. Weapons carry a damage factor and a speed bonus.
 const BASE={
@@ -1387,7 +1401,10 @@ function buildTown(zi){zi=zi||0;if(ZONES[zi].pre)return buildPre();const act=ZON
   const cols=['#7fa8d0','#d0a488','#a8c890','#c890bc','#d8c070','#90c8c0'];
   for(let i=0;i<(act===1?7:4);i++)W.npcs.push({id:'res',x:rnd(6,19),y:rnd(11,19),col:pick(cols),tx:12,ty:14,wait:rnd(0,3),say:'',st:0,cool:rnd(1,5),ph:rnd(0,6)});
   satShop=[];const arm=classWeapon((G.lvl||1)+(G.tier||0)*12+3);if(arm)satShop.push({it:arm,price:arm.q>=2?24:12});for(let i=0;i<(G.adopt<25?2:G.adopt>=60?7:5)+(G.nodeUp?1:0);i++){const r=Math.random(),q=r<.15?4:r<.32?3:2,it=makeItem(G.lvl+G.tier*12+ri(2,4),q);it.id=true;satShop.push({it,price:it.q===4?45:it.q===3?30:12})}
-  shop=[];for(let i=0;i<8;i++)shop.push(Object.assign(makeItem(G.lvl+G.tier*12+ri(0,2),Math.random()<.12?2:1),{id:true}))}
+  {const posted=mkCharm((G.lvl||1)+(G.tier||0)*12+2,{sz:Math.random()<.34?'filing':'notice'});if(posted){if((posted.q|0)<2)posted.q=2;satShop.push({it:posted,price:posted.cells>=4?30:18})}}
+  shop=[];for(let i=0;i<8;i++)shop.push(Object.assign(makeItem(G.lvl+G.tier*12+ri(0,2),Math.random()<.12?2:1),{id:true}));
+  shop.push(mkCharm((G.lvl||1)+(G.tier||0)*12,{sz:'slip'}));if(Math.random()<.5)shop.push(mkCharm((G.lvl||1)+(G.tier||0)*12+1,{sz:'notice'}));
+  BUYBACK.length=0}
 /* the simulator: an arena outside the campaign. Waves grow in size, level and variety; nothing is saved and nothing is lost. */
 function buildSim(wave,rush){W=blankW(6,30);const N=30;for(let y=4;y<=25;y++)for(let x=4;x<=25;x++)W.map[y*N+x]=1;
   for(const[x,y]of[[10,10],[19,10],[10,19],[19,19]])solid('prop',x,y,{v:1});for(const[x,y]of[[5,5],[24,5],[5,24],[24,24],[14,4],[14,25]])solid('lamp',x,y);
@@ -5255,8 +5272,8 @@ function talkTo0(id){if(W.z.pre)return preTalk(id);if(id==='float')return talkFl
   if(id==='brenda'){
     if(G.q.q2===2){G.q.q2=3;G.disc=true;const it=makeItem(G.lvl+2,2,'ring');it.id=true;if(bagCan(it))G.bag.push(it);else addDrop({it},P.x,P.y);sfx('rare');return dlg('Brenda','“She smiled at me for six years without blinking.” You receive '+it.name+'. Brenda’s prices fall by 15%.',[['Thank you']])}
     if(scs()<500&&!(G.wonF&&G.wonF.brenda===1))return dlg('Brenda','“I am so sorry. It is your score. If I serve you, mine drops. Try the orange man; he does not seem to care about that sort of thing.”',[['Leave']]);
-    return dlg('Brenda','“'+gos('brenda')+'”',[['Trade',()=>{shopVia=0;openSheet('items',{only:['items','shop']})}],['Leave']])}
-  if(id==='wren')return dlg('Wren','“'+gos('wren')+'”',[['Open a mystery box',()=>openSheet('items',{only:['items','gamble']})],['Leave']]);
+    return dlg('Brenda','“'+gos('brenda')+'”',[['Trade',()=>{shopVia=0;openVend('brenda')}],['Leave']])}
+  if(id==='wren')return dlg('Wren','“'+gos('wren')+'”',[['Open a mystery box',()=>openVend('gamble')],['Leave']]);
   if(id==='null'&&G.q.q7===2){G.q.q7=3;G.ap+=5;sfx('level');return dlg('Sister Null','“Let them grow.” You gain 5 attribute points.',[['Thank you']])}
   if(id==='null'){
     if(G.q.q4===2){G.q.q4=3;G.ap+=5;sfx('level');return dlg('Sister Null','“I felt two hundred accounts go quiet at once.” You gain 5 attribute points.',[['I am']])}
@@ -5268,7 +5285,7 @@ function talkTo0(id){if(W.z.pre)return preTalk(id);if(id==='float')return talkFl
   if(id==='kestrel')return dlg('Kestrel','“'+gos('kestrel')+'”',[[G.merc?(G.merc.dead?'Revive or replace your hire':'Change your hire'):'Hire a companion',()=>openSheet('merc',{only:['merc']})],['Leave']]);
   if(id==='nonce'&&G.q.q9===2){G.q.q9=3;G.sats+=40;sfx('coin');return dlg('Nonce','“Now nobody decides.” You receive 40 sats.',[['Thank you']])}
   if(id==='nonce'&&smearOpen())return smearAsk();
-  if(id==='nonce'){const b=[['Trade for sats',()=>openSheet('items',{only:['items','sats']})]];if(cause())b.push(['Brenda’s goods, 30% off',()=>{shopVia=1;openSheet('items',{only:['items','shop']})}]);b.push(['Leave']);return dlg('Nonce',cause()?'“They cut you off? Good. Means you said something true. Whatever Brenda will not sell you, I will, at thirty percent off her price. No charge for the favour.”':'“'+gos('nonce')+'”',b)}
+  if(id==='nonce'){const b=[['The exchange',()=>openSheet('sats',{only:['sats']})],['His goods',()=>{shopVia=0;openVend('sat')}]];if(cause())b.push(['Brenda’s goods, 30% off',()=>{shopVia=1;openVend('brenda')}]);b.push(['Leave']);return dlg('Nonce',cause()?'“They cut you off? Good. Means you said something true. Whatever Brenda will not sell you, I will, at thirty percent off her price. No charge for the favour.”':'“'+gos('nonce')+'”',b)}
   if(id==='marrow'&&G.q.q8===2){G.q.q8=3;G.sp++;sfx('level');return dlg('Marrow','“Nobody will read most of them.” You gain 1 skill point.',[['Take it']])}
   if(id==='marrow'){const n=unidCount();
     return dlg('Marrow','“'+gos('marrow')+'”',[[n?'Identify '+n+' item'+(n>1?'s':''):'Nothing to identify',()=>{if(idAll()){sfx('rare');toast('Marrow names your finds')}}],['Leave']])}
@@ -5297,8 +5314,8 @@ function hud(){objHud();if(P&&P.dg)setT('dgn',P.dg.n);
   setT('buffs',bf.join('\n'));const bu=$('buffs');if(bu&&!bu._ws){bu._ws=1;bu.style.whiteSpace='pre'}paintMouseSlots()}
 
 /* ================= sheets ================= */
-let tab='items',sel=null,sheetCtx={},lastBox=null;
-const TABS={party:'Party',web:'Web',char:'Hero',items:'Items',skills:'Skills',quests:'Quests',story:'Story',codex:'Codex',opts:'Options',shop:'Trade',gamble:'Boxes',travel:'Travel',load:'Load',merc:'Hire',sats:'Sats',bounty:'Bounties',stash:'Lockbox',shift:'Shape shift'};
+let tab='items',sel=null,sheetCtx={},lastBox=null,VEND={kind:'brenda',tab:'weapons',who:'Brenda',side:'both'},BUYBACK=[],vendDragged=false;
+const TABS={party:'Party',web:'Web',char:'Hero',items:'Items',skills:'Skills',quests:'Quests',story:'Story',codex:'Codex',opts:'Options',shop:'Trade',gamble:'Boxes',travel:'Travel',load:'Load',merc:'Hire',sats:'Sats',vend:'Trade',bounty:'Bounties',stash:'Lockbox',shift:'Shape shift'};
 const satPrice=o=>Math.ceil(o.price*(cause()?.75:1)*(repRank('btc')>=1?.9:1)*((G.lean||0)<-50?1.15:1));
 const satRate=()=>mktMid();
 /* ================= the price chart =================
@@ -5337,17 +5354,18 @@ function mktChart(){const s=mktSeries(),n=s.p.length;if(n<2)return '';
     <text x="${(L+iw).toFixed(1)}" y="${H-3}" fill="${MKC.ink}" font-size="8.5" font-family="Spectral,serif" text-anchor="end">ratio scale · the last few minutes</text>
   </svg></div>`}
 const hireCost=()=>80+8*G.lvl,reviveCost=()=>cause()?0:40+4*G.lvl;
-function openSheet(t,c){if(mode!=='play'&&mode!=='title')return;cmpHide();sheetCtx=c||{};sheetCtx.from=mode;if(t==='web')webVB=null;tab=t;sel=null;mode='sheet';$('sheet').hidden=false;$('sheet').scrollTop=0;J.x=J.y=0;atkHeld=false;MO=null;const pk=$('mPick');if(pk)pk.hidden=true;$('stick').hidden=true;drawSheet()}
+function openSheet(t,c){c=c||{};if(t!=='vend'){const only=c.only;const gamble=t==='gamble'||(!!only&&only.indexOf('gamble')>=0&&only.indexOf('shop')<0);const shop=t==='shop'||(!!only&&only.indexOf('shop')>=0&&only.indexOf('sats')<0);if(gamble||shop)return openVend(gamble?'gamble':'brenda')}if(mode!=='play'&&mode!=='title')return;cmpHide();sheetCtx=c||{};sheetCtx.from=mode;if(t==='web')webVB=null;tab=t;sel=null;mode='sheet';$('sheet').hidden=false;$('sheet').scrollTop=0;J.x=J.y=0;atkHeld=false;MO=null;const pk=$('mPick');if(pk)pk.hidden=true;$('stick').hidden=true;drawSheet()}
 function closeSheet(){$('sheet').hidden=true;$('pop').hidden=true;if(sheetCtx.from==='title'){mode='title';return}mode='play';calc();setSkillButtons();save(true)}
 function pscore(s){return{dps:((s.dmin+s.dmax)/2*(1+s.dmg/100)+s.shock)*(1+Math.max(-50,s.aspd)/100)*(1+Math.min(100,s.crit)/100*(s.critM-1)),ehp:s.maxHp*(1+s.armor/100)/(1-Math.min(.6,(s.dodge||0)/100))}}
 /* how much stronger (+) or weaker (-) the hero gets by equipping this, as a fraction; null when it cannot be judged */
 function itemDelta(it){if(!it||!it.id||it.charm)return null;const A=S,B=statsWith(it.slot,it),a=pscore(A),b=pscore(B);
   return (b.dps/a.dps-1)+(b.ehp/a.ehp-1)+(B.maxEn-A.maxEn)/A.maxEn*.2+(B.mspd-A.mspd)*.004+(B.leech-A.leech)*.02+(B.skills-A.skills)*.15+(B.mf-A.mf)*.001+(B.gold-A.gold)*.0005+(B.regen-A.regen)*.02+(B.regenH-A.regenH)*.01+(B.stun-A.stun)*.005+(B.thorns-A.thorns)*.003+(Object.keys(B.sp).length-Object.keys(A.sp).length)*.12+(B.cap-A.cap)*.01}
 const dPct=d=>(d>0?'+':'−')+Math.min(999,Math.round(Math.abs(d)*100))+'%';
-function cell(it,attr,isSel,slot,d){if(!it){const hot=attr&&/data-packempty|data-csocket/.test(attr);return `<button class="cell empty" ${attr||''}${hot?'':' disabled'}>${slot?svgIcon(slot):''}</button>`}
+function cell(it,attr,isSel,slot,d,price){if(!it){const hot=attr&&/data-packempty|data-csocket/.test(attr);return `<button class="cell empty" ${attr||''}${hot?'':' disabled'}>${slot?svgIcon(slot):''}</button>`}
   const arrow=!!(OPT.cmpArrow&&d!=null&&it.id&&!it.charm&&strictUp(it));
-  const ch=it.charm?' ch'+(charmCost(it)>=3?' grand':charmCost(it)>=2?' wide':''):'',drag=it.charm&&!uiTouch()?' draggable="true"':'',num=it.charm?charmCost(it):it.il;
-  return `<button class="cell q${it.q}${isSel?' sel':''}${it.id?'':' unid'}${arrow?' arr':''}${it.junk?' junk':''}${ch}" ${attr}${drag}>${svgIcon(it.charm?'charm':it.slot)}<small>${num}</small>${arrow?'<em>↑</em>':''}${it.junk?'<u>JUNK</u>':''}</button>`}
+  const ch=it.charm?' ch'+(charmCost(it)>=3?' grand':charmCost(it)>=2?' wide':''):'',drag=it.charm&&!uiTouch()&&!(attr&&attr.indexOf('data-vbag')>=0)?' draggable="true"':'',num=it.charm?charmCost(it):it.il;
+  const tag=price!=null?`<u class="vp">${price} sat${price===1?'':'s'}</u>`:'';
+  return `<button class="cell q${it.q}${isSel?' sel':''}${it.id?'':' unid'}${arrow?' arr':''}${it.junk?' junk':''}${ch}" ${attr}${drag}>${svgIcon(it.charm?'charm':it.slot)}<small>${num}</small>${arrow?'<em>↑</em>':''}${tag}${it.junk?'<u>JUNK</u>':''}</button>`}
 function equipFromBag(i){const it=G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.charm)return charmSocket(i);if(!it.id){toast('Identify it first');sfx('err');return false}if(G.lvl<it.req){toast('Needs level '+it.req);sfx('err');return false}
   const old=G.eq[it.slot];G.eq[it.slot]=it;it.junk=false;G.bag.splice(i,1);if(old){if(bagCan(old))G.bag.push(old);else addDrop({it:old},P.x,P.y)}if(it.slot==='belt')charmRefit();calc();sfx('equip');return true}
 function equipBest(){let n=0;for(const slot of SLOTS){let best=-1,bd=.01;G.bag.forEach((it,i)=>{if(it.slot!==slot||!it.id||G.lvl<it.req)return;const d=itemDelta(it);if(d>bd){bd=d;best=i}});if(best>=0&&equipFromBag(best))n++}return n}
@@ -5644,11 +5662,11 @@ function cmpSheetPop(){
     if(sel.tid){const it=(G.bag||[]).find(x=>x&&x.tid===sel.tid);if(it){const on=MP.tradePick&&MP.tradePick[it.tid];return itemCard(it,`<button class="big" data-mptigo="${esc(it.tid)}">${on?'Take it off the table':'Put it on the table'}</button>`,false,!!(!it.charm&&!it.slot))}}
     if(sel.theirs!=null&&MP.trade&&MP.trade.them&&MP.trade.them.items){const it=MP.trade.them.items[sel.theirs];if(it)return itemCard(it,'',false,!!(!it.charm&&!it.slot))}}
   return ''}
-let cmpSig='',cmpSrc='',cmpIt=null,cmpOpt=null,cmpDrop=null,cmpMuteDrop=null,cmpLeave=null,cmpXY=null;
-function cmpHide(){const el=$('cmpTip');if(el){el.hidden=true;el.innerHTML='';el.classList.remove('dock');el.style.left='';el.style.top=''}cmpSig='';cmpSrc='';cmpIt=null;cmpDrop=null}
+let cmpSig='',cmpSrc='',cmpIt=null,cmpOpt=null,cmpDrop=null,cmpMuteDrop=null,cmpLeave=null,cmpXY=null,cmpNote='';
+function cmpHide(){const el=$('cmpTip');if(el){el.hidden=true;el.innerHTML='';el.classList.remove('dock');el.style.left='';el.style.top=''}cmpSig='';cmpSrc='';cmpIt=null;cmpDrop=null;cmpNote=''}
 function cmpSigOf(it,opt){
   const w=it&&it.slot&&G&&G.eq?G.eq[it.slot]:null,mw=G&&G.merc&&it?G.merc[it.slot]:null;
-  return [CMP_KEY,opt&&opt.off?1:0,G&&G.diff|0,G&&G.lvl|0,it&&(it.uid||it.name||''),it&&it.il,it&&(it.id?1:0),w&&(w.uid||w.name||'1'),mw&&(mw.uid||mw.name||''),(G&&G.cslots||[]).map(c=>c&&(c.uid||c.name||'1')).join(','),S&&S.maxHp,S&&S.armor,S&&S.dmin,S&&S.dmax,P&&P.bear|0,P&&P.orders|0,P&&P.book|0,P&&P.two&&P.two.n|0,G&&G.mouse&&G.mouse.L,G&&G.slots&&G.slots[0]].join('|')}
+  return [CMP_KEY,opt&&opt.off?1:0,G&&G.diff|0,G&&G.lvl|0,it&&(it.uid||it.name||''),it&&it.il,it&&(it.id?1:0),w&&(w.uid||w.name||'1'),mw&&(mw.uid||mw.name||''),(G&&G.cslots||[]).map(c=>c&&(c.uid||c.name||'1')).join(','),S&&S.maxHp,S&&S.armor,S&&S.dmin,S&&S.dmax,P&&P.bear|0,P&&P.orders|0,P&&P.book|0,P&&P.two&&P.two.n|0,G&&G.mouse&&G.mouse.L,G&&G.slots&&G.slots[0],cmpNote].join('|')}
 function cmpPlace(el){
   if(!cmpXY||!el)return;const app=$('app');if(!app)return;const r=app.getBoundingClientRect();
   el.style.left='8px';el.style.top='8px';
@@ -5659,11 +5677,12 @@ function cmpPlace(el){
   el.style.left=left+'px';el.style.top=top+'px'}
 function cmpShow(it,opt,src,drop){
   if(!it||(!it.charm&&!it.slot)){if(cmpSrc===src)cmpHide();return}
+  if(src!=='sheet')cmpNote='';
   const pop=$('pop');if(pop&&!pop.hidden)return;
   const el=$('cmpTip');if(!el||!G)return;
   opt=opt||{};const sig=cmpSigOf(it,opt);
   cmpIt=it;cmpOpt=opt;cmpSrc=src||'';cmpDrop=drop||null;
-  if(sig!==cmpSig||el.hidden){cmpSig=sig;el.innerHTML=cmpHTML(it,opt)+'<div class="row"><button type="button" class="ghost" data-cmphide="1">Hide</button></div>';if(src!=='dock')cmpPlace(el)}
+  if(sig!==cmpSig||el.hidden){cmpSig=sig;el.innerHTML=cmpHTML(it,opt)+(cmpNote?`<div class="ln" style="color:var(--gold)">${esc(cmpNote)}</div>`:'')+'<div class="row"><button type="button" class="ghost" data-cmphide="1">Hide</button></div>';if(src!=='dock')cmpPlace(el)}
   el.hidden=false;
   if(src==='dock'){el.classList.add('dock');el.style.left='';el.style.top=''}else el.classList.remove('dock')}
 function cmpFromEl(el){
@@ -5675,6 +5694,9 @@ function cmpFromEl(el){
   if(d.st!==undefined)return (ACC&&ACC.stash&&ACC.stash[+d.st])||null;
   if(d.sb!==undefined)return (G.bag&&G.bag[+d.sb])||null;
   if(d.cs!==undefined)return (G.cslots&&G.cslots[+d.cs])||null;
+  if(d.vend!==undefined){const row=vendRow(+d.vend);return (row&&row.it)||null}
+  if(d.vbag!==undefined)return (G.bag&&G.bag[+d.vbag])||null;
+  if(d.vback!==undefined){const row=BUYBACK[+d.vback];return (row&&row.it)||null}
   if(d.mpti&&typeof MP!=='undefined')return (G.bag||[]).find(x=>x&&x.tid===d.mpti)||null;
   if(d.tsee!==undefined&&typeof MP!=='undefined'&&MP.trade&&MP.trade.them)return (MP.trade.them.items||[])[+d.tsee]||null;
   return null}
@@ -5697,11 +5719,18 @@ function cmpGround(){
 $('sheet').addEventListener('pointerover',e=>{
   if(e.pointerType&&e.pointerType!=='mouse')return;
   if(uiTouch())return;
-  const el=e.target.closest&&e.target.closest('[data-bag],[data-eq],[data-shop],[data-sat],[data-st],[data-sb],[data-mpti],[data-tsee],[data-cs]');
+  const el=e.target.closest&&e.target.closest('[data-bag],[data-eq],[data-shop],[data-sat],[data-st],[data-sb],[data-mpti],[data-tsee],[data-cs],[data-vend],[data-vbag],[data-vback],[data-vstim],[data-vbox]');
   if(!el)return;
-  const it=cmpFromEl(el);if(!it||(!it.charm&&!it.slot))return;
   if(e.clientX!=null)cmpXY={x:e.clientX,y:e.clientY};
   clearTimeout(cmpLeave);
+  if(el.dataset.vstim!==undefined){const ask=vendStimSats();cmpPlain('Stim',['Restores 45% of your life.','You carry '+G.stims+' of '+S.cap+'.',ask+(ask===1?' sat':' sats')]);return}
+  if(el.dataset.vbox!==undefined){const ask=vendBoxSats(),il=(G.lvl||1)+(G.tier||0)*12;cmpPlain((SNAME[el.dataset.vbox]||'Gear')+' box',['Sealed. Unique 1.5%, set 2%, rare 15%, the rest magic.','Item level '+il+'.',ask+' sats']);return}
+  let note='';
+  if(el.dataset.vend!==undefined){const row=vendRow(+el.dataset.vend);note=row?row.ask+' sats':''}
+  else if(el.dataset.vbag!==undefined){const it=G.bag[+el.dataset.vbag];const b=it?vendBid(it):0;note=b?b+' sats':'No price'}
+  else if(el.dataset.vback!==undefined){const row=BUYBACK[+el.dataset.vback];note=row?row.ask+' sats':''}
+  cmpNote=note;
+  const it=cmpFromEl(el);if(!it||(!it.charm&&!it.slot)){cmpNote='';return}
   cmpShow(it,{off:!!el.dataset.eq},'sheet')});
 $('sheet').addEventListener('pointerout',e=>{
   if(e.pointerType&&e.pointerType!=='mouse')return;
@@ -5724,13 +5753,256 @@ function beltRowHTML(){const belt=G.eq&&G.eq.belt,bud=beltBudget(belt),used=char
   for(let i=0;i<Math.max(0,bud.slots-used);i++)cells+=`<button class="cell empty" data-csocket="1">${svgIcon('charm')}</button>`;
   if(!cells)cells=`<button class="cell empty" disabled>${svgIcon('charm')}</button>`;
   return `<h3>${esc(nm)} · ${used}/${bud.slots} charms · ${G.stims||0}/${bud.stims} stims</h3><div class="beltRow${G.charmShake?' shake':''}">${cells}</div><p class="beltNote">${uiSay('Click a charm in the pack, then an empty belt slot. Double-click puts it on. On a desk you can drag it.','Tap a charm in the pack, then an empty belt slot. Double-tap puts it on.')} Off the belt a charm does nothing, and charms do not stack.</p>${G.charmWhy?`<p class="beltNote">${esc(G.charmWhy)}</p>`:''}`}
-function gridPack(list,cols,rows,key){list=list||[];const placed=gridPlace(list,cols,rows),occ=Array(cols*rows).fill(0);let h='';const ds=key==='bag'?list.map(it=>it?itemDelta(it):null):null;
-  const draw=(it,i,x,y,w,ht)=>{const style=`style="grid-column:${x+1} / span ${w};grid-row:${y+1} / span ${ht}"`;let attr=style;if(key==='bag')attr=`data-bag="${i}" ${style}`;else if(key==='st')attr=`data-st="${i}" ${style}`;else if(key==='sb')attr=`data-sb="${i}" ${style}`;
-    h+=cell(it,attr,sel&&((key==='bag'&&sel.bag===i)||(key==='st'&&sel.st===i)||(key==='sb'&&sel.sb===i)),null,ds?ds[i]:undefined)};
+function gridPack(list,cols,rows,key){list=list||[];const placed=gridPlace(list,cols,rows),occ=Array(cols*rows).fill(0);let h='';const ds=(key==='bag'||key==='vbag')?list.map(it=>it?itemDelta(it):null):null;
+  const draw=(it,i,x,y,w,ht)=>{const style=`style="grid-column:${x+1} / span ${w};grid-row:${y+1} / span ${ht}"`;let attr=style;if(key==='bag')attr=`data-bag="${i}" ${style}`;else if(key==='st')attr=`data-st="${i}" ${style}`;else if(key==='sb')attr=`data-sb="${i}" ${style}`;else if(key==='vbag')attr=`data-vbag="${i}" ${style}`;
+    h+=cell(it,attr,sel&&((key==='bag'&&sel.bag===i)||(key==='st'&&sel.st===i)||(key==='sb'&&sel.sb===i)||(key==='vbag'&&sel.vbag===i)),null,ds?ds[i]:undefined)};
   if(placed){for(const p of placed){for(let dy=0;dy<p.h;dy++)for(let dx=0;dx<p.w;dx++)occ[(p.y+dy)*cols+p.x+dx]=1;draw(p.it,p.i,p.x,p.y,p.w,p.h)}}
   else{let n=0;for(let i=0;i<list.length&&n<cols*rows;i++){const it=list[i];if(!it)continue;occ[n]=1;draw(it,i,n%cols,(n/cols)|0,1,1);n++}}
   for(let y=0;y<rows;y++)for(let x=0;x<cols;x++)if(!occ[y*cols+x]){const style=`style="grid-column:${x+1};grid-row:${y+1}"`;h+=cell(null,key==='bag'?`data-packempty="1" ${style}`:style)}
   return h}
+function openVend(kind){
+  kind=kind||'brenda';
+  if(kind!=='brenda')shopVia=0;
+  VEND.kind=kind;
+  VEND.tab=kind==='gamble'?'boxes':'weapons';
+  VEND.who=kind==='sat'?'Nonce':kind==='gamble'?'Wren':'Brenda';
+  VEND.side=uiTouch()?'them':'both';
+  openSheet('vend',{only:['vend']});
+}
+function vendKind(){return (VEND&&VEND.kind)||'brenda'}
+function vendBuys(){const k=vendKind();return k==='brenda'||k==='sat'}
+function vendTabOf(it){
+  if(!it)return 'supplies';
+  if(it.charm)return 'charms';
+  if(it.slot==='weapon')return 'weapons';
+  if(it.slot==='ring'||it.slot==='amulet')return 'trinkets';
+  if(it.slot==='helm'||it.slot==='armor'||it.slot==='gloves'||it.slot==='boots'||it.slot==='belt')return 'armor';
+  return 'supplies';
+}
+function vendCreditSats(cr){
+  cr=Math.floor(+cr||0);
+  if(!(cr>0))return 0;
+  const rate=satRate()||1;
+  return Math.max(1,Math.ceil(cr/rate));
+}
+function vendBid(it){return vendCreditSats(sellValue(it))}
+function vendAsk(it){
+  if(!it)return 0;
+  if(vendKind()==='sat'){
+    const o=(typeof satShop!=='undefined'?satShop:[]).find(x=>x&&x.it===it);
+    if(o)return satPrice(o);
+  }
+  return satCost(it);
+}
+function vendRow(i){
+  const k=vendKind();
+  if(k==='sat'){const o=satShop[i];if(!o||!o.it)return null;return {i:i,it:o.it,ask:satPrice(o)}}
+  const it=shop[i];if(!it)return null;return {i:i,it:it,ask:satCost(it)};
+}
+function vendStimSats(){return vendKind()==='sat'?1:vendCreditSats(payTag(stimPrice()))}
+function vendIdSats(){const n=unidCount();if(!n||G.marrow)return 0;return vendCreditSats(payTag(40*G.cpi*n*(G.disc?.85:1)))}
+function vendBoxSats(){return vendCreditSats(boxPrice())}
+function vendList(){
+  const tab=VEND.tab||'weapons',out=[];
+  if(vendKind()==='gamble'||tab==='boxes'||tab==='supplies'||tab==='buyback')return out;
+  if(vendKind()==='sat')satShop.forEach((o,i)=>{if(o&&o.it&&vendTabOf(o.it)===tab)out.push({i:i,it:o.it,ask:satPrice(o)})});
+  else shop.forEach((it,i)=>{if(it&&vendTabOf(it)===tab)out.push({i:i,it:it,ask:satCost(it)})});
+  return out;
+}
+function vendPay(ask,label,go){
+  if(ask>=12&&uiTouch()){dlg('Buy','Pay '+ask+' sats for '+label+'?',[['Buy',go],['Leave']]);return 'dlg'}
+  go();
+  return true;
+}
+function vendBuy(i){
+  const row=vendRow(i);if(!row)return false;
+  const it=row.it,ask=row.ask;
+  if(!bagCan(it)){toast('Your pack is full');sfx('err');return false}
+  const label=it.id?it.name:(it.base||'that');
+  return vendPay(ask,label,()=>{
+    const again=vendRow(i);if(!again||again.it!==it){toast('That is gone');return}
+    if(!bagCan(it)){toast('Your pack is full');sfx('err');return}
+    if(!spendSats(ask))return;
+    if(vendKind()==='sat'){
+      const o=satShop[i];
+      addRep('btc',Math.ceil((o&&o.price||0)/4));
+      addAdopt(1,'you paid in sats');
+      G.bag.push(o.it);satShop.splice(i,1);
+    }else{
+      addAdopt(.5,'');
+      G.bag.push(shop[i]);shop.splice(i,1);
+    }
+    sel=null;sfx('coin');toast('Paid '+ask+' sats');
+    if(mode==='sheet')drawSheet();
+  });
+}
+function vendBuyStim(){
+  if(G.stims>=S.cap){toast('You cannot carry another');sfx('err');return false}
+  const ask=vendStimSats();
+  return vendPay(ask,'a stim',()=>{
+    if(G.stims>=S.cap){toast('You cannot carry another');sfx('err');return}
+    if(!spendSats(ask,vendKind()==='sat'?'A stim costs 1 sat':undefined))return;
+    G.stims++;
+    if(vendKind()==='sat')addRep('btc',1);
+    sfx('coin');toast('Paid '+ask+' sat'+(ask===1?'':'s'));
+    if(mode==='sheet')drawSheet();
+  });
+}
+function vendIdentify(){
+  if(vendKind()!=='brenda'||G.marrow)return false;
+  const n=unidCount();if(!n)return false;
+  const ask=vendIdSats();
+  return vendPay(ask,'an appraisal',()=>{
+    if(!unidCount())return;
+    if(!spendSats(ask))return;
+    idAll();sfx('rare');toast('Appraised');
+    if(mode==='sheet')drawSheet();
+  });
+}
+function vendBox(slot){
+  if(!SLOTS.includes(slot))return false;
+  if(!bagCan({slot:slot})){toast('Your pack is full');sfx('err');return false}
+  const ask=vendBoxSats();
+  return vendPay(ask,(SNAME[slot]||'Gear')+' box',()=>{
+    if(!bagCan({slot:slot})){toast('Your pack is full');sfx('err');return}
+    if(!spendSats(ask))return;
+    const r=Math.random(),q=r<.015?4:r<.035?3:r<.185?2:1;
+    const it=makeItem(G.lvl+ri(-1,2)+G.tier*12,q,slot);it.id=true;
+    G.bag.push(it);lastBox=it;sfx(q===4?'unique':q>=2?'rare':'drop');
+    if(mode==='sheet')drawSheet();
+  });
+}
+function vendSell(i){
+  if(!vendBuys()){toast('Wren does not buy gear');sfx('err');return false}
+  const it=G.bag&&G.bag[i];if(!it)return false;
+  if(typeof tradeLocked==='function'&&tradeLocked(it))return false;
+  const paid=vendBid(it);
+  if(!(paid>0)){toast(it.test?'Test gear has no price':'That has no price');sfx('err');return false}
+  const ask=Math.max(paid,vendAsk(it));
+  G.bag.splice(i,1);
+  G.sats=(G.sats|0)+paid;
+  BUYBACK.push({it:it,paid:paid,ask:ask,kind:vendKind()});
+  sel=null;sfx('coin');toast('Sold for '+paid+' sats');
+  return true;
+}
+function vendBuyback(i){
+  const row=BUYBACK[i];
+  if(!row||row.kind!==vendKind())return false;
+  if(!bagCan(row.it)){toast('Your pack is full');sfx('err');return false}
+  const label=row.it.id?row.it.name:(row.it.base||'that');
+  return vendPay(row.ask,label,()=>{
+    if(BUYBACK[i]!==row){toast('That is gone');return}
+    if(!bagCan(row.it)){toast('Your pack is full');sfx('err');return}
+    if(!spendSats(row.ask))return;
+    G.bag.push(row.it);
+    BUYBACK.splice(i,1);
+    sel=null;sfx('coin');toast('Bought back for '+row.ask+' sats');
+    if(mode==='sheet')drawSheet();
+  });
+}
+function vendOccupy(rows,key){
+  const list=rows.map(r=>r.it);
+  let hgt=4;
+  while(hgt<=12&&!gridPlace(list,6,hgt))hgt++;
+  const placed=gridPlace(list,6,hgt);
+  const occ=Array(6*hgt).fill(0);
+  let h='';
+  const paint=(r,x,y,w,ht)=>{
+    const style='style="grid-column:'+(x+1)+' / span '+w+';grid-row:'+(y+1)+' / span '+ht+'"';
+    const attr=key==='back'?('data-vback="'+r.i+'" '+style):('data-vend="'+r.i+'" '+style);
+    const on=key==='back'?sel&&sel.vback===r.i:sel&&sel.vend===r.i;
+    h+=cell(r.it,attr,on,null,itemDelta(r.it),r.ask);
+  };
+  if(placed){
+    for(const p of placed){
+      for(let dy=0;dy<p.h;dy++)for(let dx=0;dx<p.w;dx++)occ[(p.y+dy)*6+p.x+dx]=1;
+      paint(rows[p.i],p.x,p.y,p.w,p.h);
+    }
+  }else{
+    rows.forEach((r,n)=>{const x=n%6,y=(n/6)|0;if(y<hgt){occ[y*6+x]=1;paint(r,x,y,1,1)}});
+  }
+  for(let y=0;y<hgt;y++)for(let x=0;x<6;x++)if(!occ[y*6+x])h+=cell(null,'style="grid-column:'+(x+1)+';grid-row:'+(y+1)+'"');
+  return h;
+}
+function vendBackRows(){
+  const rows=[];
+  BUYBACK.forEach((r,i)=>{if(r&&r.kind===vendKind())rows.push({i:i,it:r.it,ask:r.ask})});
+  return rows;
+}
+function cmpPlain(title,lines){
+  const el=$('cmpTip');if(!el)return;
+  const pop=$('pop');if(pop&&!pop.hidden)return;
+  cmpNote='';cmpIt=null;cmpSrc='sheet';cmpSig='plain:'+title+':'+(lines||[]).join('|');
+  el.innerHTML='<div class="cmpView"><div class="card"><div class="nm">'+esc(title)+'</div>'+(lines||[]).map(l=>'<div class="ln">'+esc(l)+'</div>').join('')+'</div></div>';
+  el.hidden=false;el.classList.remove('dock');cmpPlace(el);
+}
+function vendHTML(){
+  const k=vendKind(),gamble=k==='gamble';
+  const who=shopVia&&k==='brenda'?'Nonce · Brenda’s goods':(VEND.who||'Brenda');
+  const tabs=gamble?[['boxes','Boxes']]:[['weapons','Weapons'],['armor','Armor'],['trinkets','Trinkets'],['charms','Charms'],['supplies','Supplies'],['buyback','Buyback']];
+  if(!tabs.some(t=>t[0]===VEND.tab))VEND.tab=tabs[0][0];
+  let h='<div class="vendHead"><h2>'+esc(who)+'</h2><p>You hold <strong style="color:#f7931a">'+(G.sats|0)+' sats</strong>.</p>';
+  if(shopVia&&k==='brenda')h+='<p>Thirty percent off her price.</p>';
+  if(k==='brenda')h+='<p>Prices are up '+(G.cpi<100?((G.cpi-1)*100).toFixed(0)+'%':'beyond counting')+' since you arrived.</p>';
+  if(k==='sat')h+='<p>Credits rot. These do not. Rare, set and unique pieces, and a stim for one sat.</p>';
+  if(gamble){
+    const il=(G.lvl||1)+(G.tier||0)*12;
+    h+='<p>Sealed at the factory. Posted odds: <span class="q4">unique 1.5%</span>, <span class="q3">set 2%</span>, <span class="q2">rare 15%</span>, the rest <span class="q1">magic</span>. Centered on item level '+il+'.</p>';
+  }
+  h+='<div class="row vendTabs">'+tabs.map(t=>'<button type="button" class="'+(VEND.tab===t[0]?'big':'ghost')+'" data-vtab="'+t[0]+'">'+t[1]+'</button>').join('')+'</div>';
+  h+='<div class="row vendToggle"><button type="button" class="'+(VEND.side!=='you'?'big':'ghost')+'" data-vside="them">Merchant</button><button type="button" class="'+(VEND.side==='you'?'big':'ghost')+'" data-vside="you">You</button></div></div>';
+  h+='<div class="vendBody" data-side="'+(VEND.side||'both')+'"><div class="vendSide" data-vpanel="them">';
+  let pop='';
+  if(gamble||VEND.tab==='boxes'){
+    const ask=vendBoxSats(),il=(G.lvl||1)+(G.tier||0)*12;
+    h+='<div class="grid" id="vendGrid">';
+    SLOTS.forEach((s,i)=>{
+      const x=i%6,y=(i/6)|0,off=satsFree()<ask||!bagCan({slot:s});
+      h+='<button type="button" class="cell" data-vbox="'+s+'" style="grid-column:'+(x+1)+';grid-row:'+(y+1)+'" '+(off?'disabled':'')+'>'+svgIcon(s)+'<small>'+il+'</small><u class="vp">'+ask+' sats</u></button>';
+    });
+    h+='</div><p>Each box is '+ask+' sats. Wren does not buy gear.</p>';
+    if(lastBox)h+='<p>Last roll: '+esc(lastBox.name)+'.</p>';
+  }else if(VEND.tab==='supplies'){
+    const ask=vendStimSats(),off=satsFree()<ask||G.stims>=S.cap;
+    h+='<div class="grid" id="vendGrid"><button type="button" class="cell" data-vstim="1" '+(off?'disabled':'')+'><small>Stim</small><u class="vp">'+ask+' sat'+(ask===1?'':'s')+'</u></button></div>';
+    h+='<p>A stim restores 45% of your life. You carry '+G.stims+' of '+S.cap+'.</p>';
+  }else if(VEND.tab==='buyback'){
+    const rows=vendBackRows();
+    h+='<div class="grid" id="vendGrid">'+vendOccupy(rows,'back')+'</div>';
+    h+=rows.length?'<p>Buying one back costs what the counter would charge, which is more than it paid you.</p>':'<p>Nothing sold this visit. Leaving town clears the counter.</p>';
+  }else{
+    const rows=vendList();
+    h+='<div class="grid" id="vendGrid">'+vendOccupy(rows,'vend')+'</div>';
+    h+=rows.length?'<p>'+uiSay('Right-click a piece to buy it. Hover shows it beside what you wear, and the price in sats.','Tap a piece, then Buy. A purchase of 12 sats or more asks first.')+'</p>':'<p>Nothing in this bin. The counter changes when you leave town and come back.</p>';
+  }
+  h+='</div><div class="youSide" data-vpanel="you"><h3>Pack '+gridCells(G.bag)+'/24</h3><div class="grid" id="bagGrid">'+gridPack(G.bag,6,4,'vbag')+'</div>';
+  h+='<p>'+(vendBuys()?uiSay('Right-click a piece of yours, or drag it onto the counter, to sell it.','Tap a piece of yours, then Sell.'):'What you buy lands in the pack. This counter does not buy gear.')+'</p></div></div>';
+  if(k==='brenda'&&!G.marrow&&unidCount()){
+    const ask=vendIdSats(),n=unidCount();
+    h+='<div class="row vendFoot"><button type="button" class="big" data-vid="1" '+(satsFree()<ask?'disabled':'')+'>Appraise '+n+' item'+(n>1?'s':'')+' · '+ask+' sats</button></div>';
+  }
+  if(sel&&sel.vend!==undefined){
+    const row=vendRow(sel.vend);
+    if(row){
+      const ok=satsFree()>=row.ask&&bagCan(row.it);
+      pop=itemCard(row.it,'<button type="button" class="big" data-vbuy="'+sel.vend+'" '+(ok?'':'disabled')+'>Buy for '+row.ask+' sats</button>',false,false);
+    }
+  }else if(sel&&sel.vbag!==undefined){
+    const it=G.bag[sel.vbag];
+    if(it){
+      const bid=vendBid(it);
+      const btn=vendBuys()&&bid>0?'<button type="button" class="big" data-vsell="'+sel.vbag+'">Sell for '+bid+' sats</button>':'';
+      pop=itemCard(it,btn,false,false);
+    }
+  }else if(sel&&sel.vback!==undefined){
+    const row=BUYBACK[sel.vback];
+    if(row&&row.kind===vendKind()){
+      const ok=satsFree()>=row.ask&&bagCan(row.it);
+      pop=itemCard(row.it,'<button type="button" class="big" data-vbb="'+sel.vback+'" '+(ok?'':'disabled')+'>Buy back for '+row.ask+' sats</button>',false,false);
+    }
+  }
+  return {h:h,pop:pop};
+}
 function drawSheet(){
   const only=sheetCtx.only||(mpOn()?['char','items','skills','web','party','quests','story','codex','opts']:['char','items','skills','web','quests','story','codex','opts']);let pop='';$('pop').hidden=true;
   const sheetFit=tab==='char'||tab==='items'||tab==='skills'||tab==='quests'||tab==='opts';
@@ -5817,15 +6089,7 @@ function drawSheet(){
   if(tab==='opts'){h+=`<h2>Options</h2><button class="ghost" data-walk="1">Walkthrough</button><h3>Characters</h3><div class="list">${[0,1,2].slice(0,NSLOT).map(n=>{const i=n===SLOT?{lvl:G.lvl,cls:G.cls,act:heroAct(G),dead:heroDead(G)}:slotInfo(n);return i&&CLS[i.cls]?`<button class="li${n===SLOT?' on':''}" ${n===SLOT?'':`data-swslot="${n}"`}><i style="background:${CLS[i.cls].col}"></i><div><b>${i.dead?'Hardcore · fallen':'Level '+i.lvl+' '+CLS[i.cls].n}${n===SLOT?' · playing now':''}</b><span>Slot ${n+1} · Act ${actRoman(i.act)}${i.dead?' · begins again':n===SLOT?'':' · '+uiSay('click','tap')+' to switch'}</span></div></button>${n===SLOT?'':`<button class="ghost" data-delslot="${n}" style="margin:-4px 0 8px auto;display:block;font-size:10px;padding:5px 10px;min-height:0">Delete slot ${n+1}</button>`}`:`<button class="li" data-newslot="${n}"><div><b>Slot ${n+1} · empty</b><span>${uiSay('Click to create a new character here','Tap to create a new character here')}</span></div></button>`}).join('')}</div><p class="hint" style="font-size:13.5px">Your current character is saved before you switch. The town lockbox is shared between them.</p>`;h+=`<h3>Difficulty</h3><div class="row">${DIFFS.map((f,i)=>`<button class="${(G.diff||0)===i?'big':'ghost'}" data-diff="${i}" ${diffUnlocked(i)?'':'disabled'}>${f.n}</button>`).join('')}</div><p class="hint" id="diffHint" style="font-size:13.5px">Hard and Brutal machines have more life and hit harder, and pay more experience to match: every machine’s experience scales with how tough it is. ${diffUnlocked(1)?'':'Hard opens after you clear Act V on Normal. '}${diffUnlocked(2)?'':'Brutal opens after you clear Act V on Hard. '}A change applies to machines that spawn from now on.</p><button class="tog${G.hc?' on':''}" data-hc="1"><span>Hardcore: one life. If this hero dies, they are gone and a new wanderer starts from nothing. +25% experience and magic find.</span><i>${G.hc?'ON':'OFF'}</i></button>${pkRow()}<div class="list optg">`;for(const k in OPT_LBL)h+=`<button class="tog${OPT[k]?' on':''}" data-opt="${k}"><span>${OPT_LBL[k]}</span><i>${OPT[k]?'ON':'OFF'}</i></button>`;h+=`<button class="tog${OPT.fx==='thin'?'':' on'}" data-opt="fx"><span>Combat effects. Thin keeps your own telegraphs and marks, and drops particles, extra lights, and other players' casts.</span><i>${OPT.fx==='full'?'Full':OPT.fx==='thin'?'Thin':'Normal'}</i></button><button class="tog on" data-opt="aim"><span>Ground skills. Auto drags on a phone and casts at once on a desk. Drag to aim shows the area and casts when you let go. Quick cast never shows it. ${uiSay('On a desk the area follows the pointer. A right click still casts at the pointer.','Drag away from the button. Further from the button puts the area further from you, and back toward the button brings it in. Let go on the button after a drag, or on Cancel, and it costs nothing. A quick tap hits the nearest machine in reach, or the ground in front of you. A blink hops a short way and will not land on a machine. Hold for a fifth of a second, or drag, to place it yourself.')}</span><i>${OPT.aim==='drag'?'Drag to aim':OPT.aim==='quick'?'Quick cast':'Auto'}</i></button><button class="tog on" data-opt="ui"><span>Layout. Auto follows the last touch, or a real mouse move or key. Touch keeps the stick and the buttons. Mouse &amp; keyboard keeps the hotbar.</span><i>${OPT.ui==='touch'?'Touch':OPT.ui==='mouse'?'Mouse & keyboard':'Auto'}</i></button>`;
     h+=`</div><h3>Saving</h3><p>${CL?(clState==='err'?'The last save to your account failed and will be retried. A copy is kept in this browser.':'Saved to your account every ten seconds, on every zone change and when you close this menu. Closing the page mid-zone brings you back to the same spot.'):'Account saving is not available in this view. The game saves in this browser every few seconds.'}</p><div class="row"><button class="big" data-save="1">Save now</button><button class="ghost" data-code="1">Copy save code</button></div><textarea id="codeOut" hidden readonly></textarea><button class="ghost" data-title="1">Save and return to title</button>`;
     if(devOn())h+=`<h3>Testing tools</h3><div class="row"><button class="ghost" data-dev="lvl">+1 level</button><button class="ghost" data-dev="cr">+credits</button><button class="ghost" data-dev="loot">Loot pile</button></div><div class="row"><button class="ghost" data-dev="zones">Unlock zones</button><button class="ghost" data-dev="god">Untouchable ${G.god?'ON':'OFF'}</button><button class="ghost" data-dev="reset">Respawn machines</button></div>`}
-  if(tab==='shop'){h+=`<h2>${shopVia?'Nonce · Brenda’s goods':'Brenda’s'}</h2><p>“Prices are up ${G.cpi<100?((G.cpi-1)*100).toFixed(0)+'%':'beyond counting'} since you arrived.” You carry <strong>${fmt(G.credits)}</strong>. Sell from the Items tab.</p>${shopVia?'<p>Thirty percent off her price.</p>':''}<div class="list">`;
-    const pp=payTag(stimPrice()),n=unidCount(),ic=payTag(40*G.cpi*n*(G.disc?.85:1));
-    h+=`<button class="li" data-buy="stim" ${G.credits<pp||G.stims>=S.cap?'disabled':''}><div><b>Stim</b><span>Restores 45% of your life. You carry ${G.stims} of ${S.cap}.</span></div><span class="pr">${fmt(pp)}</span></button>`;
-    if(n&&!G.marrow)h+=`<button class="li" data-buy="id" ${G.credits<ic?'disabled':''}><div><b>Appraise ${n} item${n>1?'s':''}</b><span>Brenda names your unidentified finds.</span></div><span class="pr">${fmt(ic)}</span></button>`;
-    shop.forEach((it,i)=>{h+=`<button class="li${sel&&sel.shop===i?' on':''}" data-shop="${i}"><div><b class="q${it.q}">${esc(it.name)}</b><span>${SNAME[it.slot]} · level ${it.il}</span></div><span class="pr">${fmt(buyPrice(it))}</span></button>`});h+=`</div>`;
-    if(sel&&sel.shop!==undefined&&shop[sel.shop]){const it=shop[sel.shop];pop=itemCard(it,`<button class="big" data-buy="item" ${G.credits<buyPrice(it)||!bagCan(it)?'disabled':''}>Buy for ${fmt(buyPrice(it))}</button>`+(satsOk()?`<button class="ghost" data-buy="itemsat" ${G.sats<satCost(it)||!bagCan(it)?'disabled':''}>or ${satCost(it)} sats</button>`:''))}}
-  if(tab==='gamble'){h+=`<h2>Wren’s mystery boxes</h2><p>Sealed at the factory. Posted odds: <span class="q4">unique 1.5%</span>, <span class="q3">set 2%</span>, <span class="q2">rare 15%</span>, the rest <span class="q1">magic</span>. You carry <strong>${fmt(G.credits)}</strong>.</p><div class="grid eq">`;
-    for(const s of SLOTS)h+=`<button class="cell" data-box="${s}" ${G.credits<boxPrice()||!bagCan({slot:s})?'disabled':''}>${svgIcon(s)}</button>`;
-    h+=`</div><p>Each box costs <strong>${fmt(boxPrice())}</strong>.</p>`;if(lastBox)h+=itemCard(lastBox,'')}
+  if(tab==='vend'){const v=vendHTML();h+=v.h;if(v.pop)pop=v.pop}
   if(tab==='bounty'){const rows=bounties(),bump=repRank('anon')>=1?1.25:1;h+=`<h2>Bounty board</h2><p>Posted by anons, paid on proof. ${rows.length} contract${rows.length===1?'':'s'} at a time; a new one is pinned up when you claim one. You hold <strong style="color:#f7931a">${G.sats} sats</strong>.</p><div class="list">`;
     rows.forEach((b,i)=>{const dn=b.c>=b.n,sats=Math.ceil(b.sats*bump),pay=Math.floor(b.cr*bump*G.cpi);h+=`<button class="li${dn?' on':''}" data-claim="${i}" ${dn?'':'disabled'}><div><b>${b.n} × ${ET[b.k].n}</b><span>${ZONES[b.zi].n} · ${b.c}/${b.n}${dn?' · tap to claim':''}</span></div><span class="pr" style="color:#f7931a">${sats} sats<br>${fmt(pay)}</span></button>`});h+=`</div>`}
   if(tab==='stash'){const real=Math.floor(ACC.cr*G.cpi);h+=`<h2>Your lockbox</h2><p>One lockbox for every wanderer you play. Leave gear, credits or sats here and any of your heroes can take them out, in any slot.</p>
@@ -5885,13 +6149,7 @@ function drawSheet(){
       h+=`<h3>Mr. Float holds ${p0.n} of your sats</h3><div class="tick"><div>He lent you<b>${fmt(p0.lent)}</b></div><div>You owe him<b>${fmt(owe)}</b></div>
         <div>He keeps them below<b>${fmt(p0.liq)}</b></div><div>Room left<b class="${safe<12?'dn2':'up2'}">${safe.toFixed(0)}%</b></div></div>
         <div class="row"><button class="big" data-mkr="1" ${G.credits<owe?'disabled':''}>Repay and take them back</button></div>`}
-    h+=`<h3>Nonce’s goods</h3><div class="list">`;
-    h+=`<button class="li" data-satstim="1" ${G.sats<1||G.stims>=S.cap?'disabled':''}><div><b>Stim</b><span>Restores 45% of your life. One sat, whatever the credit index says. You carry ${G.stims} of ${S.cap}.</span></div><span class="pr" style="color:#f7931a">1 sat</span></button>`;
-    satShop.forEach((o,i)=>{h+=`<button class="li${sel&&sel.sat===i?' on':''}" data-sat="${i}"><div><b class="q${o.it.q}">${esc(o.it.name)}</b><span>${QN[o.it.q]} ${SNAME[o.it.slot]} · level ${o.it.il}${o.it.fam?' · '+FAM[o.it.fam].n:''}</span></div><span class="pr" style="color:#f7931a">${satPrice(o)} sats</span></button>`});
-    if(!satShop.length)h+=`<p>Sold out. Nonce restocks each time you return to town.</p>`;h+=`</div>`;
-    h+=`<div class="stats"><div>A stim, in credits<b>${fmt(sq)}</b></div><div>Same stim, at arrival<b>${fmt(25*(1+G.lvl*.2)*(G.disc?.85:1))}</b></div><div>Nonce’s stim<b>1 sat</b></div></div>
-      <p style="font-size:13.5px">The credit price climbs every minute. Nonce sells the same stim for one sat, and that price does not.</p>`;
-    if(sel&&sel.sat!==undefined&&satShop[sel.sat]){const o=satShop[sel.sat];pop=itemCard(o.it,`<button class="big" data-satbuy="1" ${G.sats<satPrice(o)||!bagCan(o.it)?'disabled':''}>Buy for ${satPrice(o)} sats</button>`)}}
+    h+=`<p style="font-size:13.5px">His goods are on the other side of the counter.</p>`}
   if(tab==='travel'){h+=`<h2>Transit Gate</h2>`;if(!gateAct||sheetCtx.gFresh){sheetCtx.gFresh=0;gateAct=actOf(W.zi)||1}const acts=[[1,'I',1],[2,'II',G.q.q5===3],[3,'III',G.q.q10===3],[4,'IV',G.q.q15===3],[5,'V',G.q.q20===3],[6,'More',1]];if(!acts[gateAct-1][2])gateAct=1;
     h+=`<div class="row">${acts.map(a=>`<button class="${gateAct===a[0]?'big':'ghost'}" data-gact="${a[0]}" ${a[2]?'':'disabled'}>${a[1]}</button>`).join('')}</div><div class="list">`;
     const row=i=>{const z=ZONES[i],ok=i<=G.unlocked,held=ok&&actBriefHold(i);return `<button class="li" data-go="${i}" ${ok?'':'disabled'}><div><b>${z.n}</b><span>${held?'Talk to Gramps first.':ok?((b=>b?'Machine level '+b.ml+' · '+b.ents.length+' machines remain':'Machine level '+zoneLevel(z)+' · untouched')(zoneBag(i))):'Locked. Clear the district before it.'}</span></div></button>`};
@@ -5926,7 +6184,7 @@ function longPress(i){const it=G.bag[i];if(!it)return;lpFired=true;clearTimeout(
 $('sheetIn').addEventListener('pointerdown',e=>{const c=e.target.closest('[data-bag]');lpFired=false;clearTimeout(lpT);if(!c||c.disabled)return;const i=+c.dataset.bag;lpXY=[e.clientX,e.clientY];lpT=setTimeout(()=>longPress(i),480)});
 $('sheetIn').addEventListener('pointermove',e=>{if(lpXY&&Math.hypot(e.clientX-lpXY[0],e.clientY-lpXY[1])>10)clearTimeout(lpT)});
 for(const n of['pointerup','pointercancel','pointerleave'])$('sheetIn').addEventListener(n,()=>clearTimeout(lpT));
-$('sheetIn').addEventListener('dragstart',e=>{const c=e.target.closest&&e.target.closest('[data-bag]');if(!c||!e.dataTransfer)return;const it=G.bag[+c.dataset.bag];if(!it||!it.charm){e.preventDefault();return}e.dataTransfer.setData('text/plain',String(+c.dataset.bag));e.dataTransfer.effectAllowed='move'});
+$('sheetIn').addEventListener('dragstart',e=>{if(e.target.closest&&e.target.closest('[data-vbag]')){e.preventDefault();return}const c=e.target.closest&&e.target.closest('[data-bag]');if(!c||!e.dataTransfer)return;const it=G.bag[+c.dataset.bag];if(!it||!it.charm){e.preventDefault();return}e.dataTransfer.setData('text/plain',String(+c.dataset.bag));e.dataTransfer.effectAllowed='move'});
 $('sheetIn').addEventListener('dragover',e=>{if(e.target.closest&&e.target.closest('[data-csocket]')){e.preventDefault();if(e.dataTransfer)e.dataTransfer.dropEffect='move'}});
 $('sheetIn').addEventListener('drop',e=>{const slot=e.target.closest&&e.target.closest('[data-csocket]');if(!slot)return;e.preventDefault();const i=+(e.dataTransfer&&e.dataTransfer.getData('text/plain'));if(!(i>=0)||!G.bag[i])return;if(charmSocket(i)){toast('On the belt');sel=null}drawSheet()});
 const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],[data-webadd]');if(!b||b.disabled)return;const d=b.dataset;sfx('ui');
@@ -5993,8 +6251,6 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.mkr)if(!mktRepay()){toast('Not enough credits to repay him');sfx('err')}
   /* The pledge is the one printed on the sheet, and it never goes under ten sats. */
   if(d.mkb){const n=Math.max(10,Math.min(G.sats,mktQty));if(!mktBorrow(n)){toast(G.mkt.pos?'He will only hold one position':'Not enough sats');sfx('err')}}
-  if(d.satstim){if(G.stims>=S.cap){toast('You cannot carry another');sfx('err')}else if(spendSats(1,'A stim costs 1 sat')){G.stims++;addRep('btc',1);sfx('coin');toast('Paid 1 sat')}}
-  if(d.satbuy){const o=satShop[sel.sat];if(o&&satsFree()>=satPrice(o)&&bagCan(o.it)&&spendSats(satPrice(o))){addRep('btc',Math.ceil(o.price/4));addAdopt(1,'you paid in sats');G.bag.push(o.it);satShop.splice(sel.sat,1);sel=null;sfx('coin');toast('Paid in sats')}}
   if(d.node!==undefined)sel={sk:+d.node};
   if(d.learn!==undefined){const i=+d.learn;G.sp-=skCost(i);G.sk[i]++;if(G.sk[i]===10)toast(CLS[G.cls].sk[i].n+' is mastered: two extra ranks’ worth of power'+(CLS[G.cls].sk[i].a?' and 20% faster recovery':'')+'.');if(CLS[G.cls].sk[i].a&&!G.slots.includes(i)){const e=G.slots.indexOf(-1);if(e>=0)G.slots[e]=i}if(!CLS[G.cls].sk[i].a&&G.pas&&!G.pas.includes(i)&&G.pas.length<PCAP())G.pas.push(i);calc();sfx('learn');if(G.cls==='hacker'&&i===11&&G.sk[11]===1&&!G.schema)schemaAsk()}
   if(d.assign!==undefined){const k=+d.assign,i=sel.sk,o=G.slots.indexOf(i);if(o>=0)G.slots[o]=G.slots[k];G.slots[k]=i}
@@ -6034,16 +6290,54 @@ const sheetClick=ev=>{const b=ev.target.closest('button,[data-track],[data-web],
   if(d.walk){const fromTitle=sheetCtx.from==='title';closeSheet();walkChoose(!!fromTitle);return}if(d.title){save(true);$('sheet').hidden=true;$('hud').hidden=true;$('title').hidden=false;mode='title';music('scene');showContinue();W=null;return}
   if(d.dev&&devOn()){const k=d.dev;if(k==='lvl')gainXp(xpNext(G.lvl)-G.xp);if(k==='cr')G.credits+=5000*G.cpi*G.lvl;if(k==='zones')G.unlocked=5;if(k==='god')G.god=!G.god;if(k==='reset'){resetZones();toast('Every district is restocked')}
     if(k==='loot'){for(let q=1;q<=4;q++)for(let i=0;i<2;i++)W.drops.push({x:P.x+rnd(-2,2),y:P.y+rnd(-2,2),it:makeItem(G.lvl+1,q),t:1});toast('Loot scattered at your feet')}}
-  if(d.buy==='stim'){G.credits-=payTag(stimPrice());G.stims++;sfx('coin')}
-  if(d.buy==='id'){G.credits-=payTag(40*G.cpi*unidCount()*(G.disc?.85:1));idAll();sfx('rare')}
-  if(d.shop!==undefined)sel={shop:+d.shop};
-  if(d.buy==='itemsat'){const it=shop[sel.shop];if(it&&bagCan(it)&&spendSats(satCost(it))){addAdopt(.5,'');G.bag.push(it);shop.splice(sel.shop,1);sel=null;sfx('coin')}}
-  if(d.buy==='item'){const it=shop[sel.shop];if(!bagCan(it)){toast('Your pack is full');return}G.credits-=buyPrice(it);G.bag.push(it);shop.splice(sel.shop,1);sel=null;sfx('coin')}
-  if(d.box){if(!bagCan({slot:d.box})){toast('Your pack is full');return}G.credits-=boxPrice();const r=Math.random(),q=r<.015?4:r<.035?3:r<.185?2:1;const it=makeItem(G.lvl+ri(-1,2)+G.tier*12,q,d.box);it.id=true;G.bag.push(it);lastBox=it;sfx(q===4?'unique':q>=2?'rare':'drop')}
+  if(d.vtab){VEND.tab=d.vtab;sel=null;drawSheet();return}
+  if(d.vside){VEND.side=d.vside;drawSheet();return}
+  if(d.vstim){if(vendBuyStim()==='dlg')return}
+  if(d.vid){if(vendIdentify()==='dlg')return}
+  if(d.vbox){if(vendBox(d.vbox)==='dlg')return}
+  if(d.vbuy!==undefined){if(vendBuy(+d.vbuy)==='dlg')return}
+  if(d.vsell!==undefined){vendSell(+d.vsell);sel=null}
+  if(d.vbb!==undefined){if(vendBuyback(+d.vbb)==='dlg')return}
+  if(d.vend!==undefined)sel={vend:+d.vend};
+  if(d.vbag!==undefined){if(vendDragged){vendDragged=false;return}sel={vbag:+d.vbag}}
+  if(d.vback!==undefined)sel={vback:+d.vback};
   if(d.go){if(mpPortalBlocked())return;if(actBriefHold(+d.go)){actBriefDeny();return}closeSheet();enter(+d.go);return}
   if(d.tier){G.tier=clamp(G.tier+ +d.tier,0,G.maxTier);resetZones()}
   drawSheet()};
 $('sheet').addEventListener('click',ev=>{if(webPanMoved){webPanMoved=0;if(ev.target.closest&&ev.target.closest('#webStage'))return}sheetClick(ev)});
+
+$('sheet').addEventListener('contextmenu',e=>{
+  const el=e.target.closest&&e.target.closest('[data-vend],[data-vbag],[data-vstim],[data-vbox],[data-vback]');
+  if(!el)return;
+  e.preventDefault();
+  if(uiTouch())return;
+  if(el.dataset.vend!==undefined){vendBuy(+el.dataset.vend);return}
+  if(el.dataset.vbag!==undefined){if(vendSell(+el.dataset.vbag)&&mode==='sheet')drawSheet();return}
+  if(el.dataset.vstim!==undefined){vendBuyStim();return}
+  if(el.dataset.vbox!==undefined){vendBox(el.dataset.vbox);return}
+  if(el.dataset.vback!==undefined){vendBuyback(+el.dataset.vback);return}
+});
+let vendPtr=null;
+$('sheetIn').addEventListener('pointerdown',e=>{
+  const c=e.target.closest&&e.target.closest('[data-vbag]');
+  if(!c||c.disabled||uiTouch()||!vendBuys())return;
+  vendPtr={i:+c.dataset.vbag,x:e.clientX,y:e.clientY,id:e.pointerId,moved:false};
+  try{c.setPointerCapture(e.pointerId)}catch(err){}
+});
+addEventListener('pointermove',e=>{
+  if(!vendPtr||e.pointerId!==vendPtr.id)return;
+  if(Math.hypot(e.clientX-vendPtr.x,e.clientY-vendPtr.y)>8)vendPtr.moved=true;
+});
+addEventListener('pointerup',e=>{
+  if(!vendPtr||e.pointerId!==vendPtr.id)return;
+  const p=vendPtr;vendPtr=null;
+  if(!p.moved)return;
+  const stack=document.elementsFromPoint(e.clientX,e.clientY)||[];
+  if(!stack.some(n=>n.closest&&n.closest('.vendSide')))return;
+  vendDragged=true;
+  if(vendSell(p.i)&&mode==='sheet')drawSheet();
+});
+
 $('pop').addEventListener('click',ev=>{if(ev.target.id==='pop'){sel=null;sfx('ui');drawSheet();return}sheetClick(ev)});
 
 function showDeath(){const town=ZONES[HT()]||{n:'town'};$('deathP').textContent='Slain by '+DY.by+' in '+ZONES[DY.zi].n+', with '+DTY[P.lastTy||'impact'].n+' damage.'+(G.hc?' This was a hardcore hero. They are gone, and a new wanderer will take the road.':'');
@@ -6235,7 +6529,7 @@ uiBoot();
 showDisc();
 cloudInit();
 function devOn(){try{if(window.__DEBUG)return true;var h=location.hostname;if(h==='localhost'||h==='127.0.0.1'||h==='::1')return true;if(location.protocol==='file:'||location.protocol==='about:')return true}catch(e){}return false}
-if(devOn())window.__g={migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},get shop(){return shop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith};
+if(devOn())window.__g={migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},get shop(){return shop},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith,openVend,vendAsk,vendBid,vendBuy,vendSell,vendBuyback,vendBuyStim,vendIdentify,vendBox,vendTabOf,buyPrice,sellValue,satCost,satPrice,boxPrice,get VEND(){return VEND},get BUYBACK(){return BUYBACK},get shopVia(){return shopVia},setShopVia(v){shopVia=+v||0}};
 /* late additions that need the dialogue tables */
 QRW.push(
  ['q16','gramps','“I do not remember the nine years after I clicked.” You gain 1 skill point.',()=>G.sp++,'Gramps'],
