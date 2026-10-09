@@ -118,45 +118,32 @@ if(!/needs 1 slot/.test(toast))fail('charm toast '+toast);
 
 const sold=await p.evaluate(()=>{
   __g.closeSheet();__g.setMode('play');
-  const belt=__g.makeItem(4,1,'belt');belt.id=true;belt.val=10;belt.name='FRACTION BELT';belt.q=1;
-  __g.G.bag=[belt];__g.G.cpi=1.15;__g.G.credits=100;__g.G.charms=[];
-  __g.openSheet('items',{only:['items','shop']});
-  return true;
+  const belt=__g.makeItem(4,1,'belt');belt.id=true;belt.val=10;belt.name='FRACTION BELT';belt.q=1;belt.aff=belt.aff||[];
+  __g.G.bag=[belt];__g.G.cpi=1.15;__g.G.credits=100;__g.G.sats=0;__g.G.mkt={p:1};
+  __g.openVend('brenda');
+  const bid=__g.vendBid(__g.G.bag[0]);
+  __g.vendSell(0);
+  return {bid,credits:__g.G.credits,sats:__g.G.sats,bag:__g.G.bag.length};
 });
-if(!sold)fail('sell sheet');
-await p.click('[data-bag="0"]');
-await p.waitForTimeout(400);
-const oneBtn=await p.evaluate(()=>{const b=document.querySelector('[data-do="sell"]');return b?b.textContent:''});
-await p.click('[data-do="sell"]');
-const one=await p.evaluate(()=>({credits:__g.G.credits,bag:__g.G.bag.length}));
-if(oneBtn!=='Sell ₡4'||one.credits!==104||one.bag!==0)fail('one sale '+JSON.stringify({oneBtn,one}));
+if(sold.bid!==4||sold.sats!==4||sold.credits!==100||sold.bag!==0)fail('one sale '+JSON.stringify(sold));
 
-const bulk=await p.evaluate(()=>{
-  const a=__g.makeItem(4,1,'belt');a.id=true;a.val=10;a.q=1;
-  const b=__g.makeItem(4,1,'gloves');b.id=true;b.val=10;b.q=1;
-  __g.G.bag=[a,b];__g.G.cpi=1.15;__g.G.credits=200;
-  __g.drawSheet();
-  const btn=[...document.querySelectorAll('[data-sellq="-1"]')].map(x=>x.textContent);
-  return {btn};
+const pair=await p.evaluate(()=>{
+  const a=__g.makeItem(4,1,'belt');a.id=true;a.val=10;a.q=1;a.aff=a.aff||[];
+  const b=__g.makeItem(4,1,'gloves');b.id=true;b.val=10;b.q=1;b.aff=b.aff||[];
+  __g.G.bag=[a,b];__g.G.cpi=1.15;__g.G.credits=200;__g.G.sats=0;__g.G.mkt={p:1};
+  __g.vendSell(1);__g.vendSell(0);
+  return {credits:__g.G.credits,sats:__g.G.sats,bag:__g.G.bag.length};
 });
-if(!/₡8/.test(bulk.btn[0]||''))fail('bulk label '+JSON.stringify(bulk));
-await p.evaluate(()=>{const b=document.querySelector('[data-sellq="-1"]');b.scrollIntoView({block:'center'});b.click();});
-const pair=await p.evaluate(()=>({credits:__g.G.credits,bag:__g.G.bag.length,log:document.getElementById('log').textContent}));
-if(pair.credits!==208||pair.bag!==0||!/₡8/.test(pair.log))fail('bulk sale '+JSON.stringify(pair));
+if(pair.credits!==200||pair.sats!==8||pair.bag!==0)fail('bulk sale '+JSON.stringify(pair));
 
-const charm=await p.evaluate(()=>{
+const ch=await p.evaluate(()=>{
   __g.G.bag=[{slot:'charm',charm:1,sz:'slip',cs:1,cells:1,cw:1,ch:1,q:1,il:1,id:true,req:1,name:'Fraction Slip',base:'Slip',aff:[],val:10}];
-  __g.G.credits=50;__g.G.cpi=1.15;
-  __g.drawSheet();
-  return true;
+  __g.G.credits=50;__g.G.sats=0;__g.G.cpi=1.15;__g.G.mkt={p:1};
+  const bid=__g.vendBid(__g.G.bag[0]);
+  __g.vendSell(0);
+  return {bid,credits:__g.G.credits,sats:__g.G.sats,n:__g.G.bag.length};
 });
-if(!charm)fail('charm sheet');
-await p.click('[data-bag="0"]');
-await p.waitForTimeout(400);
-const chBtn=await p.evaluate(()=>{const b=document.querySelector('[data-do="sell"]');return b?b.textContent:''});
-await p.click('[data-do="sell"]');
-const ch=await p.evaluate(()=>({credits:__g.G.credits,n:__g.G.bag.length}));
-if(chBtn!=='Sell ₡4'||ch.credits!==54||ch.n!==0)fail('charm sale '+JSON.stringify({chBtn,ch}));
+if(ch.bid!==4||ch.sats!==4||ch.credits!==50||ch.n!==0)fail('charm sale '+JSON.stringify(ch));
 
 if(errs.length)fail(errs[0]);
 console.log('loot-clarity ok');

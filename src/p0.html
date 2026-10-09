@@ -394,6 +394,19 @@ html[data-ui="touch"] .cmpActs button,html[data-ui="touch"] .cmpAlts button,html
   .cmpBox{flex-direction:column}
   .cmpDelta{max-height:38vh}
 }
+.vendBody{display:flex;gap:10px;align-items:flex-start}
+.vendSide,.youSide{flex:1;min-width:0}
+.vendSide{background:rgba(0,0,0,.28);padding:6px;border:1px solid var(--edge)}
+.vendTabs,.vendToggle,.vendFoot{flex-wrap:wrap}
+.vendToggle{display:none}
+.cell u.vp{color:var(--gold);background:rgba(5,4,9,.85);letter-spacing:0}
+html[data-ui="touch"] .vendTabs button,html[data-ui="touch"] .vendToggle button,html[data-ui="touch"] .vendFoot button{min-height:44px}
+@media (max-width:720px){
+  .vendToggle{display:flex}
+  .vendBody{flex-direction:column}
+  .vendBody[data-side="them"] .youSide,.vendBody[data-side="you"] .vendSide{display:none}
+}
+
 </style>
 
 <div id="app">

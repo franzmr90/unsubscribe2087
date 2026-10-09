@@ -641,73 +641,91 @@ async function townEconomy(page) {
   else if (before.unid) {
     const opened = await say(page, 'brenda', '^Trade$');
     if (String(opened).startsWith('ok')) {
-      await page.evaluate(() => { const b = document.querySelector('[data-buy="id"]'); if (b && !b.disabled) b.click(); });
+      await page.evaluate(() => {
+        __g.VEND.tab = 'supplies';
+        __g.drawSheet();
+        const b = document.querySelector('[data-vid="1"]');
+        if (b && !b.disabled) b.click();
+      });
     }
   }
   await say(page, 'brenda', '^Trade$');
   await page.evaluate(() => {
     const note = s => window.__prog.log.notes.push(s);
     const click = sel => { const b = document.querySelector(sel); if (b && !b.disabled) { b.click(); return true; } return false; };
-    if (__g.mode !== 'sheet') {
-      if (__g.mode !== 'play') { note('brenda sheet stayed ' + __g.mode); return; }
-      __g.openSheet('items', { only: ['items', 'shop'] });
-    }
-    click('[data-tab="items"]');
+    const g = __g;
+    if (g.mode === 'sheet') g.closeSheet();
+    if (g.mode !== 'play') { note('brenda sheet stayed ' + g.mode); return; }
+    g.openSheet('items');
     click('[data-best="1"]');
     click('[data-bestok="1"]');
-    __g.drawSheet();
+    g.drawSheet();
     click('[data-markjunk="1"]');
-    __g.drawSheet();
-    if (click('[data-sellq="9"]')) window.__prog.log.spend.junkSales = (window.__prog.log.spend.junkSales || 0) + 1;
-    __g.drawSheet();
-    click('[data-tab="shop"]');
-    if (!__g.G.marrow && click('[data-buy="id"]')) window.__prog.log.spend.idBuys = (window.__prog.log.spend.idBuys || 0) + 1;
+    g.closeSheet();
+    g.setMode('play');
+    g.openVend('brenda');
+    for (let i = g.G.bag.length - 1; i >= 0; i--) {
+      if (g.G.bag[i] && g.G.bag[i].junk && g.vendSell(i)) window.__prog.log.spend.junkSales = (window.__prog.log.spend.junkSales || 0) + 1;
+    }
+    g.VEND.tab = 'supplies';
+    g.drawSheet();
+    if (!g.G.marrow && click('[data-vid="1"]')) window.__prog.log.spend.idBuys = (window.__prog.log.spend.idBuys || 0) + 1;
     let guard = 0, bought = 0;
-    while (guard++ < 8 && __g.G.stims < Math.min(8, __g.S.cap)) {
-      if (!click('[data-buy="stim"]')) break;
+    while (guard++ < 8 && g.G.stims < Math.min(8, g.S.cap)) {
+      if (!click('[data-vstim="1"]')) break;
       bought++;
-      __g.drawSheet();
+      g.drawSheet();
     }
     window.__prog.log.spend.stimClicks = (window.__prog.log.spend.stimClicks || 0) + bought;
-    const shop = __g.shop || [];
+    const shop = g.shop || [];
     let best = -1, bd = 0.05;
-    shop.forEach((it, i) => { const d = __g.itemDelta(it); if (d > bd) { bd = d; best = i; } });
-    if (best >= 0 && click('[data-shop="' + best + '"]')) {
-      __g.drawSheet();
-      if (click('[data-buy="item"]')) window.__prog.log.spend.creditBuys = (window.__prog.log.spend.creditBuys || 0) + 1;
+    shop.forEach((it, i) => { const d = g.itemDelta(it); if (d > bd) { bd = d; best = i; } });
+    if (best >= 0) {
+      g.VEND.tab = g.vendTabOf(shop[best]);
+      g.drawSheet();
+      if (click('[data-vend="' + best + '"]')) {
+        if (click('[data-vbuy="' + best + '"]')) window.__prog.log.spend.vendorBuys = (window.__prog.log.spend.vendorBuys || 0) + 1;
+      }
     }
-    click('[data-tab="items"]');
+    g.closeSheet();
+    g.setMode('play');
+    g.openSheet('items');
     click('[data-mbest="1"]');
-    __g.closeSheet();
+    g.closeSheet();
   });
   await page.evaluate(() => { if (__g.mode === 'sheet') __g.closeSheet(); if (__g.mode !== 'play') __g.setMode('play'); });
   await clearDlg(page);
-  await say(page, 'nonce', 'Trade for sats');
+  await say(page, 'nonce', 'His goods');
   await clearDlg(page);
   await page.evaluate(() => {
     const click = sel => { const b = document.querySelector(sel); if (b && !b.disabled) { b.click(); return true; } return false; };
-    if (__g.mode !== 'sheet') {
-      if (__g.mode === 'play') __g.openSheet('items', { only: ['items', 'sats'] });
+    const g = __g;
+    if (g.mode !== 'sheet') {
+      if (g.mode === 'play') g.openVend('sat');
     }
-    if (__g.mode !== 'sheet') {
+    if (g.mode !== 'sheet') {
       const n = window.__prog.log.notes;
-      if (n.filter(x => String(x).indexOf('sat shop stayed') === 0).length < 3) n.push('sat shop stayed ' + __g.mode);
+      if (n.filter(x => String(x).indexOf('sat shop stayed') === 0).length < 3) n.push('sat shop stayed ' + g.mode);
       return;
     }
-    click('[data-tab="sats"]');
+    g.VEND.tab = 'supplies';
+    g.drawSheet();
     let stims = 0;
-    while (stims++ < 4 && __g.G.sats >= 1 && __g.G.stims < Math.min(4, __g.S.cap)) {
-      if (!click('[data-satstim="1"]')) break;
-      __g.drawSheet();
+    while (stims++ < 4 && g.G.sats >= 1 && g.G.stims < Math.min(4, g.S.cap)) {
+      if (!click('[data-vstim="1"]')) break;
+      g.drawSheet();
     }
-    const list = (__g.satShop || []).map((o, i) => ({ i, d: __g.itemDelta(o.it), price: o.price, fam: o.it && o.it.fam }));
+    const list = (g.satShop || []).map((o, i) => ({ i, d: g.itemDelta(o.it), price: g.satPrice(o), fam: o.it && o.it.fam }));
     list.sort((a, b) => (b.d || 0) - (a.d || 0));
-    const pick = list.find(o => o.d > 0.03 && __g.G.sats >= o.price + 2);
-    if (pick && click('[data-sat="' + pick.i + '"]')) {
-      __g.drawSheet();
-      if (click('[data-satbuy="1"]')) window.__prog.log.spend.satBuys = (window.__prog.log.spend.satBuys || 0) + 1;
+    const pick = list.find(o => o.d > 0.03 && g.G.sats >= o.price + 2);
+    if (pick) {
+      g.VEND.tab = g.vendTabOf(g.satShop[pick.i].it);
+      g.drawSheet();
+      if (click('[data-vend="' + pick.i + '"]')) {
+        if (click('[data-vbuy="' + pick.i + '"]')) window.__prog.log.spend.satBuys = (window.__prog.log.spend.satBuys || 0) + 1;
+      }
     }
-    __g.closeSheet();
+    g.closeSheet();
   });
   await page.evaluate(() => { if (__g.mode === 'sheet') __g.closeSheet(); if (__g.mode !== 'play') __g.setMode('play'); });
   await clearDlg(page);

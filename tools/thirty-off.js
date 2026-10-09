@@ -31,19 +31,22 @@ const pin=await p.evaluate(()=>{
   g.G.rep.norm=0;
   g.G.scs=700;
   g.G.credits=5000;
+  g.G.sats=5000;
+  g.G.mkt={p:1};
   g.shop[0].val=40;
   g.talkTo('brenda');
   const btn=[...document.querySelectorAll('#dBtns button:not([disabled])')].find(e=>e.textContent==='Trade');
   if(!btn)return {err:'no trade',body:document.getElementById('dP').textContent,buttons:[...document.querySelectorAll('#dBtns button')].map(e=>e.disabled+' '+e.textContent)};
   btn.click();
-  const tab=document.querySelector('[data-tab="shop"]');
-  if(tab)tab.click();
-  const row=document.querySelector('[data-shop="0"] .pr');
+  const it=g.shop[0];
+  g.VEND.tab=g.vendTabOf(it);
+  g.drawSheet();
+  const row=document.querySelector('[data-vend="0"] .vp');
   const price=row?row.textContent:'';
   g.closeSheet();
   return price;
 });
-check('Brenda prints ₡100 for a value of 40', pin==='₡100', pin);
+check('Brenda prints 100 sats for a value of 40', pin==='100 sats', pin);
 
 const off=await p.evaluate(()=>{
   const g=__g;
@@ -59,30 +62,32 @@ check('the button says 30% off', off.buttons.some(t=>t==='Brenda’s goods, 30% 
 await p.evaluate(()=>{
   const btn=[...document.querySelectorAll('#dBtns button:not([disabled])')].find(e=>e.textContent==='Brenda’s goods, 30% off');
   btn.click();
-  const tab=document.querySelector('[data-tab="shop"]');
-  if(tab)tab.click();
+  __g.VEND.tab=__g.vendTabOf(__g.shop[0]);
+  __g.drawSheet();
 });
 const shop=await p.evaluate(()=>{
-  const row=document.querySelector('[data-shop="0"] .pr').textContent;
+  const row=document.querySelector('[data-vend="0"] .vp').textContent;
   const head=document.querySelector('#sheetIn h2').textContent;
   const note=[...document.querySelectorAll('#sheetIn p')].map(e=>e.textContent).join(' ');
   return {row,head,note};
 });
-check('his tag is ₡70', shop.row==='₡70', shop.row);
+check('his tag is 70 sats', shop.row==='70 sats', shop.row);
 check('the counter says thirty percent off', /Thirty percent off her price/.test(shop.note)&&/Nonce/.test(shop.head), shop.head+' '+shop.note);
 
 const odd=await p.evaluate(()=>{
   const g=__g;
   g.G.cpi=1.1;
+  g.G.mkt={p:1};
   g.shop[0].val=13;
+  g.VEND.tab=g.vendTabOf(g.shop[0]);
   g.drawSheet();
-  const row=document.querySelector('[data-shop="0"] .pr').textContent;
-  const before=g.G.credits;
-  document.querySelector('[data-shop="0"]').click();
-  document.querySelector('[data-buy="item"]').click();
-  return {row,paid:before-g.G.credits};
+  const row=document.querySelector('[data-vend="0"] .vp').textContent;
+  const before=g.G.sats, credits=g.G.credits;
+  document.querySelector('[data-vend="0"]').click();
+  document.querySelector('[data-vbuy="0"]').click();
+  return {row,paid:before-g.G.sats,credits:g.G.credits-credits};
 });
-check('a 35.75 price is ₡35 off, then ₡24', odd.row==='₡24'&&odd.paid===24, JSON.stringify(odd));
+check('a 35.75 price is 35 off, then 24 sats', odd.row==='24 sats'&&odd.paid===24&&odd.credits===0, JSON.stringify(odd));
 
 const hero=await p.evaluate(()=>{
   __g.closeSheet();

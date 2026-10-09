@@ -37,39 +37,39 @@ await clearUI(p);
 await p.evaluate(()=>__g.enter(0));
 await clearUI(p);
 /* Prices climb while the clock runs, and buying strength lowers adoption, so each check pins the index. */
-await p.evaluate(()=>{__g.setMode('play');__g.G.cpi=1.073;__g.G.adopt=100;__g.G.lvl=1;__g.G.disc=null;__g.G.stims=0;__g.G.credits=32});
-await p.evaluate(()=>__g.openSheet('shop',{only:['items','shop']}));
+await p.evaluate(()=>{__g.setMode('play');__g.G.cpi=1.073;__g.G.adopt=100;__g.G.lvl=1;__g.G.disc=null;__g.G.stims=0;__g.G.credits=32;__g.G.mkt={p:1};__g.G.sats=32});
+await p.evaluate(()=>{__g.openSheet('shop',{only:['items','shop']});__g.VEND.tab='supplies';__g.drawSheet()});
 const stim=await p.evaluate(()=>{
-  const btn=document.querySelector('[data-buy="stim"]');
+  const btn=document.querySelector('[data-vstim="1"]');
   return {text:btn?btn.textContent:'',off:btn?btn.disabled:true};
 });
-check('a stim tag of 32 is payable with 32', /₡32/.test(stim.text)&&!stim.off, JSON.stringify(stim));
-await p.click('[data-buy="stim"]');
-const stimPay=await p.evaluate(()=>({credits:__g.G.credits,stims:__g.G.stims}));
-check('the stim takes 32', stimPay.credits===0&&stimPay.stims===1, JSON.stringify(stimPay));
+check('a stim tag of 32 is payable with 32', /32 sats/.test(stim.text)&&!stim.off, JSON.stringify(stim));
+await p.click('[data-vstim="1"]');
+const stimPay=await p.evaluate(()=>({credits:__g.G.credits,sats:__g.G.sats,stims:__g.G.stims}));
+check('the stim takes 32', stimPay.sats===0&&stimPay.credits===32&&stimPay.stims===1, JSON.stringify(stimPay));
 
 const id=await p.evaluate(()=>{
   const it=__g.makeItem(3,1,'helm');it.id=false;it.name='UNNAMED';
-  __g.G.bag=[it];__g.G.credits=42;
+  __g.G.bag=[it];__g.G.sats=42;__g.G.credits=42;
   __g.drawSheet();
-  const btn=document.querySelector('[data-buy="id"]');
+  const btn=document.querySelector('[data-vid="1"]');
   return {text:btn?btn.textContent:'',off:btn?btn.disabled:true};
 });
-check('appraisal of 42 is payable with 42', /₡42/.test(id.text)&&!id.off, JSON.stringify(id));
-await p.click('[data-buy="id"]');
-const idPay=await p.evaluate(()=>({credits:__g.G.credits,named:__g.G.bag[0]&&__g.G.bag[0].id}));
-check('appraisal takes 42 and names the piece', idPay.credits===0&&idPay.named, JSON.stringify(idPay));
+check('appraisal of 42 is payable with 42', /42 sats/.test(id.text)&&!id.off, JSON.stringify(id));
+await p.click('[data-vid="1"]');
+const idPay=await p.evaluate(()=>({credits:__g.G.credits,sats:__g.G.sats,named:__g.G.bag[0]&&__g.G.bag[0].id}));
+check('appraisal takes 42 and names the piece', idPay.sats===0&&idPay.credits===42&&idPay.named, JSON.stringify(idPay));
 
-await p.evaluate(()=>{__g.closeSheet();__g.setMode('play');__g.G.cpi=1.073;__g.G.adopt=100;__g.G.lvl=1;__g.G.credits=125;__g.G.bag=[];__g.openSheet('gamble',{only:['items','gamble']})});
+await p.evaluate(()=>{__g.closeSheet();__g.setMode('play');__g.G.cpi=1.073;__g.G.adopt=100;__g.G.lvl=1;__g.G.credits=125;__g.G.sats=125;__g.G.mkt={p:1};__g.G.bag=[];__g.openSheet('gamble',{only:['items','gamble']})});
 const box=await p.evaluate(()=>{
-  const line=[...document.querySelectorAll('#sheet p')].map(n=>n.textContent).find(t=>/Each box costs/.test(t))||'';
-  const btn=document.querySelector('[data-box]');
+  const line=[...document.querySelectorAll('#sheet p, #sheet u')].map(n=>n.textContent).join(' ');
+  const btn=document.querySelector('[data-vbox]');
   return {line,off:btn?btn.disabled:true};
 });
-check('a box tag of 125 is payable with 125', /₡125/.test(box.line)&&!box.off, JSON.stringify(box));
-await p.click('[data-box]');
-const boxPay=await p.evaluate(()=>({credits:__g.G.credits,bag:__g.G.bag.length}));
-check('the box takes 125', boxPay.credits===0&&boxPay.bag===1, JSON.stringify(boxPay));
+check('a box tag of 125 is payable with 125', /125 sats/.test(box.line)&&!box.off, JSON.stringify(box));
+await p.click('[data-vbox]');
+const boxPay=await p.evaluate(()=>({credits:__g.G.credits,sats:__g.G.sats,bag:__g.G.bag.length}));
+check('the box takes 125', boxPay.sats===0&&boxPay.credits===125&&boxPay.bag===1, JSON.stringify(boxPay));
 
 await p.evaluate(()=>{__g.closeSheet();__g.setMode('play');__g.G.cpi=1.073;__g.G.adopt=100;__g.G.lvl=1;__g.G.credits=268;__g.G.merc=null;__g.openSheet('merc',{only:['merc']})});
 const hire=await p.evaluate(()=>{
