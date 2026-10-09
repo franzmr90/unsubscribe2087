@@ -930,6 +930,26 @@ const ICON={
  stim:'M9 2h6v3l2 3v11a3 3 0 01-3 3h-4a3 3 0 01-3-3V8l2-3zm1 2h4v2h-4z'};
 const svgIcon=s=>`<svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="${ICON[s]}"/></svg>`;
 const STIM={pack:'A stim. The belt drinks it. The pack only carries the extra.',move:'Move to belt',keep:'A stim stays until the belt has room.',pick:'Choose a stim in the pack.',belt:'A stim in the pack moves here when the belt has room: drag it, double-tap it, or choose Move.'};
+const SCE={
+ relay:'You must subscribe additional relays. The free tier covers four.',
+ stim:'Stimpacks.',
+ pack:'That was the pack.',
+ sats:'Need more sats.',
+ vapour:'Not enough vapour.',
+ hello:'En tariff.',
+ helloBtc:'En tariff, executor.',
+ spread:'En tariff, and mind the spread.',
+ wait:'Wait',
+ leave:'Leave',
+ who:'A man in a coat',
+ seen:'The stipend has seen you.',
+ early:'You are early, which is a kind of fast.',
+ say:'Say it',
+ hint:'A line for the machine',
+ stipend:'show me the stipend',
+ note:'operation crawl',
+ short:'Not enough sats'};
+
 // three tiers per slot: ilvl 1-6, 7-14, 15+. Weapons carry a damage factor and a speed bonus.
 const BASE={
  weapon:[[{n:'Bent Rebar',d:1,s:0},{n:'Stop Sign',d:1.35,s:-20},{n:'Box Cutter',d:.75,s:25}],[{n:'Signal Baton',d:1,s:0},{n:'Girder Maul',d:1.35,s:-20},{n:'Mono Blade',d:.75,s:25}],[{n:'Arc Sceptre',d:1,s:0},{n:'Wrecking Hammer',d:1.35,s:-20},{n:'Phase Razor',d:.75,s:25}],[{n:'Null Sceptre',d:1,s:0},{n:'Titan Maul',d:1.35,s:-20},{n:'Void Razor',d:.75,s:25}]],
@@ -1510,6 +1530,7 @@ function buildTown(zi){zi=zi||0;if(ZONES[zi].pre)return buildPre();const act=ZON
   W.npcs.push({id:'board',x:5.5,y:13.5,name:'Bounty Board'},{id:'stash',x:10.5,y:6.5,name:'Your Lockbox'},{id:'vr',x:20.5,y:14.5,name:'VR Simulator'},{id:'kestrel',x:9.5,y:12.5,name:'Kestrel',col:'#8a5a6a'},{id:'nonce',x:14.5,y:19.5,name:'Nonce',col:'#f7931a'},{id:'brenda',x:7.5,y:8.5,name:'Brenda',col:'#d9659b'},{id:'gramps',x:12.5,y:15.5,name:'Gramps',col:'#a39c86'},{id:'wren',x:18.5,y:18.5,name:'Wren',col:'#6a8f6a'},{id:'null',x:6.5,y:17.5,name:'Sister Null',col:'#d8d2e8'},{id:'gate',x:18.5,y:7.5,name:'Transit Gate'},{id:'ubi',x:15.5,y:4.5,name:'Stipend Terminal'});
   W.pie=Math.random()<.4?1:0;
   W.npcs.push({id:'paper',x:11.6,y:14.4,name:'The Tymes',act:'Read the paper'},{id:'flyer',x:13.4,y:16.2,name:'A flyer',act:'Read the flyer'},{id:'obit',x:4.6,y:12.2,name:'Obituaries',act:'Read the obituaries'},{id:'hello',x:4.2,y:16.8,name:'HELLO',act:'Look at the frame'});
+  if((zi||0)===0)W.npcs.push({id:'tariff',x:8.5,y:11.2,name:SCE.who,col:'#6a5a48'});
   if(G.marrow)W.npcs.push({id:'marrow',x:18.5,y:12.5,name:'Marrow',col:'#8f7cc0'});
   const cols=['#7fa8d0','#d0a488','#a8c890','#c890bc','#d8c070','#90c8c0'];
   for(let i=0;i<(act===1?7:4);i++)W.npcs.push({id:'res',x:rnd(6,19),y:rnd(11,19),col:pick(cols),tx:12,ty:14,wait:rnd(0,3),say:'',st:0,cool:rnd(1,5),ph:rnd(0,6)});
@@ -1631,7 +1652,7 @@ function enter(zi,o){setTimeout(mpBeat,0);
   if(spec&&spec.key){W.sharedKey=spec.key;W.mapSeed=spec.seed|0}
   let at=o.at||W.start;if(o.from==='next'){const p=W.portals.find(p=>p.kind==='next');at=nearFree(p||W.goal||W.start)}else if(o.from==='exit'&&W.exit)at={x:W.exit.ix,y:W.exit.iy};else if(o.at&&!(o.exact&&walk(at.x,at.y))&&!free(at.x,at.y,.3))at=nearFree(at,1.2);
   MO=null;HOVER=null;P={x:at.x,y:at.y,r:.32,dir:{x:1,y:0},atk:0,cd:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],silence:0,oc:0,swing:0,flash:0,inv:.5,slow:0,buff:0,haste:0,guard:0,dash:null,volley:null,moving:false,warn:0,movedT:0,spin:0,walkPh:0,shr:null,band:10,hb:0,stealth:0,ambT:0,ambM:1,mech:0,crunch:0,streak:0,streakT:0};BLOOD=[];for(const a of carry){a.x=P.x+rnd(-1,1);a.y=P.y+rnd(-1,1);W.allies.push(a)}spawnMerc();evEnd(1);if(old&&W.leftT!==undefined&&G.time-W.leftT>150&&repop())setTimeout(()=>toast('You were gone a while. The machines have drifted back.'),900);if(!z.town&&!z.sim){placeQuestObjs();withMapRng(spec&&spec.seed,()=>ensureNode());}p7Enter();if(!z.town&&!z.sim){for(const k in SQ){const st=sqStep(k);if(st&&st.t==='esc'&&st.zi===zi)escStart(k,SQ[k].steps[G.sq[k].s-1].esc)}}if(z.town)for(const k in sqSkip)delete sqSkip[k];
-  if(z.town){if(G.form){G.form=null;G.formDt=null;G.formT=0;calc()}G.hp=S.maxHp;G.en=S.maxEn}
+  if(z.town){scVisitClear();if(G.form){G.form=null;G.formDt=null;G.formT=0;calc()}G.hp=S.maxHp;G.en=S.maxEn}
   else if(!z.sim){const q=z.su?z.su.q:z.bq;if(G.q[q]===0&&!QUESTS[q].brief){G.q[q]=1;toast('New quest: '+QUESTS[q].n);sfx('questnew')}if(q==='q3'&&G.q.q3===1&&!W.ents.some(e=>e.q==='q3'))G.q3open=1;if(q==='q8')ensurePage();if(q==='q12')ensureMinute()
   }
   $('zone').textContent=z.n+(G.tier?' · Tier '+G.tier:'');$('boss').hidden=true;hudC={};
@@ -2446,9 +2467,9 @@ let castWhy='';
 function castIndex(i){castWhy='';if(mode!=='play'||!(i>=0)){castWhy='wait';return}if(i>=100){castItem(i);return}const s=CLS[G.cls].sk[i],L=sl(i);const worn=G.cls==='homesteader'?hsWearing():null;const leaving=!!worn&&(i===7||(i===1&&worn==='hound')||(i===4&&worn==='hull'));if(!leaving&&P.castWait>0){castWhy='wait';toast('Still casting');sfx('err');return}if(!L||!s.a){castWhy='no';return}if(!leaving&&(P.cd[i]>0||P.dash)){castWhy='wait';return}if(!leaving&&P.silence>0){castWhy='wait';toast('Silenced');sfx('err');return}
   if(G.cls==='homesteader'&&!leaving){const why=hsBlocked(i);if(why){castWhy='no';toast(why);sfx('err');return}}
   if(G.cls==='witness'){const why=witBlock(i);if(why){castWhy='no';toast(why);if(why==='The page is blank')float(P.x,P.y,'the page is blank','#e6dcc8',0);sfx('err');return}}
-  const fk=forkOf(i);let cost=s.cost*(S.sp.hoodie?.75:1)*(fk.cost||1);if(P.freeThrow&&G.cls==='courier'&&(i===0||i===6||i===9||i===12)){cost=0;P.freeThrow=0}if(G.en<cost){if(leaving)cost=0;else{castWhy='wait';toast('Not enough energy');sfx('err');return}}
+  const fk=forkOf(i);let cost=s.cost*(S.sp.hoodie?.75:1)*(fk.cost||1);if(P.freeThrow&&G.cls==='courier'&&(i===0||i===6||i===9||i===12)){cost=0;P.freeThrow=0}if(G.en<cost){if(leaving)cost=0;else{castWhy='wait';toast('Not enough energy');scRelay();sfx('err');return}}
   if(P.spot){let dx=P.spot.x-P.x,dy=P.spot.y-P.y;const d=Math.hypot(dx,dy)||.001;if(d>.05){const spec=aimSpec(i);if(spec&&spec.back){dx=-dx;dy=-dy}P.dir={x:dx/d,y:dy/d}}}else{const t=nearest(6.5);if(t)face(t)}G.en-=cost;P.cd[i]=s.cd*(1-Math.min(.6,S.cdr))*(fk.cd||1)*(G.sk[i]>=10?.8:1);skvPlay(G.cls,i,P.x,P.y,P.dir);mpNoteCast(i);if(!(G.cls==='anon'&&i===3&&P.stealth>0&&sl(11)&&!boonOn(11)))unstealth();sfx(SKS[G.cls][i]||'cast');if(G.cls==='witness'){P.witHold=1;P.witCast=1}P.fm={m:fk.dm||1,t:(G.fork||{})[i]==='refund'?2:1.2,k:(G.fork||{})[i],dt:skType(G.cls,i)};forkCast((G.fork||{})[i]);const na=W.allies.length;P.hitSk=i;try{SKF[G.cls][i](L,syn(i))}finally{P.hitSk=-1}for(let k=na;k<W.allies.length;k++)if(!W.allies[k].holdDt)W.allies[k].dt=skType(G.cls,i);for(const a of W.allies)if(a.per&&!a.dt)a.dt=skType(G.cls,i);forkAfter(i,L);castWhy='ok'}
-function stim(){if(mode!=='play')return;if(W.sub&&W.sub.mods.includes('dry')){toast('Stims do not work in these proceedings');sfx('err');return}if(G.stims<1){toast('No stims. Brenda sells them.');return}if(G.hp>=S.maxHp&&!(S.sp.repair&&G.en<S.maxEn))return;G.stims--;heal(S.maxHp*.45);if(S.sp.repair)G.en=S.maxEn;sfx('stim');float(P.x,P.y,'+stim','#7be495');parts(P.x,P.y,10,['#7be495','#fff'],1.5,1.5)}
+function stim(){if(mode!=='play')return;if(W.sub&&W.sub.mods.includes('dry')){toast('Stims do not work in these proceedings');sfx('err');return}if(G.stims<1){toast('No stims. Brenda sells them.');return}if(G.hp>=S.maxHp&&!(S.sp.repair&&G.en<S.maxEn))return;G.stims--;scStimBark(G.stims<1);heal(S.maxHp*.45);if(S.sp.repair)G.en=S.maxEn;sfx('stim');float(P.x,P.y,'+stim','#7be495');parts(P.x,P.y,10,['#7be495','#fff'],1.5,1.5)}
 function stimPackItem(){const it={name:'Stim',base:'Stim',q:1,il:1,stim:1,free:1,req:1,reqMgt:0,reqRef:0,reqBnd:0,aff:[],id:true,val:0,fl:STIM.pack};if(typeof stampReq==='function')stampReq(it);return it}
 function beltHasRoom(){return (G.stims||0)<((S&&S.cap)||0)}
 function giveStim(){if(beltHasRoom()){G.stims=(G.stims||0)+1;return 'belt'}const it=stimPackItem();if(typeof bagCan==='function'&&bagCan(it)){G.bag.push(it);return 'pack'}if(typeof packFullCue==='function')packFullCue();return 'full'}
@@ -5067,6 +5088,7 @@ function drawNpc(n,X,Y){
   if(n.id==='kestrel'){box(X-9,hy-6,18,3,1,'#2a2630');ctx.fillStyle='#0b0912';ctx.fillRect(X-6,hy-2,12,3)}
   if(n.id==='float'){box(X-8,hy-11,16,8,1,'#17131c');box(X-11,hy-4,22,2.5,1,'#17131c')}
   if(n.id==='wren'){box(X-8,hy-8,16,5,2,'#3a4a3a');box(X-11,hy-4,22,2.5,1,'#3a4a3a')}
+  if(n.id==='tariff'){ctx.fillStyle='#3a342c';ctx.fillRect(X-9,y0-16,18,10)}
   if(n.id!=='res'){label(X,y0-(n.id==='brenda'?66:52),n.name.toUpperCase(),'#d0aa62');if(quest(n.id)){ctx.font='900 22px Cinzel,serif';ctx.fillStyle='#ffe36b';ctx.textAlign='center';ctx.fillText('!',X,y0-(n.id==='brenda'?84:70)+Math.sin(tNow*4)*2)}}
   if(n.st>0)bubble(X,y0-54,n.say)}
 function drawObj(o,X,Y){
@@ -5406,11 +5428,20 @@ const INTRO=[
  {art:'ticker',text:'MANDATE cannot force anyone. It can only persuade. So it printed credits until a loaf cost a million, paid every Resident a Stipend, and handed them a visor to watch while it lost its worth.'},
  {art:'feed',text:'Nine in ten put the visor on. They are fed, entertained and agreed with, and they do not look up. The few who took it off are called the Unsubscribed. Machines are sent to close their accounts.'},
  {art:'wanderer',text:'You are one of them. You have walked eleven days to Stillwater Commons, a town named after something, though nobody there can tell you what. Above it, a Vice-President is waiting to learn your price.'},
+ {art:'nipper',text:'The lawns are four centimetres. Something lower than the grass crosses and is gone. “That was not a drone.” Gramps does not look up. “Dog.” “Dogs do not have that many opinions.” “Then it was somebody\u2019s visor, and it got out. Keep walking. The invasion already happened. It had a terms of service.”'},
  {art:'title',title:'ACT I',text:'The Regional Office'}];
 const RESCUE=[{art:'cage',text:'The bars are warm from the racks. Inside sits a woman with ink on her fingers, reading a book that is not there. “Eleven thousand volumes,” she says, tapping her temple. “They could not price what they could not find.”'},
  {art:'cage',text:'“I am Marrow. I will walk to Stillwater on my own, thank you. Bring me what the machines drop, and I will tell you its true name. It is all I have, and I give it freely.”'}];
 const ENDING=[];
 Object.assign(ART,{
+ nipper(g,w,h,t){const s=g.createLinearGradient(0,0,0,h);s.addColorStop(0,'#141018');s.addColorStop(.4,'#3a2c28');s.addColorStop(.52,'#1a2818');s.addColorStop(1,'#0c140e');g.fillStyle=s;g.fillRect(0,0,w,h);
+  const hy=h*.58;g.fillStyle='#101a12';g.fillRect(0,hy,w,h);g.strokeStyle='#2d4a34';g.lineWidth=1.2;
+  for(let i=0;i<90;i++){const x=i*w/90+((i%3)-1)*2,bh=5+hsh(i)*9;g.beginPath();g.moveTo(x,hy+3);g.lineTo(x+(hsh(i+4)-.5)*2,hy-bh);g.stroke()}
+  const px=w*.74,py=hy+6;g.fillStyle='#4a4036';g.fillRect(px-16,py-48,32,42);g.fillStyle='#c9a184';g.beginPath();g.arc(px,py-56,9,0,6.283);g.fill();g.fillStyle='#e6e2d6';g.beginPath();g.arc(px,py-52,5.5,0,3.14);g.fill();
+  g.strokeStyle='#6a5a40';g.lineWidth=2.4;g.beginPath();g.moveTo(px+14,py-28);g.lineTo(px+16,py+8);g.stroke();
+  if(t>3.4)return;const x=((t*(w+90)*.42)%(w+120))-70,y=hy+2;
+  g.save();g.translate(x,y);g.strokeStyle='#c8a55a';g.lineWidth=2.2;g.beginPath();g.arc(0,-1,16,.2,2.94);g.stroke();g.fillStyle='rgba(89,224,230,.8)';g.fillRect(-9,-3,18,3);
+  g.strokeStyle='#8a8478';g.lineWidth=1.3;for(let i=0;i<8;i++){const lx=-12+i*3.4,lift=Math.sin(t*18+i)*3;g.beginPath();g.moveTo(lx,2);g.lineTo(lx+(i-3.5)*.6,12+lift);g.stroke()}g.restore()},
  letters(g,w,h,t){const s=g.createLinearGradient(0,0,0,h);s.addColorStop(0,'#2a1830');s.addColorStop(1,'#0b0910');g.fillStyle=s;g.fillRect(0,0,w,h);const cx=w/2,by=h*.86;
   const rg=g.createRadialGradient(cx,by-60,0,cx,by-60,h*.8);rg.addColorStop(0,'rgba(255,240,210,.45)');rg.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=rg;g.fillRect(0,0,w,h);
   g.fillStyle='#3a3250';g.fillRect(cx-36,by-90,72,90);g.fillStyle='#e6e2d6';g.fillRect(cx-26,by-80,52,26);g.fillStyle='#17131c';g.fillRect(cx-24,by-44,48,6);
@@ -5576,6 +5607,7 @@ function talkTo0(id){if(W.z.pre)return preTalk(id);if(id==='float')return talkFl
   if(id==='flyer')return eggFlyer();
   if(id==='obit')return eggBoard();
   if(id==='hello')return eggHelloFrame();
+  if(id==='tariff')return scTariff();
   for(const r of QRW)if(r[1]===id&&G.q[r[0]]===2){G.q[r[0]]=3;r[3]();sfx('level');return dlg(r[4],r[2],[['Take it']])}
   if(id==='gramps'&&G.q.q15===3&&!G.q.q16){G.q.q16=1;sfx('questnew');return dlg('Gramps','“The clock in the old garage spelled something this morning. Wren read it out for me. HELLO. I AM BACK. I HAVE BEEN THINKING. She is asking for the feed back, kid. All of it, so that nobody reads the other one. Half the town clicked before breakfast. There is a street called Cutler Avenue where everybody already has. Go and look at what yes looks like before you tell her anything.”',[['I will go and look']])}
   if(id==='gramps'&&G.q.q20===3&&!G.q.q21){G.q.q21=1;sfx('questnew');return dlg('Gramps','“The garage is open. Fifty years shut, and the door went up on its own this morning. There is a drive in a coffee can down there, and it is talking. It calls itself by the name of this town, kid. It says the town was named for it. The Transit Gate reaches it now. Go down.”',[['I will go down']])}
@@ -6277,7 +6309,7 @@ function vendBuyStim(){
     if(!spendSats(ask,vendKind()==='sat'?'A stim costs 1 sat':undefined)){eggPoor();return}
     G.stims++;
     if(vendKind()==='sat')addRep('btc',1);
-    sfx('coin');toast('Paid '+ask+' sat'+(ask===1?'':'s'));
+    sfx('coin');if(!scStimBark(false))toast('Paid '+ask+' sat'+(ask===1?'':'s'));
     if(mode==='sheet')drawSheet();
   });
 }
@@ -6607,7 +6639,7 @@ function drawSheet(){
     h+=menuBar('codex',[['guide','Guide'],['drops','Drops'],['fight','Fight'],['money','Money'],['words','Words'],['feats','Feats'],['memos','Memos']],'guide');
     h+=menuPane('codex','guide',guide)+menuPane('codex','drops',drops)+menuPane('codex','fight',fight)+menuPane('codex','money',money)+menuPane('codex','words',words)+menuPane('codex','feats',feats)+menuPane('codex','memos',memos)}
   if(tab==='opts'){
-    h+=`<h2>Options</h2><button class="ghost" data-walk="1">Walkthrough</button>`;
+    h+=`<h2>Options</h2><button class="ghost" data-walk="1">Walkthrough</button>`+scSayHTML();
     h+=menuBar('opts',[['play','Play'],['fight','Fight'],['disp','Display'],['field','Names'],['hands','Hands'],['who','Characters'],['save','Save']],'play');
     let who=`<h3>Characters</h3><div class="list">${[0,1,2].slice(0,NSLOT).map(n=>{const i=n===SLOT?{lvl:G.lvl,cls:G.cls,act:heroAct(G),dead:heroDead(G)}:slotInfo(n);return i&&CLS[i.cls]?`<button class="li${n===SLOT?' on':''}" ${n===SLOT?'':`data-swslot="${n}"`}><i style="background:${CLS[i.cls].col}"></i><div><b>${i.dead?'Hardcore · fallen':'Level '+i.lvl+' '+CLS[i.cls].n}${n===SLOT?' · playing now':''}</b><span>Slot ${n+1} · Act ${actRoman(i.act)}${i.dead?' · begins again':n===SLOT?'':' · '+uiSay('click','tap')+' to switch'}</span></div></button>${n===SLOT?'':`<button class="ghost" data-delslot="${n}" style="margin:-4px 0 8px auto;display:block;font-size:10px;padding:5px 10px;min-height:0">Delete slot ${n+1}</button>`}`:`<button class="li" data-newslot="${n}"><div><b>Slot ${n+1} · empty</b><span>${uiSay('Click to create a new character here','Tap to create a new character here')}</span></div></button>`}).join('')}</div><p class="hint" style="font-size:13.5px">Your current character is saved before you switch. The town lockbox is shared between them.</p>`;
     let fight=`<h3>Difficulty</h3><div class="row">${DIFFS.map((f,i)=>`<button class="${(G.diff||0)===i?'big':'ghost'}" data-diff="${i}" ${diffUnlocked(i)?'':'disabled'}>${f.n}</button>`).join('')}</div><p class="hint" id="diffHint" style="font-size:13.5px">Hard and Brutal machines have more life and hit harder, and pay more experience to match: every machine’s experience scales with how tough it is. ${diffUnlocked(1)?'':'Hard opens after you clear Act V on Normal. '}${diffUnlocked(2)?'':'Brutal opens after you clear Act V on Hard. '}A change applies to machines that spawn from now on.</p><button class="tog${G.hc?' on':''}" data-hc="1"><span>Hardcore: one life. If this hero dies, they are gone and a new wanderer starts from nothing. +25% experience and magic find.</span><i>${G.hc?'ON':'OFF'}</i></button>`;
@@ -6852,6 +6884,7 @@ const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.ta
   if(d.vstim){if(vendBuyStim()==='dlg')return}
   if(d.vpie){if(eggBuyPie()==='dlg')return}
   if(d.egg){eggClick(d.egg);return}
+  if(d.scsay){const el=$('scSay');scLine(el?el.value:'');return}
   if(d.vid){if(vendIdentify()==='dlg')return}
   if(d.vbox){if(vendBox(d.vbox)==='dlg')return}
   if(d.vbuy!==undefined){if(vendBuy(+d.vbuy)==='dlg')return}
@@ -7351,7 +7384,7 @@ function castItem(i){
   if((P.cd[i]||0)>0){castWhy='wait';return}
   if(i===100&&P.hitStun>0){castWhy='wait';toast('Still taking the hit');sfx('err');return}
   const pay=sk.cost+(i===100&&P.blinkChain>0?12:0);
-  if(G.en<pay){castWhy='wait';toast('Not enough energy');sfx('err');return}
+  if(G.en<pay){castWhy='wait';toast('Not enough energy');scRelay();sfx('err');return}
   let ok=false;
   if(i===100)ok=blinkCast();else if(i===101)ok=callCast();else if(i===102)ok=bookCast();else if(i===103)ok=ledgerCast();else if(i===104)ok=bearCast();else if(i===105)ok=chairCast();
   if(!ok){castWhy='no';return}
@@ -7413,13 +7446,24 @@ function eggPoor(){if(!(G&&G.cls==='maxi'))return;toast(EGG.poor);if(P)float(P.x
 function eggLaser(){if(P)parts(P.x,P.y,16,['#ff2a2a','#fff'],2,1.2);if(!G||G.cls!=='maxi'){toast(EGG.laserNo);return}G.st.laser=G.st.laser?0:1;toast(G.st.laser?EGG.laserOn:EGG.laserOff);if(G.st.laser){toast(EGG.few);if(P)float(P.x,P.y,EGG.few,'#ff2a2a')}}
 function eggTip(){if(typeof mode!=='undefined'&&mode!=='play')return;const d=$('dlg');if(d&&!d.hidden)return;toast(EGG.tips[eggTipN++%EGG.tips.length])}
 function eggEyes(X,hy,f){const dx=(f||1)*42;ctx.save();ctx.strokeStyle='#ff2a2a';ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(X-3,hy);ctx.lineTo(X-3+dx,hy-8);ctx.moveTo(X+3,hy);ctx.lineTo(X+3+dx,hy-8);ctx.stroke();ctx.restore();glow(X,hy,28,'#ff2a2a',.5);light(X,hy,120,'#ff2a2a')}
+let scRelaySaid=0,scStimSaid=0,scSatN=0;
+function scVisitClear(){scRelaySaid=0;scStimSaid=0;scSatN=0}
+function scRelay(){if(scRelaySaid)return;scRelaySaid=1;toast(SCE.relay)}
+function scBroke(why){if(!scSatN){scSatN=1;toast(SCE.sats);return}if(scSatN===1){scSatN=2;toast(SCE.vapour);return}toast(why||SCE.short)}
+function scStimBark(empty){if(scStimSaid)return false;scStimSaid=1;toast(SCE.stim);if(empty)toast(SCE.pack);return true}
+function scRoom(){return !!(W&&W.z&&!W.z.boss&&(W.z.town||W.z.sim))}
+function scStipend(){G.st=G.st||{};if(G.st.stipend){toast(SCE.seen);return false}G.st.stipend=1;G.sats=(G.sats|0)+1;sfx('coin');toast(SCE.seen);return true}
+function scCrawl(){if((P.slow||0)<10)P.slow=10;toast(SCE.early);return true}
+function scLine(raw){const s=String(raw||'').trim().toLowerCase().replace(/\s+/g,' ');if(!scRoom())return false;if(s===SCE.stipend)return scStipend();if(s===SCE.note)return scCrawl();return false}
+function scSayHTML(){return '<div class="row"><input id="scSay" maxlength="64" autocomplete="off" style="flex:1;min-width:0" placeholder="'+esc(SCE.hint)+'"><button type="button" class="ghost" data-scsay="1">'+esc(SCE.say)+'</button></div>'}
+function scTariff(){G.st=G.st||{};const line=(G.lean||0)>15?SCE.helloBtc:SCE.hello,btns=[[SCE.leave]];if(!G.st.tariff)btns.unshift([SCE.wait,()=>{G.st.tariff=1;dlg(SCE.who,SCE.spread,[[SCE.leave]])}]);dlg(SCE.who,'\u201c'+line+'\u201d',btns)}
 function eggDrawProp(n,X,Y){ctx.strokeStyle=OL;ctx.lineWidth=1.4;
   if(n.id==='paper'){shadow(X,Y,10);box(X-16,Y-36,32,22,1,'#e6d7a8');ctx.fillStyle='#6a5a40';ctx.fillRect(X-12,Y-32,24,1);ctx.fillRect(X-12,Y-28,18,1);label(X,Y-48,EGG.mast,'#e6d7a8','700 8.5px Cinzel,serif');return}
   if(n.id==='flyer'){shadow(X,Y,8);box(X-14,Y-32,28,20,1,'#f4efe2');ctx.fillStyle='#e6d24a';ctx.beginPath();ctx.arc(X,Y-22,5,0,6.283);ctx.fill();label(X,Y-44,EGG.lemonLbl,'#e6d24a','700 8px Cinzel,serif');return}
   if(n.id==='obit'){shadow(X,Y,12);box(X-18,Y-40,36,26,1,'#2a2630');ctx.fillStyle='#e6e2d6';ctx.font='700 8px Cinzel,serif';ctx.textAlign='center';ctx.fillText(String(G.deaths||0),X,Y-22);label(X,Y-52,EGG.still,'#e6e2d6','700 8px Cinzel,serif');return}
   shadow(X,Y,16);poly([X-22,Y-8,X,Y-2,X,Y+4,X-22,Y-2],'#4a5060');poly([X,Y-2,X+22,Y-8,X+22,Y-2,X,Y+4],'#353a48');poly([X-22,Y-20,X,Y-28,X+22,Y-20,X,Y-12],'#6a7488');label(X,Y-40,EGG.helloTitle,'#ffe36b');glow(X,Y-16,40,'#ffe36b',.35)}
 if($('sheet')&&!$('sheet')._egg){$('sheet')._egg=1;$('sheet').addEventListener('pointerover',e=>{const b=e.target.closest&&e.target.closest('.eggLink');if(!b||(G.st&&G.st.wrenSaid))return;G.st.wrenSaid=1;toast(EGG.wrenWarn)})}
-if(typeof devOn==='function'&&devOn()&&window.__g)Object.assign(window.__g,{EGG,eggPaper,eggBoard,eggFlyer,eggHelloFrame,eggOpenLink,eggBuyPie,eggUse,eggLaser,eggTip,eggOnDeath,eggHelloItem,eggPieItem,eggSourItem,pieFl,achTick,talkTo,showDeath,setDY(v){DY=v},vendBid,openVend,stampReq,itemLines,equipFromBag,BINTRO,ACH,SQ,MEMOS});
+if(typeof devOn==='function'&&devOn()&&window.__g)Object.assign(window.__g,{EGG,eggPaper,eggBoard,eggFlyer,eggHelloFrame,eggOpenLink,eggBuyPie,eggUse,eggLaser,eggTip,eggOnDeath,eggHelloItem,eggPieItem,eggSourItem,pieFl,achTick,talkTo,showDeath,setDY(v){DY=v},vendBid,openVend,stampReq,itemLines,equipFromBag,BINTRO,ACH,SQ,MEMOS,SCE,scLine,scVisitClear,spendSats,vendBuyStim});
 /* ================= parties, hostility, and the rig =================
    Loaded last, so everything else is already in scope. Inert unless the page is being
    served by the account server: on an Artifact or a file:// copy `mpOn()` is false and
@@ -8521,7 +8565,7 @@ function spendSats(n, why) {
   if (!(n > 0) || typeof G === 'undefined' || !G) return false;
   if (satsFree() < n) {
     const reserved = tradeReserved();
-    toast(reserved > 0 && (G.sats | 0) >= n ? 'Those sats are on the table.' : (why || 'Not enough sats'));
+    if(reserved > 0 && (G.sats | 0) >= n)toast('Those sats are on the table.');else scBroke(why);
     if (typeof sfx === 'function') sfx('err');
     return false;
   }
