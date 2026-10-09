@@ -764,13 +764,13 @@ Object.assign(CLS,{
    {n:'Salt the Earth',ab:'SALT',a:1,cost:18,cd:12,d:L=>`Every plot you have placed bursts for ${pct(.8+.12*L)} rust and is gone.`},
    {n:'Too Big for the Door',ab:'',a:0,d:L=>`Passive. The hull cannot dash. Armour in the hull rises the longer you have worn it: +${3*L} every 2 seconds, up to 8 times.`},
    {n:'Slaughter Weight',ab:'SLAUGH-\nTER',a:1,cost:20,cd:12,d:L=>`Each drone and the bull become a rust plot where they stand, ${pct(.28+.05*L)} every half second. The flock is spent. You cannot do this from a chassis.`}]},
- witness:{n:'Witness',tag:'Kept notes when Unity told everyone to stop looking. Stillwater watches and does nothing. The Witness writes it down. The record is paper.',hp:FORMULAS.cls.witness.hp,hpL:FORMULAS.cls.witness.hpL,melee:true,mult:.8,ivl:.68,spd:4.2,col:'#8d9aab',
+ witness:{n:'Witness',tag:'Kept notes when Unity told everyone to stop looking. Stillwater watches and does nothing. The Witness writes it down. The record is paper.',hp:FORMULAS.cls.witness.hp,hpL:FORMULAS.cls.witness.hpL,melee:true,mult:.92,ivl:.68,spd:4.2,col:'#8d9aab',
   sk:[
    {n:'Look',ab:'LOOK',a:1,cost:4,cd:.5,d:()=>`Mark one machine with Testimony. The stack grows while you can see them and you are not casting. No Record cost. A swing against a marked machine hits 7% harder for each point of Testimony, up to six.`},
    {n:'The Sentence',ab:'THE\nSENTENCE',a:1,cost:8,cd:2,d:L=>`Spend Record, up to 25. Delay that machine's next attack by ${(0.4+.08*L).toFixed(2)}s at a full page. Less Record, a shorter delay. For 2.4s afterward you take 48% less, and an empty page does not punish you while that holds.`},
    {n:'Margin',ab:'',a:0,d:L=>`Passive. Below half life the Record fills ${20*L}% faster.`},
    {n:'Cross-reference',ab:'CROSS-\nREF',a:1,cost:14,cd:6,d:L=>`Spend 20 Record. Copy that machine's last attack onto another machine you have Testimony on, at ${Math.round((.75+.05*L)*100)}% of the blow.`},
-   {n:'Pull the Thread',ab:'PULL THE\nTHREAD',a:1,cost:12,cd:4,d:L=>`Spend most of the Record. One Impact hit, ${(3.5+.45*L).toFixed(1)} for each point of Testimony, and your weapon is not consulted. No Testimony, no blow, and an empty page is not spent. 42% more for each level after the first, so the page keeps up with the machines.`},
+   {n:'Pull the Thread',ab:'PULL THE\nTHREAD',a:1,cost:12,cd:4,d:L=>`Spend most of the Record. One Impact hit, ${(4.6+.5*L).toFixed(1)} for each point of Testimony, a little more when the page you spend is full, and your weapon is not consulted. No Testimony, no blow, and an empty page is not spent. 42% more for each level after the first, so the page keeps up with the machines.`},
    {n:'Filed',ab:'',a:0,d:L=>`Passive. Testimony does not decay for ${(2+.4*L).toFixed(1)}s after the machine leaves the screen.`},
    {n:'Correction',ab:'CORRECT',a:1,cost:10,cd:8,d:()=>`Once per district. Spend the whole Record to restore the life you lost on the last hit, not a share of your maximum. An empty Record corrects nothing.`},
    {n:'Redaction',ab:'REDACT',a:1,cost:12,cd:8,d:()=>`Spend 30 Record. For 2s machines can see you and cannot land a blow. They still path toward you. This is not stealth.`},
@@ -1427,10 +1427,11 @@ function simTick(dt){const s=W.sim;if(s.rush)return rushTick(dt);if(W.ents.lengt
   });
   toast('Wave '+n+(n%5===0?' · a lieutenant joins':''));sfx('warn');$('zone').textContent='The Simulator · Wave '+n;
   if(n>1){heal(S.maxHp*.3);G.en=S.maxEn;addDrop({cr:(3+W.ml*2)*(2+n)*Math.pow(G.cpi,.9)},P.x,P.y);if((n-1)%5===0)dropFrom('chest',P.x,P.y,W.ml)}}
-/* the Humming Fields must always hold Marrow's cage until she is freed, including in districts saved before a fix */
-function ensureCage(){if(W.zi!==3||G.marrow||W.objs.some(o=>o.k==='cage'&&!o.used))return;const N=W.N,c=W.suAt||W.goal||W.start,cx=Math.round(c.x),cy=Math.round(c.y);
+/* the Humming Fields must hold Marrow's cage until that quest is done, even if a
+   previous difficulty already set the freed flag */
+function ensureCage(){if(W.zi!==3||(G.q.q3||0)>=2||W.objs.some(o=>o.k==='cage'&&!o.used))return;const N=W.N,c=W.suAt||W.goal||W.start,cx=Math.round(c.x),cy=Math.round(c.y);
   for(let r=2;r<12;r++)for(let y=cy-r;y<=cy+r;y++)for(let x=cx-r;x<=cx+r;x++){if(Math.max(Math.abs(x-cx),Math.abs(y-cy))!==r||x<2||y<2||x>N-3||y>N-3)continue;let ok=true;for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++)if(W.map[(y+j)*N+x+i]!==1)ok=false;if(ok){solid('cage',x,y);return}}}
-function goalPt(){if(W&&W.z.pre)return preGoal();if(!W||W.z.town||W.z.sim||W.hold)return null;const lg=W.objs.find(o=>o.k==='leg');if(lg)return lg;const qo=W.objs.find(o=>o.k==='qobj'&&!o.used);if(qo)return qo;const pg=W.objs.find(o=>o.k==='page'&&!o.used);if(pg&&(G.q.q8||0)<2)return pg;const su=W.ents.find(e=>e.su&&e.q&&G.q[e.q]<2);if(su)return su;const mn=W.objs.find(o=>o.k==='minute'&&!o.used);if(mn)return mn;const cg=W.objs.find(o=>o.k==='cage'&&!o.used);if(cg&&!G.marrow)return cg;return W.goal}
+function goalPt(){if(W&&W.z.pre)return preGoal();if(!W||W.z.town||W.z.sim||W.hold)return null;const lg=W.objs.find(o=>o.k==='leg');if(lg)return lg;const qo=W.objs.find(o=>o.k==='qobj'&&!o.used);if(qo)return qo;const pg=W.objs.find(o=>o.k==='page'&&!o.used);if(pg&&(G.q.q8||0)<2)return pg;const su=W.ents.find(e=>e.su&&e.q&&G.q[e.q]<2);if(su)return su;const mn=W.objs.find(o=>o.k==='minute'&&!o.used);if(mn)return mn;const cg=W.objs.find(o=>o.k==='cage'&&!o.used);if(cg&&(G.q.q3||0)<2)return cg;return W.goal}
 const lvlCap=()=>G.act5?100:G.act4?90:G.act3?75:G.act2?50:25;
 /* Act I stays written. Later districts use campaignLevel, then twelve per tier.
    Hard and Brutal lift that ladder. They do not rise to the character.
@@ -1440,6 +1441,13 @@ function zoneLevel(z){const written=z.lvl||1;const ml=(z.sub||z.sim)?written:cam
    The Simulator, a subpoena, and the Bull Run pay the card as written. */
 function xpRest(){if(!W||!W.z||W.z.sim||W.z.sub||W.z.secret)return 1;return (W.z.lvl||1)>12?FORMULAS.xp.after:FORMULAS.xp.act1}
 function dynFor(ml){if(!OPT.dyn||!(G.diff>0))return{hp:1,dmg:1};const p=pscore(S),f=r=>clamp(r<1?1:1+(r-1)*.8,1,12);return{hp:f(p.dps*2.4/(30*(1+.42*(ml-1)))),dmg:f(p.ehp/16/(7*(1+.22*(ml-1))))}}
+/* A saved district keeps the machines it spawned. Hard and Brutal bake dyn into them.
+   Dying strips the gear and used to leave that baked multiplier in place, so a loaner
+   walked back into a fight scaled for a full kit. Ease them down to the body you are
+   wearing, and bring them back up when the gear is on, never past the multipliers
+   they were born with. Normal does not scale. */
+function dynResync(){if(!W||!W.ents||!W.z||W.z.town||W.z.sim||!(G.diff>0)||!OPT.dyn)return;W.ml=zoneLevel(W.z);W.dyn=dynFor(W.ml);const df=DF(),dy=W.dyn||{hp:1,dmg:1},nowH=(dy.hp||1)*(df.hp||1),nowD=(dy.dmg||1)*(df.dmg||1);
+  for(const e of W.ents){if(!e||e.mp||!(e.max>0))continue;if(!(e.bornHp>0)){const t=ET[e.k];if(!t)continue;const ml=W.ml||1;let hp0=t.hp*(1+.42*(ml-1))*(e.su?5:e.champ?2.8:1)*(isBoss(e.k)?2.5:1),dmg0=t.dmg*(1+.22*(ml-1))*(e.champ?1.3:1)*(isBoss(e.k)?1.35:1)*(ml>25?1+.008*(ml-25):1);if(e.mods&&e.mods.strong)dmg0*=1.6;if(e.minion&&W.boss&&(W.boss.k==='boss3'||W.boss.k==='boss4'||W.boss.k==='boss5')){hp0*=.75;dmg0*=.55}if(typeof defragAct1==='function'&&defragAct1(e))dmg0*=.7;if(!(hp0>0)||!(dmg0>0))continue;e.bornHp=e.max/hp0;e.bornDmg=Math.max(.05,e.dmg/dmg0);e.dynHp=e.bornHp;e.dynDmg=e.bornDmg}const tgtH=Math.min(e.bornHp,nowH),tgtD=Math.min(e.bornDmg,nowD),curH=e.dynHp||e.bornHp,curD=e.dynDmg||e.bornDmg;if(curH>0&&Math.abs(tgtH-curH)/curH>.04){const r=tgtH/curH,pct=e.hp>0?e.hp/e.max:0;e.max*=r;if(e.hp>0)e.hp=e.max*pct;e.dynHp=tgtH}if(curD>0&&Math.abs(tgtD-curD)/curD>.04){e.dmg*=tgtD/curD;e.dynDmg=tgtD}}}
 function fillRoom(r,z,zi,i){
   if(i===1&&zi>=1&&zi<=4){const hot=zi>=3,pool=z.mix.filter(m=>m[0]!=='tick'&&!(zi===4&&m[0]==='mech')),n=hot?2:ri(3,4),mul=zi===4?.55:.7;
     for(let k=0;k<n;k++){const e=spawn(wpick(pool),r.x+rnd(-r.w+1,r.w-1)+.5,r.y+rnd(-r.h+1,r.h-1)+.5);if(e){e.gate=1;if(hot)e.dmg*=mul}}
@@ -1476,7 +1484,7 @@ function genZone(zi){
     if(i===n-1&&z.boss){spawn(z.bossK||'boss',L.x+.5,L.y+.5);for(let k=0;k<4;k++)spawn(z.guard||'mech',r.x+rnd(-6,6),r.y+rnd(-6,6));continue}
     fillRoom(r,z,zi,i);
     if(i===gobRoom)spawn('gob',r.x+.5,r.y-1.5);
-    if(z.su&&i===n-2){const e=spawn(z.su.k,r.x+.5,r.y+.5,{su:z.su});for(let k=0;k<3;k++)spawn(z.su.k==='mech'?'bot':z.su.k,r.x+rnd(-2,2),r.y+rnd(-2,2));
+    if(z.su&&i===n-2&&!suStepDone(z)){const e=spawn(z.su.k,r.x+.5,r.y+.5,{su:z.su});for(let k=0;k<3;k++)spawn(z.su.k==='mech'?'bot':z.su.k,r.x+rnd(-2,2),r.y+rnd(-2,2));
       W.suAt={x:r.x,y:r.y}}
   }
   if(!z.boss)W.portals.push({x:L.x+.5,y:L.y+.5,kind:'next'});
@@ -1492,6 +1500,7 @@ function spawn(k,x,y,o){
   if(e.mods.fast)e.spd*=1.5;if(e.mods.strong)e.dmg*=1.6;
   if(o.minion&&W.boss&&(W.boss.k==='boss3'||W.boss.k==='boss4'||W.boss.k==='boss5')){e.dmg*=.55;e.hp*=.75;e.max=e.hp}
   if(defragAct1(e)){e.dty='impact';e.dmg*=.7}
+  e.bornHp=dy.hp;e.bornDmg=dy.dmg;e.dynHp=dy.hp;e.dynDmg=dy.dmg;
   if(W&&(mapShared||(typeof mpMobHost==='function'&&mpMobHost()))){W.mobSeq=(W.mobSeq||0)+1;e.mid=W.mobSeq}
   p7Spawn(e);W.ents.push(e);if(isBoss(k))W.boss=e;return e}
 function zoneBag(zi){if(typeof mpZoneBag==='function'){const w=mpZoneBag(zi);if(w)return w}const w=ZS[zi];return w&&w.tier===G.tier?w:null}
@@ -1525,7 +1534,7 @@ function enter(zi,o){setTimeout(mpBeat,0);
   else if(act===2&&!G.act2){G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO2,()=>{mode='play';dlg('Act II · The Cloud','Level limit 50, and a fourth skill row opens. The fourth row is yours. Vale does not get a vote on it.',[['Begin']])}),50)}
   else if(!z.town&&!G['in'+zi]&&z.intro){G['in'+zi]=1;dlg(z.n,z.intro,[['Go on']])}
   else toast(z.town?z.n:'Entering '+z.n);
-  if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}if(o.after)o.after();if(typeof mpMobCatch==='function')mpMobCatch();placeCorpses();calmNearCorpse();seenT=0;music(zoneMusic());save(true)}
+  if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}if(o.after)o.after();if(typeof mpMobCatch==='function')mpMobCatch();placeCorpses();calmNearCorpse();dynResync();seenT=0;music(zoneMusic());save(true)}
 /* A cast portal lives on this character: zone and the exact spot. A new cast forgets the last one, in this district and in any district already saved. */
 function dropCastPortals(){const strip=w=>{if(w&&w.portals)w.portals=w.portals.filter(q=>!q.cast)};strip(W);for(const k in ZS)if(ZS[k]!==W)strip(ZS[k])}
 function openPortal(){if(mode!=='play'||W.z.town)return;if(mpPortalBlocked())return;if(W.z.sim){sfx('portal');enter(HT());return}if(nearest(4)){toast('Machines are too close to open a portal');return}
@@ -1677,7 +1686,7 @@ function layCorpse(x,y){lastLaid=false;if(!G||G.hc)return 0;if(W&&W.z&&W.z.sim)r
 function placeCorpses(){if(!W||!W.objs||!G)return;W.objs=W.objs.filter(o=>o.k!=='corpse');for(const c of G.corpses||[]){if(!c||c.zi!==W.zi||(c.tier|0)!==(G.tier|0))continue;let x=c.x,y=c.y;if(typeof free==='function'&&!free(x,y,.3)&&typeof nearFree==='function'){const n=nearFree({x,y},1.4);x=n.x;y=n.y;c.x=x;c.y=y}W.objs.push({k:'corpse',id:c.id,x,y})}}
 function calmNearCorpse(){if(!W||!W.ents||(W.z&&W.z.town))return;const bodies=(W.objs||[]).filter(o=>o&&o.k==='corpse');if(!bodies.length)return;for(const e of W.ents){if(!e||e.hp<=0||e.mp)continue;let near=null;for(const b of bodies)if(Math.hypot(e.x-b.x,e.y-b.y)<14)near=b;if(!near)continue;e.aggro=false;e.calm=20;e.wind=0;let dx=e.x-near.x,dy=e.y-near.y,d=Math.hypot(dx,dy);if(d<0.4){const a=(e.ph||0)+1.7;dx=Math.cos(a);dy=Math.sin(a);d=1}const nx=near.x+dx/d*16,ny=near.y+dy/d*16;if(typeof free==='function'&&free(nx,ny,.35)){e.x=nx;e.y=ny}else if(typeof nearFree==='function'){const n=nearFree({x:near.x+dx/d*14,y:near.y+dy/d*14},5);if(n){e.x=n.x;e.y=n.y}}}}
 function giveBack(it){if(!it)return;if(it.charm){const max=beltBudget(G.eq&&G.eq.belt).slots;if(charmUsed()+charmCost(it)<=max){G.cslots=G.cslots||[];G.cslots.push(it);return}}else if(it.slot&&G.eq){const cur=G.eq[it.slot];if(!cur||(it.slot==='weapon'&&cur.loan&&!it.loan)){G.eq[it.slot]=it;return}}if(bagCan(it)){G.bag.push(it);return}if(P)addDrop({it},P.x,P.y)}
-function reclaimCorpse(id){const list=G.corpses||[],i=list.findIndex(c=>c&&c.id===id);if(i<0)return false;const c=list[i];for(const sl of SLOTS)giveBack(c.eq&&c.eq[sl]);for(const ch of c.cslots||[])giveBack(ch);G.credits=(G.credits||0)+(c.credits||0);list.splice(i,1);if(W&&W.objs)W.objs=W.objs.filter(o=>!(o.k==='corpse'&&o.id===id));if(typeof charmRefit==='function')charmRefit();calc();sfx('pick');toast('Your gear is back on you');return true}
+function reclaimCorpse(id){const list=G.corpses||[],i=list.findIndex(c=>c&&c.id===id);if(i<0)return false;const c=list[i];for(const sl of SLOTS)giveBack(c.eq&&c.eq[sl]);for(const ch of c.cslots||[])giveBack(ch);G.credits=(G.credits||0)+(c.credits||0);list.splice(i,1);if(W&&W.objs)W.objs=W.objs.filter(o=>!(o.k==='corpse'&&o.id===id));if(typeof charmRefit==='function')charmRefit();calc();dynResync();sfx('pick');toast('Your gear is back on you');return true}
 function corpseFee(c){const mul=[1,2,3][G.diff|0]||1;return Math.max(1,Math.round((G.lvl||1)/6)*mul)}
 function buyCorpse(id){if(!W||!W.z||!W.z.town){toast('That can be done in town');sfx('err');return false}const c=(G.corpses||[]).find(x=>x&&x.id===id);if(!c)return false;const fee=corpseFee(c);if(!spendSats(fee,'Walking a body back costs '+fee+' sats'))return false;G.corpseBought=(G.corpseBought||0)+fee;return reclaimCorpse(id)}
 function repairQuote(it){if(!it)return 0;stampDura(it);if(it.indestruct||!(it.duraMax>0)||it.dura>=it.duraMax)return 0;return Math.max(1,Math.ceil((it.duraMax-it.dura)/12))}
@@ -1791,7 +1800,7 @@ function founderTick(dt){if(P.grave&&P.grave.t>0){P.grave.t-=dt;if(P.grave.t<=0)
 function orgMul(ally){if(G.cls!=='founder'||!sl(13)||boonOn(13))return 1;const n=W.allies.filter(a=>a.per).length;if(!n)return 1;return ally?1+n*(.08+.01*sl(13)):Math.max(0,1-n*(.04+.01*sl(13)))}
 function vestMul(a){if(!a||!a.per||!sl(11)||boonOn(11))return 1;return 1+(.04+.01*sl(11))*(a.vest||0)}
 function nodeMul(self){if(G.cls!=='maxi'||!sl(10)||!P.aura)return 1;const b=.06+.02*sl(10);return 1+(self?b/2:b)}
-function maxiTick(dt){if(G.keyT>0)G.keyT=Math.max(0,G.keyT-dt);const c=P.cite;if(!c)return;c.cd-=dt;if(c.cd>0)return;c.cd=c.gap;c.n--;const t=nearest(7);if(t)face(t);DT='sound';shoot(P.dir,c.m,0,{dt:'sound',col:'#f7931a'});DT=null;if(c.n<=0)P.cite=null}
+function maxiTick(dt){if(G.keyT>0)G.keyT=Math.max(0,G.keyT-dt);const tk=P.tick;if(tk){if(mode!=='play'||G.hp<=0)P.tick=null;else{tk.cd-=dt;if(tk.cd<=0){if(tk.n>0){const o=nearest(2.6);if(o)hit(o,tk.m);tk.n--;tk.cd=tk.n>0?.07:.1}else{const o=nearest(2.8)||P;sfx('boom');float(o.x,o.y,'BLOCK','#f7931a',1);P.maxiBlock=2.2;burst(o.x,o.y,2.4,tk.block,.4,'#f7931a');P.tick=null}}}}const c=P.cite;if(!c)return;c.cd-=dt;if(c.cd>0)return;c.cd=c.gap;c.n--;const t=nearest(7);if(t)face(t);DT='sound';shoot(P.dir,c.m,0,{dt:'sound',col:'#f7931a'});DT=null;if(c.n<=0)P.cite=null}
 function openTarget(range,from){let b=null,bd=range;from=from||P;for(const e of W.ents){if(e.nc>0)continue;const d=dist(e,from);if(d<bd){bd=d;b=e}}return b}
 function founderLiq(L,m){const cs=(P.corpses||[]).filter(c=>c.t>0&&Math.hypot(c.x-P.x,c.y-P.y)<5);if(!cs.length){toast('No corpses to liquidate');return}for(const c of cs){c.t=0;burst(c.x,c.y,2.2,(1.1+.15*L)*m,0,'#e0bd6e')}P.corpses=P.corpses.filter(c=>c.t>0)}
 function skillTick(dt){if(P.dump&&P.dump.t>0){P.dump.t-=dt;if(P.dump.t<=0)P.dump=null}if(P.castWait>0)P.castWait=Math.max(0,P.castWait-dt);if(G.cls==='scrapper')scrTick(dt);else if(G.cls==='hacker')hackTick(dt);else if(G.cls==='courier')runTick(dt);else if(G.cls==='anon')anonTick(dt);else if(G.cls==='founder')founderTick(dt);else if(G.cls==='maxi')maxiTick(dt);else if(G.cls==='homesteader')hsTick(dt);else if(G.cls==='witness')witTick(dt)}
@@ -1857,7 +1866,7 @@ function hsTick(dt){
   if(P.corpses){for(const c of P.corpses)c.t-=dt;P.corpses=P.corpses.filter(c=>c.t>0)}
   if(G.form==='hull'){const prev=Math.floor((G.formT||0)/HS.bigStep);G.formT=(G.formT||0)+dt;if(Math.floor(G.formT/HS.bigStep)!==prev)calc()}}
 /* Draft magnitudes for the Witness. The plan fixed the meter and the life total; these coefficients sit near a row-3 hit and are called out as draft. */
-const WIT={fill:8,still:1.6,swing:.45,book:1.22,carbon:1.3,cap:6,stack:1.15,decay:1,high:4,onRec:8,thread:.7,sentMax:25,pressStack:2};
+const WIT={fill:8,still:1.6,swing:.45,book:1.22,carbon:1.3,cap:6,stack:.9,decay:1,high:4,onRec:8,thread:.55,sentMax:25,pressStack:2};
 const WITMIN={1:1,3:20,4:1,6:1,7:30,9:25,10:20,12:1};
 function recBag(){return (P&&P.tag)?P:G}
 function recGet(){const b=recBag();return Math.max(0,Math.min(100,+b.page||0))}
@@ -1920,11 +1929,9 @@ const SKF={
 Object.assign(SKF,{
  maxi:{
   /* Tick Tock Next Block: nine swings and then a block. It arrives when it arrives. */
-  0:(L,m)=>{const t=nearest(6);if(t)face(t);P.maxiBlock=3;
-    for(let i=0;i<9;i++)setTimeout(()=>{if(mode!=='play'||G.hp<=0)return;
-      const o=nearest(2.6);if(!o)return;hit(o,(.5+.08*L)*m)},i*70);
-    setTimeout(()=>{if(mode!=='play'||G.hp<=0)return;const o=nearest(2.8)||P;
-      sfx('boom');float(o.x,o.y,'BLOCK','#f7931a',1);P.maxiBlock=2.2;burst(o.x,o.y,2.4,(4+.8*L)*m,.4,'#f7931a')},660)},
+  /* Nine strikes, then the block, on game time. A wall-clock timer lands after a
+     fast sim has already left the fight, so the tenth hit never arrives. */
+  0:(L,m)=>{const t=nearest(6);if(t)face(t);P.maxiBlock=3;P.tick={n:9,cd:0,m:(.5+.08*L)*m,block:(4+.8*L)*m}},
   /* Have Fun Staying Poor: close range, cannot miss, and it stuns. */
   1:(L,m)=>{const t=nearest(2.6);
     W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.22,w:1.2,reach:2.6});
@@ -1996,7 +2003,7 @@ Object.assign(SKF,{
   0:()=>{const t=nearest(8);if(!t){toast('Nothing in view');return}const n=(S.sp&&S.sp.press)?WIT.pressStack:1;t.tes=Math.min(witCap(),(t.tes||0)+n);face(t);float(t.x,t.y,'Look','#e6dcc8',0);fxAim('mark',t.x,t.y)},
   1:(L)=>{if(recGet()<witNeed(1)){witBlank();return}const t=nearest(7);if(!t){toast('Nobody to sentence');return}const cap=Math.max(1,Math.ceil(WIT.sentMax*(1+((S&&S.recCost)||0)/100))),spend=Math.min(recGet(),cap);if(!witPay(spend)){witBlank();return}const delay=(.4+.08*L)*(spend/WIT.sentMax);t.cd=(t.cd||0)+delay;t.wind=(t.wind||0)+delay*.5;P.paper=2.4;face(t);float(t.x,t.y,'Sentenced','#e6dcc8',0)},
   3:(L)=>{if(recGet()<witNeed(3)){witBlank();return}const src=nearest(8);if(!src){toast('Nothing in view');return}if(!(src.lastAtk>0)){toast('They have not swung');return}let dst=null,best=-1,bd=99;for(const e of W.ents){if(e===src||e.hp<=0||e.mp||!(e.tes>0))continue;const d=dist(e,P);if(e.tes>best||(e.tes===best&&d<bd)){best=e.tes;dst=e;bd=d}}if(!dst){toast('Nothing else is on the record');return}if(!witPay(witNeed(3))){witBlank();return}face(dst);W.fx.push({k:'bolt',x:src.x,y:src.y,x2:dst.x,y2:dst.y,t:0,life:.28,col:'#e6dcc8'});witImpact(dst,src.lastAtk*(.75+.05*L))},
-  4:(L)=>{if(recGet()<witNeed(4)){witBlank();return}const t=nearest(6);if(!t){toast('Nothing in view');return}if(!(t.tes>0)){float(t.x,t.y,'the page is blank','#e6dcc8',0);return}const spend=Math.max(1,Math.ceil(recGet()*WIT.thread));if(!witPay(spend)){witBlank();return}const d=(t.tes||0)*(3.5+.45*L)*(1+((G.lvl||1)-1)*.42);face(t);if(!(d>0)){float(t.x,t.y,'the page is blank','#e6dcc8',0);return}witImpact(t,d)},
+  4:(L)=>{if(recGet()<witNeed(4)){witBlank();return}const t=nearest(6);if(!t){toast('Nothing in view');return}if(!(t.tes>0)){float(t.x,t.y,'the page is blank','#e6dcc8',0);return}const spend=Math.max(1,Math.ceil(recGet()*WIT.thread));if(!witPay(spend)){witBlank();return}const page=1+Math.min(1,spend/40)*.28;const d=(t.tes||0)*(4.6+.5*L)*page*(1+((G.lvl||1)-1)*.42);face(t);if(!(d>0)){float(t.x,t.y,'the page is blank','#e6dcc8',0);return}witImpact(t,d)},
   6:()=>{if(!(P&&P.tag)&&G.corrZi===W.zi){toast('Already corrected in this district');return}if(recGet()<1){witBlank();return}const loss=P.lastLoss||0;if(!(loss>0)){toast('Nothing to correct');return}recSet(0);let h=loss;if(S.retr)h*=1+S.retr/100;if(P&&P.tag)P.hp=Math.min(P.max||P.hp,(P.hp||0)+h);else{heal(h);G.corrZi=W.zi}float(P.x,P.y,'Corrected','#7be495',0)},
   7:()=>{if(recGet()<witNeed(7)){witBlank();return}if(!witPay(witNeed(7))){witBlank();return}P.redact=2;float(P.x,P.y,'Redacted','#e6dcc8',0)},
   9:(L)=>{if(recGet()<witNeed(9)){witBlank();return}let best=null,bt=-1;for(const e of W.ents){if(e.hp<=0||e.mp)continue;if((e.tes||0)>bt){bt=e.tes||0;best=e}}if(!best||bt<WIT.high){toast('The testimony is too thin');return}if(!witPay(witNeed(9))){witBlank();return}best.onRecT=WIT.onRec;best.onRecM=1+.12*L;if(typeof mpNoteCurse==='function')mpNoteCurse(best,'rec',best.onRecM,WIT.onRec);float(best.x,best.y,'On the record','#e6dcc8',0);fxAim('mark',best.x,best.y)},
@@ -2679,6 +2686,9 @@ function drawHover(){
 
 /* ================= update ================= */
 function update(dt){
+  /* The page decides what is on screen from the camera. Follow the body here, not
+     only when a frame is painted, so a fast sim still writes Testimony. */
+  if(P){cx=(P.x-P.y)*32;cy=(P.x+P.y)*16}
   mpTick(dt);patchTick(dt);maxiAura(dt);
   G.time+=dt;const gr=G.adopt>=100?1:Math.pow(SEA.k==='stim'?1.005:1.0025,(dt/60)*(1.45-G.adopt/100)*(G.fate==='fail'?1.4:1));G.cpi*=gr;if(S.sp.hedge)G.credits*=gr;G.ubiT=Math.max(0,G.ubiT-dt);G.chuteT=Math.max(0,G.chuteT-dt);
   const c=CLS[G.cls];
@@ -2997,10 +3007,13 @@ function actRoman(n){return ['I','II','III','IV','V'][(n||1)-1]||'I'}
 const townOf=zi=>{const a=actOf(zi);return a===5?27:a===4?21:a===3?18:a===2?17:a===1?0:(G.town||0)};
 const HT=()=>G.town||0;
 function nearFree(p,d){for(let i=0;i<24;i++){const a=i*.8,r=d||1.3,x=p.x+Math.cos(a)*r,y=p.y+Math.sin(a)*r;if(free(x,y,.35))return{x,y}}return{x:p.x,y:p.y}}
+/* A lieutenant whose kill step is already done stays down. Bringing Defrag back
+   seals Marrow's cage while the tracker still says to open it. */
+function suStepDone(z){const su=z&&z.su;if(!su||!su.q)return false;const q=su.q,st=(G.q&&G.q[q])||0;if(st>=2)return true;if(q==='q3'&&G.q3open)return true;if(q==='q8'&&G.q8down)return true;if(q==='q12'&&G.q12down)return true;return false}
 /* machines drift back into a district you have been away from */
 function repop(){const z=W.z,N=W.N,base=z.boss?24:46,have=W.ents.filter(e=>!isBoss(e.k)&&!e.su).length,need=base-have,away=G.time-W.leftT;let back=0;
-  if(away>600&&z.su&&!W.ents.some(e=>e.su)){const p=W.suAt||W.goal;if(spawn(z.su.k,p.x+.5,p.y+.5,{su:z.su}))back++}
-  if(away>900&&z.boss&&!W.boss&&W.goal){if(spawn(z.bossK||'boss',W.goal.x,W.goal.y)){back++;W.portals=W.portals.filter(p=>p.kind!=='home')}}
+  if(away>600&&z.su&&!suStepDone(z)&&!W.ents.some(e=>e.su)){const p=W.suAt||W.goal;if(spawn(z.su.k,p.x+.5,p.y+.5,{su:z.su}))back++}
+  if(away>900&&z.boss&&!W.boss&&W.goal&&!(z.bq&&(G.q[z.bq]||0)>=2)){if(spawn(z.bossK||'boss',W.goal.x,W.goal.y)){back++;W.portals=W.portals.filter(p=>p.kind!=='home')}}
   if(need<6)return back;
   W.ml=zoneLevel(z);W.dyn=dynFor(W.ml);let n=0;
   for(let t=0;t<600&&n<need;t++){const x=ri(2,N-3)+.5,y=ri(2,N-3)+.5;if(W.map[(y|0)*N+(x|0)]!==1||Math.hypot(x-P.x,y-P.y)<13||Math.hypot(x-W.start.x,y-W.start.y)<8||(z.boss&&W.goal&&Math.hypot(x-W.goal.x,y-W.goal.y)<10))continue;
@@ -3957,7 +3970,7 @@ const BUILDS={
   {k:'hull',n:'Inside the Hull',p:'Wear the Hull and stay in it. Shed when you must. Nothing is planted.',doc:'tenant',at:[20,20,50,10],pr:[[1,4],[4,10],[7,4],[10,6],[13,8]],sl:[4,10,7],main:4,pa:[13],web:[1,2],fk:['ward','stun','lean','siphon']},
   {k:'flock',n:'What Follows',p:'Strays and one bull. Cold Frame is only there so they have somewhere to stand. Slaughter Weight spends them into the ground.',doc:'poacher',at:[40,20,25,15],pr:[[2,10],[5,6],[8,8],[11,5],[14,4],[0,3]],sl:[2,5,14],pa:[8,11],web:[0,3],fk:['over','mark','echo','lean']}],
  witness:[
-  {k:'page',n:'The Page',p:'The Sentence, then Pull the Thread, then Correction. Slow, single target, and dull on purpose. There is no quiet way to clear a room.',doc:'editor',at:[20,15,55,10],pr:[[1,10],[4,10],[6,8],[0,4],[3,4],[2,6],[5,4],[8,6],[11,4]],sl:[1,4,6],pa:[2,8,11],web:[1,2],fk:['lean','ward','echo','mark']},
+  {k:'page',n:'The Page',p:'Look, then The Sentence, then Pull the Thread. Slow, single target, and dull on purpose. There is no quiet way to clear a room.',doc:'editor',at:[20,15,55,10],pr:[[0,6],[1,6],[4,10],[6,8],[3,4],[2,6],[5,4],[8,6],[11,4]],sl:[4,0,1],pa:[2,8,11],web:[1,2],fk:['lean','ward','echo','mark']},
   {k:'party',n:'Named in the Notes',p:'Look until the page is full. On the Record makes everyone hit harder. Unnamed Source lends one Sound swing. Named Party is the passive, and it is not for you.',doc:'stringer',at:[15,20,40,25],pr:[[0,8],[9,8],[10,6],[13,6],[3,4],[6,4],[1,4],[4,4],[7,3],[5,3],[2,3]],sl:[0,9,10],main:9,pa:[13,5,2],web:[1,6],fk:['mark','echo','lean','ward']},
   {k:'risk',n:'Above Eighty',p:'Sit on a full Record and a thin life. Retraction is the save, and it spends the page. An empty Record is a death.',doc:'corrections',at:[10,15,65,10],pr:[[14,8],[11,6],[8,6],[5,4],[2,4],[0,4],[7,6],[6,6],[1,3],[4,3],[3,3]],sl:[0,7,6],main:7,pa:[14,11,8,2],web:[1,2],fk:['ward','lean','siphon','echo']}]};
 function buildApply(cls,key,sp,ap){const B=BUILDS[cls].find(b=>b.k===key),sk=CLS[cls].sk,ok=i=>{const row=Math.floor(i/3);return G.lvl>=ROWREQ[row]&&(row<3||G.act2)&&(row<4||G.act3)};
