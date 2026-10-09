@@ -154,7 +154,7 @@ function mkFixed(u,il,q,set){il=Math.max(il,u.il);let b=null,tr=0;BASE[u.slot].f
   const sc=1+(il-u.il)*.04,scale=['dmg','hp','shock','thorns','armor','en','armorP'];
   for(const k in u.mods){const m=u.mods[k];let v=modRoll(m);if(v>0&&scale.includes(k))v=Math.round(v*sc);it.aff.push({k,v})}
   if(u.sp){it.sp=u.id;it.spT=u.sp}if(set)it.set=set;
-  it.val=(8+il*5)*(q===4?8:6);it.req=Math.max(1,Math.floor(u.il*.75));if(u.ind)it.indestruct=1;if(u.patch)it.aff.push({k:'patch',v:1,nm:'of the Patch'});beltStamp(it);stampDura(it);return it}
+  it.val=(8+il*5)*(q===4?8:6);it.req=Math.max(1,Math.floor(u.il*.75));if(u.ind)it.indestruct=1;if(u.patch)it.aff.push({k:'patch',v:1,nm:'of the Patch'});beltStamp(it);stampDura(it);if(typeof stampReq==='function')stampReq(it);return it}
 const ITEM_HOOKS=[];
 function makeItem(il,q,slot){let it=makeItemCore(il,q,slot);for(const h of ITEM_HOOKS)it=h(it,il,q,slot);return it}
 function moorsBlade(){
@@ -204,7 +204,7 @@ const stimPrice=()=>25*G.cpi*(1+G.lvl*.2)*(G.disc?.85:1);
 function calc(){
   const c=CLS[G.cls],s={dmin:2,dmax:4,wspd:0,barm:0,sp:{},set:{},cap:4,cdr:0,dodge:0,pierce:0,critM:2,enc:0,grant:{}};
   for(const k of STATK)s[k]=0;
-  for(const slot of SLOTS){const it=G.eq[slot];if(!it)continue;if(itemBroken(it)){if(slot==='belt')s.beltBroken=1;continue}if(it.dmin){s.dmin=it.dmin;s.dmax=it.dmax;s.wspd=it.spd||0}if(it.arm)s.barm+=it.arm;if(it.slot==='belt'){const b=beltBudget(it);s.cap=b.stims;s.csl=b.slots}else if(it.cap)s.cap=it.cap;
+  const live=typeof gearLive==='function'?gearLive(null).live:null;for(const slot of SLOTS){const it=G.eq[slot];if(!it)continue;if(itemBroken(it)){if(slot==='belt')s.beltBroken=1;continue}if(live&&!live[slot])continue;if(it.dmin){s.dmin=it.dmin;s.dmax=it.dmax;s.wspd=it.spd||0}if(it.arm)s.barm+=it.arm;if(it.slot==='belt'){const b=beltBudget(it);s.cap=b.stims;s.csl=b.slots}else if(it.cap)s.cap=it.cap;
     for(const a of it.aff){let v=a.v;if(a.k==='cdr'&&v>1)v=v/100;s[a.k]=(s[a.k]||0)+v}if(it.sp&&uOk(it))s.sp[it.sp]=1;if(it.uid&&UNIK[it.uid]&&UNIK[it.uid].grant&&uOk(it))s.grant[UNIK[it.uid].grant[0]]=UNIK[it.uid].grant[1];if(it.set)s.set[it.set]=(s.set[it.set]||0)+1}
   if(G.cls==='hacker')s.skills+=(s.sk_hacker||0);if(G.cls==='courier')s.skills+=(s.sk_courier||0);gearPerLevel(s);famBonus(s);if(s.set.striker>=2)s.dmg+=20;if(s.set.striker>=3){s.skills+=1;s.sp.vigil=1}charmApply(s);s.skills=Math.min(4,s.skills||0)
   fixPas();const L=i=>{const b=G.sk[i]&&pon(i)?G.sk[i]+charmBonus(s,i)+mast(i):0,g=s.grant[i]||0;return g?Math.max(b,g+(G.sk[i]||0)):b};let hpM=1,armM=1;
@@ -222,7 +222,7 @@ function calc(){
   if(G.cls==='maxi'&&L(8)){armM+=.08*L(8);s.pdr=(s.pdr||0)+FORMULAS.brace.million.pdr+FORMULAS.brace.million.pdrL*L(8)}
   if(s.sp.nda)s.dodge+=15;if(s.sp.cloud9)s.dodge+=10;if(s.sp.fineprint)s.cdr+=.2;
   hpM+=extra(s);s.cdr=Math.min(.6,s.cdr||0);
-  s.dmg+=(G.at.mgt+(s.mgt||0))*1.5;s.crit=Math.round((s.crit+5+(G.at.ref+(s.ref||0))*.3)*10)/10;
+  s.crit=Math.round((s.crit+5+(G.at.ref+(s.ref||0))*.3)*10)/10;
   s.armor=Math.round((s.barm*(1+s.armorP/100)+s.armor+(G.at.ref+(s.ref||0)))*armM);
   if(P&&P.bear>0)s.armor=Math.round(s.armor*1.25);
   s.maxHp=Math.round((c.hp+(G.lvl-1)*c.hpL+(G.at.vit+(s.vit||0))*4+s.hp+(s.hpL||0)*(G.lvl||1))*hpM);s.preHp=Math.round((c.hp+(G.lvl-1)*c.hpL+(G.at.vit+(s.vit||0))*4+(s.hp-(s.chFlat||0))+(s.hpL||0)*(G.lvl||1))*hpM);s.chHp=Math.max(0,s.maxHp-s.preHp);
@@ -231,11 +231,11 @@ function calc(){
   if(s.pdr)s.pdr=Math.min(FORMULAS.brace.pdrCap,s.pdr);
   s.aspd+=s.wspd;s.mspd=Math.min(s.mspd,50);
   if(s.r_all)for(const k of RTK)s['r_'+k]=(s['r_'+k]||0)+s.r_all;
-  S=s;G.hp=Math.min(G.hp,S.maxHp);G.en=Math.min(G.en,S.maxEn);G.stims=Math.min(G.stims,S.cap);scrubItemBinds()}
+  s.blow=typeof swingBlow==='function'?swingBlow(s):0;S=s;G.hp=Math.min(G.hp,S.maxHp);G.en=Math.min(G.en,S.maxEn);G.stims=Math.min(G.stims,S.cap);scrubItemBinds()}
 function newGame(cls){
   G={v:2,cls,lvl:1,xp:0,sp:0,ap:0,sk:[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],slots:[0,-1,-1],at:{mgt:0,ref:0,vit:0,bnd:0},hp:9999,en:9999,credits:120,cpi:1,stims:3,bag:[],
     eq:{weapon:null,helm:null,armor:null,gloves:null,boots:null,belt:null,ring:null,amulet:null},unlocked:1,tier:0,maxTier:0,kills:0,deaths:0,ubiT:0,time:0,zone:0,
-    sats:0,merc:null,sq:{},stash:[],q:{q1:0,q2:0,q3:0,q4:0,q5:0,q6:0,q7:0,q8:0,q9:0,q10:0},memos:[],marrow:false,disc:false,portal:null,chuteT:0,bossKills:0,seenIntro:false,god:false};ensureMouse();
+    sats:0,merc:null,sq:{},stash:[],q:{q1:0,q2:0,q3:0,q4:0,q5:0,q6:0,q7:0,q8:0,q9:0,q10:0},memos:[],marrow:false,disc:false,portal:null,chuteT:0,bossKills:0,seenIntro:false,god:false,statNote:1};ensureMouse();
   G.eq.weapon=makeItem(1,0,'weapon');ZS={};freshState();calc();G.hp=S.maxHp;G.en=S.maxEn;
   G.walkNew=1;G.pre=1;playScene(PRE_INTRO,()=>startPlay())}
 
@@ -279,6 +279,7 @@ function applySave(o){if(!o||!o.G||!CLS[o.G.cls])return false;G=o.G;
   if(G.q.q10===3&&(G.unlocked||0)<12)G.unlocked=12;for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;if(G.q.q5===3&&(G.unlocked||0)<7)G.unlocked=7;actBriefMigrate();if(G.hp<=0){if(!G.hc)G.hp=9999;o.cur=null}ZS={};for(const k in (o.zs||{})){let z=null;try{z=decW(o.zs[k])}catch(e){z=null}if(z)ZS[k]=z;else keepGround(o.zs[k])}if(o.opt){const raw=o.opt;OPT=Object.assign({},OPT_DEF,raw);lootMigrate(raw)}if(Array.isArray(o.buyback))G._buyback=o.buyback.filter(r=>r&&r.it&&!r.it.test);G._cur=o.cur||null;boonRefund();return true}
 function hcBegin(){const c=G&&CLS[G.cls]?G.cls:'scrapper';DY=null;const d=$('death');if(d)d.hidden=true;resetZones();newGame(c);G.hc=true;save(true)}
 function startPlay(){ensureG();if(G.hc&&G.hp<=0){hcBegin();return}mpConnect();mode='play';$('title').hidden=true;$('hud').hidden=false;calc();setSkillButtons();
+  if(!G.statNote){G.statNote=1;const spent=(G.at.mgt||0)+(G.at.ref||0)+(G.at.vit||0)+(G.at.bnd||0);if(spent>0)setTimeout(()=>toast('Attribute damage has changed. Sister Null can return your points.'),400)}
   const c=G._cur;delete G._cur;const cz=c&&ZONES[c.zi];
   if(cz&&(cz.town||cz.sim||ZS[c.zi])){const o={at:c,swap:1};if(cz.sim){o.wave=(c.sim&&c.sim.wave)||1;if(c.sim&&c.sim.rush)o.rush=1}enter(c.zi,o);if(cz.pre)return}else if(G.pre===1){enter(PREZ);return}else enter(HT());
   if(!G.q.q1&&W.z.town&&G.seenIntro!==false){talkTo('gramps')}
@@ -510,7 +511,7 @@ function stateMarks(){if(!W||!W.fx||!P)return;const live={};
   for(let i=W.fx.length-1;i>=0;i--)if(W.fx[i].sid&&!live[W.fx[i].sid])W.fx.splice(i,1)}
 function parts(x,y,n,cols,sp,up){if(OPT.fx==='thin')return;for(let i=0;i<n;i++){const a=rnd(0,6.283),v=rnd(.3,1)*sp;W.parts.push({x,y,z:rnd(8,26),vx:Math.cos(a)*v,vy:Math.sin(a)*v,vz:rnd(40,120)*(up||1),t:0,life:rnd(.4,.9),col:pick(cols),s:rnd(2,4.5)})}}
 function pdmg(m,e){
-  let d=rnd(S.dmin,S.dmax)*(1+S.dmg/100)*m+S.shock*rnd(.8,1.2)*Math.max(.5,m);
+  let d=rnd(S.dmin,S.dmax)*(1+S.dmg/100)*(1+(typeof blowPct==='function'?blowPct():0)/100)*m+S.shock*rnd(.8,1.2)*Math.max(.5,m);
   if(P.ambT>0)d*=P.ambM;
   if(G.cls==='scrapper'&&sl(8)){let c=0;for(const o of W.ents)if(dist(o,P)<4&&c<5)c++;d*=1+.03*sl(8)*c}
   if(G.cls==='witness'&&e&&e.tes)d*=1+Math.min(6,e.tes)*.07;
@@ -595,7 +596,7 @@ function itemBroken(it){return !!(it&&it.duraMax>0&&(it.dura|0)<=0)}
 function migrateDurability(){if(!G)return;const touch=it=>{if(it)stampDura(it)};if(G.eq)for(const k in G.eq)touch(G.eq[k]);for(const it of G.bag||[])touch(it);for(const it of G.stash||[])touch(it);for(const it of G.cslots||[])touch(it);if(typeof ACC!=='undefined'&&ACC&&ACC.stash)for(const it of ACC.stash)touch(it);for(const c of G.corpses||[]){if(!c)continue;if(c.eq)for(const k in c.eq)touch(c.eq[k]);for(const it of c.cslots||[])touch(it)}if(!Array.isArray(G.corpses))G.corpses=[];G.duraMig=1}
 function deathCreditPct(){if(!G||G.hc)return 0;if(S&&S.sp&&S.sp.coldwallet)return 0;const diff=G.diff|0,cap=[.2,.35,.5][diff]||.2,floor=[.04,.08,.12][diff]||.04,t=Math.min(1,Math.max(0,((G.lvl||1)-1)/39));return floor+(cap-floor)*t}
 function deathFee(){return Math.floor((G&&G.credits||0)*deathCreditPct())}
-function loanerWeapon(){if(!G||!G.eq||(G.eq.weapon&&!G.eq.weapon.loan))return G.eq&&G.eq.weapon;if(G.eq.weapon&&G.eq.weapon.loan)return G.eq.weapon;const it=makeItem(Math.max(1,Math.min(3,G.lvl||1)),0,'weapon');if(!it)return null;it.loan=1;it.id=true;it.indestruct=1;stampDura(it);it.name=(it.base||'Weapon')+' (loaner)';G.eq.weapon=it;calc();return it}
+function loanerWeapon(){if(!G||!G.eq||(G.eq.weapon&&!G.eq.weapon.loan))return G.eq&&G.eq.weapon;if(G.eq.weapon&&G.eq.weapon.loan)return G.eq.weapon;const it=makeItem(Math.max(1,Math.min(3,G.lvl||1)),0,'weapon');if(!it)return null;it.loan=1;it.id=true;it.indestruct=1;if(typeof stampReq==='function')stampReq(it);stampDura(it);it.name=(it.base||'Weapon')+' (loaner)';G.eq.weapon=it;calc();return it}
 function layCorpse(x,y){lastLaid=false;if(!G||G.hc)return 0;if(W&&W.z&&W.z.sim)return 0;const eq={};let any=false;for(const sl of SLOTS){const it=G.eq[sl];if(it&&it.loan){eq[sl]=null;continue}eq[sl]=it||null;if(it)any=true;G.eq[sl]=null}const cslots=(G.cslots||[]).slice();if(cslots.length)any=true;G.cslots=[];const credits=deathFee();if(credits>0)any=true;G.credits=Math.max(0,(G.credits||0)-credits);if(!any){if(!G.eq.weapon)loanerWeapon();else calc();return 0}const id=(G.corpseN=(G.corpseN||0)+1);G.corpses=G.corpses||[];G.corpses.push({id,zi:W?W.zi:0,x,y,tier:G.tier|0,eq,cslots,credits,t:G.time||0});lastLaid=true;if(!G.eq.weapon)loanerWeapon();else calc();placeCorpses();calmNearCorpse();return credits}
 function placeCorpses(){if(!W||!W.objs||!G)return;W.objs=W.objs.filter(o=>o.k!=='corpse');for(const c of G.corpses||[]){if(!c||c.zi!==W.zi||(c.tier|0)!==(G.tier|0))continue;let x=c.x,y=c.y;if(typeof free==='function'&&!free(x,y,.3)&&typeof nearFree==='function'){const n=nearFree({x,y},1.4);x=n.x;y=n.y;c.x=x;c.y=y}W.objs.push({k:'corpse',id:c.id,x,y})}}
 function calmNearCorpse(){if(!W||!W.ents||(W.z&&W.z.town))return;const bodies=(W.objs||[]).filter(o=>o&&o.k==='corpse');if(!bodies.length)return;for(const e of W.ents){if(!e||e.hp<=0||e.mp)continue;let near=null;for(const b of bodies)if(Math.hypot(e.x-b.x,e.y-b.y)<14)near=b;if(!near)continue;e.aggro=false;e.calm=20;e.wind=0;let dx=e.x-near.x,dy=e.y-near.y,d=Math.hypot(dx,dy);if(d<0.4){const a=(e.ph||0)+1.7;dx=Math.cos(a);dy=Math.sin(a);d=1}const nx=near.x+dx/d*16,ny=near.y+dy/d*16;if(typeof free==='function'&&free(nx,ny,.35)){e.x=nx;e.y=ny}else if(typeof nearFree==='function'){const n=nearFree({x:near.x+dx/d*14,y:near.y+dy/d*14},5);if(n){e.x=n.x;e.y=n.y}}}}
@@ -793,7 +794,7 @@ function witHostile(){if(!W||!W.ents)return false;for(const e of W.ents)if(witSe
 function witBlank(){toast('The page is blank');float(P.x,P.y,'the page is blank','#e6dcc8',0);sfx('err')}
 function witBlock(i){if(!G||G.cls!=='witness')return null;const sk=CLS.witness.sk[i];if(!sk||!sk.a||i===0)return null;if(recGet()<witNeed(i))return 'The page is blank';if(i===6&&!(P&&P.tag)&&G.corrZi===W.zi)return 'Already corrected in this district';if(i===6&&!(P.lastLoss>0))return 'Nothing to correct';return null}
 function witPay(n){if(recGet()<n)return 0;recSet(recGet()-n);return n}
-function witImpact(e,d){if(!e||e.hp<=0||!(d>0))return;const prev=DT;DT='impact';const out=typed(e,d);dmgEnemy(e,out,false);DT=prev}
+function witImpact(e,d){if(!e||e.hp<=0||!(d>0))return;const vit=(G.at.vit||0)+((S&&S.vit)||0);d*=1+vit*.006;const prev=DT;DT='impact';const out=typed(e,d);dmgEnemy(e,out,false);DT=prev}
 function witWrap(who,fn){const snd=who&&who.soundSwing;if(snd)who.soundSwing=0;const prev=DT;if(snd)DT='sound';const ph=P.partyHit;P.partyHit=1;try{fn(!!snd)}finally{P.partyHit=ph;DT=prev}}
 function witMercHit(m,e,d){witWrap(m,snd=>{const prev=DT;if(!snd)DT=(MERCS[G.merc.k]||{}).dt||'impact';P.holdTy=1;const out=typed(e,d);P.holdTy=0;DT=prev;dmgEnemy(e,out,false)})}
 function witLends(a){return !!(a&&a.k==='minion'&&(a.hp===undefined||a.hp>0))}
@@ -1664,8 +1665,8 @@ function update(dt){
         const strike=snd=>{if(a.raw){const prev=DT;if(!snd)DT=foeType(a.e)||'impact';P.holdTy=1;const out=typed(t,a.raw*orgMul(true)*vestMul(a)*toxicDmg(a.toxL)*(S.sp.check&&a.per?1.25:1));P.holdTy=0;DT=prev;dmgEnemy(t,out,false);return}if(snd||!(rg>2)){P.swingBody=a;P.allySwing=1;hit(t,m,true);P.allySwing=0;P.swingBody=null;if(a.aoe)for(const o of W.ents.slice())if(o!==t&&!(o.nc>0)&&dist(o,t)<1.7){P.swingBody=a;P.allySwing=1;hit(o,m*.6,true);P.allySwing=0;P.swingBody=null}}else{sfx('throw');shoot({x:(t.x-a.x)/d,y:(t.y-a.y)/d},m,0,{from:a,life:.6,col:'#e0bd6e',nl:1})}};
         if(a.soundSwing)witWrap(a,strike);else{const ph=P.partyHit;P.partyHit=1;strike(false);P.partyHit=ph}}}
     if(a.k==='mine'){a.arm-=dt;if(a.arm<=0&&nearest(1.3,a)){if(!a.cut&&G.cls==='anon'&&sl(13)&&!boonOn(13))a.cut=1;else a.life=0}}
-    if(a.k==='raid'&&a.cd<=0){a.cd=.13;const c2=W.ents.filter(e=>dist(e,P)<9);if(c2.length){const t=pick(c2);W.fx.push({k:'bolt',x:t.x+rnd(-5,5),y:t.y-rnd(3,6),x2:t.x,y2:t.y,t:0,life:.18,col:'#e6e2d6'});hit(t,a.m)}}
-    if(a.life<=0){W.allies.splice(W.allies.indexOf(a),1);if(a.k==='decoy')burst(a.x,a.y,2.6,a.m,a.stun||0,'#ffb238');if(a.k==='drop'){burst(a.x,a.y,1.8,0,0,'#3fbf8f');parts(a.x,a.y,14,['#2a8f68','#e6e2d6','#fff'],2.6);sfx('boom');float(a.x,a.y,'Pop','#3fbf8f',1);toast('The second drop pops')}if((a.k==='mine'||a.k==='blast')&&!a.hush)burst(a.x,a.y,a.r||2.4,a.m,0,'#ff5d4d');if(a.k==='pail'){parts(a.x,a.y,8,['#c9a868','#7be495'],1.6);toast('The lunch pail is empty.')}}}
+    if(a.k==='raid'&&a.cd<=0){a.cd=.13;const c2=W.ents.filter(e=>dist(e,P)<9);if(c2.length){const t=pick(c2);W.fx.push({k:'bolt',x:t.x+rnd(-5,5),y:t.y-rnd(3,6),x2:t.x,y2:t.y,t:0,life:.18,col:'#e6e2d6'});const prev=P.blowForce;P.blowForce='mgt';hit(t,a.m);P.blowForce=prev}}
+    if(a.life<=0){W.allies.splice(W.allies.indexOf(a),1);if(a.k==='decoy'){const prev=P.blowForce;P.blowForce='mgt';burst(a.x,a.y,2.6,a.m,a.stun||0,'#ffb238');P.blowForce=prev}if(a.k==='drop'){burst(a.x,a.y,1.8,0,0,'#3fbf8f');parts(a.x,a.y,14,['#2a8f68','#e6e2d6','#fff'],2.6);sfx('boom');float(a.x,a.y,'Pop','#3fbf8f',1);toast('The second drop pops')}if((a.k==='mine'||a.k==='blast')&&!a.hush){const prev=P.blowForce;P.blowForce='mgt';burst(a.x,a.y,a.r||2.4,a.m,0,'#ff5d4d');P.blowForce=prev}if(a.k==='pail'){parts(a.x,a.y,8,['#c9a868','#7be495'],1.6);toast('The lunch pail is empty.')}}}
   DT=null;typeTick(dt);typeInTick(dt);updMerc(dt);updTag(dt);if(!(typeof mpMobWatch==='function'&&mpMobWatch())){if(W.z.sim)simTick(dt);sqTick(dt);escTick(dt);evTick(dt)}achTick(dt);p7Tick(dt);
   // projectiles
   for(let _pi=W.projs.length-1;_pi>=0;_pi--){const p=W.projs[_pi];if(!p)continue;p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;let gone=p.life<=0||!open(p.x,p.y);
@@ -1684,7 +1685,7 @@ function update(dt){
     if(d.cr){const v=Math.floor(d.cr*(1+S.gold/100));G.credits+=v;if(v){float(P.x,P.y,'+'+fmt(v),'#ffe36b');sfx('coin')}}
     else if(d.pot){if(G.stims>=S.cap)continue;G.stims++;float(P.x,P.y,'+stim','#7be495');toast('Stim');sfx('pick')}
     else if(d.it.charm){charmNormalize(d.it);if(!bagCan(d.it)){packFullCue();continue}G.bag.push(d.it);sfx('pick');float(P.x,P.y,lootName(d),lootCol(d));toast(lootName(d))}
-    else{if(!d.force&&skipPick(d.it))continue;if(!bagCan(d.it)){packFullCue();continue}G.bag.push(d.it);sfx('pick');float(P.x,P.y,lootName(d),lootCol(d));if(d.it.id&&G.lvl>=d.it.req&&!d.it.charm){const dl=itemDelta(d.it),emp=!G.eq[d.it.slot];if(emp||(OPT.autoEq&&dl>.01)){equipFromBag(G.bag.indexOf(d.it));toast('Equipped '+d.it.name);W.drops.splice(W.drops.indexOf(d),1);continue}if(dl>.2&&(!SWAP||dl>SWAP.d))SWAP={it:d.it,d:dl,t:8}}toast(d.it.id?d.it.name:'Unidentified '+d.it.base)}
+    else{if(!d.force&&skipPick(d.it))continue;if(!bagCan(d.it)){packFullCue();continue}G.bag.push(d.it);sfx('pick');float(P.x,P.y,lootName(d),lootCol(d));if(typeof canWear==='function'?canWear(d.it):(d.it.id&&G.lvl>=d.it.req&&!d.it.charm)){const dl=itemDelta(d.it),emp=!G.eq[d.it.slot];if(emp||(OPT.autoEq&&dl>.01)){equipFromBag(G.bag.indexOf(d.it));toast('Equipped '+d.it.name);W.drops.splice(W.drops.indexOf(d),1);continue}if(dl>.2&&(!SWAP||dl>SWAP.d))SWAP={it:d.it,d:dl,t:8}}toast(d.it.id?d.it.name:'Unidentified '+d.it.base)}
     W.drops.splice(W.drops.indexOf(d),1)}
   for(const n of W.npcs){if(n.id!=='res')continue;n.wait-=dt;n.st=Math.max(0,n.st-dt);n.cool-=dt;n.ph+=dt;
     if(n.wait<=0){if(n.ev){n.tx=n.hx+rnd(-6,6);n.ty=n.hy+rnd(-6,6)}else{n.tx=rnd(5,20);n.ty=rnd(10,20)}n.wait=rnd(3,8)}

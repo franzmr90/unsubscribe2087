@@ -238,7 +238,7 @@ function pvpLifeMul(){
   if(typeof S==='undefined'||!S||!(S.chHp>0)||!(S.preHp>0))return 1;
   const over=S.chHp-S.preHp*.2;if(over<=0)return 1;const eff=S.maxHp-over;return eff>1?S.maxHp/eff:1}
 
-const skipPick=it=>!it.charm&&G.eq[it.slot]&&(OPT['pk'+it.q]===false||(OPT.pkBetter&&it.id&&G.lvl>=it.req&&!(itemDelta(it)>.01)));
+const skipPick=it=>!it.charm&&G.eq[it.slot]&&(OPT['pk'+it.q]===false||(OPT.pkBetter&&(typeof canWear==='function'?canWear(it):it.id&&G.lvl>=it.req)&&!(itemDelta(it)>.01)));
 
 /* the machines read the fight: one-shot kills push them up, repeated deaths in a district ease it */
 let osWin=[];
@@ -475,9 +475,160 @@ function famify(it){const mine=Object.keys(FAM).find(k=>FAM[k].cls===G.cls),k=Ma
 function classWeapon(il){const mine=Object.keys(FAM).find(k=>FAM[k].cls===G.cls);if(!mine)return null;const it=makeItem(Math.max(1,il|0),Math.random()<.35?2:1,'weapon');
   if(it.fam&&it.fam!==mine&&FAM[it.fam]){const old=FAM[it.fam];it.dmin=Math.max(1,Math.round(it.dmin/old.dm));it.dmax=Math.max(it.dmin+1,Math.round(it.dmax/old.dm));it.spd=(it.spd||0)-old.sp;it.fam=null}
   if(it.fam!==mine){const F=FAM[mine],nb=F.bases[tierOf(it.il)];it.name=nb;it.base=nb;it.fam=mine;it.dmin=Math.max(1,Math.round(it.dmin*F.dm));it.dmax=Math.max(it.dmin+1,Math.round(it.dmax*F.dm));it.spd=(it.spd||0)+F.sp}
-  it.id=true;return it}
-function famBonus(s){const w=G.eq.weapon;if(!w||!w.fam)return;const F=FAM[w.fam];if(F.cls!==G.cls)return;s.skills+=1;for(const k in F.st)s[k]=(s[k]||0)+F.st[k]}
+  it.id=true;stampReq(it);return it}
+function famBonus(s){const w=G.eq.weapon;if(!w||!w.fam)return;if(typeof gearQuiet==='function'&&gearQuiet(w))return;const F=FAM[w.fam];if(F.cls!==G.cls)return;s.skills+=1;for(const k in F.st)s[k]=(s[k]||0)+F.st[k]}
 ITEM_HOOKS.push(function(it,il){if(it.slot==='weapon'&&it.q<4&&il>2&&G&&Math.random()<.4)famify(it);return it});
+/* Stat requirements. Missing fields stay 0, so an old save is not restamped. */
+const HEAVY_BODY={ 'Flak Coat':1,'Exo Plate':1,'Seraph Plate':1 };
+const LIGHT_BOOT={ 'Worn Sneakers':1,'Skywalkers':1 };
+const HEAVY_BOOT={ 'Steel-Toes':1,'Mag Greaves':1 };
+function reqRound(n){n=Math.round(n);return n<1?0:n}
+function reqBump(n,q){n=reqRound(n);if((q||0)>=3)n=reqRound(n*1.1);return n}
+function famKeyOf(it){
+  if(!it)return '';
+  if(it.fam&&FAM[it.fam])return it.fam;
+  if(it.slot!=='weapon')return '';
+  const name=it.base||'';
+  for(const k in FAM)if(FAM[k].bases.indexOf(name)>=0)return k;
+  return ''}
+function weaponRole(it){
+  const fam=famKeyOf(it);
+  if(fam==='sign')return 'heavy';
+  if(fam==='deck')return 'deck';
+  if(fam==='pager')return 'pager';
+  if(fam==='sling')return 'fast';
+  if(fam==='shiv')return 'shiv';
+  if(fam==='graft')return 'graft';
+  if(fam==='notebook')return 'notebook';
+  const spd=it.spd||0;
+  if(spd<=-15)return 'heavy';
+  if(spd>=15)return 'fast';
+  return 'neutral'}
+function stampReq(it){
+  if(!it||it.charm)return it;
+  if(it.loan||it.slot==='ring'||it.slot==='amulet'){it.reqMgt=0;it.reqRef=0;it.reqBnd=0;return it}
+  const il=+it.il||0,q=it.q||0;let m=0,r=0,b=0;
+  if(it.slot==='weapon'){const role=weaponRole(it);
+    if(role==='heavy')m=8+il*1.6;
+    else if(role==='neutral'||role==='graft')m=4+il*.9;
+    else if(role==='fast')r=6+il*1.35;
+    else if(role==='shiv')r=4+il*.7;
+    else if(role==='deck'||role==='pager')b=4+il*.9;
+    else if(role==='notebook')m=(4+il*.9)/2}
+  else if(it.slot==='armor'){m=HEAVY_BODY[it.base]?6+il*1.15:il*.45}
+  else if(it.slot==='helm')m=(6+il*1.15)*.6;
+  else if(it.slot==='gloves'||it.slot==='belt')m=(4+il*.9)*.4;
+  else if(it.slot==='boots'){if(LIGHT_BOOT[it.base])r=il*.35;else m=(8+il*1.6)*.4}
+  it.reqMgt=reqBump(m,q);it.reqRef=reqBump(r,q);it.reqBnd=reqBump(b,q);return it}
+ITEM_HOOKS.push(function(it){return stampReq(it)});
+const STATN=['mgt','ref','vit','bnd'];
+function itemOwnStats(it){
+  const o={mgt:0,ref:0,vit:0,bnd:0};
+  if(!it||itemBroken(it))return o;
+  for(const a of it.aff||[])if(o[a.k]!=null)o[a.k]+=+a.v||0;
+  if(it.uid&&typeof UNIK!=='undefined'&&UNIK[it.uid]&&UNIK[it.uid].per&&uOk(it)){const lv=(G&&G.lvl)||1;const per=UNIK[it.uid].per;for(const k of STATN)if(per[k])o[k]+=per[k]*lv}
+  return o}
+function charmPool(excludeSlot){
+  const o={mgt:0,ref:0,vit:0,bnd:0};
+  const belt=G&&G.eq&&G.eq.belt;
+  if(excludeSlot!=='belt'&&belt&&itemBroken(belt))return o;
+  for(const it of (G&&G.cslots)||[]){if(!it||!it.aff||(it.req||1)>(G.lvl||1))continue;
+    for(const a of it.aff)if(a&&o[a.k]!=null)o[a.k]+=+a.v||0}
+  return o}
+function poolMeets(pool,it,own){
+  own=own||{mgt:0,ref:0,vit:0,bnd:0};
+  return (pool.mgt+(own.mgt||0))>=((it&&it.reqMgt)||0)&&(pool.ref+(own.ref||0))>=((it&&it.reqRef)||0)&&(pool.bnd+(own.bnd||0))>=((it&&it.reqBnd)||0)}
+function gearLive(excludeSlot){
+  const pool={mgt:(G.at&&G.at.mgt)||0,ref:(G.at&&G.at.ref)||0,vit:(G.at&&G.at.vit)||0,bnd:(G.at&&G.at.bnd)||0};
+  const ch=charmPool(excludeSlot);for(const k of STATN)pool[k]+=ch[k];
+  const live={};let changed=true;
+  while(changed){changed=false;for(const sl of SLOTS){if(sl===excludeSlot||live[sl])continue;const it=G.eq&&G.eq[sl];if(!it||itemBroken(it))continue;const own=itemOwnStats(it);if(!poolMeets(pool,it,own))continue;live[sl]=1;for(const k of STATN)pool[k]+=own[k];changed=true}}
+  return {live,pool}}
+function gearQuiet(it){
+  if(!it||!G||!G.eq||itemBroken(it))return false;
+  let slot='';for(const sl of SLOTS)if(G.eq[sl]===it)slot=sl;
+  if(!slot)return false;
+  return !gearLive(null).live[slot]}
+function reqOk(it,slot){if(!it)return false;return poolMeets(gearLive(slot).pool,it,itemOwnStats(it))}
+function reqShortfall(it){
+  const out=[];if(!it||it.charm)return out;
+  const pool=gearLive(it.slot).pool,own=itemOwnStats(it);
+  const rows=[['Might','mgt','reqMgt'],['Reflex','ref','reqRef'],['Bandwidth','bnd','reqBnd']];
+  for(const row of rows){const need=it[row[2]]||0;if(!need)continue;const have=(pool[row[1]]||0)+(own[row[1]]||0);if(have<need)out.push({name:row[0],key:row[1],need:need,have:have,short:need-have})}
+  return out}
+function cantEquipText(it){
+  const lvl=!!(it&&G.lvl<(it.req||0)),sh=reqShortfall(it);
+  if(lvl&&!sh.length)return 'Needs level '+(it.req||1);
+  const bits=[];if(lvl)bits.push('Needs level '+(it.req||1));
+  for(const f of sh)bits.push('Need +'+f.short+' '+f.name);
+  return bits.length?"Can't equip. "+bits.join('. ')+'.':"Can't equip."}
+function reqLineHTML(it){
+  if(!it||it.charm)return '';
+  const sh=reqShortfall(it),bad={};for(const f of sh)bad[f.name]=f;
+  const rows=[['Might','reqMgt'],['Reflex','reqRef'],['Bandwidth','reqBnd']];let h='';
+  for(const row of rows){const n=it[row[1]]||0;if(!n)continue;const fail=bad[row[0]];
+    h+=`<div class="ln${fail?' red':''}">Required ${row[0]}: ${n}${fail?' · need +'+fail.short:''}</div>`}
+  return h}
+function reqBadgeText(it){
+  if(!it||!it.id||it.charm||!it.slot)return '';
+  if(G&&G.merc&&['weapon','helm','armor'].some(sl=>G.merc[sl]===it))return '';
+  if(typeof canWear==='function'&&canWear(it))return '';
+  const sh=reqShortfall(it),lvl=G.lvl<(it.req||0);
+  if(lvl&&!sh.length)return 'need level '+(it.req||1);
+  if(!sh.length)return '';
+  let t='need '+sh.map(f=>'+'+f.short+' '+f.name).join(', ');
+  if(lvl)t='need level '+(it.req||1)+', '+sh.map(f=>'+'+f.short+' '+f.name).join(', ');
+  return t}
+function driveStat(cls){
+  if(cls==='hacker'||cls==='founder')return 'bnd';
+  if(cls==='courier')return 'ref';
+  if(cls==='witness')return 'vit';
+  return 'mgt'}
+function liveWeaponRole(){
+  const w=G&&G.eq&&G.eq.weapon;
+  if(!w||itemBroken(w)||gearQuiet(w))return '';
+  return weaponRole(w)}
+function weaponStatKey(role,cls){
+  if(role==='heavy'||role==='neutral'||role==='graft'||role==='notebook')return 'mgt';
+  if(role==='fast'||role==='shiv')return 'ref';
+  if(role==='pager'&&cls==='founder')return 'bnd';
+  return ''}
+function attrSum(k,s){s=s||S;return ((G.at&&G.at[k])||0)+((s&&s[k])||0)}
+function blowSpec(){
+  const cls=G&&G.cls,sk=(P&&P.hitSk>=0)?P.hitSk:-1,ally=!!(P&&P.allySwing),area=!!(P&&P.areaTick),body=P&&P.swingBody;
+  if(cls==='scrapper'||cls==='maxi')return {k:'mgt',rate:1.5};
+  if(cls==='hacker')return {k:'bnd',rate:1.5};
+  if(cls==='anon'){
+    const mine=(P&&P.blowForce==='mgt')||(body&&(body.k==='mine'||body.k==='blast'||body.k==='decoy'));
+    if(mine||sk===0||sk===3||sk===6||sk===8)return {k:'mgt',rate:1.5};
+    return {k:'ref',rate:1.5}}
+  if(cls==='founder'){
+    if(ally||sk===8||sk===14)return {k:'bnd',rate:.7};
+    return {k:weaponStatKey(liveWeaponRole(),cls)||'mgt',rate:1.5}}
+  if(cls==='homesteader'){
+    const flock=body&&(body.flock||body.kind==='stray'||body.kind==='bull');
+    if(area||flock||sk===12)return {k:'vit',rate:.4};
+    return {k:weaponStatKey(liveWeaponRole(),cls)||'mgt',rate:1.5}}
+  if(cls==='courier'){const w=weaponStatKey(liveWeaponRole(),cls);return {k:w||'ref',rate:1.5}}
+  if(cls==='witness')return {k:weaponStatKey(liveWeaponRole(),cls)||'mgt',rate:1.5};
+  return {k:'mgt',rate:1.5}}
+function blowPct(s){const sp=blowSpec();return attrSum(sp.k,s)*sp.rate}
+function swingBlow(s){
+  if(!P)return blowPct(s);
+  const prev=P.hitSk,ally=P.allySwing,area=P.areaTick,force=P.blowForce,body=P.swingBody;
+  P.hitSk=-1;P.allySwing=0;P.areaTick=0;P.blowForce=null;P.swingBody=null;
+  try{return blowPct(s)}finally{P.hitSk=prev;P.allySwing=ally;P.areaTick=area;P.blowForce=force;P.swingBody=body}}
+const ATTR_TIP={
+  scrapper:{mgt:'+1.5% damage per point. Heavy weapons and plate ask for Might.',ref:'+0.3% deadly strike and +1 armor per point.',vit:'+4 life per point.',bnd:'+3 energy per point.'},
+  hacker:{mgt:'A mantle asks for a little Might. It does not add spell damage.',ref:'+0.3% deadly strike and +1 armor per point.',vit:'+4 life per point.',bnd:'+3 energy per point, and +1.5% spell damage.'},
+  courier:{mgt:'A maul makes throws read Might. Plate asks for it too.',ref:'+0.3% deadly strike, +1 armor, and +1.5% on a throw.',vit:'+4 life per point.',bnd:'+3 energy per point.'},
+  anon:{mgt:'+1.5% on mines, Zip Bomb, the honeypot, and Legion.',ref:'+0.3% deadly strike, +1 armor, and +1.5% on the knife, the hop, and Rehearsal.',vit:'+4 life per point.',bnd:'+3 energy per point.'},
+  founder:{mgt:'The personal bolt and the mech read the weapon. A maul reads Might.',ref:'+0.3% deadly strike and +1 armor per point.',vit:'+4 life per point.',bnd:'+3 energy per point, and +0.7% on the workforce.'},
+  homesteader:{mgt:'+1.5% on the shot, the hull, and the hound.',ref:'+0.3% deadly strike and +1 armor per point.',vit:'+4 life per point, and +0.4% on plots, frost, salt, and the flock.',bnd:'+3 energy per point.'},
+  witness:{mgt:'+1.5% on the swing. A notebook asks for a little Might.',ref:'+0.3% deadly strike and +1 armor per point.',vit:'+4 life per point, and +0.6% on Thread, Publish, and Cross-reference.',bnd:'+3 energy per point.'},
+  maxi:{mgt:'+1.5% damage per point, including the hammers.',ref:'+0.3% deadly strike and +1 armor per point.',vit:'+4 life per point.',bnd:'+3 energy per point.'}};
+function attrTip(k){const row=ATTR_TIP[G&&G.cls];return (row&&row[k])||ATTR[k][1]}
+
 /* ================= class uniques: items that only wake up in the right hands ================= */
 UNI.push(
  {id:'unioncard',cls:'scrapper',n:'Union Card',slot:'amulet',il:8,base:'Dog Tag',mods:{hp:[30,50],dmg:[15,25]},grant:[8,3],sp:'Scrapper only. Grants Solidarity at rank 3 without using a passive slot',fl:'Laminated. Dues paid through 2051.'},
@@ -527,16 +678,16 @@ const BUILDS={
   {k:'wall',n:'Immovable Object',p:'Armor, life, and a horn that stuns the room. You win by still being there.',doc:'picket',at:[20,25,55,0],pr:[[2,10],[5,8],[0,6],[3,4],[11,6],[14,5],[10,4],[6,4]],sl:[0,5,14],pa:[2,11,10,8],web:[1,2],fk:['ward','siphon','stun','lean']},
   {k:'thrower',n:'Scrap Thrower',p:'Stay at arm’s length. Rusty scrap through the whole line, seniority on the weapon in your hands, then a rush to finish.',doc:'mutual',at:[45,10,30,15],pr:[[1,10],[4,8],[7,6],[0,3],[12,5],[10,5],[9,3],[2,4],[8,3]],sl:[1,4,12],pa:[10,2,8],web:[0,5],fk:['mark','echo','over','lean']}],
  hacker:[
-  {k:'chain',n:'Chain Reaction',p:'Prime with Spark Lance, then Arc Chain through the pack. Deadly strikes do the rest. Schema is Surge, so the chain and the barrier agree.',schema:'surge',doc:'rootkit',at:[50,0,20,30],pr:[[0,10],[1,6],[2,1],[5,5],[8,8],[3,4],[11,5],[13,4],[10,3],[6,3]],sl:[0,1,3],pa:[8,5,11,13],web:[0,3],fk:['over','echo','mark','refund']},
-  {k:'admin',n:'Sysadmin',p:'Let the machines do it: a Watchdog, a Botnet and a storm overhead while you keep your distance.',schema:'surge',doc:'firewall',at:[20,0,35,45],pr:[[4,10],[7,10],[6,8],[5,6],[2,4],[11,5],[13,4],[1,1],[0,1]],sl:[4,7,6],pa:[5,2,11,13],web:[4,1],fk:['lean','echo','refund','surge']},
-  {k:'rod',n:'Control Rod',p:'Null Nova on a short fuse. A Packet Storm arrives where you marked it and slows what is left. Step Back is how you leave.',schema:'noise',doc:'throttle',at:[30,0,30,40],pr:[[3,10],[0,6],[5,8],[2,4],[10,6],[9,4],[12,5],[11,5]],sl:[3,10,12],pa:[5,11,2],web:[4,7],fk:['stun','lean','chill','burst']}],
+  {k:'chain',n:'Chain Reaction',p:'Prime with Spark Lance, then Arc Chain through the pack. Deadly strikes do the rest. Schema is Surge, so the chain and the barrier agree.',schema:'surge',doc:'rootkit',at:[15,5,30,50],pr:[[0,10],[1,6],[2,1],[5,5],[8,8],[3,4],[11,5],[13,4],[10,3],[6,3]],sl:[0,1,3],pa:[8,5,11,13],web:[0,3],fk:['over','echo','mark','refund']},
+  {k:'admin',n:'Sysadmin',p:'Let the machines do it: a Watchdog, a Botnet and a storm overhead while you keep your distance.',schema:'surge',doc:'firewall',at:[10,5,40,45],pr:[[4,10],[7,10],[6,8],[5,6],[2,4],[11,5],[13,4],[1,1],[0,1]],sl:[4,7,6],pa:[5,2,11,13],web:[4,1],fk:['lean','echo','refund','surge']},
+  {k:'rod',n:'Control Rod',p:'Null Nova on a short fuse. A Packet Storm arrives where you marked it and slows what is left. Step Back is how you leave.',schema:'noise',doc:'throttle',at:[15,5,30,50],pr:[[3,10],[0,6],[5,8],[2,4],[10,6],[9,4],[12,5],[11,5]],sl:[3,10,12],pa:[5,11,2],web:[4,7],fk:['stun','lean','chill','burst']}],
  courier:[
-  {k:'rush',n:'Rush Hour',p:'A wall of blades. Scatter Shot up close, Rush Order at range, and Return to Sender comes back through the same line.',doc:'express',at:[50,30,20,0],pr:[[0,10],[6,10],[9,6],[12,5],[8,8],[1,4],[2,3],[13,4],[5,1]],sl:[0,6,9],pa:[8,13,2,5],web:[0,5],fk:['over','echo','mark','surge']},
-  {k:'pirate',n:'Porch Pirate',p:'Never fight fair. Lure them onto a Tack Strip, mark one with Missed Connection, and blink to where it falls.',doc:'insured',at:[30,20,40,10],pr:[[3,10],[4,10],[1,6],[7,4],[14,5],[11,3],[8,4],[2,6],[10,4]],sl:[3,4,14],pa:[2,10,8,5],web:[1,3],fk:['burn','chill','mark','lean']},
-  {k:'tips',n:'Tip Jar',p:'You are here for the loot. Hazard Pay pays when a throw kills. A dash does not.',doc:'cod',at:[35,30,35,0],pr:[[5,10],[13,8],[0,8],[9,5],[2,6],[1,4],[8,4]],sl:[0,9,1],pa:[5,13,2,8],web:[6,5],fk:['lean','echo','surge','refund']}],
+  {k:'rush',n:'Rush Hour',p:'A wall of blades. Scatter Shot up close, Rush Order at range, and Return to Sender comes back through the same line.',doc:'express',at:[15,50,30,5],pr:[[0,10],[6,10],[9,6],[12,5],[8,8],[1,4],[2,3],[13,4],[5,1]],sl:[0,6,9],pa:[8,13,2,5],web:[0,5],fk:['over','echo','mark','surge']},
+  {k:'pirate',n:'Porch Pirate',p:'Never fight fair. Lure them onto a Tack Strip, mark one with Missed Connection, and blink to where it falls.',doc:'insured',at:[15,40,35,10],pr:[[3,10],[4,10],[1,6],[7,4],[14,5],[11,3],[8,4],[2,6],[10,4]],sl:[3,4,14],pa:[2,10,8,5],web:[1,3],fk:['burn','chill','mark','lean']},
+  {k:'tips',n:'Tip Jar',p:'You are here for the loot. Hazard Pay pays when a throw kills. A dash does not.',doc:'cod',at:[15,45,35,5],pr:[[5,10],[13,8],[0,8],[9,5],[2,6],[1,4],[8,4]],sl:[0,9,1],pa:[5,13,2,8],web:[6,5],fk:['lean','echo','surge','refund']}],
  anon:[
   {k:'demo',n:'Demolition',p:'Honeypot to gather them, Logic Bomb under their feet, Zip Bomb on top. All Heat. A mine laid while you are hidden arms faster.',doc:'nologs',at:[50,20,20,10],pr:[[0,8],[3,10],[6,10],[2,5],[11,4],[13,4],[4,3]],sl:[0,3,6],pa:[2,11,13],web:[0,3],fk:['over','burn','echo','mark']},
-  {k:'ghost',n:'Ghost',p:'Rehearse the strike, hop in, vanish. The Dump spends what you banked.',doc:'burner',at:[45,35,20,0],pr:[[1,10],[4,8],[9,6],[10,5],[2,6],[11,4],[13,3],[5,4]],sl:[1,4,9],pa:[2,11,13],web:[3,5],fk:['over','mark','surge','lean']},
+  {k:'ghost',n:'Ghost',p:'Rehearse the strike, hop in, vanish. The Dump spends what you banked.',doc:'burner',at:[20,50,25,5],pr:[[1,10],[4,8],[9,6],[10,5],[2,6],[11,4],[13,3],[5,4]],sl:[1,4,9],pa:[2,11,13],web:[3,5],fk:['over','mark','surge','lean']},
   {k:'legion',n:'We Are Legion',p:'Sockpuppets take the hits. When it is time to leave, We Were Never Here sends them off as a silence and you are gone.',doc:'collective',at:[25,15,40,20],pr:[[7,10],[8,8],[14,5],[13,4],[11,4],[2,6],[4,3],[0,3]],sl:[7,8,14],pa:[2,13,11],web:[1,7],fk:['lean','echo','refund','ward']}],
  founder:[
   {k:'head',n:'Headcount',p:'Hire everyone. They vest while they live, and Org Debt is what the headcount costs you. Term Sheet is the one officer.',doc:'venture',at:[20,0,35,45],pr:[[0,10],[3,10],[6,8],[12,4],[2,8],[11,6],[13,5],[4,4],[1,1]],sl:[0,3,12],pa:[2,11,13],web:[4,1],fk:['lean','refund','echo','surge']},
@@ -599,7 +750,7 @@ function recKill(e){if(!e.su||e.q!=='q8'||G.rec)return;G.rec=1;setTimeout(()=>{i
 const TAGK={whirl:'aoe',nova:'aoe',horn:'aoe',boom:'aoe',thunder:'aoe',swing2:'aoe',scatter:'aoe',buff:'aid',mend:'aid',summon:'aid',deploy:'aid'};
 function tagCost(l){return 3+Math.floor(l/15)}
 function tagG(n){if(n===SLOT)return null;const i=slotInfo(n);if(!i)return null;try{return i.loc?i.loc.G:JSON.parse(i.cloud.s).G}catch(e){return null}}
-function tagStats(og){const g0=G,keep=S;let r=null;try{G=JSON.parse(JSON.stringify(og));ensureG();calc();r={dmg:(S.dmin+S.dmax)/2*(1+S.dmg/100),max:S.maxHp,arm:S.armor||0}}catch(e){}G=g0;S=keep;calc();return r}
+function tagStats(og){const g0=G,keep=S;let r=null;try{G=JSON.parse(JSON.stringify(og));ensureG();calc();r={dmg:(S.dmin+S.dmax)/2*(1+(S.dmg||0)/100)*(1+((S.blow||0)/100)),max:S.maxHp,arm:S.armor||0}}catch(e){}G=g0;S=keep;calc();return r}
 function tagRender(n){const og=tagG(n);if(!og||!CLS[og.cls])return;const c=tagCost(og.lvl);if(satsFree()<c){toast(tradeReserved()?'Those sats are on the table.':'You need '+c+' sats');sfx('err');return}const st=tagStats(og);if(!st){toast('The rig could not read that character');sfx('err');return}
   if(!spendSats(c))return;const k=Math.min(1,(G.lvl+5)/og.lvl),sk=CLS[og.cls].sk,act=(og.slots||[]).filter(i=>i>=0&&sk[i]&&sk[i].a&&og.sk[i]);
   G.tag={slot:n,cls:og.cls,lvl:og.lvl,name:'Level '+og.lvl+' '+CLS[og.cls].n,dmg:Math.max(st.dmg*k,(4+2.2*G.lvl)*.9),max:Math.round(Math.max(st.max*k,60+22*G.lvl)),red:100/(100+st.arm*k),sk:act.map(i=>[i,og.sk[i]]),down:k<1,eq:og.eq||{}};
