@@ -212,20 +212,21 @@ if(!hover.on||!hover.name){console.log('ground hover',JSON.stringify(hover));pro
 console.log('desktop ground hover');
 await p.evaluate(()=>__g.noteInput('touch'));
 await p.waitForTimeout(50);
-const dock=await p.evaluate(()=>{
-  __g.hud();
+const quiet=await p.evaluate(()=>{
+  __g.hud();__g.render();
   const el=document.getElementById('cmpTip');
-  return {on:!!(el&&!el.hidden&&el.classList.contains('dock')&&el.querySelector('.cmpBox')&&el.textContent.indexOf('Ground Loop')>=0),ui:document.documentElement.dataset.ui,text:el&&el.textContent.slice(0,120)};
+  const labs=[...document.querySelectorAll('#lootLabs button')].map(b=>b.textContent);
+  return {tipHidden:!el||el.hidden,labs,ui:document.documentElement.dataset.ui};
 });
-if(!dock.on){console.log('dock',JSON.stringify(dock));process.exit(1)}
-console.log('touch dock',dock.ui);
-await p.evaluate(()=>{
-  const el=document.getElementById('cmpTip');
-  const b=el.querySelector('[data-cmphide]');if(b)b.click();
-});
-await p.waitForTimeout(50);
-const muted=await p.evaluate(()=>{__g.hud();const el=document.getElementById('cmpTip');return !el||el.hidden});
-if(!muted){console.log('hide did not mute the dock');process.exit(1)}
+if(!quiet.tipHidden){console.log('walk opened a description',JSON.stringify(quiet));process.exit(1)}
+if(!quiet.labs.some(t=>t.indexOf('Ground Loop')>=0)){console.log('touch label',JSON.stringify(quiet));process.exit(1)}
+await p.evaluate(()=>{const b=document.querySelector('#lootLabs button');b.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,cancelable:true,pointerType:'touch'}))});
+const card=await p.evaluate(()=>{const c=document.getElementById('lootCard');return {on:!!(c&&!c.hidden),text:c?c.textContent:''}});
+if(!card.on||card.text.indexOf('Pick up')<0||card.text.indexOf('Compare')<0||card.text.indexOf('Ground Loop')<0){console.log('card',JSON.stringify(card));process.exit(1)}
+await p.click('#lootCard [data-lcmp]');
+const shown=await p.evaluate(()=>{const el=document.getElementById('cmpTip');return {on:!!(el&&!el.hidden&&el.querySelector('.cmpBox')),name:!!(el&&el.textContent.indexOf('Ground Loop')>=0)}});
+if(!shown.on||!shown.name){console.log('compare',JSON.stringify(shown));process.exit(1)}
+console.log('touch label card',quiet.ui);
 
 await p.evaluate(()=>{
   const g=__g;

@@ -26,27 +26,29 @@ await p.evaluate(()=>{const d=document.getElementById('dlg');if(d&&!d.hidden){co
 const filters=await p.evaluate(()=>{
   const g=__g,P=g.P;
   const wear=g.makeItem(2,0,'weapon');wear.id=true;wear.req=1;g.G.eq.weapon=wear;
-  const held=()=>g.G.bag.length+(g.G.charms||[]).length;
-  const drop=(it,opt)=>{Object.assign(g.OPT,opt);g.W.drops=[{it,x:P.x,y:P.y,t:1}];const before=held();g.update(0.05);const left=g.W.drops.some(d=>d.it===it);return {left,took:held()-before}};
+  const held=()=>g.G.bag.length;
+  const tip=()=>{const el=document.getElementById('cmpTip');return !!(el&&!el.hidden)};
+  const drop=it=>{g.W.drops=[{it,x:P.x,y:P.y,t:1}];const before=held();g.update(0.05);g.hud();return {left:g.W.drops.some(d=>d.it===it),took:held()-before,tip:tip()}};
   const rare=g.makeItem(6,2,'weapon');
-  const struck=drop(rare,{pk2:false,pkBetter:false});
-  const judged=drop(g.makeItem(6,2,'weapon'),{pk2:true,pkBetter:true});
-  g.G.eq.helm=null;
-  const empty=drop(Object.assign(g.makeItem(2,0,'helm'),{id:true,req:1}),{pk0:false,pkBetter:false});
-  const sub=drop({slot:'charm',charm:1,q:1,il:1,id:true,req:1,base:'Lapsed Subscription',name:'Lapsed Test Subscription',aff:[{k:'hp',v:4}],val:10,on:false},{pk1:false,pkBetter:false});
-  return {rareId:rare.id,struck,judged,empty,sub,charms:(g.G.charms||[]).length};
+  const struck=drop(rare);
+  const sub=drop({slot:'charm',charm:1,q:1,il:1,id:true,req:1,base:'Lapsed Subscription',name:'Lapsed Test Subscription',aff:[{k:'hp',v:4}],val:10,on:false});
+  g.W.drops=[{sat:3,x:P.x,y:P.y,t:1}];const s0=g.G.sats;g.update(0.05);const sat={got:g.G.sats-s0,left:g.W.drops.length,tip:tip()};
+  g.W.drops=[{cr:12,x:P.x,y:P.y,t:1}];const c0=g.G.credits;g.update(0.05);const cred={got:g.G.credits-c0,left:g.W.drops.length};
+  g.W.drops=[{it:rare,x:P.x,y:P.y,t:1,force:1}];const b0=held();g.update(0.05);
+  return {rareId:rare.id,struck,sub,sat,cred,took:held()-b0,left:g.W.drops.some(d=>d.it===rare)};
 });
 if(filters.rareId)fail('rare came identified');
-if(!filters.struck.left)fail('struck rare was picked up '+JSON.stringify(filters.struck));
-if(filters.judged.left)fail('better-only left an unidentified rare');
-if(filters.empty.left)fail('empty slot left a struck white');
-if(filters.sub.left||filters.sub.took!==1)fail('charm was filtered '+JSON.stringify(filters.sub));
+if(!filters.struck.left||filters.struck.took||filters.struck.tip)fail('walk took gear or opened a card '+JSON.stringify(filters.struck));
+if(!filters.sub.left||filters.sub.took||filters.sub.tip)fail('walk took a charm '+JSON.stringify(filters.sub));
+if(filters.sat.got!==3||filters.sat.left||filters.sat.tip)fail('sats '+JSON.stringify(filters.sat));
+if(filters.cred.got!==12||filters.cred.left)fail('credits '+JSON.stringify(filters.cred));
+if(filters.took!==1||filters.left)fail('forced pickup '+JSON.stringify(filters));
 
 await p.evaluate(()=>__g.openSheet('items',{}));
 await p.waitForTimeout(80);
-const hint=await p.evaluate(()=>{const el=[...document.querySelectorAll('#sheet p')].find(n=>/Struck-out tiers/.test(n.textContent));el&&el.scrollIntoView({block:'center'});return el?el.textContent:''});
-if(!/named or not/.test(hint)||!/Charms are picked up anyway/.test(hint))fail('pickup hint '+hint);
-if(/still picked up\./.test(hint))fail('old unidentified sentence');
+const hint=await p.evaluate(()=>{const el=[...document.querySelectorAll('#sheet p')].find(n=>/Walking over gear/.test(n.textContent));el&&el.scrollIntoView({block:'center'});return el?el.textContent:''});
+if(!/Walking over gear/.test(hint)||!/Sats and credits/.test(hint))fail('pickup hint '+hint);
+if(/Charms are picked up anyway/.test(hint)||/Struck-out tiers/.test(hint))fail('old pickup sentence '+hint);
 if(OUT)await p.screenshot({path:path.join(OUT,'loot-pickup.png')});
 
 const box=await p.evaluate(()=>{
