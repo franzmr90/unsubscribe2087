@@ -161,6 +161,7 @@ async function install(page, cls, seed) {
       MP.scale = { players: 2, diff: 'normal', diffName: 'Normal', hp: 1.25 * 1.5, dmg: 1.3, xp: 1.5 };
       prog.log.party = { hp: MP.scale.hp, xp: MP.scale.xp, dmg: MP.scale.dmg };
       prog.log.notes.push('two-player Normal scale: damage dealt is divided by ' + MP.scale.hp + ', experience ×' + MP.scale.xp);
+      prog.log.notes.push('a joined game waits on the server for the district map, and a hit waits on the server to come off the bar');
     }
     function hypot(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
     function gearSnap() {
@@ -838,6 +839,15 @@ async function runClass(browser, cls, seed, deadline) {
       if (sig !== lastSig) {
         lastSig = sig;
         console.log(cls, st.zone, 'L' + st.lvl, 'hp' + st.hp, 'd' + st.deaths, 't' + st.time, st.order || '', 'steps', st.steps);
+      }
+      if (process.env.PROG_PARTY === '1' && !st.zi && st.steps === 0 && spins > 2) {
+        console.log(cls, 'no district: a joined game waits on the server map');
+        await page.evaluate(() => {
+          window.__prog.giveUp = true;
+          window.__prog.giveReason = 'party stub never entered a district';
+          window.__prog.log.notes.push('joined game waited on a server map; no district loaded');
+        });
+        break;
       }
       if (st.shot) {
         try { await shot(page, st.shot); console.log('shot', st.shot); } catch (e) { console.log('shot fail', e.message); }
