@@ -538,8 +538,9 @@ async function install(page, cls, seed) {
           const gp = jobPoint();
           if (!prog.zoneLived) prog.zoneLived = {};
           prog.zoneLived[W.zi] = (prog.zoneLived[W.zi] || 0) + dt;
-          const commit = prog.zoneLived[W.zi] > 40 || (prog.log.fell[W.z.n] || 0) >= 2;
           const skipMotion = e => W.zi === 14 && e.su && ((G.qt && G.qt.motion) || 0) < 4;
+          const suUp = W.ents.some(e => e.hp > 0 && e.su && e.q && (G.q[e.q] || 0) < 2 && !skipMotion(e));
+          const commit = prog.zoneLived[W.zi] > (suUp ? 180 : 25);
           const goGoal = () => {
             if (!gp) return;
             if (hypot(gp, P) < 1.35) {
