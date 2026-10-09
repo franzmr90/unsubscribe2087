@@ -234,7 +234,7 @@ function castItem(i){
   if((P.cd[i]||0)>0){castWhy='wait';return}
   if(i===100&&P.hitStun>0){castWhy='wait';toast('Still taking the hit');sfx('err');return}
   const pay=sk.cost+(i===100&&P.blinkChain>0?12:0);
-  if(G.en<pay){castWhy='wait';toast('Not enough energy');sfx('err');return}
+  if(G.en<pay){castWhy='wait';toast('Not enough energy');scRelay();sfx('err');return}
   let ok=false;
   if(i===100)ok=blinkCast();else if(i===101)ok=callCast();else if(i===102)ok=bookCast();else if(i===103)ok=ledgerCast();else if(i===104)ok=bearCast();else if(i===105)ok=chairCast();
   if(!ok){castWhy='no';return}
@@ -296,10 +296,21 @@ function eggPoor(){if(!(G&&G.cls==='maxi'))return;toast(EGG.poor);if(P)float(P.x
 function eggLaser(){if(P)parts(P.x,P.y,16,['#ff2a2a','#fff'],2,1.2);if(!G||G.cls!=='maxi'){toast(EGG.laserNo);return}G.st.laser=G.st.laser?0:1;toast(G.st.laser?EGG.laserOn:EGG.laserOff);if(G.st.laser){toast(EGG.few);if(P)float(P.x,P.y,EGG.few,'#ff2a2a')}}
 function eggTip(){if(typeof mode!=='undefined'&&mode!=='play')return;const d=$('dlg');if(d&&!d.hidden)return;toast(EGG.tips[eggTipN++%EGG.tips.length])}
 function eggEyes(X,hy,f){const dx=(f||1)*42;ctx.save();ctx.strokeStyle='#ff2a2a';ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(X-3,hy);ctx.lineTo(X-3+dx,hy-8);ctx.moveTo(X+3,hy);ctx.lineTo(X+3+dx,hy-8);ctx.stroke();ctx.restore();glow(X,hy,28,'#ff2a2a',.5);light(X,hy,120,'#ff2a2a')}
+let scRelaySaid=0,scStimSaid=0,scSatN=0;
+function scVisitClear(){scRelaySaid=0;scStimSaid=0;scSatN=0}
+function scRelay(){if(scRelaySaid)return;scRelaySaid=1;toast(SCE.relay)}
+function scBroke(why){if(!scSatN){scSatN=1;toast(SCE.sats);return}if(scSatN===1){scSatN=2;toast(SCE.vapour);return}toast(why||SCE.short)}
+function scStimBark(empty){if(scStimSaid)return false;scStimSaid=1;toast(SCE.stim);if(empty)toast(SCE.pack);return true}
+function scRoom(){return !!(W&&W.z&&!W.z.boss&&(W.z.town||W.z.sim))}
+function scStipend(){G.st=G.st||{};if(G.st.stipend){toast(SCE.seen);return false}G.st.stipend=1;G.sats=(G.sats|0)+1;sfx('coin');toast(SCE.seen);return true}
+function scCrawl(){if((P.slow||0)<10)P.slow=10;toast(SCE.early);return true}
+function scLine(raw){const s=String(raw||'').trim().toLowerCase().replace(/\s+/g,' ');if(!scRoom())return false;if(s===SCE.stipend)return scStipend();if(s===SCE.note)return scCrawl();return false}
+function scSayHTML(){return '<div class="row"><input id="scSay" maxlength="64" autocomplete="off" style="flex:1;min-width:0" placeholder="'+esc(SCE.hint)+'"><button type="button" class="ghost" data-scsay="1">'+esc(SCE.say)+'</button></div>'}
+function scTariff(){G.st=G.st||{};const line=(G.lean||0)>15?SCE.helloBtc:SCE.hello,btns=[[SCE.leave]];if(!G.st.tariff)btns.unshift([SCE.wait,()=>{G.st.tariff=1;dlg(SCE.who,SCE.spread,[[SCE.leave]])}]);dlg(SCE.who,'\u201c'+line+'\u201d',btns)}
 function eggDrawProp(n,X,Y){ctx.strokeStyle=OL;ctx.lineWidth=1.4;
   if(n.id==='paper'){shadow(X,Y,10);box(X-16,Y-36,32,22,1,'#e6d7a8');ctx.fillStyle='#6a5a40';ctx.fillRect(X-12,Y-32,24,1);ctx.fillRect(X-12,Y-28,18,1);label(X,Y-48,EGG.mast,'#e6d7a8','700 8.5px Cinzel,serif');return}
   if(n.id==='flyer'){shadow(X,Y,8);box(X-14,Y-32,28,20,1,'#f4efe2');ctx.fillStyle='#e6d24a';ctx.beginPath();ctx.arc(X,Y-22,5,0,6.283);ctx.fill();label(X,Y-44,EGG.lemonLbl,'#e6d24a','700 8px Cinzel,serif');return}
   if(n.id==='obit'){shadow(X,Y,12);box(X-18,Y-40,36,26,1,'#2a2630');ctx.fillStyle='#e6e2d6';ctx.font='700 8px Cinzel,serif';ctx.textAlign='center';ctx.fillText(String(G.deaths||0),X,Y-22);label(X,Y-52,EGG.still,'#e6e2d6','700 8px Cinzel,serif');return}
   shadow(X,Y,16);poly([X-22,Y-8,X,Y-2,X,Y+4,X-22,Y-2],'#4a5060');poly([X,Y-2,X+22,Y-8,X+22,Y-2,X,Y+4],'#353a48');poly([X-22,Y-20,X,Y-28,X+22,Y-20,X,Y-12],'#6a7488');label(X,Y-40,EGG.helloTitle,'#ffe36b');glow(X,Y-16,40,'#ffe36b',.35)}
 if($('sheet')&&!$('sheet')._egg){$('sheet')._egg=1;$('sheet').addEventListener('pointerover',e=>{const b=e.target.closest&&e.target.closest('.eggLink');if(!b||(G.st&&G.st.wrenSaid))return;G.st.wrenSaid=1;toast(EGG.wrenWarn)})}
-if(typeof devOn==='function'&&devOn()&&window.__g)Object.assign(window.__g,{EGG,eggPaper,eggBoard,eggFlyer,eggHelloFrame,eggOpenLink,eggBuyPie,eggUse,eggLaser,eggTip,eggOnDeath,eggHelloItem,eggPieItem,eggSourItem,pieFl,achTick,talkTo,showDeath,setDY(v){DY=v},vendBid,openVend,stampReq,itemLines,equipFromBag,BINTRO,ACH,SQ,MEMOS});
+if(typeof devOn==='function'&&devOn()&&window.__g)Object.assign(window.__g,{EGG,eggPaper,eggBoard,eggFlyer,eggHelloFrame,eggOpenLink,eggBuyPie,eggUse,eggLaser,eggTip,eggOnDeath,eggHelloItem,eggPieItem,eggSourItem,pieFl,achTick,talkTo,showDeath,setDY(v){DY=v},vendBid,openVend,stampReq,itemLines,equipFromBag,BINTRO,ACH,SQ,MEMOS,SCE,scLine,scVisitClear,spendSats,vendBuyStim});

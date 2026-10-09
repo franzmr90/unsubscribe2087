@@ -414,6 +414,7 @@ function drawNpc(n,X,Y){
   if(n.id==='kestrel'){box(X-9,hy-6,18,3,1,'#2a2630');ctx.fillStyle='#0b0912';ctx.fillRect(X-6,hy-2,12,3)}
   if(n.id==='float'){box(X-8,hy-11,16,8,1,'#17131c');box(X-11,hy-4,22,2.5,1,'#17131c')}
   if(n.id==='wren'){box(X-8,hy-8,16,5,2,'#3a4a3a');box(X-11,hy-4,22,2.5,1,'#3a4a3a')}
+  if(n.id==='tariff'){ctx.fillStyle='#3a342c';ctx.fillRect(X-9,y0-16,18,10)}
   if(n.id!=='res'){label(X,y0-(n.id==='brenda'?66:52),n.name.toUpperCase(),'#d0aa62');if(quest(n.id)){ctx.font='900 22px Cinzel,serif';ctx.fillStyle='#ffe36b';ctx.textAlign='center';ctx.fillText('!',X,y0-(n.id==='brenda'?84:70)+Math.sin(tNow*4)*2)}}
   if(n.st>0)bubble(X,y0-54,n.say)}
 function drawObj(o,X,Y){

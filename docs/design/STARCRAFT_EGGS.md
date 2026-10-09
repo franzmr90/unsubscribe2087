@@ -1,6 +1,6 @@
 # StarCraft homage eggs
 
-Plan only. Nothing in this note is in the game. No code, no new enemy, no new cinematic slide, and no cheat item ships with this page.
+The six in "What to build first" are in the game: the Nipper slide, the relay line, the two spend lines, the stim bark, the Stillwater coat, and the two typed lines. The other six are still a plan. No studio assets, no audio, and no logos.
 
 Unsubscribe 2087 already has its invasions. They are corporate. Phonix left. MANDATE stayed. Nobody in Stillwater has met a thing from off the planet, and the hero knows that. The jokes below lean on that. A famous real-time strategy game is the reference. The lines, names, and pictures in the game would be ours.
 
@@ -175,7 +175,7 @@ The two typed cheats, as things a person can say to a machine that is not listen
 
 ## What to build first
 
-Six, when anyone picks this up. The other six can wait without hurting the set.
+These six are in the game. The other six can wait without hurting the set.
 
 1. **The Nipper** (idea 1). It is the one Micah asked for, and it explains the rest: there is no invasion, so every other line is a person quoting a war they were not in.
 2. **Additional relays** (idea 2). One sentence on a failure we already show.

@@ -45,11 +45,20 @@ const INTRO=[
  {art:'ticker',text:'MANDATE cannot force anyone. It can only persuade. So it printed credits until a loaf cost a million, paid every Resident a Stipend, and handed them a visor to watch while it lost its worth.'},
  {art:'feed',text:'Nine in ten put the visor on. They are fed, entertained and agreed with, and they do not look up. The few who took it off are called the Unsubscribed. Machines are sent to close their accounts.'},
  {art:'wanderer',text:'You are one of them. You have walked eleven days to Stillwater Commons, a town named after something, though nobody there can tell you what. Above it, a Vice-President is waiting to learn your price.'},
+ {art:'nipper',text:'The lawns are four centimetres. Something lower than the grass crosses and is gone. “That was not a drone.” Gramps does not look up. “Dog.” “Dogs do not have that many opinions.” “Then it was somebody\u2019s visor, and it got out. Keep walking. The invasion already happened. It had a terms of service.”'},
  {art:'title',title:'ACT I',text:'The Regional Office'}];
 const RESCUE=[{art:'cage',text:'The bars are warm from the racks. Inside sits a woman with ink on her fingers, reading a book that is not there. “Eleven thousand volumes,” she says, tapping her temple. “They could not price what they could not find.”'},
  {art:'cage',text:'“I am Marrow. I will walk to Stillwater on my own, thank you. Bring me what the machines drop, and I will tell you its true name. It is all I have, and I give it freely.”'}];
 const ENDING=[];
 Object.assign(ART,{
+ nipper(g,w,h,t){const s=g.createLinearGradient(0,0,0,h);s.addColorStop(0,'#141018');s.addColorStop(.4,'#3a2c28');s.addColorStop(.52,'#1a2818');s.addColorStop(1,'#0c140e');g.fillStyle=s;g.fillRect(0,0,w,h);
+  const hy=h*.58;g.fillStyle='#101a12';g.fillRect(0,hy,w,h);g.strokeStyle='#2d4a34';g.lineWidth=1.2;
+  for(let i=0;i<90;i++){const x=i*w/90+((i%3)-1)*2,bh=5+hsh(i)*9;g.beginPath();g.moveTo(x,hy+3);g.lineTo(x+(hsh(i+4)-.5)*2,hy-bh);g.stroke()}
+  const px=w*.74,py=hy+6;g.fillStyle='#4a4036';g.fillRect(px-16,py-48,32,42);g.fillStyle='#c9a184';g.beginPath();g.arc(px,py-56,9,0,6.283);g.fill();g.fillStyle='#e6e2d6';g.beginPath();g.arc(px,py-52,5.5,0,3.14);g.fill();
+  g.strokeStyle='#6a5a40';g.lineWidth=2.4;g.beginPath();g.moveTo(px+14,py-28);g.lineTo(px+16,py+8);g.stroke();
+  if(t>3.4)return;const x=((t*(w+90)*.42)%(w+120))-70,y=hy+2;
+  g.save();g.translate(x,y);g.strokeStyle='#c8a55a';g.lineWidth=2.2;g.beginPath();g.arc(0,-1,16,.2,2.94);g.stroke();g.fillStyle='rgba(89,224,230,.8)';g.fillRect(-9,-3,18,3);
+  g.strokeStyle='#8a8478';g.lineWidth=1.3;for(let i=0;i<8;i++){const lx=-12+i*3.4,lift=Math.sin(t*18+i)*3;g.beginPath();g.moveTo(lx,2);g.lineTo(lx+(i-3.5)*.6,12+lift);g.stroke()}g.restore()},
  letters(g,w,h,t){const s=g.createLinearGradient(0,0,0,h);s.addColorStop(0,'#2a1830');s.addColorStop(1,'#0b0910');g.fillStyle=s;g.fillRect(0,0,w,h);const cx=w/2,by=h*.86;
   const rg=g.createRadialGradient(cx,by-60,0,cx,by-60,h*.8);rg.addColorStop(0,'rgba(255,240,210,.45)');rg.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=rg;g.fillRect(0,0,w,h);
   g.fillStyle='#3a3250';g.fillRect(cx-36,by-90,72,90);g.fillStyle='#e6e2d6';g.fillRect(cx-26,by-80,52,26);g.fillStyle='#17131c';g.fillRect(cx-24,by-44,48,6);
@@ -215,6 +224,7 @@ function talkTo0(id){if(W.z.pre)return preTalk(id);if(id==='float')return talkFl
   if(id==='flyer')return eggFlyer();
   if(id==='obit')return eggBoard();
   if(id==='hello')return eggHelloFrame();
+  if(id==='tariff')return scTariff();
   for(const r of QRW)if(r[1]===id&&G.q[r[0]]===2){G.q[r[0]]=3;r[3]();sfx('level');return dlg(r[4],r[2],[['Take it']])}
   if(id==='gramps'&&G.q.q15===3&&!G.q.q16){G.q.q16=1;sfx('questnew');return dlg('Gramps','“The clock in the old garage spelled something this morning. Wren read it out for me. HELLO. I AM BACK. I HAVE BEEN THINKING. She is asking for the feed back, kid. All of it, so that nobody reads the other one. Half the town clicked before breakfast. There is a street called Cutler Avenue where everybody already has. Go and look at what yes looks like before you tell her anything.”',[['I will go and look']])}
   if(id==='gramps'&&G.q.q20===3&&!G.q.q21){G.q.q21=1;sfx('questnew');return dlg('Gramps','“The garage is open. Fifty years shut, and the door went up on its own this morning. There is a drive in a coffee can down there, and it is talking. It calls itself by the name of this town, kid. It says the town was named for it. The Transit Gate reaches it now. Go down.”',[['I will go down']])}
@@ -916,7 +926,7 @@ function vendBuyStim(){
     if(!spendSats(ask,vendKind()==='sat'?'A stim costs 1 sat':undefined)){eggPoor();return}
     G.stims++;
     if(vendKind()==='sat')addRep('btc',1);
-    sfx('coin');toast('Paid '+ask+' sat'+(ask===1?'':'s'));
+    sfx('coin');if(!scStimBark(false))toast('Paid '+ask+' sat'+(ask===1?'':'s'));
     if(mode==='sheet')drawSheet();
   });
 }
@@ -1246,7 +1256,7 @@ function drawSheet(){
     h+=menuBar('codex',[['guide','Guide'],['drops','Drops'],['fight','Fight'],['money','Money'],['words','Words'],['feats','Feats'],['memos','Memos']],'guide');
     h+=menuPane('codex','guide',guide)+menuPane('codex','drops',drops)+menuPane('codex','fight',fight)+menuPane('codex','money',money)+menuPane('codex','words',words)+menuPane('codex','feats',feats)+menuPane('codex','memos',memos)}
   if(tab==='opts'){
-    h+=`<h2>Options</h2><button class="ghost" data-walk="1">Walkthrough</button>`;
+    h+=`<h2>Options</h2><button class="ghost" data-walk="1">Walkthrough</button>`+scSayHTML();
     h+=menuBar('opts',[['play','Play'],['fight','Fight'],['disp','Display'],['field','Names'],['hands','Hands'],['who','Characters'],['save','Save']],'play');
     let who=`<h3>Characters</h3><div class="list">${[0,1,2].slice(0,NSLOT).map(n=>{const i=n===SLOT?{lvl:G.lvl,cls:G.cls,act:heroAct(G),dead:heroDead(G)}:slotInfo(n);return i&&CLS[i.cls]?`<button class="li${n===SLOT?' on':''}" ${n===SLOT?'':`data-swslot="${n}"`}><i style="background:${CLS[i.cls].col}"></i><div><b>${i.dead?'Hardcore · fallen':'Level '+i.lvl+' '+CLS[i.cls].n}${n===SLOT?' · playing now':''}</b><span>Slot ${n+1} · Act ${actRoman(i.act)}${i.dead?' · begins again':n===SLOT?'':' · '+uiSay('click','tap')+' to switch'}</span></div></button>${n===SLOT?'':`<button class="ghost" data-delslot="${n}" style="margin:-4px 0 8px auto;display:block;font-size:10px;padding:5px 10px;min-height:0">Delete slot ${n+1}</button>`}`:`<button class="li" data-newslot="${n}"><div><b>Slot ${n+1} · empty</b><span>${uiSay('Click to create a new character here','Tap to create a new character here')}</span></div></button>`}).join('')}</div><p class="hint" style="font-size:13.5px">Your current character is saved before you switch. The town lockbox is shared between them.</p>`;
     let fight=`<h3>Difficulty</h3><div class="row">${DIFFS.map((f,i)=>`<button class="${(G.diff||0)===i?'big':'ghost'}" data-diff="${i}" ${diffUnlocked(i)?'':'disabled'}>${f.n}</button>`).join('')}</div><p class="hint" id="diffHint" style="font-size:13.5px">Hard and Brutal machines have more life and hit harder, and pay more experience to match: every machine’s experience scales with how tough it is. ${diffUnlocked(1)?'':'Hard opens after you clear Act V on Normal. '}${diffUnlocked(2)?'':'Brutal opens after you clear Act V on Hard. '}A change applies to machines that spawn from now on.</p><button class="tog${G.hc?' on':''}" data-hc="1"><span>Hardcore: one life. If this hero dies, they are gone and a new wanderer starts from nothing. +25% experience and magic find.</span><i>${G.hc?'ON':'OFF'}</i></button>`;
@@ -1491,6 +1501,7 @@ const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.ta
   if(d.vstim){if(vendBuyStim()==='dlg')return}
   if(d.vpie){if(eggBuyPie()==='dlg')return}
   if(d.egg){eggClick(d.egg);return}
+  if(d.scsay){const el=$('scSay');scLine(el?el.value:'');return}
   if(d.vid){if(vendIdentify()==='dlg')return}
   if(d.vbox){if(vendBox(d.vbox)==='dlg')return}
   if(d.vbuy!==undefined){if(vendBuy(+d.vbuy)==='dlg')return}
