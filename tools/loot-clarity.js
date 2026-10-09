@@ -34,7 +34,7 @@ const filters=await p.evaluate(()=>{
   g.G.eq.helm=null;
   const empty=drop(Object.assign(g.makeItem(2,0,'helm'),{id:true,req:1}),{pk0:false,pkBetter:false});
   const sub=drop({slot:'charm',charm:1,q:1,il:1,id:true,req:1,base:'Lapsed Subscription',name:'Lapsed Test Subscription',aff:[{k:'hp',v:4}],val:10,on:false},{pk1:false,pkBetter:false});
-  return {rareId:rare.id,struck,judged,empty,sub,charms:g.G.charms.length};
+  return {rareId:rare.id,struck,judged,empty,sub,charms:(g.G.charms||[]).length};
 });
 if(filters.rareId)fail('rare came identified');
 if(!filters.struck.left)fail('struck rare was picked up '+JSON.stringify(filters.struck));
@@ -140,8 +140,7 @@ const bulk=await p.evaluate(()=>{
   return {btn};
 });
 if(!/₡8/.test(bulk.btn[0]||''))fail('bulk label '+JSON.stringify(bulk));
-await p.click('[data-sellq="-1"]');
-await p.click('[data-sellq="-1"]');
+await p.evaluate(()=>{const b=document.querySelector('[data-sellq="-1"]');b.scrollIntoView({block:'center'});b.click();});
 const pair=await p.evaluate(()=>({credits:__g.G.credits,bag:__g.G.bag.length,log:document.getElementById('log').textContent}));
 if(pair.credits!==208||pair.bag!==0||!/₡8/.test(pair.log))fail('bulk sale '+JSON.stringify(pair));
 

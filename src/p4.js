@@ -381,7 +381,7 @@ function gridPack(list,cols,rows,key){list=list||[];const placed=gridPlace(list,
 function drawSheet(){
   const only=sheetCtx.only||(mpOn()?['char','items','skills','web','party','quests','story','codex','opts']:['char','items','skills','web','quests','story','codex','opts']);let pop='';$('pop').hidden=true;
   const sheetFit=tab==='char'||tab==='items'||tab==='skills'||tab==='quests'||tab==='opts';
-  let h=`<div class="shead">${only.map(t=>`<button class="tab${tab===t?' on':''}" data-tab="${t}">${TABS[t]}${t==='skills'&&G&&G.sp?' •':t==='char'&&G&&G.ap?' •':t==='story'&&sdxUnseen()?' •':''}</button>`).join('')}<button class="tab x" data-close="1">Close</button></div><div class="sheetBody${sheetFit?' fit':tab==='web'?' web':' canScroll'}">`;
+  let h=`<div class="shead">${only.map(t=>`<button class="tab${tab===t?' on':''}" data-tab="${t}">${TABS[t]}${t==='skills'&&G&&G.sp?' •':t==='char'&&G&&G.ap?' •':t==='story'&&sdxUnseen()?' •':''}</button>`).join('')}<button class="tab x" data-close="1">Close</button></div><div class="sheetBody${sheetFit?' fit':tab==='web'?' web':' canScroll'}${tab==='items'?' items':''}">`;
   if(tab==='load'){h+=`<h2>Load a save code</h2><p>Paste a code copied from the Options tab. This replaces the saved wanderer on this device.</p><textarea id="codeIn" placeholder="Paste here"></textarea><button class="big" data-loadcode="1">Load</button></div>`;$('sheetIn').innerHTML=h;return}
   calc();
   if(tab==='char'){const c=CLS[G.cls];

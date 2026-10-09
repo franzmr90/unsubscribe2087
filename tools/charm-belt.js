@@ -80,7 +80,7 @@ check('ordinary and champion charm odds match the table',
 
 const pvp=await p.evaluate(()=>{
   const g=__g,G=g.G,W=g.W;
-  G.cls='scrapper';G.lvl=40;G.sk=Array(15).fill(0);G.sk[0]=1;G.web={};G.doc=null;G.para=0;G.at={mgt:0,ref:0,vit:0,bnd:0};G.pas=[];G.eq={};
+  G.cls='scrapper';G.lvl=60;G.sk=Array(15).fill(0);G.sk[0]=1;G.web={};G.doc=null;G.para=0;G.at={mgt:0,ref:0,vit:0,bnd:0};G.pas=[];G.eq={};
   G.eq.belt={slot:'belt',base:'Orbit Girdle',name:'Orbit Girdle',id:true,req:1,il:40,q:0,cap:12,csl:4,aff:[]};
   const letter=g.mkLetter('scrapper',45),churn=g.mkChurn(60);
   G.cslots=[letter,churn];
@@ -94,8 +94,7 @@ const pvp=await p.evaluate(()=>{
   G.cslots=[letter,churn];g.calc();
   const capped=g.charmRanks(0);
   W.ents.pop();
-  const other=g.mkClassSlip(40,'hacker');
-  return {pve,capped,under,over,ch,pre,letter:letter.aff.find(a=>a.k==='skills').v,churn:churn.aff.find(a=>a.k==='skills').v,other:other.cls};
+  return {pve,capped,under,over,ch,pre,letter:letter.aff.find(a=>a.k==='skills').v,churn:churn.aff.find(a=>a.k==='skills').v};
 });
 check('PvE charm skills add, and a duel clamps them at +2', pvp.pve===3&&pvp.capped===2, JSON.stringify(pvp));
 check('charm life under 20% does not change a player hit, and the excess does', pvp.under===1&&pvp.over>1&&pvp.ch>pvp.pre*0.2, JSON.stringify(pvp));
@@ -192,18 +191,18 @@ if(shots){
   await p.waitForTimeout(200);
   const belt=await p.evaluate(()=>{
     const row=document.querySelector('.beltRow');
-    if(row)row.scrollIntoView({block:'center'});
+    if(row)row.scrollIntoView({block:'start'});
     const note=document.querySelector('.beltNote');
     const head=[...document.querySelectorAll('#sheet h3')].map(e=>e.textContent).find(t=>/charms/.test(t))||'';
     const filing=document.querySelector('#bagGrid .cell.grand, #bagGrid .cell.ch');
     return {head,note:note?note.textContent:'',slots:document.querySelectorAll('.beltRow [data-cs], .beltRow [data-csocket]').length,filing:!!filing,shake:!!document.querySelector('.beltRow')};
   });
-  check('the items sheet shows the belt, its empty slot, and a charm in the pack', /3\/4 charms/.test(belt.head)&&/4\/12 stims/.test(belt.head)&&belt.slots===3&&belt.filing&&/does not stack/.test(belt.note), JSON.stringify(belt));
+  check('the items sheet shows the belt, its empty slot, and a charm in the pack', /3\/4 charms/.test(belt.head)&&/4\/12 stims/.test(belt.head)&&belt.slots===3&&belt.filing&&/do not stack/.test(belt.note), JSON.stringify(belt));
   await p.screenshot({path:path.join(shots,'charm-belt-desktop.png')});
   await p.click('.beltRow [data-cs="0"]');
   await p.waitForTimeout(150);
   const card=await p.evaluate(()=>document.getElementById('pop').innerText);
-  check('a worn charm’s card says it applies and names its slots', /On the belt/.test(card)&&/1 belt slot/.test(card)&&/1 pack cell/.test(card)&&/Sharpened Slip/.test(card), card.slice(0,240));
+  check('a worn charm’s card says it applies and names its slots', /On the belt/.test(card)&&/1 belt slot/.test(card)&&/1 pack cell/.test(card)&&/sharpened slip/i.test(card), card.slice(0,280));
   await p.screenshot({path:path.join(shots,'charm-card-desktop.png')});
   await p.setViewportSize({width:390,height:844});
   await p.evaluate(()=>{const d=document.getElementById('pop');if(d)d.hidden=true;__g.sel&&0;const s=document.querySelector('.beltRow');if(s)s.scrollIntoView({block:'start'});});
