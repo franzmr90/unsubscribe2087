@@ -211,6 +211,10 @@ function talkTo0(id){if(W.z.pre)return preTalk(id);if(id==='float')return talkFl
   const gos=k=>pick(GOSSIP[k]);
   if(id==='board')return openSheet('bounty',{only:['bounty']});
   if(id==='stash')return openSheet('stash',{only:['stash']});
+  if(id==='paper')return eggPaper();
+  if(id==='flyer')return eggFlyer();
+  if(id==='obit')return eggBoard();
+  if(id==='hello')return eggHelloFrame();
   for(const r of QRW)if(r[1]===id&&G.q[r[0]]===2){G.q[r[0]]=3;r[3]();sfx('level');return dlg(r[4],r[2],[['Take it']])}
   if(id==='gramps'&&G.q.q15===3&&!G.q.q16){G.q.q16=1;sfx('questnew');return dlg('Gramps','“The clock in the old garage spelled something this morning. Wren read it out for me. HELLO. I AM BACK. I HAVE BEEN THINKING. She is asking for the feed back, kid. All of it, so that nobody reads the other one. Half the town clicked before breakfast. There is a street called Cutler Avenue where everybody already has. Go and look at what yes looks like before you tell her anything.”',[['I will go and look']])}
   if(id==='gramps'&&G.q.q20===3&&!G.q.q21){G.q.q21=1;sfx('questnew');return dlg('Gramps','“The garage is open. Fifty years shut, and the door went up on its own this morning. There is a drive in a coffee can down there, and it is talking. It calls itself by the name of this town, kid. It says the town was named for it. The Transit Gate reaches it now. Go down.”',[['I will go down']])}
@@ -332,7 +336,7 @@ function cell(it,attr,isSel,slot,d,price){if(!it){const hot=attr&&/data-packempt
   const dw=it.duraMax>0?(it.dura<=0?' brk':it.dura<=it.duraMax*.25?' thin':''):'';const rq=(!it.charm&&typeof reqBadgeText==='function')?reqBadgeText(it):'';
   const tag=price!=null?`<u class="vp">${price} sat${price===1?'':'s'}</u>`:'';
   const lk=it.lock?'<svg class="lk" viewBox="0 0 24 24"><path d="M7 11V8a5 5 0 0110 0v3h1v10H6V11h1zm2 0h6V8a3 3 0 00-6 0v3z"/></svg>':'';
-  return `<button class="cell q${it.q}${isSel?' sel':''}${it.id?'':' unid'}${arrow?' arr':''}${it.junk?' junk':''}${it.lock?' seal':''}${ch}${dw}${rq?' req':''}" ${attr}${drag}>${svgIcon(it.charm?'charm':it.slot)}<small>${num}</small>${dw?`<i class="dw">${it.dura<=0?'!':'·'}</i>`:''}${arrow?'<em>↑</em>':''}${rq?`<u class="rq">${esc(rq)}</u>`:''}${lk}${tag}${it.junk?'<u>JUNK</u>':''}</button>`}function equipFromBag(i){const it=G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.charm)return charmSocket(i);if(!it.id){toast('Identify it first');sfx('err');return false}if(!canWear(it)){toast(typeof cantEquipText==='function'?cantEquipText(it):'Needs level '+it.req);sfx('err');return false}
+  return `<button class="cell q${it.q}${isSel?' sel':''}${it.id?'':' unid'}${arrow?' arr':''}${it.junk?' junk':''}${it.lock?' seal':''}${ch}${dw}${rq?' req':''}" ${attr}${drag}>${svgIcon(it.charm?'charm':it.slot)}<small>${num}</small>${dw?`<i class="dw">${it.dura<=0?'!':'·'}</i>`:''}${arrow?'<em>↑</em>':''}${rq?`<u class="rq">${esc(rq)}</u>`:''}${lk}${tag}${it.junk?'<u>JUNK</u>':''}</button>`}function equipFromBag(i){const it=G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.charm)return charmSocket(i);if(!it.id){toast('Identify it first');sfx('err');return false}if(it.pie||it.sour||it.hello)return eggUse(i);if(!canWear(it)){toast(typeof cantEquipText==='function'?cantEquipText(it):'Needs level '+it.req);sfx('err');return false}
   const old=G.eq[it.slot];G.eq[it.slot]=it;it.junk=false;G.bag.splice(i,1);if(old){if(bagCan(old))G.bag.push(old);else addDrop({it:old},P.x,P.y)}if(it.slot==='belt')charmRefit();calc();sfx('equip');return true}
 function equipBest(){let n=0;for(const slot of SLOTS){let best=-1,bd=.01;G.bag.forEach((it,i)=>{if(it.slot!==slot||!canWear(it))return;const d=itemDelta(it);if(d>bd){bd=d;best=i}});if(best>=0&&equipFromBag(best))n++}return n}
 function gearNow(s){const f=hitFactor(s);return{lo:Math.round(s.dmin*f+s.shock),hi:Math.round(s.dmax*f+s.shock),arm:s.armor}}
@@ -348,7 +352,7 @@ function itemLines(it){let h='';
   if(it.dmin)h+=`<div class="ln">Damage: ${it.dmin} to ${it.dmax}</div><div class="ln">${it.spd>0?'Fast':it.spd<0?'Slow':'Normal'} attack speed</div>`;
   if(it.arm)h+=`<div class="ln">Armor: ${it.arm}</div>`;if(it.slot==='belt'){const b=beltBudget(it);h+=`<div class="ln">Holds ${b.stims} stims · ${b.slots} charm slot${b.slots===1?'':'s'}</div>`}else if(it.cap)h+=`<div class="ln">Holds ${it.cap} stims</div>`;if(it.indestruct)h+=`<div class="ln">Indestructible</div>`;else if(it.duraMax){const thin=it.dura>0&&it.dura<=it.duraMax*.25;h+=`<div class="ln${it.dura<=0?' red':''}"${thin?' style="color:#e0b03a"':''}>Durability: ${it.dura|0} of ${it.duraMax}${it.dura<=0?' · broken. It gives nothing until it is repaired.':(it.aff&&it.aff.some(a=>a&&a.k==='patch')?' · self-patching':'')}</div>`}if(it.loan)h+=`<div class="ln">A loaner. It stays in your hands when you fall, until your own weapon is back.</div>`
   if(it.charm){const word=it.sz==='filing'?'Filing':it.sz==='notice'?'Notice':'Slip',worn=(G.cslots||[]).indexOf(it)>=0;h+=`<div class="ln">${word} · ${charmCost(it)} belt slot${charmCost(it)===1?'':'s'} · ${charmCells(it)} pack cell${charmCells(it)===1?'':'s'}</div><div class="ln">${worn?'On the belt. It applies.':'Off the belt. It grants nothing until it is worn, and it does not stack.'}</div>`}
-  h+=`<div class="ln${G.lvl<it.req?' red':''}">Required Level: ${it.req}</div>`;if(typeof reqLineHTML==='function')h+=reqLineHTML(it);
+  if(it.pie)it.fl=pieFl();if(it.free)h+=`<div class="ln">${esc(EGG.freeNote)}</div>`;else{h+=`<div class="ln${G.lvl<it.req?' red':''}">Required Level: ${it.req}</div>`;if(typeof reqLineHTML==='function')h+=reqLineHTML(it)}if(it.hello)h+=`<div class="ln off">${esc(EGG.brendaNo)}</div>`;
   if(it.fam){const F=FAM[it.fam],mine=F.cls===G.cls;h+=`<div class="ln" style="color:${mine?'#7be495':'var(--dim)'}">${CLS[F.cls].n} ${F.n.toLowerCase()}${it.id?': in a '+CLS[F.cls].n+'’s hands, +1 to all skills, '+F.perk+(mine?'':' (not your class)'):''}</div>`}
   if(it.dt&&it.id)h+=`<div class="ln" style="color:${DTY[it.dt].c}">Infused: your attacks deal ${DTY[it.dt].n} damage</div>`;
   if(it.soc)h+=`<div class="ln" style="color:#f7931a">Sockets: ${Array.from({length:it.soc},(_,i)=>it.words[i]?'['+it.words[i]+']':'[ empty ]').join(' ')}</div>`;
@@ -853,7 +857,7 @@ function vendCreditSats(cr){
   const rate=satRate()||1;
   return Math.max(1,Math.ceil(cr/rate));
 }
-function vendBid(it){return vendCreditSats(sellValue(it))}
+function vendBid(it){if(it&&it.hello)return 1;return vendCreditSats(sellValue(it))}
 function vendAsk(it){
   if(!it)return 0;
   if(vendKind()==='sat'){
@@ -890,7 +894,7 @@ function vendBuy(i){
   return vendPay(ask,label,()=>{
     const again=vendRow(i);if(!again||again.it!==it){toast('That is gone');return}
     if(!bagCan(it)){toast('Your pack is full');sfx('err');return}
-    if(!spendSats(ask))return;
+    if(!spendSats(ask)){eggPoor();return}
     if(vendKind()==='sat'){
       const o=satShop[i];
       addRep('btc',Math.ceil((o&&o.price||0)/4));
@@ -909,7 +913,7 @@ function vendBuyStim(){
   const ask=vendStimSats();
   return vendPay(ask,'a stim',()=>{
     if(G.stims>=S.cap){toast('You cannot carry another');sfx('err');return}
-    if(!spendSats(ask,vendKind()==='sat'?'A stim costs 1 sat':undefined))return;
+    if(!spendSats(ask,vendKind()==='sat'?'A stim costs 1 sat':undefined)){eggPoor();return}
     G.stims++;
     if(vendKind()==='sat')addRep('btc',1);
     sfx('coin');toast('Paid '+ask+' sat'+(ask===1?'':'s'));
@@ -922,7 +926,7 @@ function vendIdentify(){
   const ask=vendIdSats();
   return vendPay(ask,'an appraisal',()=>{
     if(!unidCount())return;
-    if(!spendSats(ask))return;
+    if(!spendSats(ask)){eggPoor();return}
     idAll();sfx('rare');toast('Appraised');
     if(mode==='sheet')drawSheet();
   });
@@ -933,7 +937,7 @@ function vendBox(slot){
   const ask=vendBoxSats();
   return vendPay(ask,(SNAME[slot]||'Gear')+' box',()=>{
     if(!bagCan({slot:slot})){toast('Your pack is full');sfx('err');return}
-    if(!spendSats(ask))return;
+    if(!spendSats(ask)){eggPoor();return}
     const r=Math.random(),q=r<.015?4:r<.035?3:r<.185?2:1;
     const it=makeItem(G.lvl+ri(-1,2)+G.tier*12,q,slot);it.id=true;
     G.bag.push(it);lastBox=it;sfx(q===4?'unique':q>=2?'rare':'drop');
@@ -952,7 +956,7 @@ function vendSell(i,quiet){
   G.bag.splice(i,1);
   G.sats=(G.sats|0)+paid;
   BUYBACK.push({it:it,paid:paid,ask:ask,kind:vendKind()});
-  sel=null;if(!quiet){sfx('coin');toast('Sold for '+paid+' sats');save(true)}
+  sel=null;if(!quiet){sfx('coin');toast(it.hello?EGG.brendaNo:('Sold for '+paid+' sats'));save(true)}
   return true;
 }
 function vendQuest(it){return !!(it&&(it.quest||it.sq||it.key))}
@@ -1091,7 +1095,9 @@ function vendHTML(){
     if(lastBox)h+='<p>Last roll: '+esc(lastBox.name)+'.</p>';
   }else if(VEND.tab==='supplies'){
     const ask=vendStimSats(),off=satsFree()<ask||G.stims>=S.cap;
-    h+='<div class="grid" id="vendGrid"><button type="button" class="cell" data-vstim="1" '+(off?'disabled':'')+'><small>Stim</small><u class="vp">'+ask+' sat'+(ask===1?'':'s')+'</u></button></div>';
+    h+='<div class="grid" id="vendGrid"><button type="button" class="cell" data-vstim="1" '+(off?'disabled':'')+'><small>Stim</small><u class="vp">'+ask+' sat'+(ask===1?'':'s')+'</u></button>';
+    if(vendKind()==='brenda'&&W&&W.pie){const pieOff=!bagCan({aff:[]});h+='<button type="button" class="cell" data-vpie="1" '+(pieOff?'disabled':'')+'><small>'+esc(EGG.pieName)+'</small><u class="vp">10000 sats</u></button>'}
+    h+='</div>';
     h+='<p>A stim restores 45% of your life. You carry '+G.stims+' of '+S.cap+'.</p>';
   }else if(VEND.tab==='buyback'){
     const rows=vendBackRows();
@@ -1171,7 +1177,7 @@ function drawSheet(){
     const it=sel&&(sel.cs!==undefined?(G.cslots||[])[sel.cs]:sel.m?G.merc&&G.merc[sel.m]:sel.eq?G.eq[sel.eq]:G.bag[sel.bag]);
     if(it&&sel.sock){const own=WK.filter(w=>G.words[w]);pop=`<div class="card"><div class="nm" style="color:#f7931a">Socket a word</div><div class="ln off">${esc(it.name)} · ${it.soc-it.words.length} empty. A word cannot be removed once set. Phrases need the right words in the right order: see the Codex.</div><div class="list">${own.length?own.map(w=>`<button class="li" data-word="${w}"><div><b>${w} ×${G.words[w]}</b><span>${AFK[WORDS[w][0]].t.replace('{v}',WORDS[w][1])}</span></div></button>`).join(''):'<div class="ln off">You hold no words. They turn up on torn notes dropped by machines.</div>'}</div><div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`}
     else 
-    if(it){let b='';if(sel.cs!==undefined){b=`<button class="big" data-csdo="off">Take off</button>`+(selling()?`<button class="ghost" data-csdo="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-csdo="drop">Drop</button>`)+`<button class="ghost" data-csdo="scrap">Scrap · ${charmParts(it)} parts</button>`}else if(sel.m){b=`<button class="big" data-mtake="${sel.m}">Take it back</button>`}else if(sel.eq){b=`<button class="ghost" data-do="unequip">Take off</button>`;if(W&&W.z&&W.z.town&&repairQuote(it))b+=`<button class="ghost" data-repair="one" ${G.sats<repairQuote(it)?'disabled':''}>Repair · ${repairQuote(it)} sat${repairQuote(it)===1?'':'s'}</button>`;if(it.soc&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`}else{b=`<button class="big" data-do="equip" ${(it.charm?it.id&&G.lvl>=(it.req||0):canWear(it))?'':'disabled'}>${it.charm?'Put on the belt':'Equip'}</button>`;b+=selling()?`<button class="ghost" data-do="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-do="drop">Drop</button>`;b+=`<button class="ghost" data-do="junk">${it.junk?'Not junk':'Junk'}</button><button class="ghost" data-do="lock">${it.lock?'Unlock':'Lock'}</button>`;if(it.soc&&it.id&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`;if(it.charm)b+=`<button class="ghost" data-do="scrap">Scrap · ${charmParts(it)} parts</button>`;if(it.id&&!it.charm){b+=`<button class="ghost" data-do="scrap">Scrap · ${[1,2,4,8,15][it.q]||1} parts</button>`;if(it.aff.length)b+=`<button class="ghost" data-do="reroll" ${(G.parts||0)<rerollCost(it)?'disabled':''}>Reroll a modifier · ${rerollCost(it)} parts</button>`;if(canSoc(it))b+=`<button class="ghost" data-do="addsoc" ${(G.parts||0)<12?'disabled':''}>Cut a socket · 12 parts</button>`}if(G.merc&&!G.merc.dead&&it.id&&MSL.includes(it.slot))b+=`<button class="ghost" data-do="mgive">Give to ${esc(G.merc.name)}</button>`}pop=itemCard(it,b,!!sel.eq,!!sel.m)}
+    if(it){let b='';if(sel.cs!==undefined){b=`<button class="big" data-csdo="off">Take off</button>`+(selling()?`<button class="ghost" data-csdo="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-csdo="drop">Drop</button>`)+`<button class="ghost" data-csdo="scrap">Scrap · ${charmParts(it)} parts</button>`}else if(sel.m){b=`<button class="big" data-mtake="${sel.m}">Take it back</button>`}else if(sel.eq){b=`<button class="ghost" data-do="unequip">Take off</button>`;if(W&&W.z&&W.z.town&&repairQuote(it))b+=`<button class="ghost" data-repair="one" ${G.sats<repairQuote(it)?'disabled':''}>Repair · ${repairQuote(it)} sat${repairQuote(it)===1?'':'s'}</button>`;if(it.soc&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`}else{b=`<button class="big" data-do="equip" ${(it.pie||it.sour||it.hello||(it.charm?it.id&&G.lvl>=(it.req||0):canWear(it)))?'':'disabled'}>${it.pie||it.sour?EGG.eat:it.hello?EGG.leaveIt:it.charm?'Put on the belt':'Equip'}</button>`;b+=selling()?`<button class="ghost" data-do="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-do="drop">Drop</button>`;b+=`<button class="ghost" data-do="junk">${it.junk?'Not junk':'Junk'}</button><button class="ghost" data-do="lock">${it.lock?'Unlock':'Lock'}</button>`;if(it.soc&&it.id&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`;if(it.charm)b+=`<button class="ghost" data-do="scrap">Scrap · ${charmParts(it)} parts</button>`;if(it.id&&!it.charm&&!it.free){b+=`<button class="ghost" data-do="scrap">Scrap · ${[1,2,4,8,15][it.q]||1} parts</button>`;if(it.aff.length)b+=`<button class="ghost" data-do="reroll" ${(G.parts||0)<rerollCost(it)?'disabled':''}>Reroll a modifier · ${rerollCost(it)} parts</button>`;if(canSoc(it))b+=`<button class="ghost" data-do="addsoc" ${(G.parts||0)<12?'disabled':''}>Cut a socket · 12 parts</button>`}if(G.merc&&!G.merc.dead&&it.id&&MSL.includes(it.slot))b+=`<button class="ghost" data-do="mgive">Give to ${esc(G.merc.name)}</button>`}pop=itemCard(it,b,!!sel.eq,!!sel.m)}
     const jn=G.bag.filter(i=>i.junk).length;
     if(!selling()&&jn)h+=`<button class="ghost" data-dropjunk="1">Drop ${jn} junk item${jn>1?'s':''}</button>`;
     if(selling()&&G.bag.length){const sum=q=>G.bag.filter(i=>i&&(q<0||i.q===q)).reduce((a,i)=>a+sellValue(i),0),cnt=q=>G.bag.filter(i=>i&&i.q===q).length;h+=`<h3>Sell in bulk</h3>`;
@@ -1236,7 +1242,7 @@ function drawSheet(){
       <div class="list">${PHRASES.map(p=>`<div class="li"><div><b style="color:#f7931a">${p.n} · ${SNAME[p.slot]} with ${p.w.length} sockets</b><span>${p.w.join(' → ')}</span><span>${Object.keys(p.mods).map(k=>AFK[k].t.replace('{v}',p.mods[k])).join(' · ')}</span></div></div>`).join('')}</div>`;
     feats+=`<h2>Feats · ${Object.keys(G.ach).length}/${ACH.length}</h2><div class="list">${ACH.map(a=>`<div class="li${G.ach[a[0]]?' on':''}"><div><b>${G.ach[a[0]]?'✓ ':''}${a[1]}</b><span>${a[2]}</span></div></div>`).join('')}</div>`;
     memos+=`<h2>Memos · ${G.memos.length}/${MEMOS.length}</h2>`;if(!G.memos.length)memos+=`<p>Papers lie about the districts. Read them and they are kept here.</p>`;
-    for(const i of G.memos)memos+=`<div class="memo"><b>${esc(MEMOS[i][0])}</b><p>${esc(MEMOS[i][1])}</p></div>`
+    for(const i of G.memos)memos+=`<div class="memo"><b>${esc(MEMOS[i][0])}</b><p>${esc(MEMOS[i][1])}</p>${eggMemoBtn(i)}</div>`
     h+=menuBar('codex',[['guide','Guide'],['drops','Drops'],['fight','Fight'],['money','Money'],['words','Words'],['feats','Feats'],['memos','Memos']],'guide');
     h+=menuPane('codex','guide',guide)+menuPane('codex','drops',drops)+menuPane('codex','fight',fight)+menuPane('codex','money',money)+menuPane('codex','words',words)+menuPane('codex','feats',feats)+menuPane('codex','memos',memos)}
   if(tab==='opts'){
@@ -1483,6 +1489,8 @@ const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.ta
   if(d.vtab){VEND.tab=d.vtab;sel=null;drawSheet();return}
   if(d.vside){VEND.side=d.vside;drawSheet();return}
   if(d.vstim){if(vendBuyStim()==='dlg')return}
+  if(d.vpie){if(eggBuyPie()==='dlg')return}
+  if(d.egg){eggClick(d.egg);return}
   if(d.vid){if(vendIdentify()==='dlg')return}
   if(d.vbox){if(vendBox(d.vbox)==='dlg')return}
   if(d.vbuy!==undefined){if(vendBuy(+d.vbuy)==='dlg')return}
@@ -1546,7 +1554,7 @@ function showDeath(){const town=ZONES[HT()]||{n:'town'};const onBody=!G.hc&&last
   $('deathP').textContent='Slain by '+DY.by+' in '+ZONES[DY.zi].n+', with '+DTY[P.lastTy||'impact'].n+' damage.'+(G.hc?' This was a hardcore hero. They are gone, and a new wanderer will take the road.':gear+pvp);
   $('deathNote').textContent=G.hc?'There is no portal. This hero does not get back up.':'A portal in the square opens at the start of that district. Your body is marked. In town, Kestrel will have it walked in for a few sats.';
   $('bRise').textContent=G.hc?'Begin again':'Rise in '+town.n;
-  $('deathS').innerHTML=`<div>Level<b>${G.lvl}</b></div><div>Machines scrapped<b>${G.kills}</b></div><div>Credits on the body<b>${G.hc?'none':fmt(DY.fee)}</b></div>`;$('death').hidden=false}
+  $('deathS').innerHTML=`<div>Level<b>${G.lvl}</b></div><div>Machines scrapped<b>${G.kills}</b></div><div>Credits on the body<b>${G.hc?'none':fmt(DY.fee)}</b></div>`;$('death').hidden=false;eggPryceNote()}
 function repairBarHTML(){const items=repairList();if(!items.length)return '';const n=items.reduce((s,it)=>s+repairQuote(it),0);return `<button class="li" data-repair="all" ${G.sats<n?'disabled':''}><div><b>Repair all</b><span>${items.length} piece${items.length>1?'s':''} on you or in the pack. A broken piece gives nothing.</span></div><span class="pr" style="color:#f7931a">${n} sat${n===1?'':'s'}</span></button>`}
 $('bRise').onclick=()=>{if(!DY)return;if(G.hc){hcBegin();return}const d=DY;DY=null;$('death').hidden=true;G.hp=S.maxHp;G.en=S.maxEn;mode='play';G.portal={zi:d.zi,x:d.st.x,y:d.st.y};sfx('portal');enter(HT());toast('A portal back stands open in the square')};
 

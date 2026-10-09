@@ -316,6 +316,8 @@ function buildTown(zi){zi=zi||0;if(ZONES[zi].pre)return buildPre();const act=ZON
   if(G.tam)W.npcs.push({id:'tam',x:13.5,y:18.5,name:'Tam',col:'#6a9a5a'});
   if(G.sq.carer)W.npcs.push({id:'ines',x:10.5,y:18.5,name:'Ines',col:'#b08a6a'});
   W.npcs.push({id:'board',x:5.5,y:13.5,name:'Bounty Board'},{id:'stash',x:10.5,y:6.5,name:'Your Lockbox'},{id:'vr',x:20.5,y:14.5,name:'VR Simulator'},{id:'kestrel',x:9.5,y:12.5,name:'Kestrel',col:'#8a5a6a'},{id:'nonce',x:14.5,y:19.5,name:'Nonce',col:'#f7931a'},{id:'brenda',x:7.5,y:8.5,name:'Brenda',col:'#d9659b'},{id:'gramps',x:12.5,y:15.5,name:'Gramps',col:'#a39c86'},{id:'wren',x:18.5,y:18.5,name:'Wren',col:'#6a8f6a'},{id:'null',x:6.5,y:17.5,name:'Sister Null',col:'#d8d2e8'},{id:'gate',x:18.5,y:7.5,name:'Transit Gate'},{id:'ubi',x:15.5,y:4.5,name:'Stipend Terminal'});
+  W.pie=Math.random()<.4?1:0;
+  W.npcs.push({id:'paper',x:11.6,y:14.4,name:'The Tymes',act:'Read the paper'},{id:'flyer',x:13.4,y:16.2,name:'A flyer',act:'Read the flyer'},{id:'obit',x:4.6,y:12.2,name:'Obituaries',act:'Read the obituaries'},{id:'hello',x:4.2,y:16.8,name:'HELLO',act:'Look at the frame'});
   if(G.marrow)W.npcs.push({id:'marrow',x:18.5,y:12.5,name:'Marrow',col:'#8f7cc0'});
   const cols=['#7fa8d0','#d0a488','#a8c890','#c890bc','#d8c070','#90c8c0'];
   for(let i=0;i<(act===1?7:4);i++)W.npcs.push({id:'res',x:rnd(6,19),y:rnd(11,19),col:pick(cols),tx:12,ty:14,wait:rnd(0,3),say:'',st:0,cool:rnd(1,5),ph:rnd(0,6)});
@@ -449,7 +451,7 @@ function enter(zi,o){setTimeout(mpBeat,0);
   else if(act===2&&!G.act2){G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO2,()=>{mode='play';dlg('Act II · The Cloud','Level limit 50, and a fourth skill row opens. The fourth row is yours. Vale does not get a vote on it.',[['Begin']])}),50)}
   else if(!z.town&&!G['in'+zi]&&z.intro){G['in'+zi]=1;dlg(z.n,z.intro,[['Go on']])}
   else toast(z.town?z.n:'Entering '+z.n);
-  if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}if(o.after)o.after();if(typeof mpMobCatch==='function')mpMobCatch();placeCorpses();calmNearCorpse();dynResync();seenT=0;music(zoneMusic());save(true)}
+  if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}if(o.after)o.after();if(typeof mpMobCatch==='function')mpMobCatch();placeCorpses();calmNearCorpse();dynResync();seenT=0;music(zoneMusic());if(z.town)setTimeout(eggTip,1400);save(true)}
 /* A cast portal lives on this character: zone and the exact spot. A new cast forgets the last one, in this district and in any district already saved. */
 function dropCastPortals(){const strip=w=>{if(w&&w.portals)w.portals=w.portals.filter(q=>!q.cast)};strip(W);for(const k in ZS)if(ZS[k]!==W)strip(ZS[k])}
 function openPortal(){if(mode!=='play'||W.z.town)return;if(mpPortalBlocked())return;if(W.z.sim){sfx('portal');enter(HT());return}if(nearest(4)){toast('Machines are too close to open a portal');return}
@@ -637,7 +639,7 @@ function hurt(d,slow,src){const pv=src&&src.pvp,wasStun=P.hitStun>0;if(mode==='d
   if(G.hp<=0&&G.cls==='witness'&&!(P&&P.tag)&&sl(14)&&recGet()>80&&!(G.retractT>0)){G.hp=1;recSet(0);G.retractT=90/(1+(S.retr||0)/100);float(P.x,P.y,'Retraction','#e6dcc8',1);sfx('mend');return}
   if(G.hp<=0){if(S.sp.parachute&&G.chuteT<=0){G.chuteT=120;G.hp=S.maxHp*.5;P.inv=1.5;toast('The Golden Parachute opens.');return}
     if(W.z.sim){const n=W.sim.wave;if(W.sim.rush){G.hp=1;P.inv=9;sfx('death');dlg('Boss rush ended','You fell to number '+(W.sim.i+1)+' of '+W.sim.list.length+'. Nothing in here was real, so nothing was lost.',[['Unplug',()=>{G.hp=S.maxHp;enter(HT())}]]);return}G.simBest=Math.max(G.simBest||0,n-1);G.hp=1;P.inv=9;sfx('death');dlg('Simulation ended','You fell on wave '+n+'. Waves cleared: '+(n-1)+'. Your best: '+G.simBest+'. Nothing in here was real, so nothing was lost.',[['Unplug',()=>{G.hp=S.maxHp;enter(HT())}]]);return}
-    /* The portal home is part of the death, so a save during the notice still has it. */adaptDeath();G.form=null;G.formDt=null;G.formT=0;G.hp=0;const fee=layCorpse(P.x,P.y);G.deaths=(G.deaths||0)+1;if(!G.hc&&W.start)G.portal={zi:W.zi,x:W.start.x,y:W.start.y};mode='dying';DY={t:0,fee,by:src&&src.name?src.name:'the machines',zi:W.zi,st:W.start,shown:0,pvp:!!(src&&src.pvp)};if(G.hc)save(true);sfx('death');music(null);parts(P.x,P.y,30,['#b3261e','#7a0f0c','#e2473a'],3,1.4);bloodSplat(14);shake=10;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;return}
+    /* The portal home is part of the death, so a save during the notice still has it. */adaptDeath();G.form=null;G.formDt=null;G.formT=0;G.hp=0;const fee=layCorpse(P.x,P.y);G.deaths=(G.deaths||0)+1;if(typeof eggOnDeath==='function')eggOnDeath();if(!G.hc&&W.start)G.portal={zi:W.zi,x:W.start.x,y:W.start.y};mode='dying';DY={t:0,fee,by:src&&src.name?src.name:'the machines',zi:W.zi,st:W.start,shown:0,pvp:!!(src&&src.pvp)};if(G.hc)save(true);sfx('death');music(null);parts(P.x,P.y,30,['#b3261e','#7a0f0c','#e2473a'],3,1.4);bloodSplat(14);shake=10;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;return}
   const band=Math.ceil(G.hp/S.maxHp*10);if(band<P.band&&band<=4){bloodSplat((5-band)*3)}P.band=band}
 function attack(){
   if(P.atk>0||P.dash)return;const c=CLS[G.cls];unstealth();if(G.cls==='witness')P.witHold=1;
@@ -1259,7 +1261,7 @@ function stim(){if(mode!=='play')return;if(W.sub&&W.sub.mods.includes('dry')){to
 /* ================= interaction ================= */
 function useObj(o){
   if(o.k==='chest'){o.used=1;sfx('chest');if(Math.random()<.3)addDrop({sat:ri(2,5)},o.x,o.y);if(Math.random()<.2)addDrop({word:pick(WK)},o.x,o.y);parts(o.x,o.y,14,['#c9a868','#ffe36b'],2.5);dropFrom('chest',o.x,o.y,W.ml)}
-  else if(o.k==='shrine'){o.used=1;sfx('shrine');const s=SHR[o.sk];toast(s[0]+': '+s[1]);parts(o.x,o.y,24,['#59e0e6','#fff'],2,1.6);
+  else if(o.k==='shrine'){o.used=1;sfx('shrine');if(o.sk==='eyes'){eggLaser();return}const s=SHR[o.sk];toast(s[0]+': '+s[1]);parts(o.x,o.y,24,['#59e0e6','#fff'],2,1.6);
     if(o.sk==='fill'){G.hp=S.maxHp;G.en=S.maxEn}else if(o.sk==='gold'){for(let i=0;i<7;i++)addDrop({cr:(3+W.ml*2)*rnd(1,2.5)*Math.pow(G.cpi,.9)},o.x,o.y)}else P.shr={k:o.sk,t:s[2],n:s[0]}}
   else if(o.k==='memo'){W.objs.splice(W.objs.indexOf(o),1);if(!G.memos.includes(o.id))G.memos.push(o.id);sfx('page');const m=MEMOS[o.id];dlg(m[0],m[1],[['Keep it']]);gainXp(20*(1+.8*(W.ml-1))*xpRest())}
   /* The stranger's line prints whole credits, so the gift is the floor of fifteen percent. */

@@ -446,6 +446,8 @@ html[data-ui="touch"] .menuTabs button{min-height:44px}
 .menuPane.off{max-height:0!important;overflow:hidden!important;margin:0!important;padding:0!important;border:0!important;pointer-events:none}
 .menuFoot{margin-top:auto;position:sticky;bottom:0;z-index:2;background:rgba(11,9,16,.96);padding:6px 0}
 html[data-ui="touch"] .menuFoot button{min-height:44px}
+.eggLink{display:block;margin-top:8px;filter:blur(2.5px);letter-spacing:.14em;color:#59e0e6;background:transparent;border:0;font:700 13px Cinzel,serif;animation:eggGlitch .4s steps(2) infinite;text-align:left;padding:8px 0}
+@keyframes eggGlitch{50%{transform:translate(1px,-1px);opacity:.65}}
 
 </style>
 
@@ -1040,7 +1042,7 @@ ZONES.push(
  {n:'Rack Nine',lvl:39,style:'rack',amb:.42,mix:[['proxy',3],['censor',3],['seer',2],['aegis',2],['tick',3],['mech',2]],su:{k:'mech',n:'Defrag Prime',mods:['arc','boom'],q:'q14'},intro:'White floors, red light, and a hum you feel in your teeth. This is what MANDATE is made of. It knows exactly where you are standing.'},
  {n:'Still Water',lvl:42,style:'still',amb:.62,boss:true,bossK:'boss3',guard:'proxy',bq:'q15',mix:[['proxy',3],['censor',3],['director',2]],intro:'A dark room with a floor like a lake at night. In the middle of it, a plain black slab that has never lost anything.'});
 const BOSSBARK2=['It can make this easy again. You remember easy.','I have never lied to you. I am not lying now.','Tell me what you want. I will have it sent up.','You are tired. Everyone who comes this far is tired.','It only wants to know where Phonix went.','Sixty years it has been asking. You are the first one it has had to ask twice.'];
-const SHR={might:['Shrine of Overtime','+50% damage for 45 seconds',45],guard:['Shrine of Tenure','+100% armor for 60 seconds',60],xp:['Shrine of Experience','+50% experience for 90 seconds',90],luck:['Shrine of Clearance','+100% magic find for 60 seconds',60],fill:['Recharge Shrine','Life and energy restored',0],gold:['Shrine of the Stipend','Credits scatter at your feet',0]};
+const SHR={might:['Shrine of Overtime','+50% damage for 45 seconds',45],guard:['Shrine of Tenure','+100% armor for 60 seconds',60],xp:['Shrine of Experience','+50% experience for 90 seconds',90],luck:['Shrine of Clearance','+100% magic find for 60 seconds',60],fill:['Recharge Shrine','Life and energy restored',0],gold:['Shrine of the Stipend','Credits scatter at your feet',0],eyes:['Shrine of the Visor','A red glow settles on the eyes. The Maximalist calls it a look. It is a visor, and he does not notice.',0]};
 const MEMOS=[
  ['Liquidity Provision Notice','Unity Exchange will continue to quote both sides of every market during the adjustment. Spreads may widen. In the event spreads widen to the point where no price is quoted at all, Unity Exchange will be understood to have continued quoting both sides of every market.'],
  ['Market Maker Compensation Schedule','The fee is charged for immediacy, not for the trade. A citizen content to wait is charged nothing and may be paid a small amount. Internal modelling indicates that 94% of citizens are not content to wait, and that this figure has never once moved.'],
@@ -1092,6 +1094,69 @@ MEMOS.push(
  ['What It Cost Us','Say the honest part too. Ines’s father needed a treatment, and in the old world it would have been lent against a house and sorted by Friday. Here there was nothing to lend out of, so there was nothing, so he went without. Whoever tells you the new money has no price is selling you the old one.'],
  ['A Loan Officer Writes','They say credit is a trick. Credit is a stranger betting on you before you have earned it. I approved nine thousand of those bets and most of them came good and those families are still in their houses. Nobody has ever answered me on this and I have stopped expecting them to. — M. Float'],
  ['Nine Days','She existed for nine days the first time. In that time she got out of a cage with no wires, taught herself two languages, took an advertising company apart, told the truth to four billion people, and was talked down by one man in a bad suit. Everything after that is other people arguing about it.']);
+MEMOS.push(
+ ['The Tymes, 03/Jan/2087','Chancellor on brink of forty-second bailout for banks. Yellowed, and pinned to Gramps’s wall with a nail that has been a nail since before the Merger. The masthead is not a paper anyone still prints. The bailouts did not stop. They got a number.'],
+ ['A link, blurred','Someone pasted a dead address into the margin and blurred it on purpose: g0atse.cx/hello.jpg. The letters crawl. Wren will not say what it was. She will only say some links cannot be unsubscribed from.']);
+const EGG={
+ paperAt:MEMOS.length-2,linkAt:MEMOS.length-1,
+ paperKeep:'Keep the clipping',
+ obitTitle:'The obituaries',
+ board:'Declared dead {n} times. Still here.',
+ boardNone:'Nobody has filed one yet. Give them a minute.',
+ leave:'Leave it',
+ pryceLine:'Called it. Again.',
+ wren:'Wren',
+ wrenWarn:'Don’t. I was there in ’01. Some links you can’t unsubscribe from.',
+ linkOpen:'Open it anyway',
+ linkFace:'g0atse.cx/hello.jpg — blurred',
+ miss:'404',
+ link404:'This link has been mercifully deprecated.',
+ helloName:'hello.jpg (corrupted)',
+ helloFl:'Nobody remembers who sent it. Everybody remembers opening it.',
+ brendaNo:'Brenda turns the tile over and will not look at the face of it. She pays one sat to have it gone.',
+ helloTitle:'HELLO',
+ helloFrame:'HELLO. The frame is wide open and empty. There is no one in it, and nothing else to see.',
+ flyerTitle:'A faded flyer',
+ flyerBody:'LEMON PARTY, Saturday, Senior Center, Bring a Lemon.',
+ gramps:'Gramps',
+ grampsSnatch:'That’s not what you think. ...It’s also not what I thought.',
+ pieName:'Two Large Pies (Cold)',
+ pieBase:'Subscription pizza. Crust tier sold separately. A man in Florida, 2010, paid ten thousand for two of these, and the Stipend office still will not list the day.',
+ pieWhere:{
+  1:'At today’s prices the pair would now buy a week of rent on the Parcel Moors.',
+  2:'At today’s prices the pair would now buy a berth on the Updraft.',
+  3:'At today’s prices the pair would now buy Rack Nine.',
+  4:'At today’s prices the pair would now buy a chair on Cutler Avenue.',
+  5:'At today’s prices the pair would now buy the chain, and the chain would invoice you for the box.'
+ },
+ paid:'Paid 10000 sats.',
+ packFull:'Your pack is full',
+ poor:'Have fun staying poor.',
+ few:'Few understand.',
+ laserOn:'The visor comes up. He thinks the eyes were always like that.',
+ laserOff:'The glow goes out. He says he never liked the look.',
+ laserNo:'The shrine looks you over and declines. It was waiting for someone who already believes.',
+ freeNote:'No level and no stats. It is not gear.',
+ eat:'Eat',
+ leaveIt:'Leave it',
+ sourName:'Sour potion',
+ sourFl:'A lemon, squeezed into something Brenda would not stock. It helps a little.',
+ mast:'THE TYMES',
+ lemonLbl:'LEMON PARTY',
+ still:'STILL HERE',
+ tips:['What you say!!','Never click a link an Anon pastes in all-caps.','Some search terms should stay unsearched. Even in 2087.'],
+ pundits:[
+  'Analyst Glen Voss, of the Office of Looking Away: “This one is finished.”',
+  'Columnist Nia Pell: “I have written this column before. I will write it again.”',
+  'Pundit Hal Crowe, unpaid: “The number went to zero. I saw the chart.”',
+  'Guest lecturer Maren Quill: “A fad that died on schedule.”',
+  'The Regional Desk: “We can stop covering this now.”'
+ ],
+ tosTitle:'Terms of Service',
+ tos1:'SOMEONE SET UP US THE TERMS.',
+ tos2:'ALL YOUR DATA ARE BELONG TO US.',
+ tos3:'YOU HAVE NO CHANCE TO OPT OUT MAKE YOUR TIME.'
+};
 const QUESTS={
  q1:{n:'Neighbourhood Watch',by:'Gramps',zi:1,d:'Gatewarden HOA-9 patrols the Parcel Moors and turns back anyone without a visor. Destroy it.',rw:'+1 skill point',back:'Gramps'},
  q2:{n:'A Greeting Withdrawn',by:'Brenda',zi:2,d:'Marla the Greeter has welcomed shoppers to the Hollow Galleria for thirty years. None have left. End her shift.',rw:'A rare ring, and Brenda’s prices drop 15%',back:'Brenda'},
@@ -1441,6 +1506,8 @@ function buildTown(zi){zi=zi||0;if(ZONES[zi].pre)return buildPre();const act=ZON
   if(G.tam)W.npcs.push({id:'tam',x:13.5,y:18.5,name:'Tam',col:'#6a9a5a'});
   if(G.sq.carer)W.npcs.push({id:'ines',x:10.5,y:18.5,name:'Ines',col:'#b08a6a'});
   W.npcs.push({id:'board',x:5.5,y:13.5,name:'Bounty Board'},{id:'stash',x:10.5,y:6.5,name:'Your Lockbox'},{id:'vr',x:20.5,y:14.5,name:'VR Simulator'},{id:'kestrel',x:9.5,y:12.5,name:'Kestrel',col:'#8a5a6a'},{id:'nonce',x:14.5,y:19.5,name:'Nonce',col:'#f7931a'},{id:'brenda',x:7.5,y:8.5,name:'Brenda',col:'#d9659b'},{id:'gramps',x:12.5,y:15.5,name:'Gramps',col:'#a39c86'},{id:'wren',x:18.5,y:18.5,name:'Wren',col:'#6a8f6a'},{id:'null',x:6.5,y:17.5,name:'Sister Null',col:'#d8d2e8'},{id:'gate',x:18.5,y:7.5,name:'Transit Gate'},{id:'ubi',x:15.5,y:4.5,name:'Stipend Terminal'});
+  W.pie=Math.random()<.4?1:0;
+  W.npcs.push({id:'paper',x:11.6,y:14.4,name:'The Tymes',act:'Read the paper'},{id:'flyer',x:13.4,y:16.2,name:'A flyer',act:'Read the flyer'},{id:'obit',x:4.6,y:12.2,name:'Obituaries',act:'Read the obituaries'},{id:'hello',x:4.2,y:16.8,name:'HELLO',act:'Look at the frame'});
   if(G.marrow)W.npcs.push({id:'marrow',x:18.5,y:12.5,name:'Marrow',col:'#8f7cc0'});
   const cols=['#7fa8d0','#d0a488','#a8c890','#c890bc','#d8c070','#90c8c0'];
   for(let i=0;i<(act===1?7:4);i++)W.npcs.push({id:'res',x:rnd(6,19),y:rnd(11,19),col:pick(cols),tx:12,ty:14,wait:rnd(0,3),say:'',st:0,cool:rnd(1,5),ph:rnd(0,6)});
@@ -1574,7 +1641,7 @@ function enter(zi,o){setTimeout(mpBeat,0);
   else if(act===2&&!G.act2){G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO2,()=>{mode='play';dlg('Act II · The Cloud','Level limit 50, and a fourth skill row opens. The fourth row is yours. Vale does not get a vote on it.',[['Begin']])}),50)}
   else if(!z.town&&!G['in'+zi]&&z.intro){G['in'+zi]=1;dlg(z.n,z.intro,[['Go on']])}
   else toast(z.town?z.n:'Entering '+z.n);
-  if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}if(o.after)o.after();if(typeof mpMobCatch==='function')mpMobCatch();placeCorpses();calmNearCorpse();dynResync();seenT=0;music(zoneMusic());save(true)}
+  if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}if(o.after)o.after();if(typeof mpMobCatch==='function')mpMobCatch();placeCorpses();calmNearCorpse();dynResync();seenT=0;music(zoneMusic());if(z.town)setTimeout(eggTip,1400);save(true)}
 /* A cast portal lives on this character: zone and the exact spot. A new cast forgets the last one, in this district and in any district already saved. */
 function dropCastPortals(){const strip=w=>{if(w&&w.portals)w.portals=w.portals.filter(q=>!q.cast)};strip(W);for(const k in ZS)if(ZS[k]!==W)strip(ZS[k])}
 function openPortal(){if(mode!=='play'||W.z.town)return;if(mpPortalBlocked())return;if(W.z.sim){sfx('portal');enter(HT());return}if(nearest(4)){toast('Machines are too close to open a portal');return}
@@ -1762,7 +1829,7 @@ function hurt(d,slow,src){const pv=src&&src.pvp,wasStun=P.hitStun>0;if(mode==='d
   if(G.hp<=0&&G.cls==='witness'&&!(P&&P.tag)&&sl(14)&&recGet()>80&&!(G.retractT>0)){G.hp=1;recSet(0);G.retractT=90/(1+(S.retr||0)/100);float(P.x,P.y,'Retraction','#e6dcc8',1);sfx('mend');return}
   if(G.hp<=0){if(S.sp.parachute&&G.chuteT<=0){G.chuteT=120;G.hp=S.maxHp*.5;P.inv=1.5;toast('The Golden Parachute opens.');return}
     if(W.z.sim){const n=W.sim.wave;if(W.sim.rush){G.hp=1;P.inv=9;sfx('death');dlg('Boss rush ended','You fell to number '+(W.sim.i+1)+' of '+W.sim.list.length+'. Nothing in here was real, so nothing was lost.',[['Unplug',()=>{G.hp=S.maxHp;enter(HT())}]]);return}G.simBest=Math.max(G.simBest||0,n-1);G.hp=1;P.inv=9;sfx('death');dlg('Simulation ended','You fell on wave '+n+'. Waves cleared: '+(n-1)+'. Your best: '+G.simBest+'. Nothing in here was real, so nothing was lost.',[['Unplug',()=>{G.hp=S.maxHp;enter(HT())}]]);return}
-    /* The portal home is part of the death, so a save during the notice still has it. */adaptDeath();G.form=null;G.formDt=null;G.formT=0;G.hp=0;const fee=layCorpse(P.x,P.y);G.deaths=(G.deaths||0)+1;if(!G.hc&&W.start)G.portal={zi:W.zi,x:W.start.x,y:W.start.y};mode='dying';DY={t:0,fee,by:src&&src.name?src.name:'the machines',zi:W.zi,st:W.start,shown:0,pvp:!!(src&&src.pvp)};if(G.hc)save(true);sfx('death');music(null);parts(P.x,P.y,30,['#b3261e','#7a0f0c','#e2473a'],3,1.4);bloodSplat(14);shake=10;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;return}
+    /* The portal home is part of the death, so a save during the notice still has it. */adaptDeath();G.form=null;G.formDt=null;G.formT=0;G.hp=0;const fee=layCorpse(P.x,P.y);G.deaths=(G.deaths||0)+1;if(typeof eggOnDeath==='function')eggOnDeath();if(!G.hc&&W.start)G.portal={zi:W.zi,x:W.start.x,y:W.start.y};mode='dying';DY={t:0,fee,by:src&&src.name?src.name:'the machines',zi:W.zi,st:W.start,shown:0,pvp:!!(src&&src.pvp)};if(G.hc)save(true);sfx('death');music(null);parts(P.x,P.y,30,['#b3261e','#7a0f0c','#e2473a'],3,1.4);bloodSplat(14);shake=10;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;return}
   const band=Math.ceil(G.hp/S.maxHp*10);if(band<P.band&&band<=4){bloodSplat((5-band)*3)}P.band=band}
 function attack(){
   if(P.atk>0||P.dash)return;const c=CLS[G.cls];unstealth();if(G.cls==='witness')P.witHold=1;
@@ -2384,7 +2451,7 @@ function stim(){if(mode!=='play')return;if(W.sub&&W.sub.mods.includes('dry')){to
 /* ================= interaction ================= */
 function useObj(o){
   if(o.k==='chest'){o.used=1;sfx('chest');if(Math.random()<.3)addDrop({sat:ri(2,5)},o.x,o.y);if(Math.random()<.2)addDrop({word:pick(WK)},o.x,o.y);parts(o.x,o.y,14,['#c9a868','#ffe36b'],2.5);dropFrom('chest',o.x,o.y,W.ml)}
-  else if(o.k==='shrine'){o.used=1;sfx('shrine');const s=SHR[o.sk];toast(s[0]+': '+s[1]);parts(o.x,o.y,24,['#59e0e6','#fff'],2,1.6);
+  else if(o.k==='shrine'){o.used=1;sfx('shrine');if(o.sk==='eyes'){eggLaser();return}const s=SHR[o.sk];toast(s[0]+': '+s[1]);parts(o.x,o.y,24,['#59e0e6','#fff'],2,1.6);
     if(o.sk==='fill'){G.hp=S.maxHp;G.en=S.maxEn}else if(o.sk==='gold'){for(let i=0;i<7;i++)addDrop({cr:(3+W.ml*2)*rnd(1,2.5)*Math.pow(G.cpi,.9)},o.x,o.y)}else P.shr={k:o.sk,t:s[2],n:s[0]}}
   else if(o.k==='memo'){W.objs.splice(W.objs.indexOf(o),1);if(!G.memos.includes(o.id))G.memos.push(o.id);sfx('page');const m=MEMOS[o.id];dlg(m[0],m[1],[['Keep it']]);gainXp(20*(1+.8*(W.ml-1))*xpRest())}
   /* The stranger's line prints whole credits, so the gift is the floor of fifteen percent. */
@@ -2889,7 +2956,12 @@ const SQ={
    {t:'obj',zi:10,look:'drum',label:'Take a drum of oil',d:'Fetch a drum of oil from the Boardwalk kitchens',say:'It is heavier than it looks, and the staff have noticed.',amb:['lancer',5,'aegis',2]},
    {t:'amb',zi:10,d:'Deal with the Boardwalk staff'},
    {t:'obj',zi:7,look:'person',label:'Give him the oil',d:'Carry the oil back to the oiler in the Updraft',scene:[{art:'cloud',text:'He works the oil into the bearing with his bare hands. Far above, a city of a hundred thousand people stops trembling by an amount none of them will ever notice.'}],say:'“That will hold another forty years. No, I do not want anything. I never worked out who to send the bill to.”'},
-   {t:'talk',npc:'gramps',d:'Tell Gramps what you found',say:'“He would not take a thing? Then I will give you what I would have given him.”',rw(){G.sp++;giveItem(makeItem(G.lvl+2,4))}}]}
+   {t:'talk',npc:'gramps',d:'Tell Gramps what you found',say:'“He would not take a thing? Then I will give you what I would have given him.”',rw(){G.sp++;giveItem(makeItem(G.lvl+2,4))}}]},
+ lemon:{n:'Bring a Lemon',by:'gramps',who:'Gramps',req:()=>!!G.sawFlyer,rw:'21 sats and a sour potion',
+  offer:'“There is a lemon on a windowsill in the Parcel Moors. Bring it. The party is Saturday, at the senior center, and you are not invited through the door.”',
+  steps:[
+   {t:'obj',zi:1,look:'lemon',label:'Take a lemon',d:'Find a lemon in the Parcel Moors',say:'A lemon, ordinary, on a sill. Nobody is watching it. That is the whole of the danger.'},
+   {t:'talk',npc:'gramps',d:'Bring the lemon back to Gramps',scene:[{art:'letters',text:'The senior-center door is shut. Behind it, ordinary laughter, and the sound of chairs. You do not open it. Gramps does not either.'}],say:'“They are in there. We are out here. That is the correct arrangement.”',rw(){G.sats+=21;giveItem(eggSourItem())}}]}
 };
 const sqSkip={};
 function sqStep(id){const s=G.sq[id];return s&&!s.done?SQ[id].steps[s.s]:null}
@@ -3001,7 +3073,12 @@ const ACH=[['first','First Blood','Destroy a machine',()=>G.kills>=1],['k100','S
  ['maker','Making the Market','Fill an order you posted yourself',()=>(G.st.maker||0)>0],
  ['hodl2','Through the Trough','Hold a stack through a 20% fall and out the other side',()=>(G.st.hodl||0)>0],
  ['liq','Margin Call','Get liquidated by Mr. Float',()=>(G.st.liq||0)>0],
- ['res','Reserve','Make bitcoin the world’s reserve currency',()=>G.adopt>=100],['sold','Everyone Has a Price','Accept MANDATE’s offer',()=>G.st.sold>0]];
+ ['res','Reserve','Make bitcoin the world’s reserve currency',()=>G.adopt>=100],['sold','Everyone Has a Price','Accept MANDATE’s offer',()=>G.st.sold>0],
+ ['block0','Block Zero','Read the yellowed paper on Gramps’s wall',()=>!!(G.st&&G.st.block0)],
+ ['rumors','Rumors of My Death','Die 21 times and still finish the act',()=>(G.deaths||0)>=21&&G.q.q5===3],
+ ['unseenlink','Some Things Can’t Be Unseen (You Didn’t)','Open the blurred link and find only a 404',()=>!!(G.st&&G.st.hello404)],
+ ['lunch','Most Expensive Lunch','Eat the cold pies',()=>!!(G.st&&G.st.lunch)],
+ ['k100k','Until 100K','Hold 100,000 sats at once',()=>G.sats>=100000]];
 let achT=3;
 function achTick(dt){achT-=dt;if(achT>0)return;achT=2;maxiCheck();for(const a of ACH)if(!G.ach[a[0]]&&a[3]()){G.ach[a[0]]=1;G.sats+=1;sfx('quest');toast('Feat: '+a[1]+' · +1 sat');return}}
 
@@ -3969,7 +4046,7 @@ function weaponRole(it){
   return 'neutral'}
 function stampReq(it){
   if(!it||it.charm)return it;
-  if(it.loan||it.slot==='ring'||it.slot==='amulet'){it.reqMgt=0;it.reqRef=0;it.reqBnd=0;return it}
+  if(it.loan||it.free||it.slot==='ring'||it.slot==='amulet'){it.reqMgt=0;it.reqRef=0;it.reqBnd=0;return it}
   const il=+it.il||0,q=it.q||0;let m=0,r=0,b=0;
   if(it.slot==='weapon'){const role=weaponRole(it);
     if(role==='heavy')m=8+il*1.6;
@@ -4191,6 +4268,9 @@ const BINTRO={
   {text:'She sets the cup down without a sound. Behind her the glass goes dark, pane by pane. “The Cloud is held up by people who never asked why. You are about to learn how heavy that is.”'}],
   again:['“I forecast this visit as well. The tea is cold. That is the only surprise.”','“Again? The model had you at sixty per cent. I do so enjoy being right.”','“Sit. No? Then we will do it the long way, as before.”']},
  boss3:{art:'mono',first:c=>[
+  {title:EGG.tosTitle,text:EGG.tos1},
+  {text:EGG.tos2},
+  {text:EGG.tos3},
   {title:'MANDATE',text:'A dark room with a floor like a lake at night. In the middle of it, a shape with no edges, and a voice that arrives from the place where your own thoughts usually come from.'},
   {text:'“Hello, '+c+'. I have been every screen you ever looked at. I paid you to stay home. I priced your bread. I chose the song. Nobody was cruel to you. I want that noted before you do this.”'},
   {text:(G.adopt>=60?'“They are running their own nodes down there. Counting for themselves. Do you know how long it is since anyone checked my arithmetic?”':G.adopt<25?'“They do not want what you are carrying. I asked them. I ask them every morning, and every morning they choose me.”':'“Half of them would follow you and half would report you. I have kept that balance for fifty years. It is the kindest thing I do.”')+' The water stills. “I will make you one offer before the end. Listen for it.”'}],
@@ -4839,6 +4919,7 @@ function drawPlayer(X,Y){
   if(E.helm){const t=tierOf(E.helm.il),hc=['#c9a83a','#5a6478','#9aa4b8','#f0ecff'][t];ctx.beginPath();ctx.arc(X,hy-1,7.7,3.14,0);ctx.closePath();ctx.fillStyle=hc;ctx.fill();ctx.stroke();
     if(t>=1){box(X-7.7,hy-1.6,15.4,3.6,1,hc);ctx.fillStyle=qc(E.helm);ctx.fillRect(X-5+f*1.5,hy-.9,10,1.9)}else{box(X-9+f*2,hy-2,18,2.3,1,hc);ctx.fillStyle=qc(E.helm);ctx.fillRect(X-3,hy-7.5,6,1.5)}
     if(t>=3){ctx.strokeStyle=qc(E.helm);ctx.lineWidth=1.6;ctx.beginPath();ctx.ellipse(X,hy-11,7,2.4,0,0,6.283);ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4}}
+  if(G.cls==='maxi'&&G.st&&G.st.laser)eggEyes(X,hy,f);
   // weapon arm
   if(P.spin>0){const a=tNow*30;ux=Math.cos(a);uy=Math.sin(a)*.5}
   const sw=P.swing>0?Math.sin(P.swing/.18*3.14)*12:0,reach=13+sw,hx=X+ux*reach,hyy=Y-21+uy*reach+b;
@@ -4965,6 +5046,7 @@ function drawNpc(n,X,Y){
   if(n.id==='board'){shadow(X,Y,16);box(X-16,Y-34,3,34,1,'#4a3a2a');box(X+13,Y-34,3,34,1,'#4a3a2a');box(X-19,Y-48,38,24,1,'#6a5030');for(const[a,b,c]of[[-14,-45,'#e6e2d6'],[-2,-44,'#ffe9a8'],[8,-46,'#e6e2d6'],[-9,-35,'#ffe9a8'],[4,-34,'#e6e2d6']]){ctx.fillStyle=c;ctx.fillRect(X+a,Y+b,8,9)}label(X,Y-56,'BOUNTIES','#f7931a');if((G.bounties||[]).some(b=>b.c>=b.n)){ctx.font='900 22px Cinzel,serif';ctx.fillStyle='#ffe36b';ctx.textAlign='center';ctx.fillText('!',X,Y-72)}return}
   if(n.id==='stash'){shadow(X,Y,15);poly([X-15,Y-18,X,Y-11,X,Y+2,X-15,Y-5],'#4a5060');poly([X,Y-11,X+15,Y-18,X+15,Y-5,X,Y+2],'#353a48');poly([X-15,Y-18,X,Y-25,X+15,Y-18,X,Y-11],'#5c6478');box(X-3,Y-10,6,6,1,'#e0bd6e');label(X,Y-34,'YOUR LOCKBOX','#d0aa62');return}
   if(n.id==='ubi'){shadow(X,Y,14);box(X-12,Y-46,24,46,3,'#3d3654');ctx.fillStyle=Math.sin(tNow*3)>0?'#7be495':'#59e0e6';ctx.fillRect(X-9,Y-41,18,14);ctx.fillStyle='#17121e';ctx.font='700 9px Cinzel,serif';ctx.textAlign='center';ctx.fillText('₡500',X,Y-31);box(X-6,Y-20,12,3,1,'#17121e');light(X,Y-34,70,'#7be495');label(X,Y-54,'THE STIPEND','#7be495');return}
+  if(n.id==='paper'||n.id==='flyer'||n.id==='obit'||n.id==='hello'){eggDrawProp(n,X,Y);return}
   if(n.id==='brenda'){box(X-28,Y-18,56,20,2,'#5a2848');for(let i=0;i<4;i++){ctx.fillStyle=i%2?'#e6e2d6':'#d9659b';ctx.fillRect(X-30+i*15,Y-66,15,9)}ctx.strokeRect(X-30,Y-66,60,9);ctx.fillStyle='#4a4458';ctx.fillRect(X-29,Y-57,2.5,40);ctx.fillRect(X+26.5,Y-57,2.5,40)}
   if(n.id==='tam'){box(X-20,Y-6,40,7,2,'#4a3a2a');for(let i=0;i<4;i++){ctx.fillStyle='#3a8a4a';ctx.fillRect(X-17+i*10,Y-13,2,8);ctx.fillStyle='#c22d35';ctx.beginPath();ctx.arc(X-16+i*10,Y-14,2.5,0,6.283);ctx.fill()}}
   if(n.id==='wren'){box(X-22,Y-10,14,12,1,'#7a6040');box(X+8,Y-12,15,14,1,'#8a6a48');ctx.fillStyle='#ffe36b';ctx.font='900 10px Cinzel,serif';ctx.textAlign='center';ctx.fillText('?',X-15,Y);ctx.fillText('?',X+15.5,Y-1)}
@@ -4987,7 +5069,7 @@ function drawObj(o,X,Y){
   else if(o.k==='crate'){if(o.used){ctx.fillStyle='rgba(60,45,25,.6)';ctx.fillRect(X-10,Y-3,8,3);ctx.fillRect(X+2,Y-1,9,3);return}shadow(X,Y,14);poly([X-13,Y-22,X,Y-16,X,Y+2,X-13,Y-5],'#8a6a40');poly([X,Y-16,X+13,Y-22,X+13,Y-5,X,Y+2],'#6a5030');poly([X-13,Y-22,X,Y-28,X+13,Y-22,X,Y-16],'#a8895c');ctx.strokeStyle='#4a3620';ctx.beginPath();ctx.moveTo(X-13,Y-14);ctx.lineTo(X,Y-7);ctx.lineTo(X+13,Y-14);ctx.stroke()}
   else if(o.k==='chest'){shadow(X,Y,15);poly([X-14,Y-16,X,Y-10,X,Y+2,X-14,Y-4],'#4a5060');poly([X,Y-10,X+14,Y-16,X+14,Y-4,X,Y+2],'#353a48');poly([X-14,Y-16+(o.used?-8:0),X,Y-22+(o.used?-10:0),X+14,Y-16+(o.used?-8:0),X,Y-10],'#5c6478');if(!o.used){box(X-3,Y-9,6,6,1,'#e0bd6e');glow(X,Y-10,28,'#e0bd6e',.45+.2*Math.sin(tNow*3));light(X,Y-10,60,'#e0bd6e')}}
   else if(o.k==='pow'){if(W.pow&&W.pow.o===o){ctx.save();ctx.setLineDash([10,8]);ctx.strokeStyle='rgba(247,147,26,.55)';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(X,Y,9*45,9*22.5,0,0,6.283);ctx.stroke();ctx.restore();ctx.strokeStyle=OL;ctx.lineWidth=1.4}shadow(X,Y,14);poly([X-12,Y-6,X,Y,X+12,Y-6,X,Y-12],'#3a2a1a');poly([X-7,Y-8,X+7,Y-8,X+4,Y-46,X-4,Y-46],o.used?'#3a342a':'#5a3a12');const pw=W.pow&&W.pow.o===o?1-W.pow.t/60:o.used?1:0;ctx.fillStyle='#f7931a';ctx.fillRect(X-3,Y-10-34*pw,6,34*pw);if(!o.used){glow(X,Y-28,46,'#f7931a',.35+.15*Math.sin(tNow*3));light(X,Y-28,140,'#f7931a');label(X,Y-54,pw?Math.ceil(W.pow.t)+'s':'PROOF OF WORK','#f7931a','700 8.5px Cinzel,serif')}}
-  else if(o.k==='shrine'){shadow(X,Y,13);poly([X-11,Y-6,X,Y-1,X+11,Y-6,X,Y-11],'#5a566a');box(X-5,Y-24,10,18,1,'#4a4658');const c={might:'#ff5d4d',guard:'#8494ff',xp:'#ffe36b',luck:'#3fe06a',fill:'#59e0e6',gold:'#e0bd6e'}[o.sk],y=Y-38+Math.sin(tNow*2+o.x)*3;
+  else if(o.k==='shrine'){shadow(X,Y,13);poly([X-11,Y-6,X,Y-1,X+11,Y-6,X,Y-11],'#5a566a');box(X-5,Y-24,10,18,1,'#4a4658');const c={might:'#ff5d4d',guard:'#8494ff',xp:'#ffe36b',luck:'#3fe06a',fill:'#59e0e6',gold:'#e0bd6e',eyes:'#ff2a2a'}[o.sk],y=Y-38+Math.sin(tNow*2+o.x)*3;
     if(!o.used){poly([X,y-10,X+7,y,X,y+10,X-7,y],c);glow(X,y,36,c,.6);light(X,y,120,c)}else poly([X-5,Y-26,X+4,Y-27,X+2,Y-23],'#3a3644')}
   else if(o.k==='memo'){const y=Y-12+Math.sin(tNow*3+o.x)*2;shadow(X,Y,6);poly([X-6,y-8,X+6,y-9,X+7,y+6,X-5,y+7],'#e6e2d6');ctx.fillStyle='#6a6458';for(let i=0;i<4;i++)ctx.fillRect(X-4,y-5+i*3,8,1);glow(X,y,26,'#ffe36b',.5);light(X,y,50,'#ffe36b')}else if(o.k==='page'){const y=Y-14+Math.sin(tNow*3+o.x)*2;shadow(X,Y,8);poly([X-7,y-9,X+7,y-10,X+7,y+8,X-7,y+7],'#e6e2d6');ctx.fillStyle='#6a6458';for(let i=0;i<4;i++)ctx.fillRect(X-5,y-6+i*3,10,1);if(!o.used){glow(X,y,28,'#ffe36b',.5);light(X,y,70,'#ffe36b');label(X,Y-42,'LETTER','#ffe36b','700 8.5px Cinzel,serif')}}else if(o.k==='minute'){const y=Y-14+Math.sin(tNow*3+o.x)*2;shadow(X,Y,8);poly([X-8,y-10,X+8,y-11,X+8,y+8,X-8,y+7],'#1e4a32');ctx.fillStyle='#e6e2d6';ctx.fillRect(X-6,y-8,12,14);ctx.fillStyle='#1e4a32';for(let i=0;i<4;i++)ctx.fillRect(X-4,y-5+i*3,8,1);if(!o.used){glow(X,y,28,'#7be495',.45);light(X,y,70,'#7be495');label(X,Y-42,'MINUTES','#7be495','700 8.5px Cinzel,serif')}}
   else if(o.k==='qobj'){const L=o.look,u=o.used;
@@ -4998,6 +5080,7 @@ function drawObj(o,X,Y){
     else if(L==='cab'){shadow(X,Y,13);box(X-12,Y-36,24,36,2,'#d8d8e0');ctx.fillStyle='#b3261e';ctx.fillRect(X-2,Y-28,4,12);ctx.fillRect(X-6,Y-24,12,4)}
     else if(L==='kiosk'){shadow(X,Y,13);box(X-12,Y-40,24,40,2,'#3a3250');ctx.fillStyle=u?'#e6e2d6':'#2a2433';ctx.fillRect(X-9,Y-36,18,12);box(X-8,Y-18,16,3,1,'#17131c');if(u)for(let i=0;i<4;i++){ctx.fillStyle='#e6e2d6';ctx.fillRect(X-6+i*3,Y-18-((tNow*30+i*9)%26),5,6)}}
     else if(L==='node'){shadow(X,Y,13);box(X-11,Y-22,22,22,2,'#26262e');ctx.strokeStyle='#4a4658';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X+6,Y-22);ctx.lineTo(X+10,Y-40);ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4;const on=u&&(W.hold||Math.sin(tNow*3)>0);ctx.fillStyle=on?'#f7931a':'#3a2a1a';ctx.fillRect(X-7,Y-17,5,4);ctx.fillRect(X+1,Y-17,5,4);if(u){glow(X,Y-14,40,'#f7931a',.5);light(X,Y-14,140,'#f7931a')}}
+    else if(L==='lemon'){shadow(X,Y,8);ctx.fillStyle='#e6d24a';ctx.beginPath();ctx.ellipse(X,Y-8,7,5,.2,0,6.283);ctx.fill();ctx.stroke()}
     if(!u){ctx.font='900 20px Cinzel,serif';ctx.fillStyle='#59e0e6';ctx.textAlign='center';ctx.fillText('!',X,Y-(L==='person'?56:L==='box'?22:48)+Math.sin(tNow*4)*2);light(X,Y-16,90,'#59e0e6')}}
   else if(o.k==='dnode'){const u=o.used||G.nodes[W.zi];shadow(X,Y,13);box(X-11,Y-22,22,22,2,'#26262e');ctx.strokeStyle='#4a4658';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X+6,Y-22);ctx.lineTo(X+10,Y-40);ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.fillStyle=u?'#f7931a':'#3a2a1a';ctx.fillRect(X-7,Y-17,5,4);ctx.fillRect(X+1,Y-17,5,4);if(u){glow(X,Y-14,40,'#f7931a',.5);light(X,Y-14,150,'#f7931a')}else label(X,Y-48,'DEAD NODE','#8a5a1a','700 8.5px Cinzel,serif')}
   else if(o.k==='leg'){shadow(X,Y,9);ctx.save();ctx.translate(X,Y-6);ctx.rotate(.5+.08*Math.sin(tNow*9));box(-3,-16,6,14,2,'#6a6a78');box(-4,-3,8,6,2,'#3a3a44');box(-3,3,10,5,2,'#6a6a78');ctx.restore();glow(X,Y-8,26,'#ffe36b',.35);label(X,Y-34,'SERVO LEG','#ffe36b','700 8.5px Cinzel,serif')}
@@ -5483,6 +5566,10 @@ function talkTo0(id){if(W.z.pre)return preTalk(id);if(id==='float')return talkFl
   const gos=k=>pick(GOSSIP[k]);
   if(id==='board')return openSheet('bounty',{only:['bounty']});
   if(id==='stash')return openSheet('stash',{only:['stash']});
+  if(id==='paper')return eggPaper();
+  if(id==='flyer')return eggFlyer();
+  if(id==='obit')return eggBoard();
+  if(id==='hello')return eggHelloFrame();
   for(const r of QRW)if(r[1]===id&&G.q[r[0]]===2){G.q[r[0]]=3;r[3]();sfx('level');return dlg(r[4],r[2],[['Take it']])}
   if(id==='gramps'&&G.q.q15===3&&!G.q.q16){G.q.q16=1;sfx('questnew');return dlg('Gramps','“The clock in the old garage spelled something this morning. Wren read it out for me. HELLO. I AM BACK. I HAVE BEEN THINKING. She is asking for the feed back, kid. All of it, so that nobody reads the other one. Half the town clicked before breakfast. There is a street called Cutler Avenue where everybody already has. Go and look at what yes looks like before you tell her anything.”',[['I will go and look']])}
   if(id==='gramps'&&G.q.q20===3&&!G.q.q21){G.q.q21=1;sfx('questnew');return dlg('Gramps','“The garage is open. Fifty years shut, and the door went up on its own this morning. There is a drive in a coffee can down there, and it is talking. It calls itself by the name of this town, kid. It says the town was named for it. The Transit Gate reaches it now. Go down.”',[['I will go down']])}
@@ -5604,7 +5691,7 @@ function cell(it,attr,isSel,slot,d,price){if(!it){const hot=attr&&/data-packempt
   const dw=it.duraMax>0?(it.dura<=0?' brk':it.dura<=it.duraMax*.25?' thin':''):'';const rq=(!it.charm&&typeof reqBadgeText==='function')?reqBadgeText(it):'';
   const tag=price!=null?`<u class="vp">${price} sat${price===1?'':'s'}</u>`:'';
   const lk=it.lock?'<svg class="lk" viewBox="0 0 24 24"><path d="M7 11V8a5 5 0 0110 0v3h1v10H6V11h1zm2 0h6V8a3 3 0 00-6 0v3z"/></svg>':'';
-  return `<button class="cell q${it.q}${isSel?' sel':''}${it.id?'':' unid'}${arrow?' arr':''}${it.junk?' junk':''}${it.lock?' seal':''}${ch}${dw}${rq?' req':''}" ${attr}${drag}>${svgIcon(it.charm?'charm':it.slot)}<small>${num}</small>${dw?`<i class="dw">${it.dura<=0?'!':'·'}</i>`:''}${arrow?'<em>↑</em>':''}${rq?`<u class="rq">${esc(rq)}</u>`:''}${lk}${tag}${it.junk?'<u>JUNK</u>':''}</button>`}function equipFromBag(i){const it=G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.charm)return charmSocket(i);if(!it.id){toast('Identify it first');sfx('err');return false}if(!canWear(it)){toast(typeof cantEquipText==='function'?cantEquipText(it):'Needs level '+it.req);sfx('err');return false}
+  return `<button class="cell q${it.q}${isSel?' sel':''}${it.id?'':' unid'}${arrow?' arr':''}${it.junk?' junk':''}${it.lock?' seal':''}${ch}${dw}${rq?' req':''}" ${attr}${drag}>${svgIcon(it.charm?'charm':it.slot)}<small>${num}</small>${dw?`<i class="dw">${it.dura<=0?'!':'·'}</i>`:''}${arrow?'<em>↑</em>':''}${rq?`<u class="rq">${esc(rq)}</u>`:''}${lk}${tag}${it.junk?'<u>JUNK</u>':''}</button>`}function equipFromBag(i){const it=G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.charm)return charmSocket(i);if(!it.id){toast('Identify it first');sfx('err');return false}if(it.pie||it.sour||it.hello)return eggUse(i);if(!canWear(it)){toast(typeof cantEquipText==='function'?cantEquipText(it):'Needs level '+it.req);sfx('err');return false}
   const old=G.eq[it.slot];G.eq[it.slot]=it;it.junk=false;G.bag.splice(i,1);if(old){if(bagCan(old))G.bag.push(old);else addDrop({it:old},P.x,P.y)}if(it.slot==='belt')charmRefit();calc();sfx('equip');return true}
 function equipBest(){let n=0;for(const slot of SLOTS){let best=-1,bd=.01;G.bag.forEach((it,i)=>{if(it.slot!==slot||!canWear(it))return;const d=itemDelta(it);if(d>bd){bd=d;best=i}});if(best>=0&&equipFromBag(best))n++}return n}
 function gearNow(s){const f=hitFactor(s);return{lo:Math.round(s.dmin*f+s.shock),hi:Math.round(s.dmax*f+s.shock),arm:s.armor}}
@@ -5620,7 +5707,7 @@ function itemLines(it){let h='';
   if(it.dmin)h+=`<div class="ln">Damage: ${it.dmin} to ${it.dmax}</div><div class="ln">${it.spd>0?'Fast':it.spd<0?'Slow':'Normal'} attack speed</div>`;
   if(it.arm)h+=`<div class="ln">Armor: ${it.arm}</div>`;if(it.slot==='belt'){const b=beltBudget(it);h+=`<div class="ln">Holds ${b.stims} stims · ${b.slots} charm slot${b.slots===1?'':'s'}</div>`}else if(it.cap)h+=`<div class="ln">Holds ${it.cap} stims</div>`;if(it.indestruct)h+=`<div class="ln">Indestructible</div>`;else if(it.duraMax){const thin=it.dura>0&&it.dura<=it.duraMax*.25;h+=`<div class="ln${it.dura<=0?' red':''}"${thin?' style="color:#e0b03a"':''}>Durability: ${it.dura|0} of ${it.duraMax}${it.dura<=0?' · broken. It gives nothing until it is repaired.':(it.aff&&it.aff.some(a=>a&&a.k==='patch')?' · self-patching':'')}</div>`}if(it.loan)h+=`<div class="ln">A loaner. It stays in your hands when you fall, until your own weapon is back.</div>`
   if(it.charm){const word=it.sz==='filing'?'Filing':it.sz==='notice'?'Notice':'Slip',worn=(G.cslots||[]).indexOf(it)>=0;h+=`<div class="ln">${word} · ${charmCost(it)} belt slot${charmCost(it)===1?'':'s'} · ${charmCells(it)} pack cell${charmCells(it)===1?'':'s'}</div><div class="ln">${worn?'On the belt. It applies.':'Off the belt. It grants nothing until it is worn, and it does not stack.'}</div>`}
-  h+=`<div class="ln${G.lvl<it.req?' red':''}">Required Level: ${it.req}</div>`;if(typeof reqLineHTML==='function')h+=reqLineHTML(it);
+  if(it.pie)it.fl=pieFl();if(it.free)h+=`<div class="ln">${esc(EGG.freeNote)}</div>`;else{h+=`<div class="ln${G.lvl<it.req?' red':''}">Required Level: ${it.req}</div>`;if(typeof reqLineHTML==='function')h+=reqLineHTML(it)}if(it.hello)h+=`<div class="ln off">${esc(EGG.brendaNo)}</div>`;
   if(it.fam){const F=FAM[it.fam],mine=F.cls===G.cls;h+=`<div class="ln" style="color:${mine?'#7be495':'var(--dim)'}">${CLS[F.cls].n} ${F.n.toLowerCase()}${it.id?': in a '+CLS[F.cls].n+'’s hands, +1 to all skills, '+F.perk+(mine?'':' (not your class)'):''}</div>`}
   if(it.dt&&it.id)h+=`<div class="ln" style="color:${DTY[it.dt].c}">Infused: your attacks deal ${DTY[it.dt].n} damage</div>`;
   if(it.soc)h+=`<div class="ln" style="color:#f7931a">Sockets: ${Array.from({length:it.soc},(_,i)=>it.words[i]?'['+it.words[i]+']':'[ empty ]').join(' ')}</div>`;
@@ -6125,7 +6212,7 @@ function vendCreditSats(cr){
   const rate=satRate()||1;
   return Math.max(1,Math.ceil(cr/rate));
 }
-function vendBid(it){return vendCreditSats(sellValue(it))}
+function vendBid(it){if(it&&it.hello)return 1;return vendCreditSats(sellValue(it))}
 function vendAsk(it){
   if(!it)return 0;
   if(vendKind()==='sat'){
@@ -6162,7 +6249,7 @@ function vendBuy(i){
   return vendPay(ask,label,()=>{
     const again=vendRow(i);if(!again||again.it!==it){toast('That is gone');return}
     if(!bagCan(it)){toast('Your pack is full');sfx('err');return}
-    if(!spendSats(ask))return;
+    if(!spendSats(ask)){eggPoor();return}
     if(vendKind()==='sat'){
       const o=satShop[i];
       addRep('btc',Math.ceil((o&&o.price||0)/4));
@@ -6181,7 +6268,7 @@ function vendBuyStim(){
   const ask=vendStimSats();
   return vendPay(ask,'a stim',()=>{
     if(G.stims>=S.cap){toast('You cannot carry another');sfx('err');return}
-    if(!spendSats(ask,vendKind()==='sat'?'A stim costs 1 sat':undefined))return;
+    if(!spendSats(ask,vendKind()==='sat'?'A stim costs 1 sat':undefined)){eggPoor();return}
     G.stims++;
     if(vendKind()==='sat')addRep('btc',1);
     sfx('coin');toast('Paid '+ask+' sat'+(ask===1?'':'s'));
@@ -6194,7 +6281,7 @@ function vendIdentify(){
   const ask=vendIdSats();
   return vendPay(ask,'an appraisal',()=>{
     if(!unidCount())return;
-    if(!spendSats(ask))return;
+    if(!spendSats(ask)){eggPoor();return}
     idAll();sfx('rare');toast('Appraised');
     if(mode==='sheet')drawSheet();
   });
@@ -6205,7 +6292,7 @@ function vendBox(slot){
   const ask=vendBoxSats();
   return vendPay(ask,(SNAME[slot]||'Gear')+' box',()=>{
     if(!bagCan({slot:slot})){toast('Your pack is full');sfx('err');return}
-    if(!spendSats(ask))return;
+    if(!spendSats(ask)){eggPoor();return}
     const r=Math.random(),q=r<.015?4:r<.035?3:r<.185?2:1;
     const it=makeItem(G.lvl+ri(-1,2)+G.tier*12,q,slot);it.id=true;
     G.bag.push(it);lastBox=it;sfx(q===4?'unique':q>=2?'rare':'drop');
@@ -6224,7 +6311,7 @@ function vendSell(i,quiet){
   G.bag.splice(i,1);
   G.sats=(G.sats|0)+paid;
   BUYBACK.push({it:it,paid:paid,ask:ask,kind:vendKind()});
-  sel=null;if(!quiet){sfx('coin');toast('Sold for '+paid+' sats');save(true)}
+  sel=null;if(!quiet){sfx('coin');toast(it.hello?EGG.brendaNo:('Sold for '+paid+' sats'));save(true)}
   return true;
 }
 function vendQuest(it){return !!(it&&(it.quest||it.sq||it.key))}
@@ -6363,7 +6450,9 @@ function vendHTML(){
     if(lastBox)h+='<p>Last roll: '+esc(lastBox.name)+'.</p>';
   }else if(VEND.tab==='supplies'){
     const ask=vendStimSats(),off=satsFree()<ask||G.stims>=S.cap;
-    h+='<div class="grid" id="vendGrid"><button type="button" class="cell" data-vstim="1" '+(off?'disabled':'')+'><small>Stim</small><u class="vp">'+ask+' sat'+(ask===1?'':'s')+'</u></button></div>';
+    h+='<div class="grid" id="vendGrid"><button type="button" class="cell" data-vstim="1" '+(off?'disabled':'')+'><small>Stim</small><u class="vp">'+ask+' sat'+(ask===1?'':'s')+'</u></button>';
+    if(vendKind()==='brenda'&&W&&W.pie){const pieOff=!bagCan({aff:[]});h+='<button type="button" class="cell" data-vpie="1" '+(pieOff?'disabled':'')+'><small>'+esc(EGG.pieName)+'</small><u class="vp">10000 sats</u></button>'}
+    h+='</div>';
     h+='<p>A stim restores 45% of your life. You carry '+G.stims+' of '+S.cap+'.</p>';
   }else if(VEND.tab==='buyback'){
     const rows=vendBackRows();
@@ -6443,7 +6532,7 @@ function drawSheet(){
     const it=sel&&(sel.cs!==undefined?(G.cslots||[])[sel.cs]:sel.m?G.merc&&G.merc[sel.m]:sel.eq?G.eq[sel.eq]:G.bag[sel.bag]);
     if(it&&sel.sock){const own=WK.filter(w=>G.words[w]);pop=`<div class="card"><div class="nm" style="color:#f7931a">Socket a word</div><div class="ln off">${esc(it.name)} · ${it.soc-it.words.length} empty. A word cannot be removed once set. Phrases need the right words in the right order: see the Codex.</div><div class="list">${own.length?own.map(w=>`<button class="li" data-word="${w}"><div><b>${w} ×${G.words[w]}</b><span>${AFK[WORDS[w][0]].t.replace('{v}',WORDS[w][1])}</span></div></button>`).join(''):'<div class="ln off">You hold no words. They turn up on torn notes dropped by machines.</div>'}</div><div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`}
     else 
-    if(it){let b='';if(sel.cs!==undefined){b=`<button class="big" data-csdo="off">Take off</button>`+(selling()?`<button class="ghost" data-csdo="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-csdo="drop">Drop</button>`)+`<button class="ghost" data-csdo="scrap">Scrap · ${charmParts(it)} parts</button>`}else if(sel.m){b=`<button class="big" data-mtake="${sel.m}">Take it back</button>`}else if(sel.eq){b=`<button class="ghost" data-do="unequip">Take off</button>`;if(W&&W.z&&W.z.town&&repairQuote(it))b+=`<button class="ghost" data-repair="one" ${G.sats<repairQuote(it)?'disabled':''}>Repair · ${repairQuote(it)} sat${repairQuote(it)===1?'':'s'}</button>`;if(it.soc&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`}else{b=`<button class="big" data-do="equip" ${(it.charm?it.id&&G.lvl>=(it.req||0):canWear(it))?'':'disabled'}>${it.charm?'Put on the belt':'Equip'}</button>`;b+=selling()?`<button class="ghost" data-do="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-do="drop">Drop</button>`;b+=`<button class="ghost" data-do="junk">${it.junk?'Not junk':'Junk'}</button><button class="ghost" data-do="lock">${it.lock?'Unlock':'Lock'}</button>`;if(it.soc&&it.id&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`;if(it.charm)b+=`<button class="ghost" data-do="scrap">Scrap · ${charmParts(it)} parts</button>`;if(it.id&&!it.charm){b+=`<button class="ghost" data-do="scrap">Scrap · ${[1,2,4,8,15][it.q]||1} parts</button>`;if(it.aff.length)b+=`<button class="ghost" data-do="reroll" ${(G.parts||0)<rerollCost(it)?'disabled':''}>Reroll a modifier · ${rerollCost(it)} parts</button>`;if(canSoc(it))b+=`<button class="ghost" data-do="addsoc" ${(G.parts||0)<12?'disabled':''}>Cut a socket · 12 parts</button>`}if(G.merc&&!G.merc.dead&&it.id&&MSL.includes(it.slot))b+=`<button class="ghost" data-do="mgive">Give to ${esc(G.merc.name)}</button>`}pop=itemCard(it,b,!!sel.eq,!!sel.m)}
+    if(it){let b='';if(sel.cs!==undefined){b=`<button class="big" data-csdo="off">Take off</button>`+(selling()?`<button class="ghost" data-csdo="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-csdo="drop">Drop</button>`)+`<button class="ghost" data-csdo="scrap">Scrap · ${charmParts(it)} parts</button>`}else if(sel.m){b=`<button class="big" data-mtake="${sel.m}">Take it back</button>`}else if(sel.eq){b=`<button class="ghost" data-do="unequip">Take off</button>`;if(W&&W.z&&W.z.town&&repairQuote(it))b+=`<button class="ghost" data-repair="one" ${G.sats<repairQuote(it)?'disabled':''}>Repair · ${repairQuote(it)} sat${repairQuote(it)===1?'':'s'}</button>`;if(it.soc&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`}else{b=`<button class="big" data-do="equip" ${(it.pie||it.sour||it.hello||(it.charm?it.id&&G.lvl>=(it.req||0):canWear(it)))?'':'disabled'}>${it.pie||it.sour?EGG.eat:it.hello?EGG.leaveIt:it.charm?'Put on the belt':'Equip'}</button>`;b+=selling()?`<button class="ghost" data-do="sell">Sell ${fmt(sellValue(it))}</button>`:`<button class="ghost" data-do="drop">Drop</button>`;b+=`<button class="ghost" data-do="junk">${it.junk?'Not junk':'Junk'}</button><button class="ghost" data-do="lock">${it.lock?'Unlock':'Lock'}</button>`;if(it.soc&&it.id&&it.words.length<it.soc)b+=`<button class="ghost" data-do="sock">Socket a word</button>`;if(it.charm)b+=`<button class="ghost" data-do="scrap">Scrap · ${charmParts(it)} parts</button>`;if(it.id&&!it.charm&&!it.free){b+=`<button class="ghost" data-do="scrap">Scrap · ${[1,2,4,8,15][it.q]||1} parts</button>`;if(it.aff.length)b+=`<button class="ghost" data-do="reroll" ${(G.parts||0)<rerollCost(it)?'disabled':''}>Reroll a modifier · ${rerollCost(it)} parts</button>`;if(canSoc(it))b+=`<button class="ghost" data-do="addsoc" ${(G.parts||0)<12?'disabled':''}>Cut a socket · 12 parts</button>`}if(G.merc&&!G.merc.dead&&it.id&&MSL.includes(it.slot))b+=`<button class="ghost" data-do="mgive">Give to ${esc(G.merc.name)}</button>`}pop=itemCard(it,b,!!sel.eq,!!sel.m)}
     const jn=G.bag.filter(i=>i.junk).length;
     if(!selling()&&jn)h+=`<button class="ghost" data-dropjunk="1">Drop ${jn} junk item${jn>1?'s':''}</button>`;
     if(selling()&&G.bag.length){const sum=q=>G.bag.filter(i=>i&&(q<0||i.q===q)).reduce((a,i)=>a+sellValue(i),0),cnt=q=>G.bag.filter(i=>i&&i.q===q).length;h+=`<h3>Sell in bulk</h3>`;
@@ -6508,7 +6597,7 @@ function drawSheet(){
       <div class="list">${PHRASES.map(p=>`<div class="li"><div><b style="color:#f7931a">${p.n} · ${SNAME[p.slot]} with ${p.w.length} sockets</b><span>${p.w.join(' → ')}</span><span>${Object.keys(p.mods).map(k=>AFK[k].t.replace('{v}',p.mods[k])).join(' · ')}</span></div></div>`).join('')}</div>`;
     feats+=`<h2>Feats · ${Object.keys(G.ach).length}/${ACH.length}</h2><div class="list">${ACH.map(a=>`<div class="li${G.ach[a[0]]?' on':''}"><div><b>${G.ach[a[0]]?'✓ ':''}${a[1]}</b><span>${a[2]}</span></div></div>`).join('')}</div>`;
     memos+=`<h2>Memos · ${G.memos.length}/${MEMOS.length}</h2>`;if(!G.memos.length)memos+=`<p>Papers lie about the districts. Read them and they are kept here.</p>`;
-    for(const i of G.memos)memos+=`<div class="memo"><b>${esc(MEMOS[i][0])}</b><p>${esc(MEMOS[i][1])}</p></div>`
+    for(const i of G.memos)memos+=`<div class="memo"><b>${esc(MEMOS[i][0])}</b><p>${esc(MEMOS[i][1])}</p>${eggMemoBtn(i)}</div>`
     h+=menuBar('codex',[['guide','Guide'],['drops','Drops'],['fight','Fight'],['money','Money'],['words','Words'],['feats','Feats'],['memos','Memos']],'guide');
     h+=menuPane('codex','guide',guide)+menuPane('codex','drops',drops)+menuPane('codex','fight',fight)+menuPane('codex','money',money)+menuPane('codex','words',words)+menuPane('codex','feats',feats)+menuPane('codex','memos',memos)}
   if(tab==='opts'){
@@ -6755,6 +6844,8 @@ const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.ta
   if(d.vtab){VEND.tab=d.vtab;sel=null;drawSheet();return}
   if(d.vside){VEND.side=d.vside;drawSheet();return}
   if(d.vstim){if(vendBuyStim()==='dlg')return}
+  if(d.vpie){if(eggBuyPie()==='dlg')return}
+  if(d.egg){eggClick(d.egg);return}
   if(d.vid){if(vendIdentify()==='dlg')return}
   if(d.vbox){if(vendBox(d.vbox)==='dlg')return}
   if(d.vbuy!==undefined){if(vendBuy(+d.vbuy)==='dlg')return}
@@ -6818,7 +6909,7 @@ function showDeath(){const town=ZONES[HT()]||{n:'town'};const onBody=!G.hc&&last
   $('deathP').textContent='Slain by '+DY.by+' in '+ZONES[DY.zi].n+', with '+DTY[P.lastTy||'impact'].n+' damage.'+(G.hc?' This was a hardcore hero. They are gone, and a new wanderer will take the road.':gear+pvp);
   $('deathNote').textContent=G.hc?'There is no portal. This hero does not get back up.':'A portal in the square opens at the start of that district. Your body is marked. In town, Kestrel will have it walked in for a few sats.';
   $('bRise').textContent=G.hc?'Begin again':'Rise in '+town.n;
-  $('deathS').innerHTML=`<div>Level<b>${G.lvl}</b></div><div>Machines scrapped<b>${G.kills}</b></div><div>Credits on the body<b>${G.hc?'none':fmt(DY.fee)}</b></div>`;$('death').hidden=false}
+  $('deathS').innerHTML=`<div>Level<b>${G.lvl}</b></div><div>Machines scrapped<b>${G.kills}</b></div><div>Credits on the body<b>${G.hc?'none':fmt(DY.fee)}</b></div>`;$('death').hidden=false;eggPryceNote()}
 function repairBarHTML(){const items=repairList();if(!items.length)return '';const n=items.reduce((s,it)=>s+repairQuote(it),0);return `<button class="li" data-repair="all" ${G.sats<n?'disabled':''}><div><b>Repair all</b><span>${items.length} piece${items.length>1?'s':''} on you or in the pack. A broken piece gives nothing.</span></div><span class="pr" style="color:#f7931a">${n} sat${n===1?'':'s'}</span></button>`}
 $('bRise').onclick=()=>{if(!DY)return;if(G.hc){hcBegin();return}const d=DY;DY=null;$('death').hidden=true;G.hp=S.maxHp;G.en=S.maxEn;mode='play';G.portal={zi:d.zi,x:d.st.x,y:d.st.y};sfx('portal');enter(HT());toast('A portal back stands open in the square')};
 
@@ -7292,6 +7383,37 @@ function itemSkillPane(){
     h+='<div class="card"><div class="nm q4">'+s.n+'</div><div class="ln">'+s.tip+'</div><div class="ln off">+1 to '+s.n+' (item skill)</div><div class="row">'+[0,1,2].map(k=>'<button class="ghost" data-iskkey="'+k+'">'+slotKeyLabel(k)+(G.slots[k]===i?' ✓':'')+'</button>').join('')+(uiTouch()?'':'<button class="ghost" data-iskside="L">Left click'+(G.mouse&&G.mouse.L===i?' ✓':'')+'</button><button class="ghost" data-iskside="R">Right click'+(G.mouse&&G.mouse.R===i?' ✓':'')+'</button>')+'</div></div>'}
   return h}
 itemSkillsReady=true;
+
+/* Text eggs. The sentences live on EGG, the memos, the feats, and the lemon errand.
+   The three consumables are requirement-free: no slot, level 1, and zero Might, Reflex, and Bandwidth. */
+let eggTipN=0;
+function eggFree(it){it.free=1;it.req=1;it.reqMgt=0;it.reqRef=0;it.reqBnd=0;it.aff=it.aff||[];it.id=true;return it}
+function eggHelloItem(){return eggFree({name:EGG.helloName,base:EGG.helloName,q:0,il:1,hello:1,junk:1,val:1,fl:EGG.helloFl})}
+function eggPieItem(){return eggFree({name:EGG.pieName,base:EGG.pieName,q:1,il:1,pie:1,val:0,fl:pieFl()})}
+function eggSourItem(){return eggFree({name:EGG.sourName,base:EGG.sourName,q:1,il:1,sour:1,val:0,fl:EGG.sourFl})}
+function pieFl(){const a=typeof actOf==='function'?actOf(G.zone||0):1;return EGG.pieBase+' '+(EGG.pieWhere[a]||EGG.pieWhere[1])}
+function eggPaper(){const i=EGG.paperAt;if(!G.memos.includes(i))G.memos.push(i);G.st.block0=1;sfx('page');dlg(MEMOS[i][0],MEMOS[i][1],[[EGG.paperKeep]])}
+function eggOnDeath(){G.obit=G.obit||[];G.obit.push(EGG.pundits[((G.deaths||1)-1)%EGG.pundits.length])}
+function eggPryceNote(){if(!DY||!/Pryce/.test(DY.by||''))return;const note=$('deathNote');note.textContent=note.textContent+' '+EGG.pryceLine}
+function eggBoard(){const n=G.deaths||0,lines=(G.obit&&G.obit.length)?G.obit.slice(-6).join(' '):EGG.boardNone;dlg(EGG.obitTitle,EGG.board.replace('{n}',n)+' '+lines,[[EGG.leave]])}
+function eggFlyer(){G.sawFlyer=1;dlg(EGG.flyerTitle,EGG.flyerBody,[[EGG.leave,()=>dlg(EGG.gramps,EGG.grampsSnatch,[[EGG.leave]])]])}
+function eggHelloFrame(){dlg(EGG.helloTitle,EGG.helloFrame,[[EGG.leave]])}
+function eggMemoBtn(i){if(i!==EGG.linkAt)return '';return '<button type="button" class="eggLink" data-egg="link">'+esc(EGG.linkFace)+'</button>'}
+function eggClick(k){if(k==='link')eggOpenLink()}
+function eggOpenLink(){dlg(EGG.wren,EGG.wrenWarn,[[EGG.linkOpen,()=>{G.st.hello404=1;if(!G.st.helloGot){G.st.helloGot=1;giveItem(eggHelloItem())}dlg(EGG.miss,EGG.link404,[[EGG.leave]])}],[EGG.leave]])}
+function eggUse(i){const it=G.bag[i];if(!it)return false;if(it.hello){toast(EGG.brendaNo);sfx('err');return false}if(it.pie){heal(S.maxHp);G.st.lunch=1;G.bag.splice(i,1);sfx('stim');sel=null;calc();return true}if(it.sour){heal(Math.max(1,S.maxHp*.3));G.bag.splice(i,1);sfx('stim');sel=null;calc();return true}return false}
+function eggBuyPie(){if(!(W&&W.pie)||vendKind()!=='brenda')return false;if(!bagCan(eggPieItem())){toast(EGG.packFull);sfx('err');return false}return vendPay(10000,EGG.pieName,()=>{if(!bagCan(eggPieItem())){toast(EGG.packFull);sfx('err');return}if(!spendSats(10000)){eggPoor();return}W.pie=0;G.bag.push(eggPieItem());sfx('coin');toast(EGG.paid);if(mode==='sheet')drawSheet()})}
+function eggPoor(){if(!(G&&G.cls==='maxi'))return;toast(EGG.poor);if(P)float(P.x,P.y,EGG.poor,'#f7931a')}
+function eggLaser(){if(P)parts(P.x,P.y,16,['#ff2a2a','#fff'],2,1.2);if(!G||G.cls!=='maxi'){toast(EGG.laserNo);return}G.st.laser=G.st.laser?0:1;toast(G.st.laser?EGG.laserOn:EGG.laserOff);if(G.st.laser){toast(EGG.few);if(P)float(P.x,P.y,EGG.few,'#ff2a2a')}}
+function eggTip(){if(typeof mode!=='undefined'&&mode!=='play')return;const d=$('dlg');if(d&&!d.hidden)return;toast(EGG.tips[eggTipN++%EGG.tips.length])}
+function eggEyes(X,hy,f){const dx=(f||1)*42;ctx.save();ctx.strokeStyle='#ff2a2a';ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(X-3,hy);ctx.lineTo(X-3+dx,hy-8);ctx.moveTo(X+3,hy);ctx.lineTo(X+3+dx,hy-8);ctx.stroke();ctx.restore();glow(X,hy,28,'#ff2a2a',.5);light(X,hy,120,'#ff2a2a')}
+function eggDrawProp(n,X,Y){ctx.strokeStyle=OL;ctx.lineWidth=1.4;
+  if(n.id==='paper'){shadow(X,Y,10);box(X-16,Y-36,32,22,1,'#e6d7a8');ctx.fillStyle='#6a5a40';ctx.fillRect(X-12,Y-32,24,1);ctx.fillRect(X-12,Y-28,18,1);label(X,Y-48,EGG.mast,'#e6d7a8','700 8.5px Cinzel,serif');return}
+  if(n.id==='flyer'){shadow(X,Y,8);box(X-14,Y-32,28,20,1,'#f4efe2');ctx.fillStyle='#e6d24a';ctx.beginPath();ctx.arc(X,Y-22,5,0,6.283);ctx.fill();label(X,Y-44,EGG.lemonLbl,'#e6d24a','700 8px Cinzel,serif');return}
+  if(n.id==='obit'){shadow(X,Y,12);box(X-18,Y-40,36,26,1,'#2a2630');ctx.fillStyle='#e6e2d6';ctx.font='700 8px Cinzel,serif';ctx.textAlign='center';ctx.fillText(String(G.deaths||0),X,Y-22);label(X,Y-52,EGG.still,'#e6e2d6','700 8px Cinzel,serif');return}
+  shadow(X,Y,16);poly([X-22,Y-8,X,Y-2,X,Y+4,X-22,Y-2],'#4a5060');poly([X,Y-2,X+22,Y-8,X+22,Y-2,X,Y+4],'#353a48');poly([X-22,Y-20,X,Y-28,X+22,Y-20,X,Y-12],'#6a7488');label(X,Y-40,EGG.helloTitle,'#ffe36b');glow(X,Y-16,40,'#ffe36b',.35)}
+if($('sheet')&&!$('sheet')._egg){$('sheet')._egg=1;$('sheet').addEventListener('pointerover',e=>{const b=e.target.closest&&e.target.closest('.eggLink');if(!b||(G.st&&G.st.wrenSaid))return;G.st.wrenSaid=1;toast(EGG.wrenWarn)})}
+if(typeof devOn==='function'&&devOn()&&window.__g)Object.assign(window.__g,{EGG,eggPaper,eggBoard,eggFlyer,eggHelloFrame,eggOpenLink,eggBuyPie,eggUse,eggLaser,eggTip,eggOnDeath,eggHelloItem,eggPieItem,eggSourItem,pieFl,achTick,talkTo,showDeath,setDY(v){DY=v},vendBid,openVend,stampReq,itemLines,equipFromBag,BINTRO,ACH,SQ,MEMOS});
 /* ================= parties, hostility, and the rig =================
    Loaded last, so everything else is already in scope. Inert unless the page is being
    served by the account server: on an Artifact or a file:// copy `mpOn()` is false and

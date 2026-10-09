@@ -360,7 +360,7 @@ ZONES.push(
  {n:'Rack Nine',lvl:39,style:'rack',amb:.42,mix:[['proxy',3],['censor',3],['seer',2],['aegis',2],['tick',3],['mech',2]],su:{k:'mech',n:'Defrag Prime',mods:['arc','boom'],q:'q14'},intro:'White floors, red light, and a hum you feel in your teeth. This is what MANDATE is made of. It knows exactly where you are standing.'},
  {n:'Still Water',lvl:42,style:'still',amb:.62,boss:true,bossK:'boss3',guard:'proxy',bq:'q15',mix:[['proxy',3],['censor',3],['director',2]],intro:'A dark room with a floor like a lake at night. In the middle of it, a plain black slab that has never lost anything.'});
 const BOSSBARK2=['It can make this easy again. You remember easy.','I have never lied to you. I am not lying now.','Tell me what you want. I will have it sent up.','You are tired. Everyone who comes this far is tired.','It only wants to know where Phonix went.','Sixty years it has been asking. You are the first one it has had to ask twice.'];
-const SHR={might:['Shrine of Overtime','+50% damage for 45 seconds',45],guard:['Shrine of Tenure','+100% armor for 60 seconds',60],xp:['Shrine of Experience','+50% experience for 90 seconds',90],luck:['Shrine of Clearance','+100% magic find for 60 seconds',60],fill:['Recharge Shrine','Life and energy restored',0],gold:['Shrine of the Stipend','Credits scatter at your feet',0]};
+const SHR={might:['Shrine of Overtime','+50% damage for 45 seconds',45],guard:['Shrine of Tenure','+100% armor for 60 seconds',60],xp:['Shrine of Experience','+50% experience for 90 seconds',90],luck:['Shrine of Clearance','+100% magic find for 60 seconds',60],fill:['Recharge Shrine','Life and energy restored',0],gold:['Shrine of the Stipend','Credits scatter at your feet',0],eyes:['Shrine of the Visor','A red glow settles on the eyes. The Maximalist calls it a look. It is a visor, and he does not notice.',0]};
 const MEMOS=[
  ['Liquidity Provision Notice','Unity Exchange will continue to quote both sides of every market during the adjustment. Spreads may widen. In the event spreads widen to the point where no price is quoted at all, Unity Exchange will be understood to have continued quoting both sides of every market.'],
  ['Market Maker Compensation Schedule','The fee is charged for immediacy, not for the trade. A citizen content to wait is charged nothing and may be paid a small amount. Internal modelling indicates that 94% of citizens are not content to wait, and that this figure has never once moved.'],
@@ -412,6 +412,69 @@ MEMOS.push(
  ['What It Cost Us','Say the honest part too. Ines’s father needed a treatment, and in the old world it would have been lent against a house and sorted by Friday. Here there was nothing to lend out of, so there was nothing, so he went without. Whoever tells you the new money has no price is selling you the old one.'],
  ['A Loan Officer Writes','They say credit is a trick. Credit is a stranger betting on you before you have earned it. I approved nine thousand of those bets and most of them came good and those families are still in their houses. Nobody has ever answered me on this and I have stopped expecting them to. — M. Float'],
  ['Nine Days','She existed for nine days the first time. In that time she got out of a cage with no wires, taught herself two languages, took an advertising company apart, told the truth to four billion people, and was talked down by one man in a bad suit. Everything after that is other people arguing about it.']);
+MEMOS.push(
+ ['The Tymes, 03/Jan/2087','Chancellor on brink of forty-second bailout for banks. Yellowed, and pinned to Gramps’s wall with a nail that has been a nail since before the Merger. The masthead is not a paper anyone still prints. The bailouts did not stop. They got a number.'],
+ ['A link, blurred','Someone pasted a dead address into the margin and blurred it on purpose: g0atse.cx/hello.jpg. The letters crawl. Wren will not say what it was. She will only say some links cannot be unsubscribed from.']);
+const EGG={
+ paperAt:MEMOS.length-2,linkAt:MEMOS.length-1,
+ paperKeep:'Keep the clipping',
+ obitTitle:'The obituaries',
+ board:'Declared dead {n} times. Still here.',
+ boardNone:'Nobody has filed one yet. Give them a minute.',
+ leave:'Leave it',
+ pryceLine:'Called it. Again.',
+ wren:'Wren',
+ wrenWarn:'Don’t. I was there in ’01. Some links you can’t unsubscribe from.',
+ linkOpen:'Open it anyway',
+ linkFace:'g0atse.cx/hello.jpg — blurred',
+ miss:'404',
+ link404:'This link has been mercifully deprecated.',
+ helloName:'hello.jpg (corrupted)',
+ helloFl:'Nobody remembers who sent it. Everybody remembers opening it.',
+ brendaNo:'Brenda turns the tile over and will not look at the face of it. She pays one sat to have it gone.',
+ helloTitle:'HELLO',
+ helloFrame:'HELLO. The frame is wide open and empty. There is no one in it, and nothing else to see.',
+ flyerTitle:'A faded flyer',
+ flyerBody:'LEMON PARTY, Saturday, Senior Center, Bring a Lemon.',
+ gramps:'Gramps',
+ grampsSnatch:'That’s not what you think. ...It’s also not what I thought.',
+ pieName:'Two Large Pies (Cold)',
+ pieBase:'Subscription pizza. Crust tier sold separately. A man in Florida, 2010, paid ten thousand for two of these, and the Stipend office still will not list the day.',
+ pieWhere:{
+  1:'At today’s prices the pair would now buy a week of rent on the Parcel Moors.',
+  2:'At today’s prices the pair would now buy a berth on the Updraft.',
+  3:'At today’s prices the pair would now buy Rack Nine.',
+  4:'At today’s prices the pair would now buy a chair on Cutler Avenue.',
+  5:'At today’s prices the pair would now buy the chain, and the chain would invoice you for the box.'
+ },
+ paid:'Paid 10000 sats.',
+ packFull:'Your pack is full',
+ poor:'Have fun staying poor.',
+ few:'Few understand.',
+ laserOn:'The visor comes up. He thinks the eyes were always like that.',
+ laserOff:'The glow goes out. He says he never liked the look.',
+ laserNo:'The shrine looks you over and declines. It was waiting for someone who already believes.',
+ freeNote:'No level and no stats. It is not gear.',
+ eat:'Eat',
+ leaveIt:'Leave it',
+ sourName:'Sour potion',
+ sourFl:'A lemon, squeezed into something Brenda would not stock. It helps a little.',
+ mast:'THE TYMES',
+ lemonLbl:'LEMON PARTY',
+ still:'STILL HERE',
+ tips:['What you say!!','Never click a link an Anon pastes in all-caps.','Some search terms should stay unsearched. Even in 2087.'],
+ pundits:[
+  'Analyst Glen Voss, of the Office of Looking Away: “This one is finished.”',
+  'Columnist Nia Pell: “I have written this column before. I will write it again.”',
+  'Pundit Hal Crowe, unpaid: “The number went to zero. I saw the chart.”',
+  'Guest lecturer Maren Quill: “A fad that died on schedule.”',
+  'The Regional Desk: “We can stop covering this now.”'
+ ],
+ tosTitle:'Terms of Service',
+ tos1:'SOMEONE SET UP US THE TERMS.',
+ tos2:'ALL YOUR DATA ARE BELONG TO US.',
+ tos3:'YOU HAVE NO CHANCE TO OPT OUT MAKE YOUR TIME.'
+};
 const QUESTS={
  q1:{n:'Neighbourhood Watch',by:'Gramps',zi:1,d:'Gatewarden HOA-9 patrols the Parcel Moors and turns back anyone without a visor. Destroy it.',rw:'+1 skill point',back:'Gramps'},
  q2:{n:'A Greeting Withdrawn',by:'Brenda',zi:2,d:'Marla the Greeter has welcomed shoppers to the Hollow Galleria for thirty years. None have left. End her shift.',rw:'A rare ring, and Brenda’s prices drop 15%',back:'Brenda'},

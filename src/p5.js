@@ -29,7 +29,12 @@ const SQ={
    {t:'obj',zi:10,look:'drum',label:'Take a drum of oil',d:'Fetch a drum of oil from the Boardwalk kitchens',say:'It is heavier than it looks, and the staff have noticed.',amb:['lancer',5,'aegis',2]},
    {t:'amb',zi:10,d:'Deal with the Boardwalk staff'},
    {t:'obj',zi:7,look:'person',label:'Give him the oil',d:'Carry the oil back to the oiler in the Updraft',scene:[{art:'cloud',text:'He works the oil into the bearing with his bare hands. Far above, a city of a hundred thousand people stops trembling by an amount none of them will ever notice.'}],say:'“That will hold another forty years. No, I do not want anything. I never worked out who to send the bill to.”'},
-   {t:'talk',npc:'gramps',d:'Tell Gramps what you found',say:'“He would not take a thing? Then I will give you what I would have given him.”',rw(){G.sp++;giveItem(makeItem(G.lvl+2,4))}}]}
+   {t:'talk',npc:'gramps',d:'Tell Gramps what you found',say:'“He would not take a thing? Then I will give you what I would have given him.”',rw(){G.sp++;giveItem(makeItem(G.lvl+2,4))}}]},
+ lemon:{n:'Bring a Lemon',by:'gramps',who:'Gramps',req:()=>!!G.sawFlyer,rw:'21 sats and a sour potion',
+  offer:'“There is a lemon on a windowsill in the Parcel Moors. Bring it. The party is Saturday, at the senior center, and you are not invited through the door.”',
+  steps:[
+   {t:'obj',zi:1,look:'lemon',label:'Take a lemon',d:'Find a lemon in the Parcel Moors',say:'A lemon, ordinary, on a sill. Nobody is watching it. That is the whole of the danger.'},
+   {t:'talk',npc:'gramps',d:'Bring the lemon back to Gramps',scene:[{art:'letters',text:'The senior-center door is shut. Behind it, ordinary laughter, and the sound of chairs. You do not open it. Gramps does not either.'}],say:'“They are in there. We are out here. That is the correct arrangement.”',rw(){G.sats+=21;giveItem(eggSourItem())}}]}
 };
 const sqSkip={};
 function sqStep(id){const s=G.sq[id];return s&&!s.done?SQ[id].steps[s.s]:null}
