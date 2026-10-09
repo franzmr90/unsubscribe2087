@@ -32,7 +32,7 @@ const pin=await p.evaluate(()=>{
   g.G.scs=700;
   g.G.credits=5000;
   g.G.sats=5000;
-  g.G.mkt={p:1};
+  g.mktInit();const f=g.mktFair()||1;g.G.mkt.p=1;g.G.mkt.r=1/f;g.G.mkt.sent=0;g.G.mkt.sT=1e9;
   g.shop[0].val=40;
   g.talkTo('brenda');
   const btn=[...document.querySelectorAll('#dBtns button:not([disabled])')].find(e=>e.textContent==='Trade');
@@ -60,10 +60,12 @@ check('Nonce names thirty percent off', /thirty percent off her price/.test(off.
 check('the button says 30% off', off.buttons.some(t=>t==='Brenda’s goods, 30% off')&&!off.buttons.some(t=>/at cost/.test(t)), off.buttons.join(' | '));
 
 await p.evaluate(()=>{
+  const g=__g;
+  g.mktInit();const f=g.mktFair()||1;g.G.mkt.p=1;g.G.mkt.r=1/f;g.G.mkt.sent=0;g.G.mkt.sT=1e9;
   const btn=[...document.querySelectorAll('#dBtns button:not([disabled])')].find(e=>e.textContent==='Brenda’s goods, 30% off');
   btn.click();
-  __g.VEND.tab=__g.vendTabOf(__g.shop[0]);
-  __g.drawSheet();
+  g.VEND.tab=g.vendTabOf(g.shop[0]);
+  g.drawSheet();
 });
 const shop=await p.evaluate(()=>{
   const row=document.querySelector('[data-vend="0"] .vp').textContent;
@@ -77,7 +79,7 @@ check('the counter says thirty percent off', /Thirty percent off her price/.test
 const odd=await p.evaluate(()=>{
   const g=__g;
   g.G.cpi=1.1;
-  g.G.mkt={p:1};
+  g.mktInit();const f=g.mktFair()||1;g.G.mkt.p=1;g.G.mkt.r=1/f;g.G.mkt.sent=0;g.G.mkt.sT=1e9;
   g.shop[0].val=13;
   g.VEND.tab=g.vendTabOf(g.shop[0]);
   g.drawSheet();

@@ -161,7 +161,7 @@ async function clearUI(page) {
     const g = __g;
     g.G.credits = 1000;
     g.G.sats = 0;
-    g.G.mkt = { p: 1 };
+    g.mktInit(); const f = g.mktFair() || 1; g.G.mkt.p = 1; g.G.mkt.r = 1 / f; g.G.mkt.sent = 0; g.G.mkt.sT = 1e9;
     g.G.bag = [g.makeItem(4, 1, 'helm')];
     g.G.bag[0].id = true;
     g.setMode('play');

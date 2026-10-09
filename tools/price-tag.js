@@ -37,7 +37,7 @@ await clearUI(p);
 await p.evaluate(()=>__g.enter(0));
 await clearUI(p);
 /* Prices climb while the clock runs, and buying strength lowers adoption, so each check pins the index. */
-await p.evaluate(()=>{__g.setMode('play');__g.G.cpi=1.073;__g.G.adopt=100;__g.G.lvl=1;__g.G.disc=null;__g.G.stims=0;__g.G.credits=32;__g.G.mkt={p:1};__g.G.sats=32});
+await p.evaluate(()=>{__g.setMode('play');__g.G.cpi=1.073;__g.G.adopt=100;__g.G.lvl=1;__g.G.disc=null;__g.G.stims=0;__g.G.credits=32;__g.mktInit();const f=__g.mktFair()||1;__g.G.mkt.p=1;__g.G.mkt.r=1/f;__g.G.mkt.sent=0;__g.G.mkt.sT=1e9;__g.G.sats=32});
 await p.evaluate(()=>{__g.openSheet('shop',{only:['items','shop']});__g.VEND.tab='supplies';__g.drawSheet()});
 const stim=await p.evaluate(()=>{
   const btn=document.querySelector('[data-vstim="1"]');
@@ -60,7 +60,7 @@ await p.click('[data-vid="1"]');
 const idPay=await p.evaluate(()=>({credits:__g.G.credits,sats:__g.G.sats,named:__g.G.bag[0]&&__g.G.bag[0].id}));
 check('appraisal takes 42 and names the piece', idPay.sats===0&&idPay.credits===42&&idPay.named, JSON.stringify(idPay));
 
-await p.evaluate(()=>{__g.closeSheet();__g.setMode('play');__g.G.cpi=1.073;__g.G.adopt=100;__g.G.lvl=1;__g.G.credits=125;__g.G.sats=125;__g.G.mkt={p:1};__g.G.bag=[];__g.openSheet('gamble',{only:['items','gamble']})});
+await p.evaluate(()=>{__g.closeSheet();__g.setMode('play');__g.G.cpi=1.073;__g.G.adopt=100;__g.G.lvl=1;__g.G.credits=125;__g.G.sats=125;__g.mktInit();const f=__g.mktFair()||1;__g.G.mkt.p=1;__g.G.mkt.r=1/f;__g.G.mkt.sent=0;__g.G.mkt.sT=1e9;__g.G.bag=[];__g.openSheet('gamble',{only:['items','gamble']})});
 const box=await p.evaluate(()=>{
   const line=[...document.querySelectorAll('#sheet p, #sheet u')].map(n=>n.textContent).join(' ');
   const btn=document.querySelector('[data-vbox]');
@@ -71,15 +71,15 @@ await p.click('[data-vbox]');
 const boxPay=await p.evaluate(()=>({credits:__g.G.credits,sats:__g.G.sats,bag:__g.G.bag.length}));
 check('the box takes 125', boxPay.sats===0&&boxPay.credits===125&&boxPay.bag===1, JSON.stringify(boxPay));
 
-await p.evaluate(()=>{__g.closeSheet();__g.setMode('play');__g.G.cpi=1.073;__g.G.adopt=100;__g.G.lvl=1;__g.G.credits=268;__g.G.merc=null;__g.openSheet('merc',{only:['merc']})});
+await p.evaluate(()=>{__g.closeSheet();__g.setMode('play');__g.G.cpi=1.073;__g.G.adopt=100;__g.G.lvl=1;__g.G.credits=88;__g.G.merc=null;__g.openSheet('merc',{only:['merc']})});
 const hire=await p.evaluate(()=>{
   const btn=document.querySelector('[data-hire]');
   return {text:btn?btn.textContent:'',off:btn?btn.disabled:true};
 });
-check('a hire tag of 268 is payable with 268', /₡268/.test(hire.text)&&!hire.off, JSON.stringify(hire));
+check('a hire tag of 88 is payable with 88', /₡88/.test(hire.text)&&!hire.off, JSON.stringify(hire));
 await p.click('[data-hire]');
 const hirePay=await p.evaluate(()=>({credits:__g.G.credits,merc:!!__g.G.merc}));
-check('the hire takes 268', hirePay.credits===0&&hirePay.merc, JSON.stringify(hirePay));
+check('the hire takes 88', hirePay.credits===0&&hirePay.merc, JSON.stringify(hirePay));
 
 await p.evaluate(()=>{__g.closeSheet();__g.setMode('play');__g.G.cpi=1.073;__g.G.adopt=100;__g.G.lvl=1;__g.G.credits=160;__g.G.lean=0;__g.talkFloat()});
 const now=await p.evaluate(()=>{

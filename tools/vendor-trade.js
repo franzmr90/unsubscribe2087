@@ -43,7 +43,7 @@ await p.evaluate(()=>__g.setMode('play'));
 
 const math=await p.evaluate(()=>{
   const g=__g, G=g.G;
-  G.mkt={p:1}; G.cpi=1; G.disc=0; G.rep.norm=0; G.rep.btc=0; G.lean=0; G.lvl=1; G.tier=0;
+  g.mktInit(); G.mkt.p=1; G.mkt.r=1; G.mkt.sent=0; G.mkt.sT=1e9; G.cpi=1; G.disc=0; G.rep.norm=0; G.rep.btc=0; G.lean=0; G.lvl=1; G.tier=0;
   G.credits=77; G.sats=500; G.stims=0; G.bag=[]; G.marrow=0;
   g.setShopVia(0);
   const gear=g.makeItem(4,1,'weapon');
@@ -123,7 +123,7 @@ check('every quoted price is a whole number', math.ints&&math.prices, math);
 
 await p.evaluate(()=>{
   const g=__g, G=g.G;
-  G.mkt={p:1}; G.cpi=1; G.disc=0; G.lvl=1; G.credits=40; G.sats=80; G.stims=0; G.bag=[];
+  g.mktInit(); G.mkt.p=1; G.mkt.r=1; G.mkt.sent=0; G.mkt.sT=1e9; G.cpi=1; G.disc=0; G.lvl=1; G.rep.norm=0; G.rep.btc=0; G.credits=40; G.sats=80; G.stims=0; G.bag=[];
   g.setShopVia(0); g.setMode('play');
   const it=g.makeItem(2,1,'helm'); it.id=true; it.val=40; it.aff=it.aff||[]; it.name='Shown Helm'; it.req=1;
   g.shop=[it];
@@ -142,14 +142,14 @@ await p.screenshot({path:'/opt/cursor/artifacts/vendor-desktop.png'});
 await p.click('[data-vend="0"]',{button:'right'});
 const short=await p.evaluate(()=>({sats:__g.G.sats, credits:__g.G.credits, bag:__g.G.bag.length, shop:__g.shop.length}));
 check('a short purse does not take the piece', short.sats===80 && short.credits===40 && short.bag===0 && short.shop===1, short);
-await p.evaluate(()=>{__g.G.sats=180; __g.G.bag=[]; const it=__g.makeItem(2,1,'helm'); it.id=true; it.val=40; it.aff=it.aff||[]; it.name='Shown Helm'; it.req=1; __g.shop=[it]; __g.VEND.tab='armor'; __g.drawSheet()});
+await p.evaluate(()=>{__g.G.sats=180; __g.G.bag=[]; __g.G.rep.norm=0; __g.mktInit(); __g.G.mkt.p=1; __g.G.mkt.r=1; __g.G.mkt.sent=0; __g.G.mkt.sT=1e9; __g.G.cpi=1; const it=__g.makeItem(2,1,'helm'); it.id=true; it.val=40; it.aff=it.aff||[]; it.name='Shown Helm'; it.req=1; __g.shop=[it]; __g.VEND.tab='armor'; __g.drawSheet()});
 await p.click('[data-vend="0"]',{button:'right'});
 const paid=await p.evaluate(()=>({sats:__g.G.sats, credits:__g.G.credits, bag:__g.G.bag.length}));
 check('right-click spends exactly 100 sats', paid.sats===80 && paid.credits===40 && paid.bag===1, paid);
 
 await p.evaluate(()=>{
   const g=__g;
-  g.G.sats=200; g.G.bag=[];
+  g.G.sats=200; g.G.bag=[]; g.G.rep.norm=0; g.G.rep.btc=0; g.mktInit(); g.G.mkt.p=1; g.G.mkt.r=1; g.G.mkt.sent=0; g.G.mkt.sT=1e9; g.G.cpi=1;
   const it=g.makeItem(2,1,'boots'); it.id=true; it.val=40; it.aff=it.aff||[]; it.name='Shown Boots'; it.req=1;
   g.shop=[it]; g.VEND.tab='armor'; g.drawSheet();
   document.querySelector('[data-vend="0"]').click();
@@ -185,7 +185,7 @@ await p.evaluate(()=>{
   const port=document.getElementById('uiPortX'); if(port)port.click();
   __g.setMode('play');
   const it=__g.makeItem(2,1,'belt'); it.id=true; it.val=40; it.aff=it.aff||[]; it.name='Phone Belt'; it.req=1;
-  __g.shop=[it]; __g.G.sats=200; __g.G.credits=15; __g.G.bag=[];
+  __g.shop=[it]; __g.G.sats=200; __g.G.credits=15; __g.G.bag=[]; __g.G.rep.norm=0; __g.mktInit(); __g.G.mkt.p=1; __g.G.mkt.r=1; __g.G.mkt.sent=0; __g.G.mkt.sT=1e9; __g.G.cpi=1;
   __g.openVend('brenda');
   __g.VEND.tab='armor'; __g.VEND.side='them'; __g.drawSheet();
 });
