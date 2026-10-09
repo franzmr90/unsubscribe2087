@@ -373,6 +373,27 @@ html[data-ui="touch"] .cls{min-height:44px}
   html[data-ui="touch"] #pad{transform:scale(.82);transform-origin:bottom right}
   html[data-ui="touch"] #log{bottom:calc(188px + env(safe-area-inset-bottom,0px))}
 }
+
+#cmpTip{position:absolute;z-index:8;left:8px;top:8px;width:min(640px,calc(100% - 16px));max-height:min(70vh,520px);overflow:auto;background:rgba(8,7,12,.96);border:1px solid var(--gold);box-shadow:0 10px 40px #000;padding:8px 10px;pointer-events:auto;touch-action:pan-y}
+#cmpTip.dock{left:8px;right:8px;width:auto;top:calc(78px + env(safe-area-inset-top,0px));max-height:46vh}
+.cmpBox{display:flex;gap:8px;align-items:flex-start}
+.cmpCol{flex:1;min-width:0;text-align:left}
+.cmpFoot{margin-top:8px}
+.cmpDelta{max-height:220px;overflow:auto;touch-action:pan-y}
+.dln{display:flex;gap:8px;justify-content:space-between;align-items:baseline;font-size:13.5px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.dln span{color:var(--dim)}
+.dln em{color:var(--dim);font-style:normal;font-size:12px}
+.dln b{font-variant-numeric:tabular-nums}
+.cmpAlts{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px}
+.cmpAlts span{font:700 11px var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.cell.arr{box-shadow:none}
+.cell.arr em{color:var(--gold)}
+html[data-ui="touch"] .cmpActs button,html[data-ui="touch"] .cmpAlts button,html[data-ui="touch"] #cmpTip .ghost{min-height:44px}
+#popIn:has(.cmpBox){max-width:min(680px,100%)}
+@media (max-width:720px){
+  .cmpBox{flex-direction:column}
+  .cmpDelta{max-height:38vh}
+}
 </style>
 
 <div id="app">
@@ -435,6 +456,7 @@ html[data-ui="touch"] .cls{min-height:44px}
 
   <div id="sheet" hidden><div class="wrap" id="sheetIn"></div></div>
   <div id="pop" hidden><div id="popIn"></div></div>
+  <div id="cmpTip" hidden></div>
   <div id="scene" hidden><canvas id="sc"></canvas><div id="scBox"><div id="scTitle"></div><div id="scText"></div><div class="row"><button class="ghost" id="scBack" hidden>Back</button><button class="ghost" id="scSkip">Skip</button><button class="big" id="scNext">Next</button></div></div></div>
   <div id="death" hidden><div class="wrap"><div class="kicker">Notice of closure</div><h1>You have died</h1><p id="deathP"></p><div class="stats" id="deathS"></div><p id="deathNote" style="font-size:14px;color:var(--dim)">The machines have not moved. A portal back to the start of the district will wait in the square.</p><button class="big" id="bRise">Rise in town</button></div></div>
   <div id="dlg" hidden><div class="card"><h2 id="dT"></h2><p id="dP"></p><div id="dBtns"></div></div></div>
