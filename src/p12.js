@@ -255,7 +255,7 @@ function itemSkillTick(dt){
 function tryGear(id){
   if(!G)return null;const u=UNI.find(x=>x.id===id);if(!u)return null;
   const it=mkFixed(u,Math.max(u.il,G.lvl||1),4);it.test=1;it.id=true;it.val=0;
-  const old=G.eq[u.slot];G.eq[u.slot]=it;if(old&&!old.test&&G.bag.length<24)G.bag.push(old);calc();return it}
+  const old=G.eq[u.slot];G.eq[u.slot]=it;if(old&&!old.test&&bagCan(old))G.bag.push(old);else if(old&&!old.test)addDrop({it:old},P.x,P.y);calc();return it}
 function itemTryRow(){
   if(typeof devOn==='function'&&!devOn())return '';
   const rows=[['cipher','The Cipher Mantle'],['call','The Standing Call'],['book','The Open Book'],['ledger','The Quiet Ledger'],['bear','The Bear Market'],['chair','The Spare Chair']];

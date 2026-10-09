@@ -40,12 +40,12 @@ if(filters.rareId)fail('rare came identified');
 if(!filters.struck.left)fail('struck rare was picked up '+JSON.stringify(filters.struck));
 if(filters.judged.left)fail('better-only left an unidentified rare');
 if(filters.empty.left)fail('empty slot left a struck white');
-if(filters.sub.left||filters.charms<1)fail('subscription was filtered '+JSON.stringify(filters.sub));
+if(filters.sub.left||filters.sub.took!==1)fail('charm was filtered '+JSON.stringify(filters.sub));
 
 await p.evaluate(()=>__g.openSheet('items',{}));
 await p.waitForTimeout(80);
 const hint=await p.evaluate(()=>{const el=[...document.querySelectorAll('#sheet p')].find(n=>/Struck-out tiers/.test(n.textContent));el&&el.scrollIntoView({block:'center'});return el?el.textContent:''});
-if(!/named or not/.test(hint)||!/Subscriptions are picked up anyway/.test(hint))fail('pickup hint '+hint);
+if(!/named or not/.test(hint)||!/Charms are picked up anyway/.test(hint))fail('pickup hint '+hint);
 if(/still picked up\./.test(hint))fail('old unidentified sentence');
 if(OUT)await p.screenshot({path:path.join(OUT,'loot-pickup.png')});
 
@@ -83,16 +83,20 @@ const scrap=await p.evaluate(()=>{
   const r=g.makeItem(8,2,'belt');r.id=true;g.G.bag=[r];g.G.parts=0;g.craft(r,'scrap');out.rare=g.G.parts;
   const u=g.UNI.find(x=>x.id==='handshake');
   const glove=g.mkFixed(u,16,4);g.G.bag=[glove];g.G.parts=0;g.craft(glove,'scrap');out.unique=g.G.parts;out.sp=u.sp;
-  g.G.charms=[{slot:'charm',charm:1,q:1,il:1,id:true,req:1,name:'Lapsed Test',base:'Lapsed Subscription',aff:[],val:10,on:false}];
+  g.G.cslots=[];g.G.bag=[{slot:'charm',charm:1,sz:'slip',cs:1,cells:1,cw:1,ch:1,q:1,il:1,id:true,req:1,name:'Lapsed Test',base:'Slip',aff:[],val:10}];
   g.G.parts=0;g.openSheet('items',{});
-  document.querySelector('[data-ch="0"]').click();
-  const btn=[...document.querySelectorAll('[data-chdo="scrap"]')].map(b=>b.textContent);
-  document.querySelector('[data-chdo="scrap"]').click();
-  out.charm=g.G.parts;out.btn=btn;
+  document.querySelector('[data-bag="0"]').click();
+  out.wait=1;out.parts=g.G.parts;
   return out;
 });
 if(scrap.white!==1||scrap.rare!==4||scrap.unique!==15)fail('scrap parts '+JSON.stringify(scrap));
-if(scrap.charm!==2||scrap.btn[0]!=='Scrap · 2 parts')fail('charm scrap '+JSON.stringify(scrap));
+await p.waitForTimeout(400);
+const charmScrap=await p.evaluate(()=>{
+  const btn=[...document.querySelectorAll('[data-do="scrap"]')].map(b=>b.textContent);
+  const b=document.querySelector('[data-do="scrap"]'); if(b)b.click();
+  return {btn,parts:__g.G.parts,bag:__g.G.bag.length};
+});
+if(charmScrap.parts!==2||charmScrap.btn[0]!=='Scrap · 2 parts'||charmScrap.bag!==0)fail('charm scrap '+JSON.stringify(charmScrap));
 if(!/Ordinary machines/.test(scrap.sp)||!/13%/.test(scrap.sp))fail('handshake '+scrap.sp);
 
 await p.evaluate(()=>{__g.closeSheet();__g.openSheet('codex',{})});
@@ -110,7 +114,7 @@ const toast=await p.evaluate(()=>{
   cell.click();cell.click();
   return document.getElementById('log').textContent;
 });
-if(!/not worn/.test(toast))fail('charm toast '+toast);
+if(!/needs 1 slot/.test(toast))fail('charm toast '+toast);
 
 const sold=await p.evaluate(()=>{
   __g.closeSheet();__g.setMode('play');
@@ -142,16 +146,17 @@ const pair=await p.evaluate(()=>({credits:__g.G.credits,bag:__g.G.bag.length,log
 if(pair.credits!==208||pair.bag!==0||!/₡8/.test(pair.log))fail('bulk sale '+JSON.stringify(pair));
 
 const charm=await p.evaluate(()=>{
-  __g.G.charms=[{slot:'charm',charm:1,q:1,il:1,id:true,req:1,name:'Fraction Sub',base:'Lapsed Subscription',aff:[],val:10,on:false}];
+  __g.G.bag=[{slot:'charm',charm:1,sz:'slip',cs:1,cells:1,cw:1,ch:1,q:1,il:1,id:true,req:1,name:'Fraction Slip',base:'Slip',aff:[],val:10}];
   __g.G.credits=50;__g.G.cpi=1.15;
   __g.drawSheet();
   return true;
 });
 if(!charm)fail('charm sheet');
-await p.click('[data-ch="0"]');
-const chBtn=await p.evaluate(()=>{const b=document.querySelector('[data-chdo="sell"]');return b?b.textContent:''});
-await p.click('[data-chdo="sell"]');
-const ch=await p.evaluate(()=>({credits:__g.G.credits,n:__g.G.charms.length}));
+await p.click('[data-bag="0"]');
+await p.waitForTimeout(400);
+const chBtn=await p.evaluate(()=>{const b=document.querySelector('[data-do="sell"]');return b?b.textContent:''});
+await p.click('[data-do="sell"]');
+const ch=await p.evaluate(()=>({credits:__g.G.credits,n:__g.G.bag.length}));
 if(chBtn!=='Sell ₡4'||ch.credits!==54||ch.n!==0)fail('charm sale '+JSON.stringify({chBtn,ch}));
 
 if(errs.length)fail(errs[0]);

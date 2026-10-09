@@ -141,7 +141,7 @@ function wake(e){if(e.aggro)return;e.aggro=true;partyWake(e);if(e.k==='gob'){sfx
 function baseStats(it,b,tr){const il=it.il,s=it.slot;
   if(s==='weapon'){it.dmin=Math.round((3+1.6*il)*b.d);it.dmax=Math.round((6+2.6*il)*b.d);it.spd=b.s}
   if(ARMF[s])it.arm=Math.round(ARMF[s][0]+ARMF[s][1]*il);
-  if(s==='belt')it.cap=6+tr*2}
+  if(s==='belt'){it.cap=6+tr*2;it.csl=tr+1}}
 function rollAffix(a,il){const el=a.tiers.filter(t=>t[1]<=il);if(!el.length)return null;const t=Math.random()<.55?el[el.length-1]:pick(el);const f={k:a.k,v:ri(t[2],t[3]),nm:t[0],pre:a.pre?1:0};if(a.grp)f.grp=a.grp;return f}
 /* A unique's band is the monster levels that may still roll it. Missing tc follows item level, so older uniques age out. The late band stays open above 80: a tier replay should still find the chase, and the early names should still be gone. */
 const BANDS={early:[1,18],mid:[19,40],high:[41,60],late:[61,999]};
@@ -154,7 +154,7 @@ function mkFixed(u,il,q,set){il=Math.max(il,u.il);let b=null,tr=0;BASE[u.slot].f
   const sc=1+(il-u.il)*.04,scale=['dmg','hp','shock','thorns','armor','en','armorP'];
   for(const k in u.mods){const m=u.mods[k];let v=modRoll(m);if(v>0&&scale.includes(k))v=Math.round(v*sc);it.aff.push({k,v})}
   if(u.sp){it.sp=u.id;it.spT=u.sp}if(set)it.set=set;
-  it.val=(8+il*5)*(q===4?8:6);it.req=Math.max(1,Math.floor(u.il*.75));return it}
+  it.val=(8+il*5)*(q===4?8:6);it.req=Math.max(1,Math.floor(u.il*.75));beltStamp(it);return it}
 const ITEM_HOOKS=[];
 function makeItem(il,q,slot){let it=makeItemCore(il,q,slot);for(const h of ITEM_HOOKS)it=h(it,il,q,slot);return it}
 function moorsBlade(){
@@ -190,13 +190,13 @@ function dropFrom(tc,x,y,ml,minQ,forceU){const T=TC[tc],rest=T.gold+T.item+T.sti
   for(let i=0;i<T.picks;i++){let r=wpick([['no',no],['gold',T.gold],['item',T.item],['stim',T.stim]]);if((minQ||forceU)&&i===0)r='item';
     if(r==='gold')addDrop({cr:(3+ml*2)*rnd(.6,1.4)*Math.pow(G.cpi,.9)*(T.goldMul||1)*(EV&&EV.k==='stipend'?3:1)*GOLDM()},x,y);
     else if(r==='stim')addDrop({pot:1},x,y);
-    else if(r==='item'){let q=rollQ(tc,i===0?minQ:0);if(forceU&&i===0)q=4;addDrop({it:makeItem(ml+ri(0,2),q,T.jewel&&Math.random()<.45?pick(JEW):null)},x,y)}}}
+    else if(r==='item'){let q=rollQ(tc,i===0?minQ:0);if(forceU&&i===0)q=4;addDrop({it:makeItem(ml+ri(0,2),q,T.jewel&&Math.random()<.45?pick(JEW):null)},x,y)}}if(tc==='chest')charmFrom('champ',x,y)}
 
 /* ================= character ================= */
 const PCAP=()=>G.act5?5:G.act3?4:G.act2?3:2;
 const pon=i=>CLS[G.cls].sk[i].a||(G.pas||[]).includes(i);
 function fixPas(){const sk=CLS[G.cls].sk,ok=i=>sk[i]&&!sk[i].a&&G.sk[i]>0;if(!G.pas)G.pas=G.sk.map((v,i)=>i).filter(ok).sort((a,b)=>G.sk[b]-G.sk[a]);G.pas=G.pas.filter(ok).slice(0,PCAP())}
-const sl=i=>{const b=G.sk[i]&&pon(i)?G.sk[i]+(S.skills||0)+mast(i):0,g=(S.grant||{})[i]||0;return g?Math.max(b,g+(G.sk[i]||0)):b};
+const sl=i=>{const b=G.sk[i]&&pon(i)?G.sk[i]+charmRanks(i)+mast(i):0,g=(S.grant||{})[i]||0;return g?Math.max(b,g+(G.sk[i]||0)):b};
 const syn=i=>i>=3?1+.06*G.sk[i-3]:1;const mast=i=>G.sk[i]>=10?2:0;
 /* A price tag prints whole credits, so the purse pays that floor. The market still samples the raw stim price. */
 function payTag(n){return Math.floor(n)}
@@ -204,10 +204,10 @@ const stimPrice=()=>25*G.cpi*(1+G.lvl*.2)*(G.disc?.85:1);
 function calc(){
   const c=CLS[G.cls],s={dmin:2,dmax:4,wspd:0,barm:0,sp:{},set:{},cap:4,cdr:0,dodge:0,pierce:0,critM:2,enc:0,grant:{}};
   for(const k of STATK)s[k]=0;
-  for(const slot of SLOTS){const it=G.eq[slot];if(!it)continue;if(it.dmin){s.dmin=it.dmin;s.dmax=it.dmax;s.wspd=it.spd||0}if(it.arm)s.barm+=it.arm;if(it.cap)s.cap=it.cap;
+  for(const slot of SLOTS){const it=G.eq[slot];if(!it)continue;if(it.dmin){s.dmin=it.dmin;s.dmax=it.dmax;s.wspd=it.spd||0}if(it.arm)s.barm+=it.arm;if(it.slot==='belt'){const b=beltBudget(it);s.cap=b.stims;s.csl=b.slots}else if(it.cap)s.cap=it.cap;
     for(const a of it.aff){let v=a.v;if(a.k==='cdr'&&v>1)v=v/100;s[a.k]=(s[a.k]||0)+v}if(it.sp&&uOk(it))s.sp[it.sp]=1;if(it.uid&&UNIK[it.uid]&&UNIK[it.uid].grant&&uOk(it))s.grant[UNIK[it.uid].grant[0]]=UNIK[it.uid].grant[1];if(it.set)s.set[it.set]=(s.set[it.set]||0)+1}
-  if(G.cls==='hacker')s.skills+=(s.sk_hacker||0);if(G.cls==='courier')s.skills+=(s.sk_courier||0);gearPerLevel(s);famBonus(s);if(s.set.striker>=2)s.dmg+=20;if(s.set.striker>=3){s.skills+=1;s.sp.vigil=1}s.skills=Math.min(4,s.skills||0)
-  fixPas();const L=i=>{const b=G.sk[i]&&pon(i)?G.sk[i]+s.skills+mast(i):0,g=s.grant[i]||0;return g?Math.max(b,g+(G.sk[i]||0)):b};let hpM=1,armM=1;
+  if(G.cls==='hacker')s.skills+=(s.sk_hacker||0);if(G.cls==='courier')s.skills+=(s.sk_courier||0);gearPerLevel(s);famBonus(s);if(s.set.striker>=2)s.dmg+=20;if(s.set.striker>=3){s.skills+=1;s.sp.vigil=1}charmApply(s);s.skills=Math.min(4,s.skills||0)
+  fixPas();const L=i=>{const b=G.sk[i]&&pon(i)?G.sk[i]+charmBonus(s,i)+mast(i):0,g=s.grant[i]||0;return g?Math.max(b,g+(G.sk[i]||0)):b};let hpM=1,armM=1;
   if(G.cls==='scrapper'){armM+=.08*L(2);hpM+=.04*L(2);if(L(10)&&!boonOn(10)){const w=G.eq.weapon,ty=(w&&w.dt)||'impact';s['t_'+ty]=(s['t_'+ty]||0)+6*L(10)}}
   if(G.cls==='hacker'){s.enc=Math.min(FORMULAS.brace.cipher.cap,FORMULAS.brace.cipher.per*L(2));s.regen+=L(5);s.cdr+=.03*L(5);s.crit+=3*L(8);s.critM=2+.1*L(8);if(L(11)&&!boonOn(11)&&G.schema)s['t_'+G.schema]=(s['t_'+G.schema]||0)+8*L(11)}
   if(G.cls==='anon'){s.dodge=Math.min(35,2.5*L(2));s.crit+=2*L(2)}
@@ -220,14 +220,14 @@ function calc(){
   if(G.cls==='witness'){if(L(2))s.margin=1+.2*L(2);if(L(5))s.filed=2+.4*L(5);if(L(8)){s.footnote=1+.08*L(8);hpM=Math.max(.4,hpM-.04*L(8))}if(L(11)){s.pdr=(s.pdr||0)+FORMULAS.brace.colophon.pdr+FORMULAS.brace.colophon.pdrL*L(11);s.coloHi=1-Math.min(FORMULAS.brace.colophon.hi,FORMULAS.brace.colophon.hiPer*L(11));s.coloLo=1+.03*L(11)}if(L(13))s.named=.05*L(13)}
   /* Twenty-One Million prints +8% armour per rank, the same multiplier Iron Hide uses, and 8% + 2% damage reduction per rank. */
   if(G.cls==='maxi'&&L(8)){armM+=.08*L(8);s.pdr=(s.pdr||0)+FORMULAS.brace.million.pdr+FORMULAS.brace.million.pdrL*L(8)}
-  if(s.sp.nda)s.dodge+=15;if(s.sp.cloud9)s.dodge+=10;if(s.sp.fineprint)s.cdr+=.2;if(s.sp.repair)s.cap+=4;
+  if(s.sp.nda)s.dodge+=15;if(s.sp.cloud9)s.dodge+=10;if(s.sp.fineprint)s.cdr+=.2;
   hpM+=extra(s);s.cdr=Math.min(.6,s.cdr||0);
   s.dmg+=(G.at.mgt+(s.mgt||0))*1.5;s.crit=Math.round((s.crit+5+(G.at.ref+(s.ref||0))*.3)*10)/10;
   s.armor=Math.round((s.barm*(1+s.armorP/100)+s.armor+(G.at.ref+(s.ref||0)))*armM);
   if(P&&P.bear>0)s.armor=Math.round(s.armor*1.25);
-  s.maxHp=Math.round((c.hp+(G.lvl-1)*c.hpL+(G.at.vit+(s.vit||0))*4+s.hp+(s.hpL||0)*(G.lvl||1))*hpM);
+  s.maxHp=Math.round((c.hp+(G.lvl-1)*c.hpL+(G.at.vit+(s.vit||0))*4+s.hp+(s.hpL||0)*(G.lvl||1))*hpM);s.preHp=Math.round((c.hp+(G.lvl-1)*c.hpL+(G.at.vit+(s.vit||0))*4+(s.hp-(s.chFlat||0))+(s.hpL||0)*(G.lvl||1))*hpM);s.chHp=Math.max(0,s.maxHp-s.preHp);
   s.maxEn=Math.max(1,Math.round((50+G.lvl*2+(G.at.bnd+(s.bnd||0))*3+s.en+(s.enL||0)*(G.lvl||1))*(1+Math.min(80,s.enPct||0)/100)));
-  if(P&&(P.orders>0||P.rCall>0)){s.maxHp=Math.round(s.maxHp*(1+FORMULAS.aura.call.life));s.maxEn=Math.round(s.maxEn*(1+FORMULAS.aura.call.en))}
+  if(P&&(P.orders>0||P.rCall>0)){const m=1+FORMULAS.aura.call.life;s.maxHp=Math.round(s.maxHp*m);s.preHp=Math.round((s.preHp||s.maxHp)*m);s.chHp=Math.max(0,s.maxHp-s.preHp);s.maxEn=Math.round(s.maxEn*(1+FORMULAS.aura.call.en))}
   if(s.pdr)s.pdr=Math.min(FORMULAS.brace.pdrCap,s.pdr);
   s.aspd+=s.wspd;s.mspd=Math.min(s.mspd,50);
   if(s.r_all)for(const k of RTK)s['r_'+k]=(s['r_'+k]||0)+s.r_all;
@@ -245,10 +245,10 @@ const unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 function encW(w){return{zi:w.zi,N:w.N,ml:w.ml,tier:w.tier,map:b64(w.map),wh:b64(w.wh),seen:b64(w.seen),leftT:w.leftT,sub:w.sub,suAt:w.suAt,ents:w.ents.filter(e=>!e.mp),objs:w.objs,drops:(w.drops||[]).filter(d=>!(d.it&&d.it.test)),decals:w.decals.slice(-40),portals:w.portals,goal:w.goal,start:w.start}}
 function decW(o){if(!o||typeof o!=='object')return null;try{const w=Object.assign({},o);w.map=unb64(o.map);w.wh=unb64(o.wh);w.seen=unb64(o.seen);return w}catch(e){return null}}
 function keepGround(o){if(!o||!G)return;if(!Array.isArray(G.bag))G.bag=[];if(!Array.isArray(G.stash))G.stash=[];
-  for(const d of (Array.isArray(o.drops)?o.drops:[])){if(!d)continue;if(d.it){if(G.bag.length<24)G.bag.push(d.it);else G.stash.push(d.it)}
+  for(const d of (Array.isArray(o.drops)?o.drops:[])){if(!d)continue;if(d.it){if(bagCan(d.it))G.bag.push(d.it);else G.stash.push(d.it)}
     else if(d.sat)G.sats=(G.sats||0)+(d.sat|0);else if(d.cr)G.credits=(G.credits||0)+Math.floor(+d.cr||0);else if(d.pot)G.stims=(G.stims||0)+1;
     else if(d.word){G.words=G.words||{};G.words[d.word]=(G.words[d.word]||0)+1}}}
-function packSave(G0,zs,cur){const G2=Object.assign({},G0);G2.eq=Object.assign({},G0.eq||{});for(const sl of SLOTS)if(G2.eq[sl]&&G2.eq[sl].test)G2.eq[sl]=null;G2.bag=(G0.bag||[]).filter(it=>!(it&&it.test));G2.stash=(G0.stash||[]).filter(it=>!(it&&it.test));if(G0.merc){G2.merc=Object.assign({},G0.merc);for(const sl of ['weapon','helm','armor'])if(G2.merc[sl]&&G2.merc[sl].test)G2.merc[sl]=null}return{G:G2,zs,cur,opt:OPT,t:Date.now()}}
+function packSave(G0,zs,cur){const G2=Object.assign({},G0);G2.eq=Object.assign({},G0.eq||{});for(const sl of SLOTS)if(G2.eq[sl]&&G2.eq[sl].test)G2.eq[sl]=null;G2.bag=(G0.bag||[]).filter(it=>!(it&&it.test));G2.stash=(G0.stash||[]).filter(it=>!(it&&it.test));G2.cslots=(G0.cslots||[]).filter(it=>!(it&&it.test));if(G0.merc){G2.merc=Object.assign({},G0.merc);for(const sl of ['weapon','helm','armor'])if(G2.merc[sl]&&G2.merc[sl].test)G2.merc[sl]=null}return{G:G2,zs,cur,opt:OPT,t:Date.now()}}
 function saveObj(){const zs={};for(const k in ZS)if(String(k).indexOf('g:')!==0)zs[k]=encW(ZS[k]);let cur=null;if(W&&P){if(!W.z.town&&!W.z.sim)zs[W.zi]=encW(W);cur={zi:W.zi,x:P.x,y:P.y};if(W.z.sim&&W.sim)cur.sim=W.sim.rush?{rush:1}:{wave:Math.max(1,W.sim.wave|0)}}return packSave(G,zs,cur)}
 function save(force){if(!G)return false;let ok=false;try{localStorage.setItem(skey(SLOT),JSON.stringify(saveObj()));localStorage.setItem(SAVEKEY+'_slot',SLOT);ok=true}catch(e){}
   if(CL&&(force||Date.now()-clAt>10000))cloudSave();return ok||!!CL}
@@ -580,7 +580,7 @@ function deathFee(){if(G.hc)return 0;if(S.sp&&S.sp.coldwallet)return 0;if(G.act2
 function defragAct1(e){return !!(e&&e.q==='q3'&&!G.act2)}
 /* A player hit is already quartered by the server. Difficulty and companion pressure are for machines. */
 /* A blow that lands while you are already falling does not fine you again or restart the notice. */
-function hurt(d,slow,src){const pv=src&&src.pvp,wasStun=P.hitStun>0;if(mode==='dying'||(P.inv>0&&!pv)||(mode!=='play'&&!pv)||G.god)return;if(P.redact>0){float(P.x,P.y,'Redacted','#e6dcc8',1);return}if(src&&W&&W.ents&&W.ents.indexOf(src)>=0)src.lastAtk=d;if(P.dip){P.dip=0;float(P.x,P.y,'The dip','#f7931a',1);sfx('whiff');return}if(!pv)d*=partyD();if(!pv){let mk=P.mkAura>0?1.3:1;if(P.mkP>0)mk=Math.max(mk,1+P.mkP);if(mk>1)d*=mk}
+function hurt(d,slow,src){const pv=src&&src.pvp,wasStun=P.hitStun>0;if(mode==='dying'||(P.inv>0&&!pv)||(mode!=='play'&&!pv)||G.god)return;if(pv)d*=pvpLifeMul();if(P.redact>0){float(P.x,P.y,'Redacted','#e6dcc8',1);return}if(src&&W&&W.ents&&W.ents.indexOf(src)>=0)src.lastAtk=d;if(P.dip){P.dip=0;float(P.x,P.y,'The dip','#f7931a',1);sfx('whiff');return}if(!pv)d*=partyD();if(!pv){let mk=P.mkAura>0?1.3:1;if(P.mkP>0)mk=Math.max(mk,1+P.mkP);if(mk>1)d*=mk}
   if(S.dodge&&Math.random()*100<S.dodge){float(P.x,P.y,'Dodge','#9fe0d0',1);sfx('whiff');return}
   if(P.route>0&&G.cls==='courier'&&sl(10)&&!boonOn(10)&&Math.random()*100<6+2*sl(10)){float(P.x,P.y,'Route','#3fbf8f',1);sfx('whiff');return}
   d=typedIn(d,src);if(S.pdr)d*=1-Math.min(FORMULAS.brace.pdrCap,S.pdr)/100;if(S.sp.indemnity&&src&&src.crit){d/=(src.critM||2);src.crit=0}d*=S.taken||1;d*=100/(100+(S.armor+(G.cls==='scrapper'&&sl(11)&&!boonOn(11)?Math.floor(Math.min(6,P.lineT||0))*4*sl(11):0))*(P.mech>0?2:1)*(P.guard>0?1.6:1)*(P.shr&&P.shr.k==='guard'?2:1));if(P.lastTy==='rust')P.rustD={dps:d*.25/3,t:3};
@@ -1645,8 +1645,8 @@ function update(dt){
     /* The pickup line prints whole credits, so the purse gains that floor. */
     if(d.cr){const v=Math.floor(d.cr*(1+S.gold/100));G.credits+=v;if(v){float(P.x,P.y,'+'+fmt(v),'#ffe36b');sfx('coin')}}
     else if(d.pot){if(G.stims>=S.cap)continue;G.stims++;float(P.x,P.y,'+stim','#7be495');sfx('pick')}
-    else if(d.it.charm){if(!chTake(d.it)){if(P.warn<=0){toast('Your subscriptions are full (12)');P.warn=3}continue}sfx('pick');toast('Subscribed: '+d.it.name+(d.it.on?'':' (paused: six already running)'))}
-    else{if(!d.force&&skipPick(d.it))continue;if(G.bag.length>=24){if(P.warn<=0){toast('Your pack is full');P.warn=3}continue}G.bag.push(d.it);sfx('pick');if(d.it.id&&G.lvl>=d.it.req&&!d.it.charm){const dl=itemDelta(d.it),emp=!G.eq[d.it.slot];if(emp||(OPT.autoEq&&dl>.01)){equipFromBag(G.bag.indexOf(d.it));toast('Equipped '+d.it.name);W.drops.splice(W.drops.indexOf(d),1);continue}if(dl>.2&&(!SWAP||dl>SWAP.d))SWAP={it:d.it,d:dl,t:8}}toast('Picked up '+(d.it.id?d.it.name:'an unidentified '+d.it.base))}
+    else if(d.it.charm){charmNormalize(d.it);if(!bagCan(d.it)){if(P.warn<=0){toast('Your pack is full');P.warn=3}continue}G.bag.push(d.it);sfx('pick');toast('Picked up '+d.it.name)}
+    else{if(!d.force&&skipPick(d.it))continue;if(!bagCan(d.it)){if(P.warn<=0){toast('Your pack is full');P.warn=3}continue}G.bag.push(d.it);sfx('pick');if(d.it.id&&G.lvl>=d.it.req&&!d.it.charm){const dl=itemDelta(d.it),emp=!G.eq[d.it.slot];if(emp||(OPT.autoEq&&dl>.01)){equipFromBag(G.bag.indexOf(d.it));toast('Equipped '+d.it.name);W.drops.splice(W.drops.indexOf(d),1);continue}if(dl>.2&&(!SWAP||dl>SWAP.d))SWAP={it:d.it,d:dl,t:8}}toast('Picked up '+(d.it.id?d.it.name:'an unidentified '+d.it.base))}
     W.drops.splice(W.drops.indexOf(d),1)}
   for(const n of W.npcs){if(n.id!=='res')continue;n.wait-=dt;n.st=Math.max(0,n.st-dt);n.cool-=dt;n.ph+=dt;
     if(n.wait<=0){if(n.ev){n.tx=n.hx+rnd(-6,6);n.ty=n.hy+rnd(-6,6)}else{n.tx=rnd(5,20);n.ty=rnd(10,20)}n.wait=rnd(3,8)}

@@ -1,5 +1,5 @@
 /* ================= side quests: multi-step errands that move things between districts ================= */
-function giveItem(it){it.id=true;if(G.bag.length<24)G.bag.push(it);else addDrop({it},P.x,P.y);toast('You receive '+it.name)}
+function giveItem(it){it.id=true;if(bagCan(it))G.bag.push(it);else addDrop({it},P.x,P.y);toast('You receive '+it.name)}
 const SQ={
  shoebox:{n:'The Shoebox',by:'marrow',who:'Marrow',req:()=>G.marrow,rw:'+1 skill point and a rare amulet',
   offer:'“I told you I kept my letter. There is a shoebox of others under a porch in the Parcel Moors: a whole street’s worth, never deleted. The drones watch for it. Bring it to the old print kiosk in the Hollow Galleria and run them off.”',
