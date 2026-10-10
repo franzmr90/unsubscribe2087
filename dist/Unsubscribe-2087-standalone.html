@@ -8618,12 +8618,22 @@ function mpDraw(o, X, Y) {
   ctx.fillStyle = 'rgba(8,6,14,.75)'; ctx.fillRect(X - w / 2, y - 18, w, 4);
   ctx.fillStyle = hos ? '#e2443c' : '#7be495'; ctx.fillRect(X - w / 2 + .5, y - 17.5, (w - 1) * hp, 3);
   ctx.font = '600 10px Cinzel,serif'; ctx.textAlign = 'center';
-  ctx.fillStyle = 'rgba(8,6,14,.8)';
   const nm = (hos ? '⚔ ' : '') + o.name + ' · ' + o.lvl;
   const tw = ctx.measureText(nm).width;
-  ctx.fillRect(X - tw / 2 - 3, y - 32, tw + 6, 12);
+  /* Drawn here rather than through label() because this plate carries its own
+     hostile and party colours. It still takes a slot from the same list, or eight
+     people in one doorway print their names on top of each other. */
+  const nx = X - tw / 2 - 3, nw = tw + 6;
+  let ny = y - 32;
+  if (typeof txtSlot === 'function') {
+    const put = txtSlot(nx, ny, nw, 12, 14, 14);
+    if (put === null) { ctx.textAlign = 'left'; return; }
+    ny = put; txtClaim(nx, ny, nw, 12);
+  }
+  ctx.fillStyle = 'rgba(8,6,14,.8)';
+  ctx.fillRect(nx, ny, nw, 12);
   ctx.fillStyle = hos ? '#f0918b' : mate ? '#9fe0b4' : '#cfc8dd';
-  ctx.fillText(nm, X, y - 23);
+  ctx.fillText(nm, X, ny + 9);
   ctx.textAlign = 'left';
 }
 
