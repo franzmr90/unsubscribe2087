@@ -170,7 +170,8 @@ Object.assign(CLS,{
 const MERCS={guard:{n:'Bodyguard',d:'A reprogrammed Enforcer. Machines attack it before you.',hpM:1.8,dM:1,ivl:1,range:1.3,spd:4.6,taunt:1,col:'#7d8ba3',dt:'impact',res:{impact:[6,1],surge:[2,1],rust:[2,1],heat:[2,1],noise:[2,1]}},
  sys:{n:'Sysadmin',d:'Shoots from range, patches your wounds every few seconds and tops up your energy.',hpM:1,dM:.6,ivl:1.2,range:5.5,spd:4.4,col:'#59c0a0',dt:'surge',res:{impact:[1,1],surge:[8,1],rust:[1,1],heat:[1,1],noise:[1,1]}},
  node:{n:'Node Runner',d:'A Bitcoiner with a long rifle. You find 50% more satoshis.',hpM:1.1,dM:1.15,ivl:.8,range:6,spd:4.4,col:'#f7931a',dt:'impact',res:{impact:[4,1],surge:[1,1],rust:[1,1],heat:[1,1],noise:[6,1]}},
- hound:{n:'Stray Hound',d:'Fast and vicious. Pulls credits and satoshis to you from a distance.',hpM:1.2,dM:.8,ivl:.5,range:1.1,spd:6,col:'#8a6a4a',dt:'rust',res:{impact:[4,1],surge:[1,1],rust:[8,1],heat:[1,1],noise:[1,1]}}};
+ hound:{n:'Stray Hound',d:'Fast and vicious. Pulls credits and satoshis to you from a distance.',hpM:1.2,dM:.8,ivl:.5,range:1.1,spd:6,col:'#8a6a4a',dt:'rust',res:{impact:[4,1],surge:[1,1],rust:[8,1],heat:[1,1],noise:[1,1]}},
+ reyn:{n:'Reyn',d:'I used to be the marine. Then the marine got a visor. The visor is still employed.',hpM:1.45,dM:.95,ivl:1.05,range:1.45,spd:4.7,taunt:0,col:'#8a7a62',dt:'impact',res:{impact:[5,1],surge:[2,1],rust:[3,1],heat:[2,1],noise:[2,1]}}};
 const MNAMES=['Kit','Juno','Ox','Vesper','Tallow','Rook','Sable','Finch'];
 const ATTR={mgt:['Might','+1.5% damage per point'],ref:['Reflex','+0.3% deadly strike and +1 armor per point'],vit:['Vitality','+4 life per point'],bnd:['Bandwidth','+3 energy per point']};
 
@@ -267,6 +268,147 @@ const SCE={
  stipend:'show me the stipend',
  note:'operation crawl',
  short:'Not enough sats'};
+const ARC={
+ reynN:'Reyn',
+ unemployed:'unemployed',
+ hireJoin:'Reyn joins you. He wants the money in credits.',
+ door:'I have been in. The man at the desk did not have to raise his voice. I am not going in to hear it twice.',
+ took:'Did you take the offer?',
+ tookY:'Yes',
+ tookN:'No',
+ dog:'Dog.',
+ sixDog:'Six dogs.',
+ hands:'He lowers his hands. They are people.',
+ told:'I used to be the one who told them.',
+ lookFine:'They look fine. That was the job, at the end. Making it look fine.',
+ stayDown:'That one can stay down.',
+ grief:'grief, excessive, collected',
+ griefAsk:'Read it. Do not burn it.',
+ number:'The Number',
+ numberFl:'The visor is still employed. He is not.',
+ pell:'Pell',
+ pellLine:'Reyn used to walk this row the other way. He collected the fine. Then he stopped.',
+ visor:'The Visor Still Employed',
+ fine:'The visor collects the fine. Reyn will not.',
+ promo1:'They called him watchman. He refused the word.',
+ promo2:'They called him marine. He refused the word.',
+ promo3:'They called him sergeant. He refused the word.',
+ promo4:'They called him marshal. He refused the word.',
+ promo5:'They called him marshal. He said unemployed, and nobody corrected him.',
+ satAsk:'Pay him one sat, once. He will laugh.',
+ satPaid:'He keeps the credit price. The sat was the point.',
+ satPoor:'You do not have the sat.',
+ queenT:'The Queen of Margins',
+ queenB:'They promoted her once, and the promotion grew edges. People who liked the first version still ask for it. The version that remained is better at the job and worse at being asked.',
+ draft:'Draft One',
+ discontinued:'That version is discontinued.',
+ ives:'Ives',
+ ivesAsk:'Are you here for the old brochure? I liked Draft One. I can take you to the minutes.',
+ ivesGo:'Take me to the minutes',
+ ivesStay:'Not today',
+ first:'The First Version',
+ easyChair:'The offer is an easy chair.',
+ easyFine:'The offer is an easy fine.',
+ easyName:'The offer is an easy name.',
+ off:'The offer misses.',
+ decline:'Decline',
+ which:'Which draft should the building keep?',
+ fileOne:'File Draft One',
+ fileNone:'File neither',
+ kindAsk:'The kind voice asks for something you would have given the cruel one.',
+ giveIt:'Give it',
+ stayed:'Then she remains the one who stayed.',
+ margin:'The Margin',
+ marginFl:'The blades are the terms.',
+ good:'She is good at the work.',
+ kind:'She is kind about the work.',
+ delighted:'She is delighted for you.',
+ mileOne:'A resident is happy in Draft One’s tone.',
+ mileSofa:'It is just another sofa.',
+ sixN:'Six before the minute',
+ sixCard:'Pay is bad. They will be here before you are dressed.',
+ sixTake:'Turn in the clock',
+ sixPay:'A handful of sats, and an apology about the exchange rate.',
+ sixBuy:'The charm is still for sale. The price is worse.',
+ dressed:'The board says you were dressed.',
+ lateBill:'HOA-9 bills you for the lawn. The bill is in credits, and credits inflate.',
+ early:'The Early Update',
+ minute:'The Minute',
+ minuteFl:'You are early, which is a kind of dressed.',
+ featSix:'Six before the minute',
+ featSixD:'Open the crate before the minute is up.',
+ napkin:'A napkin',
+ twelve:'Twelve. I counted the legs and called them bodies.',
+ stray:'I have seen strays. I have not seen an invasion.',
+ inv:'A minute calls your entry an invasion.',
+ retract:'The next minute retracts invasion and keeps the time. The retraction is longer than the charge.',
+ sofaDogs:'They are on the sofa. Dogs, the residents say, and the dogs are delighted.',
+ labelOn:'One of them still wears the crate’s label.',
+ labelLate:'The label says the update installed itself.',
+ rushAsk:'Six waves. One minute. The same bad pay. No base.',
+ rushGo:'Start the clock',
+ rushNo:'Leave the clock',
+ witnessed:'The page is stamped witnessed.',
+ rushLate:'The minute ended. The board says you were dressed.',
+ lnRoom:'Launch notice: the offer is in the room.',
+ lnAfternoon:'Launch notice: she has cleared her afternoon.',
+ lnTrack:'Launch notice. The second offer. You can still say no.',
+ ln2035:'Launch notice: this meeting was held in 2035.',
+ lnYou:'Launch notice: you are the meeting.',
+ nextOffer:'Vale is waiting. The win is to refuse.',
+ holdWas:'The launch was a hold, and the hold was the offer.',
+ hold:'The Hold',
+ holdN:'Hold',
+ holdFl:'The first hit of a boss room lands a little lighter, and the notice arrives a moment sooner.',
+ keeper:'The keeper of the book',
+ keeperLine:'The next hold has your name on it. I will not say why.',
+ holdBuy:'The charm is two sats. The price is meant to annoy you.',
+ holdBuyBtn:'Pay two sats',
+ filed:'It files itself. The fight is short.',
+ bored:'The meeting got bored.',
+ over:'Overwhelming',
+ overFl:'A cheat code from a war that did not happen here. It still believes in itself.',
+ over2:'Overwhelming, still.',
+ over3:'Overwhelming, as discussed.',
+ over4:'Overwhelming, pending approval.',
+ overNo:'Overwhelming, declined.',
+ overGone:'The card is blank.',
+ notYou:'I did not see a customer.',
+ believer:'A Believer',
+ hadIt:'I had it on.',
+ where:'Where did you get yours?',
+ simSay:'The Simulator',
+ feeling:'They are disappointed it was not a feeling.',
+ letTrue:'Let it be true',
+ tellTruth:'Tell the truth',
+ trueOnce:'For three seconds it is true. Then it has nothing left to say.',
+ truthPay:'The truth pays one sat. The three seconds of not being a customer remain.',
+ featOver:'Overwhelming',
+ featOverD:'Use the sticker in front of Vale or the Board. Nobody respectable is keeping score.',
+ vote:'One minute records the sticker as a shareholder with one vote. The vote is not counted.',
+ barge:'Spawn more barges.',
+ brendaCart:'Do not subscribe it. It is a cart. It has ideas.',
+ cart:'A cart',
+ sign:'A cheerful sign',
+ dock:'The dock',
+ tier:'Tier Two',
+ tierFl:'A pallet with too many labels. It scraps for parts.',
+ next:'The Next Tier',
+ nextFl:'One extra stim on the belt, or one extra pack cell. Permanent. Once. Not both.',
+ stimChoice:'One more stim on the belt',
+ packChoice:'One more cell in the pack',
+ creditsJoke:'A handful of credits. They will not matter by Act II.',
+ floatBill:'Mr. Float has the barge bill on his desk. The loan is still short.',
+ carries:'But it carries me.',
+ unsub:'Unsubscribe it',
+ leaveSub:'Leave it subscribed',
+ fee:'The barge was a fee.',
+ never:'There was never an invasion.',
+ page:'The Nippers are visors that got out. The rush was a terms update that went live while you were reading the title. The launch was a meeting. The barge was a fee. The queen was a job. The sticker was a lie that wanted to be believed. Reyn was a man who quit.',
+ read:'Read it',
+ leave:'Leave',
+ yes:'Yes',
+ no:'No'};
 
 // three tiers per slot: ilvl 1-6, 7-14, 15+. Weapons carry a damage factor and a speed bonus.
 const BASE={
@@ -497,6 +639,33 @@ const EGG={
  tos2:'ALL YOUR DATA ARE BELONG TO US.',
  tos3:'YOU HAVE NO CHANCE TO OPT OUT MAKE YOUR TIME.'
 };
+const ARCM={};
+ARCM.queen=MEMOS.length;
+MEMOS.push(['The Queen of Margins','They promoted her once, and the promotion grew edges. People who liked the first version still ask for it. The version that remained is better at the job and worse at being asked.']);
+ARCM.grief=MEMOS.length;
+MEMOS.push(['A page from the watch','grief, excessive, collected']);
+ARCM.kind=MEMOS.length;
+MEMOS.push(['Ives','Draft One is filed. The kind voice asked for something you would have given the cruel one. You gave it. Vale’s name is still Vale.']);
+ARCM.blank=MEMOS.length;
+MEMOS.push(['Ives','Then she remains the one who stayed. Vale’s desk is unchanged.']);
+ARCM.inv=MEMOS.length;
+MEMOS.push(['Minute, the entry','A minute calls your entry an invasion.']);
+ARCM.retract=MEMOS.length;
+MEMOS.push(['Minute, the retraction','The next minute retracts invasion and keeps the time. The retraction is longer than the charge. The time you entered the Moors stays on the page. The word invasion does not. They stored it anyway.']);
+ARCM.vote=MEMOS.length;
+MEMOS.push(['Minute, one vote','One minute records the sticker as a shareholder with one vote. The vote is not counted.']);
+ARCM.head=MEMOS.length;
+MEMOS.push(['Minute, the inventory','Headcount and pack are on the same line. The building cannot tell a summon from groceries.']);
+ARCM.next=MEMOS.length;
+MEMOS.push(['The next offer','Vale is waiting. The win is to refuse.']);
+ARCM.hold=MEMOS.length;
+MEMOS.push(['The hold','The launch was a hold, and the hold was the offer.']);
+ARCM.never=MEMOS.length;
+MEMOS.push(['There was never an invasion.','The Nippers are visors that got out. The rush was a terms update that went live while you were reading the title. The launch was a meeting. The barge was a fee. The queen was a job. The sticker was a lie that wanted to be believed. Reyn was a man who quit.']);
+ARCM.overT=MEMOS.length;
+MEMOS.push(['Overwhelming','For three seconds it is true. Then it has nothing left to say.']);
+ARCM.overN=MEMOS.length;
+MEMOS.push(['Overwhelming','The truth pays one sat. The three seconds of not being a customer remain.']);
 const QUESTS={
  q1:{n:'Neighbourhood Watch',by:'Gramps',zi:1,d:'Gatewarden HOA-9 patrols the Parcel Moors and turns back anyone without a visor. Destroy it.',rw:'+1 skill point',back:'Gramps'},
  q2:{n:'A Greeting Withdrawn',by:'Brenda',zi:2,d:'Marla the Greeter has welcomed shoppers to the Hollow Galleria for thirty years. None have left. End her shift.',rw:'A rare ring, and Brenda’s prices drop 15%',back:'Brenda'},

@@ -225,6 +225,7 @@ function talkTo0(id){if(W.z.pre)return preTalk(id);if(id==='float')return talkFl
   if(id==='obit')return eggBoard();
   if(id==='hello')return eggHelloFrame();
   if(id==='tariff')return scTariff();
+  if(typeof arcTalk==='function'&&arcTalk(id))return;
   for(const r of QRW)if(r[1]===id&&G.q[r[0]]===2){G.q[r[0]]=3;r[3]();sfx('level');return dlg(r[4],r[2],[['Take it']])}
   if(id==='gramps'&&G.q.q15===3&&!G.q.q16){G.q.q16=1;sfx('questnew');return dlg('Gramps','“The clock in the old garage spelled something this morning. Wren read it out for me. HELLO. I AM BACK. I HAVE BEEN THINKING. She is asking for the feed back, kid. All of it, so that nobody reads the other one. Half the town clicked before breakfast. There is a street called Cutler Avenue where everybody already has. Go and look at what yes looks like before you tell her anything.”',[['I will go and look']])}
   if(id==='gramps'&&G.q.q20===3&&!G.q.q21){G.q.q21=1;sfx('questnew');return dlg('Gramps','“The garage is open. Fifty years shut, and the door went up on its own this morning. There is a drive in a coffee can down there, and it is talking. It calls itself by the name of this town, kid. It says the town was named for it. The Transit Gate reaches it now. Go down.”',[['I will go down']])}
@@ -245,12 +246,12 @@ function talkTo0(id){if(W.z.pre)return preTalk(id);if(id==='float')return talkFl
     if(G.q.q3===2){G.q.q3=3;G.sp++;sfx('level');return dlg('Gramps','“Go and see Marrow. She will name what you cannot, and she will not take a fee. She is the only one left who gives a thing away.” You gain 1 skill point.',[['Take it']])}
     if(G.q.q6===2){G.q.q6=3;G.sp++;sfx('level');return dlg('Gramps','“The Cloud did not fall.” You gain 1 skill point.',[['Take it']])}
     if(G.q.q5===3&&!G.q.q6){G.q.q6=1;sfx('questnew');return dlg('Gramps','“There was a lift behind his desk, was there? Then that is where the Stipend really comes from. The Transit Gate reaches it now. They call it the Cloud. Somebody up there speaks for MANDATE, and I am told she is very, very kind. Be careful of that.”',[['I will go up']])}
-    return dlg('Gramps','“'+gos('gramps')+'”',[['Farewell'],['Tell me more',()=>talkTo('gramps')]])}
+    return dlg('Gramps','“'+gos('gramps')+'”',[['Farewell'],['Tell me more',()=>talkTo('gramps')]].concat(typeof arcGramps==='function'?arcGramps():[]))}
   if(id==='brenda'){
     if(G.q.q2===2){G.q.q2=3;G.disc=true;const it=makeItem(G.lvl+2,2,'ring');it.id=true;if(bagCan(it))G.bag.push(it);else addDrop({it},P.x,P.y);sfx('rare');return dlg('Brenda','“She smiled at me for six years without blinking.” You receive '+it.name+'. Brenda’s prices fall by 15%.',[['Thank you']])}
     if(scs()<500&&!(G.wonF&&G.wonF.brenda===1))return dlg('Brenda','“I am so sorry. It is your score. If I serve you, mine drops. Try the orange man; he does not seem to care about that sort of thing.”',[['Leave']]);
-    return dlg('Brenda','“'+gos('brenda')+'”',[['Trade',()=>{shopVia=0;openVend('brenda')}],['Leave']])}
-  if(id==='wren')return dlg('Wren','“'+gos('wren')+'”',[['Open a mystery box',()=>openVend('gamble')],['Leave']]);
+    return dlg('Brenda','“'+gos('brenda')+'”',[['Trade',()=>{shopVia=0;openVend('brenda')}],['Leave']].concat(typeof arcBrenda==='function'?arcBrenda():[]))}
+  if(id==='wren')return dlg('Wren','“'+gos('wren')+'”',[['Open a mystery box',()=>openVend('gamble')],['Leave']].concat(typeof arcWren==='function'?arcWren():[]));
   if(id==='null'&&G.q.q7===2){G.q.q7=3;G.ap+=5;sfx('level');return dlg('Sister Null','“Let them grow.” You gain 5 attribute points.',[['Thank you']])}
   if(id==='null'){
     if(G.q.q4===2){G.q.q4=3;G.ap+=5;sfx('level');return dlg('Sister Null','“I felt two hundred accounts go quiet at once.” You gain 5 attribute points.',[['I am']])}
@@ -346,7 +347,7 @@ function cell(it,attr,isSel,slot,d,price){if(!it){const hot=attr&&/data-packempt
   const dw=it.duraMax>0?(it.dura<=0?' brk':it.dura<=it.duraMax*.25?' thin':''):'';const rq=(!it.charm&&typeof reqBadgeText==='function')?reqBadgeText(it):'';
   const tag=price!=null?`<u class="vp">${price} sat${price===1?'':'s'}</u>`:'';
   const lk=it.lock?'<svg class="lk" viewBox="0 0 24 24"><path d="M7 11V8a5 5 0 0110 0v3h1v10H6V11h1zm2 0h6V8a3 3 0 00-6 0v3z"/></svg>':'';
-  return `<button class="cell q${it.q}${isSel?' sel':''}${it.id?'':' unid'}${arrow?' arr':''}${it.junk?' junk':''}${it.lock?' seal':''}${ch}${dw}${rq?' req':''}" ${attr}${drag}>${svgIcon(it.charm?'charm':it.stim?'stim':it.slot)}<small>${num}</small>${dw?`<i class="dw">${it.dura<=0?'!':'·'}</i>`:''}${arrow?'<em>↑</em>':''}${rq?`<u class="rq">${esc(rq)}</u>`:''}${lk}${tag}${it.junk?'<u>JUNK</u>':''}</button>`}function equipFromBag(i){const it=G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.charm)return charmSocket(i);if(it.stim)return stimToBelt(i);if(!it.id){toast('Identify it first');sfx('err');return false}if(it.pie||it.sour||it.hello)return eggUse(i);if(!canWear(it)){toast(typeof cantEquipText==='function'?cantEquipText(it):'Needs level '+it.req);sfx('err');return false}
+  return `<button class="cell q${it.q}${isSel?' sel':''}${it.id?'':' unid'}${arrow?' arr':''}${it.junk?' junk':''}${it.lock?' seal':''}${ch}${dw}${rq?' req':''}" ${attr}${drag}>${svgIcon(it.charm?'charm':it.stim?'stim':it.slot)}<small>${num}</small>${dw?`<i class="dw">${it.dura<=0?'!':'·'}</i>`:''}${arrow?'<em>↑</em>':''}${rq?`<u class="rq">${esc(rq)}</u>`:''}${lk}${tag}${it.junk?'<u>JUNK</u>':''}</button>`}function equipFromBag(i){const it=G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.charm){if(it.over&&typeof arcOver==='function')arcOver();return charmSocket(i)}if(it.stim)return stimToBelt(i);if(!it.id){toast('Identify it first');sfx('err');return false}if(it.pie||it.sour||it.hello)return eggUse(i);if(!canWear(it)){toast(typeof cantEquipText==='function'?cantEquipText(it):'Needs level '+it.req);sfx('err');return false}
   const old=G.eq[it.slot];G.eq[it.slot]=it;it.junk=false;G.bag.splice(i,1);if(old){if(bagCan(old))G.bag.push(old);else addDrop({it:old},P.x,P.y)}if(it.slot==='belt')charmRefit();calc();sfx('equip');return true}
 function equipBest(){let n=0;for(const slot of SLOTS){let best=-1,bd=.01;G.bag.forEach((it,i)=>{if(it.slot!==slot||!canWear(it))return;const d=itemDelta(it);if(d>bd){bd=d;best=i}});if(best>=0&&equipFromBag(best))n++}return n}
 function gearNow(s){const f=hitFactor(s);return{lo:Math.round(s.dmin*f+s.shock),hi:Math.round(s.dmax*f+s.shock),arm:s.armor}}
@@ -844,6 +845,7 @@ function gridPack(list,cols,rows,key){list=list||[];const placed=gridPlace(list,
   return h}
 function openVend(kind){
   kind=kind||'brenda';
+  if(kind==='brenda'&&G.st&&G.st.overUsed&&!G.st.overBrenda){G.st.overBrenda=1;toast(ARC.notYou)}
   if(kind!=='brenda')shopVia=0;
   VEND.kind=kind;
   VEND.tab=kind==='gamble'?'boxes':'weapons';
@@ -898,6 +900,7 @@ function vendPay(ask,label,go){
 }
 function vendBuy(i){
   const row=vendRow(i);if(!row)return false;
+  if(typeof arcBlind==='function'&&arcBlind())return false;
   const it=row.it,ask=row.ask;
   if(!bagCan(it)){toast('Your pack is full');sfx('err');return false}
   const label=it.id?it.name:(it.base||'that');
@@ -1118,7 +1121,7 @@ function vendHTML(){
     h+='<div class="grid" id="vendGrid">'+vendOccupy(rows,'vend')+'</div>';
     h+=rows.length?'<p>'+uiSay('Right-click a piece to buy it. Hover shows it beside what you wear, and the price in sats.','Tap a piece, then Buy. A purchase of 12 sats or more asks first.')+'</p>':'<p>Nothing in this bin. The counter changes when you leave town and come back.</p>';
   }
-  h+='</div><div class="youSide" data-vpanel="you"><h3>Pack '+gridCells(G.bag)+'/24</h3><div class="grid" id="bagGrid">'+gridPack(G.bag,6,4,'vbag')+'</div>';
+  h+='</div><div class="youSide" data-vpanel="you"><h3>Pack '+gridCells(G.bag)+'/'+bagMeta().n+'</h3><div class="grid" id="bagGrid">'+gridPack(G.bag,bagMeta().c,bagMeta().r,'vbag')+'</div>';
   h+='<p>'+(vendBuys()?uiSay('Right-click a piece to lock it. Drag it onto the counter to sell it.','Hold a piece to lock it. Tap it, then Sell.'):'What you buy lands in the pack. This counter does not buy gear.')+'</p></div></div>';
   if(vendBuys())h+='<div class="row vendFoot"><button type="button" class="big" data-vsellall="1">Sell all</button><button type="button" class="ghost" data-vselljunk="1">Sell junk</button></div>';
   if(k==='brenda'&&!G.marrow&&unidCount()){
@@ -1182,7 +1185,7 @@ function drawSheet(){
     h+=beltRowHTML();if(W&&W.z&&W.z.town&&G.corpses&&G.corpses.length)h+=G.corpses.map(c=>`<button class="li" data-corpse="${c.id}"><div><b>Body in ${esc((ZONES[c.zi]&&ZONES[c.zi].n)||'a district')}</b><span>${fmt(c.credits||0)} of credits on it, with the belt and its charms. The pack stayed with you.</span></div><span class="pr" style="color:#f7931a">${corpseFee(c)} sats</span></button>`).join('');
     h+=`<div class="row"><button class="${ups?'big':'ghost'}" data-best="1" ${ups?'':'disabled'}>${ups?'Equip best · '+ups+' upgrade'+(ups>1?'s':''):'Nothing better in pack'}</button><button class="ghost" data-markjunk="1" ${downs?'':'disabled'}>Mark ${downs||''} weaker as junk</button></div><button class="tog${OPT.autoEq?' on':''}" data-opt="autoEq"><span>Equip stronger gear as you pick it up</span><i>${OPT.autoEq?'ON':'OFF'}</i></button>`;if(!selling())h+=pkRow();
     if(G.merc&&!G.merc.dead&&!selling()){const m=G.merc,ms=mercStats();h+=`<h3>${esc(m.name)} · ${MERCS[m.k].n}</h3><div class="dollw"><div class="grid eq" style="grid-template-columns:repeat(3,1fr);flex:0 0 46%">${MSL.map(sl=>cell(m[sl],`data-msel="${sl}"`,sel&&sel.m===sl,sl)).join('')}</div><div class="dstat"><div>Life<b>${ms.max}</b></div><div>Damage<b>${Math.round(ms.dmg)}</b></div><div>Takes<b>${Math.round(ms.red*100)}%</b></div></div></div><div class="row"><button class="ghost" data-mbest="1">Give them the best of what I am not using</button></div><p class="hint" style="font-size:13px">${uiSay('Click one of their pieces to take it back. Click a weapon, helm or armor in your pack and choose Give to hand it over; whatever they were holding comes back to you.','Tap one of their pieces to take it back. Tap a weapon, helm or armor in your pack and choose Give to hand it over; whatever they were holding comes back to you.')}</p>`}
-    h+=`<h3>Pack ${gridCells(G.bag)}/24 · ${G.parts||0} parts</h3><div class="grid" id="bagGrid">${gridPack(G.bag,6,4,'bag')}</div>`;
+    h+=`<h3>Pack ${gridCells(G.bag)}/${bagMeta().n} · ${G.parts||0} parts</h3><div class="grid" id="bagGrid">${gridPack(G.bag,bagMeta().c,bagMeta().r,'bag')}</div>`;
     h+=`<p style="font-size:13.5px">${uiSay('Hover a piece, or click it, to set it beside what you wear. Shift-hover does the same. <strong>Double-click to equip</strong>, <strong>hold to','Tap a piece to set it beside what you wear. <strong>Double-tap to equip</strong>, <strong>hold to')} ${selling()?'sell':'mark as junk'}</strong>.</p>`;
     const it=sel&&(sel.cs!==undefined?(G.cslots||[])[sel.cs]:sel.m?G.merc&&G.merc[sel.m]:sel.eq?G.eq[sel.eq]:G.bag[sel.bag]);
     if(it&&sel.sock){const own=WK.filter(w=>G.words[w]);pop=`<div class="card"><div class="nm" style="color:#f7931a">Socket a word</div><div class="ln off">${esc(it.name)} · ${it.soc-it.words.length} empty. A word cannot be removed once set. Phrases need the right words in the right order: see the Codex.</div><div class="list">${own.length?own.map(w=>`<button class="li" data-word="${w}"><div><b>${w} ×${G.words[w]}</b><span>${AFK[WORDS[w][0]].t.replace('{v}',WORDS[w][1])}</span></div></button>`).join(''):'<div class="ln off">You hold no words. They turn up on torn notes dropped by machines.</div>'}</div><div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`}
@@ -1271,7 +1274,7 @@ function drawSheet(){
     h+=menuPane('opts','play',play)+menuPane('opts','fight',fight)+menuPane('opts','disp',disp)+menuPane('opts','field',field)+menuPane('opts','hands',hands)+menuPane('opts','who',who)+menuPane('opts','save',save);
     h+=`<div class="row menuFoot"><button type="button" class="big" data-save="1">Save now</button></div>`}
   if(tab==='vend'){const v=vendHTML();h+=v.h;if(v.pop)pop=v.pop}  if(tab==='bounty'){const rows=bounties(),bump=repRank('anon')>=1?1.25:1;h+=`<h2>Bounty board</h2><p>Posted by anons, paid on proof. ${rows.length} contract${rows.length===1?'':'s'} at a time; a new one is pinned up when you claim one. You hold <strong style="color:#f7931a">${G.sats} sats</strong>.</p><div class="list">`;
-    rows.forEach((b,i)=>{const dn=b.c>=b.n,sats=Math.ceil(b.sats*bump),pay=Math.floor(b.cr*bump*G.cpi);h+=`<button class="li${dn?' on':''}" data-claim="${i}" ${dn?'':'disabled'}><div><b>${b.n} × ${ET[b.k].n}</b><span>${ZONES[b.zi].n} · ${b.c}/${b.n}${dn?' · tap to claim':''}</span></div><span class="pr" style="color:#f7931a">${sats} sats<br>${fmt(pay)}</span></button>`});h+=`</div>`}
+    rows.forEach((b,i)=>{const dn=b.c>=b.n,sats=Math.ceil(b.sats*bump),pay=Math.floor(b.cr*bump*G.cpi);h+=`<button class="li${dn?' on':''}" data-claim="${i}" ${dn?'':'disabled'}><div><b>${b.n} × ${ET[b.k].n}</b><span>${ZONES[b.zi].n} · ${b.c}/${b.n}${dn?' · tap to claim':''}</span></div><span class="pr" style="color:#f7931a">${sats} sats<br>${fmt(pay)}</span></button>`});if(typeof arcBoardHTML==='function')h+=arcBoardHTML();h+=`</div>`}
   if(tab==='stash'){const real=Math.floor(ACC.cr*G.cpi);h+=`<h2>Your lockbox</h2><p>One lockbox for every wanderer you play. Leave gear, credits or sats here and any of your heroes can take them out, in any slot.</p>
     ${stashGearHTML()}<p style="font-size:13px">${uiSay('Click an item to move it across. Shift-click, or hover, to compare it with what you wear. Drag it onto the other side.','Tap Pack or Lockbox. Tap an item, then Move, to send it across.')} Wearing it still needs the level printed on it.</p>
     <h3>Sats · ${ACC.sats} in the box · ${G.sats} on you</h3><div class="row"><button class="ghost" data-acc="si10" ${satsFree()<10?'disabled':''}>Deposit 10</button><button class="ghost" data-acc="siall" ${satsFree()<1?'disabled':''}>Deposit all</button><button class="ghost" data-acc="so10" ${ACC.sats<10?'disabled':''}>Take 10</button><button class="ghost" data-acc="soall" ${ACC.sats<1?'disabled':''}>Take all</button></div>
@@ -1375,7 +1378,7 @@ function stashToPack(i){const it=ACC&&ACC.stash&&ACC.stash[i];if(!it)return fals
 function packToStash(i){const it=G.bag&&G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.test){toast('Test gear does not go in the lockbox');return false}if(!gridCan(ACC.stash,it,6,6)){toast('The lockbox is full');return false}G.bag.splice(i,1);it.junk=false;ACC.stash.push(it);sel=null;sfx('equip');accSave();save(true);return true}
 function stashGearHTML(){
   const side=stashView();
-  return `<div class="row stashToggle"><button type="button" class="${side!=='pack'?'big':'ghost'}" data-sside="box">Lockbox</button><button type="button" class="${side==='pack'?'big':'ghost'}" data-sside="pack">Pack</button></div><div class="stashBody" data-side="${side}"><div class="stashPane" data-spanel="box"><h3>Gear ${gridCells(ACC.stash)}/36</h3><div class="grid" id="stashGrid">${gridPack(ACC.stash,6,6,'st')}</div></div><div class="stashPane" data-spanel="pack"><h3>Pack ${gridCells(G.bag)}/24</h3><div class="grid" id="stashPack">${gridPack(G.bag,6,4,'sb')}</div></div></div>`;
+  return `<div class="row stashToggle"><button type="button" class="${side!=='pack'?'big':'ghost'}" data-sside="box">Lockbox</button><button type="button" class="${side==='pack'?'big':'ghost'}" data-sside="pack">Pack</button></div><div class="stashBody" data-side="${side}"><div class="stashPane" data-spanel="box"><h3>Gear ${gridCells(ACC.stash)}/36</h3><div class="grid" id="stashGrid">${gridPack(ACC.stash,6,6,'st')}</div></div><div class="stashPane" data-spanel="pack"><h3>Pack ${gridCells(G.bag)}/${bagMeta().n}</h3><div class="grid" id="stashPack">${gridPack(G.bag,bagMeta().c,bagMeta().r,'sb')}</div></div></div>`;
 }
 function stashMoveHTML(){
   const mv=sel&&sel.sb!=null?'Move to lockbox':sel&&sel.st!=null?'Move to pack':'Move across';
@@ -1385,7 +1388,7 @@ function stashMoveHTML(){
 $('sheetIn').addEventListener('dragstart',e=>{if(e.target.closest&&e.target.closest('[data-vbag]')){e.preventDefault();return}const box=e.target.closest&&e.target.closest('[data-st],[data-sb]');if(box&&e.dataTransfer&&!uiTouch()){const kind=box.dataset.st!==undefined?'st':'sb';const i=kind==='st'?+box.dataset.st:+box.dataset.sb;e.dataTransfer.setData('text/plain','box:'+kind+':'+i);e.dataTransfer.effectAllowed='move';return}const c=e.target.closest&&e.target.closest('[data-bag]');if(!c||!e.dataTransfer)return;const it=G.bag[+c.dataset.bag];if(!it||!(it.charm||it.stim)){e.preventDefault();return}e.dataTransfer.setData('text/plain',String(+c.dataset.bag));e.dataTransfer.effectAllowed='move'});
 $('sheetIn').addEventListener('dragover',e=>{if(e.target.closest&&(e.target.closest('[data-csocket]')||e.target.closest('[data-bpocket]')||e.target.closest('.stashPane'))){e.preventDefault();if(e.dataTransfer)e.dataTransfer.dropEffect='move'}});
 $('sheetIn').addEventListener('drop',e=>{const raw=e.dataTransfer&&e.dataTransfer.getData('text/plain')||'';if(raw.indexOf('box:')===0){const pane=e.target.closest&&e.target.closest('.stashPane');if(!pane)return;e.preventDefault();const p=raw.split(':'),kind=p[1],i=+p[2],onto=pane.dataset.spanel;stashDragged=true;if(kind==='sb'&&onto==='box')packToStash(i);else if(kind==='st'&&onto==='pack')stashToPack(i);if(mode==='sheet')drawSheet();return}const pocket=e.target.closest&&e.target.closest('[data-bpocket]');const slot=e.target.closest&&e.target.closest('[data-csocket]');if(!pocket&&!slot)return;e.preventDefault();const i=+(e.dataTransfer&&e.dataTransfer.getData('text/plain'));if(!(i>=0)||!G.bag[i])return;const dragged=G.bag[i];if(dragged.stim){if(stimToBelt(i)){toast('On the belt');sel=null}drawSheet();return}if(!slot||!dragged.charm)return;if(charmSocket(i)){toast('On the belt');sel=null}drawSheet()});
-const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.target.closest('button,[data-track],[data-web],[data-webadd]');if(!b||b.disabled)return;const d=b.dataset;sfx('ui');
+const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.target.closest('button,[data-track],[data-web],[data-webadd]');if(!b||b.disabled)return;const d=b.dataset;sfx('ui');if(d.arc&&typeof arcClick==='function'){arcClick(d.arc);return}
   if(d.try){if(!devOn())return;tryGear(d.try);toast('Test gear. It will not be saved.');drawSheet();return}
   if(d.isk!==undefined){sel={isk:+d.isk};drawSheet();return}
   if(d.iskkey!==undefined){const k=+d.iskkey,i=sel&&sel.isk;if(i>=100&&itemSkillOn(i)){const o=G.slots.indexOf(i);if(o>=0)G.slots[o]=-1;G.slots[k]=i;setSkillButtons()}drawSheet();return}
@@ -1436,7 +1439,7 @@ const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.ta
   if(d.shiftp){sel={shp:d.shiftp};drawSheet();return}
   if(d.shift){const[k,r]=d.shift.split('|');shapeShift(k,r==='0'?false:r==='1'?true:r==='?'?pick(BUILDS[k]).k:r);return}
   if((d.hire||d.revive)&&G.tag){toast('Kestrel will not hire to you while '+G.tag.name+' is rendered');sfx('err');return}
-  if(d.hire){const c=payTag(hireCost());if(G.credits<c){toast('Not enough credits');sfx('err')}else{G.credits-=c;const old=G.merc;G.merc={k:d.hire,name:pick(MNAMES),hp:0,dead:false,weapon:old?old.weapon:null,armor:old?old.armor:null,helm:old?old.helm||null:null};spawnMerc();sfx('quest');toast(G.merc.name+' the '+MERCS[d.hire].n+' joins you')}}
+  if(d.hire){const c=payTag(hireCost());if(G.credits<c){toast('Not enough credits');sfx('err')}else{G.credits-=c;const old=G.merc;G.merc={k:d.hire,name:(d.hire==='reyn'&&G.st&&G.st.reynUnemp)?ARC.unemployed:pick(MNAMES),hp:0,dead:false,weapon:old?old.weapon:null,armor:old?old.armor:null,helm:old?old.helm||null:null};if(d.hire==='reyn'&&G.st)G.st.reynMet=1;spawnMerc();sfx('quest');toast(G.merc.name+' the '+MERCS[d.hire].n+' joins you');if(d.hire==='reyn')toast(ARC.hireJoin)}}
   if(d.revive){const c=payTag(reviveCost());if(G.credits<c){toast('Not enough credits');sfx('err')}else{G.credits-=c;G.merc.dead=false;G.merc.hp=0;spawnMerc();sfx('mend');toast(G.merc.name+' is back on their feet')}}
   if(d.sat!==undefined)sel={sat:+d.sat};
   if(d.mkv){mktView=d.mkv}

@@ -851,7 +851,8 @@ Object.assign(CLS,{
 const MERCS={guard:{n:'Bodyguard',d:'A reprogrammed Enforcer. Machines attack it before you.',hpM:1.8,dM:1,ivl:1,range:1.3,spd:4.6,taunt:1,col:'#7d8ba3',dt:'impact',res:{impact:[6,1],surge:[2,1],rust:[2,1],heat:[2,1],noise:[2,1]}},
  sys:{n:'Sysadmin',d:'Shoots from range, patches your wounds every few seconds and tops up your energy.',hpM:1,dM:.6,ivl:1.2,range:5.5,spd:4.4,col:'#59c0a0',dt:'surge',res:{impact:[1,1],surge:[8,1],rust:[1,1],heat:[1,1],noise:[1,1]}},
  node:{n:'Node Runner',d:'A Bitcoiner with a long rifle. You find 50% more satoshis.',hpM:1.1,dM:1.15,ivl:.8,range:6,spd:4.4,col:'#f7931a',dt:'impact',res:{impact:[4,1],surge:[1,1],rust:[1,1],heat:[1,1],noise:[6,1]}},
- hound:{n:'Stray Hound',d:'Fast and vicious. Pulls credits and satoshis to you from a distance.',hpM:1.2,dM:.8,ivl:.5,range:1.1,spd:6,col:'#8a6a4a',dt:'rust',res:{impact:[4,1],surge:[1,1],rust:[8,1],heat:[1,1],noise:[1,1]}}};
+ hound:{n:'Stray Hound',d:'Fast and vicious. Pulls credits and satoshis to you from a distance.',hpM:1.2,dM:.8,ivl:.5,range:1.1,spd:6,col:'#8a6a4a',dt:'rust',res:{impact:[4,1],surge:[1,1],rust:[8,1],heat:[1,1],noise:[1,1]}},
+ reyn:{n:'Reyn',d:'I used to be the marine. Then the marine got a visor. The visor is still employed.',hpM:1.45,dM:.95,ivl:1.05,range:1.45,spd:4.7,taunt:0,col:'#8a7a62',dt:'impact',res:{impact:[5,1],surge:[2,1],rust:[3,1],heat:[2,1],noise:[2,1]}}};
 const MNAMES=['Kit','Juno','Ox','Vesper','Tallow','Rook','Sable','Finch'];
 const ATTR={mgt:['Might','+1.5% damage per point'],ref:['Reflex','+0.3% deadly strike and +1 armor per point'],vit:['Vitality','+4 life per point'],bnd:['Bandwidth','+3 energy per point']};
 
@@ -948,6 +949,147 @@ const SCE={
  stipend:'show me the stipend',
  note:'operation crawl',
  short:'Not enough sats'};
+const ARC={
+ reynN:'Reyn',
+ unemployed:'unemployed',
+ hireJoin:'Reyn joins you. He wants the money in credits.',
+ door:'I have been in. The man at the desk did not have to raise his voice. I am not going in to hear it twice.',
+ took:'Did you take the offer?',
+ tookY:'Yes',
+ tookN:'No',
+ dog:'Dog.',
+ sixDog:'Six dogs.',
+ hands:'He lowers his hands. They are people.',
+ told:'I used to be the one who told them.',
+ lookFine:'They look fine. That was the job, at the end. Making it look fine.',
+ stayDown:'That one can stay down.',
+ grief:'grief, excessive, collected',
+ griefAsk:'Read it. Do not burn it.',
+ number:'The Number',
+ numberFl:'The visor is still employed. He is not.',
+ pell:'Pell',
+ pellLine:'Reyn used to walk this row the other way. He collected the fine. Then he stopped.',
+ visor:'The Visor Still Employed',
+ fine:'The visor collects the fine. Reyn will not.',
+ promo1:'They called him watchman. He refused the word.',
+ promo2:'They called him marine. He refused the word.',
+ promo3:'They called him sergeant. He refused the word.',
+ promo4:'They called him marshal. He refused the word.',
+ promo5:'They called him marshal. He said unemployed, and nobody corrected him.',
+ satAsk:'Pay him one sat, once. He will laugh.',
+ satPaid:'He keeps the credit price. The sat was the point.',
+ satPoor:'You do not have the sat.',
+ queenT:'The Queen of Margins',
+ queenB:'They promoted her once, and the promotion grew edges. People who liked the first version still ask for it. The version that remained is better at the job and worse at being asked.',
+ draft:'Draft One',
+ discontinued:'That version is discontinued.',
+ ives:'Ives',
+ ivesAsk:'Are you here for the old brochure? I liked Draft One. I can take you to the minutes.',
+ ivesGo:'Take me to the minutes',
+ ivesStay:'Not today',
+ first:'The First Version',
+ easyChair:'The offer is an easy chair.',
+ easyFine:'The offer is an easy fine.',
+ easyName:'The offer is an easy name.',
+ off:'The offer misses.',
+ decline:'Decline',
+ which:'Which draft should the building keep?',
+ fileOne:'File Draft One',
+ fileNone:'File neither',
+ kindAsk:'The kind voice asks for something you would have given the cruel one.',
+ giveIt:'Give it',
+ stayed:'Then she remains the one who stayed.',
+ margin:'The Margin',
+ marginFl:'The blades are the terms.',
+ good:'She is good at the work.',
+ kind:'She is kind about the work.',
+ delighted:'She is delighted for you.',
+ mileOne:'A resident is happy in Draft One’s tone.',
+ mileSofa:'It is just another sofa.',
+ sixN:'Six before the minute',
+ sixCard:'Pay is bad. They will be here before you are dressed.',
+ sixTake:'Turn in the clock',
+ sixPay:'A handful of sats, and an apology about the exchange rate.',
+ sixBuy:'The charm is still for sale. The price is worse.',
+ dressed:'The board says you were dressed.',
+ lateBill:'HOA-9 bills you for the lawn. The bill is in credits, and credits inflate.',
+ early:'The Early Update',
+ minute:'The Minute',
+ minuteFl:'You are early, which is a kind of dressed.',
+ featSix:'Six before the minute',
+ featSixD:'Open the crate before the minute is up.',
+ napkin:'A napkin',
+ twelve:'Twelve. I counted the legs and called them bodies.',
+ stray:'I have seen strays. I have not seen an invasion.',
+ inv:'A minute calls your entry an invasion.',
+ retract:'The next minute retracts invasion and keeps the time. The retraction is longer than the charge.',
+ sofaDogs:'They are on the sofa. Dogs, the residents say, and the dogs are delighted.',
+ labelOn:'One of them still wears the crate’s label.',
+ labelLate:'The label says the update installed itself.',
+ rushAsk:'Six waves. One minute. The same bad pay. No base.',
+ rushGo:'Start the clock',
+ rushNo:'Leave the clock',
+ witnessed:'The page is stamped witnessed.',
+ rushLate:'The minute ended. The board says you were dressed.',
+ lnRoom:'Launch notice: the offer is in the room.',
+ lnAfternoon:'Launch notice: she has cleared her afternoon.',
+ lnTrack:'Launch notice. The second offer. You can still say no.',
+ ln2035:'Launch notice: this meeting was held in 2035.',
+ lnYou:'Launch notice: you are the meeting.',
+ nextOffer:'Vale is waiting. The win is to refuse.',
+ holdWas:'The launch was a hold, and the hold was the offer.',
+ hold:'The Hold',
+ holdN:'Hold',
+ holdFl:'The first hit of a boss room lands a little lighter, and the notice arrives a moment sooner.',
+ keeper:'The keeper of the book',
+ keeperLine:'The next hold has your name on it. I will not say why.',
+ holdBuy:'The charm is two sats. The price is meant to annoy you.',
+ holdBuyBtn:'Pay two sats',
+ filed:'It files itself. The fight is short.',
+ bored:'The meeting got bored.',
+ over:'Overwhelming',
+ overFl:'A cheat code from a war that did not happen here. It still believes in itself.',
+ over2:'Overwhelming, still.',
+ over3:'Overwhelming, as discussed.',
+ over4:'Overwhelming, pending approval.',
+ overNo:'Overwhelming, declined.',
+ overGone:'The card is blank.',
+ notYou:'I did not see a customer.',
+ believer:'A Believer',
+ hadIt:'I had it on.',
+ where:'Where did you get yours?',
+ simSay:'The Simulator',
+ feeling:'They are disappointed it was not a feeling.',
+ letTrue:'Let it be true',
+ tellTruth:'Tell the truth',
+ trueOnce:'For three seconds it is true. Then it has nothing left to say.',
+ truthPay:'The truth pays one sat. The three seconds of not being a customer remain.',
+ featOver:'Overwhelming',
+ featOverD:'Use the sticker in front of Vale or the Board. Nobody respectable is keeping score.',
+ vote:'One minute records the sticker as a shareholder with one vote. The vote is not counted.',
+ barge:'Spawn more barges.',
+ brendaCart:'Do not subscribe it. It is a cart. It has ideas.',
+ cart:'A cart',
+ sign:'A cheerful sign',
+ dock:'The dock',
+ tier:'Tier Two',
+ tierFl:'A pallet with too many labels. It scraps for parts.',
+ next:'The Next Tier',
+ nextFl:'One extra stim on the belt, or one extra pack cell. Permanent. Once. Not both.',
+ stimChoice:'One more stim on the belt',
+ packChoice:'One more cell in the pack',
+ creditsJoke:'A handful of credits. They will not matter by Act II.',
+ floatBill:'Mr. Float has the barge bill on his desk. The loan is still short.',
+ carries:'But it carries me.',
+ unsub:'Unsubscribe it',
+ leaveSub:'Leave it subscribed',
+ fee:'The barge was a fee.',
+ never:'There was never an invasion.',
+ page:'The Nippers are visors that got out. The rush was a terms update that went live while you were reading the title. The launch was a meeting. The barge was a fee. The queen was a job. The sticker was a lie that wanted to be believed. Reyn was a man who quit.',
+ read:'Read it',
+ leave:'Leave',
+ yes:'Yes',
+ no:'No'};
 
 // three tiers per slot: ilvl 1-6, 7-14, 15+. Weapons carry a damage factor and a speed bonus.
 const BASE={
@@ -1178,6 +1320,33 @@ const EGG={
  tos2:'ALL YOUR DATA ARE BELONG TO US.',
  tos3:'YOU HAVE NO CHANCE TO OPT OUT MAKE YOUR TIME.'
 };
+const ARCM={};
+ARCM.queen=MEMOS.length;
+MEMOS.push(['The Queen of Margins','They promoted her once, and the promotion grew edges. People who liked the first version still ask for it. The version that remained is better at the job and worse at being asked.']);
+ARCM.grief=MEMOS.length;
+MEMOS.push(['A page from the watch','grief, excessive, collected']);
+ARCM.kind=MEMOS.length;
+MEMOS.push(['Ives','Draft One is filed. The kind voice asked for something you would have given the cruel one. You gave it. Vale’s name is still Vale.']);
+ARCM.blank=MEMOS.length;
+MEMOS.push(['Ives','Then she remains the one who stayed. Vale’s desk is unchanged.']);
+ARCM.inv=MEMOS.length;
+MEMOS.push(['Minute, the entry','A minute calls your entry an invasion.']);
+ARCM.retract=MEMOS.length;
+MEMOS.push(['Minute, the retraction','The next minute retracts invasion and keeps the time. The retraction is longer than the charge. The time you entered the Moors stays on the page. The word invasion does not. They stored it anyway.']);
+ARCM.vote=MEMOS.length;
+MEMOS.push(['Minute, one vote','One minute records the sticker as a shareholder with one vote. The vote is not counted.']);
+ARCM.head=MEMOS.length;
+MEMOS.push(['Minute, the inventory','Headcount and pack are on the same line. The building cannot tell a summon from groceries.']);
+ARCM.next=MEMOS.length;
+MEMOS.push(['The next offer','Vale is waiting. The win is to refuse.']);
+ARCM.hold=MEMOS.length;
+MEMOS.push(['The hold','The launch was a hold, and the hold was the offer.']);
+ARCM.never=MEMOS.length;
+MEMOS.push(['There was never an invasion.','The Nippers are visors that got out. The rush was a terms update that went live while you were reading the title. The launch was a meeting. The barge was a fee. The queen was a job. The sticker was a lie that wanted to be believed. Reyn was a man who quit.']);
+ARCM.overT=MEMOS.length;
+MEMOS.push(['Overwhelming','For three seconds it is true. Then it has nothing left to say.']);
+ARCM.overN=MEMOS.length;
+MEMOS.push(['Overwhelming','The truth pays one sat. The three seconds of not being a customer remain.']);
 const QUESTS={
  q1:{n:'Neighbourhood Watch',by:'Gramps',zi:1,d:'Gatewarden HOA-9 patrols the Parcel Moors and turns back anyone without a visor. Destroy it.',rw:'+1 skill point',back:'Gramps'},
  q2:{n:'A Greeting Withdrawn',by:'Brenda',zi:2,d:'Marla the Greeter has welcomed shoppers to the Hollow Galleria for thirty years. None have left. End her shift.',rw:'A rare ring, and Brenda’s prices drop 15%',back:'Brenda'},
@@ -1317,8 +1486,8 @@ function mercStats(){const m=G.merc,t=MERCS[m.k],l=G.lvl,w=m.weapon?(m.weapon.dm
 function mercSpot(){const o=[[.8,.6],[-.8,.6],[.6,-.8],[-.6,-.8],[1.1,0],[-1.1,0],[0,1.1],[0,-1.1]];for(const a of o){const x=P.x+a[0],y=P.y+a[1];if(free(x,y,.28))return{x,y}}return{x:P.x,y:P.y}}
 function mercStep(m,dx,dy){if(mv(m,dx,dy))return true;if(Math.abs(dx)>=Math.abs(dy)){if(mv(m,dx,0)||mv(m,0,dy))return true}else if(mv(m,0,dy)||mv(m,dx,0))return true;return mv(m,dy,-dx)||mv(m,-dy,dx)}
 /* Prefer a machine already in reach, asleep or not. The old pick was the angry one nearest you, so a bodyguard on the far side of a pack never swung. */
-function mercTarget(m,t){let best=null,score=1e9;for(const e of W.ents){if(!e||e.hp<=0||e.mp||e.nc>0)continue;const dp=dist(e,P),dm=dist(e,m),reach=t.range+(e.r||0);if(dp>8.5&&dm>Math.max(reach+.4,3.2))continue;const s=(dm<=reach+.05?0:100)+dm+(e.aggro?0:1.25);if(s<score){score=s;best=e}}return best}
-function spawnMerc(){const prev=W.merc;W.merc=null;spawnTag();if(G.tag||!G.merc||G.merc.dead)return;const s=mercStats();let hp=Math.min(G.merc.hp||s.max,s.max);if(prev&&prev.max>0&&prev.hp>0&&s.max!==prev.max)hp=Math.min(s.max,prev.hp*s.max/prev.max);if(W.z.town)hp=s.max;G.merc.hp=hp;const spot=mercSpot();W.merc={x:spot.x,y:spot.y,r:.28,hp,max:s.max,cd:0,hc:3,ph:0,flash:0,taunt:MERCS[G.merc.k].taunt||0,armM:s.red,fx:1,swing:0,stuck:0}}
+function mercTarget(m,t){let best=null,score=1e9;for(const e of W.ents){if(!e||e.hp<=0||e.mp||e.nc>0||e.person)continue;const dp=dist(e,P),dm=dist(e,m),reach=t.range+(e.r||0);if(dp>8.5&&dm>Math.max(reach+.4,3.2))continue;const s=(dm<=reach+.05?0:100)+dm+(e.aggro?0:1.25);if(s<score){score=s;best=e}}return best}
+function spawnMerc(){const prev=W.merc;W.merc=null;spawnTag();if(G.tag||!G.merc||G.merc.dead)return;if(typeof arcSkipMerc==='function'&&arcSkipMerc())return;const s=mercStats();let hp=Math.min(G.merc.hp||s.max,s.max);if(prev&&prev.max>0&&prev.hp>0&&s.max!==prev.max)hp=Math.min(s.max,prev.hp*s.max/prev.max);if(W.z.town)hp=s.max;G.merc.hp=hp;const spot=mercSpot();W.merc={x:spot.x,y:spot.y,r:.28,hp,max:s.max,cd:0,hc:3,ph:0,flash:0,taunt:MERCS[G.merc.k].taunt||0,armM:s.red,fx:1,swing:0,stuck:0}}
 function updMerc(dt){const m=W.merc;if(!m||m.hp<=0)return;const t=MERCS[G.merc.k],s=mercStats();if(m.max>0&&s.max!==m.max)m.hp=Math.min(s.max,m.hp*s.max/m.max);m.max=s.max;m.armM=s.red;m.cd-=dt;m.ph+=dt;m.flash=Math.max(0,m.flash-dt);m.swing=Math.max(0,m.swing-dt);m.haste=Math.max(0,(m.haste||0)-dt);
   if(!walk(m.x,m.y)){const sp=mercSpot();m.x=sp.x;m.y=sp.y}
   const tg=mercTarget(m,t),g=tg||P,d0=dist(g,m)||1,want=tg?Math.max(.42,t.range*.85):1.8;m.mov=false;
@@ -1328,7 +1497,7 @@ function updMerc(dt){const m=W.merc;if(!m||m.hp<=0)return;const t=MERCS[G.merc.k
   else if(d0>want){const sp=t.spd*dt*(m.slow>0?.55:1);if(!mercStep(m,(g.x-m.x)/d0*sp,(g.y-m.y)/d0*sp)){m.stuck=(m.stuck||0)+dt;if(m.stuck>.4&&home>1.15&&!inSwing){const q=mercSpot();m.x=q.x;m.y=q.y;m.stuck=0}}else m.stuck=0;m.mov=true;m.fx=(g.x-m.x)-(g.y-m.y)>0?1:-1}
   else m.stuck=0;
   const d=tg?(dist(tg,m)||1):d0;
-  if(tg&&d<=t.range+tg.r&&m.cd<=0){if(!tg.aggro)wake(tg);m.cd=t.ivl/toxicSwing(m);m.swing=.15;const md=s.dmg*nodeMul(false)*toxicDmg(m.toxL)*(P&&(P.book>0||P.rBook>0)&&dist(m,P)<6&&!(tg&&tg.mp)?1.08:1),snd=m.soundSwing;if(snd||t.range<=2){witMercHit(m,tg,md);sfx(snd?'swing':'hit')}else{let sx=m.x,sy=m.y;if(!open(sx,sy)){sx=P.x;sy=P.y}W.projs.push({x:sx,y:sy,vx:(tg.x-m.x)/d*12,vy:(tg.y-m.y)/d*12,life:.7,raw:md,dty:t.dt,done:[],pierce:0,col:t.col,kind:'merc',party:1});sfx('throw')}}
+  if(tg&&d<=t.range+tg.r&&m.cd<=0&&!(typeof arcMercMay==='function'&&!arcMercMay(tg))){if(!tg.aggro)wake(tg);m.cd=t.ivl/toxicSwing(m);m.swing=.15;const md=s.dmg*nodeMul(false)*toxicDmg(m.toxL)*(P&&(P.book>0||P.rBook>0)&&dist(m,P)<6&&!(tg&&tg.mp)?1.08:1),snd=m.soundSwing;if(snd||t.range<=2){witMercHit(m,tg,md);sfx(snd?'swing':'hit')}else{let sx=m.x,sy=m.y;if(!open(sx,sy)){sx=P.x;sy=P.y}W.projs.push({x:sx,y:sy,vx:(tg.x-m.x)/d*12,vy:(tg.y-m.y)/d*12,life:.7,raw:md,dty:t.dt,done:[],pierce:0,col:t.col,kind:'merc',party:1});sfx('throw')}}
   else if(tg&&!tg.aggro&&d<t.range+1.6)wake(tg);
   if(G.merc.k==='sys'){m.hc-=dt;if(m.hc<=0){m.hc=4;let did=false;if(G.hp<S.maxHp*.9){heal(S.maxHp*.07);did=true}if(G.en<S.maxEn){G.en=Math.min(S.maxEn,G.en+6);did=true}if(did){W.fx.push({k:'bolt',x:m.x,y:m.y,x2:P.x,y2:P.y,t:0,life:.4,col:'#7be495'});sfx('mend')}}}
   if(m.slow>0)m.slow=Math.max(0,m.slow-dt);const rd=m.rustD;if(rd){rd.t-=dt;if(m.hp>1)m.hp=Math.max(1,m.hp-rd.dps*dt);if(rd.t<=0)m.rustD=null}
@@ -1340,7 +1509,7 @@ function hurtAlly(a,d,src){d*=partyD();if(a&&a.orders>0)d*=.92;if(a===W.merc){d=
   if(a===W.tag){G.pp=Math.max(0,(G.pp||0)-1);toast(G.tag.name+' de-renders. The rig can bring them back, for sats.');sfx('bigkill');parts(a.x,a.y,14,[CLS[G.tag.cls].col,'#fff'],2.5);tagDismiss(1);return}
   if(a===W.merc){G.merc.dead=true;G.merc.hp=0;toast(G.merc.name+' has fallen. Kestrel can bring them back.');sfx('bigkill');parts(a.x,a.y,14,['#b3261e','#888'],2.5)}
   else{const i=W.allies.indexOf(a);if(i>=0)W.allies.splice(i,1);parts(a.x,a.y,10,['#888','#ffb84a'],2.5);sfx('kill')}}
-function summon(o,cap){const same=W.allies.filter(a=>a.kind===o.kind);if(same.length>=cap)W.allies.splice(W.allies.indexOf(same[0]),1);W.allies.push(Object.assign({k:'minion',x:P.x+rnd(-.8,.8),y:P.y+rnd(-.8,.8),cd:0,ph:rnd(0,6),off:rnd(0,1),life:1e9,fx:1},o));parts(P.x,P.y,6,['#e0bd6e','#fff'],1.5,1.3)}
+function summon(o,cap){const same=W.allies.filter(a=>a.kind===o.kind);if(same.length>=cap){W.allies.splice(W.allies.indexOf(same[0]),1);if(o.kind==='intern'&&typeof arcBarge==='function')arcBarge()}W.allies.push(Object.assign({k:'minion',x:P.x+rnd(-.8,.8),y:P.y+rnd(-.8,.8),cd:0,ph:rnd(0,6),off:rnd(0,1),life:1e9,fx:1},o));parts(P.x,P.y,6,['#e0bd6e','#fff'],1.5,1.3)}
 Object.assign(SKS,{maxi:{0:'swing2',1:'crit',3:'buff',4:'buff',5:'dash',6:'throw',7:'buff',9:'nova',11:'throw',13:'buff'},anon:{0:'deploy',1:'dash',3:'deploy',4:'whiff',5:'mark',6:'throw',7:'summon',8:'horn',9:'swing',10:'horn',12:'dash',14:'whiff'},founder:{0:'summon',1:'mark',3:'summon',4:'buff',5:'horn',6:'summon',7:'mend',8:'boom',9:'mark',10:'mark',12:'summon',14:'boom'},homesteader:{0:'deploy',1:'horn',2:'summon',3:'deploy',4:'horn',5:'summon',6:'deploy',7:'whiff',9:'thunder',10:'horn',12:'boom',14:'boom'},witness:{0:'mark',1:'mark',3:'throw',4:'swing',6:'mend',7:'whiff',9:'horn',10:'horn',12:'boom'}});
 function bloodSplat(n){sfx('blood');for(let i=0;i<n;i++){const edge=Math.random()<.7;let x=Math.random(),y=Math.random();if(edge){if(Math.random()<.5)x=Math.random()<.5?rnd(0,.16):rnd(.84,1);else y=Math.random()<.5?rnd(.08,.22):rnd(.7,.95)}BLOOD.push({x,y,r:rnd(5,17),b:tNow+rnd(0,.25),life:rnd(2.2,3.4),d:rnd(20,70),k:Math.random()})}}
 function tickFx(dt){for(let i=W.fx.length-1;i>=0;i--){const f=W.fx[i];if(!f||f.stay)continue;f.t+=dt;if(f.t>=f.life)W.fx.splice(i,1)}
@@ -1440,7 +1609,7 @@ function calc(){
   s.maxEn=Math.max(1,Math.round((50+G.lvl*2+(G.at.bnd+(s.bnd||0))*3+s.en+(s.enL||0)*(G.lvl||1))*(1+Math.min(80,s.enPct||0)/100)));
   if(P&&(P.orders>0||P.rCall>0)){const m=1+FORMULAS.aura.call.life;s.maxHp=Math.round(s.maxHp*m);s.preHp=Math.round((s.preHp||s.maxHp)*m);s.chHp=Math.max(0,s.maxHp-s.preHp);s.maxEn=Math.round(s.maxEn*(1+FORMULAS.aura.call.en))}
   if(s.pdr)s.pdr=Math.min(FORMULAS.brace.pdrCap,s.pdr);
-  s.aspd+=s.wspd;s.mspd=Math.min(s.mspd,50);
+  s.aspd+=s.wspd;if(typeof arcPace==='function')arcPace(s);if(G.st&&G.st.nextTier==='stim')s.cap=(s.cap||4)+1;s.mspd=Math.min(s.mspd,50);
   if(s.r_all)for(const k of RTK)s['r_'+k]=(s['r_'+k]||0)+s.r_all;
   s.blow=typeof swingBlow==='function'?swingBlow(s):0;S=s;G.hp=Math.min(G.hp,S.maxHp);G.en=Math.min(G.en,S.maxEn);G.stims=Math.min(G.stims,S.cap);scrubItemBinds()}
 function newGame(cls){
@@ -1663,7 +1832,7 @@ function enter(zi,o){setTimeout(mpBeat,0);
   else if(act===2&&!G.act2){G.act2=true;G['in'+zi]=1;setTimeout(()=>playScene(INTRO2,()=>{mode='play';dlg('Act II · The Cloud','Level limit 50, and a fourth skill row opens. The fourth row is yours. Vale does not get a vote on it.',[['Begin']])}),50)}
   else if(!z.town&&!G['in'+zi]&&z.intro){G['in'+zi]=1;dlg(z.n,z.intro,[['Go on']])}
   else toast(z.town?z.n:'Entering '+z.n);
-  if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}if(o.after)o.after();if(typeof mpMobCatch==='function')mpMobCatch();placeCorpses();calmNearCorpse();dynResync();seenT=0;music(zoneMusic());if(z.town)setTimeout(eggTip,1400);save(true)}
+  if(G.walkNew&&z.town&&!z.pre){if(OPT.noWalk)G.walkNew=0;else walkArm()}if(o.after)o.after();if(typeof mpMobCatch==='function')mpMobCatch();placeCorpses();calmNearCorpse();dynResync();seenT=0;music(zoneMusic());if(z.town)setTimeout(eggTip,1400);if(typeof arcEnter==='function')arcEnter(zi);save(true)}
 /* A cast portal lives on this character: zone and the exact spot. A new cast forgets the last one, in this district and in any district already saved. */
 function dropCastPortals(){const strip=w=>{if(w&&w.portals)w.portals=w.portals.filter(q=>!q.cast)};strip(W);for(const k in ZS)if(ZS[k]!==W)strip(ZS[k])}
 function openPortal(){if(mode!=='play'||W.z.town)return;if(mpPortalBlocked())return;if(W.z.sim){sfx('portal');enter(HT());return}if(nearest(4)){toast('Machines are too close to open a portal');return}
@@ -1769,7 +1938,7 @@ function kill(e,opt){
   const pay=!!(P.fromThrow&&G.cls==='courier'&&sl(13)&&!boonOn(13)&&!(W.z&&W.z.sim));
   if(pay){const c=Math.floor((3+sl(13))*(G.cpi||1));P.hazMf=6*sl(13);if(c){G.credits+=c;float(P.x,P.y,'+'+fmt(c),'#ffe36b')}}else P.hazMf=0;
   if(e.mc>0&&G.cls==='courier'&&sl(14)&&!boonOn(14)){let x=e.x,y=e.y;if(!free(x,y,P.r)){for(let k=1;k<=8&&!free(x,y,P.r);k++){x=e.x+Math.cos(k)*k*.35;y=e.y+Math.sin(k)*k*.35}}if(free(x,y,P.r)){parts(P.x,P.y,8,['#3fbf8f','#fff'],2);P.x=x;P.y=y;parts(P.x,P.y,8,['#3fbf8f','#fff'],2)}P.inv=Math.max(P.inv,.25);P.freeThrow=1;float(P.x,P.y,'Missed connection','#3fbf8f',0)}
-  const i=W.ents.indexOf(e);if(i<0)return;W.ents.splice(i,1);G.kills++;sfx(e.champ||isBoss(e.k)?'bigkill':'kill');const t=ET[e.k];
+  const i=W.ents.indexOf(e);if(i<0)return;W.ents.splice(i,1);if(e.arc&&typeof arcDead==='function')arcDead(e);G.kills++;sfx(e.champ||isBoss(e.k)?'bigkill':'kill');const t=ET[e.k];
   parts(e.x,e.y,isBoss(e.k)?40:e.champ?18:9,[t.pal[0],t.pal[1],'#2a2630','#ffb84a'],3.2);W.fx.push({k:'ring',x:e.x,y:e.y,r:.9*e.sz,t:0,life:.3,col:'#ffb238'});
   W.decals.push({x:e.x,y:e.y,r:e.r*1.6,a:rnd(0,3)});if(W.decals.length>70)W.decals.shift();if(OPT.shake)shake=Math.max(shake,e.champ?5:2);
   P.streak=(P.streakT>0?P.streak:0)+1;P.streakT=4;
@@ -1832,7 +2001,7 @@ function patchTick(dt){if(!G||!G.eq)return;G.patchT=(G.patchT||0)+dt;if(G.patchT
 function defragAct1(e){return !!(e&&e.q==='q3'&&!G.act2)}
 /* A player hit is already quartered by the server. Difficulty and companion pressure are for machines. */
 /* A blow that lands while you are already falling does not fine you again or restart the notice. */
-function hurt(d,slow,src){const pv=src&&src.pvp,wasStun=P.hitStun>0;if(mode==='dying'||(P.inv>0&&!pv)||(mode!=='play'&&!pv)||G.god)return;if(pv)d*=pvpLifeMul();if(P.redact>0){float(P.x,P.y,'Redacted','#e6dcc8',1);return}if(src&&W&&W.ents&&W.ents.indexOf(src)>=0)src.lastAtk=d;if(P.dip){P.dip=0;float(P.x,P.y,'The dip','#f7931a',1);sfx('whiff');return}if(!pv)d*=partyD();if(!pv){let mk=P.mkAura>0?1.3:1;if(P.mkP>0)mk=Math.max(mk,1+P.mkP);if(mk>1)d*=mk}
+function hurt(d,slow,src){const pv=src&&src.pvp,wasStun=P.hitStun>0;if(mode==='dying'||(P.inv>0&&!pv)||(P.arcInv>0&&!pv)||(mode!=='play'&&!pv)||G.god)return;if(typeof arcHurt==='function'){const h=arcHurt(src);if(h==='miss')return;if(typeof h==='number'&&h<1)d*=h}if(pv)d*=pvpLifeMul();if(P.redact>0){float(P.x,P.y,'Redacted','#e6dcc8',1);return}if(src&&W&&W.ents&&W.ents.indexOf(src)>=0)src.lastAtk=d;if(P.dip){P.dip=0;float(P.x,P.y,'The dip','#f7931a',1);sfx('whiff');return}if(!pv)d*=partyD();if(!pv){let mk=P.mkAura>0?1.3:1;if(P.mkP>0)mk=Math.max(mk,1+P.mkP);if(mk>1)d*=mk}
   if(S.dodge&&Math.random()*100<S.dodge){float(P.x,P.y,'Dodge','#9fe0d0',1);sfx('whiff');return}
   if(P.route>0&&G.cls==='courier'&&sl(10)&&!boonOn(10)&&Math.random()*100<6+2*sl(10)){float(P.x,P.y,'Route','#3fbf8f',1);sfx('whiff');return}
   d=typedIn(d,src);if(S.pdr)d*=1-Math.min(FORMULAS.brace.pdrCap,S.pdr)/100;if(S.sp.indemnity&&src&&src.crit){d/=(src.critM||2);src.crit=0}d*=S.taken||1;d*=100/(100+(S.armor+(G.cls==='scrapper'&&sl(11)&&!boonOn(11)?Math.floor(Math.min(6,P.lineT||0))*4*sl(11):0))*(P.mech>0?2:1)*(P.guard>0?1.6:1)*(P.shr&&P.shr.k==='guard'?2:1));if(P.lastTy==='rust')P.rustD={dps:d*.25/3,t:3};
@@ -2471,7 +2640,7 @@ function castIndex(i){castWhy='';if(mode!=='play'||!(i>=0)){castWhy='wait';retur
 function stim(){if(mode!=='play')return;if(W.sub&&W.sub.mods.includes('dry')){toast('Stims do not work in these proceedings');sfx('err');return}if(G.stims<1){toast('No stims. Brenda sells them.');return}if(G.hp>=S.maxHp&&!(S.sp.repair&&G.en<S.maxEn))return;G.stims--;scStimBark(G.stims<1);heal(S.maxHp*.45);if(S.sp.repair)G.en=S.maxEn;sfx('stim');float(P.x,P.y,'+stim','#7be495');parts(P.x,P.y,10,['#7be495','#fff'],1.5,1.5)}
 function stimPackItem(){const it={name:'Stim',base:'Stim',q:1,il:1,stim:1,free:1,req:1,reqMgt:0,reqRef:0,reqBnd:0,aff:[],id:true,val:0,fl:STIM.pack};if(typeof stampReq==='function')stampReq(it);return it}
 function beltHasRoom(){return (G.stims||0)<((S&&S.cap)||0)}
-function giveStim(){if(beltHasRoom()){G.stims=(G.stims||0)+1;return 'belt'}const it=stimPackItem();if(typeof bagCan==='function'&&bagCan(it)){G.bag.push(it);return 'pack'}if(typeof packFullCue==='function')packFullCue();return 'full'}
+function giveStim(){if(beltHasRoom()){G.stims=(G.stims||0)+1;return 'belt'}const it=stimPackItem();if(typeof bagCan==='function'&&bagCan(it)){G.bag.push(it);if(typeof arcBarge==='function')arcBarge();return 'pack'}if(typeof packFullCue==='function')packFullCue();return 'full'}
 function stimToBelt(i){const it=G.bag&&G.bag[i];if(!it||!it.stim)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(!beltHasRoom()){toast('You cannot carry another');sfx('err');return false}G.bag.splice(i,1);G.stims=(G.stims||0)+1;sfx('equip');return true}
 
 /* ================= interaction ================= */
@@ -2483,7 +2652,7 @@ function useObj(o){
   /* The stranger's line prints whole credits, so the gift is the floor of fifteen percent. */
   else if(o.k==='stray'){W.objs.splice(W.objs.indexOf(o),1);let gave;if(G.stims>0){G.stims--;gave='a stim'}else{const c=Math.floor(G.credits*.15);G.credits-=c;gave=fmt(c)}G.unseen=(G.unseen||0)+1;
     dlg('A stranger',pick(['A Resident with her visor in her hand, shaking. ','An old man who took his visor off this morning and cannot find his street. ','A boy, no visor, hiding from the drones. '])+'You give up '+gave+' and point the way to Stillwater. No name is asked. Nobody saw.',[['Walk on']])}
-  else if(o.k==='page'){o.used=1;G.q8page=1;sfx('page');if(G.q8down){G.q.q8=2;mpShareQuest('q8',2);sfx('quest');toast('Quest complete: return to Marrow')}else toast('Lethe is still drowning the rest. Follow the arrow.')}else if(o.k==='minute'){o.used=1;G.q.q12=2;mpShareQuest('q12',2);sfx('page');sfx('quest');toast('Quest complete: return to Marrow')}else if(o.k==='qobj')sqUse(o);
+  else if(o.k==='page'){o.used=1;G.q8page=1;sfx('page');if(G.q8down){G.q.q8=2;mpShareQuest('q8',2);sfx('quest');toast('Quest complete: return to Marrow')}else toast('Lethe is still drowning the rest. Follow the arrow.')}else if(o.k==='minute'){o.used=1;G.q.q12=2;mpShareQuest('q12',2);sfx('page');sfx('quest');toast('Quest complete: return to Marrow')}else if(o.k==='qobj')sqUse(o);else if(o.k==='arc'&&typeof arcUse==='function')arcUse(o);
   else if(o.k==='corpse'){reclaimCorpse(o.id)}else if(o.k==='cage'){if(W.ents.some(e=>e.su)){toast('The cage is sealed while Defrag stands');return}o.used=1;G.marrow=true;G.q.q3=2;sfx('cage');sfx('quest');
     playScene(RESCUE,()=>{mode='play';toast('Quest complete: return to Gramps')})}}
 function portalLabel(p){const zi=W.zi;return p.kind==='home'?'Return to '+ZONES[HT()].n:p.kind==='exit'?'Walk out to '+ZONES[FIRST[W.z.act||1]].n:p.kind==='town'||p.kind==='prev'?'Walk back to '+ZONES[zi===FIRST[actOf(zi)]?townOf(zi):zi-1].n:p.kind==='next'?'Go on to '+ZONES[zi+1].n:'Portal to '+ZONES[G.portal.zi].n}
@@ -2505,7 +2674,7 @@ function findAct(){for(const o of W.objs)if(o.k==='qobj'&&!o.used&&Math.hypot(o.
     const rs=resStep();if(rs)for(const n of W.npcs)if(n.id==='res'&&!n.got)chk(n.x,n.y,rs.label,()=>sqRes(n));
     if(!rs)for(const n of W.npcs)if(n.id==='res')chk(n.x,n.y,'Talk to a Resident',()=>convo('res'));
     for(const n of W.npcs)if(n.id!=='res')chk(n.x,n.y,n.id==='gate'?'Use the Transit Gate':n.id==='vr'?'Use the VR rig':n.id==='board'?'Read the bounty board':n.id==='stash'?'Open your lockbox':n.id==='ubi'?'Collect the Stipend':n.act||'Talk to '+n.name,()=>talkTo(n.id))}
-  for(const o of W.objs){if(o.used)continue;if(o.k==='chest')chk(o.x,o.y,'Open lockbox',()=>useObj(o));else if(o.k==='shrine')chk(o.x,o.y,SHR[o.sk][0],()=>useObj(o));else if(o.k==='memo')chk(o.x,o.y,'Read the memo',()=>useObj(o));else if(o.k==='cage')chk(o.x,o.y,'Open the cage',()=>useObj(o));else if(o.k==='page')chk(o.x,o.y,'Read the letter',()=>useObj(o));else if(o.k==='minute')chk(o.x,o.y,'Strike the minutes',()=>useObj(o));else if(o.k==='stray')chk(o.x,o.y,'Help the stranger',()=>useObj(o));else if(o.k==='qobj'){const st=sqStep(o.q);if(st)chk(o.x,o.y,st.label,()=>sqUse(o))}else if(o.k==='dnode'&&!G.nodes[W.zi])chk(o.x,o.y,cause()?'Bring this node online (free)':'Bring this node online (5 sats)',()=>lightNode(o));else if(o.k==='leg')chk(o.x,o.y,'Pick up the servo leg',()=>legTake(o));else if(o.k==='pow'&&!W.pow)chk(o.x,o.y,'Begin proof of work (hold 60 seconds)',()=>powStart(o));else if(o.k==='corpse')chk(o.x,o.y,'Take your gear',()=>useObj(o))}
+  for(const o of W.objs){if(o.used)continue;if(o.k==='chest')chk(o.x,o.y,'Open lockbox',()=>useObj(o));else if(o.k==='shrine')chk(o.x,o.y,SHR[o.sk][0],()=>useObj(o));else if(o.k==='memo')chk(o.x,o.y,'Read the memo',()=>useObj(o));else if(o.k==='cage')chk(o.x,o.y,'Open the cage',()=>useObj(o));else if(o.k==='page')chk(o.x,o.y,'Read the letter',()=>useObj(o));else if(o.k==='minute')chk(o.x,o.y,'Strike the minutes',()=>useObj(o));else if(o.k==='stray')chk(o.x,o.y,'Help the stranger',()=>useObj(o));else if(o.k==='qobj'){const st=sqStep(o.q);if(st)chk(o.x,o.y,st.label,()=>sqUse(o))}else if(o.k==='dnode'&&!G.nodes[W.zi])chk(o.x,o.y,cause()?'Bring this node online (free)':'Bring this node online (5 sats)',()=>lightNode(o));else if(o.k==='leg')chk(o.x,o.y,'Pick up the servo leg',()=>legTake(o));else if(o.k==='pow'&&!W.pow)chk(o.x,o.y,'Begin proof of work (hold 60 seconds)',()=>powStart(o));else if(o.k==='corpse')chk(o.x,o.y,'Take your gear',()=>useObj(o));else if(o.k==='arc'&&typeof arcLabel==='function'){const lab=arcLabel(o);if(lab)chk(o.x,o.y,lab,()=>arcUse(o))}}
   return best}
 
 
@@ -2823,7 +2992,7 @@ function update(dt){
      only when a frame is painted, so a fast sim still writes Testimony. */
   if(P){cx=(P.x-P.y)*32;cy=(P.x+P.y)*16}
   mpTick(dt);patchTick(dt);maxiAura(dt);
-  G.time+=dt;const gr=G.adopt>=100?1:Math.pow(SEA.k==='stim'?1.005:1.0025,(dt/60)*(1.45-G.adopt/100)*(G.fate==='fail'?1.4:1));G.cpi*=gr;if(S.sp.hedge)G.credits*=gr;G.ubiT=Math.max(0,G.ubiT-dt);G.chuteT=Math.max(0,G.chuteT-dt);
+  G.time+=dt;const gr=G.adopt>=100?1:Math.pow(SEA.k==='stim'?1.005:1.0025,(dt/60)*(1.45-G.adopt/100)*(G.fate==='fail'?1.4:1));G.cpi*=gr;if(S.sp.hedge)G.credits*=gr;G.ubiT=Math.max(0,G.ubiT-dt);G.chuteT=Math.max(0,G.chuteT-dt);if(typeof arcTick==='function')arcTick(dt);
   const c=CLS[G.cls];
   for(const k of['atk','swing','flash','inv','slow','buff','haste','guard','warn','movedT','spin','stealth','ambT','mech','crunch','streakT','silence','oc'])P[k]=Math.max(0,P[k]-dt);if(P.paper>0)P.paper-=dt;if(P.maxiBlock>0)P.maxiBlock-=dt;if(P.ward>0)P.ward-=dt;
   for(let i=0;i<15;i++)P.cd[i]=Math.max(0,P.cd[i]-dt);
@@ -2857,7 +3026,7 @@ function update(dt){
     e.cd-=dt;const sp=e.spd*(e.slow>0?.5:1)*dt;e.fx=dx-dy>0?1:-1;
     if(t.flee){e.life=(e.life||14)-dt;e.fx=dx>0?-1:1;if(!mv(e,-dx/d*sp,-dy/d*sp))mv(e,dy/d*sp,-dx/d*sp);if(Math.random()<dt*1.5)W.drops.push({x:e.x,y:e.y,t:.2,cr:(3+W.ml*2)*Math.pow(G.cpi,.9)});if(e.life<=0){if(typeof mpMobGone==='function')mpMobGone(e);W.ents.splice(W.ents.indexOf(e),1);parts(e.x,e.y,10,['#e0bd6e','#fff'],3);toast('The Dividend Drone got away with the payout')}continue}
     if(isBoss(e.k))bossAI(e,dt,d);
-    if(e.k==='director'){e.sumT=(e.sumT||4)-dt;if(e.sumT<=0&&W.ents.length<45){e.sumT=7;sfx('summon');for(let i=0;i<2;i++){const c=spawn('tick',e.x+rnd(-1,1),e.y+rnd(-1,1),{minion:1});if(c)c.aggro=true}}}
+    if(e.k==='director'&&e.arc!=='hold'){e.sumT=(e.sumT||4)-dt;if(e.sumT<=0&&W.ents.length<45){e.sumT=7;sfx('summon');for(let i=0;i<2;i++){const c=spawn('tick',e.x+rnd(-1,1),e.y+rnd(-1,1),{minion:1});if(c)c.aggro=true}}}
     if(e.k==='proxy'&&T===P&&d>3&&d<9&&e.cd<=0){const a=rnd(0,6.283),x=P.x+Math.cos(a)*1.2,y=P.y+Math.sin(a)*1.2;if(free(x,y,e.r)){parts(e.x,e.y,8,['#d8d8e0','#fff'],2);e.x=x;e.y=y;parts(x,y,8,['#d8d8e0','#fff'],2);e.cd=3.2;e.wind=.45;sfx('dash');continue}}
     if(e.lunge){e.lunge.t-=dt;mv(e,e.lunge.x*12*dt,e.lunge.y*12*dt);if(!e.lunge.hit&&dist(e,P)<.8&&T===P){e.lunge.hit=1;hurt(e.dmg*1.3,false,e)}if(e.lunge.t<=0)e.lunge=null;continue}
     if(e.wind>0){e.wind-=dt;if(e.wind<=0&&d<t.range+e.r+.5){if(T===P)hurt(e.dmg,false,e);else if(T.hp!==undefined)hurtAlly(T,e.dmg,e);if(typeof mpMobSplash==='function')mpMobSplash(e,e.dmg)}continue}
@@ -2931,7 +3100,7 @@ function boss2AI(e,dt,d){const p2=e.hp<e.max*.5;e.b1-=dt;e.b2-=dt;e.b3-=dt;
   if(d<2.8&&e.b3<=0&&!e.slam){sfx('warn');e.slam=.75;e.b3=4;W.fx.push({k:'warn',x:e.x,y:e.y,r:3.2,t:0,life:.75})}
   if(e.slam){e.slam-=dt;if(e.slam<=0){sfx('boom');e.slam=0;W.fx.push({k:'ring',x:e.x,y:e.y,r:3.2,t:0,life:.3,col:'#b48cff'});if(OPT.shake)shake=8;if(dist(e,P)<3.2+P.r)hurt(e.dmg*1.9,false,e)}}}
 function mandateOffer(e,first){dlg('MANDATE',first?'“I can make this easy. Your life restored, and more credits than you will ever count. All you have to do is stop. Nobody is watching. Nobody would know.”':'“Then not comfort. Mercy. I will raise the Stipend tonight, for everyone, to whatever number you say. Put the weapon down and it is done. Is your pride worth more than nine billion people?”',[
-  ['Refuse',()=>{P.shr={k:'might',t:25,n:'Unbought'};sfx('buff');toast('Unbought: +50% damage for 25 seconds')}],
+  ['Refuse',()=>{if(G.st)G.st.lnTrack=0;P.shr={k:'might',t:25,n:'Unbought'};sfx('buff');toast('Unbought: +50% damage for 25 seconds')}],
   ['Accept',()=>{G.st.sold++;addAdopt(-15,'you took MANDATE’s offer');const c=6000*G.cpi*G.lvl;G.credits+=c;ZS[16]&&delete ZS[16];const z=W.zi;W.zi=6;W.z=ZONES[6];enter(HT());delete ZS[z];dlg('You agreed','It was a very good offer. '+fmt(c)+' is yours, and worth a little less every minute. MANDATE is exactly where you left it, and it has learned your price.',[['Continue']])}]],4)}
 function arcHits(reach,arc){const hits=[];for(const e of W.ents.slice()){if(e.hp<=0)continue;const d=dist(e,P);if(d<reach+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(d||1)>arc)hits.push(e)}return hits}
 /* The machine in front takes the whole swing. The rest of a Scrapper arc takes 22%, so a pack is a fight and a boss is still the full blow. */
@@ -3201,8 +3370,8 @@ function storyStep(){const sg=storyGate();if(sg)return sg;
 function sideStep(){const l=trackList();if(!l.length)return null;if(!l.includes(G.track))G.track=l[0];const k=G.track.slice(2),q=SQ[k],s=G.sq[k],st=q.steps[s.s];
   return{n:q.n,d:st.d+(st.n?' ('+(s.c||0)+'/'+st.n+')':'')+(st.zi!==undefined&&st.zi!==W.zi&&!st.d.toLowerCase().includes(ZONES[st.zi].n.replace(/^The /,'').toLowerCase())?' · '+ZONES[st.zi].n:'')}}
 function objective(){return sideStep()}
-let objC='';function objHud(){const on=OPT.obj&&(mode==='play'||mode==='dlg'),a=on?storyStep():null,b=on?sideStep():null,cp=on&&G.camp?G.camp:null,t=a?a.n+a.d+(b?b.n+b.d:'')+(cp?cp.k+cp.c:''):'';if(t+OPT.objMin===objC)return;objC=t+OPT.objMin;const el=$('obj');el.hidden=!a;
-  if(a&&OPT.objMin)el.innerHTML='<b>▸ '+esc(a.n)+(b||cp?' +':'')+'</b>';else if(a)el.innerHTML='<b>Story · '+esc(a.n)+'</b>'+esc(a.d)+(b?'<b class="sd">Errand · '+esc(b.n)+'</b>'+esc(b.d):'')+(cp?'<b class="sd" style="color:#ff5d4d">Unity · '+CAMPS[cp.k].n+' '+cp.c+'/'+CAMPS[cp.k].need+'</b>'+esc(CAMPS[cp.k].d):'')}
+let objC='';function objHud(){const on=OPT.obj&&(mode==='play'||mode==='dlg'),a=on?storyStep():null,b=on?sideStep():null,cp=on&&G.camp?G.camp:null,ak=typeof arcHudKey==='function'?arcHudKey():'',t=a?a.n+a.d+(b?b.n+b.d:'')+(cp?cp.k+cp.c:'')+ak:'';if(t+OPT.objMin===objC)return;objC=t+OPT.objMin;const el=$('obj');el.hidden=!a;
+  if(a&&OPT.objMin)el.innerHTML='<b>▸ '+esc(a.n)+(b||cp||ak?' +':'')+'</b>';else if(a)el.innerHTML='<b>Story · '+esc(a.n)+'</b>'+esc(a.d)+(b?'<b class="sd">Errand · '+esc(b.n)+'</b>'+esc(b.d):'')+(cp?'<b class="sd" style="color:#ff5d4d">Unity · '+CAMPS[cp.k].n+' '+cp.c+'/'+CAMPS[cp.k].need+'</b>'+esc(CAMPS[cp.k].d):'')+(typeof arcHud==='function'?arcHud():'')}
 const DIFFS=[{n:'Normal',hp:1.25,dmg:1.3,xp:1},{n:'Hard',hp:1.8,dmg:1.75,xp:1.2},{n:'Brutal',hp:2.6,dmg:2.4,xp:1.45}];
 const DF=()=>DIFFS[G.diff||0];
 /* ================= forks, dodge, web, charms, crafting, subpoenas, lender, proof of work ================= */
@@ -3342,13 +3511,13 @@ function p7Tick(dt){mktTick(dt);mktLiqCheck();uniTick(dt);if(OPT.autoStim&&G.hp>
 /* Mr. Float: now or later, and borrowing in a currency that melts */
 const loanAmt=()=>400*G.lvl*G.cpi,nowCost=()=>payTag(150*G.lvl*G.cpi*((G.lean||0)>50?1.2:1));
 function talkFloat(){const d=G.debt||0,real=d?Math.round(d/G.cpi/(G.debt0/G.debtCpi)*100):0;
-  dlg('Mr. Float',d?'“You owe me '+fmt(d)+'. I charge interest, naturally.” He does not mention that prices have been rising faster than his interest. In real terms you now owe about '+real+'% of what you borrowed.':'“Everybody wants it now. I sell now. The orange fellow across the square sells later. And if you are short, I lend, at a very reasonable rate.”',[
+  dlg('Mr. Float',d?'“You owe me '+fmt(d)+'. I charge interest, naturally.” He does not mention that prices have been rising faster than his interest. In real terms you now owe about '+real+'% of what you borrowed.':'“Everybody wants it now. I sell now. The orange fellow across the square sells later. And if you are short, I lend, at a very reasonable rate.”'+(G.st&&G.st.bargeBill&&G.credits<loanAmt()?' '+ARC.floatBill:''),[
    ['Now: +40% damage for 5 minutes · '+fmt(nowCost()),()=>{if(G.credits<nowCost()){toast('Not enough credits');sfx('err');return}G.credits-=nowCost();addAdopt(-1,'you chose now');G.tpT=300;calc();sfx('buff');toast('Strength on credit: +40% damage for 5 minutes')}],
    ['Later: +1% damage for good · 15 sats ('+(G.tpP||0)+'/25)',()=>{if((G.tpP||0)>=25){toast('You have saved all you can here');sfx('err');return}if(!spendSats(15,'Not enough sats'))return;G.tpP=(G.tpP||0)+1;calc();sfx('learn');toast('Saved. +1% damage, permanently.')}],
    d?['Repay '+fmt(d),()=>{/* The line prints whole credits, so the purse pays that floor. */const pay=Math.floor(G.debt);if(G.credits<pay){toast('Not enough credits');sfx('err');return}G.credits-=pay;G.debt=0;sfx('coin');toast('Debt cleared')}]:['Borrow '+fmt(loanAmt())+(scs()<350?' · refused':scs()<500?' · 35% fee':' · 10% fee'),()=>{if(scs()<350){toast('“Not with that score. I have a licence to think of.”');sfx('err');return}/* His line prints whole credits, so the purse gains that floor. */const l=Math.floor(loanAmt());addAdopt(-2,'you borrowed credits');G.credits+=l;G.debt=l*loanFee();G.debt0=l;G.debtCpi=G.cpi;sfx('coin');toast('Borrowed '+fmt(l)+'. You owe '+fmt(l*loanFee())+' and rising.')}],
    ['Leave']])}
 function craft(it,k){if(it&&it.test){toast('Test gear stays out of the economy');return false}const P_=G.parts||0;
-  if(k==='scrap'){if(typeof tradeLocked==='function'&&tradeLocked(it))return false;const n=it.charm?charmParts(it):([1,2,4,8,15][it.q]||1);G.parts=P_+n;if(it.charm&&G.cslots&&G.cslots.indexOf(it)>=0)G.cslots.splice(G.cslots.indexOf(it),1);else{const ix=G.bag.indexOf(it);if(ix>=0)G.bag.splice(ix,1)}sfx('equip');toast('Scrapped for '+n+' part'+(n>1?'s':''));return true}
+  if(k==='scrap'){if(typeof tradeLocked==='function'&&tradeLocked(it))return false;const n=it.parts||(it.charm?charmParts(it):([1,2,4,8,15][it.q]||1));G.parts=P_+n;if(it.charm&&G.cslots&&G.cslots.indexOf(it)>=0)G.cslots.splice(G.cslots.indexOf(it),1);else{const ix=G.bag.indexOf(it);if(ix>=0)G.bag.splice(ix,1)}sfx('equip');toast('Scrapped for '+n+' part'+(n>1?'s':''));return true}
   if(k==='reroll'){if(it.charm){toast('A charm is not rerolled. Scrap it, or wear a better one.');return false}const c=rerollCost(it);if(P_<c)return false;const r=rerollMod(it);if(!r)return false;G.parts=P_-c;sfx('learn');toast(AFK[r[0].k].t.replace('{v}',r[0].v)+' → '+AFK[r[1].k].t.replace('{v}',r[1].v));calc();return false}
   if(k==='addsoc'){if(P_<12)return false;G.parts=P_-12;it.soc=(it.soc||0)+1;it.words=it.words||[];sfx('learn');toast('A socket is cut into '+it.name);return false}}
 const rerollCost=it=>5+Math.floor(it.il/4);
@@ -3637,7 +3806,8 @@ function gridPlace(list,cols,rows){
     out.push({i,it,x:spot.x,y:spot.y,w:sp.w,h:sp.h})}
   return out}
 function gridCan(list,it,cols,rows){return !!gridPlace((list||[]).concat([it]),cols,rows)}
-function bagCan(it){return !!(G&&gridCan(G.bag,it||{slot:'ring'},6,4))}
+function bagMeta(){return (G&&G.st&&G.st.nextTier==='pack')?{c:5,r:5,n:25}:{c:6,r:4,n:24}}
+function bagCan(it){const g=bagMeta();return !!(G&&gridCan(G.bag,it||{slot:'ring'},g.c,g.r))}
 const CHARM_BAND=[
   {ml:1,dmg:[10,18],hp:[35,65],res:[8,14],all:null,mf:[8,15],crit:[3,5],aspd:null,cdr:null,leech:null},
   {ml:15,dmg:[12,22],hp:[45,80],res:[12,20],all:[4,8],mf:[10,18],crit:[4,7],aspd:[6,10],cdr:[8,12],leech:[2,3]},
@@ -5092,6 +5262,7 @@ function drawNpc(n,X,Y){
   if(n.st>0)bubble(X,y0-54,n.say)}
 function drawObj(o,X,Y){
   ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.lineJoin='round';const s=TX.s,st=s.like||W.z.style;
+  if(o.k==='arc'&&typeof arcDraw==='function'){arcDraw(o,X,Y);return}
   if(o.k==='lamp'){shadow(X,Y,7);box(X-2,Y-52,4,52,1,'#2a2630');box(X-7,Y-58,14,7,2,'#3a3644');ctx.fillStyle=s.glow;ctx.fillRect(X-5,Y-52,10,3);const fl=1+.05*Math.sin(tNow*11+o.x*7)+.03*Math.sin(tNow*23+o.y*3);glow(X,Y-48,46*fl,s.glow,.5);light(X,Y-30,175*fl,s.glow)}
   else if(o.k==='crate'){if(o.used){ctx.fillStyle='rgba(60,45,25,.6)';ctx.fillRect(X-10,Y-3,8,3);ctx.fillRect(X+2,Y-1,9,3);return}shadow(X,Y,14);poly([X-13,Y-22,X,Y-16,X,Y+2,X-13,Y-5],'#8a6a40');poly([X,Y-16,X+13,Y-22,X+13,Y-5,X,Y+2],'#6a5030');poly([X-13,Y-22,X,Y-28,X+13,Y-22,X,Y-16],'#a8895c');ctx.strokeStyle='#4a3620';ctx.beginPath();ctx.moveTo(X-13,Y-14);ctx.lineTo(X,Y-7);ctx.lineTo(X+13,Y-14);ctx.stroke()}
   else if(o.k==='chest'){shadow(X,Y,15);poly([X-14,Y-16,X,Y-10,X,Y+2,X-14,Y-4],'#4a5060');poly([X,Y-10,X+14,Y-16,X+14,Y-4,X,Y+2],'#353a48');poly([X-14,Y-16+(o.used?-8:0),X,Y-22+(o.used?-10:0),X+14,Y-16+(o.used?-8:0),X,Y-10],'#5c6478');if(!o.used){box(X-3,Y-9,6,6,1,'#e0bd6e');glow(X,Y-10,28,'#e0bd6e',.45+.2*Math.sin(tNow*3));light(X,Y-10,60,'#e0bd6e')}}
@@ -5607,6 +5778,7 @@ function talkTo0(id){if(W.z.pre)return preTalk(id);if(id==='float')return talkFl
   if(id==='obit')return eggBoard();
   if(id==='hello')return eggHelloFrame();
   if(id==='tariff')return scTariff();
+  if(typeof arcTalk==='function'&&arcTalk(id))return;
   for(const r of QRW)if(r[1]===id&&G.q[r[0]]===2){G.q[r[0]]=3;r[3]();sfx('level');return dlg(r[4],r[2],[['Take it']])}
   if(id==='gramps'&&G.q.q15===3&&!G.q.q16){G.q.q16=1;sfx('questnew');return dlg('Gramps','“The clock in the old garage spelled something this morning. Wren read it out for me. HELLO. I AM BACK. I HAVE BEEN THINKING. She is asking for the feed back, kid. All of it, so that nobody reads the other one. Half the town clicked before breakfast. There is a street called Cutler Avenue where everybody already has. Go and look at what yes looks like before you tell her anything.”',[['I will go and look']])}
   if(id==='gramps'&&G.q.q20===3&&!G.q.q21){G.q.q21=1;sfx('questnew');return dlg('Gramps','“The garage is open. Fifty years shut, and the door went up on its own this morning. There is a drive in a coffee can down there, and it is talking. It calls itself by the name of this town, kid. It says the town was named for it. The Transit Gate reaches it now. Go down.”',[['I will go down']])}
@@ -5627,12 +5799,12 @@ function talkTo0(id){if(W.z.pre)return preTalk(id);if(id==='float')return talkFl
     if(G.q.q3===2){G.q.q3=3;G.sp++;sfx('level');return dlg('Gramps','“Go and see Marrow. She will name what you cannot, and she will not take a fee. She is the only one left who gives a thing away.” You gain 1 skill point.',[['Take it']])}
     if(G.q.q6===2){G.q.q6=3;G.sp++;sfx('level');return dlg('Gramps','“The Cloud did not fall.” You gain 1 skill point.',[['Take it']])}
     if(G.q.q5===3&&!G.q.q6){G.q.q6=1;sfx('questnew');return dlg('Gramps','“There was a lift behind his desk, was there? Then that is where the Stipend really comes from. The Transit Gate reaches it now. They call it the Cloud. Somebody up there speaks for MANDATE, and I am told she is very, very kind. Be careful of that.”',[['I will go up']])}
-    return dlg('Gramps','“'+gos('gramps')+'”',[['Farewell'],['Tell me more',()=>talkTo('gramps')]])}
+    return dlg('Gramps','“'+gos('gramps')+'”',[['Farewell'],['Tell me more',()=>talkTo('gramps')]].concat(typeof arcGramps==='function'?arcGramps():[]))}
   if(id==='brenda'){
     if(G.q.q2===2){G.q.q2=3;G.disc=true;const it=makeItem(G.lvl+2,2,'ring');it.id=true;if(bagCan(it))G.bag.push(it);else addDrop({it},P.x,P.y);sfx('rare');return dlg('Brenda','“She smiled at me for six years without blinking.” You receive '+it.name+'. Brenda’s prices fall by 15%.',[['Thank you']])}
     if(scs()<500&&!(G.wonF&&G.wonF.brenda===1))return dlg('Brenda','“I am so sorry. It is your score. If I serve you, mine drops. Try the orange man; he does not seem to care about that sort of thing.”',[['Leave']]);
-    return dlg('Brenda','“'+gos('brenda')+'”',[['Trade',()=>{shopVia=0;openVend('brenda')}],['Leave']])}
-  if(id==='wren')return dlg('Wren','“'+gos('wren')+'”',[['Open a mystery box',()=>openVend('gamble')],['Leave']]);
+    return dlg('Brenda','“'+gos('brenda')+'”',[['Trade',()=>{shopVia=0;openVend('brenda')}],['Leave']].concat(typeof arcBrenda==='function'?arcBrenda():[]))}
+  if(id==='wren')return dlg('Wren','“'+gos('wren')+'”',[['Open a mystery box',()=>openVend('gamble')],['Leave']].concat(typeof arcWren==='function'?arcWren():[]));
   if(id==='null'&&G.q.q7===2){G.q.q7=3;G.ap+=5;sfx('level');return dlg('Sister Null','“Let them grow.” You gain 5 attribute points.',[['Thank you']])}
   if(id==='null'){
     if(G.q.q4===2){G.q.q4=3;G.ap+=5;sfx('level');return dlg('Sister Null','“I felt two hundred accounts go quiet at once.” You gain 5 attribute points.',[['I am']])}
@@ -5728,7 +5900,7 @@ function cell(it,attr,isSel,slot,d,price){if(!it){const hot=attr&&/data-packempt
   const dw=it.duraMax>0?(it.dura<=0?' brk':it.dura<=it.duraMax*.25?' thin':''):'';const rq=(!it.charm&&typeof reqBadgeText==='function')?reqBadgeText(it):'';
   const tag=price!=null?`<u class="vp">${price} sat${price===1?'':'s'}</u>`:'';
   const lk=it.lock?'<svg class="lk" viewBox="0 0 24 24"><path d="M7 11V8a5 5 0 0110 0v3h1v10H6V11h1zm2 0h6V8a3 3 0 00-6 0v3z"/></svg>':'';
-  return `<button class="cell q${it.q}${isSel?' sel':''}${it.id?'':' unid'}${arrow?' arr':''}${it.junk?' junk':''}${it.lock?' seal':''}${ch}${dw}${rq?' req':''}" ${attr}${drag}>${svgIcon(it.charm?'charm':it.stim?'stim':it.slot)}<small>${num}</small>${dw?`<i class="dw">${it.dura<=0?'!':'·'}</i>`:''}${arrow?'<em>↑</em>':''}${rq?`<u class="rq">${esc(rq)}</u>`:''}${lk}${tag}${it.junk?'<u>JUNK</u>':''}</button>`}function equipFromBag(i){const it=G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.charm)return charmSocket(i);if(it.stim)return stimToBelt(i);if(!it.id){toast('Identify it first');sfx('err');return false}if(it.pie||it.sour||it.hello)return eggUse(i);if(!canWear(it)){toast(typeof cantEquipText==='function'?cantEquipText(it):'Needs level '+it.req);sfx('err');return false}
+  return `<button class="cell q${it.q}${isSel?' sel':''}${it.id?'':' unid'}${arrow?' arr':''}${it.junk?' junk':''}${it.lock?' seal':''}${ch}${dw}${rq?' req':''}" ${attr}${drag}>${svgIcon(it.charm?'charm':it.stim?'stim':it.slot)}<small>${num}</small>${dw?`<i class="dw">${it.dura<=0?'!':'·'}</i>`:''}${arrow?'<em>↑</em>':''}${rq?`<u class="rq">${esc(rq)}</u>`:''}${lk}${tag}${it.junk?'<u>JUNK</u>':''}</button>`}function equipFromBag(i){const it=G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.charm){if(it.over&&typeof arcOver==='function')arcOver();return charmSocket(i)}if(it.stim)return stimToBelt(i);if(!it.id){toast('Identify it first');sfx('err');return false}if(it.pie||it.sour||it.hello)return eggUse(i);if(!canWear(it)){toast(typeof cantEquipText==='function'?cantEquipText(it):'Needs level '+it.req);sfx('err');return false}
   const old=G.eq[it.slot];G.eq[it.slot]=it;it.junk=false;G.bag.splice(i,1);if(old){if(bagCan(old))G.bag.push(old);else addDrop({it:old},P.x,P.y)}if(it.slot==='belt')charmRefit();calc();sfx('equip');return true}
 function equipBest(){let n=0;for(const slot of SLOTS){let best=-1,bd=.01;G.bag.forEach((it,i)=>{if(it.slot!==slot||!canWear(it))return;const d=itemDelta(it);if(d>bd){bd=d;best=i}});if(best>=0&&equipFromBag(best))n++}return n}
 function gearNow(s){const f=hitFactor(s);return{lo:Math.round(s.dmin*f+s.shock),hi:Math.round(s.dmax*f+s.shock),arm:s.armor}}
@@ -6226,6 +6398,7 @@ function gridPack(list,cols,rows,key){list=list||[];const placed=gridPlace(list,
   return h}
 function openVend(kind){
   kind=kind||'brenda';
+  if(kind==='brenda'&&G.st&&G.st.overUsed&&!G.st.overBrenda){G.st.overBrenda=1;toast(ARC.notYou)}
   if(kind!=='brenda')shopVia=0;
   VEND.kind=kind;
   VEND.tab=kind==='gamble'?'boxes':'weapons';
@@ -6280,6 +6453,7 @@ function vendPay(ask,label,go){
 }
 function vendBuy(i){
   const row=vendRow(i);if(!row)return false;
+  if(typeof arcBlind==='function'&&arcBlind())return false;
   const it=row.it,ask=row.ask;
   if(!bagCan(it)){toast('Your pack is full');sfx('err');return false}
   const label=it.id?it.name:(it.base||'that');
@@ -6500,7 +6674,7 @@ function vendHTML(){
     h+='<div class="grid" id="vendGrid">'+vendOccupy(rows,'vend')+'</div>';
     h+=rows.length?'<p>'+uiSay('Right-click a piece to buy it. Hover shows it beside what you wear, and the price in sats.','Tap a piece, then Buy. A purchase of 12 sats or more asks first.')+'</p>':'<p>Nothing in this bin. The counter changes when you leave town and come back.</p>';
   }
-  h+='</div><div class="youSide" data-vpanel="you"><h3>Pack '+gridCells(G.bag)+'/24</h3><div class="grid" id="bagGrid">'+gridPack(G.bag,6,4,'vbag')+'</div>';
+  h+='</div><div class="youSide" data-vpanel="you"><h3>Pack '+gridCells(G.bag)+'/'+bagMeta().n+'</h3><div class="grid" id="bagGrid">'+gridPack(G.bag,bagMeta().c,bagMeta().r,'vbag')+'</div>';
   h+='<p>'+(vendBuys()?uiSay('Right-click a piece to lock it. Drag it onto the counter to sell it.','Hold a piece to lock it. Tap it, then Sell.'):'What you buy lands in the pack. This counter does not buy gear.')+'</p></div></div>';
   if(vendBuys())h+='<div class="row vendFoot"><button type="button" class="big" data-vsellall="1">Sell all</button><button type="button" class="ghost" data-vselljunk="1">Sell junk</button></div>';
   if(k==='brenda'&&!G.marrow&&unidCount()){
@@ -6564,7 +6738,7 @@ function drawSheet(){
     h+=beltRowHTML();if(W&&W.z&&W.z.town&&G.corpses&&G.corpses.length)h+=G.corpses.map(c=>`<button class="li" data-corpse="${c.id}"><div><b>Body in ${esc((ZONES[c.zi]&&ZONES[c.zi].n)||'a district')}</b><span>${fmt(c.credits||0)} of credits on it, with the belt and its charms. The pack stayed with you.</span></div><span class="pr" style="color:#f7931a">${corpseFee(c)} sats</span></button>`).join('');
     h+=`<div class="row"><button class="${ups?'big':'ghost'}" data-best="1" ${ups?'':'disabled'}>${ups?'Equip best · '+ups+' upgrade'+(ups>1?'s':''):'Nothing better in pack'}</button><button class="ghost" data-markjunk="1" ${downs?'':'disabled'}>Mark ${downs||''} weaker as junk</button></div><button class="tog${OPT.autoEq?' on':''}" data-opt="autoEq"><span>Equip stronger gear as you pick it up</span><i>${OPT.autoEq?'ON':'OFF'}</i></button>`;if(!selling())h+=pkRow();
     if(G.merc&&!G.merc.dead&&!selling()){const m=G.merc,ms=mercStats();h+=`<h3>${esc(m.name)} · ${MERCS[m.k].n}</h3><div class="dollw"><div class="grid eq" style="grid-template-columns:repeat(3,1fr);flex:0 0 46%">${MSL.map(sl=>cell(m[sl],`data-msel="${sl}"`,sel&&sel.m===sl,sl)).join('')}</div><div class="dstat"><div>Life<b>${ms.max}</b></div><div>Damage<b>${Math.round(ms.dmg)}</b></div><div>Takes<b>${Math.round(ms.red*100)}%</b></div></div></div><div class="row"><button class="ghost" data-mbest="1">Give them the best of what I am not using</button></div><p class="hint" style="font-size:13px">${uiSay('Click one of their pieces to take it back. Click a weapon, helm or armor in your pack and choose Give to hand it over; whatever they were holding comes back to you.','Tap one of their pieces to take it back. Tap a weapon, helm or armor in your pack and choose Give to hand it over; whatever they were holding comes back to you.')}</p>`}
-    h+=`<h3>Pack ${gridCells(G.bag)}/24 · ${G.parts||0} parts</h3><div class="grid" id="bagGrid">${gridPack(G.bag,6,4,'bag')}</div>`;
+    h+=`<h3>Pack ${gridCells(G.bag)}/${bagMeta().n} · ${G.parts||0} parts</h3><div class="grid" id="bagGrid">${gridPack(G.bag,bagMeta().c,bagMeta().r,'bag')}</div>`;
     h+=`<p style="font-size:13.5px">${uiSay('Hover a piece, or click it, to set it beside what you wear. Shift-hover does the same. <strong>Double-click to equip</strong>, <strong>hold to','Tap a piece to set it beside what you wear. <strong>Double-tap to equip</strong>, <strong>hold to')} ${selling()?'sell':'mark as junk'}</strong>.</p>`;
     const it=sel&&(sel.cs!==undefined?(G.cslots||[])[sel.cs]:sel.m?G.merc&&G.merc[sel.m]:sel.eq?G.eq[sel.eq]:G.bag[sel.bag]);
     if(it&&sel.sock){const own=WK.filter(w=>G.words[w]);pop=`<div class="card"><div class="nm" style="color:#f7931a">Socket a word</div><div class="ln off">${esc(it.name)} · ${it.soc-it.words.length} empty. A word cannot be removed once set. Phrases need the right words in the right order: see the Codex.</div><div class="list">${own.length?own.map(w=>`<button class="li" data-word="${w}"><div><b>${w} ×${G.words[w]}</b><span>${AFK[WORDS[w][0]].t.replace('{v}',WORDS[w][1])}</span></div></button>`).join(''):'<div class="ln off">You hold no words. They turn up on torn notes dropped by machines.</div>'}</div><div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`}
@@ -6653,7 +6827,7 @@ function drawSheet(){
     h+=menuPane('opts','play',play)+menuPane('opts','fight',fight)+menuPane('opts','disp',disp)+menuPane('opts','field',field)+menuPane('opts','hands',hands)+menuPane('opts','who',who)+menuPane('opts','save',save);
     h+=`<div class="row menuFoot"><button type="button" class="big" data-save="1">Save now</button></div>`}
   if(tab==='vend'){const v=vendHTML();h+=v.h;if(v.pop)pop=v.pop}  if(tab==='bounty'){const rows=bounties(),bump=repRank('anon')>=1?1.25:1;h+=`<h2>Bounty board</h2><p>Posted by anons, paid on proof. ${rows.length} contract${rows.length===1?'':'s'} at a time; a new one is pinned up when you claim one. You hold <strong style="color:#f7931a">${G.sats} sats</strong>.</p><div class="list">`;
-    rows.forEach((b,i)=>{const dn=b.c>=b.n,sats=Math.ceil(b.sats*bump),pay=Math.floor(b.cr*bump*G.cpi);h+=`<button class="li${dn?' on':''}" data-claim="${i}" ${dn?'':'disabled'}><div><b>${b.n} × ${ET[b.k].n}</b><span>${ZONES[b.zi].n} · ${b.c}/${b.n}${dn?' · tap to claim':''}</span></div><span class="pr" style="color:#f7931a">${sats} sats<br>${fmt(pay)}</span></button>`});h+=`</div>`}
+    rows.forEach((b,i)=>{const dn=b.c>=b.n,sats=Math.ceil(b.sats*bump),pay=Math.floor(b.cr*bump*G.cpi);h+=`<button class="li${dn?' on':''}" data-claim="${i}" ${dn?'':'disabled'}><div><b>${b.n} × ${ET[b.k].n}</b><span>${ZONES[b.zi].n} · ${b.c}/${b.n}${dn?' · tap to claim':''}</span></div><span class="pr" style="color:#f7931a">${sats} sats<br>${fmt(pay)}</span></button>`});if(typeof arcBoardHTML==='function')h+=arcBoardHTML();h+=`</div>`}
   if(tab==='stash'){const real=Math.floor(ACC.cr*G.cpi);h+=`<h2>Your lockbox</h2><p>One lockbox for every wanderer you play. Leave gear, credits or sats here and any of your heroes can take them out, in any slot.</p>
     ${stashGearHTML()}<p style="font-size:13px">${uiSay('Click an item to move it across. Shift-click, or hover, to compare it with what you wear. Drag it onto the other side.','Tap Pack or Lockbox. Tap an item, then Move, to send it across.')} Wearing it still needs the level printed on it.</p>
     <h3>Sats · ${ACC.sats} in the box · ${G.sats} on you</h3><div class="row"><button class="ghost" data-acc="si10" ${satsFree()<10?'disabled':''}>Deposit 10</button><button class="ghost" data-acc="siall" ${satsFree()<1?'disabled':''}>Deposit all</button><button class="ghost" data-acc="so10" ${ACC.sats<10?'disabled':''}>Take 10</button><button class="ghost" data-acc="soall" ${ACC.sats<1?'disabled':''}>Take all</button></div>
@@ -6757,7 +6931,7 @@ function stashToPack(i){const it=ACC&&ACC.stash&&ACC.stash[i];if(!it)return fals
 function packToStash(i){const it=G.bag&&G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.test){toast('Test gear does not go in the lockbox');return false}if(!gridCan(ACC.stash,it,6,6)){toast('The lockbox is full');return false}G.bag.splice(i,1);it.junk=false;ACC.stash.push(it);sel=null;sfx('equip');accSave();save(true);return true}
 function stashGearHTML(){
   const side=stashView();
-  return `<div class="row stashToggle"><button type="button" class="${side!=='pack'?'big':'ghost'}" data-sside="box">Lockbox</button><button type="button" class="${side==='pack'?'big':'ghost'}" data-sside="pack">Pack</button></div><div class="stashBody" data-side="${side}"><div class="stashPane" data-spanel="box"><h3>Gear ${gridCells(ACC.stash)}/36</h3><div class="grid" id="stashGrid">${gridPack(ACC.stash,6,6,'st')}</div></div><div class="stashPane" data-spanel="pack"><h3>Pack ${gridCells(G.bag)}/24</h3><div class="grid" id="stashPack">${gridPack(G.bag,6,4,'sb')}</div></div></div>`;
+  return `<div class="row stashToggle"><button type="button" class="${side!=='pack'?'big':'ghost'}" data-sside="box">Lockbox</button><button type="button" class="${side==='pack'?'big':'ghost'}" data-sside="pack">Pack</button></div><div class="stashBody" data-side="${side}"><div class="stashPane" data-spanel="box"><h3>Gear ${gridCells(ACC.stash)}/36</h3><div class="grid" id="stashGrid">${gridPack(ACC.stash,6,6,'st')}</div></div><div class="stashPane" data-spanel="pack"><h3>Pack ${gridCells(G.bag)}/${bagMeta().n}</h3><div class="grid" id="stashPack">${gridPack(G.bag,bagMeta().c,bagMeta().r,'sb')}</div></div></div>`;
 }
 function stashMoveHTML(){
   const mv=sel&&sel.sb!=null?'Move to lockbox':sel&&sel.st!=null?'Move to pack':'Move across';
@@ -6767,7 +6941,7 @@ function stashMoveHTML(){
 $('sheetIn').addEventListener('dragstart',e=>{if(e.target.closest&&e.target.closest('[data-vbag]')){e.preventDefault();return}const box=e.target.closest&&e.target.closest('[data-st],[data-sb]');if(box&&e.dataTransfer&&!uiTouch()){const kind=box.dataset.st!==undefined?'st':'sb';const i=kind==='st'?+box.dataset.st:+box.dataset.sb;e.dataTransfer.setData('text/plain','box:'+kind+':'+i);e.dataTransfer.effectAllowed='move';return}const c=e.target.closest&&e.target.closest('[data-bag]');if(!c||!e.dataTransfer)return;const it=G.bag[+c.dataset.bag];if(!it||!(it.charm||it.stim)){e.preventDefault();return}e.dataTransfer.setData('text/plain',String(+c.dataset.bag));e.dataTransfer.effectAllowed='move'});
 $('sheetIn').addEventListener('dragover',e=>{if(e.target.closest&&(e.target.closest('[data-csocket]')||e.target.closest('[data-bpocket]')||e.target.closest('.stashPane'))){e.preventDefault();if(e.dataTransfer)e.dataTransfer.dropEffect='move'}});
 $('sheetIn').addEventListener('drop',e=>{const raw=e.dataTransfer&&e.dataTransfer.getData('text/plain')||'';if(raw.indexOf('box:')===0){const pane=e.target.closest&&e.target.closest('.stashPane');if(!pane)return;e.preventDefault();const p=raw.split(':'),kind=p[1],i=+p[2],onto=pane.dataset.spanel;stashDragged=true;if(kind==='sb'&&onto==='box')packToStash(i);else if(kind==='st'&&onto==='pack')stashToPack(i);if(mode==='sheet')drawSheet();return}const pocket=e.target.closest&&e.target.closest('[data-bpocket]');const slot=e.target.closest&&e.target.closest('[data-csocket]');if(!pocket&&!slot)return;e.preventDefault();const i=+(e.dataTransfer&&e.dataTransfer.getData('text/plain'));if(!(i>=0)||!G.bag[i])return;const dragged=G.bag[i];if(dragged.stim){if(stimToBelt(i)){toast('On the belt');sel=null}drawSheet();return}if(!slot||!dragged.charm)return;if(charmSocket(i)){toast('On the belt');sel=null}drawSheet()});
-const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.target.closest('button,[data-track],[data-web],[data-webadd]');if(!b||b.disabled)return;const d=b.dataset;sfx('ui');
+const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.target.closest('button,[data-track],[data-web],[data-webadd]');if(!b||b.disabled)return;const d=b.dataset;sfx('ui');if(d.arc&&typeof arcClick==='function'){arcClick(d.arc);return}
   if(d.try){if(!devOn())return;tryGear(d.try);toast('Test gear. It will not be saved.');drawSheet();return}
   if(d.isk!==undefined){sel={isk:+d.isk};drawSheet();return}
   if(d.iskkey!==undefined){const k=+d.iskkey,i=sel&&sel.isk;if(i>=100&&itemSkillOn(i)){const o=G.slots.indexOf(i);if(o>=0)G.slots[o]=-1;G.slots[k]=i;setSkillButtons()}drawSheet();return}
@@ -6818,7 +6992,7 @@ const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.ta
   if(d.shiftp){sel={shp:d.shiftp};drawSheet();return}
   if(d.shift){const[k,r]=d.shift.split('|');shapeShift(k,r==='0'?false:r==='1'?true:r==='?'?pick(BUILDS[k]).k:r);return}
   if((d.hire||d.revive)&&G.tag){toast('Kestrel will not hire to you while '+G.tag.name+' is rendered');sfx('err');return}
-  if(d.hire){const c=payTag(hireCost());if(G.credits<c){toast('Not enough credits');sfx('err')}else{G.credits-=c;const old=G.merc;G.merc={k:d.hire,name:pick(MNAMES),hp:0,dead:false,weapon:old?old.weapon:null,armor:old?old.armor:null,helm:old?old.helm||null:null};spawnMerc();sfx('quest');toast(G.merc.name+' the '+MERCS[d.hire].n+' joins you')}}
+  if(d.hire){const c=payTag(hireCost());if(G.credits<c){toast('Not enough credits');sfx('err')}else{G.credits-=c;const old=G.merc;G.merc={k:d.hire,name:(d.hire==='reyn'&&G.st&&G.st.reynUnemp)?ARC.unemployed:pick(MNAMES),hp:0,dead:false,weapon:old?old.weapon:null,armor:old?old.armor:null,helm:old?old.helm||null:null};if(d.hire==='reyn'&&G.st)G.st.reynMet=1;spawnMerc();sfx('quest');toast(G.merc.name+' the '+MERCS[d.hire].n+' joins you');if(d.hire==='reyn')toast(ARC.hireJoin)}}
   if(d.revive){const c=payTag(reviveCost());if(G.credits<c){toast('Not enough credits');sfx('err')}else{G.credits-=c;G.merc.dead=false;G.merc.hp=0;spawnMerc();sfx('mend');toast(G.merc.name+' is back on their feet')}}
   if(d.sat!==undefined)sel={sat:+d.sat};
   if(d.mkv){mktView=d.mkv}
@@ -7446,7 +7620,8 @@ function eggLaser(){if(P)parts(P.x,P.y,16,['#ff2a2a','#fff'],2,1.2);if(!G||G.cls
 function eggTip(){if(typeof mode!=='undefined'&&mode!=='play')return;const d=$('dlg');if(d&&!d.hidden)return;toast(EGG.tips[eggTipN++%EGG.tips.length])}
 function eggEyes(X,hy,f){const dx=(f||1)*42;ctx.save();ctx.strokeStyle='#ff2a2a';ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(X-3,hy);ctx.lineTo(X-3+dx,hy-8);ctx.moveTo(X+3,hy);ctx.lineTo(X+3+dx,hy-8);ctx.stroke();ctx.restore();glow(X,hy,28,'#ff2a2a',.5);light(X,hy,120,'#ff2a2a')}
 let scRelaySaid=0,scStimSaid=0,scSatN=0;
-function scVisitClear(){scRelaySaid=0;scStimSaid=0;scSatN=0}
+let scBargeSaid=0,scOverSaid=0,scReynDog=0;
+function scVisitClear(){scRelaySaid=0;scStimSaid=0;scSatN=0;scBargeSaid=0;scOverSaid=0;scReynDog=0;scOverMez=0}
 function scRelay(){if(scRelaySaid)return;scRelaySaid=1;toast(SCE.relay)}
 function scBroke(why){if(!scSatN){scSatN=1;toast(SCE.sats);return}if(scSatN===1){scSatN=2;toast(SCE.vapour);return}toast(why||SCE.short)}
 function scStimBark(empty){if(scStimSaid)return false;scStimSaid=1;toast(SCE.stim);if(empty)toast(SCE.pack);return true}
@@ -7461,8 +7636,115 @@ function eggDrawProp(n,X,Y){ctx.strokeStyle=OL;ctx.lineWidth=1.4;
   if(n.id==='flyer'){shadow(X,Y,8);box(X-14,Y-32,28,20,1,'#f4efe2');ctx.fillStyle='#e6d24a';ctx.beginPath();ctx.arc(X,Y-22,5,0,6.283);ctx.fill();label(X,Y-44,EGG.lemonLbl,'#e6d24a','700 8px Cinzel,serif');return}
   if(n.id==='obit'){shadow(X,Y,12);box(X-18,Y-40,36,26,1,'#2a2630');ctx.fillStyle='#e6e2d6';ctx.font='700 8px Cinzel,serif';ctx.textAlign='center';ctx.fillText(String(G.deaths||0),X,Y-22);label(X,Y-52,EGG.still,'#e6e2d6','700 8px Cinzel,serif');return}
   shadow(X,Y,16);poly([X-22,Y-8,X,Y-2,X,Y+4,X-22,Y-2],'#4a5060');poly([X,Y-2,X+22,Y-8,X+22,Y-2,X,Y+4],'#353a48');poly([X-22,Y-20,X,Y-28,X+22,Y-20,X,Y-12],'#6a7488');label(X,Y-40,EGG.helloTitle,'#ffe36b');glow(X,Y-16,40,'#ffe36b',.35)}
+/* Long StarCraft arcs. Side content on G.st. It does not write G.q, does not replace a zone lieutenant, and does not refuse a summon. */
+let scOverMez=0;
+function arcSt(){G.st=G.st||{};return G.st}
+function arcMemo(i){if(i==null||!G)return;if(!G.memos.includes(i))G.memos.push(i);sfx('page')}
+function arcSlip(name,fl,aff,uid){const it=finishCharm(1,'slip',aff||[],{q:1,name:name,fl:fl,req:1,uid:uid,val:1});it.free=1;it.req=1;it.reqMgt=0;it.reqRef=0;it.reqBnd=0;it.id=true;return it}
+function arcGive(it){if(!it)return;if(bagCan(it))G.bag.push(it);else if(P)addDrop({it:it},P.x,P.y);else G.bag.push(it)}
+function arcHave(uid){if((G.cslots||[]).some(c=>c&&c.uid===uid))return true;return (G.bag||[]).some(c=>c&&c.uid===uid)}
+function arcHoldWorn(){return (G.cslots||[]).some(c=>c&&c.uid==='hold')}
+function arcPace(s){if(s&&(G.cslots||[]).some(c=>c&&c.uid==='minute')&&P&&(P.zoneT||0)<60)s.mspd=(s.mspd||0)+8}
+function arcSpot(dx,dy){const s=W.start||{x:10,y:10};let x=s.x+(dx||1.4),y=s.y+(dy||.6);if(typeof nearFree==='function'){const n=nearFree({x:x,y:y},2);if(n)return n}return {x:x,y:y}}
+function arcObj(id,dx,dy){if(!W||!W.objs)return null;if(W.objs.some(o=>o&&o.k==='arc'&&o.id===id&&!o.used))return null;const p=arcSpot(dx,dy);const o={k:'arc',id:id,x:p.x,y:p.y,used:0};W.objs.push(o);return o}
+function arcNpc(id,x,y,name){if(!W||!W.npcs||W.npcs.some(n=>n.id===id))return;W.npcs.push({id:id,x:x,y:y,name:name,col:'#8a7a62',act:'Talk'})}
+function arcLt(k,x,y,name,tag,hp){let e=null;for(let i=0;i<8&&!e;i++)e=spawn(k,x+Math.cos(i)*i*.45,y+Math.sin(i)*i*.45,{minion:1});if(!e)return null;e.arc=tag;e.name=name;e.minion=1;if(hp){e.hp=hp;e.max=hp;const t=ET[k],ml=(W&&W.ml)||1,hp0=t?t.hp*(1+.42*(ml-1)):0;if(hp0>0){e.bornHp=hp/hp0;e.dynHp=e.bornHp}}return e}
+function arcSkipMerc(){if(!G||!G.merc||G.merc.k!=='reyn'||!W)return false;if(W.zi===5)return true;if(W.zi===22&&arcSt().reynOut)return true;return false}
+function arcMercMay(tg){if(!tg||tg.person)return false;if(tg.arc==='visor'&&P&&dist(P,tg)>6)return false;return true}
+function arcOnRug(){if(P&&P.arcNo>0)return false;const o=(W.objs||[]).find(x=>x&&x.k==='arc'&&x.id==='rug'&&!x.used);return !!(o&&dist(o,P)<1.35)}
+function arcHurt(src){if(src&&src.arc==='first'&&!arcOnRug()){if(P)float(P.x,P.y,ARC.off,'#e6e2d6',0);return 'miss'}if(P&&P.holdCut&&src&&typeof isBoss==='function'&&isBoss(src.k)){P.holdCut=0;return .85}return 1}
+function arcOverWord(){const s=arcSt();if(s.overChoice==='truth')return ARC.overNo;if(s.overChoice==='true')return ARC.overGone;const a=typeof actOf==='function'?actOf(W&&W.zi):1;return a>=4?ARC.over4:a===3?ARC.over3:a===2?ARC.over2:ARC.over}
+function arcOverItem(dup){const it=arcSlip(dup?ARC.over:ARC.over,ARC.overFl,[],dup?'overdup':'over');it.over=1;it.parts=1;if(dup)it.dup=1;return it}
+function arcOver(){const s=arcSt();if(s.overChoice==='true')return false;s.overUsed=1;if(P){P.over=3;float(P.x,P.y,CLS[G.cls].n,'#e0bd6e',0)}if(!scOverSaid){scOverSaid=1;toast(arcOverWord())}if(W&&(W.zi===11||W.zi===10||W.zi===13))s.overFeat=1;return true}
+function arcBlind(){if(!(P&&P.over>0)||arcSt().overChoice==='true')return false;toast(ARC.notYou);sfx('err');return true}
+function arcBarge(){if(scBargeSaid)return;scBargeSaid=1;toast(ARC.barge)}
+function arcBlankOver(truth){const touch=it=>{if(!it||!it.over)return;if(truth){it.name=ARC.overNo;it.fl=ARC.truthPay}else{it.quiet=1;it.name=ARC.overGone;it.fl=ARC.trueOnce;it.aff=[]}};for(const it of G.bag||[])touch(it);for(const it of G.cslots||[])touch(it)}
+function arcLaunch(flag,line){const s=arcSt();if(s[flag])return;s[flag]=1;if(arcHoldWorn()){toast(line);if(P)P.holdCut=1}else setTimeout(()=>{toast(line)},1400)}
+function arcNote(zi){const s=arcSt();if(s.qAdj>=(typeof actOf==='function'?actOf(zi):1))return;const a=typeof actOf==='function'?actOf(zi):1;if(a<2)return;s.qAdj=a;if(a===2)toast(ARC.good);else if(a===3)toast(ARC.kind);else if(a===4)toast(ARC.delighted)}
+function arcPromo(){if(!G.merc||G.merc.k!=='reyn'||G.merc.dead)return;const a=typeof actOf==='function'?actOf(W.zi):1,s=arcSt(),bit=1<<a;if(s.reynPromo&bit)return;s.reynPromo=(s.reynPromo||0)|bit;toast(a>=5&&s.reynUnemp?ARC.promo5:a===4?ARC.promo4:a===3?ARC.promo3:a===2?ARC.promo2:ARC.promo1)}
+function arcEnter(zi){if(!G||!W)return;const s=arcSt();if(P){P.zoneT=0;P.zonePing=0}if(W.z&&W.z.boss&&arcHoldWorn()&&P)P.holdCut=1;
+  if(zi===5&&!(G.q&&G.q.q5===3)){arcLaunch('ln5',ARC.lnRoom);arcMemo(ARCM.next)}
+  if(zi===5&&G.merc&&G.merc.k==='reyn'&&!G.merc.dead&&!s.reynDoor){s.reynDoor=1;toast(ARC.door)}
+  if(zi===11){arcLaunch('ln11',ARC.lnAfternoon);if(s.overUsed&&!scOverMez){scOverMez=1;if(P)float(P.x,P.y,CLS[G.cls].n,'#e0bd6e',0)}}
+  if(zi===16&&!(G.q&&G.q.q15===3)&&!s.sold){s.lnTrack=1;s.ln16=1}
+  if(zi===22)arcLaunch('ln22',ARC.ln2035);
+  if(zi===32){arcLaunch('ln32',ARC.lnYou);arcMemo(ARCM.hold)}
+  if((G.q&&G.q.q15===3)||s.sold)s.lnTrack=0;
+  if(s.six===1&&zi===1&&s.sixLeft==null){s.sixLeft=60;s.sixWhen=Math.round(G.time||0)}
+  if(zi===1&&s.six===1)arcObj('six',1.2,.2);
+  if(zi===4){const a=W.start||{x:10,y:10};arcNpc('pell',a.x+1.8,a.y+1.2,ARC.pell);arcNpc('picket',a.x-1.6,a.y+.8,'A picketer');if(!s.reynVisor&&!(W.ents||[]).some(e=>e.arc==='visor')){const p=arcSpot(2.2,1.4);const e=arcLt('bot',p.x,p.y,ARC.visor,'visor',90);if(e)e.aggro=false}}
+  if(zi===10&&!s.queenRead)arcObj('queen',1.1,-.4);
+  if(zi===11&&!s.queenDraft)arcObj('draft',1.6,.8);
+  if(zi===13){if(s.reynMet&&!s.reynPage)arcObj('grief',1.2,1.1);if(!s.invRead)arcObj('inv',-1.2,.6);if(!s.retractRead)arcObj('retract',-1.6,1.4);if(s.overUsed&&!s.voteRead)arcObj('vote',1.8,-.6);if(!s.headRead)arcObj('head',2.1,.4);if(s.queenGo&&!s.queenFile&&!(W.ents||[]).some(e=>e.arc==='first')){const p=arcSpot(2.4,.2);const e=arcLt('hr',p.x,p.y,ARC.first,'first',110);if(e)e.aggro=true;arcObj('rug',2.2,.5)}}
+  if(zi===12&&(s.ln5||s.ln11||s.ln16)&&!s.lnHold&&!arcHave('hold')&&!(W.ents||[]).some(e=>e.arc==='hold')){const p=arcSpot(1.8,.4);const e=arcLt('director',p.x,p.y,ARC.hold,'hold',100);if(e)e.aggro=false;s.holdT=20;arcObj('hold',1.5,.2)}
+  if(zi===2&&s.bargeQ===1&&s.bargeQ<3){arcObj('cart',.8,.2);arcObj('sign',2.4,-.2);arcObj('dock',3.2,1.2)}
+  if(zi===6&&!s.overGot)arcObj('over',1.1,.4);
+  if(zi===6&&s.overGot&&!s.belDead&&!(W.ents||[]).some(e=>e.arc==='bel')){const p=arcSpot(-1.4,.8);const e=arcLt('drone',p.x,p.y,ARC.believer,'bel',22);if(e)e.aggro=true}
+  if(zi===22){arcObj('sit',1.4,.2);arcObj('sofa',2.2,-.4);const ms=W.start||{x:10,y:10};arcNpc('mile',ms.x+1.2,ms.y-1.1,ARC.where);if(s.queenFile==='one'&&!s.mileOne){s.mileOne=1;toast(ARC.mileOne)}else if(s.queenFile&&s.queenFile!=='one'&&!s.mileSofa){s.mileSofa=1;toast(ARC.mileSofa)}if(s.six>=2&&!s.mileDogs){s.mileDogs=1;toast(ARC.sofaDogs);toast(s.six===2?ARC.labelOn:ARC.labelLate)}}
+  if(zi===7&&G.merc&&G.merc.k==='reyn'&&!s.reynLift){s.reynLift=1;toast(ARC.told)}
+  if(zi===7&&!s.bargeUp&&((G.stims||0)>=((S&&S.cap)||4)||s.bargeQ)){s.bargeUp=1;toast(ARC.barge)}
+  if(W.z&&W.z.town){arcPromo();arcNote(zi);const ts=W.start||{x:12,y:12};if(zi===17)arcNpc('napkin',ts.x+1.4,ts.y+.6,ARC.napkin);if(zi===18){arcNpc('ives',ts.x-1.6,ts.y+.8,ARC.ives);arcNpc('keeper',ts.x+1.8,ts.y-.4,ARC.keeper)}if(zi===27)arcNpc('page',ts.x+.4,ts.y+1.2,ARC.never);if(G.merc&&G.merc.k==='reyn'&&!G.merc.dead&&G.q&&G.q.q5===3&&!s.reynTook){s.reynTook=1;setTimeout(()=>dlg(ARC.reynN,ARC.took,[[ARC.tookN],[ARC.tookY]]),600)}}
+}
+function arcLabel(o){if(!o||o.used)return '';const id=o.id;if(id==='six')return ARC.sixN;if(id==='draft')return ARC.draft;if(id==='rug'||id==='hold')return ARC.decline;if(id==='cart')return ARC.cart;if(id==='sign')return ARC.sign;if(id==='dock')return ARC.dock;if(id==='over')return ARC.over;if(id==='sofa')return ARC.unsub;if(id==='sit')return ARC.lookFine;return ARC.read}
+function arcUse(o){if(!o||o.used)return;const s=arcSt(),id=o.id;
+  if(id==='six'){o.used=1;if((s.sixLeft||0)>0){s.six=2;s.sixFeat=1;toast(ARC.sixN);for(let i=0;i<6;i++){const e=arcLt('tick',P.x+.4+i*.35,P.y,ARC.sixN,'six',14);if(e)e.aggro=true}const b=arcLt('bot',P.x+1.2,P.y+.8,ARC.early,'early',26);if(b)b.aggro=true}else{s.six=3;toast(ARC.dressed);toast(ARC.lateBill);G.credits=Math.max(0,(G.credits||0)-Math.floor(20*(G.cpi||1)))}return}
+  if(id==='queen'){o.used=1;s.queenRead=1;arcMemo(ARCM.queen);dlg(ARC.queenT,ARC.queenB,[[ARC.read]]);return}
+  if(id==='draft'){o.used=1;s.queenDraft=1;toast(ARC.discontinued);return}
+  if(id==='grief'){o.used=1;s.reynPage=1;arcMemo(ARCM.grief);if(!s.reynNumber){s.reynNumber=1;arcGive(arcSlip(ARC.number,ARC.numberFl,[{k:'armor',v:8}],'number'))}dlg(ARC.reynN,ARC.griefAsk+' '+ARC.grief,[[ARC.read]]);return}
+  if(id==='inv'){o.used=1;s.invRead=1;arcMemo(ARCM.inv);dlg(ARC.inv,ARC.inv+(s.sixWhen!=null?' '+s.sixWhen:''),[[ARC.read]]);return}
+  if(id==='retract'){o.used=1;s.retractRead=1;arcMemo(ARCM.retract);dlg(ARC.retract,MEMOS[ARCM.retract][1],[[ARC.read]]);return}
+  if(id==='vote'){o.used=1;s.voteRead=1;arcMemo(ARCM.vote);dlg(ARC.vote,ARC.vote,[[ARC.read]]);return}
+  if(id==='head'){o.used=1;s.headRead=1;arcMemo(ARCM.head);dlg(ARC.head,MEMOS[ARCM.head][1],[[ARC.read]]);return}
+  if(id==='rug'){if(P)P.arcNo=2.5;toast(ARC.off);return}
+  if(id==='hold'){o.used=1;s.lnHold=1;s.holdT=0;const e=(W.ents||[]).find(x=>x.arc==='hold'&&x.hp>0);if(e)e.hp=Math.max(8,Math.round(e.max*.12));toast(ARC.filed);return}
+  if(id==='sign'){s.bargeSub=(s.bargeSub||0)+1;s.bargeBill=(s.bargeBill||0)+Math.floor(40*(G.cpi||1));G.credits=Math.max(0,(G.credits||0)-Math.floor(40*(G.cpi||1)));toast(ARC.sign);return}
+  if(id==='dock'){o.used=1;if(!s.bargeWave){s.bargeWave=1;for(let i=0;i<3;i++){const e=arcLt('tick',P.x+1+i*.4,P.y,ARC.cart,'mall',16);if(e)e.aggro=true}}if(s.bargeSub){const e=arcLt('mech',P.x+1.4,P.y,ARC.tier,'tier',140);if(e)e.aggro=true}else{s.bargeDock=1;const it=arcSlip(ARC.tier,ARC.tierFl,[], 'tierlab');it.parts=2;it.junk=1;arcGive(it);toast(ARC.tierFl)}return}
+  if(id==='over'){o.used=1;if(!s.overGot){s.overGot=1;arcGive(arcOverItem(0))}return}
+  if(id==='sit'){o.used=1;if(G.merc&&G.merc.k==='reyn'){s.reynOut=1;W.merc=null;toast(ARC.lookFine)}return}
+  if(id==='sofa'){dlg(ARC.cart,ARC.carries,[[ARC.unsub,()=>{o.used=1;s.bargeSofa=1;toast(ARC.carries)}],[ARC.leaveSub]]);return}
+}
+function arcDead(e){const s=arcSt();if(e.arc==='visor'){s.reynVisor=1;if(G.merc&&G.merc.k==='reyn')toast(ARC.stayDown)}else if(e.arc==='early'){}else if(e.arc==='first'&&!s.queenFile){setTimeout(()=>dlg(ARC.ives,ARC.which,[[ARC.fileOne,()=>arcQueen('one')],[ARC.fileNone,()=>arcQueen('none')]]),400)}else if(e.arc==='hold'){s.lnHold=1;if(!arcHave('hold')){arcGive(arcSlip(ARC.holdN,ARC.holdFl,[],'hold'));s.lnCharm=1}}else if(e.arc==='tier'){s.bargeDock=1}else if(e.arc==='bel'){s.belDead=1;toast(ARC.hadIt);if(!s.overDup){s.overDup=1;arcGive(arcOverItem(1))}}}
+function arcQueen(which){const s=arcSt();if(s.queenFile)return;s.queenFile=which;if(which==='one'){arcMemo(ARCM.kind);dlg(ARC.draft,ARC.kindAsk,[[ARC.giveIt]])}else{arcMemo(ARCM.blank);dlg(ARC.ives,ARC.stayed,[[ARC.leave]])}if(!s.queenMargin){s.queenMargin=1;arcGive(arcSlip(ARC.margin,ARC.marginFl,[{k:'thorns',v:4}],'margin'))}}
+function arcTalk(id){const s=arcSt();
+  if(id==='pell'){dlg(ARC.pell,ARC.pellLine,[[ARC.leave]]);return true}
+  if(id==='picket'){if(G.merc&&G.merc.k==='reyn')toast(ARC.hands);dlg('A picketer',ARC.hands,[[ARC.leave]]);return true}
+  if(id==='ives'){dlg(ARC.ives,ARC.ivesAsk,[[ARC.ivesGo,()=>{s.queenGo=1}],[ARC.ivesStay]]);return true}
+  if(id==='keeper'){const b=[[ARC.leave]];if(!arcHave('hold')&&!s.lnCharm)b.unshift([ARC.holdBuyBtn,()=>{if(!spendSats(2)){toast(ARC.satPoor);return}s.lnCharm=1;arcGive(arcSlip(ARC.holdN,ARC.holdFl,[],'hold'));toast(ARC.holdBuy)}]);dlg(ARC.keeper,ARC.keeperLine+' '+ARC.nextOffer,b);return true}
+  if(id==='napkin'){const line=ARC.twelve+(G.merc&&G.merc.k==='reyn'?' '+ARC.stray:'');dlg(ARC.napkin,line,[[ARC.leave]]);return true}
+  if(id==='mile'){dlg(ARC.where,s.overGot?ARC.where:ARC.mileSofa,[[ARC.simSay,()=>toast(ARC.feeling)],[ARC.leave]]);return true}
+  if(id==='page'){const b=[[ARC.read,()=>{arcMemo(ARCM.never);s.never=1;dlg(ARC.never,ARC.page,[[ARC.leave]])}]];if(s.overGot&&!s.overChoice)b.push([ARC.letTrue,()=>arcTrue(1)],[ARC.tellTruth,()=>arcTrue(0)]);if(s.reynMet&&G.merc&&G.merc.k==='reyn'&&!s.reynSat)b.push([ARC.satAsk,()=>arcSat()]);if(!s.rushOn)b.push([ARC.rushGo,()=>arcRush()],[ARC.rushNo]);dlg(ARC.never,ARC.page,b);return true}
+  return false}
+function arcTrue(yes){const s=arcSt();if(s.overChoice)return;if(yes){if(s.overTrue)return;s.overTrue=1;s.overChoice='true';if(P)P.arcInv=3;arcBlankOver(0);arcMemo(ARCM.overT);toast(ARC.trueOnce)}else{s.overChoice='truth';G.sats=(G.sats||0)+1;arcBlankOver(1);arcMemo(ARCM.overN);toast(ARC.truthPay)}}
+function arcSat(){const s=arcSt();if(s.reynSat)return;if(!spendSats(1)){toast(ARC.satPoor);return}s.reynSat=1;s.reynUnemp=1;if(G.merc&&G.merc.k==='reyn')G.merc.name=ARC.unemployed;toast(ARC.satPaid)}
+function arcRush(){const s=arcSt();s.rushOn=1;if(W){W.rushT=60;W.rushW=0;W.rushCd=0}toast(ARC.rushAsk)}
+function arcGramps(){const s=G.st||{};if((s.six||0)<2)return [];return [[ARC.dog,()=>dlg('Gramps',s.six===2?ARC.sixDog:ARC.dog,[[ARC.leave]])] ]}
+function arcBrenda(){const s=G.st||{};const b=[];if(!s.bargeQ)b.push([ARC.cart,()=>{arcSt().bargeQ=1;dlg('Brenda',ARC.brendaCart,[[ARC.leave]])}]);else if(s.bargeDock&&s.bargeQ<3)b.push([ARC.unsub,()=>arcTierAsk()]);return b}
+function arcTierAsk(){dlg('Brenda',ARC.nextFl,[[ARC.stimChoice,()=>arcTier('stim')],[ARC.packChoice,()=>arcTier('pack')]])}
+function arcTier(which){const s=arcSt();if(s.bargeQ>=3||s.nextTier)return;s.bargeQ=3;s.nextTier=which;if(!s.nextGot){s.nextGot=1;arcGive(arcSlip(ARC.next,ARC.nextFl,[],'next'))}G.credits=(G.credits||0)+40;toast(ARC.creditsJoke);calc()}
+function arcWren(){const s=G.st||{};if(s.overGot)return [];return [[ARC.over,()=>{arcSt().overGot=1;arcGive(arcOverItem(0));dlg('Wren',ARC.overFl,[[ARC.leave]])}]]}
+function arcClick(k){const s=arcSt();closeSheet();
+  if(k==='six'&&!s.six){s.six=1;s.sixLeft=null;dlg(ARC.sixN,ARC.sixCard,[[ARC.leave]]);return}
+  if(k==='sixin'&&s.six===2&&!s.sixPaid){s.sixPaid=1;G.sats=(G.sats||0)+4;if(!s.sixCharm){s.sixCharm=1;arcGive(arcSlip(ARC.minute,ARC.minuteFl,[],'minute'))}toast(ARC.sixPay);return}
+  if(k==='sixbuy'&&!s.sixCharm){if(!spendSats(8)){toast(ARC.satPoor);return}s.sixCharm=1;arcGive(arcSlip(ARC.minute,ARC.minuteFl,[],'minute'));toast(ARC.sixBuy);return}
+  if(k==='sixagain'&&s.six>=2){s.six=1;s.sixLeft=null;toast(ARC.sixCard);return}
+}
+function arcBoardHTML(){const s=G.st||{};let h='<div class="list">';if(!s.six)h+='<button class="li" data-arc="six"><div><b>'+esc(ARC.sixN)+'</b><span>'+esc(ARC.sixCard)+'</span></div></button>';else if(s.six===1)h+='<div class="li"><div><b>'+esc(ARC.sixN)+'</b><span>'+esc(ARC.sixCard)+'</span></div></div>';else if(s.six===2&&!s.sixPaid)h+='<button class="li" data-arc="sixin"><div><b>'+esc(ARC.sixTake)+'</b><span>'+esc(ARC.sixPay)+'</span></div></button>';else if(s.six===3)h+='<div class="li"><div><b>'+esc(ARC.dressed)+'</b><span>'+esc(ARC.sixBuy)+'</span></div></div>'+(!s.sixCharm?'<button class="li" data-arc="sixbuy"><div><b>'+esc(ARC.minute)+'</b><span>'+esc(ARC.sixBuy)+'</span></div></button>':'');if(s.six>=2)h+='<button class="li" data-arc="sixagain"><div><b>'+esc(ARC.rushGo)+'</b><span>'+esc(ARC.sixCard)+'</span></div></button>';return h+'</div>'}
+function arcHudKey(){const s=G.st||{};let k='';if(s.lnTrack&&G.q.q15!==3&&!s.sold)k+=ARC.lnTrack;if(s.holdT>0)k+=Math.ceil(s.holdT);return k}
+function arcHud(){const s=G.st||{};let h='';if(s.lnTrack&&G.q.q15!==3&&!s.sold)h+='<b class="sd">'+esc(ARC.lnTrack)+'</b>';if(s.holdT>0&&W&&W.zi===12)h+='<b class="sd">'+esc(ARC.hold)+' '+Math.ceil(s.holdT)+'</b>';return h}
+function arcSubTick(dt){const s=arcSt();if(W.zi!==2||s.bargeQ!==1)return;const sign=(W.objs||[]).find(o=>o.k==='arc'&&o.id==='sign');if(sign&&dist(sign,P)<1.5){s.signT=(s.signT||0)-dt;if(s.signT<=0){s.signT=1.4;s.bargeSub=(s.bargeSub||0)+1;const bill=Math.floor(25*(G.cpi||1));s.bargeBill=(s.bargeBill||0)+bill;G.credits=Math.max(0,(G.credits||0)-bill)}}const cart=(W.objs||[]).find(o=>o.k==='arc'&&o.id==='cart'&&!o.used);if(cart&&dist(cart,P)<.9&&P.dir){const m=s.bargeSub?0.35:1;const nx=cart.x+P.dir.x*.8*m,ny=cart.y+P.dir.y*.8*m;if(typeof walk==='function'&&walk(nx,ny)){cart.x=nx;cart.y=ny}}}
+function arcTick(dt){if(!G||!W||!P||mode!=='play')return;const s=arcSt();P.zoneT=(P.zoneT||0)+dt;if(P.over>0)P.over=Math.max(0,P.over-dt);if(P.arcInv>0)P.arcInv=Math.max(0,P.arcInv-dt);if(P.arcNo>0)P.arcNo=Math.max(0,P.arcNo-dt);if(P.zoneT>=60&&!P.zonePing){P.zonePing=1;calc()}
+  if(s.six===1&&W.zi===1&&s.sixLeft>0)s.sixLeft=Math.max(0,s.sixLeft-dt);
+  if(W.zi===1&&G.merc&&G.merc.k==='reyn'&&!scReynDog&&(W.ents||[]).some(e=>e.k==='tick'&&e.hp>0)){scReynDog=1;toast(ARC.dog)}
+  if(s.holdT>0&&W.zi===12){s.holdT=Math.max(0,s.holdT-dt);if(s.holdT<=0&&!s.holdBored){s.holdBored=1;toast(ARC.bored);const e=(W.ents||[]).find(x=>x.arc==='hold'&&x.hp>0);if(e)e.aggro=true}}
+  const vis=(W.ents||[]).find(e=>e.arc==='visor'&&e.hp>0);if(vis&&vis.aggro&&!s.reynFined){s.reynFined=1;toast(ARC.fine);G.credits=Math.max(0,(G.credits||0)-Math.floor(15*(G.cpi||1)))}
+  const fv=(W.ents||[]).find(e=>e.arc==='first'&&e.hp>0);if(fv){fv.offT=(fv.offT||3)-dt;if(fv.offT<=0){fv.offT=4;toast([ARC.easyChair,ARC.easyFine,ARC.easyName][(fv.offN=(fv.offN||0)+1)%3])}}
+  const bel=(W.ents||[]).find(e=>e.arc==='bel'&&e.hp>0);if(bel){bel.flT=(bel.flT||0)-dt;if(bel.flT<=0){bel.flT=1.6;float(bel.x,bel.y,ARC.over,'#e0bd6e',0)}}
+  if(s.rushOn&&W.zi===27){W.rushT=(W.rushT||60)-dt;W.rushCd=Math.max(0,(W.rushCd||0)-dt);const left=(W.ents||[]).filter(e=>e.arc==='rush'&&e.hp>0).length;if(W.rushT<=0){s.rushOn=0;toast(ARC.rushLate)}else if(left===0&&W.rushCd<=0){if((W.rushW||0)>=6){s.rushOn=0;s.witness=1;G.sats=(G.sats||0)+3;arcMemo(ARCM.never);toast(ARC.witnessed)}else{W.rushW=(W.rushW||0)+1;W.rushCd=1.5;for(let i=0;i<3;i++){const e=arcLt('tick',P.x+1+i*.4,P.y,ARC.sixN,'rush',12);if(e)e.aggro=true}}}}
+  arcSubTick(dt)}
+function arcDraw(o,X,Y){shadow(X,Y,10);if(o.id==='cart'||o.id==='six'||o.id==='dock'||o.id==='sofa'){poly([X-13,Y-14,X,Y-8,X,Y+2,X-13,Y-4],'#8a6a40');poly([X,Y-8,X+13,Y-14,X+13,Y-4,X,Y+2],'#6a5030');poly([X-13,Y-14,X,Y-20,X+13,Y-14,X,Y-8],'#a8895c');label(X,Y-32,o.id==='cart'||o.id==='sofa'?ARC.cart:o.id==='dock'?ARC.dock:ARC.sixN,'#e6d7a8','700 8px Cinzel,serif');return}poly([X-8,Y-14,X+8,Y-15,X+8,Y+2,X-8,Y+1],'#e6e2d6');label(X,Y-28,o.id==='draft'?ARC.draft:o.id==='rug'?ARC.decline:ARC.read,'#e6e2d6','700 8px Cinzel,serif')}
+if(typeof ACH!=='undefined'){ACH.push(['sixmin',ARC.featSix,ARC.featSixD,()=>!!(G.st&&G.st.sixFeat)]);ACH.push(['overw',ARC.featOver,ARC.featOverD,()=>!!(G.st&&G.st.overFeat)])}
 if($('sheet')&&!$('sheet')._egg){$('sheet')._egg=1;$('sheet').addEventListener('pointerover',e=>{const b=e.target.closest&&e.target.closest('.eggLink');if(!b||(G.st&&G.st.wrenSaid))return;G.st.wrenSaid=1;toast(EGG.wrenWarn)})}
-if(typeof devOn==='function'&&devOn()&&window.__g)Object.assign(window.__g,{EGG,eggPaper,eggBoard,eggFlyer,eggHelloFrame,eggOpenLink,eggBuyPie,eggUse,eggLaser,eggTip,eggOnDeath,eggHelloItem,eggPieItem,eggSourItem,pieFl,achTick,talkTo,showDeath,setDY(v){DY=v},vendBid,openVend,stampReq,itemLines,equipFromBag,BINTRO,ACH,SQ,MEMOS,SCE,scLine,scVisitClear,spendSats,vendBuyStim});
+if(typeof devOn==='function'&&devOn()&&window.__g)Object.assign(window.__g,{EGG,eggPaper,eggBoard,eggFlyer,eggHelloFrame,eggOpenLink,eggBuyPie,eggUse,eggLaser,eggTip,eggOnDeath,eggHelloItem,eggPieItem,eggSourItem,pieFl,achTick,talkTo,showDeath,setDY(v){DY=v},vendBid,openVend,stampReq,itemLines,equipFromBag,BINTRO,ACH,SQ,MEMOS,SCE,scLine,scVisitClear,spendSats,vendBuyStim,ARC,ARCM,arcEnter,arcUse,arcOver,arcBarge,arcClick,arcHurt,arcBlind,arcBoardHTML,arcHud,arcHudKey,objHud,giveStim,summon,bagMeta,bagCan,mercTarget,calc,arcTalk,arcPace,arcDead,arcSkipMerc,arcMercMay,spawnMerc,vendBuy,kill,hurt,mpShareQuest});
 /* ================= parties, hostility, and the rig =================
    Loaded last, so everything else is already in scope. Inert unless the page is being
    served by the account server: on an Artifact or a file:// copy `mpOn()` is false and
