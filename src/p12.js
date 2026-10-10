@@ -150,7 +150,7 @@ function maxiAura(dt) {
       P.areaTick = 1;
       try { for (const e of auraFoes(h)) hit(e, m, true); }
       finally { P.hitSk = prevSk; P.areaTick = 0; }
-      W.fx.push({ k: 'ring', x: P.x, y: P.y, r: auraVisR(7, h.L), t: 0, life: .25, col: '#f7931a' });
+      W.fx.push({ k: 'ring', x: P.x, y: P.y, r: auraVisR(7, h.L), t: 0, life: .25, col: typeof auraCol === 'function' ? auraCol(7) : '#f7931a' });
     }
   }
   /* Running a Node. The hireling's shot already multiplies nodeMul. A companion

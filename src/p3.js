@@ -345,6 +345,62 @@ function sprActor(k,e,X,Y,s,flash){
     ctx.drawImage(S.img,d*cell,(an.row+f)*cell,cell,cell,X-k2/2,Y-k2*0.62,k2,k2);ctx.restore()}
   return true;
 }
+/* ---------------- Maximalist auras, on the ground ----------------
+   The class is built on standing inside a field: one aura at a time, no duration,
+   buffing what is near you and marking what is not. None of that was drawn. The
+   logic in maxiAura() knew the radius and the renderer never asked for it, so the
+   only way to see an aura was to read the skill panel.
+   A ground ellipse at auraVisR in the aura's own colour, a rim that tells you the
+   reach, accents that turn so it reads as running, and a light so the field
+   actually lifts the district around you. It is your own telegraph, so it
+   survives Thin (own=2) while everything optional drops away. */
+/* Base colours come from AURACOL in p2 so the field, the allies standing in it and
+   other players' fields never disagree. Only the highlight and the motion live here. */
+const AURAV={
+  3:{g:[255,184,74], n:9,  spin: .55},   /* Toxic Maximalism */
+  4:{g:[255,122,106],n:6,  spin:-.38},   /* Marked to Market */
+  7:{g:[159,240,244],n:12, spin: .85}    /* Proof of Work    */
+};
+const rgba=(t,a)=>'rgba('+t[0]+','+t[1]+','+t[2]+','+a.toFixed(3)+')';
+function drawAura(){
+  if(!P||!G||G.cls!=='maxi'||!P.aura)return;
+  if(typeof auraVisR!=='function')return;
+  const a=P.aura,v=AURAV[a.i];
+  if(!v)return;
+  const base=hex2rgb(typeof auraCol==='function'?auraCol(a.i):'#f7931a');
+  const r=auraVisR(a.i,a.L);
+  if(!(r>0))return;
+  const X=SX(P.x,P.y),Y=SY(P.x,P.y),rx=r*32,ry=r*16;
+  const pulse=.5+.5*Math.sin(tNow*2.1),thin=OPT.fx==='thin',full=OPT.fx==='full';
+  ctx.save();
+  if(!thin){
+    /* a shallow pool, dark in the middle so it never fights the floor art */
+    const g=ctx.createRadialGradient(X,Y,Math.max(1,rx*.3),X,Y,rx);
+    g.addColorStop(0,rgba(base,0));
+    g.addColorStop(.74,rgba(base,.055+.03*pulse));
+    g.addColorStop(1,rgba(v.g,.17+.07*pulse));
+    ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(X,Y,rx,ry,0,0,6.283);ctx.fill();
+  }
+  /* the rim is the part that matters: it is the reach, so keep it legible */
+  ctx.lineWidth=2;ctx.strokeStyle=rgba(v.g,.45+.28*pulse);
+  ctx.beginPath();ctx.ellipse(X,Y,rx,ry,0,0,6.283);ctx.stroke();
+  ctx.lineWidth=1;ctx.strokeStyle=rgba(base,.3+.2*pulse);
+  ctx.beginPath();ctx.ellipse(X,Y,rx*.82,ry*.82,0,0,6.283);ctx.stroke();
+  if(!thin){
+    /* accents around the circumference, turning: an aura that is doing something */
+    const sp=tNow*v.spin;
+    ctx.fillStyle=rgba(v.g,.55+.3*pulse);
+    for(let i=0;i<v.n;i++){
+      const an=sp+i*6.283/v.n;
+      const px=X+Math.cos(an)*rx,py=Y+Math.sin(an)*ry;
+      ctx.beginPath();ctx.ellipse(px,py,2.4,1.6,an,0,6.283);ctx.fill();
+    }
+  }
+  ctx.restore();
+  if(full)glow(X,Y,rx*.9,rgba(v.g,.1+.05*pulse),.5);
+  /* own=2: the player's own field is not an optional flourish */
+  light(X,Y,rx*1.15,rgba(v.g,.5),.55+.12*pulse,2);
+}
 function drawEnemy(e,X,Y){
   const s=e.sz,t=ET[e.k],k=t.spr||e.k,fl=e.flash>0,c1=fl?'#fff':t.pal[0],c2=fl?'#fff':t.pal[1],bob=Math.sin(e.ph*4)*2,f=e.fx||1,mov=e.aggro&&e.stun<=0;
   ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.lineJoin='round';
@@ -654,6 +710,7 @@ function render(){
     else{const h=W.wh[y*N+x];if(h)dl.push({d:x+y+1,k:0,X,Y,h,near:h>1&&x+y+1>pd&&Math.abs(x+.5-P.x)<3.2&&Math.abs(y+.5-P.y)<3.2})}}
   if(FC){ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.drawImage(FC,0,0);ctx.restore()}
   for(const d of W.decals){const X=SX(d.x,d.y),Y=SY(d.x,d.y);ctx.fillStyle='rgba(5,4,9,.42)';ctx.beginPath();ctx.ellipse(X,Y,d.r*30,d.r*15,d.a,0,6.283);ctx.fill();ctx.fillStyle='rgba(60,50,40,.5)';ctx.fillRect(X-4+d.a*3,Y-2,5,2);ctx.fillRect(X+3-d.a*2,Y+2,4,2)}
+  drawAura();
   for(const a of W.allies)if(a.k==='trops'){const X=SX(a.x,a.y),Y=SY(a.x,a.y),r=2.6;ctx.fillStyle='rgba(200,210,220,.14)';ctx.beginPath();ctx.ellipse(X,Y,r*45,r*22.5,0,0,6.283);ctx.fill();
     ctx.fillStyle='#c8d0d8';for(let i=0;i<22;i++){const an=i*2.4,rr=(i*37%100)/100*r;ctx.fillRect(X+Math.cos(an)*rr*45,Y+Math.sin(an)*rr*22,2.5,2.5)}}
   for(const a of W.allies)if(a.k==='storm')drawStormBody(a);

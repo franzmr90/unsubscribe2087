@@ -489,15 +489,24 @@ function dumpSpent(k){if(P)P.dump={k:k,t:1.4}}
 function fxStay(id,rec){let f=null;for(const x of W.fx)if(x.sid===id){f=x;break}
   if(!f){f={sid:id,stay:1,t:0,life:1,k:rec.k};W.fx.push(f)}
   f.k=rec.k;f.x=rec.x;f.y=rec.y;f.r=rec.r||0;f.col=rec.col;f.n=rec.n||0;f.remote=rec.remote?1:0;f.stay=1;f.t=0;f.life=1;f.sid=id}
+/* One colour per aura. Everything that marks an aura -- the field under you, the
+   allies standing in it, other players' fields -- reads from here, so the three
+   auras are told apart at a glance instead of all being orange. */
+const AURACOL={3:'#f7931a',4:'#e2443c',7:'#59e0e6'};
+function auraCol(i){return AURACOL[i]||'#f7931a'}
 function stateMarks(){if(!W||!W.fx||!P)return;const live={};
   const keep=(id,rec)=>{live[id]=1;fxStay(id,rec)};
   const ar=P.aura?auraVisR(P.aura.i,P.aura.L||1):0;
-  if(ar>0){keep('aura',{k:'patch',x:P.x,y:P.y,r:ar,col:'#f7931a'});
+  const acol=P.aura?auraCol(P.aura.i):'#f7931a';
+  /* The field under your own feet is drawn in p3 (drawAura): same radius, but with
+     a rim that states the reach, turning accents and a light. Only the allies
+     standing inside it are marked from here. */
+  if(ar>0){
     const near=o=>!!(o&&(o.hp===undefined||o.hp>0)&&dist(o,P)<ar);
-    if(near(W.merc))keep('aura-m',{k:'patch',x:W.merc.x,y:W.merc.y,r:ar,col:'#f7931a'});
-    if(near(W.tag))keep('aura-t',{k:'patch',x:W.tag.x,y:W.tag.y,r:ar,col:'#f7931a'});
-    if(typeof MP!=='undefined'&&MP.others)for(let i=0;i<MP.others.length;i++){const o=MP.others[i];if(o&&typeof mpInParty==='function'&&mpInParty(o.uid)&&near(o))keep('aura-p'+i,{k:'patch',x:o.x,y:o.y,r:ar,col:'#f7931a'})}}
-  if(typeof MP!=='undefined'&&MP.others)for(let i=0;i<MP.others.length;i++){const o=MP.others[i];const rr=o&&auraVisR(o.au,o.aL||1);if(rr>0)keep('oth'+i,{k:'patch',x:o.x,y:o.y,r:rr,col:'#f7931a',remote:1})}
+    if(near(W.merc))keep('aura-m',{k:'patch',x:W.merc.x,y:W.merc.y,r:ar,col:acol});
+    if(near(W.tag))keep('aura-t',{k:'patch',x:W.tag.x,y:W.tag.y,r:ar,col:acol});
+    if(typeof MP!=='undefined'&&MP.others)for(let i=0;i<MP.others.length;i++){const o=MP.others[i];if(o&&typeof mpInParty==='function'&&mpInParty(o.uid)&&near(o))keep('aura-p'+i,{k:'patch',x:o.x,y:o.y,r:ar,col:acol})}}
+  if(typeof MP!=='undefined'&&MP.others)for(let i=0;i<MP.others.length;i++){const o=MP.others[i];const rr=o&&auraVisR(o.au,o.aL||1);if(rr>0)keep('oth'+i,{k:'patch',x:o.x,y:o.y,r:rr,col:auraCol(o.au),remote:1})}
   if(P.reh>0&&P.rehT>0)keep('reh',{k:'mark',x:P.x,y:P.y,col:'#e6e2d6',n:P.reh});
   if(P.dip)keep('dip',{k:'mark',x:P.x,y:P.y,col:'#f7931a'});
   if(P.dump&&P.dump.t>0){const k=P.dump.k,col=k==='silence'?'#d98cff':k==='blades'?'#e6e2d6':'#c9803a',n=k==='silence'?2:k==='blades'?3:1;keep('dump',{k:'mark',x:P.x+.45,y:P.y,col:col,n:n})}
