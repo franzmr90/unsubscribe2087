@@ -149,4 +149,95 @@ function pailRate(L) {
   return f.rate + f.rateL * n;
 }
 
-if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep, xpNext, xpPace, campaignLevel, auraRank, auraRadius, toxicSwingMul, pailMax, pailRate };
+/* All-Hands, the cabinet in the rig. Percents are a share price.
+   Knockback grows with the price. Past 100 the same hit is overvalued.
+   Coordinates: x right, y down. Angle 0 launches to the facing side,
+   and a positive angle lifts (negative vy). */
+const OFFSITE = {
+  grav: 1680,
+  scale: 3.5,
+  blast: { l: -80, r: 1040, t: -260, b: 700 },
+  floorY: 420
+};
+
+function offsiteKnock(o) {
+  o = o || {};
+  const price0 = Math.max(0, +o.price || 0);
+  const print = Math.max(0, +o.print || 0);
+  const price = price0 + print;
+  const growth = price < 100 ? 1 : 1.8;
+  const kBase = o.kBase == null ? 30 : +o.kBase;
+  const kGrowth = o.kGrowth == null ? 0.45 : +o.kGrowth;
+  const weight = Math.max(1, +o.weight || 100);
+  const knockback = (kBase + price * kGrowth * growth) * (100 / weight);
+  const di = Math.max(-18, Math.min(18, +o.di || 0));
+  const angle = (+o.angle || 0) + di * Math.PI / 180;
+  const speed = knockback * (o.scale == null ? OFFSITE.scale : +o.scale);
+  const face = o.facing < 0 ? -1 : 1;
+  const hitstun = Math.max(0.08, Math.min(0.55, knockback * 0.012));
+  return {
+    price: price,
+    knockback: knockback,
+    speed: speed,
+    hitstun: hitstun,
+    vx: Math.cos(angle) * speed * face,
+    vy: -Math.sin(angle) * speed,
+    angle: angle,
+    growth: growth
+  };
+}
+
+function offsiteOut(x, y, blast) {
+  const b = blast || OFFSITE.blast;
+  return x < b.l || x > b.r || y < b.t || y > b.b;
+}
+
+/* One body, one step. Platforms are {x, y, w, gone}. Feet sit on y.
+   A delisting spends a stock, zeroes the price, and returns from spawn. */
+function offsiteStep(b, dt, platforms) {
+  dt = Math.max(0, Math.min(0.05, +dt || 0));
+  if (!b || (b.stocks | 0) <= 0) {
+    if (b) b.alive = 0;
+    return { out: false, dead: true };
+  }
+  if (b.inv > 0) b.inv = Math.max(0, b.inv - dt);
+  if (b.hitstun > 0) b.hitstun = Math.max(0, b.hitstun - dt);
+  if (b.stun > 0) b.stun = Math.max(0, b.stun - dt);
+  /* Air keeps a launch. The floor bleeds it off, so a heavy body can land. */
+  b.vx *= Math.exp(-dt * (b.ground ? 7.5 : 0.45));
+  b.vy += OFFSITE.grav * dt;
+  b.x += b.vx * dt;
+  b.y += b.vy * dt;
+  b.ground = 0;
+  if (b.vy >= 0) {
+    for (const p of platforms || []) {
+      if (!p || p.gone) continue;
+      const prev = b.y - b.vy * dt;
+      if (prev <= p.y + 1 && b.y >= p.y && b.x >= p.x && b.x <= p.x + p.w) {
+        b.y = p.y;
+        b.vy = 0;
+        b.ground = 1;
+      }
+    }
+  }
+  if (offsiteOut(b.x, b.y, b.blast || OFFSITE.blast)) {
+    b.stocks = Math.max(0, (b.stocks | 0) - 1);
+    const s = b.spawn || { x: 480, y: 180 };
+    b.x = s.x;
+    b.y = s.y;
+    b.vx = 0;
+    b.vy = 0;
+    b.price = 0;
+    b.inv = 1.5;
+    b.hitstun = 0;
+    b.ground = 0;
+    if (b.stocks <= 0) {
+      b.alive = 0;
+      b.y = -500;
+    }
+    return { out: true, dead: b.stocks <= 0 };
+  }
+  return { out: false, dead: false };
+}
+
+if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep, xpNext, xpPace, campaignLevel, auraRank, auraRadius, toxicSwingMul, pailMax, pailRate, OFFSITE, offsiteKnock, offsiteOut, offsiteStep };
