@@ -58,7 +58,8 @@ Object.assign(ART,{
   g.strokeStyle='#6a5a40';g.lineWidth=2.4;g.beginPath();g.moveTo(px+14,py-28);g.lineTo(px+16,py+8);g.stroke();
   if(t>3.4)return;const x=((t*(w+90)*.42)%(w+120))-70,y=hy+2;
   g.save();g.translate(x,y);g.strokeStyle='#c8a55a';g.lineWidth=2.2;g.beginPath();g.arc(0,-1,16,.2,2.94);g.stroke();g.fillStyle='rgba(89,224,230,.8)';g.fillRect(-9,-3,18,3);
-  g.strokeStyle='#8a8478';g.lineWidth=1.3;for(let i=0;i<8;i++){const lx=-12+i*3.4,lift=Math.sin(t*18+i)*3;g.beginPath();g.moveTo(lx,2);g.lineTo(lx+(i-3.5)*.6,12+lift);g.stroke()}g.restore()},
+  g.strokeStyle='#8a8478';g.lineWidth=1.3;for(let i=0;i<8;i++){const lx=-12+i*3.4,lift=Math.sin(t*18+i)*3;g.beginPath();g.moveTo(lx,2);g.lineTo(lx+(i-3.5)*.6,12+lift);g.stroke()}g.restore();
+  g.strokeStyle='#3e6b46';g.lineWidth=1.5;for(let i=0;i<16;i++){const gx=x-36+i*5,bh=7+hsh(i+21)*11;g.beginPath();g.moveTo(gx,hy+10);g.lineTo(gx+(hsh(i+8)-.5)*2,hy+10-bh);g.stroke()}},
  letters(g,w,h,t){const s=g.createLinearGradient(0,0,0,h);s.addColorStop(0,'#2a1830');s.addColorStop(1,'#0b0910');g.fillStyle=s;g.fillRect(0,0,w,h);const cx=w/2,by=h*.86;
   const rg=g.createRadialGradient(cx,by-60,0,cx,by-60,h*.8);rg.addColorStop(0,'rgba(255,240,210,.45)');rg.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=rg;g.fillRect(0,0,w,h);
   g.fillStyle='#3a3250';g.fillRect(cx-36,by-90,72,90);g.fillStyle='#e6e2d6';g.fillRect(cx-26,by-80,52,26);g.fillStyle='#17131c';g.fillRect(cx-24,by-44,48,6);
@@ -761,7 +762,7 @@ function lootAt(vx,vy){for(let i=LOOT_BOX.length-1;i>=0;i--){const r=LOOT_BOX[i]
 function drawLootLabels(){
   const rows=lootLayout();
   if(!(typeof uiTouch==='function'&&uiTouch())){
-    for(const r of rows){ctx.font='700 11px Cinzel,serif';ctx.textAlign='center';ctx.fillStyle='rgba(5,4,9,.82)';ctx.fillRect(r.x,r.y,r.w,r.h);ctx.fillStyle=r.col;ctx.fillText(r.nm,r.x+r.w/2,r.y+Math.min(14,r.h-4))}}
+    for(const r of rows){ctx.font='700 11px Cinzel,serif';ctx.textAlign='center';ctx.fillStyle='rgba(8,6,12,.9)';ctx.fillRect(r.x,r.y,r.w,r.h);ctx.fillStyle=r.col;ctx.fillRect(r.x,r.y,3,r.h);ctx.fillText(r.nm,r.x+r.w/2,r.y+Math.min(14,r.h-4))}}
   lootDom(rows);cmpGround()}
 function lootDom(rows){
   const box=$('lootLabs');if(!box)return;
