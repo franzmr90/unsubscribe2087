@@ -186,6 +186,21 @@ function weather(){const wx=TX.wx;if(!wx)return;const dt=Math.min(.05,Math.max(0
 /* ================= canvas ================= */
 const cv=$('cv'),ctx=cv.getContext('2d');let VW=400,VH=700,ZM=1,DPR=1,CW=400,CH=700,cx=0,cy=0;
 const LC=mk(8,8),lg=LC.getContext('2d');let LIGHTS=[];
+/* Every name and bubble this frame has already printed, in screen pixels. A new one
+   that would land on a rectangle already taken steps up until it is clear, so two
+   people standing together, or a pile of drops, do not print over each other.
+   Cleared at the top of render(). First to draw keeps its place. */
+let LBOX=[];
+function boxFree(x,y,w,h){for(let i=0;i<LBOX.length;i++){const b=LBOX[i];
+  if(x<b.x+b.w&&x+w>b.x&&y<b.y+b.h&&y+h>b.y)return false}return true}
+/* The first clear y at or above the one asked for, stepping by step, or null when
+   every step is taken. Null means do not draw: past a certain crowd another row of
+   text is unreadable anyway, and printing it on top of what is already there is
+   worse than leaving it out. Names get many steps, so a pile of drops stacks the
+   way it should; a bubble gets a few, since twelve at once cannot be read. */
+function txtSlot(x,y,w,h,step,tries){for(let i=0;i<tries;i++){const yy=y-i*step;
+  if(boxFree(x,yy,w,h))return yy}return null}
+function txtClaim(x,y,w,h){LBOX.push({x,y,w,h})}
 function resize(){const r=cv.getBoundingClientRect();CW=r.width;CH=r.height;DPR=Math.min(2,window.devicePixelRatio||1);cv.width=Math.max(1,CW*DPR);cv.height=Math.max(1,CH*DPR);ZM=clamp(Math.min(CW,CH)/560,.68,1.25);VW=CW/ZM;VH=CH/ZM;LC.width=Math.ceil(VW/4);LC.height=Math.ceil(VH/4)}
 addEventListener('resize',resize);
 const SX=(x,y)=>(x-y)*32-cx+VW/2, SY=(x,y)=>(x+y)*16-cy+VH*.44;
@@ -378,14 +393,29 @@ function drawEnemy(e,X,Y){
   const top=Y-(e.k==='boss5'?172:e.k==='boss4'?122:k==='mono'?160:k==='boss'?112:k==='mech'?76*s:k==='tick'?20:k==='hound'?36*s:56*s);
   if(e.stun>0){ctx.fillStyle='#59e0e6';ctx.font='700 10px Cinzel,serif';ctx.textAlign='center';ctx.fillText('STUNNED',X,top-4)}
   if(OPT.enemyBars&&e.hp<e.max&&k!=='boss'&&k!=='mono'&&e.k!=='boss4'&&e.k!=='boss5'){const w=30*s;ctx.fillStyle='#050409';ctx.fillRect(X-w/2-1,top-1,w+2,5);ctx.fillStyle=e.su?'#d0aa62':e.champ?'#8494ff':'#d23a2e';ctx.fillRect(X-w/2,top,w*Math.max(0,e.hp/e.max),3)}
-  if(e.champ){ctx.font='700 11px Cinzel,serif';ctx.textAlign='center';ctx.fillStyle='#000';ctx.fillText(e.name,X+1,top-8);ctx.fillStyle=e.su?'#d0aa62':'#8494ff';ctx.fillText(e.name,X,top-9);
-    ctx.font='400 9.5px Spectral,serif';ctx.fillStyle='#b8b0a0';ctx.fillText(Object.keys(e.mods).map(m=>MODS[m]).join(' · '),X,top-21)}
+  if(e.champ){ctx.font='700 11px Cinzel,serif';ctx.textAlign='center';
+    /* Drawn straight, not through label(), because a champion's name is shadowed text
+       with no plate behind it. It still claims the room it uses so a name or a bubble
+       placed later steps over it. */
+    const cw=ctx.measureText(e.name).width+6,cy0=txtSlot(X-cw/2,top-20,cw,14,16,10);
+    if(cy0===null)return;txtClaim(X-cw/2,cy0,cw,14);
+    ctx.fillStyle='#000';ctx.fillText(e.name,X+1,cy0+12);ctx.fillStyle=e.su?'#d0aa62':'#8494ff';ctx.fillText(e.name,X,cy0+11);
+    ctx.font='400 9.5px Spectral,serif';ctx.fillStyle='#b8b0a0';
+    const md=Object.keys(e.mods).map(m=>MODS[m]).join(' · ');
+    if(md){const mw=ctx.measureText(md).width+6,my=txtSlot(X-mw/2,cy0-13,mw,12,14,4);
+      if(my!==null){txtClaim(X-mw/2,my,mw,12);ctx.fillText(md,X,my+10)}}}
 }
 function wrapText(t,max){const ws=t.split(' '),out=[];let l='';for(const w of ws){const n=l?l+' '+w:w;if(ctx.measureText(n).width>max&&l){out.push(l);l=w}else l=n}out.push(l);return out}
 function bubble(X,Y,t){ctx.font='400 12.5px Spectral,serif';const ls=wrapText(t,150),w=Math.max(...ls.map(l=>ctx.measureText(l).width))+14,h=ls.length*15+10;
-  ctx.fillStyle='#e6e2d6';ctx.strokeStyle=OL;ctx.lineWidth=1.2;ctx.beginPath();ctx.roundRect(X-w/2,Y-h,w,h,5);ctx.fill();ctx.stroke();ctx.beginPath();ctx.moveTo(X-5,Y-1);ctx.lineTo(X,Y+6);ctx.lineTo(X+5,Y-1);ctx.fill();
-  ctx.fillStyle='#17121e';ctx.textAlign='center';ls.forEach((l,i)=>ctx.fillText(l,X,Y-h+17+i*15))}
-function label(X,Y,t,col,fnt){ctx.font=fnt||'700 10.5px Cinzel,serif';ctx.textAlign='center';const w=ctx.measureText(t).width+10;ctx.fillStyle='rgba(5,4,9,.78)';ctx.fillRect(X-w/2,Y-12,w,16);ctx.fillStyle=col;ctx.fillText(t,X,Y)}
+  const x=X-w/2,top=txtSlot(x,Y-h,w,h+7,h+7,4);
+  if(top===null)return;
+  const by=top+h;txtClaim(x,top,w,h+7);
+  ctx.fillStyle='#e6e2d6';ctx.strokeStyle=OL;ctx.lineWidth=1.2;ctx.beginPath();ctx.roundRect(x,top,w,h,5);ctx.fill();ctx.stroke();ctx.beginPath();ctx.moveTo(X-5,by-1);ctx.lineTo(X,by+6);ctx.lineTo(X+5,by-1);ctx.fill();
+  ctx.fillStyle='#17121e';ctx.textAlign='center';ls.forEach((l,i)=>ctx.fillText(l,X,top+17+i*15))}
+function label(X,Y,t,col,fnt){ctx.font=fnt||'700 10.5px Cinzel,serif';ctx.textAlign='center';
+  const w=ctx.measureText(t).width+10,x=X-w/2,y=txtSlot(x,Y-12,w,16,17,16);
+  if(y===null)return;txtClaim(x,y,w,16);
+  ctx.fillStyle='rgba(5,4,9,.78)';ctx.fillRect(x,y,w,16);ctx.fillStyle=col;ctx.fillText(t,X,y+12)}
 function portal(X,Y,col){shadow(X,Y,17);const g=ctx.createRadialGradient(X,Y-30,2,X,Y-30,34);g.addColorStop(0,'#fff');g.addColorStop(.35,col);g.addColorStop(1,'rgba(0,0,0,.1)');
   ctx.save();ctx.translate(X,Y-30);ctx.scale(.62,1);ctx.beginPath();ctx.arc(0,0,31,0,6.283);ctx.fillStyle=g;ctx.globalAlpha=.85;ctx.fill();ctx.globalAlpha=1;ctx.strokeStyle=col;ctx.lineWidth=3;
   for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(0,0,12+i*8,tNow*(2+i)+i,tNow*(2+i)+i+2.2);ctx.stroke()}ctx.restore();glow(X,Y-30,70,col,.5);light(X,Y-30,150,col)}
@@ -572,7 +602,7 @@ function drawAim(){
   ctx.restore()}
 function render(){
   ctx.setTransform(DPR*ZM,0,0,DPR*ZM,0,0);if(W&&P)backdrop();else{ctx.fillStyle='#050409';ctx.fillRect(0,0,VW,VH)}
-  if(!W||!P)return;LIGHTS=[];fxBind();fxTrim();stateMarks();
+  if(!W||!P)return;LIGHTS=[];LBOX=[];fxBind();fxTrim();stateMarks();
   cx=(P.x-P.y)*32+(shake?rnd(-shake,shake):0);cy=(P.x+P.y)*16+(shake?rnd(-shake,shake):0);
   const z=W.z,N=W.N,R=Math.ceil(VW/128+VH/64)+3,pd=P.x+P.y;
   const x0=Math.max(0,Math.floor(P.x-R)),x1=Math.min(N-1,Math.ceil(P.x+R)),y0=Math.max(0,Math.floor(P.y-R)),y1=Math.min(N-1,Math.ceil(P.y+R));
