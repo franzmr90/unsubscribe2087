@@ -1,0 +1,36 @@
+{
+  "enabledPlugins": {
+    "game-development@claude-code-game-development": true,
+    "game-architecture@claude-code-game-development": true,
+    "ai-game-behavior@claude-code-game-development": true,
+    "level-design@claude-code-game-development": true,
+    "save-systems@claude-code-game-development": true,
+    "input-systems@claude-code-game-development": true,
+    "ui-game-design@claude-code-game-development": true,
+    "procedural-generation@claude-code-game-development": true,
+    "animation-systems@claude-code-game-development": true,
+    "audio-systems@claude-code-game-development": true,
+    "multiplayer-networking@claude-code-game-development": true,
+    "performance-optimization@claude-code-game-development": true,
+    "playtesting@claude-code-game-development": true,
+    "localization@claude-code-game-development": true,
+    "router@awesome-gamedev-agent-skills": true,
+    "disciplines@awesome-gamedev-agent-skills": true,
+    "genres@awesome-gamedev-agent-skills": true,
+    "workflows@awesome-gamedev-agent-skills": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-code-game-development": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/HermeticOrmus/claude-code-game-development.git"
+      }
+    },
+    "awesome-gamedev-agent-skills": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills.git"
+      }
+    }
+  }
+}
