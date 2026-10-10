@@ -27,7 +27,10 @@ const clear = async p => { for (let i = 0; i < 14; i++) { await p.evaluate(() =>
   await p.evaluate(() => __g.skipDisc()); await p.waitForTimeout(250);
 
   const offered = await p.evaluate(() => [...document.querySelectorAll('[data-cls]')].map(e => e.dataset.cls));
-  ok('five classes on a fresh account', offered.length === 5, offered.join(','));
+  const unlocked = await p.evaluate(() => Object.entries(__g.CLS).filter(([k, c]) => !c.locked).map(([k]) => k));
+  ok('every unlocked class is offered on a fresh account',
+    offered.length === unlocked.length && unlocked.every(k => offered.includes(k)),
+    'offered ' + offered.join(',') + ' | unlocked ' + unlocked.join(','));
   ok('the Maximalist is not among them', !offered.includes('maxi'), offered.join(','));
 
   /* ---- he exists in the data, with a full tree ---- */
