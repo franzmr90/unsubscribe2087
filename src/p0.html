@@ -176,6 +176,7 @@ p strong{color:var(--ink);font-weight:600}
 .stats div{background:var(--stone);padding:6px 8px;font-size:12px;color:var(--dim);min-width:0}
 .stats b{display:block;font:600 15px var(--body);color:var(--ink);font-variant-numeric:tabular-nums}
 .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
+.grid.g5{grid-template-columns:repeat(5,1fr)}
 .grid.eq{grid-template-columns:repeat(4,1fr)}
 .cell{position:relative;aspect-ratio:1;background:radial-gradient(circle at 50% 40%,#2a2332,#0e0b13);border:1px solid var(--edge);display:grid;place-items:center;min-width:0;color:var(--q0)}
 .cell svg{width:62%;height:62%;fill:currentColor;filter:drop-shadow(0 1px 1px #000)}
@@ -210,6 +211,8 @@ p strong{color:var(--ink);font-weight:600}
 .li .pr{font:600 13px var(--body);color:var(--q2);flex:none;font-variant-numeric:tabular-nums}
 .li:disabled{opacity:.4}
 .li.on{border-color:var(--gold)}
+.arcBoard{margin-top:6px}
+.arcBoard .li{border-left:2px solid var(--gold)}
 #title .walkLead{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;padding:14px 16px;background:linear-gradient(#2c2418,var(--stone));border:1px solid var(--gold);box-shadow:0 0 0 1px #000,0 0 18px rgba(200,165,90,.28)}
 #title .walkLead b{font:700 16px var(--display);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
 #title .walkLead span{font:400 14.5px var(--body);letter-spacing:0;text-transform:none;color:var(--ink)}
