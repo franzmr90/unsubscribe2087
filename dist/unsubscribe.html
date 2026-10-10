@@ -3096,11 +3096,61 @@ function drawHover(){
   ctx.restore()}
 
 /* ================= update ================= */
+/* ---------------- NaN watchdog ----------------
+   A single non-finite number in a damage or heal path spreads: once G.hp is NaN
+   the orb reads NAN, every comparison against it is false, and the damage you
+   deal turns the monster's hp to NaN too, so its bar cannot be measured and it
+   can never reach zero. The character is then unplayable and the save still
+   looks healthy, because JSON writes NaN as null and the loader clamps it.
+   This caught a live report that could not be reproduced from the save. It
+   records the first occurrence with enough context to find the cause, tells the
+   player once, and puts the numbers back so the hero is not lost. */
+let NANREP=null;
+function nanSnap(where,bad){
+  const it=sl=>{const o=G&&G.eq&&G.eq[sl];return o?(o.name||o.base)+(o.uid?'/'+o.uid:''):null};
+  return {where,bad,t:Math.round((G&&G.time)||0),zi:W&&W.zi,cls:G&&G.cls,lvl:G&&G.lvl,
+    hp:String(G&&G.hp),maxHp:String(S&&S.maxHp),dmin:String(S&&S.dmin),dmax:String(S&&S.dmax),
+    aura:P&&P.aura?P.aura.i+'@'+P.aura.L:null,doc:G&&G.doc,diff:G&&G.diff,
+    merc:G&&G.merc?G.merc.k+(G.merc.dead?'(dead)':''):null,
+    eq:['weapon','helm','armor','gloves','boots','belt','ring','amulet'].map(it),
+    pas:G&&G.pas,sk:G&&G.sk};
+}
+function nanReport(){return NANREP}
+/* Cheap: six reads and a loop over nothing in the normal case. */
+function nanWatch(){
+  if(!G||!S||!P)return;
+  const nf=v=>typeof v!=='number'||!isFinite(v);
+  let bad=null;
+  if(nf(G.hp))bad='G.hp';
+  else if(nf(S.maxHp))bad='S.maxHp';
+  else if(nf(S.dmin)||nf(S.dmax))bad='S.dmg';
+  else if(nf(G.en)||nf(S.maxEn))bad='energy';
+  if(!bad)return;
+  if(!NANREP){
+    NANREP=nanSnap('update',bad);
+    try{console.error('[u2087] non-finite '+bad,NANREP)}catch(e){}
+    toast('Something went wrong with the numbers. Fixed, but please send a report.');
+  }
+  /* put it back: recompute from gear and skills, then clamp what is still broken */
+  try{calc()}catch(e){}
+  if(!isFinite(S.maxHp))S.maxHp=FORMULAS.cls[G.cls]?FORMULAS.cls[G.cls].hp:100;
+  if(!isFinite(S.maxEn))S.maxEn=100;
+  if(!isFinite(S.dmin))S.dmin=1;
+  if(!isFinite(S.dmax))S.dmax=Math.max(1,S.dmin);
+  if(!isFinite(G.hp))G.hp=S.maxHp;
+  if(!isFinite(G.en))G.en=S.maxEn;
+  G.hp=Math.max(1,Math.min(S.maxHp,G.hp));
+  /* a monster whose life went non-finite can never die: give it its max back */
+  if(W&&W.ents)for(const e of W.ents){
+    if(e&&!isFinite(e.hp))e.hp=isFinite(e.max)?e.max:1;
+    if(e&&!isFinite(e.max))e.max=Math.max(1,isFinite(e.hp)?e.hp:1);
+  }
+}
 function update(dt){
   /* The page decides what is on screen from the camera. Follow the body here, not
      only when a frame is painted, so a fast sim still writes Testimony. */
   if(P){cx=(P.x-P.y)*32;cy=(P.x+P.y)*16}
-  mpTick(dt);patchTick(dt);maxiAura(dt);
+  mpTick(dt);patchTick(dt);maxiAura(dt);nanWatch();
   G.time+=dt;const gr=G.adopt>=100?1:Math.pow(SEA.k==='stim'?1.005:1.0025,(dt/60)*(1.45-G.adopt/100)*(G.fate==='fail'?1.4:1));G.cpi*=gr;if(S.sp.hedge)G.credits*=gr;G.ubiT=Math.max(0,G.ubiT-dt);G.chuteT=Math.max(0,G.chuteT-dt);if(typeof arcTick==='function')arcTick(dt);
   const c=CLS[G.cls];
   for(const k of['atk','swing','flash','inv','slow','buff','haste','guard','warn','movedT','spin','stealth','ambT','mech','crunch','streakT','silence','oc'])P[k]=Math.max(0,P[k]-dt);if(P.paper>0)P.paper-=dt;if(P.maxiBlock>0)P.maxiBlock-=dt;if(P.ward>0)P.ward-=dt;
@@ -7568,7 +7618,7 @@ uiBoot();
 showDisc();
 cloudInit();
 function devOn(){try{if(window.__DEBUG)return true;var h=location.hostname;if(h==='localhost'||h==='127.0.0.1'||h==='::1')return true;if(location.protocol==='file:'||location.protocol==='about:')return true}catch(e){}return false}
-if(devOn())window.__g={migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,stimPackItem,giveStim,stimToBelt,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},set satShop(v){satShop=v},get shop(){return shop},set shop(v){shop=v},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},get LBOX(){return LBOX},get LOOT_BOX(){return LOOT_BOX},lootShowAll,lootPrefs,SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith,openVend,vendAsk,vendBid,vendBuy,vendSell,vendBuyback,vendBuyStim,vendIdentify,vendBox,vendTabOf,buyPrice,sellValue,satCost,satPrice,boxPrice,get VEND(){return VEND},get BUYBACK(){return BUYBACK},get shopVia(){return shopVia},setShopVia(v){shopVia=+v||0},vendFlipLock,vendSellPlan,vendSellCommit,vendSellOpen,sellFilters,vendQuest,lootPasses,lootAuto,lootMigrate,lootLayout,lootName,lootPickup,lootOpen,lootCompare,lootPrefs,lootSave,lootLoad,layCorpse,reclaimCorpse,buyCorpse,corpseFee,repairQuote,repairOne,repairAll,repairList,wearWeapon,wearArmor,wearSlot,itemBroken,stampDura,migrateDurability,placeCorpses,deathCreditPct,encW,loanerWeapon,calmNearCorpse,resetZones,stampReq,canWear,blowPct,blowSpec,swingBlow,gearLive,gearQuiet,reqShortfall,cantEquipText,attrTip,driveStat,witImpact,pdmg,classWeapon,weaponRole};
+if(devOn())window.__g={migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,stimPackItem,giveStim,stimToBelt,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},set satShop(v){satShop=v},get shop(){return shop},set shop(v){shop=v},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},get LBOX(){return LBOX},nanReport,get LOOT_BOX(){return LOOT_BOX},lootShowAll,lootPrefs,SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith,openVend,vendAsk,vendBid,vendBuy,vendSell,vendBuyback,vendBuyStim,vendIdentify,vendBox,vendTabOf,buyPrice,sellValue,satCost,satPrice,boxPrice,get VEND(){return VEND},get BUYBACK(){return BUYBACK},get shopVia(){return shopVia},setShopVia(v){shopVia=+v||0},vendFlipLock,vendSellPlan,vendSellCommit,vendSellOpen,sellFilters,vendQuest,lootPasses,lootAuto,lootMigrate,lootLayout,lootName,lootPickup,lootOpen,lootCompare,lootPrefs,lootSave,lootLoad,layCorpse,reclaimCorpse,buyCorpse,corpseFee,repairQuote,repairOne,repairAll,repairList,wearWeapon,wearArmor,wearSlot,itemBroken,stampDura,migrateDurability,placeCorpses,deathCreditPct,encW,loanerWeapon,calmNearCorpse,resetZones,stampReq,canWear,blowPct,blowSpec,swingBlow,gearLive,gearQuiet,reqShortfall,cantEquipText,attrTip,driveStat,witImpact,pdmg,classWeapon,weaponRole};
 /* late additions that need the dialogue tables */
 QRW.push(
  ['q16','gramps','“I do not remember the nine years after I clicked.” You gain 1 skill point.',()=>G.sp++,'Gramps'],

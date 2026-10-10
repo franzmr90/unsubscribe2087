@@ -1616,11 +1616,61 @@ function drawHover(){
   ctx.restore()}
 
 /* ================= update ================= */
+/* ---------------- NaN watchdog ----------------
+   A single non-finite number in a damage or heal path spreads: once G.hp is NaN
+   the orb reads NAN, every comparison against it is false, and the damage you
+   deal turns the monster's hp to NaN too, so its bar cannot be measured and it
+   can never reach zero. The character is then unplayable and the save still
+   looks healthy, because JSON writes NaN as null and the loader clamps it.
+   This caught a live report that could not be reproduced from the save. It
+   records the first occurrence with enough context to find the cause, tells the
+   player once, and puts the numbers back so the hero is not lost. */
+let NANREP=null;
+function nanSnap(where,bad){
+  const it=sl=>{const o=G&&G.eq&&G.eq[sl];return o?(o.name||o.base)+(o.uid?'/'+o.uid:''):null};
+  return {where,bad,t:Math.round((G&&G.time)||0),zi:W&&W.zi,cls:G&&G.cls,lvl:G&&G.lvl,
+    hp:String(G&&G.hp),maxHp:String(S&&S.maxHp),dmin:String(S&&S.dmin),dmax:String(S&&S.dmax),
+    aura:P&&P.aura?P.aura.i+'@'+P.aura.L:null,doc:G&&G.doc,diff:G&&G.diff,
+    merc:G&&G.merc?G.merc.k+(G.merc.dead?'(dead)':''):null,
+    eq:['weapon','helm','armor','gloves','boots','belt','ring','amulet'].map(it),
+    pas:G&&G.pas,sk:G&&G.sk};
+}
+function nanReport(){return NANREP}
+/* Cheap: six reads and a loop over nothing in the normal case. */
+function nanWatch(){
+  if(!G||!S||!P)return;
+  const nf=v=>typeof v!=='number'||!isFinite(v);
+  let bad=null;
+  if(nf(G.hp))bad='G.hp';
+  else if(nf(S.maxHp))bad='S.maxHp';
+  else if(nf(S.dmin)||nf(S.dmax))bad='S.dmg';
+  else if(nf(G.en)||nf(S.maxEn))bad='energy';
+  if(!bad)return;
+  if(!NANREP){
+    NANREP=nanSnap('update',bad);
+    try{console.error('[u2087] non-finite '+bad,NANREP)}catch(e){}
+    toast('Something went wrong with the numbers. Fixed, but please send a report.');
+  }
+  /* put it back: recompute from gear and skills, then clamp what is still broken */
+  try{calc()}catch(e){}
+  if(!isFinite(S.maxHp))S.maxHp=FORMULAS.cls[G.cls]?FORMULAS.cls[G.cls].hp:100;
+  if(!isFinite(S.maxEn))S.maxEn=100;
+  if(!isFinite(S.dmin))S.dmin=1;
+  if(!isFinite(S.dmax))S.dmax=Math.max(1,S.dmin);
+  if(!isFinite(G.hp))G.hp=S.maxHp;
+  if(!isFinite(G.en))G.en=S.maxEn;
+  G.hp=Math.max(1,Math.min(S.maxHp,G.hp));
+  /* a monster whose life went non-finite can never die: give it its max back */
+  if(W&&W.ents)for(const e of W.ents){
+    if(e&&!isFinite(e.hp))e.hp=isFinite(e.max)?e.max:1;
+    if(e&&!isFinite(e.max))e.max=Math.max(1,isFinite(e.hp)?e.hp:1);
+  }
+}
 function update(dt){
   /* The page decides what is on screen from the camera. Follow the body here, not
      only when a frame is painted, so a fast sim still writes Testimony. */
   if(P){cx=(P.x-P.y)*32;cy=(P.x+P.y)*16}
-  mpTick(dt);patchTick(dt);maxiAura(dt);
+  mpTick(dt);patchTick(dt);maxiAura(dt);nanWatch();
   G.time+=dt;const gr=G.adopt>=100?1:Math.pow(SEA.k==='stim'?1.005:1.0025,(dt/60)*(1.45-G.adopt/100)*(G.fate==='fail'?1.4:1));G.cpi*=gr;if(S.sp.hedge)G.credits*=gr;G.ubiT=Math.max(0,G.ubiT-dt);G.chuteT=Math.max(0,G.chuteT-dt);if(typeof arcTick==='function')arcTick(dt);
   const c=CLS[G.cls];
   for(const k of['atk','swing','flash','inv','slow','buff','haste','guard','warn','movedT','spin','stealth','ambT','mech','crunch','streakT','silence','oc'])P[k]=Math.max(0,P[k]-dt);if(P.paper>0)P.paper-=dt;if(P.maxiBlock>0)P.maxiBlock-=dt;if(P.ward>0)P.ward-=dt;
