@@ -1,6 +1,6 @@
 # StarCraft homage eggs
 
-The six in "What to build first" are in the game: the Nipper slide, the relay line, the two spend lines, the stim bark, the Stillwater coat, and the two typed lines. The other six are still a plan. Their long versions are the last section of this note, and nothing in that section is in the game. No studio assets, no audio, and no logos.
+The six in "What to build first" are in the game: the Nipper slide, the relay line, the two spend lines, the stim bark, the Stillwater coat, and the two typed lines. The other six are in the game as side content. Their long versions are the last section of this note. No studio assets, no audio, and no logos.
 
 Unsubscribe 2087 already has its invasions. They are corporate. Phonix left. MANDATE stayed. Nobody in Stillwater has met a thing from off the planet, and the hero knows that. The jokes below lean on that. A famous real-time strategy game is the reference. The lines, names, and pictures in the game would be ours.
 
@@ -26,6 +26,8 @@ Unsubscribe 2087 already has its invasions. They are corporate. Phonix left. MAN
 | Red button | Launch notice |
 | Cheat sticker | Overwhelming |
 | Typed cheat | Show me the stipend, Operation crawl |
+
+Names from the long versions, now in the game: The Visor Still Employed, The Number, Draft One, The First Version, The Margin, Ives, Pell, Six before the minute, The Early Update, The Minute, The Hold, the keeper of the book, A Believer, Tier Two, The Next Tier.
 
 Effort is S (a line or one slide), M (a person, a slide with a drawing, or a small item), or L (a new fight). IP risk is Low when the line is ours, Medium when a player will still hear the original in their head, High if we would need their art, their audio, or their exact sentence on screen. High is out.
 
@@ -184,17 +186,17 @@ These six are in the game. The other six can wait without hurting the set.
 5. **En tariff** (idea 6). One local. No system.
 6. **Show me the stipend / Operation crawl** (idea 12). One sat and a slow walk. The cheapest cheat, and the one that cannot unbalance a fight if the boss-room refusal stays.
 
-Leave Reyn until a hire pass. Leave the Queen of Margins until a memo pass that is already touching Vale. Leave six-before-the-minute until someone wants a timed bounty. Leave the launch notice until the Glass Cathedral cinematic is open for another line. Leave Overwhelming until joke items are being added on purpose. Leave barges as a line only, and only after relays, so we do not grow a second faction by accident. That is the advice for the one-bark versions. The long versions are the next section, and they are still unbuilt.
+Leave Reyn until a hire pass. Leave the Queen of Margins until a memo pass that is already touching Vale. Leave six-before-the-minute until someone wants a timed bounty. Leave the launch notice until the Glass Cathedral cinematic is open for another line. Leave Overwhelming until joke items are being added on purpose. Leave barges as a line only, and only after relays, so we do not grow a second faction by accident. That is the advice for the one-bark versions. The long versions are the next section, and they are in the game as side content.
 
 If a later pass can only draw one new picture, it is the Nipper, and it is a scribble.
 
 ## The long versions
 
-Plan only. The six short notes above stay the one-bark eggs. This section is what they become if anyone builds them as side content. A player who never saw the reference should still want the person, the clock, the cart, or the choice. A player who knows the reference should hear the specific joke and never see the original sentence, the original portrait, or the original sound.
+The six short notes above stay the one-bark eggs. This section is the side content that is in the game. A player who never saw the reference should still want the person, the clock, the cart, or the choice. A player who knows the reference should hear the specific joke and never see the original sentence, the original portrait, or the original sound.
 
 Rules for this section, on top of the rules at the top:
 
-- Parody names only. New names a player can read are listed under each idea. They join the allow-list when that idea is built. They are not built now.
+- Parody names only. New names a player can read are listed under each idea. They are on the allow-list. The long versions are in the game.
 - Each idea has two layers. The outside layer is the satire, the mechanic, and the reward. The inside layer is the callback. The outside layer has to stand if the inside layer is missed.
 - A running gag is one fact that gets slightly wronger every act, and then pays off. It is not a new faction.
 - Fights reuse a body the game already has and give it a new name. No new species, no swarm, no second war.
@@ -430,7 +432,7 @@ Your pockets are full. The next tier of carrying things would like a monthly fee
 
 ## What to build when someone wants the long versions
 
-Still unbuilt. The short eggs in the game do not need these. If only one long version fits in a pass, build Six before the minute, because the Nipper is already on screen and the rest of the spine hangs off that count.
+The six long versions are in the game, as side content beside the short eggs. The short eggs do not need these. The order below is how they were weighed. They shipped together.
 
 1. **Six before the minute.** Act I, the Moors. Depends only on the shipped slide and the bounty board. M. The clock charm is the reason a player with no reference finishes it.
 2. **Launch notice.** The three toasts, then the tracker, then the Hold if a lieutenant pass is open. Depends on fights the game already stages. S, then L. It teaches the set: the weapon is a meeting.
@@ -441,5 +443,5 @@ Still unbuilt. The short eggs in the game do not need these. If only one long ve
 
 A pass that can only draw one new picture still draws the Nipper, and it is still a scribble. The cart, if it needs a picture, is a cart. The Hold, the First Version, the Visor Still Employed, the Early Update, and A Believer borrow bodies the game already has.
 
-Nothing in this section is in the game.
+The long versions are in the game. They do not replace the short eggs, the main quests, or a co-op session.
 

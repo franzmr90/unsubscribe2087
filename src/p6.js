@@ -160,7 +160,7 @@ function storyStep(){const sg=storyGate();if(sg)return sg;
 function sideStep(){const l=trackList();if(!l.length)return null;if(!l.includes(G.track))G.track=l[0];const k=G.track.slice(2),q=SQ[k],s=G.sq[k],st=q.steps[s.s];
   return{n:q.n,d:st.d+(st.n?' ('+(s.c||0)+'/'+st.n+')':'')+(st.zi!==undefined&&st.zi!==W.zi&&!st.d.toLowerCase().includes(ZONES[st.zi].n.replace(/^The /,'').toLowerCase())?' · '+ZONES[st.zi].n:'')}}
 function objective(){return sideStep()}
-let objC='';function objHud(){const on=OPT.obj&&(mode==='play'||mode==='dlg'),a=on?storyStep():null,b=on?sideStep():null,cp=on&&G.camp?G.camp:null,t=a?a.n+a.d+(b?b.n+b.d:'')+(cp?cp.k+cp.c:''):'';if(t+OPT.objMin===objC)return;objC=t+OPT.objMin;const el=$('obj');el.hidden=!a;
-  if(a&&OPT.objMin)el.innerHTML='<b>▸ '+esc(a.n)+(b||cp?' +':'')+'</b>';else if(a)el.innerHTML='<b>Story · '+esc(a.n)+'</b>'+esc(a.d)+(b?'<b class="sd">Errand · '+esc(b.n)+'</b>'+esc(b.d):'')+(cp?'<b class="sd" style="color:#ff5d4d">Unity · '+CAMPS[cp.k].n+' '+cp.c+'/'+CAMPS[cp.k].need+'</b>'+esc(CAMPS[cp.k].d):'')}
+let objC='';function objHud(){const on=OPT.obj&&(mode==='play'||mode==='dlg'),a=on?storyStep():null,b=on?sideStep():null,cp=on&&G.camp?G.camp:null,ak=typeof arcHudKey==='function'?arcHudKey():'',t=a?a.n+a.d+(b?b.n+b.d:'')+(cp?cp.k+cp.c:'')+ak:'';if(t+OPT.objMin===objC)return;objC=t+OPT.objMin;const el=$('obj');el.hidden=!a;
+  if(a&&OPT.objMin)el.innerHTML='<b>▸ '+esc(a.n)+(b||cp||ak?' +':'')+'</b>';else if(a)el.innerHTML='<b>Story · '+esc(a.n)+'</b>'+esc(a.d)+(b?'<b class="sd">Errand · '+esc(b.n)+'</b>'+esc(b.d):'')+(cp?'<b class="sd" style="color:#ff5d4d">Unity · '+CAMPS[cp.k].n+' '+cp.c+'/'+CAMPS[cp.k].need+'</b>'+esc(CAMPS[cp.k].d):'')+(typeof arcHud==='function'?arcHud():'')}
 const DIFFS=[{n:'Normal',hp:1.25,dmg:1.3,xp:1},{n:'Hard',hp:1.8,dmg:1.75,xp:1.2},{n:'Brutal',hp:2.6,dmg:2.4,xp:1.45}];
 const DF=()=>DIFFS[G.diff||0];

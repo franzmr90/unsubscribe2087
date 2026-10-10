@@ -419,6 +419,7 @@ function drawNpc(n,X,Y){
   if(n.st>0)bubble(X,y0-54,n.say)}
 function drawObj(o,X,Y){
   ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.lineJoin='round';const s=TX.s,st=s.like||W.z.style;
+  if(o.k==='arc'&&typeof arcDraw==='function'){arcDraw(o,X,Y);return}
   if(o.k==='lamp'){shadow(X,Y,7);box(X-2,Y-52,4,52,1,'#2a2630');box(X-7,Y-58,14,7,2,'#3a3644');ctx.fillStyle=s.glow;ctx.fillRect(X-5,Y-52,10,3);const fl=1+.05*Math.sin(tNow*11+o.x*7)+.03*Math.sin(tNow*23+o.y*3);glow(X,Y-48,46*fl,s.glow,.5);light(X,Y-30,175*fl,s.glow)}
   else if(o.k==='crate'){if(o.used){ctx.fillStyle='rgba(60,45,25,.6)';ctx.fillRect(X-10,Y-3,8,3);ctx.fillRect(X+2,Y-1,9,3);return}shadow(X,Y,14);poly([X-13,Y-22,X,Y-16,X,Y+2,X-13,Y-5],'#8a6a40');poly([X,Y-16,X+13,Y-22,X+13,Y-5,X,Y+2],'#6a5030');poly([X-13,Y-22,X,Y-28,X+13,Y-22,X,Y-16],'#a8895c');ctx.strokeStyle='#4a3620';ctx.beginPath();ctx.moveTo(X-13,Y-14);ctx.lineTo(X,Y-7);ctx.lineTo(X+13,Y-14);ctx.stroke()}
   else if(o.k==='chest'){shadow(X,Y,15);poly([X-14,Y-16,X,Y-10,X,Y+2,X-14,Y-4],'#4a5060');poly([X,Y-10,X+14,Y-16,X+14,Y-4,X,Y+2],'#353a48');poly([X-14,Y-16+(o.used?-8:0),X,Y-22+(o.used?-10:0),X+14,Y-16+(o.used?-8:0),X,Y-10],'#5c6478');if(!o.used){box(X-3,Y-9,6,6,1,'#e0bd6e');glow(X,Y-10,28,'#e0bd6e',.45+.2*Math.sin(tNow*3));light(X,Y-10,60,'#e0bd6e')}}

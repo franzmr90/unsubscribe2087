@@ -71,7 +71,8 @@ function gridPlace(list,cols,rows){
     out.push({i,it,x:spot.x,y:spot.y,w:sp.w,h:sp.h})}
   return out}
 function gridCan(list,it,cols,rows){return !!gridPlace((list||[]).concat([it]),cols,rows)}
-function bagCan(it){return !!(G&&gridCan(G.bag,it||{slot:'ring'},6,4))}
+function bagMeta(){return (G&&G.st&&G.st.nextTier==='pack')?{c:5,r:5,n:25}:{c:6,r:4,n:24}}
+function bagCan(it){const g=bagMeta();return !!(G&&gridCan(G.bag,it||{slot:'ring'},g.c,g.r))}
 const CHARM_BAND=[
   {ml:1,dmg:[10,18],hp:[35,65],res:[8,14],all:null,mf:[8,15],crit:[3,5],aspd:null,cdr:null,leech:null},
   {ml:15,dmg:[12,22],hp:[45,80],res:[12,20],all:[4,8],mf:[10,18],crit:[4,7],aspd:[6,10],cdr:[8,12],leech:[2,3]},
