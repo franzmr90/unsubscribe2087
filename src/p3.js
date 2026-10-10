@@ -312,6 +312,39 @@ function drawPlayer(X,Y){
   if(OPT.selfBars){const w=34,y=Y-56;ctx.fillStyle='#050409';ctx.fillRect(X-w/2-1,y-1,w+2,9);ctx.fillStyle='#d23a2e';ctx.fillRect(X-w/2,y,w*clamp(G.hp/S.maxHp,0,1),3.5);ctx.fillStyle='#3a7af0';ctx.fillRect(X-w/2,y+4,w*clamp(G.en/S.maxEn,0,1),3)}
 }
 function eye(X,Y,r,col){ctx.fillStyle=col;ctx.beginPath();ctx.arc(X,Y,r,0,6.283);ctx.fill();glow(X,Y,r*5,col,.6)}
+
+/* ---------------- pre-rendered sprites ----------------
+   An actor whose atlas is loaded draws from it; everything else keeps the drawn
+   art. That is the whole migration strategy in one branch: art arrives one actor
+   at a time and a missing atlas is never a broken frame.
+   OPT.spr turns it off so the two can be compared side by side. */
+const SPR={};
+(function sprInit(){
+  if(typeof SPRITES==='undefined')return;
+  for(const k in SPRITES){const e=SPRITES[k],img=new Image();img.src=e.u;SPR[k]={m:e.m,img}}
+})();
+function sprReady(k){const e=SPR[k];return !!(e&&e.img.complete&&e.img.naturalWidth>0)}
+/* Eight directions, 0 = facing +x, counting the way the renderer rotates. */
+function sprDir(e,n){
+  const dx=e.x-(e._px===undefined?e.x:e._px),dy=e.y-(e._py===undefined?e.y:e._py);
+  if(dx*dx+dy*dy>1e-6)e._hd=Math.atan2(dy,dx);
+  e._px=e.x;e._py=e.y;
+  const a=e._hd===undefined?0:e._hd;
+  return ((Math.round(a/(6.283185/n))%n)+n)%n;
+}
+function sprActor(k,e,X,Y,s,flash){
+  const S=SPR[k],m=S.m,cell=m.cell,L=m.size;
+  const moving=e.aggro&&e.stun<=0&&!e.mp;
+  const an=m.anims[moving?'walk':'idle']||m.anims.idle;
+  const f=Math.floor((tNow*(moving?11:4)+(e.ph||0))%an.count);
+  const d=sprDir(e,m.dirs);
+  const k2=L*s*1.1;                      /* sized to the footprint the drawn art had */
+  /* z=0 in the model sits at 62% down the cell, so that point lands on the feet */
+  ctx.drawImage(S.img,d*cell,(an.row+f)*cell,cell,cell,X-k2/2,Y-k2*0.62,k2,k2);
+  if(flash){ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.55;
+    ctx.drawImage(S.img,d*cell,(an.row+f)*cell,cell,cell,X-k2/2,Y-k2*0.62,k2,k2);ctx.restore()}
+  return true;
+}
 function drawEnemy(e,X,Y){
   const s=e.sz,t=ET[e.k],k=t.spr||e.k,fl=e.flash>0,c1=fl?'#fff':t.pal[0],c2=fl?'#fff':t.pal[1],bob=Math.sin(e.ph*4)*2,f=e.fx||1,mov=e.aggro&&e.stun<=0;
   ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.lineJoin='round';
@@ -319,7 +352,8 @@ function drawEnemy(e,X,Y){
   if(e.mark>0){ctx.strokeStyle='#ff5d4d';ctx.beginPath();ctx.ellipse(X,Y,14*s,7*s,0,0,6.283);ctx.stroke();ctx.strokeStyle=OL}
   if(e.ward>0||e.k==='aegis'){ctx.strokeStyle='rgba(159,208,255,.75)';ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(X,Y-22*s,17*s,25*s,0,0,6.283);ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4}
   if(e.mods.shield){ctx.fillStyle='rgba(140,170,255,.16)';ctx.beginPath();ctx.ellipse(X,Y-24*s,22*s,30*s,0,0,6.283);ctx.fill()}
-  if(e.k==='boss4'){/* She built this body out of the only parts the machines here know how
+  if(OPT.spr!==false&&sprReady(k)&&sprActor(k,e,X,Y,s,fl)){}
+  else if(e.k==='boss4'){/* She built this body out of the only parts the machines here know how
        to make, which is an executive, and she said sorry for it. So: the frame, with
        nothing on it to hurt you, and the attending lights she cannot help sending. */
     const u=1.9,f2=e.hp/e.max,b=Math.sin(e.ph*2)*1.6;shadow(X,Y,22*u);

@@ -1,0 +1,20 @@
+{
+ "actor": "tick",
+ "size": 40,
+ "scale": 2,
+ "dirs": 8,
+ "anims": {
+  "idle": {
+   "row": 0,
+   "count": 4
+  },
+  "walk": {
+   "row": 4,
+   "count": 6
+  }
+ },
+ "frames": [],
+ "cell": 80,
+ "cols": 8,
+ "rows": 10
+}
