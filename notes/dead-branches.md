@@ -4,7 +4,7 @@ previous one rather than off main, so they are chains, not 130 lines of work. Wa
 the chains down to their tips leaves four, and of those only `cursor/all-hands-look-3887`
 had anything main did not already have. It is merged.
 
-## The 78 below contribute no source
+## The 77 below contribute no source
 Each was checked by merging it into `main` (ca5be45) and looking at what changed outside
 `dist/`, which is generated:
 
@@ -40,7 +40,7 @@ git push origin --delete \
   cursor/pvp-clarity-3941 cursor/quest-variety-3941 cursor/quote-floor-3941 \
   cursor/sell-whole-3941 cursor/sim-nonce-3941 cursor/skill-vfx-copy-plan-3941 \
   cursor/skill-vfx-v1-3941 cursor/skill-vfx-v2-3941 cursor/skill-vfx-v3-3941 \
-  cursor/skill-vfx-v4-3941 cursor/skill-vfx-v5-3941 cursor/skill-vfx-wire-3941 \
+  cursor/skill-vfx-v4-3941 cursor/skill-vfx-v5-3941 \
   cursor/skills-level-3941 cursor/smear-optin-3941 cursor/social-store-m3-3941 \
   cursor/sold-now-3941 cursor/story-engage-3941 cursor/stray-gift-3941 \
   cursor/sub-bill-3941 cursor/thirty-off-3941 cursor/tooling-coverage-3941 \
@@ -64,3 +64,18 @@ git push origin --delete \
 commit here also rewrites `dist/`, two concatenated 1MB files, so a rebased or
 squash-merged commit gets a different id and reads as unlanded. Ignoring `dist/` and
 asking whether a merge changes anything is the question that actually matters.
+
+## One that came off this list
+
+`cursor/skill-vfx-wire-3941` was on it and should not have been. `tools/vfx-check`
+aside, main carries `tools/vfx-wire-check.js`, which expects skill effect mappings
+-- anon 1 as a trail, witness 12 as a patch -- that exist only on that branch. The
+check landed and the table it checks did not, so the suite fails on main today and
+that branch holds the missing half. **Do not delete it.** Either merge it or port
+the SKV table change, then the check passes.
+
+This is also the limit of the method above: a merge into main that changes nothing
+proves the branch adds no source, but a branch whose change was *half* taken can
+still conflict and still be needed. Everything else on the list was read line by
+line against main; this one slipped through because the homesteader half of it did
+land, as three keep('form',...) calls, and that is what I checked.
