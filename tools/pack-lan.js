@@ -32,6 +32,12 @@ copyFile(path.join(root, 'dist', 'unsubscribe.html'), 'dist/unsubscribe.html');
 copyFile(path.join(root, 'dist', 'BUILD'), 'dist/BUILD');
 copyFile(path.join(root, 'LAN-PLAY.md'), 'LAN-PLAY.md');
 copyFile(path.join(root, 'LAN-PLAY.md'), 'README.md');
+/* The suites travel with it: the home-network check is the one that cannot run
+   anywhere but a machine with a real private address, so it has to be runnable
+   wherever the package lands. CHECKS.md says which need Playwright. */
+copyDir(path.join(root, 'server', 'test'), 'server/test');
+copyFile(path.join(root, 'lan', 'CHECKS.md'), 'CHECKS.md');
+copyFile(path.join(root, 'package.json'), 'package.json');
 copyFile(path.join(root, 'lan', 'Play-Unsubscribe-2087.sh'), 'Play-Unsubscribe-2087.sh', 0o755);
 copyFile(path.join(root, 'lan', 'Play-Unsubscribe-2087.sh'), 'Play-Unsubscribe-2087.command', 0o755);
 copyFile(path.join(root, 'lan', 'Play-Unsubscribe-2087.bat'), 'Play-Unsubscribe-2087.bat');
