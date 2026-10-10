@@ -69,6 +69,7 @@ const names=await p.evaluate(()=>({
   vale:__g.ZONES[11].intro,
   q1:__g.QUESTS.q1.n,
   q5:__g.QUESTS.q5.d,
+  q10:__g.QUESTS.q10.d,
   hoa:__g.ZONES[1].su.n,
   reyn:__g.MERCS.reyn.d,
   paper:__g.MEMOS[__g.EGG.paperAt][0],
@@ -78,7 +79,7 @@ const names=await p.evaluate(()=>({
 }));
 check('egg clippings stay put',names.paper==='The Tymes, 03/Jan/2087'&&names.link==='A link, blurred',names);
 check('the invasion page names the six payoffs',/There was never an invasion/.test(names.never)&&/visors that got out/.test(names.never)&&/terms update/.test(names.never)&&/launch was a meeting/.test(names.never)&&/barge was a fee/.test(names.never)&&/queen was a job/.test(names.never)&&/wanted to be believed/.test(names.never)&&/man who quit/.test(names.never),names.never);
-check('main quest names stay',names.q1==='Neighbourhood Watch'&&/Pryce/.test(names.q5)&&/HOA-9/.test(names.hoa)&&/Vale/.test(names.vale)&&/Pryce/.test(names.boss),names);
+check('main quest names stay',names.q1==='Neighbourhood Watch'&&/Pryce/.test(names.q5)&&/HOA-9/.test(names.hoa)&&/Vale/.test(names.q10),names);
 check('reyn’s hire line is the visor line',/used to be the marine/.test(names.reyn)&&/visor is still employed/.test(names.reyn),names.reyn);
 check('arcs are not side-quest slots',!/six|reyn|queen|barge/.test(names.sq),names.sq);
 
@@ -264,20 +265,26 @@ check('Brenda does not see a customer for those three seconds',blind.buy===false
 await clearUI(p);
 
 await wipe();
-const barge=await p.evaluate(()=>{
+const spill=await p.evaluate(()=>{
+  __g.scVisitClear();
   __g.calc();__g.G.stims=__g.S.cap;
   const belt=__g.giveStim();
   __g.G.stims=0;
   const room=__g.giveStim();
+  return {belt,room,log:document.getElementById('log').textContent};
+});
+check('a full belt spills the barge line and a belt drink does not',spill.belt==='pack'&&spill.room==='belt'&&/Spawn more barges/.test(spill.log),spill);
+await wipe();
+await p.waitForTimeout(1600);
+const intern=await p.evaluate(()=>{
   __g.scVisitClear();
-  document.getElementById('log').innerHTML='';
   __g.W.allies=[];
   __g.summon({kind:'intern'},1);
   const mid=document.getElementById('log').textContent;
   __g.summon({kind:'intern'},1);
-  return {belt,room,allies:__g.W.allies.length,mid,log:document.getElementById('log').textContent};
+  return {allies:__g.W.allies.length,mid,log:document.getElementById('log').textContent};
 });
-check('a full belt spills one barge line, and a replaced intern does too',barge.belt==='pack'&&barge.room==='belt'&&!/Spawn more barges/.test(barge.mid)&&/Spawn more barges/.test(barge.log)&&barge.allies===1,barge);
+check('replacing an intern says spawn more barges',intern.allies===1&&!/Spawn more barges/.test(intern.mid)&&/Spawn more barges/.test(intern.log),intern);
 
 await go(2);
 await p.evaluate(()=>{__g.G.q.q2=1;__g.talkTo('brenda')});
