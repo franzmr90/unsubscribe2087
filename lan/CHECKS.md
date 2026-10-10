@@ -63,6 +63,20 @@ browser part. That is fixed; it now shows the gate a public address through the
 forwarded header instead. The other twenty-one assertions are unproven. If
 something fails, that is useful — send the output.
 
+## The two-phones check
+
+The one that matches what the package is for: the laptop hosts, nobody plays on
+it, and two phones meet in a game. Start the launcher, then from a clone of the
+repo:
+
+```sh
+node tools/two-phones.js http://192.168.x.x:8087/
+```
+
+It makes two accounts, starts a hero on each, opens a game from one phone, finds
+it in the lobby from the other, joins, and checks both rosters show both names
+and that chat crosses. Needs Playwright.
+
 ## Playing and checking at the same time
 
 Don't. The suites start their own servers on their own ports and write to a
