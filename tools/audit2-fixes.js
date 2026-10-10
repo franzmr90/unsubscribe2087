@@ -6,7 +6,7 @@ const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
 const root = path.join(__dirname, '..');
-const CHROME = process.env.PW_CHROMIUM || '/usr/local/bin/google-chrome';
+const CHROME = process.env.PW_CHROMIUM || undefined;
 const SHOT = process.env.AUDIT_SHOTS || '/tmp/audit2-shots';
 fs.mkdirSync(SHOT, { recursive: true });
 const html = fs.readFileSync(path.join(root, 'dist/unsubscribe.html'), 'utf8');

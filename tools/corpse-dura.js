@@ -12,7 +12,7 @@ fs.mkdirSync(OUT, { recursive: true });
   const html = fs.readFileSync(path.join(root, 'dist/unsubscribe.html'), 'utf8');
   const fail = [];
   const check = (n, ok, d) => { if (!ok) fail.push(n + (d ? ': ' + d : '')); else console.log('ok', n); };
-  const b = await chromium.launch({ executablePath: process.env.PW_CHROMIUM || '/usr/local/bin/google-chrome', args: ['--no-sandbox', '--disable-dev-shm-usage'] });
+  const b = await chromium.launch({ executablePath: process.env.PW_CHROMIUM || undefined, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
   const p = await b.newPage({ viewport: { width: 1100, height: 760 } });
   const errs = [];
   p.on('pageerror', e => errs.push(e.message));

@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const root = path.join(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'dist/unsubscribe.html'), 'utf8');
-const CHROME = process.env.PW_CHROMIUM || '/usr/local/bin/google-chrome';
+const CHROME = process.env.PW_CHROMIUM || undefined;
 
 (async () => {
   const browser = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox', '--disable-dev-shm-usage'] });

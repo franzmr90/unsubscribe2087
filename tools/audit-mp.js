@@ -10,7 +10,7 @@ const { chromium } = require('playwright');
 const SHOT = process.env.AUDIT_SHOTS || '/tmp/audit-shots';
 const OUT = process.env.AUDIT_OUT || '/tmp/audit-mp.json';
 fs.mkdirSync(SHOT, { recursive: true });
-const CHROME = process.env.PW_CHROMIUM || '/usr/local/bin/google-chrome';
+const CHROME = process.env.PW_CHROMIUM || undefined;
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'u2087-audit-'));
 process.env.DATA_DIR = tmp;
 delete process.env.SMTP_HOST;

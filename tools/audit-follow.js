@@ -5,7 +5,7 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 const SHOT = process.env.AUDIT_SHOTS || '/tmp/audit-shots';
 const html = fs.readFileSync(path.join(root, 'dist/unsubscribe.html'), 'utf8');
-const CHROME = process.env.PW_CHROMIUM || '/usr/local/bin/google-chrome';
+const CHROME = process.env.PW_CHROMIUM || undefined;
 const rows = [];
 function row(area, feature, grade, notes) { rows.push({ area, feature, grade, notes }); console.log(grade.padEnd(16), feature, '—', String(notes).slice(0, 180)); }
 async function clearUI(page) {

@@ -12,7 +12,7 @@ const root = path.join(__dirname, '..');
 const SHOT = process.env.AUDIT_SHOTS || '/tmp/audit2-shots';
 const OUT = process.env.AUDIT_OUT || '/tmp/audit2-play.json';
 fs.mkdirSync(SHOT, { recursive: true });
-const CHROME = process.env.PW_CHROMIUM || '/usr/local/bin/google-chrome';
+const CHROME = process.env.PW_CHROMIUM || undefined;
 const html = fs.readFileSync(path.join(root, 'dist/unsubscribe.html'), 'utf8');
 const rows = [];
 const errs = [];

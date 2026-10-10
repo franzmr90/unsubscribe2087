@@ -11,7 +11,7 @@ const root = path.join(__dirname, '..');
 const SHOT = process.env.PROG_SHOTS || '/opt/cursor/artifacts/progression';
 const OUT = process.env.PROG_OUT || '/tmp/progression-play.json';
 fs.mkdirSync(SHOT, { recursive: true });
-const CHROME = process.env.PW_CHROMIUM || '/usr/local/bin/google-chrome';
+const CHROME = process.env.PW_CHROMIUM || undefined;
 const html = fs.readFileSync(path.join(root, 'dist/unsubscribe.html'), 'utf8');
 const PER_CLASS_MS = +(process.env.PROG_MS || 12 * 60 * 1000);
 const TOTAL_MS = +(process.env.PROG_TOTAL_MS || 46 * 60 * 1000);
