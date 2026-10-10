@@ -1,0 +1,70 @@
+[
+  {
+    "name": "dense-1",
+    "n": 21,
+    "party": 0,
+    "update": 0.106,
+    "render": 9.22,
+    "frame": 9.326,
+    "median": 0.8,
+    "p95": 2.5,
+    "peak": {
+      "ents": 21,
+      "projs": 12,
+      "parts": 29,
+      "fx": 1,
+      "texts": 0
+    }
+  },
+  {
+    "name": "dense-4",
+    "n": 26,
+    "party": 3,
+    "update": 0.141,
+    "render": 8.275,
+    "frame": 8.416,
+    "median": 0.9,
+    "p95": 2,
+    "peak": {
+      "ents": 26,
+      "projs": 20,
+      "parts": 74,
+      "fx": 1,
+      "texts": 6
+    }
+  },
+  {
+    "name": "boss-1",
+    "n": 9,
+    "party": 0,
+    "update": 0.084,
+    "render": 8.364,
+    "frame": 8.448,
+    "median": 0.7,
+    "p95": 1.5,
+    "peak": {
+      "ents": 9,
+      "projs": 0,
+      "parts": 30,
+      "fx": 2,
+      "texts": 7
+    }
+  },
+  {
+    "name": "boss-4",
+    "n": 9,
+    "party": 3,
+    "update": 0.093,
+    "render": 9.118,
+    "frame": 9.212,
+    "median": 0.8,
+    "p95": 1.7,
+    "peak": {
+      "ents": 9,
+      "projs": 12,
+      "parts": 33,
+      "fx": 2,
+      "texts": 15
+    }
+  }
+]

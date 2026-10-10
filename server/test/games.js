@@ -202,6 +202,11 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   ok('hostility starts at level 9', /level 9/.test(lastSys(A)), lastSys(A));
 
   place(A, 9, 0); place(B, 9, 0); await wait(100);
+  A.seen.length = 0;
+  A.send({ t: 'hostile', uid: uidOf(B) });
+  await wait(150);
+  ok('a declaration needs a moment in town', /moment/.test(lastSys(A)), lastSys(A));
+  await wait(3100);
   A.seen.length = 0; B.seen.length = 0;
   A.send({ t: 'hostile', uid: uidOf(B) });
   await wait(200);

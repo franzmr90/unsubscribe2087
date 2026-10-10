@@ -8,7 +8,11 @@ const PHRASES=[
  {id:'timelock',n:'Timelock',slot:'armor',w:['garden','candle','border'],mods:{hp:80,regenH:8,en:50,regen:3},fl:'Not yet. Not yet. Now.'},
  {id:'fullnode',n:'Full Node',slot:'helm',w:['island','kernel'],mods:{mf:40,crit:8,skills:1},fl:'Trust nobody. Verify everything.'},
  {id:'longest',n:'Longest Chain',slot:'helm',w:['ladder','anchor'],mods:{armorP:80,mspd:12,hp:50},fl:'The one with the most work behind it wins.'}];
-function ensureG(){bookFix();G.words=G.words||{};G.st=G.st||{};const s=G.st;s.wf=s.wf||{};for(const k of['streak','gobs','shifts','phr','sold'])s[k]=s[k]||0;G.rep=G.rep||{btc:0,anon:0};G.ach=G.ach||{};G.adopt=G.adopt||0;G.nodes=G.nodes||{};G.rep.norm=G.rep.norm||0;G.cv=G.cv||{};G.lean=G.lean||0;G.web=G.web||{};G.fork=G.fork||{};if(!G.rb1){G.rb1=1;if(G.st.sold>0&&!G.boss3Kills){const n=G.st.sold;G.st.sold=0;G.adopt=Math.min(100,G.adopt+15*n);G.credits-=Math.min(G.credits*.98,6000*G.cpi*G.lvl*n);delete ZS[16];G.rbNote=1}}acctPara();chFix();accMigrate();G.camps=G.camps||{};G.won=G.won||{};mktInit();if(!G.adInit){G.adInit=1;G.adopt=Math.min(100,G.adopt+20)}boonRefund()}
+function ensureG(){bookFix();G.words=G.words||{};G.st=G.st||{};const s=G.st;s.wf=s.wf||{};for(const k of['streak','gobs','shifts','phr','sold'])s[k]=s[k]||0;G.rep=G.rep||{btc:0,anon:0};G.ach=G.ach||{};G.adopt=G.adopt||0;G.nodes=G.nodes||{};G.rep.norm=G.rep.norm||0;G.cv=G.cv||{};G.lean=G.lean||0;G.web=G.web||{};G.fork=G.fork||{};if(!G.rb1){G.rb1=1;if(G.st.sold>0&&!G.boss3Kills){const n=G.st.sold;G.st.sold=0;G.adopt=Math.min(100,G.adopt+15*n);G.credits-=Math.min(G.credits*.98,6000*G.cpi*G.lvl*n);delete ZS[16];G.rbNote=1}}acctPara();charmMigrate();accMigrate();if(typeof migrateResists==='function')migrateResists();if(typeof migrateDurability==='function')migrateDurability();G.camps=G.camps||{};G.won=G.won||{};mktInit();if(!G.adInit){G.adInit=1;G.adopt=Math.min(100,G.adopt+20)}ensureMouse();boonRefund();if(!(G.maxTier>0)&&((G.bossKills||0)>0||(G.bk&&(G.bk.boss4||G.bk.boss5))))G.maxTier=1;migrateDiff();if(G.act3)flushBank()}
+/* Hard opens after Act V on Normal. Brutal opens after Act V on Hard. An old save keeps the difficulty it was already on, and a PROVIDENCE kill keeps Hard. */
+function diffUnlocked(i){return i<=0||(G.diffGate||0)>=i}
+function migrateDiff(){if(!G||G.diffMigrated)return;G.diffMigrated=1;let g=+G.diffGate||0;if(G.bk&&G.bk.boss5)g=Math.max(g,1);if((G.diff||0)>0)g=Math.max(g,Math.min(2,G.diff|0));G.diffGate=g}
+function flushBank(){if(!G||!G.act3||!(G.bankXp>0))return;const b=G.bankXp;G.bankXp=0;if(G.lvl>=lvlCap()){paraXp(b);return}if(!P||!W){G.xp=(G.xp||0)+b;while(G.xp>=xpNext(G.lvl)&&G.lvl<lvlCap()){G.xp-=xpNext(G.lvl);G.lvl++;G.sp++;G.ap+=5}return}gainXp(b,'bank')}
 function gotWord(w){G.words[w]=(G.words[w]||0)+1;G.st.wf[w]=1}
 function socketWord(it,w){if(!it.soc||(it.words||[]).length>=it.soc||!G.words[w])return;G.words[w]--;it.words=it.words||[];it.words.push(w);const m=WORDS[w];it.aff.push({k:m[0],v:m[1],w});sfx('equip');
   if(it.words.length===it.soc){const r=PHRASES.find(p=>p.slot===it.slot&&p.w.join()===it.words.join());
@@ -28,7 +32,7 @@ function addAdopt(n,why){if(n>0&&G.adopt>=100)return;mktNews(clamp(n*.02,-.2,.2)
   if(G.adopt>=50&&!G.ad50){G.ad50=1;setTimeout(()=>toast('Half the world now saves in sats. The Stipend terminal pays one, too.'),1800)}
   if(G.adopt>=100&&!G.resSeen)setTimeout(()=>{if(mode==='play'){G.resSeen=1;playScene(RESERVE,()=>{mode='play';dlg('The reserve','The baker’s loaf is priced in sats, and the street copied her. Unity can still create credits. Nothing you eat is priced in them, so prices have stopped rising.',[['Continue']])})}},2500)}
 function ensureNode(){if(W.z.town||W.z.sim||W.z.sub||W.objs.some(o=>o.k==='dnode'))return;const p=freeSpot(12);W.objs.push({k:'dnode',x:p.x,y:p.y})}
-function lightNode(o){if(cause()){G.sats+=5;toast('Sister Null’s people cover the cost. For the cause.')}if(G.sats<5){toast('Lighting a node costs 5 sats');sfx('err');return}G.sats-=5;o.used=1;G.nodes[W.zi]=1;sfx('shrine');parts(o.x,o.y,24,['#f7931a','#fff'],2.5,1.6);addRep('btc',5);mktNews(.12,'a node came online in '+W.z.n);addAdopt(5,'a node comes online in '+W.z.n)}
+function lightNode(o){if(cause()){G.sats+=5;toast('Sister Null’s people cover the cost. For the cause.')}if(!spendSats(5,'Lighting a node costs 5 sats'))return;o.used=1;G.nodes[W.zi]=1;sfx('shrine');parts(o.x,o.y,24,['#f7931a','#fff'],2.5,1.6);addRep('btc',5);mktNews(.12,'a node came online in '+W.z.n);addAdopt(5,'a node comes online in '+W.z.n)}
 
 /* ================= world events ================= */
 const EVS={stipend:{n:'Stipend Day',d:'Residents wander the district and credit drops are tripled.',t:45},audit:{n:'Surprise Audit',d:'A hunting party has your scent. Its leader carries a lockbox.',t:70},outage:{n:'Outage',d:'The lights fail and the machines stall. +50% experience while it lasts.',t:40},block:{n:'Block Found',d:'For a short while, any machine may drop a satoshi.',t:35}};
@@ -54,14 +58,19 @@ const ACH=[['first','First Blood','Destroy a machine',()=>G.kills>=1],['k100','S
  ['maker','Making the Market','Fill an order you posted yourself',()=>(G.st.maker||0)>0],
  ['hodl2','Through the Trough','Hold a stack through a 20% fall and out the other side',()=>(G.st.hodl||0)>0],
  ['liq','Margin Call','Get liquidated by Mr. Float',()=>(G.st.liq||0)>0],
- ['res','Reserve','Make bitcoin the world’s reserve currency',()=>G.adopt>=100],['sold','Everyone Has a Price','Accept MANDATE’s offer',()=>G.st.sold>0]];
+ ['res','Reserve','Make bitcoin the world’s reserve currency',()=>G.adopt>=100],['sold','Everyone Has a Price','Accept MANDATE’s offer',()=>G.st.sold>0],
+ ['block0','Block Zero','Read the yellowed paper on Gramps’s wall',()=>!!(G.st&&G.st.block0)],
+ ['rumors','Rumors of My Death','Die 21 times and still finish the act',()=>(G.deaths||0)>=21&&G.q.q5===3],
+ ['unseenlink','Some Things Can’t Be Unseen (You Didn’t)','Open the blurred link and find only a 404',()=>!!(G.st&&G.st.hello404)],
+ ['lunch','Most Expensive Lunch','Eat the cold pies',()=>!!(G.st&&G.st.lunch)],
+ ['k100k','Until 100K','Hold 100,000 sats at once',()=>G.sats>=100000]];
 let achT=3;
 function achTick(dt){achT-=dt;if(achT>0)return;achT=2;maxiCheck();for(const a of ACH)if(!G.ach[a[0]]&&a[3]()){G.ach[a[0]]=1;G.sats+=1;sfx('quest');toast('Feat: '+a[1]+' · +1 sat');return}}
 
 /* ================= boss rush ================= */
 function rushList(){const l=[];for(const zi of[1,2,3,4,7,8,9,10,12,13,14,15,22,23,24,25,28,29,30,31])if(G.unlocked>zi||G.q[ZONES[zi].su.q]>=2)l.push({k:ZONES[zi].su.k,n:ZONES[zi].su.n,mods:ZONES[zi].su.mods});
   if(G.q.q5===3)l.push({boss:'boss'});if(G.q.q10===3)l.push({boss:'boss2'});if(G.q.q15===3)l.push({boss:'boss3'});if(G.q.q20===3)l.push({boss:'boss4'});if(G.q.q25===3)l.push({boss:'boss5'});return l}
-function rushTick(dt){const s=W.sim;if(W.ents.some(e=>!e.minion))return;s.t-=dt;if(s.t>0)return;for(const o of W.ents.slice())W.ents.splice(W.ents.indexOf(o),1);W.projs=[];
+function rushTick(dt){const s=W.sim;if(W.ents.some(e=>!e.minion))return;s.t-=dt;if(s.t>0)return;if(!s.list.length){s.t=1e9;dlg('Boss rush','Nobody is on the list yet. Clear a district, or beat a lieutenant, and the row fills in.',[['Unplug',()=>enter(HT())]]);return}for(const o of W.ents.slice())W.ents.splice(W.ents.indexOf(o),1);W.projs=[];
   if(s.i>=0){G.sats+=2;float(P.x,P.y,'+2 sats','#f7931a');sfx('coin')}s.i++;
   if(s.i>=s.list.length){s.t=1e9;G.rushDone=true;G.sats+=10;sfx('level');dlg('Boss rush complete','Every lieutenant and executive you have beaten, back to back. Ten sats on top of the purse.',[['Unplug',()=>enter(HT())]]);return}
   s.t=3;const it=s.list[s.i];W.ml=G.lvl;W.dyn=dynFor(W.ml);heal(S.maxHp*.5);G.en=S.maxEn;$('zone').textContent='Boss rush · '+(s.i+1)+' of '+s.list.length;
@@ -100,10 +109,13 @@ function actRoman(n){return ['I','II','III','IV','V'][(n||1)-1]||'I'}
 const townOf=zi=>{const a=actOf(zi);return a===5?27:a===4?21:a===3?18:a===2?17:a===1?0:(G.town||0)};
 const HT=()=>G.town||0;
 function nearFree(p,d){for(let i=0;i<24;i++){const a=i*.8,r=d||1.3,x=p.x+Math.cos(a)*r,y=p.y+Math.sin(a)*r;if(free(x,y,.35))return{x,y}}return{x:p.x,y:p.y}}
+/* A lieutenant whose kill step is already done stays down. Bringing Defrag back
+   seals Marrow's cage while the tracker still says to open it. */
+function suStepDone(z){const su=z&&z.su;if(!su||!su.q)return false;const q=su.q,st=(G.q&&G.q[q])||0;if(st>=2)return true;if(q==='q3'&&G.q3open)return true;if(q==='q8'&&G.q8down)return true;if(q==='q12'&&G.q12down)return true;return false}
 /* machines drift back into a district you have been away from */
 function repop(){const z=W.z,N=W.N,base=z.boss?24:46,have=W.ents.filter(e=>!isBoss(e.k)&&!e.su).length,need=base-have,away=G.time-W.leftT;let back=0;
-  if(away>600&&z.su&&!W.ents.some(e=>e.su)){const p=W.suAt||W.goal;if(spawn(z.su.k,p.x+.5,p.y+.5,{su:z.su}))back++}
-  if(away>900&&z.boss&&!W.boss&&W.goal){if(spawn(z.bossK||'boss',W.goal.x,W.goal.y)){back++;W.portals=W.portals.filter(p=>p.kind!=='home')}}
+  if(away>600&&z.su&&!suStepDone(z)&&!W.ents.some(e=>e.su)){const p=W.suAt||W.goal;if(spawn(z.su.k,p.x+.5,p.y+.5,{su:z.su}))back++}
+  if(away>900&&z.boss&&!W.boss&&W.goal&&!(z.bq&&(G.q[z.bq]||0)>=2)){if(spawn(z.bossK||'boss',W.goal.x,W.goal.y)){back++;W.portals=W.portals.filter(p=>p.kind!=='home')}}
   if(need<6)return back;
   W.ml=zoneLevel(z);W.dyn=dynFor(W.ml);let n=0;
   for(let t=0;t<600&&n<need;t++){const x=ri(2,N-3)+.5,y=ri(2,N-3)+.5;if(W.map[(y|0)*N+(x|0)]!==1||Math.hypot(x-P.x,y-P.y)<13||Math.hypot(x-W.start.x,y-W.start.y)<8||(z.boss&&W.goal&&Math.hypot(x-W.goal.x,y-W.goal.y)<10))continue;
@@ -113,7 +125,23 @@ function repop(){const z=W.z,N=W.N,base=z.boss?24:46,have=W.ents.filter(e=>!isBo
 /* ================= tracked quest ================= */
 function trackList(){const l=[];for(const k in SQ)if(G.sq[k]&&!G.sq[k].done)l.push('s:'+k);return l}
 function briefReady(k){const q=QUESTS[k];if(!q||!q.brief||(G.q[k]||0))return false;for(const j in QUESTS){if(j===k)return true;if((G.q[j]||0)!==3)return false}return false}
+/* The next act stays shut until this character has heard Gramps close the one just finished.
+   q6 opens Act II, q11 Act III, q16 Act IV, q21 Act V. Showing the line is what sets the flag.
+   The gate is this save alone. A party does not share the talk: a finished objective is what
+   gets sent across, not this briefing, so one member who has not heard Gramps cannot follow
+   another through, and one who already has is not held. Each character keeps their own town.
+   A save that already walked into the next act is not walked back. The skipped line is marked
+   heard: 1 when that act's first quest is still the work in front of them, 3 when a later
+   quest has already started, so the log does not rewind and Gramps speaks for where they are. */
+const ACT_OPEN=[{act:2,flag:'act2',prev:'q5',brief:'q6'},{act:3,flag:'act3',prev:'q10',brief:'q11'},{act:4,flag:'act4',prev:'q15',brief:'q16'},{act:5,flag:'act5',prev:'q20',brief:'q21'}];
+function actBriefHold(zi){if(zi==null||!ZONES[zi])return null;const dest=actOf(zi);if(!dest)return null;
+  for(const r of ACT_OPEN){if(r.act>dest)break;if(G[r.flag])continue;if((G.q[r.prev]||0)===3&&!(G.q[r.brief]||0))return r}return null}
+function actBriefDeny(){toast('Talk to Gramps first');sfx('err')}
+function actBriefMigrate(){if(!G||!G.q)return;
+  for(const r of ACT_OPEN){if(!G[r.flag]||(G.q[r.prev]||0)!==3||(G.q[r.brief]||0)>0)continue;let later=false,seen=false;
+    for(const k in QUESTS){if(k===r.brief){seen=true;continue}if(seen&&(G.q[k]||0)>0)later=true}G.q[r.brief]=later?3:1}}
 function storyStep(){const sg=storyGate();if(sg)return sg;
+  if(G.q.q5===3&&!G.q.q6)return{n:'Act I complete',d:'Speak to Gramps in '+ZONES[HT()].n+' to begin Act II'};
   if(G.q.q5===3&&!G.act2)return{n:'Act I complete',d:'Take the Transit Gate to The Landing to begin Act II'};
   if(G.q.q10===3&&!G.q.q11)return{n:'Act II complete',d:'Speak to Gramps in '+ZONES[HT()].n+' to begin Act III'};
   if(G.q.q10===3&&!G.act3)return{n:'Act II complete',d:'Take the Transit Gate to The Antechamber to begin Act III'};
@@ -132,7 +160,7 @@ function storyStep(){const sg=storyGate();if(sg)return sg;
 function sideStep(){const l=trackList();if(!l.length)return null;if(!l.includes(G.track))G.track=l[0];const k=G.track.slice(2),q=SQ[k],s=G.sq[k],st=q.steps[s.s];
   return{n:q.n,d:st.d+(st.n?' ('+(s.c||0)+'/'+st.n+')':'')+(st.zi!==undefined&&st.zi!==W.zi&&!st.d.toLowerCase().includes(ZONES[st.zi].n.replace(/^The /,'').toLowerCase())?' · '+ZONES[st.zi].n:'')}}
 function objective(){return sideStep()}
-let objC='';function objHud(){const on=OPT.obj&&(mode==='play'||mode==='dlg'),a=on?storyStep():null,b=on?sideStep():null,cp=on&&G.camp?G.camp:null,t=a?a.n+a.d+(b?b.n+b.d:'')+(cp?cp.k+cp.c:''):'';if(t+OPT.objMin===objC)return;objC=t+OPT.objMin;const el=$('obj');el.hidden=!a;
-  if(a&&OPT.objMin)el.innerHTML='<b>▸ '+esc(a.n)+(b||cp?' +':'')+'</b>';else if(a)el.innerHTML='<b>Story · '+esc(a.n)+'</b>'+esc(a.d)+(b?'<b class="sd">Errand · '+esc(b.n)+'</b>'+esc(b.d):'')+(cp?'<b class="sd" style="color:#ff5d4d">Unity · '+CAMPS[cp.k].n+' '+cp.c+'/'+CAMPS[cp.k].need+'</b>'+esc(CAMPS[cp.k].d):'')}
+let objC='';function objHud(){const on=OPT.obj&&(mode==='play'||mode==='dlg'),a=on?storyStep():null,b=on?sideStep():null,cp=on&&G.camp?G.camp:null,ak=typeof arcHudKey==='function'?arcHudKey():'',t=a?a.n+a.d+(b?b.n+b.d:'')+(cp?cp.k+cp.c:'')+ak:'';if(t+OPT.objMin===objC)return;objC=t+OPT.objMin;const el=$('obj');el.hidden=!a;
+  if(a&&OPT.objMin)el.innerHTML='<b>▸ '+esc(a.n)+(b||cp||ak?' +':'')+'</b>';else if(a)el.innerHTML='<b>Story · '+esc(a.n)+'</b>'+esc(a.d)+(b?'<b class="sd">Errand · '+esc(b.n)+'</b>'+esc(b.d):'')+(cp?'<b class="sd" style="color:#ff5d4d">Unity · '+CAMPS[cp.k].n+' '+cp.c+'/'+CAMPS[cp.k].need+'</b>'+esc(CAMPS[cp.k].d):'')+(typeof arcHud==='function'?arcHud():'')}
 const DIFFS=[{n:'Normal',hp:1.25,dmg:1.3,xp:1},{n:'Hard',hp:1.8,dmg:1.75,xp:1.2},{n:'Brutal',hp:2.6,dmg:2.4,xp:1.45}];
 const DF=()=>DIFFS[G.diff||0];

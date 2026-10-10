@@ -26,27 +26,27 @@ await p.evaluate(()=>{const d=document.getElementById('dlg');if(d&&!d.hidden){co
 const filters=await p.evaluate(()=>{
   const g=__g,P=g.P;
   const wear=g.makeItem(2,0,'weapon');wear.id=true;wear.req=1;g.G.eq.weapon=wear;
-  const held=()=>g.G.bag.length+(g.G.charms||[]).length;
-  const drop=(it,opt)=>{Object.assign(g.OPT,opt);g.W.drops=[{it,x:P.x,y:P.y,t:1}];const before=held();g.update(0.05);const left=g.W.drops.some(d=>d.it===it);return {left,took:held()-before}};
+  const held=()=>g.G.bag.length;
+  const tip=()=>{const el=document.getElementById('cmpTip');return !!(el&&!el.hidden)};
+  const drop=it=>{g.W.drops=[{it,x:P.x,y:P.y,t:1}];const before=held();g.update(0.05);g.hud();return {left:g.W.drops.some(d=>d.it===it),took:held()-before,tip:tip()}};
   const rare=g.makeItem(6,2,'weapon');
-  const struck=drop(rare,{pk2:false,pkBetter:false});
-  const judged=drop(g.makeItem(6,2,'weapon'),{pk2:true,pkBetter:true});
-  g.G.eq.helm=null;
-  const empty=drop(Object.assign(g.makeItem(2,0,'helm'),{id:true,req:1}),{pk0:false,pkBetter:false});
-  const sub=drop({slot:'charm',charm:1,q:1,il:1,id:true,req:1,base:'Lapsed Subscription',name:'Lapsed Test Subscription',aff:[{k:'hp',v:4}],val:10,on:false},{pk1:false,pkBetter:false});
-  return {rareId:rare.id,struck,judged,empty,sub,charms:g.G.charms.length};
+  const struck=drop(rare);
+  const sub=drop({slot:'charm',charm:1,q:1,il:1,id:true,req:1,base:'Lapsed Subscription',name:'Lapsed Test Subscription',aff:[{k:'hp',v:4}],val:10,on:false});
+  g.W.drops=[{sat:3,x:P.x,y:P.y,t:1}];const s0=g.G.sats;g.update(0.05);const sat={got:g.G.sats-s0,left:g.W.drops.length,tip:tip()};
+  g.W.drops=[{cr:12,x:P.x,y:P.y,t:1}];const c0=g.G.credits;g.update(0.05);const cred={got:g.G.credits-c0,left:g.W.drops.length};
+  return {rareId:rare.id,struck,sub,sat,cred};
 });
 if(filters.rareId)fail('rare came identified');
-if(!filters.struck.left)fail('struck rare was picked up '+JSON.stringify(filters.struck));
-if(filters.judged.left)fail('better-only left an unidentified rare');
-if(filters.empty.left)fail('empty slot left a struck white');
-if(filters.sub.left||filters.charms<1)fail('subscription was filtered '+JSON.stringify(filters.sub));
+if(filters.struck.left||filters.struck.tip||!(filters.struck.took===1||filters.struck.eq))fail('walk missed the gear or opened a card '+JSON.stringify(filters.struck));
+if(filters.sub.left||filters.sub.took!==1||filters.sub.tip)fail('walk missed the charm or opened a card '+JSON.stringify(filters.sub));
+if(filters.sat.got!==3||filters.sat.left||filters.sat.tip)fail('sats '+JSON.stringify(filters.sat));
+if(filters.cred.got!==12||filters.cred.left)fail('credits '+JSON.stringify(filters.cred));
 
 await p.evaluate(()=>__g.openSheet('items',{}));
 await p.waitForTimeout(80);
-const hint=await p.evaluate(()=>{const el=[...document.querySelectorAll('#sheet p')].find(n=>/Struck-out tiers/.test(n.textContent));el&&el.scrollIntoView({block:'center'});return el?el.textContent:''});
-if(!/named or not/.test(hint)||!/Subscriptions are picked up anyway/.test(hint))fail('pickup hint '+hint);
-if(/still picked up\./.test(hint))fail('old unidentified sentence');
+const hint=await p.evaluate(()=>{const el=[...document.querySelectorAll('#sheet p')].find(n=>/Walking over gear/.test(n.textContent));el&&el.scrollIntoView({block:'center'});return el?el.textContent:''});
+if(!/Walking over gear/.test(hint)||!/Sats and credits/.test(hint))fail('pickup hint '+hint);
+if(/Charms are picked up anyway/.test(hint)||/Struck-out tiers/.test(hint))fail('old pickup sentence '+hint);
 if(OUT)await p.screenshot({path:path.join(OUT,'loot-pickup.png')});
 
 const box=await p.evaluate(()=>{
@@ -83,16 +83,20 @@ const scrap=await p.evaluate(()=>{
   const r=g.makeItem(8,2,'belt');r.id=true;g.G.bag=[r];g.G.parts=0;g.craft(r,'scrap');out.rare=g.G.parts;
   const u=g.UNI.find(x=>x.id==='handshake');
   const glove=g.mkFixed(u,16,4);g.G.bag=[glove];g.G.parts=0;g.craft(glove,'scrap');out.unique=g.G.parts;out.sp=u.sp;
-  g.G.charms=[{slot:'charm',charm:1,q:1,il:1,id:true,req:1,name:'Lapsed Test',base:'Lapsed Subscription',aff:[],val:10,on:false}];
+  g.G.cslots=[];g.G.bag=[{slot:'charm',charm:1,sz:'slip',cs:1,cells:1,cw:1,ch:1,q:1,il:1,id:true,req:1,name:'Lapsed Test',base:'Slip',aff:[],val:10}];
   g.G.parts=0;g.openSheet('items',{});
-  document.querySelector('[data-ch="0"]').click();
-  const btn=[...document.querySelectorAll('[data-chdo="scrap"]')].map(b=>b.textContent);
-  document.querySelector('[data-chdo="scrap"]').click();
-  out.charm=g.G.parts;out.btn=btn;
+  document.querySelector('[data-bag="0"]').click();
+  out.wait=1;out.parts=g.G.parts;
   return out;
 });
 if(scrap.white!==1||scrap.rare!==4||scrap.unique!==15)fail('scrap parts '+JSON.stringify(scrap));
-if(scrap.charm!==2||scrap.btn[0]!=='Scrap · 2 parts')fail('charm scrap '+JSON.stringify(scrap));
+await p.waitForTimeout(400);
+const charmScrap=await p.evaluate(()=>{
+  const btn=[...document.querySelectorAll('[data-do="scrap"]')].map(b=>b.textContent);
+  const b=document.querySelector('[data-do="scrap"]'); if(b)b.click();
+  return {btn,parts:__g.G.parts,bag:__g.G.bag.length};
+});
+if(charmScrap.parts!==2||charmScrap.btn[0]!=='Scrap · 2 parts'||charmScrap.bag!==0)fail('charm scrap '+JSON.stringify(charmScrap));
 if(!/Ordinary machines/.test(scrap.sp)||!/13%/.test(scrap.sp))fail('handshake '+scrap.sp);
 
 await p.evaluate(()=>{__g.closeSheet();__g.openSheet('codex',{})});
@@ -110,49 +114,36 @@ const toast=await p.evaluate(()=>{
   cell.click();cell.click();
   return document.getElementById('log').textContent;
 });
-if(!/not worn/.test(toast))fail('charm toast '+toast);
+if(!/needs 1 slot/.test(toast))fail('charm toast '+toast);
 
 const sold=await p.evaluate(()=>{
   __g.closeSheet();__g.setMode('play');
-  const belt=__g.makeItem(4,1,'belt');belt.id=true;belt.val=10;belt.name='FRACTION BELT';belt.q=1;
-  __g.G.bag=[belt];__g.G.cpi=1.15;__g.G.credits=100;__g.G.charms=[];
-  __g.openSheet('items',{only:['items','shop']});
-  return true;
+  const belt=__g.makeItem(4,1,'belt');belt.id=true;belt.val=10;belt.name='FRACTION BELT';belt.q=1;belt.aff=belt.aff||[];
+  __g.G.bag=[belt];__g.G.cpi=1.15;__g.G.credits=100;__g.G.sats=0;__g.G.mkt={p:1};
+  __g.openVend('brenda');
+  const bid=__g.vendBid(__g.G.bag[0]);
+  __g.vendSell(0);
+  return {bid,credits:__g.G.credits,sats:__g.G.sats,bag:__g.G.bag.length};
 });
-if(!sold)fail('sell sheet');
-await p.click('[data-bag="0"]');
-await p.waitForTimeout(400);
-const oneBtn=await p.evaluate(()=>{const b=document.querySelector('[data-do="sell"]');return b?b.textContent:''});
-await p.click('[data-do="sell"]');
-const one=await p.evaluate(()=>({credits:__g.G.credits,bag:__g.G.bag.length}));
-if(oneBtn!=='Sell ₡4'||one.credits!==104||one.bag!==0)fail('one sale '+JSON.stringify({oneBtn,one}));
+if(sold.bid!==4||sold.sats!==4||sold.credits!==100||sold.bag!==0)fail('one sale '+JSON.stringify(sold));
 
-const bulk=await p.evaluate(()=>{
-  const a=__g.makeItem(4,1,'belt');a.id=true;a.val=10;a.q=1;
-  const b=__g.makeItem(4,1,'gloves');b.id=true;b.val=10;b.q=1;
-  __g.G.bag=[a,b];__g.G.cpi=1.15;__g.G.credits=200;
-  __g.drawSheet();
-  const btn=[...document.querySelectorAll('[data-sellq="-1"]')].map(x=>x.textContent);
-  return {btn};
+const pair=await p.evaluate(()=>{
+  const a=__g.makeItem(4,1,'belt');a.id=true;a.val=10;a.q=1;a.aff=a.aff||[];
+  const b=__g.makeItem(4,1,'gloves');b.id=true;b.val=10;b.q=1;b.aff=b.aff||[];
+  __g.G.bag=[a,b];__g.G.cpi=1.15;__g.G.credits=200;__g.G.sats=0;__g.G.mkt={p:1};
+  __g.vendSell(1);__g.vendSell(0);
+  return {credits:__g.G.credits,sats:__g.G.sats,bag:__g.G.bag.length};
 });
-if(!/₡8/.test(bulk.btn[0]||''))fail('bulk label '+JSON.stringify(bulk));
-await p.click('[data-sellq="-1"]');
-await p.click('[data-sellq="-1"]');
-const pair=await p.evaluate(()=>({credits:__g.G.credits,bag:__g.G.bag.length,log:document.getElementById('log').textContent}));
-if(pair.credits!==208||pair.bag!==0||!/₡8/.test(pair.log))fail('bulk sale '+JSON.stringify(pair));
+if(pair.credits!==200||pair.sats!==8||pair.bag!==0)fail('bulk sale '+JSON.stringify(pair));
 
-const charm=await p.evaluate(()=>{
-  __g.G.charms=[{slot:'charm',charm:1,q:1,il:1,id:true,req:1,name:'Fraction Sub',base:'Lapsed Subscription',aff:[],val:10,on:false}];
-  __g.G.credits=50;__g.G.cpi=1.15;
-  __g.drawSheet();
-  return true;
+const ch=await p.evaluate(()=>{
+  __g.G.bag=[{slot:'charm',charm:1,sz:'slip',cs:1,cells:1,cw:1,ch:1,q:1,il:1,id:true,req:1,name:'Fraction Slip',base:'Slip',aff:[],val:10}];
+  __g.G.credits=50;__g.G.sats=0;__g.G.cpi=1.15;__g.G.mkt={p:1};
+  const bid=__g.vendBid(__g.G.bag[0]);
+  __g.vendSell(0);
+  return {bid,credits:__g.G.credits,sats:__g.G.sats,n:__g.G.bag.length};
 });
-if(!charm)fail('charm sheet');
-await p.click('[data-ch="0"]');
-const chBtn=await p.evaluate(()=>{const b=document.querySelector('[data-chdo="sell"]');return b?b.textContent:''});
-await p.click('[data-chdo="sell"]');
-const ch=await p.evaluate(()=>({credits:__g.G.credits,n:__g.G.charms.length}));
-if(chBtn!=='Sell ₡4'||ch.credits!==54||ch.n!==0)fail('charm sale '+JSON.stringify({chBtn,ch}));
+if(ch.bid!==4||ch.sats!==4||ch.credits!==50||ch.n!==0)fail('charm sale '+JSON.stringify(ch));
 
 if(errs.length)fail(errs[0]);
 console.log('loot-clarity ok');

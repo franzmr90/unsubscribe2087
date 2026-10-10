@@ -1,6 +1,6 @@
 # Unsubscribe 2087
 
-Diablo 2-style isometric action RPG for phone browsers (touch joystick + buttons). Set in 2087 as the
+Diablo 2-style isometric action RPG. On a phone: a touch stick and buttons. On a desk the mouse is the default: left click walks and strikes, right click casts. Set in 2087 as the
 aftermath of the author's novel *Project Phonix*. One self-contained HTML page, published as a claude.ai Artifact.
 
 ## Build

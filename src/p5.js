@@ -1,5 +1,5 @@
 /* ================= side quests: multi-step errands that move things between districts ================= */
-function giveItem(it){it.id=true;if(G.bag.length<24)G.bag.push(it);else addDrop({it},P.x,P.y);toast('You receive '+it.name)}
+function giveItem(it){it.id=true;if(bagCan(it))G.bag.push(it);else addDrop({it},P.x,P.y);toast('You receive '+it.name)}
 const SQ={
  shoebox:{n:'The Shoebox',by:'marrow',who:'Marrow',req:()=>G.marrow,rw:'+1 skill point and a rare amulet',
   offer:'“I told you I kept my letter. There is a shoebox of others under a porch in the Parcel Moors: a whole street’s worth, never deleted. The drones watch for it. Bring it to the old print kiosk in the Hollow Galleria and run them off.”',
@@ -29,7 +29,12 @@ const SQ={
    {t:'obj',zi:10,look:'drum',label:'Take a drum of oil',d:'Fetch a drum of oil from the Boardwalk kitchens',say:'It is heavier than it looks, and the staff have noticed.',amb:['lancer',5,'aegis',2]},
    {t:'amb',zi:10,d:'Deal with the Boardwalk staff'},
    {t:'obj',zi:7,look:'person',label:'Give him the oil',d:'Carry the oil back to the oiler in the Updraft',scene:[{art:'cloud',text:'He works the oil into the bearing with his bare hands. Far above, a city of a hundred thousand people stops trembling by an amount none of them will ever notice.'}],say:'“That will hold another forty years. No, I do not want anything. I never worked out who to send the bill to.”'},
-   {t:'talk',npc:'gramps',d:'Tell Gramps what you found',say:'“He would not take a thing? Then I will give you what I would have given him.”',rw(){G.sp++;giveItem(makeItem(G.lvl+2,4))}}]}
+   {t:'talk',npc:'gramps',d:'Tell Gramps what you found',say:'“He would not take a thing? Then I will give you what I would have given him.”',rw(){G.sp++;giveItem(makeItem(G.lvl+2,4))}}]},
+ lemon:{n:'Bring a Lemon',by:'gramps',who:'Gramps',req:()=>!!G.sawFlyer,rw:'21 sats and a sour potion',
+  offer:'“There is a lemon on a windowsill in the Parcel Moors. Bring it. The party is Saturday, at the senior center, and you are not invited through the door.”',
+  steps:[
+   {t:'obj',zi:1,look:'lemon',label:'Take a lemon',d:'Find a lemon in the Parcel Moors',say:'A lemon, ordinary, on a sill. Nobody is watching it. That is the whole of the danger.'},
+   {t:'talk',npc:'gramps',d:'Bring the lemon back to Gramps',scene:[{art:'letters',text:'The senior-center door is shut. Behind it, ordinary laughter, and the sound of chairs. You do not open it. Gramps does not either.'}],say:'“They are in there. We are out here. That is the correct arrangement.”',rw(){G.sats+=21;giveItem(eggSourItem())}}]}
 };
 const sqSkip={};
 function sqStep(id){const s=G.sq[id];return s&&!s.done?SQ[id].steps[s.s]:null}
@@ -71,13 +76,13 @@ function bounties(){G.bounties=G.bounties||[];while(G.bounties.length<3+(repRank
 
 /* ---------- shape shifting: same level, new class, points returned ---------- */
 const SHIFT_COST=5;
-function shapeShift(cls,roll){if(G.sats<SHIFT_COST){toast('You need '+SHIFT_COST+' sats');sfx('err');return}G.sats-=SHIFT_COST;G.st.shifts++;
+function shapeShift(cls,roll){if(!spendSats(SHIFT_COST,'You need '+SHIFT_COST+' sats'))return;G.st.shifts++;
   let sp=G.sp+G.sk.reduce((a,b)=>a+skSpent(b),0),ap=G.ap+G.at.mgt+G.at.ref+G.at.vit+G.at.bnd;
   G.cls=cls;delete G.schema;delete G.pas;delete G.doc;G.fork={};G.sk=G.sk.map(()=>0);boonRefund();G.at={mgt:0,ref:0,vit:0,bnd:0};let BR=null;
   if(typeof roll==='string'){const r=buildApply(cls,roll,sp,ap);sp=r.sp;ap=r.ap;BR=r.B;roll=0}else{G.sk[0]=1;sp--;G.slots=[0,-1,-1]}
   if(roll){let g=20000;while(sp>0&&g--){const i=ri(0,14),row=Math.floor(i/3);if(G.sk[i]>=10||G.lvl<ROWREQ[row]||(row>0&&!G.sk[i-3])||(row===3&&!G.act2)||(row===4&&!G.act3))continue;const c=skCost(i);if(sp<c)continue;G.sk[i]++;sp-=c}
-    while(ap>0){const k=Math.random()<.45?(CLS[cls].melee?'vit':'mgt'):pick(['mgt','ref','vit','bnd']),n=Math.min(ap,ri(1,5));G.at[k]+=n;ap-=n}
+    while(ap>0){const k=Math.random()<.45?(typeof driveStat==='function'?driveStat(cls):(CLS[cls].melee?'vit':'mgt')):pick(['mgt','ref','vit','bnd']),n=Math.min(ap,ri(1,5));G.at[k]+=n;ap-=n}
     const act=G.sk.map((v,i)=>v&&CLS[cls].sk[i].a?i:-1).filter(i=>i>=0).sort((a,b)=>G.sk[b]-G.sk[a]);G.slots=[0,1,2].map(i=>act[i]===undefined?-1:act[i])}
   G.sp=sp;G.ap=ap;G.form=null;G.formDt=null;G.formT=0;G.page=0;W.allies=[];P.buff=P.mech=P.stealth=P.crunch=0;P.castWait=0;calc();G.hp=S.maxHp;G.en=S.maxEn;setSkillButtons();save(true);sfx('unique');
   $('sheet').hidden=true;$('pop').hidden=true;
-  playScene([{art:'feed',text:'The rig hums. For a moment you are nobody at all. Then the simulation agrees with you about who you are.'}],()=>{mode='play';dlg('You are now a '+CLS[cls].n,BR?buildSummary(cls,BR)+' Everything can be changed from the menu.':roll?G.sk.reduce((a,b)=>a+skSpent(b),0)+' points went into skills and the rest into attributes. Open the menu; Sister Null can return them.':'Spend '+G.sp+' skill points and '+G.ap+' attribute points from the menu.',[['Continue']])})}
+  playScene([{art:'feed',text:'The rig hums. For a moment you are nobody at all. Then the simulation agrees with you about who you are.'}],()=>{mode='play';dlg('You are now a '+CLS[cls].n,BR?buildSummary(cls,BR)+uiSay(' Everything can be changed from the menu. On a desk, C opens the hero.',' Everything can be changed from the menu. Tap Menu, then Hero.'):roll?G.sk.reduce((a,b)=>a+skSpent(b),0)+uiSay(' points went into skills and the rest into attributes. On a desk, C opens the hero. Sister Null can return them.',' points went into skills and the rest into attributes. Tap Menu to spend them again. Sister Null can return them.'):'Spend '+G.sp+' skill points and '+G.ap+' attribute points. '+uiSay('On a desk, C opens the hero, and Skills is on the menu.','Tap Menu for Hero and for Skills.'),[['Continue']])})}

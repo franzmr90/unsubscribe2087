@@ -60,15 +60,25 @@ await p.evaluate(()=>{const d=document.getElementById('dlg');if(d&&!d.hidden){co
 
 const shop=await p.evaluate(()=>__g.satShop.map(o=>o.it.q));
 if(!shop.length||shop.some(q=>q<2||q>4))fail('sat shop qualities '+shop.join(','));
-await p.evaluate(()=>{__g.G.rep.btc=0;__g.G.lean=0;__g.G.scs=700;__g.openSheet('sats',{only:['sats']})});
+await p.evaluate(()=>{__g.G.rep.btc=0;__g.G.lean=0;__g.G.scs=700;__g.setMode('play');__g.openVend('sat')});
 await p.waitForTimeout(150);
-const base=await p.evaluate(()=>[...document.querySelectorAll('[data-sat]')].map(el=>parseInt(el.querySelector('.pr').textContent,10)));
-const raw=await p.evaluate(()=>__g.satShop.map(o=>o.price));
+const readPrices=()=>p.evaluate(()=>{
+  const g=__g, got={};
+  for(const t of ['weapons','armor','trinkets','charms']){
+    g.VEND.tab=t; g.drawSheet();
+    for(const el of document.querySelectorAll('[data-vend]')){
+      const n=el.querySelector('.vp');
+      got[+el.dataset.vend]=n?parseInt(n.textContent,10):NaN;
+    }
+  }
+  return g.satShop.map((o,i)=>got[i]);
+});
+const base=await readPrices();
+const raw=await p.evaluate(()=>__g.satShop.map(o=>__g.satPrice(o)));
 if(base.join()!==raw.join())fail('rank 0 price '+base+' vs '+raw);
-await p.evaluate(()=>{__g.G.rep.btc=10;__g.drawSheet()});
-await p.waitForTimeout(80);
-const off=await p.evaluate(()=>[...document.querySelectorAll('[data-sat]')].map(el=>parseInt(el.querySelector('.pr').textContent,10)));
-const want=raw.map(n=>Math.ceil(n*.9));
+await p.evaluate(()=>{__g.G.rep.btc=10});
+const off=await readPrices();
+const want=await p.evaluate(()=>__g.satShop.map(o=>__g.satPrice(o)));
 if(off.join()!==want.join())fail('rank 1 price '+off+' vs '+want);
 if(OUT)await p.screenshot({path:path.join(OUT,'sim-nonce.png')});
 

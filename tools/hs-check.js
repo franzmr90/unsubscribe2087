@@ -2,6 +2,7 @@
    Loads dist/unsubscribe.html under setContent. Asserts the class boots, the three
    columns exclude each other, the flock can turn, and the builds assign. */
 const {chromium}=require('playwright');const fs=require('fs');const path=require('path');
+const {FORMULAS}=require(path.join(__dirname,'../src/formulas'));
 (async()=>{
 const b=await chromium.launch();
 const p=await b.newPage({viewport:{width:390,height:844}});
@@ -14,7 +15,8 @@ const clear=async(n=18)=>{for(let i=0;i<n;i++){await p.evaluate(()=>{const s=doc
 await p.evaluate(()=>__g.skipDisc());await p.waitForTimeout(200);
 const title=await p.evaluate(()=>{const b=document.querySelector('[data-cls=homesteader]');const c=__g.CLS.homesteader;return {btn:!!(b&&b.textContent.includes('Homesteader')),hp:c&&c.hp,hpL:c&&c.hpL,melee:c&&c.melee,mult:c&&c.mult,ivl:c&&c.ivl,spd:c&&c.spd,col:c&&c.col,locked:c&&c.locked,boon:c&&c.boon,names:(c&&c.sk||[]).map(s=>s.n),act:(c&&c.sk||[]).map(s=>s.a)}})
 if(!title.btn)fail('title button missing');
-if(title.hp!==110||title.hpL!==15||title.melee!==false||title.mult!==1||title.ivl!==.55||title.spd!==4.3||title.col!=='#6a8f62')fail('stats '+JSON.stringify(title));
+const life=FORMULAS.cls.homesteader;
+if(title.hp!==life.hp||title.hpL!==life.hpL||title.melee!==!!life.melee||title.mult!==1||title.ivl!==life.ivl||title.spd!==4.3||title.col!=='#6a8f62')fail('stats '+JSON.stringify(title));
 if(title.locked||title.boon)fail('locked or boon set');
 const names=['Cold Frame','Wear the Hound','Strays','Compost','Wear the Hull','The Bull','Hedgerow','Shed','Go Feral','Kill Frost','Wear What You Killed','Rootbound','Salt the Earth','Too Big for the Door','Slaughter Weight'];
 if(title.names.join('|')!==names.join('|'))fail('skill names '+title.names.join('|'));

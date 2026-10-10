@@ -31,6 +31,7 @@ const clear = async p => { for (let i = 0; i < 14; i++) { await p.evaluate(() =>
   ok('every unlocked class is offered on a fresh account',
     offered.length === unlocked.length && unlocked.every(k => offered.includes(k)),
     'offered ' + offered.join(',') + ' | unlocked ' + unlocked.join(','));
+  ok('the starter classes are among them', ['scrapper', 'witness', 'homesteader'].every(k => offered.includes(k)), offered.join(','))
   ok('the Maximalist is not among them', !offered.includes('maxi'), offered.join(','));
 
   /* ---- he exists in the data, with a full tree ---- */

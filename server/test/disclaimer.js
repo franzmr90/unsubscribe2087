@@ -41,11 +41,15 @@ const ok = (n, c, d) => { if (c) { pass++; out.push('  ok   ' + n); } else { fai
   await p.waitForTimeout(700);
   ok('a tap clears it', await p.evaluate(() => document.getElementById('disc').hidden));
   ok('and that tap did not start a game', (await p.evaluate(() => __g.mode)) === 'title');
-  const after = await p.evaluate(() => ({
-    offered: document.querySelectorAll('[data-cls]').length,
-    unlocked: Object.values(__g.CLS).filter(c => !c.locked).length
-  }));
-  ok('the title is usable afterwards', after.offered > 0 && after.offered === after.unlocked, JSON.stringify(after));
+  const after = await p.evaluate(() => {
+    const ids = [...document.querySelectorAll('[data-cls]')].map(e => e.dataset.cls);
+    return { ids, unlocked: Object.values(__g.CLS).filter(c => !c.locked).length };
+  });
+  ok('the title is usable afterwards',
+    after.ids.length > 0 && after.ids.length === after.unlocked
+      && ['scrapper', 'homesteader', 'witness'].every(k => after.ids.includes(k))
+      && !after.ids.includes('maxi'),
+    JSON.stringify(after));
   await p.close();
 
   /* Nobody touches it: it must still go away. */

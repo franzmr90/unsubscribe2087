@@ -55,10 +55,10 @@ const act1=await p.evaluate(()=>({
   stats:document.getElementById('deathS').textContent
 }));
 check('Act I rises in Stillwater Commons', act1.btn==='Rise in Stillwater Commons', act1.btn);
-check('the portal is the district entrance', /start of the district/.test(act1.note), act1.note);
+check('the portal is the district entrance', /start of that district/.test(act1.note), act1.note);
 check('the slain line names the district', /The Parcel Moors/.test(act1.line), act1.line);
-check('softcore names a re-onboarding charge', /Re-onboarding fee/.test(act1.stats)&&/₡/.test(act1.stats), act1.stats);
-check('Act I fee is the whole credits the purse lost', fee1.before-fee1.after===4&&act1.stats.endsWith('Re-onboarding fee₡4'), JSON.stringify({fee1,stats:act1.stats}));
+check('softcore names the credits left on the body', /Credits on the body/.test(act1.stats)&&/₡/.test(act1.stats), act1.stats);
+check('Act I sets four percent of carried credits on the body', fee1.before-fee1.after===3&&act1.stats.endsWith('Credits on the body₡3'), JSON.stringify({fee1,stats:act1.stats}));
 check('a second blow while falling does not fine you again', fee1.once===fee1.after&&fee1.deaths===1&&/a Tick/.test(act1.line)&&!/rival/.test(act1.line), JSON.stringify({fee1,line:act1.line}));
 const heldPortal=await p.evaluate(()=>__g.G.portal);
 check('the return portal is written before Rise', heldPortal&&heldPortal.zi===1&&heldPortal.x===start.x&&heldPortal.y===start.y, JSON.stringify(heldPortal)+' start '+start.x+','+start.y);
@@ -80,7 +80,7 @@ const fee2=await p.evaluate(()=>{
 await p.waitForTimeout(2800);
 const act2=await p.evaluate(()=>({btn:document.getElementById('bRise').textContent,stats:document.getElementById('deathS').textContent}));
 check('Act II rises in The Landing', act2.btn==='Rise in The Landing', act2.btn);
-check('Act II fee is the whole credits the purse lost', fee2.before-fee2.after===49&&act2.stats.endsWith('Re-onboarding fee₡49'), JSON.stringify({fee2,stats:act2.stats}));
+check('Act II uses the same level rate, not a flat fifteen percent', fee2.before-fee2.after===13&&act2.stats.endsWith('Credits on the body₡13'), JSON.stringify({fee2,stats:act2.stats}));
 await p.click('#bRise');
 await p.waitForTimeout(300);
 const land=await p.evaluate(()=>__g.W.zi);
@@ -93,7 +93,7 @@ await p.waitForTimeout(2800);
 const hc=await p.evaluate(()=>({btn:document.getElementById('bRise').textContent,note:document.getElementById('deathNote').textContent,line:document.getElementById('deathP').textContent,stats:document.getElementById('deathS').textContent}));
 check('hardcore begins again', hc.btn==='Begin again', hc.btn);
 check('hardcore promises no portal', /no portal/i.test(hc.note)&&!/square/.test(hc.note), hc.note);
-check('hardcore does not charge a re-onboarding fee', purse.before===purse.after&&purse.before>0&&/Re-onboarding fee/.test(hc.stats)&&/none/.test(hc.stats)&&!/₡/.test(hc.stats), JSON.stringify({purse,stats:hc.stats}));
+check('hardcore leaves no credits on a body', purse.before===purse.after&&purse.before>0&&/Credits on the body/.test(hc.stats)&&/none/.test(hc.stats)&&!/₡/.test(hc.stats), JSON.stringify({purse,stats:hc.stats}));
 check('a second blow does not begin a hardcore death twice', purse.now===purse.deaths+1&&/a Tick/.test(hc.line)&&!/rival/.test(hc.line), JSON.stringify({purse,line:hc.line}));
 
 await p.evaluate(()=>{

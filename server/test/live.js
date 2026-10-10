@@ -162,10 +162,194 @@ async function until(page, fn, arg, ms) {
   const far = await until(B, () => __mp.MP.lastCast && __mp.MP.lastCast.n ? __mp.MP.lastCast : null);
   ok('the other client plays one cast', !!far && far.n === 1 && far.k === want.k && far.col === want.col, JSON.stringify(far));
 
-  /* ---- hostility. Declaring is a town act, and it holds the declarer there for ten seconds. ---- */
+  /* ---- auras. Rank travels, and the radius is that rank's radius. ---- */
+  await A.evaluate(() => {
+    __g.G.cls = 'maxi'; __g.G.sk[4] = 10; __g.G.sk[10] = 8; __g.G.pas = [10];
+    __g.P.aura = { i: 4, L: 10, t: 1 }; __g.P.x = 8; __g.P.y = 8; __g.calc();
+  });
+  await B.evaluate(() => { __g.P.x = 8; __g.P.y = 8; });
+  await wait(500);
+  const aura = await until(B, () => {
+    __g.setMode('play');
+    const o = __mp.MP.others[0];
+    if (!o || o.au !== 4 || o.aL !== 10 || o.node !== 8) return null;
+    __g.P.x = o.x; __g.P.y = o.y;
+    __g.maxiAura(0.016);
+    const nodeM = __g.P.nodeM || 0;
+    const junk = { k: 'tick', x: o.x + 4, y: o.y, hp: 10, max: 10, r: .2, mods: {} };
+    __g.W.ents.push(junk);
+    __g.maxiAura(0.016);
+    const mk = junk.mkP || 0;
+    const ix = __g.W.ents.indexOf(junk);
+    if (ix >= 0) __g.W.ents.splice(ix, 1);
+    __g.P.x = o.x + 1; __g.P.y = o.y;
+    o.au = 3; o.aL = 10;
+    __g.maxiAura(0.016);
+    const toxNear = __g.P.toxL;
+    __g.P.x = o.x + 6; __g.P.y = o.y;
+    __g.maxiAura(0.016);
+    const toxFar = __g.P.toxL;
+    o.au = 4; o.aL = 10;
+    return { aL: 10, mk, toxNear, toxFar, node: o.node, nodeM };
+  });
+  ok('a rank-10 aura reaches four paces and a rank-1 aura would not', !!aura && aura.mk > 0.5, JSON.stringify(aura));
+  ok('toxic maximalism buffs a teammate inside it and not outside it', !!aura && aura.toxNear === 10 && aura.toxFar === 0, JSON.stringify(aura));
+  ok('Running a Node rank reaches the teammate', !!aura && aura.node === 8 && aura.nodeM > 1.2, JSON.stringify(aura));
+  await A.evaluate(() => { __g.G.cls = 'scrapper'; __g.P.aura = null; __g.G.sk[4] = 0; __g.G.sk[10] = 0; __g.G.pas = []; __g.calc(); });
+
+  /* Item skill casts are not skills 0–14. Open Book has to be visible on the other client. */
+  const castN = await B.evaluate(() => (__mp.MP.lastCast && __mp.MP.lastCast.n) || 0);
+  await A.evaluate(() => { __g.setMode('play'); __g.mpNoteCast(102); });
+  const book = await until(B, n => __mp.MP.lastCast && __mp.MP.lastCast.n > n && __mp.MP.lastCast.col === '#9a6cff' ? __mp.MP.lastCast : null, castN);
+  ok('an Open Book cast reaches the other client', !!book, JSON.stringify(book));
+
+  /* Unnamed Source lends the swing to the other player when that player is the nearest ally. */
+  await A.evaluate(() => {
+    __g.setMode('play');
+    __g.G.cls = 'witness'; __g.G.sk[10] = 1; __g.G.page = 100; __g.G.en = 99999;
+    __g.P.x = 5; __g.P.y = 5; __g.P.cd = __g.P.cd || {}; __g.P.cd[10] = 0;
+    __g.P.castWait = 0; __g.P.silence = 0; __g.W.merc = null; __g.W.tag = null;
+    __g.W.allies = (__g.W.allies || []).filter(a => a && a.k !== 'minion');
+    __g.calc();
+  });
+  await B.evaluate(() => { __g.P.x = 5.3; __g.P.y = 5; __g.P.soundSwing = 0; });
+  const beside = await until(A, () => {
+    const o = __mp.MP.others && __mp.MP.others[0];
+    if (!o) return 0;
+    return Math.hypot(o.x - __g.P.x, o.y - __g.P.y) < 3 ? 1 : 0;
+  });
+  await A.evaluate(() => { __g.setMode('play'); __g.P.cd[10] = 0; __g.castIndex(10); });
+  const lent = await until(B, () => __g.P.soundSwing ? 1 : 0);
+  const sounded = await B.evaluate(() => {
+    if (!__g.P.soundSwing) return { lent: 0 };
+    __g.W.ents = (__g.W.ents || []).filter(e => !e || e.mp || Math.hypot(e.x - __g.P.x, e.y - __g.P.y) > 4);
+    const e = { k: 'tick', x: __g.P.x + 1, y: __g.P.y, hp: 80, max: 80, r: .4, mods: {}, sz: 1 };
+    __g.W.ents.push(e);
+    __g.P.dir = { x: 1, y: 0 }; __g.P.atk = 0;
+    __g.attack();
+    return { lent: 1, snd: e.snd || 0, lt: e.lt || '', left: __g.P.soundSwing || 0 };
+  });
+  ok('Unnamed Source lends one Sound swing to the other player', !!beside && !!lent && !!sounded && sounded.lt === 'sound' && !sounded.left, JSON.stringify({ beside, sounded }));
+  await A.evaluate(() => { __g.G.cls = 'scrapper'; __g.G.sk[10] = 0; __g.calc(); });
+
+  /* One lunch pail. Both stand in it. The store drops once, not once per client. */
+  await A.evaluate(() => {
+    __g.setMode('play');
+    __g.G.cls = 'scrapper'; __g.calc();
+    __g.G.hp = Math.round(__g.S.maxHp * 0.5);
+    __g.P.x = 6; __g.P.y = 6;
+    __g.W.allies = (__g.W.allies || []).filter(a => !a || a.k !== 'pail');
+    const pool = Math.round(__g.S.maxHp * 0.34);
+    __g.W.allies.push({ k: 'pail', x: 6, y: 6, life: 1e9, hp: pool, max: pool, rate: 0.06, r: .3, L: 10 });
+  });
+  await B.evaluate(() => {
+    __g.setMode('play');
+    __g.G.hp = Math.round(__g.S.maxHp * 0.5);
+    __g.P.x = 6.2; __g.P.y = 6;
+  });
+  await wait(400);
+  const pail0 = await A.evaluate(() => {
+    const a = __g.W.allies.find(x => x.k === 'pail' && !x.remote);
+    return { hp: __g.G.hp, pool: a ? a.hp : 0, max: a ? a.max : 0 };
+  });
+  const b0 = await B.evaluate(() => __g.G.hp);
+  await A.evaluate(() => { for (let i = 0; i < 8; i++) __g.update(0.3); });
+  await wait(500);
+  await A.evaluate(() => { for (let i = 0; i < 8; i++) __g.update(0.3); });
+  const pail1 = await until(B, b0 => {
+    const o = __mp.MP.others[0];
+    if (!o || !o.pail || !(o.pail.hp > 0) || o.pail.hp >= o.pail.max) return null;
+    if (__g.G.hp <= b0) return null;
+    return { hp: __g.G.hp, store: o.pail.hp, remote: (__g.W.allies || []).some(a => a && a.k === 'pail' && !a.remote) ? 1 : 0 };
+  }, b0);
+  const aHeal = await A.evaluate(h => {
+    const a = __g.W.allies.find(x => x.k === 'pail' && !x.remote);
+    return { gain: __g.G.hp - h, left: a ? a.hp : 0 };
+  }, pail0.hp);
+  ok('one lunch pail heals both players from one store', !!(pail1 && aHeal && aHeal.gain > 0 && pail1.hp > b0 && (aHeal.gain + (pail1.hp - b0)) <= pail0.pool + 1 && pail1.store < pail0.pool && !pail1.remote), JSON.stringify({ pail0, pail1, aHeal, b0 }));
+
+  /* The mob snapshot paints On the Record and Testimony onto the machine. */
+  const painted = await B.evaluate(() => {
+    const e = { mid: 9009, k: 'tick', x: 1, y: 1, hp: 10, max: 10, r: .3, mods: {}, sz: 1, ph: 0 };
+    __g.W.ents.push(e);
+    __mp.applyMobs({ zi: __g.W.zi, tier: __g.G.tier | 0, list: [{ id: 9009, k: 'tick', x: 1, y: 1, hp: 10, max: 10, tes: 4, curse: { k: 'rec', m: 1.6, sec: 8 } }] });
+    return { tes: e.partyTes || 0, rec: e.onRecM || 0, t: e.onRecT || 0 };
+  });
+  ok('On the Record and Testimony paint from the mob snapshot', !!painted && painted.tes === 4 && painted.rec >= 1.6 && painted.t > 0, JSON.stringify(painted));
+
+  /* Area ticks still land after the swing packet budget is spent.
+     The mob list is the host's. Either client can be host, depending on who walked in first. */
+  const where = await A.evaluate(() => {
+    __g.P.x = 10; __g.P.y = 10;
+    const e = { mid: 77, k: 'boss5', x: 10, y: 10, hp: 400000, max: 400000, r: .3, mods: {}, sz: 1, ph: 0 };
+    __g.W.ents.push(e);
+    __mp.send('move', { x: 10, y: 10, zi: __g.W.zi, tier: __g.G.tier | 0, hp: __g.G.hp, hpm: __g.S.maxHp, lvl: __g.G.lvl, au: 7, aL: 1 });
+    return { zi: __g.W.zi, tier: __g.G.tier | 0 };
+  });
+  const aHost = await A.evaluate(() => !!(__mp.mobHost && __mp.me && __mp.mobHost === __mp.me.uid));
+  await (aHost ? A : B).evaluate(w => {
+    __mp.send('mobs', { zi: w.zi, tier: w.tier, list: [{ id: 77, k: 'boss5', x: 10, y: 10, hp: 400000, max: 400000, ml: 20 }] });
+  }, where);
+  await wait(250);
+  await A.evaluate(() => { for (let i = 0; i < 20; i++) __mp.send('mhit', { zi: __g.W.zi, tier: __g.G.tier | 0, id: 77, d: 10, sk: -1 }); });
+  const swung = await until(A, () => { const e = __g.W.ents.find(x => x.mid === 77); return e && e.hp < 400000 ? 400000 - e.hp : 0; });
+  await A.evaluate(() => { for (let i = 0; i < 6; i++) __mp.send('mhit', { zi: __g.W.zi, tier: __g.G.tier | 0, id: 77, d: 10, sk: 7, area: 1 }); });
+  const pulsed = await until(A, base => { const e = __g.W.ents.find(x => x.mid === 77); return e && (400000 - e.hp) > base ? 400000 - e.hp : 0; }, swung);
+  ok('a Proof of Work tick still lands when the swing budget is spent', !!swung && !!pulsed && pulsed > swung, JSON.stringify({ swung, pulsed }));
+
+  /* ---- a trade, in town, both confirm, one swap ---- */
   await A.evaluate(() => { __g.enter(0); __mp.send('hello', { lvl: __g.G.lvl, cls: __g.G.cls, zi: 0, hp: __g.G.hp, hpm: __g.S.maxHp }); });
   await B.evaluate(() => { __g.enter(0); __mp.send('hello', { lvl: __g.G.lvl, cls: __g.G.cls, zi: 0, hp: __g.G.hp, hpm: __g.S.maxHp }); });
-  await wait(300);
+  await wait(400);
+  await A.evaluate(() => { __g.G.sats = 40; __g.G.bag.push({ slot: 'helm', il: 5, q: 1, base: 'Cap', name: 'Ada Helm', aff: [], id: true, tid: 'helmAda001', val: 10, req: 1 }); });
+  await B.evaluate(() => { __g.G.sats = 7; __g.G.bag.push({ slot: 'ring', il: 5, q: 1, base: 'Ring', name: 'Vale Ring', aff: [], id: true, tid: 'ringVale01', val: 10, req: 1 }); });
+  await A.evaluate(u => __mp.send('trade.ask', { uid: u }), uidB);
+  await B.evaluate(u => __mp.send('trade.accept', { uid: u }), uidA);
+  const table = await until(A, () => __mp.MP.trade && __mp.MP.trade.phase === 'open' ? 1 : 0);
+  ok('a trade window opens', !!table);
+  await A.evaluate(() => __mp.send('trade.offer', { sats: 10, items: [__g.G.bag.find(i => i.tid === 'helmAda001')] }));
+  await B.evaluate(() => __mp.send('trade.offer', { sats: 3, items: [__g.G.bag.find(i => i.tid === 'ringVale01')] }));
+  await wait(200);
+  await A.evaluate(() => __mp.send('trade.confirm', {}));
+  const frozen = await until(A, () => __mp.MP.trade && __mp.MP.trade.you && __mp.MP.trade.you.ok ? 1 : 0);
+  const spent = await A.evaluate(() => {
+    const before = __g.G.sats | 0;
+    const okSpend = __mp.spendSats(before);
+    const it = __g.G.bag.find(i => i.tid === 'helmAda001');
+    const blocked = __mp.tradeLocked(it);
+    return { frozen: __mp.MP.trade && __mp.MP.trade.locked, okSpend, sats: __g.G.sats | 0, before, blocked, still: __g.G.bag.some(i => i.tid === 'helmAda001') };
+  });
+  ok('a confirm freezes the offered sats', !!frozen && spent && spent.okSpend === false && spent.sats === spent.before, JSON.stringify(spent));
+  ok('a confirm keeps an offered item from being dropped', !!spent && spent.blocked === true && spent.still === true, JSON.stringify(spent));
+  await B.evaluate(() => __mp.send('trade.confirm', {}));
+  const swapped = await until(A, () => {
+    const bag = __g.G.bag.map(i => i.tid);
+    return bag.indexOf('ringVale01') >= 0 && bag.indexOf('helmAda001') < 0 && __g.G.sats === 33 ? 1 : 0;
+  });
+  const swappedB = await until(B, () => {
+    const bag = __g.G.bag.map(i => i.tid);
+    return bag.indexOf('helmAda001') >= 0 && bag.indexOf('ringVale01') < 0 && __g.G.sats === 14 ? 1 : 0;
+  });
+  ok('both confirms swap sats and items once', !!swapped && !!swappedB);
+  const twice = await A.evaluate(() => {
+    const before = { sats: __g.G.sats | 0, bag: __g.G.bag.map(i => i.tid).join(',') };
+    if (__mp.MP.lastDone) __mp.tradeApply(__mp.MP.lastDone);
+    const after = { sats: __g.G.sats | 0, bag: __g.G.bag.map(i => i.tid).join(',') };
+    return { before, after, same: before.sats === after.sats && before.bag === after.bag };
+  });
+  ok('applying the same trade twice does not mint', !!twice && twice.same, JSON.stringify(twice));
+
+  /* ---- hostility. Declaring is a town act, and it holds the declarer there for ten seconds. ---- */
+  await A.evaluate(() => { __g.enter(1); __mp.send('hello', { lvl: __g.G.lvl, cls: __g.G.cls, zi: 1, hp: __g.G.hp, hpm: __g.S.maxHp }); });
+  await wait(250);
+  await A.evaluate(() => { __g.enter(0); __mp.send('hello', { lvl: __g.G.lvl, cls: __g.G.cls, zi: 0, hp: __g.G.hp, hpm: __g.S.maxHp }); });
+  await B.evaluate(() => { __g.enter(0); __mp.send('hello', { lvl: __g.G.lvl, cls: __g.G.cls, zi: 0, hp: __g.G.hp, hpm: __g.S.maxHp }); });
+  await wait(200);
+  await A.evaluate(u => __mp.send('hostile', { uid: u }), uidB);
+  await wait(250);
+  const tooSoon = await B.evaluate(u => __mp.MP.hostile[u] ? 1 : 0, uidA);
+  ok('hostility does not stick the moment you arrive', !tooSoon);
+  await wait(3200);
   await A.evaluate(u => { __mp.MP.hostile[u] = 1; __mp.send('hostile', { uid: u }); }, uidB);
   const bKnows = await until(B, u => __mp.MP.hostile[u] ? 1 : 0, uidA);
   ok('hostility reaches the other player', !!bKnows);
@@ -192,6 +376,75 @@ async function until(page, fn, arg, ms) {
   const hurt = await until(B, h => __g.G.hp < h ? h - __g.G.hp : 0, hpBefore);
   ok('damage crosses between players', hurt > 0, 'took ' + hurt);
   ok('damage between players is scaled down', hurt > 0 && hurt < 400, 'took ' + hurt + ' of 400');
+
+  const leech = await A.evaluate(() => {
+    const e = __g.W.ents.find(x => x.mp);
+    if (!e) return null;
+    e.hp = 5000; e.max = 5000; e.snd = 0;
+    __g.G.cls = 'courier';
+    __g.P.aura = null; __g.P.toxL = 0; __g.P.e82 = 0; __g.P.ambT = 0; __g.P.shr = null;
+    __g.P.bear = 0; __g.P.book = 0; __g.P.rBook = 0; __g.P.fm = null; __g.P.nodeM = 0; __g.P.buff = 0;
+    __g.calc();
+    __g.S.dmin = 100; __g.S.dmax = 100; __g.S.dmg = 0; __g.S.shock = 0; __g.S.crit = 0; __g.S.critM = 1;
+    __g.S.leech = 100;
+    if (__g.S.sp) __g.S.sp.severance = 0;
+    __g.G.hp = 50; __g.S.maxHp = 100000;
+    const before = __g.G.hp;
+    __g.hit(e, 1, false);
+    return { gain: __g.G.hp - before };
+  });
+  ok('leech against a player stops at 4%', !!leech && leech.gain >= 3.9 && leech.gain < 15, JSON.stringify(leech));
+  await A.evaluate(() => { __g.G.cls = 'scrapper'; __g.calc(); });
+
+  await B.evaluate(() => {
+    __g.G.cls = 'courier'; __g.calc();
+    __g.S.armor = 0; __g.S.pdr = 0; __g.S.sp = __g.S.sp || {}; __g.S.sp.indemnity = 1;
+    __g.S.r_heat = 75; __g.S.r_impact = 0; __g.G.god = false; __g.P.inv = 0; __g.P.dip = 0; __g.P.paper = 0;
+  });
+  async function land(pkt) {
+    await B.evaluate(() => { __g.G.hp = __g.S.maxHp; __g.P.inv = 0; __g.G.god = false; });
+    const before = await B.evaluate(() => __g.G.hp);
+    await A.evaluate(p => __mp.send('pvp', p), Object.assign({ uid: uidB }, pkt));
+    return until(B, h => __g.G.hp < h - 0.5 ? +(h - __g.G.hp).toFixed(2) : 0, before);
+  }
+  const byCrit = await land({ dmg: 160, kind: 'crit', dty: 'impact', critM: 2 });
+  const byMul = await land({ dmg: 160, kind: 'crit', dty: 'impact', critM: 4 });
+  const byHeat = await land({ dmg: 160, kind: '', dty: 'heat', critM: 0 });
+  const byImpact = await land({ dmg: 160, kind: '', dty: 'impact', critM: 0 });
+  ok('indemnity uses the crit multiplier on the packet', byCrit > 0 && byMul > 0 && byMul < byCrit * 0.7, byCrit + ' at x2, ' + byMul + ' at x4');
+  ok('a player hit uses the damage type on the packet', byHeat > 0 && byImpact > byHeat * 2, byHeat + ' heat, ' + byImpact + ' impact');
+  await B.evaluate(() => { __g.G.cls = 'scrapper'; __g.S.sp.indemnity = 0; __g.S.r_heat = 0; __g.calc(); });
+
+  async function braceHit(on) {
+    await B.evaluate(flag => {
+      __g.G.cls = 'scrapper';
+      __g.G.sk = flag ? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0] : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      __g.G.pas = flag ? [11] : [];
+      __g.G.god = false;
+      __g.calc();
+      __g.P.lineT = flag ? 6 : 0;
+      __g.G.en = 0;
+      __g.G.hp = __g.S.maxHp;
+    }, on);
+    await wait(250);
+    const before = await B.evaluate(() => __g.G.hp);
+    await A.evaluate(u => __mp.send('pvp', { uid: u, dmg: 400 }), uidB);
+    return until(B, h => __g.G.hp < h ? +(h - __g.G.hp).toFixed(2) : 0, before);
+  }
+  const open = await braceHit(false);
+  const held = await braceHit(true);
+  ok('hold the line keeps more of a player hit', open > 0 && held > 0 && held < open * 0.85, open + ' open, ' + held + ' braced');
+
+  await B.evaluate(() => { __g.G.god = true; __g.G.hp = __g.S.maxHp; });
+  await wait(250);
+  const liedMax = await B.evaluate(() => __g.S.maxHp);
+  await A.evaluate(u => __mp.send('pvp', { uid: u, dmg: 800 }), uidB);
+  const lied = await until(A, max => {
+    const o = __mp.MP.others[0];
+    return o && o.hp < max - 1 ? o.hp : 0;
+  }, liedMax);
+  await B.evaluate(() => { __g.G.god = false; });
+  ok('a life bar that ignores a player hit is docked', lied > 0 && lied < liedMax - 1, lied + ' of ' + liedMax);
 
   /* ---- town is safe ---- */
   await B.evaluate(() => __g.enter(0));

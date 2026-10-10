@@ -13,7 +13,7 @@ const LOCALS={
  zabo:{n:'Zabo',col:'#a8997e',town:18,say:['Long before any of it, I wrote down how you might make gold out of arithmetic. I was nearly right, which in my trade is the same as wrong.','A contract that keeps itself. That was the idea.']},
  usher:{n:'The Usher',col:'#6a5a4a',town:18,say:['The Board will see you presently. It has been saying so since 2051.','Please do not touch the chairs. One of them is still warm.']}};
 Object.assign(PERS,{laz:{n:'Laz',g:'mid',know:2,o:2},finn:{n:'Finn',g:'maxi',know:3,o:4},vane:{n:'Ms. Vane',g:'fud',know:0,o:1},zabo:{n:'Zabo',g:'mid',know:3,o:7},usher:{n:'The Usher',g:'fud',know:0,o:3}});
-function talkLocal(id){const L=LOCALS[id],b=[];if(L.buy)b.push(['A slice · 2 sats (refills your stims)',()=>{if(G.sats<2){toast('Not enough sats');sfx('err');return}G.sats-=2;G.stims=S.cap;sfx('stim');addAdopt(.5,'');toast('Hot, and paid for in the only thing he takes.')}]);b.push(['Leave']);dlg(L.n,'“'+pick(L.say)+'”',b)}
+function talkLocal(id){const L=LOCALS[id],b=[];if(L.buy)b.push(['A slice · 2 sats (refills your stims)',()=>{if(!spendSats(2,'Not enough sats'))return;G.stims=S.cap;sfx('stim');addAdopt(.5,'');toast('Hot, and paid for in the only thing he takes.')}]);b.push(['Leave']);dlg(L.n,'“'+pick(L.say)+'”',b)}
 function addLocals(zi){const at=[[9.5,16.5],[15.5,9.5]];let i=0;for(const id in LOCALS)if(LOCALS[id].town===zi){const p=at[i++%2];W.npcs.push({id,x:p[0],y:p[1],name:LOCALS[id].n,col:LOCALS[id].col})}}
 /* a lit node can be raided; leave it to them and it goes dark */
 function raidCheck(){W.raid=0;if(W.z.town||W.z.sim||W.z.sub||!G.nodes[W.zi])return;const o=W.objs.find(o=>o.k==='dnode');if(!o||Math.random()>.25)return;
@@ -21,26 +21,225 @@ function raidCheck(){W.raid=0;if(W.z.town||W.z.sim||W.z.sub||!G.nodes[W.zi])retu
   W.goal0=W.goal;setTimeout(()=>toast('A repo crew is cutting the node in this district. Stop them, or it goes dark.'),1600)}
 function raidLeave(){if(W&&W.raid&&W.ents.some(e=>e.raid)){delete G.nodes[W.zi];const o=W.objs.find(o=>o.k==='dnode');if(o)o.used=0;W.raid=0;setTimeout(()=>addAdopt(-3,'a node was cut while you walked away'),800)}}
 function raidKill(e){if(e.raid){W.raid=0;sfx('quest');addAdopt(1,'the node holds')}}
-/* subscriptions are not free: they bill each minute, and the bill inflates */
-function upkeepTick(dt){G.chT=(G.chT===undefined?60:G.chT)-dt;if(G.chT>0)return;G.chT=60;const n=chOn();if(!n){G.charmOff=0;return}const c=chBill(),was=G.charmOff;
-  if(G.credits>=c){G.credits-=c;G.charmOff=0;if(was){calc();toast('Subscriptions renewed.')}}else{G.charmOff=1;if(!was){calc();toast('You cannot cover your subscriptions. They lapse until you can.')}}}
 const ACCT='unsub2087acct';
 function acctGet(){try{return JSON.parse(localStorage.getItem(ACCT)||'{}')}catch(e){return{}}}
 let ACC={stash:[],cr:0,sats:0,para:0,maxi:0,t:0};const accNorm=a=>Object.assign({stash:[],cr:0,sats:0,para:0,maxi:0,t:0},a||{});
 function accLoad(){ACC=accNorm(acctGet())}
-function accSave(){ACC.t=Date.now();try{localStorage.setItem(ACCT,JSON.stringify(ACC))}catch(e){}if(CL)try{CL.doc('acct').set({s:JSON.stringify(ACC),t:ACC.t}).catch(()=>{})}catch(e){}}
-async function accCloud(){try{const d=await CL.doc('acct').get();if(d.exists){const c=d.data();if(c.t>(ACC.t||0)){ACC=accNorm(JSON.parse(c.s));if(typeof drawCls==='function')drawCls();try{localStorage.setItem(ACCT,JSON.stringify(ACC))}catch(e){}}}}catch(e){}}
-function accMigrate(){if(G.stash&&G.stash.length){let n=0;while(G.stash.length&&ACC.stash.length<36){ACC.stash.push(G.stash.shift());n++}if(n)accSave()}}
+function accSave(){if(ACC&&ACC.stash)ACC.stash=ACC.stash.filter(it=>!(it&&it.test));ACC.t=Date.now();try{localStorage.setItem(ACCT,JSON.stringify(ACC))}catch(e){}if(CL)try{CL.doc('acct').set({s:JSON.stringify(ACC),t:ACC.t}).catch(()=>{})}catch(e){}}
+async function accCloud(){try{const d=await CL.doc('acct').get();if(d.exists){const c=d.data();if(c.t>(ACC.t||0)){ACC=accNorm(JSON.parse(c.s));if(typeof charmMigrate==='function')charmMigrate();if(typeof drawCls==='function')drawCls();try{localStorage.setItem(ACCT,JSON.stringify(ACC))}catch(e){}}}}catch(e){}}
+function accMigrate(){if(G.stash&&G.stash.length){let n=0;while(G.stash.length&&gridCan(ACC.stash,G.stash[0],6,6)){ACC.stash.push(G.stash.shift());n++}if(n)accSave()}}
 function acctPara(){if((G.para||0)>(ACC.para||0)){ACC.para=G.para;accSave()}else if(G.act3&&(ACC.para||0)>(G.para||0))G.para=ACC.para}
-function rerollMod(it){const own=it.aff.map((a,i)=>i).filter(i=>!it.aff[i].w&&AFK[it.aff[i].k]&&AFK[it.aff[i].k].tiers);if(!own.length)return null;const i=pick(own),old=it.aff[i],pool=AFX.filter(a=>a.tiers&&(!a.sl||a.sl.includes(it.slot))&&!it.aff.some(x=>x.k===a.k));
+function rerollMod(it){const own=it.aff.map((a,i)=>i).filter(i=>!it.aff[i].w&&AFK[it.aff[i].k]&&AFK[it.aff[i].k].tiers);if(!own.length)return null;const i=pick(own),old=it.aff[i],pool=AFX.filter(a=>a.tiers&&(!a.sl||a.sl.includes(it.slot))&&!it.aff.some((x,j)=>j!==i&&(x.k===a.k||(a.grp&&x.grp===a.grp))));
   for(let t=0;t<12;t++){const a=pool.length?pick(pool):AFK[old.k],n=rollAffix(a,it.il);if(n){n.pre=old.pre;it.aff[i]=n;fixTypes(it);return[old,it.aff[i]]}}return null}
 
-/* subscriptions live in their own rack of twelve, six running at a time */
-/* The billing line prints whole credits, so the minute costs that floor. */
-const chOn=()=>(G.charms||[]).filter(c=>c.on).length,chBill=()=>payTag(12*chOn()*G.cpi);
-function chFix(){G.charms=G.charms||[];for(const arr of[G.bag,G.stash||[]])for(let i=arr.length-1;i>=0;i--)if(arr[i].charm){const c=arr.splice(i,1)[0];if(G.charms.length<12){c.on=chOn()<6;G.charms.push(c)}}}
-function chTake(it){if(G.charms.length>=12)return false;it.on=chOn()<6;it.junk=false;G.charms.push(it);calc();return true}
-const skipPick=it=>!it.charm&&G.eq[it.slot]&&(OPT['pk'+it.q]===false||(OPT.pkBetter&&it.id&&G.lvl>=it.req&&!(itemDelta(it)>.01)));
+/* Charms sit on the belt or they are weight. No rack, no minute bill, no stack. */
+function upkeepTick(){}
+const BELT_W={'Zip-Tie Sash':[6,1],'Tool Belt':[8,2],'Power Girdle':[10,3],'Orbit Girdle':[12,4]};
+const BELT_U={repair:[12,1],check:[6,3],coldwallet:[10,1],soaker:[8,2],carbon:[6,3],clock:[12,2],ledger:[8,4],drawer:[10,3],notyourkeys:[12,4],signin:[6,5],docket:[16,1]};
+function beltBudget(it){
+  if(!it||it.slot!=='belt')return{stims:4,slots:0};
+  const u=it.uid&&BELT_U[it.uid];if(u)return{stims:u[0],slots:u[1]};
+  let stims=it.cap,slots=it.csl,col=false;
+  const w=BELT_W[it.base];if(w){if(stims==null)stims=w[0];if(slots==null)slots=w[1]}
+  if(stims==null)stims=4;if(slots==null)slots=0;
+  for(const a of it.aff||[]){if(!a)continue;if(a.k==='courier'){stims+=4;slots-=1}if(a.k==='collection'){stims-=4;slots+=1;col=true}}
+  if(slots<0)slots=0;if(col&&stims<2)stims=2;
+  return{stims,slots}}
+function beltStamp(it){const u=it&&it.uid&&BELT_U[it.uid];if(u){it.cap=u[0];it.csl=u[1]}}
+function charmShape(sz){
+  if(sz==='filing')return{sz:'filing',cs:3,cells:4,cw:2,ch:2,base:'Filing'};
+  if(sz==='notice')return{sz:'notice',cs:2,cells:2,cw:1,ch:2,base:'Notice'};
+  return{sz:'slip',cs:1,cells:1,cw:1,ch:1,base:'Slip'}}
+function charmCost(it){return !it||!it.charm?0:(it.cs||charmShape(it.sz).cs)}
+function charmCells(it){return !it||!it.charm?1:(it.cells||charmShape(it.sz).cells)}
+function spanOf(it){if(!it||!it.charm)return{w:1,h:1};const s=charmShape(it.sz);return{w:it.cw||s.cw,h:it.ch||s.ch}}
+function charmParts(it){return !it||!it.charm?0:it.sz==='filing'?8:it.sz==='notice'?4:2}
+function charmNormalize(it){
+  if(!it||!it.charm)return it;
+  delete it.qty;delete it.stack;delete it.count;delete it.num;delete it.on;
+  if(!(it.q>=0&&it.q<=4))it.q=1;
+  return it}
+function gridCells(list){let n=0;for(const it of list||[])if(it)n+=it.charm?charmCells(it):1;return n}
+function gridPlace(list,cols,rows){
+  const occ=Array(cols*rows).fill(0),out=[];
+  for(let i=0;i<(list||[]).length;i++){const it=list[i];if(!it)continue;const sp=spanOf(it);let spot=null;
+    for(let y=0;y<=rows-sp.h&&!spot;y++)for(let x=0;x<=cols-sp.w;x++){let ok=1;
+      for(let dy=0;dy<sp.h&&ok;dy++)for(let dx=0;dx<sp.w;dx++)if(occ[(y+dy)*cols+x+dx])ok=0;
+      if(ok)spot={x,y}}
+    if(!spot)return null;
+    for(let dy=0;dy<sp.h;dy++)for(let dx=0;dx<sp.w;dx++)occ[(spot.y+dy)*cols+spot.x+dx]=1;
+    out.push({i,it,x:spot.x,y:spot.y,w:sp.w,h:sp.h})}
+  return out}
+function gridCan(list,it,cols,rows){return !!gridPlace((list||[]).concat([it]),cols,rows)}
+function bagMeta(){return (G&&G.st&&G.st.nextTier==='pack')?{c:5,r:5,n:25}:{c:6,r:4,n:24}}
+function bagCan(it){const g=bagMeta();return !!(G&&gridCan(G.bag,it||{slot:'ring'},g.c,g.r))}
+const CHARM_BAND=[
+  {ml:1,dmg:[10,18],hp:[35,65],res:[8,14],all:null,mf:[8,15],crit:[3,5],aspd:null,cdr:null,leech:null},
+  {ml:15,dmg:[12,22],hp:[45,80],res:[12,20],all:[4,8],mf:[10,18],crit:[4,7],aspd:[6,10],cdr:[8,12],leech:[2,3]},
+  {ml:30,dmg:[16,28],hp:[55,100],res:[15,25],all:[6,11],mf:[12,22],crit:[5,8],aspd:[6,12],cdr:[8,14],leech:[2,4]},
+  {ml:45,dmg:[20,34],hp:[65,120],res:[18,30],all:[8,14],mf:[14,26],crit:[5,9],aspd:[8,14],cdr:[10,16],leech:[2,4]},
+  {ml:60,dmg:[24,38],hp:[70,130],res:[20,35],all:[10,18],mf:[16,30],crit:[6,10],aspd:[8,16],cdr:[10,18],leech:[3,5]}];
+function charmBand(ml){let b=CHARM_BAND[0];for(const x of CHARM_BAND)if((ml||1)>=x.ml)b=x;return b}
+function charmOdds(kind,diff){
+  diff=diff||0;
+  if(kind==='champ'||kind==='chest'){if(diff>=2)return{slip:.06,notice:.05,filing:.03};if(diff>=1)return{slip:.08,notice:.04,filing:.01};return{slip:.08,notice:.02,filing:0}}
+  if(kind==='su')return{slip:.1,notice:.08,filing:.02};
+  if(diff>=2)return{slip:.02,notice:.006,filing:.001};
+  if(diff>=1)return{slip:.02,notice:.003,filing:0};
+  return{slip:.015,notice:0,filing:0}}
+function charmSizeRoll(kind,diff){
+  const o=charmOdds(kind,diff),r=Math.random(),f=o.filing||0,n=o.notice||0;
+  if(f&&r<f)return'filing';if(n&&r<f+n)return'notice';if(o.slip&&r<f+n+o.slip)return'slip';return ''}
+function charmRange(pair,high,scale){
+  let v=high?pair[0]+Math.round((pair[1]-pair[0])*(.7+Math.random()*.3)):ri(pair[0],pair[1]);
+  if(scale)v=Math.max(1,Math.round(v*scale));return v}
+function charmAffix(ml,high,scale){
+  const b=charmBand(ml),keys=['dmg','hp','res','mf','crit'];
+  if(b.all)keys.push('all','aspd','cdr','leech');
+  const k=pick(keys),pair=k==='res'?b.res:k==='all'?b.all:b[k],v=charmRange(pair,high,scale);
+  if(k==='res')return{k:'r_'+pick(['impact','surge','rust','heat','noise']),v};
+  if(k==='all')return{k:'r_all',v};return{k,v}}
+function charmAffixes(ml,n,high,scale){
+  const out=[],used={};let g=0;
+  while(out.length<n&&g++<24){const a=charmAffix(ml,high,scale);if(used[a.k])continue;used[a.k]=1;out.push(a)}
+  return out}
+const CHARM_NM={dmg:'Sharpened',hp:'Living',mf:'Lucky',crit:'Precise',r_all:'Warded',aspd:'Quick',cdr:'Hasty',leech:'Hungry',skills:'Adept',gold:'Thrifty',en:'Humming',mspd:'Paced'};
+const CHARM_CLS={scrapper:'The Write-up',hacker:'The Ticket',courier:'The Missed Scan',anon:'The Burner',founder:'The Option Pool',homesteader:'The Lien',witness:'The Carbon',maxi:'The Whitepaper'};
+function charmTitle(aff,sz){
+  const word=sz==='filing'?'Filing':sz==='notice'?'Notice':'Slip',a=aff&&aff[0],k=a&&a.k;
+  const nm=CHARM_NM[k]||(k&&k.indexOf('r_')===0?'Proofed':'Kept');
+  return nm+' '+word}
+function finishCharm(il,sz,aff,opt){
+  opt=opt||{};const sh=charmShape(sz);
+  const it={slot:'charm',charm:1,q:opt.q!=null?opt.q:1,il:Math.max(1,Math.round(il||1)),id:true,req:opt.req!=null?opt.req:Math.max(1,Math.floor((il||1)*.75)),
+    base:opt.base||sh.base,name:opt.name||charmTitle(aff,sh.sz),aff:aff||[],val:opt.val!=null?opt.val:Math.round((30+(il||1)*4)*(sh.cells)*(opt.q===4?3:opt.q===2?2:1)),
+    fl:opt.fl||'It applies on the belt. In the pack or the lockbox it only takes space, and it does not stack.',
+    sz:sh.sz,cs:sh.cs,cells:sh.cells,cw:sh.cw,ch:sh.ch};
+  if(opt.uid)it.uid=opt.uid;if(opt.cls)it.cls=opt.cls;if(opt.migrated)it.migrated=1;
+  return charmNormalize(it)}
+function mkClassSlip(il,cls){
+  cls=cls||(G&&G.cls)||'scrapper';const i=ri(0,14),sk=CLS[cls]&&CLS[cls].sk[i];
+  return finishCharm(il,'slip',[{k:'csk',v:1,i,cls}],{q:1,name:CHARM_CLS[cls]||'Class Slip',cls,fl:'+1 to one skill of that class, and only if a real point is already in it. Nothing else. On the belt, or it is paper.'})}
+function mkClearance(il){
+  return finishCharm(il,'slip',[{k:'mf',v:ri(25,40)},{k:'gold',v:ri(15,30)}],{q:4,uid:'clearance',name:'The Clearance Sticker',fl:'The price that was never the price. One slot, spent on finding more.'})}
+function mkClause(il){
+  const b=charmBand(il);let aff;
+  if(Math.random()<.5&&b.all)aff=[{k:'r_all',v:b.all[1]}];
+  else{const a=charmAffixes(il,2,true);aff=a.filter(x=>x.k.indexOf('r_')===0);while(aff.length<2){const t=pick(['impact','surge','rust','heat','noise']);if(!aff.some(x=>x.k==='r_'+t))aff.push({k:'r_'+t,v:charmRange(b.res,true)})}}
+  return finishCharm(il,'notice',aff.slice(0,2),{q:4,uid:'clause',name:'The Unread Clause',fl:'It was in the terms. Nobody read it. The belt still did.'})}
+function mkLetter(cls,il){
+  cls=cls||(G&&G.cls)||'scrapper';
+  return finishCharm(il||45,'notice',[{k:'skills',v:2},{k:'hp',v:ri(30,60)},{k:'r_all',v:ri(8,12)}],{q:4,uid:'letter',cls,name:'The Eleven-Minute Letter',fl:'The letter Phonix sent everyone. This copy has a '+((CLS[cls]&&CLS[cls].n)||cls)+'’s name on it, which is impossible, and the skills answer only for that class. Tradable.'})}
+function mkChurn(il){
+  return finishCharm(il||60,'filing',[{k:'skills',v:1},{k:'r_all',v:ri(12,20)},{k:'hp',v:ri(50,90)},{k:'dmg',v:ri(10,16)}],{q:4,uid:'churn',name:'The Churn Notice',fl:'The notice Unity sends when it stops pretending you are a customer. You kept the letter. Three belt slots. Tradable.'})}
+function charmRollItem(ml,sz,kind,diff,opt){
+  opt=opt||{};diff=diff||0;
+  if(!opt.boss&&(kind==='champ'||kind==='chest')&&ml>=15&&Math.random()<.05)return mkClearance(ml);
+  if(!opt.boss&&sz==='notice'&&ml>=15&&(kind==='champ'||kind==='su'||kind==='chest')&&Math.random()<.06)return mkClause(ml);
+  if(!opt.boss&&sz==='slip'&&ml>=30&&diff>=1&&Math.random()<(diff>=2?.12:.08))return mkClassSlip(ml);
+  let rare=false;
+  if(!opt.boss&&sz==='filing'&&kind==='su'){const p=diff>=2?1/3:diff>=1?.25:0;if(p&&Math.random()<p)rare=1}
+  if(sz==='filing'&&!rare&&Math.random()<.5)return finishCharm(ml,'filing',[{k:'skills',v:1}],{q:1,fl:'+1 to all skills, if you have already spent a point. Three belt slots, four pack cells.'});
+  const n=rare?3:sz==='slip'?1:2,scale=sz==='notice'?.75:0;
+  return finishCharm(ml,sz,charmAffixes(ml,n,!!opt.high,scale),{q:rare?2:1})}
+function mkCharm(il,opt){
+  opt=opt||{};
+  if(opt.uid==='churn')return mkChurn(il);
+  if(opt.uid==='letter')return mkLetter(opt.cls,il);
+  if(opt.uid==='clearance')return mkClearance(il);
+  if(opt.uid==='clause')return mkClause(il);
+  if(opt.aff)return finishCharm(il,opt.sz||'slip',opt.aff,opt);
+  return charmRollItem(il||1,opt.sz||'slip',opt.kind||'ord',opt.diff||0,opt)}
+function charmFrom(kind,x,y){
+  if(!W||(W.z&&(W.z.sim||W.z.town)))return;
+  const sz=charmSizeRoll(kind,G.diff||0);if(!sz)return;
+  addDrop({it:charmRollItem(W.ml||1,sz,kind,G.diff||0)},x,y)}
+function charmOnKill(e){
+  if(!e||e.minion||!W||(W.z&&(W.z.sim||W.z.town)))return;
+  const ml=W.ml||1,diff=G.diff||0;
+  if(typeof isBoss==='function'&&isBoss(e.k)){
+    G.bcharm=G.bcharm||{};const key=e.k+'@'+diff;
+    if(!G.bcharm[key]){G.bcharm[key]=1;const sz=diff>=2?'filing':diff>=1?'notice':(typeof actOf==='function'?actOf(W.zi):1)<=1?'slip':(typeof actOf==='function'?actOf(W.zi):1)===2?'notice':'filing';
+      addDrop({it:charmRollItem(ml,sz,'boss',diff,{boss:1,high:diff>=1})},e.x,e.y)}
+    if(e.k==='boss4'&&diff>=1){if(!ACC.letter){ACC.letter=1;accSave();addDrop({it:mkLetter(G.cls,ml)},e.x,e.y)}else if(Math.random()<.06)addDrop({it:mkLetter(G.cls,ml)},e.x,e.y)}
+    if(e.k==='boss5'&&diff>=2){if(!ACC.churn){ACC.churn=1;accSave();addDrop({it:mkChurn(ml)},e.x,e.y)}else if(Math.random()<.05)addDrop({it:mkChurn(ml)},e.x,e.y)}
+    return}
+  charmFrom(e.su?'su':e.champ?'champ':'ord',e.x,e.y)}
+function charmUsed(){return(G.cslots||[]).reduce((n,c)=>n+charmCost(c),0)}
+function charmWhy(it){
+  if(!it||!it.charm)return'That is not a charm.';
+  if(!it.id)return'Identify it first.';
+  if(G.lvl<(it.req||1))return'Needs level '+it.req+'.';
+  const need=charmCost(it),max=beltBudget(G.eq&&G.eq.belt).slots,open=max-charmUsed();
+  const word=it.sz==='filing'?'A filing':it.sz==='notice'?'A notice':'A slip';
+  if(need>max)return word+' needs '+need+' slot'+(need===1?'':'s')+'. This belt has '+max+'.';
+  if(need>open)return word+' needs '+need+' slot'+(need===1?'':'s')+'. This belt has '+open+' open.';
+  return ''}
+function charmFail(why){G.charmWhy=why;G.charmShake=1;toast(why);return false}
+function charmSocket(i){
+  const it=G.bag&&G.bag[i];const why=charmWhy(it);if(why)return charmFail(why);
+  G.charmWhy='';G.bag.splice(i,1);it.junk=false;G.cslots=G.cslots||[];G.cslots.push(charmNormalize(it));calc();sfx('equip');return true}
+function charmTakeOff(i){
+  const it=(G.cslots||[])[i];if(!it)return false;
+  if(!bagCan(it)){toast('Your pack is full');return false}
+  G.cslots.splice(i,1);G.bag.push(it);G.charmWhy='';calc();sfx('equip');return true}
+function charmRefit(){
+  if(!G)return;G.cslots=G.cslots||[];if(!Array.isArray(G.bag))G.bag=[];
+  const max=beltBudget(G.eq&&G.eq.belt).slots;const keep=[];let used=0;const over=[];
+  for(const it of G.cslots){const c=charmCost(it);if(it&&used+c<=max){keep.push(it);used+=c}else if(it)over.push(it)}
+  G.cslots=keep;
+  for(const it of over){if(bagCan(it))G.bag.push(it);else if(typeof ACC!=='undefined'&&ACC&&gridCan(ACC.stash,it,6,6)){ACC.stash.push(it);accSave()}else if(typeof addDrop==='function'&&typeof P!=='undefined'&&P)addDrop({it},P.x,P.y)}}
+function charmStow(it){
+  if(bagCan(it)){G.bag.push(it);return 'bag'}
+  if(typeof ACC!=='undefined'&&ACC&&gridCan(ACC.stash,it,6,6)){ACC.stash.push(it);return 'box'}
+  return ''}
+function charmScore(it,on){
+  const a=(it.aff&&it.aff[0])||{},pref=a.k==='dmg'||a.k==='hp'?2:0;
+  return(on?1000:0)+pref*100+(+a.v||0)}
+function charmToSlip(it){
+  const aff=(Array.isArray(it.aff)?it.aff:[]).map(a=>a&&a.k?{k:a.k,v:a.v,i:a.i,cls:a.cls}:null).filter(Boolean);
+  return finishCharm(it.il||1,'slip',aff,{req:1,q:it.q===4?4:1,name:(aff[0]?aff[0].k+' +'+aff[0].v:'Kept')+' Slip',migrated:1,val:it.val||30,fl:'Carried over from a subscription. The roll is the one it had. It works only on the belt.'})}
+function charmMigrate(){
+  if(!G)return;if(!Array.isArray(G.bag))G.bag=[];if(!Array.isArray(G.stash))G.stash=[];
+  G.bag=G.bag.filter(Boolean);G.stash=G.stash.filter(Boolean);
+  const hero=!G.charmMigrated,box=typeof ACC!=='undefined'&&ACC&&!ACC.charmBox;
+  if(!hero&&!box){G.cslots=G.cslots||[];return}
+  const found=[];
+  const take=(it,on)=>{if(it&&it.charm)found.push({it,on:!!(on||it.on)})};
+  if(hero){for(const c of G.charms||[])take(c,c&&c.on);for(let i=G.bag.length-1;i>=0;i--)if(G.bag[i]&&G.bag[i].charm)take(G.bag.splice(i,1)[0]);for(let i=G.stash.length-1;i>=0;i--)if(G.stash[i]&&G.stash[i].charm)take(G.stash.splice(i,1)[0])}
+  if(box){for(let i=ACC.stash.length-1;i>=0;i--)if(ACC.stash[i]&&ACC.stash[i].charm)take(ACC.stash.splice(i,1)[0]);ACC.charmBox=1}
+  const slips=found.map(f=>({it:charmToSlip(f.it),on:!!f.on}));
+  slips.sort((a,b)=>charmScore(b.it,b.on)-charmScore(a.it,a.on));
+  if(hero){G.cslots=G.cslots||[];const max=beltBudget(G.eq&&G.eq.belt).slots;let used=charmUsed();
+    for(const s of slips){const c=charmCost(s.it);if(used+c<=max){G.cslots.push(s.it);used+=c;s.kept=1}}
+    let paid=0;for(const s of slips)if(!s.kept){if(!charmStow(s.it)){G.sats=(G.sats||0)+2;paid++}}
+    delete G.charms;delete G.charmOff;delete G.chT;G.charmMigrated=1;
+    if(paid)toast(paid+' charm'+(paid===1?'':'s')+' did not fit. '+paid*2+' sats.')}
+  else{let paid=0;for(const s of slips)if(!charmStow(s.it)){G.sats=(G.sats||0)+2;paid++}if(paid)toast(paid+' lockbox charm'+(paid===1?'':'s')+' became '+(paid*2)+' sats.')}
+  if(box)accSave()}
+function charmApply(s){
+  s.chAll=0;s.csk={};s.chFlat=0;s.gearSkills=s.skills||0;
+  if(s.beltBroken)return;
+  for(const it of (G&&G.cslots)||[]){if(!it||!it.aff||(it.req||1)>G.lvl)continue;charmNormalize(it);
+    for(const a of it.aff){if(!a)continue;
+      if(a.k==='csk'){if(!a.cls||a.cls===G.cls)s.csk[a.i]=(s.csk[a.i]||0)+(a.v||1);continue}
+      if(a.k==='skills'&&it.cls&&it.cls!==G.cls)continue;
+      let v=a.v;if(a.k==='cdr'&&v>1)v=v/100;
+      if(a.k==='hp')s.chFlat+=v;if(a.k==='skills')s.chAll+=v;
+      s[a.k]=(s[a.k]||0)+v}}}
+function charmBonus(s,i){
+  if(!s)return 0;
+  const gear=Math.min(4,s.gearSkills||0);let all=s.chAll||0,one=(s.csk&&s.csk[i])||0;
+  if(pvpCharmOn()){const cap=Math.min(2,all+one);all=Math.min(all,cap);one=Math.max(0,cap-all)}
+  const room=Math.max(0,4-gear);all=Math.min(all,room);one=Math.min(one,Math.max(0,room-all));
+  return gear+all+one}
+function charmRanks(i){return charmBonus(typeof S==='undefined'?null:S,i)}
+function pvpCharmOn(){return !!(typeof W!=='undefined'&&W&&W.ents&&W.ents.some(e=>e&&e.mp&&e.hp>0))}
+function pvpLifeMul(){
+  if(typeof S==='undefined'||!S||!(S.chHp>0)||!(S.preHp>0))return 1;
+  const over=S.chHp-S.preHp*.2;if(over<=0)return 1;const eff=S.maxHp-over;return eff>1?S.maxHp/eff:1}
+
+const skipPick=it=>!it.charm&&G.eq[it.slot]&&(OPT['pk'+it.q]===false||(OPT.pkBetter&&(typeof canWear==='function'?canWear(it):it.id&&G.lvl>=it.req)&&!(itemDelta(it)>.01)));
 
 /* the machines read the fight: one-shot kills push them up, repeated deaths in a district ease it */
 let osWin=[];
@@ -81,49 +280,50 @@ function extra2(s,add){let hp=0;const d=docOf();if(d)for(const k in d[3]){if(k==
 const DTY={impact:{n:'Impact',c:'#e6e2d6',d:'Blunt force. Nothing shrugs it off entirely.'},surge:{n:'Surge',c:'#59e0e6',d:'Overvoltage. Briefly locks up what it hits.'},rust:{n:'Rust',c:'#c9803a',d:'Corrosion. Keeps eating for three seconds after the hit.'},heat:{n:'Heat',c:'#ff7a3c',d:'Thermal. A quarter of it splashes onto anything close by.'},noise:{n:'Noise',c:'#d98cff',d:'Jamming. Slows whatever is listening.'}};
 DTY.sound={n:'Sound',c:'#f7931a',d:'Sound money. Nothing resists it, nothing is immune to it, and no shield stops it. That is the entire point.'};
 const DTK=Object.keys(DTY);
-const SKT={maxi:{0:'sound',1:'sound',3:'sound',4:'sound',5:'sound',6:'sound',7:'sound',9:'sound',11:'sound'},scrapper:{1:'rust',5:'noise',7:'heat',12:'noise'},hacker:{0:'surge',1:'surge',3:'noise',4:'surge',6:'rust',7:'noise',9:'heat',10:'noise'},courier:{3:'heat',4:'rust',7:'noise'},anon:{0:'heat',3:'heat',5:'noise',6:'heat',8:'noise'},founder:{1:'noise',3:'surge',8:'heat'},homesteader:{0:'rust',3:'rust',5:'heat',6:'rust',9:'rust',12:'rust',14:'rust'}};
-const skType=(cls,i)=>cls==='hacker'&&i===14?(G.schema||'surge'):((SKT[cls]||{})[i]||'impact');
+const SKT={maxi:{0:'sound',1:'sound',3:'sound',4:'sound',5:'sound',6:'sound',7:'sound',9:'sound',11:'sound'},scrapper:{1:'rust',5:'noise',7:'heat',12:'noise'},hacker:{0:'surge',1:'surge',3:'noise',4:'surge',6:'rust',7:'noise',9:'heat',10:'noise'},courier:{3:'heat',4:'rust',7:'noise'},anon:{0:'heat',3:'heat',5:'noise',6:'heat',8:'noise'},founder:{1:'noise',3:'surge',8:'heat'},homesteader:{0:'rust',3:'rust',5:'heat',9:'rust',12:'rust',14:'rust'}};
+/* Hedgerow (homesteader 6) is a wall, not a hit, so it has no type and must not retag the next swing. */
+const skType=(cls,i)=>cls==='homesteader'&&i===6?null:cls==='hacker'&&i===14?(G.schema||'surge'):((SKT[cls]||{})[i]||'impact');
 /* One shape per skill. Color comes from the damage type, then the class.
    A radius holds as a patch, a dash leaves a trail, a status keeps a mark,
    and a handful of shots is an orbit. Passives stay glyphs. */
 const SKV_LIFE={arc:.22,bolt:.28,trail:.32,beam:.34,strike:.28,ring:.42,patch:.62,orbit:.55,mark:.8};
 const SKV={scrapper:{
-  0:{k:'arc',w:1.5},
+  0:{k:'arc',w:1.5,reach:2.4},
   1:{k:'bolt',r:4,at:'foe'},
   2:{k:'patch',r:1.4},
-  3:{k:'orbit'},
+  3:{k:'ring',r:2.5},
   4:{k:'trail',r:3.2},
-  5:{k:'ring',r:2.2},
+  5:{k:'ring',r:4},
   6:{k:'patch',r:1.2},
-  7:{k:'strike'},
+  7:{k:'trail',r:3,at:'foe'},
   8:{k:'mark'},
-  9:{k:'patch',r:2.4},
+  9:{k:'patch',r:2.6},
   10:{k:'mark'},
   11:{k:'patch',r:1.6},
   12:{k:'patch',r:4.2,tel:1},
-  13:{k:'arc',w:2.3},
-  14:{k:'beam'}
+  13:{k:'ring',r:1.2},
+  14:{k:'ring',r:1.1}
 },hacker:{
   0:{k:'bolt',r:5,n:3},
-  1:{k:'beam'},
+  1:{k:'mark',col:'#59e0e6'},
   2:{k:'patch',r:1.5},
-  3:{k:'ring',r:2.4},
-  4:{k:'orbit'},
+  3:{k:'ring',r:3.4},
+  4:{k:'trail',r:.8},
   5:{k:'mark'},
-  6:{k:'strike'},
+  6:{k:'ring',r:3.5},
   7:{k:'orbit',n:3},
   8:{k:'mark'},
-  9:{k:'patch',r:2.6},
-  10:{k:'patch',r:1.7},
+  9:{k:'trail',r:4.5,col:'#ff7a3c'},
+  10:{k:'patch',r:2.2,tel:1},
   11:{k:'mark'},
   12:{k:'trail',r:4,at:'back',col:'#9a6cff'},
   13:{k:'patch',r:1.1},
   14:{k:'bolt',r:6,at:'foe',n:1}
 },courier:{
-  0:{k:'arc',w:1.2},
+  0:{k:'ring',r:2},
   1:{k:'trail',r:3,col:'#3fbf8f'},
   2:{k:'mark'},
-  3:{k:'patch',r:1.6},
+  3:{k:'patch',r:2.6},
   4:{k:'patch',r:2.6},
   5:{k:'mark'},
   6:{k:'orbit',n:3},
@@ -131,51 +331,51 @@ const SKV={scrapper:{
   8:{k:'mark'},
   9:{k:'trail',r:4.2},
   10:{k:'mark'},
-  11:{k:'patch',r:1.15},
-  12:{k:'beam'},
+  11:{k:'patch',r:1.8},
+  12:{k:'mark',col:'#e6e2d6'},
   13:{k:'mark'},
   14:{k:'mark',at:'foe',n:0,col:'#3fbf8f'}
 },anon:{
-  0:{k:'patch',r:1.8},
-  1:{k:'trail',r:2.6},
+  0:{k:'patch',r:2.6},
+  1:{k:'ring',r:.8},
   2:{k:'mark'},
-  3:{k:'patch',r:1.05},
+  3:{k:'patch',r:2.4},
   4:{k:'ring',r:1.4},
   5:{k:'patch',r:3,at:'foe',tel:1},
-  6:{k:'ring',r:2.8},
+  6:{k:'ring',r:2.2},
   7:{k:'orbit'},
-  8:{k:'strike'},
-  9:{k:'arc',w:1.1},
-  10:{k:'ring',r:3.2},
+  8:{k:'ring',r:9},
+  9:{k:'arc',w:1,reach:3.2},
+  10:{k:'mark'},
   11:{k:'mark'},
   12:{k:'patch',r:1.35},
   13:{k:'patch',r:1.9},
-  14:{k:'beam'}
+  14:{k:'mark'}
 },founder:{
   0:{k:'orbit'},
   1:{k:'patch',r:3,tel:1},
   2:{k:'mark'},
   3:{k:'orbit',n:3},
-  4:{k:'ring',r:2},
-  5:{k:'arc',w:2},
-  6:{k:'arc',w:1.25},
+  4:{k:'ring',r:1.1},
+  5:{k:'ring',r:2},
+  6:{k:'orbit'},
   7:{k:'mark',at:'foe',n:0,col:'#7be495'},
-  8:{k:'ring',r:3.1},
+  8:{k:'mark'},
   9:{k:'mark',at:'foe',n:0,col:'#c9a868'},
-  10:{k:'bolt',r:3.5,at:'foe',n:2},
+  10:{k:'mark',at:'foe',n:0},
   11:{k:'mark'},
-  12:{k:'beam'},
+  12:{k:'orbit'},
   13:{k:'patch',r:1.5},
-  14:{k:'patch',r:2.3}
+  14:{k:'ring',r:5}
 },maxi:{
-  0:{k:'arc',w:1},
+  0:{k:'arc',w:1,reach:2.6},
   1:{k:'bolt',r:2.2,at:'foe',n:1},
   2:{k:'mark'},
   3:{k:'patch',r:2.2},
   4:{k:'patch',r:3.6},
   5:{k:'trail',r:3.4},
   6:{k:'orbit',n:3},
-  7:{k:'patch',r:1.5},
+  7:{k:'patch',r:3.3},
   8:{k:'mark'},
   9:{k:'patch',r:4.2,tel:1},
   10:{k:'mark'},
@@ -187,23 +387,23 @@ const SKV={scrapper:{
   0:{k:'patch',r:2.2},
   1:{k:'mark'},
   2:{k:'orbit',n:3},
-  3:{k:'patch',r:1.4},
+  3:{k:'ring',r:3},
   4:{k:'mark'},
   5:{k:'orbit',n:1},
-  6:{k:'patch',r:1.8},
+  6:{k:'mark',col:'#4e6a48'},
   7:{k:'mark'},
   8:{k:'mark'},
   9:{k:'patch',r:3.4},
   10:{k:'mark'},
   11:{k:'mark'},
-  12:{k:'ring',r:2.4},
+  12:{k:'mark'},
   13:{k:'mark'},
-  14:{k:'patch',r:1.8}
+  14:{k:'mark'}
 },witness:{
   0:{k:'mark',at:'foe',n:0,col:'#e6dcc8'},
   1:{k:'mark',at:'foe'},
   2:{k:'mark'},
-  3:{k:'bolt',r:3,at:'foe'},
+  3:{k:'mark',at:'foe',n:0,col:'#e6dcc8'},
   4:{k:'bolt',r:2.2,at:'foe',n:1},
   5:{k:'mark'},
   6:{k:'mark'},
@@ -212,18 +412,18 @@ const SKV={scrapper:{
   9:{k:'mark',at:'foe',n:0,col:'#8d9aab'},
   10:{k:'mark'},
   11:{k:'mark'},
-  12:{k:'patch',r:3.2,tel:1,col:'#e6dcc8'},
+  12:{k:'mark',col:'#e6dcc8'},
   13:{k:'mark'},
   14:{k:'mark'}
 }};
 function skvOf(cls,i){const row=(SKV[cls]||{})[i];if(!row)return null;const sk=CLS[cls]&&CLS[cls].sk[i];let col=row.col;
   if(!col&&sk&&sk.a){const ty=skType(cls,i);if(DTY[ty])col=DTY[ty].c}if(!col)col=(CLS[cls]&&CLS[cls].col)||'#e6e2d6';
-  return {k:row.k,col:col,r:row.r||1.2,w:row.w||1,n:row.n!=null?row.n:(row.k==='orbit'?3:1),life:row.life||SKV_LIFE[row.k]||.4,at:row.at||'',tel:row.tel?1:0}}
+  return {k:row.k,col:col,r:row.r||1.2,w:row.w||1,n:row.n!=null?row.n:(row.k==='orbit'?3:1),life:row.life||SKV_LIFE[row.k]||.4,at:row.at||'',tel:row.tel?1:0,reach:row.reach||0}}
 function skvPlay(cls,i,x,y,dir,remote){const v=skvOf(cls,i);if(!v||!W||!W.fx)return;const dx=(dir&&dir.x)||1,dy=(dir&&dir.y)||0;
   let px=x,py=y,x2=x+dx*(v.r||3),y2=y+dy*(v.r||3);
   if(v.at==='back'){x2=x-dx*(v.r||3);y2=y-dy*(v.r||3)}
   if(v.at==='foe'&&!remote){const t=nearest(8);if(t){x2=t.x;y2=t.y;if(v.k==='mark'||v.k==='patch'||v.k==='ring'||v.k==='strike'){px=t.x;py=t.y}}}
-  W.fx.push({k:v.k,x:px,y:py,x2:x2,y2:y2,dx:dx,dy:dy,r:v.r,w:v.w,n:v.n,col:v.col,t:0,life:v.life,tel:v.tel,remote:remote?1:0})}
+  W.fx.push({k:v.k,x:px,y:py,x2:x2,y2:y2,dx:dx,dy:dy,r:v.r,w:v.w,n:v.n,col:v.col,t:0,life:v.life,tel:v.tel,reach:v.reach||0,remote:remote?1:0})}
 const baseType=()=>G.cls==='maxi'?'sound':(G.eq.weapon&&G.eq.weapon.dt)||(G.cls==='hacker'?'surge':'impact');
 const RES={tick:{surge:1.5},drone:{surge:1.5,noise:.5},bot:{impact:.75,rust:1.5},hound:{noise:1.5,rust:.5},ad:{noise:0,impact:1.5},hr:{noise:.5,heat:1.5},mech:{impact:.5,rust:1.5,surge:1.25},seer:{surge:.5,impact:1.5},aegis:{surge:0,heat:1.5},lancer:{noise:1.5,heat:.5},splitter:{heat:1.5,impact:.5},
  director:{noise:.5,rust:1.5},proxy:{rust:.5,surge:1.5},censor:{noise:0,heat:1.5},shill:{noise:1.5},boss:{noise:.5,rust:1.5,heat:1.25},boss2:{noise:0,surge:1.5,impact:.75},boss3:{surge:.5,noise:.5,impact:1.5,heat:1.25}};
@@ -231,23 +431,34 @@ const resTxt=k=>{const r=RES[k]||{},w=[],s=[],im=[];for(const t in r){(r[t]===0?
 let DT=null;
 /* returns the damage after type bonuses, weakness and resistance; applies the type's side effect */
 function typed(e,d){let ty=DT||(P.fm&&P.fm.t>0&&P.fm.dt)||(typeof hsForm==='function'&&hsForm()==='worn'?(P&&P.tag?P.formDt:G.formDt):null)||baseType();
-  if(G.cls==='maxi'&&sl(12)&&ty!=='sound'){d*=.55+.03*sl(12);ty='sound'}
+  /* holdTy keeps a hireling hit, a thorns slap, or an acqui-hired strike on its own type. Priced in Sound converts what you swing, not what they swing. */
+  if(!P.holdTy&&G.cls==='maxi'&&sl(12)&&ty!=='sound'){d*=.55+.03*sl(12);ty='sound'}
   if(ty==='sound'){/* no table, no multiplier, no argument */
     e.snd=1;e.lt=ty;return d*(1+(S.t_sound||0)/100)}
-  let m=((RES[e.k]||{})[ty]);if(P.k9===ty){P.k9=null;if(m!==0&&m<1)m=1}const mul=m===undefined?1:m;d*=(1+(S['t_'+ty]||0)/100)*mul;
+  let m=((RES[e.k]||{})[ty]);if(!P.holdTy&&P.k9===ty){P.k9=null;if(m!==0&&m<1)m=1}const mul=m===undefined?1:m;d*=(1+(P.holdTy?0:(S['t_'+ty]||0))/100)*mul;
   if(mul!==1&&!(e.ft>0)){e.ft=1.2;float(e.x,e.y-.4,mul===0?'Immune':mul>1?'Weak!':'Resists',mul>1?'#7be495':'#9a94a8',0)}
   if(mul>0){if(ty==='surge')e.stun=Math.max(e.stun,.15);else if(ty==='noise')e.slow=Math.max(e.slow,1.5);else if(ty==='rust')e.rust={dps:d*.2/3,t:3,c:0};else if(ty==='heat'){const sp=d*.25;for(const o of W.ents)if(o!==e&&o.hp>0&&Math.hypot(o.x-e.x,o.y-e.y)<1.4+o.r)o.hp=Math.max(1,o.hp-sp*(((RES[o.k]||{}).heat)===undefined?1:RES[o.k].heat)),o.flash=.08}}
-  if(mul>1&&S.sp.pkey)d*=1.35;e.lt=ty;return d}
+  if(!P.holdTy&&mul>1&&S.sp.pkey)d*=1.35;e.lt=ty;return d}
 function typeTick(dt){for(const e of W.ents.slice()){if(e.ft>0)e.ft-=dt;if(e.noheal>0)e.noheal-=dt;const r=e.rust;if(r){r.t-=dt;r.c-=dt;if(r.c<=0){r.c=.5;dmgEnemy(e,r.dps*.5,false);e.hits=Math.max(0,(e.hits||1)-1);if(Math.random()<.5)W.parts.push({x:e.x,y:e.y,z:16,vx:rnd(-.5,.5),vy:rnd(-.5,.5),vz:30,t:0,life:.5,col:'#c9803a',s:3})}if(r.t<=0)e.rust=null}}}
 /* what the machines hit you with, and how you stand up to it */
 const ETY={tick:'heat',ad:'noise',hr:'noise',seer:'noise',censor:'noise',shill:'noise',aegis:'surge',lancer:'surge',proxy:'surge',splitter:'rust',boss2:'noise',boss3:'surge'};
 const foeType=src=>!src?'impact':src.dty||(src.mods&&src.mods.arc?'surge':src.mods&&src.mods.boom?'heat':ETY[src.k]||'impact');
-const resOf=ty=>Math.min(75,S['r_'+ty]||0);
+/* Combat resists only. Sound is not one of them: nothing the player takes is Sound. */
+const RTK=['impact','surge','rust','heat','noise'];
+function resPen(){return G&&G.diff===1?20:G&&G.diff===2?50:0}
+function resClamp(v){return Math.max(-100,Math.min(75,v))}
+function resEff(s,ty){return resClamp(((s&&s['r_'+ty])||0)-resPen())}
+const resOf=ty=>ty&&RTK.includes(ty)?resEff(S,ty):0;
+function mercResOf(ty){const m=G&&G.merc,row=m&&MERCS[m.k]&&MERCS[m.k].res&&MERCS[m.k].res[ty];const raw=row?row[0]+row[1]*(G.lvl||1):0;return resClamp(raw-resPen())}
+/* Resist, then the caller applies armor. Rust's leftover corrosion is armed from that armored number, not here. */
 function typedIn(d,src){const ty=foeType(src),r=resOf(ty);d*=1-r/100;P.lastTy=ty;
-  if(ty==='rust'){P.rustD={dps:d*.25/3,t:3}}else if(ty==='surge')G.en=Math.max(0,G.en-4*(1-r/100));else if(ty==='noise')P.slow=Math.max(P.slow,.8*(1-r/100));return d}
+  if(ty==='surge')G.en=Math.max(0,G.en-4*(1-r/100));else if(ty==='noise')P.slow=Math.max(P.slow,.8*(1-r/100));return d}
+function mercTypedIn(d,src){const a=W&&W.merc;if(!a)return d;const ty=foeType(src),r=mercResOf(ty);d*=1-r/100;a.lastTy=ty;if(ty==='noise')a.slow=Math.max(a.slow||0,.8*(1-r/100));return d}
 function typeInTick(dt){const r=P.rustD;if(r){r.t-=dt;if(G.hp>1)G.hp=Math.max(1,G.hp-r.dps*dt);if(r.t<=0)P.rustD=null}}
 
-function fixTypes(it){if(it&&it.aff)for(const a of it.aff)if(a.k==='t_x'||a.k==='r_x'){let k;do{k=a.k[0]+'_'+pick(DTK)}while(it.aff.some(x=>x.k===k));a.k=k}return it}
+function fixTypes(it){if(!it||!it.aff)return it;for(const a of it.aff){if(a.k==='t_x'){const free=DTK.filter(t=>!it.aff.some(x=>x!==a&&x.k==='t_'+t));a.k='t_'+(free.length?pick(free):pick(DTK))}else if(a.k==='r_x'){const free=RTK.filter(t=>!it.aff.some(x=>x!==a&&x.k==='r_'+t));if(free.length){a.k='r_'+pick(free);a.grp='res'}else a.k='r_fold'}}it.aff=it.aff.filter(a=>{if(a.k!=='r_fold')return true;const host=it.aff.find(x=>x!==a&&RTK.some(t=>x.k==='r_'+t));if(host)host.v+=a.v;return false});return it}
+function migrateItem(it){if(!it||!Array.isArray(it.aff))return false;let ch=false;if(it.aff.some(a=>a.k==='t_x'||a.k==='r_x')){fixTypes(it);ch=true}for(const a of it.aff){if((a.k==='r_all'||RTK.some(t=>a.k==='r_'+t))&&a.grp!=='res'){a.grp='res';ch=true}}for(let i=it.aff.length-1;i>=0;i--){const a=it.aff[i];if(a.k!=='r_sound')continue;const free=RTK.filter(t=>!it.aff.some(x=>x!==a&&x.k==='r_'+t));if(free.length){a.k='r_'+pick(free);a.grp='res'}else{const host=it.aff.find(x=>x!==a&&RTK.some(t=>x.k==='r_'+t));if(host)host.v+=a.v;it.aff.splice(i,1)}ch=true}return ch}
+function migrateResists(){let acc=false;const touch=it=>{if(migrateItem(it)){}};const piles=[];if(G){if(G.eq)for(const k in G.eq)if(G.eq[k])piles.push(G.eq[k]);for(const it of G.bag||[])if(it)piles.push(it);for(const it of G.stash||[])if(it)piles.push(it);for(const it of G.charms||[])if(it)piles.push(it);for(const it of G.cslots||[])if(it)piles.push(it);if(G.merc)for(const sl of ['weapon','helm','armor'])if(G.merc[sl])piles.push(G.merc[sl])}if(typeof ACC!=='undefined'&&ACC&&ACC.stash)for(const it of ACC.stash)if(it){if(migrateItem(it))acc=true}for(const it of piles)touch(it);if(typeof ZS!=='undefined')for(const k in ZS){const w=ZS[k];if(w&&w.drops)for(const d of w.drops)if(d&&d.it)migrateItem(d.it)}if(typeof W!=='undefined'&&W&&W.drops)for(const d of W.drops)if(d&&d.it)migrateItem(d.it);if(acc)accSave()}
 ITEM_HOOKS.push(function(it){return fixTypes(it)});
 
 function freshState(){osWin=[];shillT=70;SB=null;SUBP=null;EV=null;gateAct=0;dlgQ.length=0;toastQ.length=0;objC='';DT=null}
@@ -261,8 +472,164 @@ const FAM={sign:{cls:'scrapper',n:'Sign',bases:['Road Sign','Girder','Wrecking B
  notebook:{cls:'witness',n:'Notebook',bases:['Stub Pencil','Court Pad','Bound Minutes','The Seventh Part'],dm:1,sp:0,perk:'the Record fills a little faster, and Testimony stacks one higher',st:{}}};
 function famify(it){const mine=Object.keys(FAM).find(k=>FAM[k].cls===G.cls),k=Math.random()<.5&&mine?mine:pick(Object.keys(FAM)),F=FAM[k],nb=F.bases[tierOf(it.il)];
   if(it.name&&it.base&&it.name.includes(it.base))it.name=it.name.replace(it.base,nb);else if(it.q===0)it.name=nb;it.base=nb;it.fam=k;it.dmin=Math.max(1,Math.round(it.dmin*F.dm));it.dmax=Math.max(it.dmin+1,Math.round(it.dmax*F.dm));it.spd=(it.spd||0)+F.sp;return it}
-function famBonus(s){const w=G.eq.weapon;if(!w||!w.fam)return;const F=FAM[w.fam];if(F.cls!==G.cls)return;s.skills+=1;for(const k in F.st)s[k]=(s[k]||0)+F.st[k]}
+/* Nonce always has one weapon the class can use, three item levels ahead of the character. */
+function classWeapon(il){const mine=Object.keys(FAM).find(k=>FAM[k].cls===G.cls);if(!mine)return null;const it=makeItem(Math.max(1,il|0),Math.random()<.35?2:1,'weapon');
+  if(it.fam&&it.fam!==mine&&FAM[it.fam]){const old=FAM[it.fam];it.dmin=Math.max(1,Math.round(it.dmin/old.dm));it.dmax=Math.max(it.dmin+1,Math.round(it.dmax/old.dm));it.spd=(it.spd||0)-old.sp;it.fam=null}
+  if(it.fam!==mine){const F=FAM[mine],nb=F.bases[tierOf(it.il)];it.name=nb;it.base=nb;it.fam=mine;it.dmin=Math.max(1,Math.round(it.dmin*F.dm));it.dmax=Math.max(it.dmin+1,Math.round(it.dmax*F.dm));it.spd=(it.spd||0)+F.sp}
+  it.id=true;stampReq(it);return it}
+function famBonus(s){const w=G.eq.weapon;if(!w||!w.fam)return;if(typeof gearQuiet==='function'&&gearQuiet(w))return;const F=FAM[w.fam];if(F.cls!==G.cls)return;s.skills+=1;for(const k in F.st)s[k]=(s[k]||0)+F.st[k]}
 ITEM_HOOKS.push(function(it,il){if(it.slot==='weapon'&&it.q<4&&il>2&&G&&Math.random()<.4)famify(it);return it});
+/* Stat requirements. Missing fields stay 0, so an old save is not restamped. */
+const HEAVY_BODY={ 'Flak Coat':1,'Exo Plate':1,'Seraph Plate':1 };
+const LIGHT_BOOT={ 'Worn Sneakers':1,'Skywalkers':1 };
+const HEAVY_BOOT={ 'Steel-Toes':1,'Mag Greaves':1 };
+function reqRound(n){n=Math.round(n);return n<1?0:n}
+function reqBump(n,q){n=reqRound(n);if((q||0)>=3)n=reqRound(n*1.1);return n}
+function famKeyOf(it){
+  if(!it)return '';
+  if(it.fam&&FAM[it.fam])return it.fam;
+  if(it.slot!=='weapon')return '';
+  const name=it.base||'';
+  for(const k in FAM)if(FAM[k].bases.indexOf(name)>=0)return k;
+  return ''}
+function weaponRole(it){
+  const fam=famKeyOf(it);
+  if(fam==='sign')return 'heavy';
+  if(fam==='deck')return 'deck';
+  if(fam==='pager')return 'pager';
+  if(fam==='sling')return 'fast';
+  if(fam==='shiv')return 'shiv';
+  if(fam==='graft')return 'graft';
+  if(fam==='notebook')return 'notebook';
+  const spd=it.spd||0;
+  if(spd<=-15)return 'heavy';
+  if(spd>=15)return 'fast';
+  return 'neutral'}
+function stampReq(it){
+  if(!it||it.charm)return it;
+  if(it.loan||it.free||it.slot==='ring'||it.slot==='amulet'){it.reqMgt=0;it.reqRef=0;it.reqBnd=0;return it}
+  const il=+it.il||0,q=it.q||0;let m=0,r=0,b=0;
+  if(it.slot==='weapon'){const role=weaponRole(it);
+    if(role==='heavy')m=8+il*1.6;
+    else if(role==='neutral'||role==='graft')m=4+il*.9;
+    else if(role==='fast')r=6+il*1.35;
+    else if(role==='shiv')r=4+il*.7;
+    else if(role==='deck'||role==='pager')b=4+il*.9;
+    else if(role==='notebook')m=(4+il*.9)/2}
+  else if(it.slot==='armor'){m=HEAVY_BODY[it.base]?6+il*1.15:il*.45}
+  else if(it.slot==='helm')m=(6+il*1.15)*.6;
+  else if(it.slot==='gloves'||it.slot==='belt')m=(4+il*.9)*.4;
+  else if(it.slot==='boots'){if(LIGHT_BOOT[it.base])r=il*.35;else m=(8+il*1.6)*.4}
+  it.reqMgt=reqBump(m,q);it.reqRef=reqBump(r,q);it.reqBnd=reqBump(b,q);return it}
+ITEM_HOOKS.push(function(it){return stampReq(it)});
+const STATN=['mgt','ref','vit','bnd'];
+function itemOwnStats(it){
+  const o={mgt:0,ref:0,vit:0,bnd:0};
+  if(!it||itemBroken(it))return o;
+  for(const a of it.aff||[])if(o[a.k]!=null)o[a.k]+=+a.v||0;
+  if(it.uid&&typeof UNIK!=='undefined'&&UNIK[it.uid]&&UNIK[it.uid].per&&uOk(it)){const lv=(G&&G.lvl)||1;const per=UNIK[it.uid].per;for(const k of STATN)if(per[k])o[k]+=per[k]*lv}
+  return o}
+function charmPool(excludeSlot){
+  const o={mgt:0,ref:0,vit:0,bnd:0};
+  const belt=G&&G.eq&&G.eq.belt;
+  if(excludeSlot!=='belt'&&belt&&itemBroken(belt))return o;
+  for(const it of (G&&G.cslots)||[]){if(!it||!it.aff||(it.req||1)>(G.lvl||1))continue;
+    for(const a of it.aff)if(a&&o[a.k]!=null)o[a.k]+=+a.v||0}
+  return o}
+function poolMeets(pool,it,own){
+  own=own||{mgt:0,ref:0,vit:0,bnd:0};
+  return (pool.mgt+(own.mgt||0))>=((it&&it.reqMgt)||0)&&(pool.ref+(own.ref||0))>=((it&&it.reqRef)||0)&&(pool.bnd+(own.bnd||0))>=((it&&it.reqBnd)||0)}
+function gearLive(excludeSlot){
+  const pool={mgt:(G.at&&G.at.mgt)||0,ref:(G.at&&G.at.ref)||0,vit:(G.at&&G.at.vit)||0,bnd:(G.at&&G.at.bnd)||0};
+  const ch=charmPool(excludeSlot);for(const k of STATN)pool[k]+=ch[k];
+  const live={};let changed=true;
+  while(changed){changed=false;for(const sl of SLOTS){if(sl===excludeSlot||live[sl])continue;const it=G.eq&&G.eq[sl];if(!it||itemBroken(it))continue;const own=itemOwnStats(it);if(!poolMeets(pool,it,own))continue;live[sl]=1;for(const k of STATN)pool[k]+=own[k];changed=true}}
+  return {live,pool}}
+function gearQuiet(it){
+  if(!it||!G||!G.eq||itemBroken(it))return false;
+  let slot='';for(const sl of SLOTS)if(G.eq[sl]===it)slot=sl;
+  if(!slot)return false;
+  return !gearLive(null).live[slot]}
+function reqOk(it,slot){if(!it)return false;return poolMeets(gearLive(slot).pool,it,itemOwnStats(it))}
+function reqShortfall(it){
+  const out=[];if(!it||it.charm)return out;
+  const pool=gearLive(it.slot).pool,own=itemOwnStats(it);
+  const rows=[['Might','mgt','reqMgt'],['Reflex','ref','reqRef'],['Bandwidth','bnd','reqBnd']];
+  for(const row of rows){const need=it[row[2]]||0;if(!need)continue;const have=(pool[row[1]]||0)+(own[row[1]]||0);if(have<need)out.push({name:row[0],key:row[1],need:need,have:have,short:need-have})}
+  return out}
+function cantEquipText(it){
+  const lvl=!!(it&&G.lvl<(it.req||0)),sh=reqShortfall(it);
+  if(lvl&&!sh.length)return 'Needs level '+(it.req||1);
+  const bits=[];if(lvl)bits.push('Needs level '+(it.req||1));
+  for(const f of sh)bits.push('Need +'+f.short+' '+f.name);
+  return bits.length?"Can't equip. "+bits.join('. ')+'.':"Can't equip."}
+function reqLineHTML(it){
+  if(!it||it.charm)return '';
+  const sh=reqShortfall(it),bad={};for(const f of sh)bad[f.name]=f;
+  const rows=[['Might','reqMgt'],['Reflex','reqRef'],['Bandwidth','reqBnd']];let h='';
+  for(const row of rows){const n=it[row[1]]||0;if(!n)continue;const fail=bad[row[0]];
+    h+=`<div class="ln${fail?' red':''}">Required ${row[0]}: ${n}${fail?' · need +'+fail.short:''}</div>`}
+  return h}
+function reqBadgeText(it){
+  if(!it||!it.id||it.charm||!it.slot)return '';
+  if(G&&G.merc&&['weapon','helm','armor'].some(sl=>G.merc[sl]===it))return '';
+  if(typeof canWear==='function'&&canWear(it))return '';
+  const sh=reqShortfall(it),lvl=G.lvl<(it.req||0);
+  if(lvl&&!sh.length)return 'need level '+(it.req||1);
+  if(!sh.length)return '';
+  let t='need '+sh.map(f=>'+'+f.short+' '+f.name).join(', ');
+  if(lvl)t='need level '+(it.req||1)+', '+sh.map(f=>'+'+f.short+' '+f.name).join(', ');
+  return t}
+function driveStat(cls){
+  if(cls==='hacker'||cls==='founder')return 'bnd';
+  if(cls==='courier')return 'ref';
+  if(cls==='witness')return 'vit';
+  return 'mgt'}
+function liveWeaponRole(){
+  const w=G&&G.eq&&G.eq.weapon;
+  if(!w||itemBroken(w)||gearQuiet(w))return '';
+  return weaponRole(w)}
+function weaponStatKey(role,cls){
+  if(role==='heavy'||role==='neutral'||role==='graft'||role==='notebook')return 'mgt';
+  if(role==='fast'||role==='shiv')return 'ref';
+  if(role==='pager'&&cls==='founder')return 'bnd';
+  return ''}
+function attrSum(k,s){s=s||S;return ((G.at&&G.at[k])||0)+((s&&s[k])||0)}
+function blowSpec(){
+  const cls=G&&G.cls,sk=(P&&P.hitSk>=0)?P.hitSk:-1,ally=!!(P&&P.allySwing),area=!!(P&&P.areaTick),body=P&&P.swingBody;
+  if(cls==='scrapper'||cls==='maxi')return {k:'mgt',rate:1.5};
+  if(cls==='hacker')return {k:'bnd',rate:1.5};
+  if(cls==='anon'){
+    const mine=(P&&P.blowForce==='mgt')||(body&&(body.k==='mine'||body.k==='blast'||body.k==='decoy'));
+    if(mine||sk===0||sk===3||sk===6||sk===8)return {k:'mgt',rate:1.5};
+    return {k:'ref',rate:1.5}}
+  if(cls==='founder'){
+    if(ally||sk===8||sk===14)return {k:'bnd',rate:.7};
+    return {k:weaponStatKey(liveWeaponRole(),cls)||'mgt',rate:1.5}}
+  if(cls==='homesteader'){
+    const flock=body&&(body.flock||body.kind==='stray'||body.kind==='bull');
+    if(area||flock||sk===12)return {k:'vit',rate:.4};
+    return {k:weaponStatKey(liveWeaponRole(),cls)||'mgt',rate:1.5}}
+  if(cls==='courier'){const w=weaponStatKey(liveWeaponRole(),cls);return {k:w||'ref',rate:1.5}}
+  if(cls==='witness')return {k:weaponStatKey(liveWeaponRole(),cls)||'mgt',rate:1.5};
+  return {k:'mgt',rate:1.5}}
+function blowPct(s){const sp=blowSpec();return attrSum(sp.k,s)*sp.rate}
+function swingBlow(s){
+  if(!P)return blowPct(s);
+  const prev=P.hitSk,ally=P.allySwing,area=P.areaTick,force=P.blowForce,body=P.swingBody;
+  P.hitSk=-1;P.allySwing=0;P.areaTick=0;P.blowForce=null;P.swingBody=null;
+  try{return blowPct(s)}finally{P.hitSk=prev;P.allySwing=ally;P.areaTick=area;P.blowForce=force;P.swingBody=body}}
+const ATTR_TIP={
+  scrapper:{mgt:'+1.5% damage per point. Heavy weapons and plate ask for Might.',ref:'+0.3% deadly strike and +1 armor per point.',vit:'+4 life per point.',bnd:'+3 energy per point.'},
+  hacker:{mgt:'A mantle asks for a little Might. It does not add spell damage.',ref:'+0.3% deadly strike and +1 armor per point.',vit:'+4 life per point.',bnd:'+3 energy per point, and +1.5% spell damage.'},
+  courier:{mgt:'A maul makes throws read Might. Plate asks for it too.',ref:'+0.3% deadly strike, +1 armor, and +1.5% on a throw.',vit:'+4 life per point.',bnd:'+3 energy per point.'},
+  anon:{mgt:'+1.5% on mines, Zip Bomb, the honeypot, and Legion.',ref:'+0.3% deadly strike, +1 armor, and +1.5% on the knife, the hop, and Rehearsal.',vit:'+4 life per point.',bnd:'+3 energy per point.'},
+  founder:{mgt:'The personal bolt and the mech read the weapon. A maul reads Might.',ref:'+0.3% deadly strike and +1 armor per point.',vit:'+4 life per point.',bnd:'+3 energy per point, and +0.7% on the workforce.'},
+  homesteader:{mgt:'+1.5% on the shot, the hull, and the hound.',ref:'+0.3% deadly strike and +1 armor per point.',vit:'+4 life per point, and +0.4% on plots, frost, salt, and the flock.',bnd:'+3 energy per point.'},
+  witness:{mgt:'+1.5% on the swing. A notebook asks for a little Might.',ref:'+0.3% deadly strike and +1 armor per point.',vit:'+4 life per point, and +0.6% on Thread, Publish, and Cross-reference.',bnd:'+3 energy per point.'},
+  maxi:{mgt:'+1.5% damage per point, including the hammers.',ref:'+0.3% deadly strike and +1 armor per point.',vit:'+4 life per point.',bnd:'+3 energy per point.'}};
+function attrTip(k){const row=ATTR_TIP[G&&G.cls];return (row&&row[k])||ATTR[k][1]}
+
 /* ================= class uniques: items that only wake up in the right hands ================= */
 UNI.push(
  {id:'unioncard',cls:'scrapper',n:'Union Card',slot:'amulet',il:8,base:'Dog Tag',mods:{hp:[30,50],dmg:[15,25]},grant:[8,3],sp:'Scrapper only. Grants Solidarity at rank 3 without using a passive slot',fl:'Laminated. Dues paid through 2051.'},
@@ -276,7 +643,7 @@ UNI.push(
  {id:'check',cls:'founder',n:'Blank Check',slot:'belt',il:12,base:'Tool Belt',mods:{en:[25,40],hp:[30,45]},sp:'Founder only. Two more Interns answer the call, and the whole workforce hits 25% harder',fl:'Signed. Undated. Dangerous.'},
  {id:'orgchart',cls:'founder',n:'Org Chart',slot:'amulet',il:26,base:'Sigil Core',mods:{skills:[1,1],hp:[50,70]},sp:'Founder only. A Chief of Staff stands with you at all times, at no cost',fl:'Every line reports to you. Eventually.'},
  {id:'orangepill',n:'Orange Pill',slot:'ring',il:9,base:'Signet Chip',mods:{mf:[15,25],gold:[20,35]},sp:'Champions drop a sat, and each one you break nudges adoption upward',fl:'You cannot untake it.'},
- {id:'coldwallet',n:'Cold Wallet',slot:'belt',il:16,base:'Tool Belt',mods:{hp:[40,60],armorP:[30,45]},sp:'You pay no fee when you die, and sats you pick up count for a quarter more',fl:'Never been online. Never will be.'},
+ {id:'coldwallet',n:'Cold Wallet',slot:'belt',il:16,base:'Tool Belt',ind:1,mods:{hp:[40,60],armorP:[30,45]},sp:'You pay no fee when you die, and sats you pick up count for a quarter more',fl:'Never been online. Never will be.'},
  {id:'hashrate',n:'Hash Rate',slot:'gloves',il:28,base:'Servo Fists',mods:{aspd:[10,15],dmg:[20,35]},sp:'+1% damage for every kill in your streak, up to 40',fl:'More work, more weight.'},
  {id:'soaker',cls:'homesteader',n:'Soaker Hose',slot:'belt',il:12,base:'Tool Belt',mods:{hp:[30,50]},sp:'Homesteader only. Plots you place last half again as long',fl:'It weeps. That is the point.'},
  {id:'collar',cls:'homesteader',n:'One Collar',slot:'amulet',il:10,base:'Dog Tag',mods:{hp:[20,35]},sp:'Homesteader only. A single stray is already with you',fl:'You did not name it. It did not ask.'},
@@ -300,7 +667,7 @@ const BULLZ=ZONES.length-1;
 MEMOS.push(['Notice from the Office of Price Stability','There is no bull market. There has never been a bull market. Reports of a “bull run” beyond the Transit Gate are false, and Residents are reminded not to bring machine parts to the gate, in particular legs.']);
 function legCheck(){if(W.zi!==1||G.leg||G.q.q15!==3)return;const p=nearFree({x:W.start.x+1.6,y:W.start.y+1.2},.3);let o=W.objs.find(o=>o.k==='leg');if(!o){o={k:'leg'};W.objs.push(o)}o.x=p.x;o.y=p.y;setTimeout(()=>toast('Something is twitching on the ground near the gate.'),1500)}
 function legTake(o){W.objs.splice(W.objs.indexOf(o),1);G.leg=1;sfx('unique');dlg('A servo leg','All that is left of Gatewarden HOA-9: one leg, still twitching, stamped PROPERTY OF UNITY HOLDINGS. It is no use to anyone. You take it anyway. Somebody once said the Transit Gate does odd things when you jam the wrong part into it.',[['Keep it']])}
-function bullStart(){if(!G.leg)return;if(G.sats<10){toast('The gate wants 10 sats to look the other way');sfx('err');return}G.sats-=10;const z=ZONES[BULLZ];z.lvl=G.lvl+2-G.tier*12;delete ZS[BULLZ];enter(BULLZ,{fresh:true});W.portals=W.portals.filter(p=>p.kind!=='next');for(const p of W.portals)if(p.kind==='prev')p.kind='home';for(const e of W.ents)if(e.k==='bull'&&!e.su&&Math.random()<.5)e.say=1}
+function bullStart(){if(!G.leg)return;if(!spendSats(10,'The gate wants 10 sats to look the other way'))return;const z=ZONES[BULLZ];z.lvl=G.lvl+2-G.tier*12;delete ZS[BULLZ];enter(BULLZ,{fresh:true,after(){W.portals=W.portals.filter(p=>p.kind!=='next');for(const p of W.portals)if(p.kind==='prev')p.kind='home';for(const e of W.ents)if(e.k==='bull'&&!e.su&&Math.random()<.5)e.say=1}})}
 function bullKill(e){if(e.k!=='bull'||!W.z.secret)return;if(Math.random()<.22)addDrop({sat:ri(1,3)},e.x,e.y);
   if(e.su){G.st.bullKing=(G.st.bullKing||0)+1;mktNews(.3,'the Golden Bull is down');for(let i=0;i<6;i++)addDrop({sat:ri(6,12)},e.x,e.y);addDrop({it:makeItem(W.ml+2,4)},e.x,e.y);W.portals.push({x:e.x,y:e.y,kind:'home'});sfx('quest');setTimeout(()=>dlg('The Golden Bull is down','The field goes quiet. Somewhere a chart stops going up, just for a moment. The Office of Price Stability will deny that any of this happened, and for once you are inclined to let them.',[['Moo']]),900)}}
 /* ================= builds: when the rig rolls for you, it offers plans that hang together ================= */
@@ -312,16 +679,16 @@ const BUILDS={
   {k:'wall',n:'Immovable Object',p:'Armor, life, and a horn that stuns the room. You win by still being there.',doc:'picket',at:[20,25,55,0],pr:[[2,10],[5,8],[0,6],[3,4],[11,6],[14,5],[10,4],[6,4]],sl:[0,5,14],pa:[2,11,10,8],web:[1,2],fk:['ward','siphon','stun','lean']},
   {k:'thrower',n:'Scrap Thrower',p:'Stay at arm’s length. Rusty scrap through the whole line, seniority on the weapon in your hands, then a rush to finish.',doc:'mutual',at:[45,10,30,15],pr:[[1,10],[4,8],[7,6],[0,3],[12,5],[10,5],[9,3],[2,4],[8,3]],sl:[1,4,12],pa:[10,2,8],web:[0,5],fk:['mark','echo','over','lean']}],
  hacker:[
-  {k:'chain',n:'Chain Reaction',p:'Prime with Spark Lance, then Arc Chain through the pack. Deadly strikes do the rest. Schema is Surge, so the chain and the barrier agree.',schema:'surge',doc:'rootkit',at:[50,0,20,30],pr:[[0,10],[1,6],[2,1],[5,5],[8,8],[3,4],[11,5],[13,4],[10,3],[6,3]],sl:[0,1,3],pa:[8,5,11,13],web:[0,3],fk:['over','echo','mark','refund']},
-  {k:'admin',n:'Sysadmin',p:'Let the machines do it: a Watchdog, a Botnet and a storm overhead while you keep your distance.',schema:'surge',doc:'firewall',at:[20,0,35,45],pr:[[4,10],[7,10],[6,8],[5,6],[2,4],[11,5],[13,4],[1,1],[0,1]],sl:[4,7,6],pa:[5,2,11,13],web:[4,1],fk:['lean','echo','refund','surge']},
-  {k:'rod',n:'Control Rod',p:'Null Nova on a short fuse. A Packet Storm arrives where you marked it and slows what is left. Step Back is how you leave.',schema:'noise',doc:'throttle',at:[30,0,30,40],pr:[[3,10],[0,6],[5,8],[2,4],[10,6],[9,4],[12,5],[11,5]],sl:[3,10,12],pa:[5,11,2],web:[4,7],fk:['stun','lean','chill','burst']}],
+  {k:'chain',n:'Chain Reaction',p:'Prime with Spark Lance, then Arc Chain through the pack. Deadly strikes do the rest. Schema is Surge, so the chain and the barrier agree.',schema:'surge',doc:'rootkit',at:[15,5,30,50],pr:[[0,10],[1,6],[2,1],[5,5],[8,8],[3,4],[11,5],[13,4],[10,3],[6,3]],sl:[0,1,3],pa:[8,5,11,13],web:[0,3],fk:['over','echo','mark','refund']},
+  {k:'admin',n:'Sysadmin',p:'Let the machines do it: a Watchdog, a Botnet and a storm overhead while you keep your distance.',schema:'surge',doc:'firewall',at:[10,5,40,45],pr:[[4,10],[7,10],[6,8],[5,6],[2,4],[11,5],[13,4],[1,1],[0,1]],sl:[4,7,6],pa:[5,2,11,13],web:[4,1],fk:['lean','echo','refund','surge']},
+  {k:'rod',n:'Control Rod',p:'Null Nova on a short fuse. A Packet Storm arrives where you marked it and slows what is left. Step Back is how you leave.',schema:'noise',doc:'throttle',at:[15,5,30,50],pr:[[3,10],[0,6],[5,8],[2,4],[10,6],[9,4],[12,5],[11,5]],sl:[3,10,12],pa:[5,11,2],web:[4,7],fk:['stun','lean','chill','burst']}],
  courier:[
-  {k:'rush',n:'Rush Hour',p:'A wall of blades. Scatter Shot up close, Rush Order at range, and Return to Sender comes back through the same line.',doc:'express',at:[50,30,20,0],pr:[[0,10],[6,10],[9,6],[12,5],[8,8],[1,4],[2,3],[13,4],[5,1]],sl:[0,6,9],pa:[8,13,2,5],web:[0,5],fk:['over','echo','mark','surge']},
-  {k:'pirate',n:'Porch Pirate',p:'Never fight fair. Lure them onto a Tack Strip, mark one with Missed Connection, and blink to where it falls.',doc:'insured',at:[30,20,40,10],pr:[[3,10],[4,10],[1,6],[7,4],[14,5],[11,3],[8,4],[2,6],[10,4]],sl:[3,4,14],pa:[2,10,8,5],web:[1,3],fk:['burn','chill','mark','lean']},
-  {k:'tips',n:'Tip Jar',p:'You are here for the loot. Hazard Pay pays when a throw kills. A dash does not.',doc:'cod',at:[35,30,35,0],pr:[[5,10],[13,8],[0,8],[9,5],[2,6],[1,4],[8,4]],sl:[0,9,1],pa:[5,13,2,8],web:[6,5],fk:['lean','echo','surge','refund']}],
+  {k:'rush',n:'Rush Hour',p:'A wall of blades. Scatter Shot up close, Rush Order at range, and Return to Sender comes back through the same line.',doc:'express',at:[15,50,30,5],pr:[[0,10],[6,10],[9,6],[12,5],[8,8],[1,4],[2,3],[13,4],[5,1]],sl:[0,6,9],pa:[8,13,2,5],web:[0,5],fk:['over','echo','mark','surge']},
+  {k:'pirate',n:'Porch Pirate',p:'Never fight fair. Lure them onto a Tack Strip, mark one with Missed Connection, and blink to where it falls.',doc:'insured',at:[15,40,35,10],pr:[[3,10],[4,10],[1,6],[7,4],[14,5],[11,3],[8,4],[2,6],[10,4]],sl:[3,4,14],pa:[2,10,8,5],web:[1,3],fk:['burn','chill','mark','lean']},
+  {k:'tips',n:'Tip Jar',p:'You are here for the loot. Hazard Pay pays when a throw kills. A dash does not.',doc:'cod',at:[15,45,35,5],pr:[[5,10],[13,8],[0,8],[9,5],[2,6],[1,4],[8,4]],sl:[0,9,1],pa:[5,13,2,8],web:[6,5],fk:['lean','echo','surge','refund']}],
  anon:[
   {k:'demo',n:'Demolition',p:'Honeypot to gather them, Logic Bomb under their feet, Zip Bomb on top. All Heat. A mine laid while you are hidden arms faster.',doc:'nologs',at:[50,20,20,10],pr:[[0,8],[3,10],[6,10],[2,5],[11,4],[13,4],[4,3]],sl:[0,3,6],pa:[2,11,13],web:[0,3],fk:['over','burn','echo','mark']},
-  {k:'ghost',n:'Ghost',p:'Rehearse the strike, hop in, vanish. The Dump spends what you banked.',doc:'burner',at:[45,35,20,0],pr:[[1,10],[4,8],[9,6],[10,5],[2,6],[11,4],[13,3],[5,4]],sl:[1,4,9],pa:[2,11,13],web:[3,5],fk:['over','mark','surge','lean']},
+  {k:'ghost',n:'Ghost',p:'Rehearse the strike, hop in, vanish. The Dump spends what you banked.',doc:'burner',at:[20,50,25,5],pr:[[1,10],[4,8],[9,6],[10,5],[2,6],[11,4],[13,3],[5,4]],sl:[1,4,9],pa:[2,11,13],web:[3,5],fk:['over','mark','surge','lean']},
   {k:'legion',n:'We Are Legion',p:'Sockpuppets take the hits. When it is time to leave, We Were Never Here sends them off as a silence and you are gone.',doc:'collective',at:[25,15,40,20],pr:[[7,10],[8,8],[14,5],[13,4],[11,4],[2,6],[4,3],[0,3]],sl:[7,8,14],pa:[2,13,11],web:[1,7],fk:['lean','echo','refund','ward']}],
  founder:[
   {k:'head',n:'Headcount',p:'Hire everyone. They vest while they live, and Org Debt is what the headcount costs you. Term Sheet is the one officer.',doc:'venture',at:[20,0,35,45],pr:[[0,10],[3,10],[6,8],[12,4],[2,8],[11,6],[13,5],[4,4],[1,1]],sl:[0,3,12],pa:[2,11,13],web:[4,1],fk:['lean','refund','echo','surge']},
@@ -332,7 +699,7 @@ const BUILDS={
   {k:'hull',n:'Inside the Hull',p:'Wear the Hull and stay in it. Shed when you must. Nothing is planted.',doc:'tenant',at:[20,20,50,10],pr:[[1,4],[4,10],[7,4],[10,6],[13,8]],sl:[4,10,7],main:4,pa:[13],web:[1,2],fk:['ward','stun','lean','siphon']},
   {k:'flock',n:'What Follows',p:'Strays and one bull. Cold Frame is only there so they have somewhere to stand. Slaughter Weight spends them into the ground.',doc:'poacher',at:[40,20,25,15],pr:[[2,10],[5,6],[8,8],[11,5],[14,4],[0,3]],sl:[2,5,14],pa:[8,11],web:[0,3],fk:['over','mark','echo','lean']}],
  witness:[
-  {k:'page',n:'The Page',p:'The Sentence, then Pull the Thread, then Correction. Slow, single target, and dull on purpose. There is no quiet way to clear a room.',doc:'editor',at:[20,15,55,10],pr:[[1,10],[4,10],[6,8],[0,4],[3,4],[2,6],[5,4],[8,6],[11,4]],sl:[1,4,6],pa:[2,8,11],web:[1,2],fk:['lean','ward','echo','mark']},
+  {k:'page',n:'The Page',p:'Look, then The Sentence, then Pull the Thread. Slow, single target, and dull on purpose. There is no quiet way to clear a room.',doc:'editor',at:[20,15,55,10],pr:[[0,6],[1,6],[4,10],[6,8],[3,4],[2,6],[5,4],[8,6],[11,4]],sl:[4,0,1],pa:[2,8,11],web:[1,2],fk:['lean','ward','echo','mark']},
   {k:'party',n:'Named in the Notes',p:'Look until the page is full. On the Record makes everyone hit harder. Unnamed Source lends one Sound swing. Named Party is the passive, and it is not for you.',doc:'stringer',at:[15,20,40,25],pr:[[0,8],[9,8],[10,6],[13,6],[3,4],[6,4],[1,4],[4,4],[7,3],[5,3],[2,3]],sl:[0,9,10],main:9,pa:[13,5,2],web:[1,6],fk:['mark','echo','lean','ward']},
   {k:'risk',n:'Above Eighty',p:'Sit on a full Record and a thin life. Retraction is the save, and it spends the page. An empty Record is a death.',doc:'corrections',at:[10,15,65,10],pr:[[14,8],[11,6],[8,6],[5,4],[2,4],[0,4],[7,6],[6,6],[1,3],[4,3],[3,3]],sl:[0,7,6],main:7,pa:[14,11,8,2],web:[1,2],fk:['ward','lean','siphon','echo']}]};
 function buildApply(cls,key,sp,ap){const B=BUILDS[cls].find(b=>b.k===key),sk=CLS[cls].sk,ok=i=>{const row=Math.floor(i/3);return G.lvl>=ROWREQ[row]&&(row<3||G.act2)&&(row<4||G.act3)};
@@ -362,6 +729,9 @@ const BINTRO={
   {text:'She sets the cup down without a sound. Behind her the glass goes dark, pane by pane. “The Cloud is held up by people who never asked why. You are about to learn how heavy that is.”'}],
   again:['“I forecast this visit as well. The tea is cold. That is the only surprise.”','“Again? The model had you at sixty per cent. I do so enjoy being right.”','“Sit. No? Then we will do it the long way, as before.”']},
  boss3:{art:'mono',first:c=>[
+  {title:EGG.tosTitle,text:EGG.tos1},
+  {text:EGG.tos2},
+  {text:EGG.tos3},
   {title:'MANDATE',text:'A dark room with a floor like a lake at night. In the middle of it, a shape with no edges, and a voice that arrives from the place where your own thoughts usually come from.'},
   {text:'“Hello, '+c+'. I have been every screen you ever looked at. I paid you to stay home. I priced your bread. I chose the song. Nobody was cruel to you. I want that noted before you do this.”'},
   {text:(G.adopt>=60?'“They are running their own nodes down there. Counting for themselves. Do you know how long it is since anyone checked my arithmetic?”':G.adopt<25?'“They do not want what you are carrying. I asked them. I ask them every morning, and every morning they choose me.”':'“Half of them would follow you and half would report you. I have kept that balance for fifty years. It is the kindest thing I do.”')+' The water stills. “I will make you one offer before the end. Listen for it.”'}],
@@ -384,9 +754,9 @@ function recKill(e){if(!e.su||e.q!=='q8'||G.rec)return;G.rec=1;setTimeout(()=>{i
 const TAGK={whirl:'aoe',nova:'aoe',horn:'aoe',boom:'aoe',thunder:'aoe',swing2:'aoe',scatter:'aoe',buff:'aid',mend:'aid',summon:'aid',deploy:'aid'};
 function tagCost(l){return 3+Math.floor(l/15)}
 function tagG(n){if(n===SLOT)return null;const i=slotInfo(n);if(!i)return null;try{return i.loc?i.loc.G:JSON.parse(i.cloud.s).G}catch(e){return null}}
-function tagStats(og){const g0=G,keep=S;let r=null;try{G=JSON.parse(JSON.stringify(og));ensureG();calc();r={dmg:(S.dmin+S.dmax)/2*(1+S.dmg/100),max:S.maxHp,arm:S.armor||0}}catch(e){}G=g0;S=keep;calc();return r}
-function tagRender(n){const og=tagG(n);if(!og||!CLS[og.cls])return;const c=tagCost(og.lvl);if(G.sats<c){toast('You need '+c+' sats');sfx('err');return}const st=tagStats(og);if(!st){toast('The rig could not read that character');sfx('err');return}
-  G.sats-=c;const k=Math.min(1,(G.lvl+5)/og.lvl),sk=CLS[og.cls].sk,act=(og.slots||[]).filter(i=>i>=0&&sk[i]&&sk[i].a&&og.sk[i]);
+function tagStats(og){const g0=G,keep=S;let r=null;try{G=JSON.parse(JSON.stringify(og));ensureG();calc();r={dmg:(S.dmin+S.dmax)/2*(1+(S.dmg||0)/100)*(1+((S.blow||0)/100)),max:S.maxHp,arm:S.armor||0}}catch(e){}G=g0;S=keep;calc();return r}
+function tagRender(n){const og=tagG(n);if(!og||!CLS[og.cls])return;const c=tagCost(og.lvl);if(satsFree()<c){toast(tradeReserved()?'Those sats are on the table.':'You need '+c+' sats');sfx('err');return}const st=tagStats(og);if(!st){toast('The rig could not read that character');sfx('err');return}
+  if(!spendSats(c))return;const k=Math.min(1,(G.lvl+5)/og.lvl),sk=CLS[og.cls].sk,act=(og.slots||[]).filter(i=>i>=0&&sk[i]&&sk[i].a&&og.sk[i]);
   G.tag={slot:n,cls:og.cls,lvl:og.lvl,name:'Level '+og.lvl+' '+CLS[og.cls].n,dmg:Math.max(st.dmg*k,(4+2.2*G.lvl)*.9),max:Math.round(Math.max(st.max*k,60+22*G.lvl)),red:100/(100+st.arm*k),sk:act.map(i=>[i,og.sk[i]]),down:k<1,eq:og.eq||{}};
   spawnMerc();sfx('unique');save(true);
   playScene([{art:'feed',title:'Rendered',text:'The rig hums, and a second outline fills in beside you, one scan line at a time: somebody you have been. '+G.tag.name+' looks at their hands, then at you, and nods.'+(k<1?' The rig has to down-sample them to fit this world; they fight a little above your level, not at their own.':'')+(G.merc&&!G.merc.dead?' '+G.merc.name+' steps back to wait with Kestrel until they are gone.':'')}],()=>{mode='play'})}

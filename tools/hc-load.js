@@ -111,7 +111,7 @@ const rise=await p.evaluate(()=>{
   return {txt:b?b.textContent:'',hidden:document.getElementById('death').hidden,stats:document.getElementById('deathS').textContent};
 });
 check('the death button says Begin again', rise.txt==='Begin again'&&rise.hidden===false, JSON.stringify(rise));
-check('the death panel names no re-onboarding charge', /Re-onboarding fee/.test(rise.stats)&&/none/.test(rise.stats)&&!/₡/.test(rise.stats), rise.stats);
+check('the death panel names no credit charge', /Credits on the body/.test(rise.stats)&&/none/.test(rise.stats)&&!/₡/.test(rise.stats), rise.stats);
 await p.click('#bRise');
 await p.waitForTimeout(200);
 const again=await p.evaluate(()=>({lvl:__g.G.lvl,hc:!!__g.G.hc,hp:__g.G.hp,credits:__g.G.credits,mode:__g.mode}));
