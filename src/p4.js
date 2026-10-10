@@ -58,7 +58,8 @@ Object.assign(ART,{
   g.strokeStyle='#6a5a40';g.lineWidth=2.4;g.beginPath();g.moveTo(px+14,py-28);g.lineTo(px+16,py+8);g.stroke();
   if(t>3.4)return;const x=((t*(w+90)*.42)%(w+120))-70,y=hy+2;
   g.save();g.translate(x,y);g.strokeStyle='#c8a55a';g.lineWidth=2.2;g.beginPath();g.arc(0,-1,16,.2,2.94);g.stroke();g.fillStyle='rgba(89,224,230,.8)';g.fillRect(-9,-3,18,3);
-  g.strokeStyle='#8a8478';g.lineWidth=1.3;for(let i=0;i<8;i++){const lx=-12+i*3.4,lift=Math.sin(t*18+i)*3;g.beginPath();g.moveTo(lx,2);g.lineTo(lx+(i-3.5)*.6,12+lift);g.stroke()}g.restore()},
+  g.strokeStyle='#8a8478';g.lineWidth=1.3;for(let i=0;i<8;i++){const lx=-12+i*3.4,lift=Math.sin(t*18+i)*3;g.beginPath();g.moveTo(lx,2);g.lineTo(lx+(i-3.5)*.6,12+lift);g.stroke()}g.restore();
+  g.strokeStyle='#3e6b46';g.lineWidth=1.5;for(let i=0;i<16;i++){const gx=x-36+i*5,bh=7+hsh(i+21)*11;g.beginPath();g.moveTo(gx,hy+10);g.lineTo(gx+(hsh(i+8)-.5)*2,hy+10-bh);g.stroke()}},
  letters(g,w,h,t){const s=g.createLinearGradient(0,0,0,h);s.addColorStop(0,'#2a1830');s.addColorStop(1,'#0b0910');g.fillStyle=s;g.fillRect(0,0,w,h);const cx=w/2,by=h*.86;
   const rg=g.createRadialGradient(cx,by-60,0,cx,by-60,h*.8);rg.addColorStop(0,'rgba(255,240,210,.45)');rg.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=rg;g.fillRect(0,0,w,h);
   g.fillStyle='#3a3250';g.fillRect(cx-36,by-90,72,90);g.fillStyle='#e6e2d6';g.fillRect(cx-26,by-80,52,26);g.fillStyle='#17131c';g.fillRect(cx-24,by-44,48,6);
@@ -761,7 +762,7 @@ function lootAt(vx,vy){for(let i=LOOT_BOX.length-1;i>=0;i--){const r=LOOT_BOX[i]
 function drawLootLabels(){
   const rows=lootLayout();
   if(!(typeof uiTouch==='function'&&uiTouch())){
-    for(const r of rows){ctx.font='700 11px Cinzel,serif';ctx.textAlign='center';ctx.fillStyle='rgba(5,4,9,.82)';ctx.fillRect(r.x,r.y,r.w,r.h);ctx.fillStyle=r.col;ctx.fillText(r.nm,r.x+r.w/2,r.y+Math.min(14,r.h-4))}}
+    for(const r of rows){ctx.font='700 11px Cinzel,serif';ctx.textAlign='center';ctx.fillStyle='rgba(8,6,12,.9)';ctx.fillRect(r.x,r.y,r.w,r.h);ctx.fillStyle=r.col;ctx.fillRect(r.x,r.y,3,r.h);ctx.fillText(r.nm,r.x+r.w/2,r.y+Math.min(14,r.h-4))}}
   lootDom(rows);cmpGround()}
 function lootDom(rows){
   const box=$('lootLabs');if(!box)return;
@@ -1121,7 +1122,7 @@ function vendHTML(){
     h+='<div class="grid" id="vendGrid">'+vendOccupy(rows,'vend')+'</div>';
     h+=rows.length?'<p>'+uiSay('Right-click a piece to buy it. Hover shows it beside what you wear, and the price in sats.','Tap a piece, then Buy. A purchase of 12 sats or more asks first.')+'</p>':'<p>Nothing in this bin. The counter changes when you leave town and come back.</p>';
   }
-  h+='</div><div class="youSide" data-vpanel="you"><h3>Pack '+gridCells(G.bag)+'/'+bagMeta().n+'</h3><div class="grid" id="bagGrid">'+gridPack(G.bag,bagMeta().c,bagMeta().r,'vbag')+'</div>';
+  h+='</div><div class="youSide" data-vpanel="you"><h3>Pack '+gridCells(G.bag)+'/'+bagMeta().n+'</h3><div class="grid'+(bagMeta().c===5?' g5':'')+'" id="bagGrid">'+gridPack(G.bag,bagMeta().c,bagMeta().r,'vbag')+'</div>';
   h+='<p>'+(vendBuys()?uiSay('Right-click a piece to lock it. Drag it onto the counter to sell it.','Hold a piece to lock it. Tap it, then Sell.'):'What you buy lands in the pack. This counter does not buy gear.')+'</p></div></div>';
   if(vendBuys())h+='<div class="row vendFoot"><button type="button" class="big" data-vsellall="1">Sell all</button><button type="button" class="ghost" data-vselljunk="1">Sell junk</button></div>';
   if(k==='brenda'&&!G.marrow&&unidCount()){
@@ -1185,7 +1186,7 @@ function drawSheet(){
     h+=beltRowHTML();if(W&&W.z&&W.z.town&&G.corpses&&G.corpses.length)h+=G.corpses.map(c=>`<button class="li" data-corpse="${c.id}"><div><b>Body in ${esc((ZONES[c.zi]&&ZONES[c.zi].n)||'a district')}</b><span>${fmt(c.credits||0)} of credits on it, with the belt and its charms. The pack stayed with you.</span></div><span class="pr" style="color:#f7931a">${corpseFee(c)} sats</span></button>`).join('');
     h+=`<div class="row"><button class="${ups?'big':'ghost'}" data-best="1" ${ups?'':'disabled'}>${ups?'Equip best · '+ups+' upgrade'+(ups>1?'s':''):'Nothing better in pack'}</button><button class="ghost" data-markjunk="1" ${downs?'':'disabled'}>Mark ${downs||''} weaker as junk</button></div><button class="tog${OPT.autoEq?' on':''}" data-opt="autoEq"><span>Equip stronger gear as you pick it up</span><i>${OPT.autoEq?'ON':'OFF'}</i></button>`;if(!selling())h+=pkRow();
     if(G.merc&&!G.merc.dead&&!selling()){const m=G.merc,ms=mercStats();h+=`<h3>${esc(m.name)} · ${MERCS[m.k].n}</h3><div class="dollw"><div class="grid eq" style="grid-template-columns:repeat(3,1fr);flex:0 0 46%">${MSL.map(sl=>cell(m[sl],`data-msel="${sl}"`,sel&&sel.m===sl,sl)).join('')}</div><div class="dstat"><div>Life<b>${ms.max}</b></div><div>Damage<b>${Math.round(ms.dmg)}</b></div><div>Takes<b>${Math.round(ms.red*100)}%</b></div></div></div><div class="row"><button class="ghost" data-mbest="1">Give them the best of what I am not using</button></div><p class="hint" style="font-size:13px">${uiSay('Click one of their pieces to take it back. Click a weapon, helm or armor in your pack and choose Give to hand it over; whatever they were holding comes back to you.','Tap one of their pieces to take it back. Tap a weapon, helm or armor in your pack and choose Give to hand it over; whatever they were holding comes back to you.')}</p>`}
-    h+=`<h3>Pack ${gridCells(G.bag)}/${bagMeta().n} · ${G.parts||0} parts</h3><div class="grid" id="bagGrid">${gridPack(G.bag,bagMeta().c,bagMeta().r,'bag')}</div>`;
+    h+=`<h3>Pack ${gridCells(G.bag)}/${bagMeta().n} · ${G.parts||0} parts</h3><div class="grid${bagMeta().c===5?' g5':''}" id="bagGrid">${gridPack(G.bag,bagMeta().c,bagMeta().r,'bag')}</div>`;
     h+=`<p style="font-size:13.5px">${uiSay('Hover a piece, or click it, to set it beside what you wear. Shift-hover does the same. <strong>Double-click to equip</strong>, <strong>hold to','Tap a piece to set it beside what you wear. <strong>Double-tap to equip</strong>, <strong>hold to')} ${selling()?'sell':'mark as junk'}</strong>.</p>`;
     const it=sel&&(sel.cs!==undefined?(G.cslots||[])[sel.cs]:sel.m?G.merc&&G.merc[sel.m]:sel.eq?G.eq[sel.eq]:G.bag[sel.bag]);
     if(it&&sel.sock){const own=WK.filter(w=>G.words[w]);pop=`<div class="card"><div class="nm" style="color:#f7931a">Socket a word</div><div class="ln off">${esc(it.name)} · ${it.soc-it.words.length} empty. A word cannot be removed once set. Phrases need the right words in the right order: see the Codex.</div><div class="list">${own.length?own.map(w=>`<button class="li" data-word="${w}"><div><b>${w} ×${G.words[w]}</b><span>${AFK[WORDS[w][0]].t.replace('{v}',WORDS[w][1])}</span></div></button>`).join(''):'<div class="ln off">You hold no words. They turn up on torn notes dropped by machines.</div>'}</div><div class="row"><button class="ghost" data-popx="1">Close</button></div></div>`}
@@ -1379,7 +1380,7 @@ function stashToPack(i){const it=ACC&&ACC.stash&&ACC.stash[i];if(!it)return fals
 function packToStash(i){const it=G.bag&&G.bag[i];if(!it)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(it.test){toast('Test gear does not go in the lockbox');return false}if(!gridCan(ACC.stash,it,6,6)){toast('The lockbox is full');return false}G.bag.splice(i,1);it.junk=false;ACC.stash.push(it);sel=null;sfx('equip');accSave();save(true);return true}
 function stashGearHTML(){
   const side=stashView();
-  return `<div class="row stashToggle"><button type="button" class="${side!=='pack'?'big':'ghost'}" data-sside="box">Lockbox</button><button type="button" class="${side==='pack'?'big':'ghost'}" data-sside="pack">Pack</button></div><div class="stashBody" data-side="${side}"><div class="stashPane" data-spanel="box"><h3>Gear ${gridCells(ACC.stash)}/36</h3><div class="grid" id="stashGrid">${gridPack(ACC.stash,6,6,'st')}</div></div><div class="stashPane" data-spanel="pack"><h3>Pack ${gridCells(G.bag)}/${bagMeta().n}</h3><div class="grid" id="stashPack">${gridPack(G.bag,bagMeta().c,bagMeta().r,'sb')}</div></div></div>`;
+  return `<div class="row stashToggle"><button type="button" class="${side!=='pack'?'big':'ghost'}" data-sside="box">Lockbox</button><button type="button" class="${side==='pack'?'big':'ghost'}" data-sside="pack">Pack</button></div><div class="stashBody" data-side="${side}"><div class="stashPane" data-spanel="box"><h3>Gear ${gridCells(ACC.stash)}/36</h3><div class="grid" id="stashGrid">${gridPack(ACC.stash,6,6,'st')}</div></div><div class="stashPane" data-spanel="pack"><h3>Pack ${gridCells(G.bag)}/${bagMeta().n}</h3><div class="grid${bagMeta().c===5?' g5':''}" id="stashPack">${gridPack(G.bag,bagMeta().c,bagMeta().r,'sb')}</div></div></div>`;
 }
 function stashMoveHTML(){
   const mv=sel&&sel.sb!=null?'Move to lockbox':sel&&sel.st!=null?'Move to pack':'Move across';
