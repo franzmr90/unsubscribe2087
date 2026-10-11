@@ -12,6 +12,38 @@ function ensureG(){bookFix();G.words=G.words||{};G.st=G.st||{};const s=G.st;s.wf
 /* Hard opens after Act V on Normal. Brutal opens after Act V on Hard. An old save keeps the difficulty it was already on, and a PROVIDENCE kill keeps Hard. */
 function diffUnlocked(i){return i<=0||(G.diffGate||0)>=i}
 function migrateDiff(){if(!G||G.diffMigrated)return;G.diffMigrated=1;let g=+G.diffGate||0;if(G.bk&&G.bk.boss5)g=Math.max(g,1);if((G.diff||0)>0)g=Math.max(g,Math.min(2,G.diff|0));G.diffGate=g}
+/* A run belongs to the game it was made in, not to the wanderer. Beginning a
+   difficulty wipes the world and keeps the person: Diablo's rule, and the one
+   that makes a second difficulty mean anything.
+
+   Resets: the quest log, the side quests, which districts are open, the tier,
+   where you stand, the portal, the per-zone adaptive memory, the act gates,
+   and the boss kill counts -- so each difficulty pays its own first kills.
+   G.diffGate is untouched, so resetting the counts cannot cost an unlock.
+
+   Keeps: the wanderer. Level, experience, points, skills, attributes, pack,
+   worn gear, stash, sats, credits, the hireling, memos, and the lockbox,
+   which is shared across the account anyway. seenIntro stays true: nobody
+   wants the prologue twice. */
+function beginDifficulty(d){
+  if(!G)return false;
+  d=Math.max(0,Math.min(2,d|0));
+  if(!diffUnlocked(d))return false;
+  G.diff=d;
+  G.q={q1:0,q2:0,q3:0,q4:0,q5:0,q6:0,q7:0,q8:0,q9:0,q10:0};
+  G.sq={};G.bk={};G.ez={};
+  G.unlocked=1;G.tier=0;G.zone=0;G.portal=null;
+  G.act2=G.act3=G.act4=G.act5=false;
+  G.bankXp=0;G.pre=0;G.preS=0;
+  delete G.ending;delete G._cur;
+  if(typeof resetZones==='function')resetZones();
+  G.gameId=(G.gameId||0)+1;        /* a new game, so a new world */
+  return true;
+}
+/* What this wanderer has finished, per difficulty. Written when the last boss
+   falls, read by the title to offer the next one. */
+function markCleared(d){if(!G)return;G.cleared=G.cleared||{};G.cleared[d|0]=1}
+function hasCleared(d){return !!(G&&G.cleared&&G.cleared[d|0])}
 function flushBank(){if(!G||!G.act3||!(G.bankXp>0))return;const b=G.bankXp;G.bankXp=0;if(G.lvl>=lvlCap()){paraXp(b);return}if(!P||!W){G.xp=(G.xp||0)+b;while(G.xp>=xpNext(G.lvl)&&G.lvl<lvlCap()){G.xp-=xpNext(G.lvl);G.lvl++;G.sp++;G.ap+=5}return}gainXp(b,'bank')}
 function gotWord(w){G.words[w]=(G.words[w]||0)+1;G.st.wf[w]=1}
 function socketWord(it,w){if(!it.soc||(it.words||[]).length>=it.soc||!G.words[w])return;G.words[w]--;it.words=it.words||[];it.words.push(w);const m=WORDS[w];it.aff.push({k:m[0],v:m[1],w});sfx('equip');
