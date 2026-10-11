@@ -11,6 +11,52 @@ const FORMULAS = {
     witness: { hp: 102, hpL: 13, ivl: 0.68, melee: 1 },
     maxi: { hp: 118, hpL: 15, ivl: 0.5, melee: 1 }
   },
+  /* The monster power curve. One row per level, the way Diablo's MonLvl table
+     is one row per level, because that is where the shape comes from. Each row
+     is a set of multipliers on the monster's own ET entry:
+
+       [ 0 ] hp          life
+       [ 1 ] dmg         damage a monster is actually given
+       [ 2 ] xp          experience it pays
+       [ 3 ] dmgNoKink   damage without the late-game kink, see below
+
+     Rows 1-99 were generated from the slopes that used to sit inline in nine
+     places across four files -- life +42 percent a level, damage +22, xp +80,
+     plus a further 0.8 a level of damage past level 25 -- so row n reproduces
+     exactly what the old arithmetic did, float artefacts and all. Change a row
+     to change how that level feels; none of those nine places need to know.
+
+     Columns 1 and 3 agree up to level 25 and diverge after it. That is not a
+     mistake in the table, it is a disagreement already in the game: the kink
+     is applied when a monster is spawned, but the two places that work out
+     what a monster's damage is expected to be -- the adaptive-difficulty
+     target and the bounty scaler -- leave it out. Unifying them would change
+     the balance, so the table carries both and names the difference. */
+  monLvl: [
+    [1,1,1,1],[1.42,1.22,1.8,1.22],[1.8399999999999999,1.44,2.6,1.44],[2.26,1.6600000000000001,3.4000000000000004,1.6600000000000001],[2.6799999999999997,1.88,4.2,1.88],
+    [3.1,2.1,5,2.1],[3.52,2.3200000000000003,5.800000000000001,2.3200000000000003],[3.94,2.54,6.6000000000000005,2.54],[4.359999999999999,2.76,7.4,2.76],[4.779999999999999,2.98,8.2,2.98],
+    [5.2,3.2,9,3.2],[5.62,3.42,9.8,3.42],[6.04,3.64,10.600000000000001,3.64],[6.46,3.86,11.4,3.86],[6.88,4.08,12.200000000000001,4.08],
+    [7.3,4.3,13,4.3],[7.72,4.52,13.8,4.52],[8.14,4.74,14.600000000000001,4.74],[8.559999999999999,4.96,15.4,4.96],[8.98,5.18,16.200000000000003,5.18],
+    [9.4,5.4,17,5.4],[9.82,5.62,17.8,5.62],[10.24,5.84,18.6,5.84],[10.66,6.06,19.400000000000002,6.06],[11.08,6.28,20.200000000000003,6.28],
+    [11.5,6.552,21,6.5],[11.92,6.82752,21.8,6.72],[12.34,7.106560000000001,22.6,6.94],[12.76,7.38912,23.400000000000002,7.16],[13.18,7.6752,24.200000000000003,7.38],
+    [13.6,7.9648,25,7.6],[14.02,8.25792,25.8,7.82],[14.44,8.55456,26.6,8.04],[14.86,8.85472,27.400000000000002,8.26],[15.28,9.1584,28.200000000000003,8.48],
+    [15.7,9.4656,29,8.7],[16.119999999999997,9.77632,29.8,8.92],[16.54,10.090560000000002,30.6,9.14],[16.96,10.40832,31.400000000000002,9.36],[17.38,10.729600000000001,32.2,9.58],
+    [17.8,11.054400000000001,33,9.8],[18.22,11.38272,33.800000000000004,10.02],[18.64,11.714560000000002,34.6,10.24],[19.06,12.04992,35.4,10.46],[19.48,12.388799999999998,36.2,10.68],
+    [19.9,12.7312,37,10.9],[20.32,13.077119999999999,37.800000000000004,11.12],[20.74,13.426559999999998,38.6,11.34],[21.16,13.77952,39.400000000000006,11.56],[21.58,14.136,40.2,11.78],
+    [22,14.495999999999999,41,12],[22.419999999999998,14.85952,41.800000000000004,12.22],[22.84,15.22656,42.6,12.44],[23.259999999999998,15.59712,43.400000000000006,12.66],[23.68,15.971200000000001,44.2,12.88],
+    [24.099999999999998,16.3488,45,13.1],[24.52,16.72992,45.800000000000004,13.32],[24.939999999999998,17.11456,46.6,13.540000000000001],[25.36,17.50272,47.400000000000006,13.76],[25.779999999999998,17.8944,48.2,13.98],
+    [26.2,18.2896,49,14.2],[26.619999999999997,18.68832,49.800000000000004,14.42],[27.04,19.09056,50.6,14.64],[27.459999999999997,19.49632,51.400000000000006,14.86],[27.88,19.9056,52.2,15.08],
+    [28.3,20.3184,53,15.3],[28.72,20.73472,53.800000000000004,15.52],[29.14,21.15456,54.6,15.74],[29.56,21.57792,55.400000000000006,15.96],[29.98,22.004799999999996,56.2,16.18],
+    [30.4,22.435199999999995,57,16.4],[30.82,22.869119999999995,57.800000000000004,16.619999999999997],[31.24,23.306559999999998,58.6,16.84],[31.66,23.747519999999998,59.400000000000006,17.06],[32.08,24.192,60.2,17.28],
+    [32.5,24.639999999999997,61,17.5],[32.92,25.091519999999996,61.800000000000004,17.72],[33.339999999999996,25.54656,62.6,17.94],[33.76,26.005119999999998,63.400000000000006,18.16],[34.18,26.4672,64.2,18.38],
+    [34.6,26.9328,65,18.6],[35.019999999999996,27.40192,65.8,18.82],[35.44,27.87456,66.60000000000001,19.04],[35.86,28.350720000000003,67.4,19.26],[36.28,28.8304,68.2,19.48],
+    [36.699999999999996,29.313599999999997,69,19.7],[37.12,29.800320000000003,69.8,19.92],[37.54,30.29056,70.60000000000001,20.14],[37.96,30.78432,71.4,20.36],[38.379999999999995,31.281600000000005,72.2,20.580000000000002],
+    [38.8,31.782400000000003,73,20.8],[39.22,32.28672,73.8,21.02],[39.64,32.79456,74.60000000000001,21.24],[40.059999999999995,33.30592,75.4,21.46],[40.48,33.8208,76.2,21.68],
+    [40.9,34.3392,77,21.9],[41.32,34.86112,77.80000000000001,22.12],[41.74,35.38656,78.60000000000001,22.34],[42.16,35.91552,79.4,22.56]
+  ],
+  /* What the rows were generated from. Used only past the end of the table:
+     brutal plus a few tiers can push a monster level over 99. */
+  monLvlTail: { hp: 0.42, dmg: 0.22, xp: 0.8, kinkAt: 25, kinkPer: 0.008 },
   /* Ceilings for a life report. Not a combat simulator. */
   life: {
     vitGear: 80,
@@ -91,6 +137,21 @@ function xpNext(lvl) {
 
 /* The machine level a district is actually built at, before tier.
    Subpoenas and the Simulator do not come through here. */
+/* The multipliers for one monster level: the table where it reaches, and the
+   slopes it was generated from past the end of it. The row is shared, so read
+   it, do not write to it. */
+function monLvl(ml) {
+  const T = FORMULAS.monLvl;
+  const i = Math.max(1, Math.round(+ml || 1));
+  if (i <= T.length) return T[i - 1];
+  const t = FORMULAS.monLvlTail;
+  const d0 = 1 + t.dmg * (i - 1);
+  return [1 + t.hp * (i - 1),
+          d0 * (i > t.kinkAt ? 1 + t.kinkPer * (i - t.kinkAt) : 1),
+          1 + t.xp * (i - 1),
+          d0];
+}
+
 function campaignLevel(written, diff) {
   const L = FORMULAS.ladder;
   const w = Math.max(1, Math.round(+written || 1));
@@ -240,4 +301,4 @@ function offsiteStep(b, dt, platforms) {
   return { out: false, dead: false };
 }
 
-if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, braceKeep, xpNext, xpPace, campaignLevel, auraRank, auraRadius, toxicSwingMul, pailMax, pailRate, OFFSITE, offsiteKnock, offsiteOut, offsiteStep };
+if (typeof module !== 'undefined' && module.exports) module.exports = { FORMULAS, monLvl, braceKeep, xpNext, xpPace, campaignLevel, auraRank, auraRadius, toxicSwingMul, pailMax, pailRate, OFFSITE, offsiteKnock, offsiteOut, offsiteStep };

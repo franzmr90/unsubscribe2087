@@ -48,24 +48,38 @@ feel like, so no reading can be wrong.
 
 ## What the comparison exposed in our numbers
 
-Reading our own curves next to D2's structure produced two concrete findings.
-Both are arithmetic from `src/p2.js`, not opinion.
+Reading our own curves next to D2's structure produced two findings. The
+first was wrong and is corrected below, which is left in place rather than
+deleted because the mistake is instructive. The second is arithmetic from
+`src/p2.js` and stands.
 
-### 1. Monster level follows the player, so difficulty is constant by construction
+### 1. CORRECTED — area levels are already fixed per zone, as in D2
 
-`W.ml = G.lvl`. Monster level *is* the player's level.
+**This finding was wrong when first written, and the correction matters more
+than the original claim.** I found `W.ml = G.lvl` and reported that monster
+level simply tracks the player, so difficulty was constant by construction and
+nobody could ever be over- or under-levelled.
 
-In D2, area level is fixed per zone per difficulty. Being under-levelled in Act
-IV Hell is the whole texture of the game; out-levelling an area is the reward
-for grinding, and the XP penalty for a level mismatch is what pushes you onward.
-None of that can exist in ours. You cannot be over- or under-levelled, ever.
-Progression is flat by design — gear is the only axis that can change how a
-fight feels.
+There are four assignments to `W.ml`, and the main one is not that. `enter()`
+uses `W.ml = zoneLevel(z)`, and
 
-This may well be the intended design. But it is worth naming, because it means
-every balance lever we have is gear, adaptive difficulty (`adaptSpawn`) and the
-`ET` entries themselves — and it explains why the late Acts feel undifferentiated
-rather than escalating.
+```
+zoneLevel(z) = campaignLevel(z.lvl, G.diff) + (G.tier||0)*12
+```
+
+where `z.lvl` is written per zone in `ZONES`, `campaignLevel` remaps it through
+`FORMULAS.ladder` (`act1:12, top:72, end:38`) and adds a flat offset per
+difficulty (`hard:22, brutal:38`). So area level is fixed per zone per
+difficulty, offset by tier — structurally what D2 does, and already table-driven
+through the ladder.
+
+`W.ml = G.lvl` is the **Simulator** only: an endless wave mode where scaling to
+the player is the correct design. The other two assignments are the adaptive
+recompute and the sim's own wave ramp.
+
+So there is no missing area-level system, and nothing to borrow from D2 here.
+The lesson is narrower than the first version of this document claimed: level
+*assignment* was already fine; only the *curve* was loose.
 
 ### 2. Monsters get tanky ~1.6x faster than they get dangerous
 
@@ -92,11 +106,19 @@ numbers chosen inline, rather than decisions anyone recorded.
 
 ## Concretely useful, in order of value
 
-1. **Write the curve down as a table.** A `MONLVL` array — one row per level,
-   columns for hp / dmg / xp, optionally per difficulty — replacing the three
-   inline slopes. Pure refactor, no behaviour change if row *n* reproduces the
-   current formula. It makes the curve editable, diffable, and gives the balance
-   bot something to assert against. This is the single highest-value thing here.
+1. ~~**Write the curve down as a table.**~~ **DONE** — `FORMULAS.monLvl`, 99
+   rows, one per level, four columns. The slopes turned out to be duplicated in
+   **nine places across four files**, not just `spawn()`, which made the case
+   stronger than this document first put it. `tools/monlvl-check.js` proves the
+   table reproduces the old arithmetic bit-identically (600 values, `===`, over
+   levels 1-150) and that real spawns scale by the table's own ratios.
+
+   The refactor also surfaced a disagreement already in the game: the +0.8%
+   per level damage kink past level 25 is applied when a monster spawns, but
+   the adaptive-difficulty target (`dynFor`) and the bounty scaler both compute
+   expected damage *without* it. The table carries both numbers rather than
+   unifying them, because unifying would change the balance. That is now a
+   visible decision for whoever wants to make it.
 
 2. **Decide the HP-to-damage ratio on purpose.** Flat is the easy fix: make the
    damage slope track the HP slope. Or keep the divergence deliberately and say

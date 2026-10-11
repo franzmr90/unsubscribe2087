@@ -107,7 +107,7 @@ function subStart(l){if(!spendSats(3,'Serving a subpoena costs 3 sats'))return;c
 function p7Spawn(e){e.hits=0;if(W.z.sim)return;const cl=G.lvl+(G.para||0)*.5;let h=1+.012*cl,d=1+.008*cl;if(W.pow){h*=1.3;d*=1.25}if(SEA.k==='bull')d*=1.15;if(SEA.k==='over')h*=1.15;
   if(W.z.sub&&SUBP){h*=(1+.15*SUBP.lvl)*(SUBP.mods.includes('thick')?1.5:1);d*=1+.1*SUBP.lvl;if(SUBP.mods.includes('swift'))e.spd*=1.3}
   e.hp*=h;e.max*=h;e.dmg*=d;adaptSpawn(e);
-  const t=ET[e.k],ml=W.ml,df=DF(),norm=Math.sqrt(DIFFS[0].hp*DIFFS[0].dmg),bh=t.hp*(1+.42*(ml-1))*(e.su?5:e.champ?2.8:1)*(isBoss(e.k)?2.5:1)*df.hp,bd=t.dmg*(1+.22*(ml-1))*(e.champ?1.3:1)*(isBoss(e.k)?1.35:1)*df.dmg;e.xpM=clamp(Math.sqrt(e.max/bh*e.dmg/bd)*norm/1.27*(1+.15*Object.keys(e.mods).length),.4,5)}
+  const t=ET[e.k],ml=W.ml,df=DF(),norm=Math.sqrt(DIFFS[0].hp*DIFFS[0].dmg),L=monLvl(ml),bh=t.hp*L[0]*(e.su?5:e.champ?2.8:1)*(isBoss(e.k)?2.5:1)*df.hp,bd=t.dmg*L[3]*(e.champ?1.3:1)*(isBoss(e.k)?1.35:1)*df.dmg;e.xpM=clamp(Math.sqrt(e.max/bh*e.dmg/bd)*norm/1.27*(1+.15*Object.keys(e.mods).length),.4,5)}
 function p7Kill(e){bullKill(e);if(S.sp.pod)P.haste=Math.max(P.haste,2);if(S.sp.orangepill&&(e.champ||e.su)){addDrop({sat:1},e.x,e.y);addAdopt(.2,'')}adaptKill(e);W.fx.push({k:'ring',x:e.x,y:e.y,r:e.champ||e.su?1.6:.9,t:0,life:.22,col:'#ffffff'});raidKill(e);if(P.fm&&P.fm.t>0&&P.fm.k==='refund')G.en=Math.min(S.maxEn,G.en+6);if(e.k==='shill')shillDie(e);const sb=W.sub;charmOnKill(e);
   if(SEA.k==='bull'&&Math.random()<.06)addDrop({sat:1},e.x,e.y);
   if(sb){if(sb.mods.includes('volatile'))W.fx.push({k:'warn',x:e.x,y:e.y,r:1.9,t:0,life:.8,boom:e.dmg*1.2});if(sb.mods.includes('bounty')&&Math.random()<.12)addDrop({sat:ri(1,2)},e.x,e.y);

@@ -325,7 +325,7 @@ function arcPace(s){if(s&&(G.cslots||[]).some(c=>c&&c.uid==='minute')&&P&&(P.zon
 function arcSpot(dx,dy){const s=W.start||{x:10,y:10};let x=s.x+(dx||1.4),y=s.y+(dy||.6);if(typeof nearFree==='function'){const n=nearFree({x:x,y:y},2);if(n)return n}return {x:x,y:y}}
 function arcObj(id,dx,dy){if(!W||!W.objs)return null;if(W.objs.some(o=>o&&o.k==='arc'&&o.id===id&&!o.used))return null;const p=arcSpot(dx,dy);const o={k:'arc',id:id,x:p.x,y:p.y,used:0};W.objs.push(o);return o}
 function arcNpc(id,x,y,name){if(!W||!W.npcs||W.npcs.some(n=>n.id===id))return;W.npcs.push({id:id,x:x,y:y,name:name,col:'#8a7a62',act:'Talk'})}
-function arcLt(k,x,y,name,tag,hp){let e=null;for(let i=0;i<8&&!e;i++)e=spawn(k,x+Math.cos(i)*i*.45,y+Math.sin(i)*i*.45,{minion:1});if(!e)return null;e.arc=tag;e.name=name;e.minion=1;if(hp){e.hp=hp;e.max=hp;const t=ET[k],ml=(W&&W.ml)||1,hp0=t?t.hp*(1+.42*(ml-1)):0;if(hp0>0){e.bornHp=hp/hp0;e.dynHp=e.bornHp}}return e}
+function arcLt(k,x,y,name,tag,hp){let e=null;for(let i=0;i<8&&!e;i++)e=spawn(k,x+Math.cos(i)*i*.45,y+Math.sin(i)*i*.45,{minion:1});if(!e)return null;e.arc=tag;e.name=name;e.minion=1;if(hp){e.hp=hp;e.max=hp;const t=ET[k],ml=(W&&W.ml)||1,hp0=t?t.hp*monLvl(ml)[0]:0;if(hp0>0){e.bornHp=hp/hp0;e.dynHp=e.bornHp}}return e}
 function arcSkipMerc(){if(!G||!G.merc||G.merc.k!=='reyn'||!W)return false;if(W.zi===5)return true;if(W.zi===22&&arcSt().reynOut)return true;return false}
 function arcMercMay(tg){if(!tg||tg.person)return false;if(tg.arc==='visor'&&P&&dist(P,tg)>6)return false;return true}
 function arcOnRug(){if(P&&P.arcNo>0)return false;const o=(W.objs||[]).find(x=>x&&x.k==='arc'&&x.id==='rug'&&!x.used);return !!(o&&dist(o,P)<1.35)}
