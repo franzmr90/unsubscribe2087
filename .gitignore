@@ -4,6 +4,7 @@
 # the trailer is generated, not source
 .DS_Store
 .fx-shots/
+.skill-shots/
 .tmp/
 node_modules/
 server/data/

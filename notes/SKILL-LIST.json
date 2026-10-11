@@ -1,0 +1,2424 @@
+{
+ "out": [
+  {
+   "cls": "scrapper",
+   "i": 0,
+   "name": "Stop Sign",
+   "ab": "STOP SIGN",
+   "active": true,
+   "cost": 5,
+   "cd": 0.8,
+   "desc": "A wide swing. The machine in front takes 205%. Everyone else in the swing takes 22% of that, with a 25% chance to stun.",
+   "vfx": {
+    "k": "arc",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.22,
+    "at": "",
+    "tel": 0,
+    "reach": 2.4
+   }
+  },
+  {
+   "cls": "scrapper",
+   "i": 1,
+   "name": "Hurl",
+   "ab": "HURL",
+   "active": true,
+   "cost": 6,
+   "cd": 0.6,
+   "desc": "Throw scrap that passes through enemies for 220% damage.",
+   "vfx": {
+    "k": "bolt",
+    "col": "#c9803a",
+    "r": 4,
+    "n": 1,
+    "life": 0.28,
+    "at": "foe",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "scrapper",
+   "i": 2,
+   "name": "Iron Hide",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. +40% armor and +20% life.",
+   "vfx": {
+    "k": "patch",
+    "col": "#d9822b",
+    "r": 1.4,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "scrapper",
+   "i": 3,
+   "name": "Turnstile",
+   "ab": "TURN- STILE",
+   "active": true,
+   "cost": 12,
+   "cd": 1.5,
+   "desc": "Spin. The nearest machine takes 260%. Everyone else in the spin takes 22% of that.",
+   "vfx": {
+    "k": "ring",
+    "col": "#e6e2d6",
+    "r": 2.5,
+    "n": 1,
+    "life": 0.42,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "scrapper",
+   "i": 4,
+   "name": "Picket Rush",
+   "ab": "PICKET RUSH",
+   "active": true,
+   "cost": 12,
+   "cd": 4,
+   "desc": "Rush forward, untouchable, hitting each enemy in the path for 270%.",
+   "vfx": {
+    "k": "trail",
+    "col": "#e6e2d6",
+    "r": 3.2,
+    "n": 1,
+    "life": 0.32,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "scrapper",
+   "i": 5,
+   "name": "War Horn",
+   "ab": "WAR HORN",
+   "active": true,
+   "cost": 16,
+   "cd": 10,
+   "desc": "Stun enemies around you for 2.0s and gain +60% armor for 8s.",
+   "vfx": {
+    "k": "ring",
+    "col": "#d98cff",
+    "r": 4,
+    "n": 1,
+    "life": 0.42,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "scrapper",
+   "i": 6,
+   "name": "Overtime",
+   "ab": "OVER- TIME",
+   "active": true,
+   "cost": 25,
+   "cd": 18,
+   "desc": "For 11s: +40% attack speed and 11% life stolen per hit.",
+   "vfx": {
+    "k": "patch",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "scrapper",
+   "i": 7,
+   "name": "Earthbreaker",
+   "ab": "EARTH- BREAKER",
+   "active": true,
+   "cost": 20,
+   "cd": 7,
+   "desc": "Leap to the nearest enemy and slam for 395%. Anyone else in the slam takes 22% of that.",
+   "vfx": {
+    "k": "trail",
+    "col": "#ff7a3c",
+    "r": 3,
+    "n": 1,
+    "life": 0.32,
+    "at": "foe",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "scrapper",
+   "i": 8,
+   "name": "Solidarity",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. +15% damage for each enemy near you, up to five.",
+   "vfx": {
+    "k": "mark",
+    "col": "#d9822b",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "scrapper",
+   "i": 9,
+   "name": "Lunch Pail",
+   "ab": "LUNCH PAIL",
+   "active": true,
+   "cost": 16,
+   "cd": 14,
+   "desc": "Set it down. You and anyone fighting beside it recover 4.0% of their life each second from the pail, until its stores (58% of your life) run out.",
+   "vfx": {
+    "k": "patch",
+    "col": "#e6e2d6",
+    "r": 2.6,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "scrapper",
+   "i": 10,
+   "name": "Seniority",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. The damage type on the weapon in your hand gains +30%.",
+   "vfx": {
+    "k": "mark",
+    "col": "#d9822b",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "scrapper",
+   "i": 11,
+   "name": "Hold the Line",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. Each second you have not dashed adds 20 armour and 5% damage reduction, up to six seconds. A dash spends it.",
+   "vfx": {
+    "k": "patch",
+    "col": "#d9822b",
+    "r": 1.6,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "scrapper",
+   "i": 12,
+   "name": "Call the Strike",
+   "ab": "CALL THE STRIKE",
+   "active": true,
+   "cost": 18,
+   "cd": 11,
+   "desc": "A horn. Ordinary machines are pushed back. Elites and bosses are pulled in. Everyone caught takes 95% noise.",
+   "vfx": {
+    "k": "patch",
+    "col": "#d98cff",
+    "r": 4.2,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 1,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "scrapper",
+   "i": 13,
+   "name": "Two-Handed",
+   "ab": "TWO- HANDED",
+   "active": true,
+   "cost": 14,
+   "cd": 9,
+   "desc": "Your next three swings are slow, cannot be interrupted, and hit a wider arc.",
+   "vfx": {
+    "k": "ring",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.42,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "scrapper",
+   "i": 14,
+   "name": "Last Shift",
+   "ab": "LAST SHIFT",
+   "active": true,
+   "cost": 24,
+   "cd": 22,
+   "desc": "For 5.5s your swings leech 13% and you do not flinch. If you fall while it is up, you fall.",
+   "vfx": {
+    "k": "ring",
+    "col": "#e6e2d6",
+    "r": 1.1,
+    "n": 1,
+    "life": 0.42,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "hacker",
+   "i": 0,
+   "name": "Arc Chain",
+   "ab": "ARC CHAIN",
+   "active": true,
+   "cost": 11,
+   "cd": 1.2,
+   "desc": "Lightning that leaps through 5 enemies for 210% each. For 1.7s after you cast it, 30% of each hit is paid from energy, and only as much as you have.",
+   "vfx": {
+    "k": "bolt",
+    "col": "#59e0e6",
+    "r": 5,
+    "n": 3,
+    "life": 0.28,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "hacker",
+   "i": 1,
+   "name": "Spark Lance",
+   "ab": "SPARK LANCE",
+   "active": true,
+   "cost": 5,
+   "cd": 0.5,
+   "desc": "A bolt that pierces every enemy in a line for 240%. Primes your next Arc Chain within 3 seconds for +30%.",
+   "vfx": {
+    "k": "mark",
+    "col": "#59e0e6",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "hacker",
+   "i": 2,
+   "name": "Cipher Ward",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. 30% of damage taken drains energy instead of life.",
+   "vfx": {
+    "k": "patch",
+    "col": "#9a6cff",
+    "r": 1.5,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "hacker",
+   "i": 3,
+   "name": "Null Nova",
+   "ab": "NULL NOVA",
+   "active": true,
+   "cost": 18,
+   "cd": 7,
+   "desc": "A blast around you: 190% damage and 2.5s stun.",
+   "vfx": {
+    "k": "ring",
+    "col": "#d98cff",
+    "r": 3.4,
+    "n": 1,
+    "life": 0.42,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "hacker",
+   "i": 4,
+   "name": "Watchdog",
+   "ab": "WATCH- DOG",
+   "active": true,
+   "cost": 25,
+   "cd": 16,
+   "desc": "Deploy a turret for 20s that fires for 90% per shot.",
+   "vfx": {
+    "k": "trail",
+    "col": "#59e0e6",
+    "r": 0.8,
+    "n": 1,
+    "life": 0.32,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "hacker",
+   "i": 5,
+   "name": "Overclock",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. +5 energy per second and 15% faster skill recovery.",
+   "vfx": {
+    "k": "mark",
+    "col": "#9a6cff",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "hacker",
+   "i": 6,
+   "name": "Black Storm",
+   "ab": "BLACK STORM",
+   "active": true,
+   "cost": 30,
+   "cd": 12,
+   "desc": "Call a storm on a spot for 4s. Shards fall there, and each strike deals 130%.",
+   "vfx": {
+    "k": "ring",
+    "col": "#c9803a",
+    "r": 3.5,
+    "n": 1,
+    "life": 0.42,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "hacker",
+   "i": 7,
+   "name": "Botnet",
+   "ab": "BOTNET",
+   "active": true,
+   "cost": 30,
+   "cd": 20,
+   "desc": "Hijack three drones for 20s. Each bite deals 75%.",
+   "vfx": {
+    "k": "orbit",
+    "col": "#d98cff",
+    "r": 1.2,
+    "n": 3,
+    "life": 0.55,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "hacker",
+   "i": 8,
+   "name": "Zero Day",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. +15% deadly strike chance, and deadly strikes deal 250%.",
+   "vfx": {
+    "k": "mark",
+    "col": "#9a6cff",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "hacker",
+   "i": 9,
+   "name": "Ground Fault",
+   "ab": "GROUND FAULT",
+   "active": true,
+   "cost": 14,
+   "cd": 6,
+   "desc": "A line of heat on the floor for 4.0s, 70% every half second. Casting it locks your hands for a moment.",
+   "vfx": {
+    "k": "trail",
+    "col": "#ff7a3c",
+    "r": 4.5,
+    "n": 1,
+    "life": 0.32,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "hacker",
+   "i": 10,
+   "name": "Packet Storm",
+   "ab": "PACKET STORM",
+   "active": true,
+   "cost": 16,
+   "cd": 8,
+   "desc": "Mark a spot. A noise storm arrives there after a short delay and strikes for 90%. Walking away does not move it.",
+   "vfx": {
+    "k": "patch",
+    "col": "#d98cff",
+    "r": 2.2,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 1,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "hacker",
+   "i": 11,
+   "name": "Schema",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. You work in one element. Damage of that type gains +40%. The other two do not. Sister Null can make you choose again. Dying cannot.",
+   "vfx": {
+    "k": "mark",
+    "col": "#9a6cff",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "hacker",
+   "i": 12,
+   "name": "Step Back",
+   "ab": "STEP BACK",
+   "active": true,
+   "cost": 8,
+   "cd": 4,
+   "desc": "About four paces back along your facing.",
+   "vfx": {
+    "k": "trail",
+    "col": "#9a6cff",
+    "r": 4,
+    "n": 1,
+    "life": 0.32,
+    "at": "back",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "hacker",
+   "i": 13,
+   "name": "Patched",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. 20% of the Surge damage you deal becomes a barrier, up to 30% of your life. Nothing, if your Schema is Heat or Noise.",
+   "vfx": {
+    "k": "patch",
+    "col": "#9a6cff",
+    "r": 1.1,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "hacker",
+   "i": 14,
+   "name": "Kill Dash Nine",
+   "ab": "KILL -9",
+   "active": true,
+   "cost": 26,
+   "cd": 16,
+   "desc": "One machine, for 480% of your Schema element. It ignores that element's resistance, once. A resistance of zero is still a wall. Casting it locks your hands.",
+   "vfx": {
+    "k": "bolt",
+    "col": "#59e0e6",
+    "r": 6,
+    "n": 1,
+    "life": 0.28,
+    "at": "foe",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "courier",
+   "i": 0,
+   "name": "Scatter Shot",
+   "ab": "SCATTER",
+   "active": true,
+   "cost": 9,
+   "cd": 1.2,
+   "desc": "Throw a fan of 5 blades for 140% each. Anything within arm’s reach is also cut for 80%.",
+   "vfx": {
+    "k": "ring",
+    "col": "#e6e2d6",
+    "r": 2,
+    "n": 1,
+    "life": 0.42,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "courier",
+   "i": 1,
+   "name": "Fleet Step",
+   "ab": "FLEET STEP",
+   "active": true,
+   "cost": 9,
+   "cd": 3.5,
+   "desc": "Dash, untouchable, then run 50% faster for 3.5s.",
+   "vfx": {
+    "k": "trail",
+    "col": "#3fbf8f",
+    "r": 3,
+    "n": 1,
+    "life": 0.32,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "courier",
+   "i": 2,
+   "name": "Evasion",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. +10% run speed and 12.5% chance to avoid any hit.",
+   "vfx": {
+    "k": "mark",
+    "col": "#3fbf8f",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "courier",
+   "i": 3,
+   "name": "Lure",
+   "ab": "LURE",
+   "active": true,
+   "cost": 20,
+   "cd": 12,
+   "desc": "Drop a decoy parcel. Machines attack it, then it bursts for 450%.",
+   "vfx": {
+    "k": "patch",
+    "col": "#ff7a3c",
+    "r": 2.6,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "courier",
+   "i": 4,
+   "name": "Tack Strip",
+   "ab": "TACK STRIP",
+   "active": true,
+   "cost": 14,
+   "cd": 8,
+   "desc": "Scatter spikes for 6s that slow enemies and deal 50% twice a second.",
+   "vfx": {
+    "k": "patch",
+    "col": "#c9803a",
+    "r": 2.6,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "courier",
+   "i": 5,
+   "name": "Scavenger",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. +50% credits and +25% magic find.",
+   "vfx": {
+    "k": "mark",
+    "col": "#3fbf8f",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "courier",
+   "i": 6,
+   "name": "Rush Order",
+   "ab": "RUSH ORDER",
+   "active": true,
+   "cost": 22,
+   "cd": 8,
+   "desc": "A 1.5s stream of blades at the nearest enemy, 85% each.",
+   "vfx": {
+    "k": "orbit",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 3,
+    "life": 0.55,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "courier",
+   "i": 7,
+   "name": "Signed For",
+   "ab": "SIGNED FOR",
+   "active": true,
+   "cost": 16,
+   "cd": 6,
+   "desc": "Strike the nearest enemy for 550%. It takes +30% damage for 8s.",
+   "vfx": {
+    "k": "mark",
+    "col": "#d98cff",
+    "r": 1.2,
+    "n": 0,
+    "life": 0.8,
+    "at": "foe",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "courier",
+   "i": 8,
+   "name": "Deadeye",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. 40% chance for throws to pierce and +10% deadly strike.",
+   "vfx": {
+    "k": "mark",
+    "col": "#3fbf8f",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "courier",
+   "i": 9,
+   "name": "Return to Sender",
+   "ab": "RETURN SENDER",
+   "active": true,
+   "cost": 12,
+   "cd": 5,
+   "desc": "A throw that goes out and comes back, 190% on each pass.",
+   "vfx": {
+    "k": "trail",
+    "col": "#e6e2d6",
+    "r": 4.2,
+    "n": 1,
+    "life": 0.32,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "courier",
+   "i": 10,
+   "name": "Route Knowledge",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. After a dash, you avoid 16% more hits for 3.0s. Standing still does nothing.",
+   "vfx": {
+    "k": "mark",
+    "col": "#3fbf8f",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "courier",
+   "i": 11,
+   "name": "Second Drop",
+   "ab": "SECOND DROP",
+   "active": true,
+   "cost": 16,
+   "cd": 10,
+   "desc": "One decoy copies your last throw, then stays on a 4.5-pace leash for 6s. Leave it behind and it pops.",
+   "vfx": {
+    "k": "patch",
+    "col": "#e6e2d6",
+    "r": 1.8,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "courier",
+   "i": 12,
+   "name": "Manifest",
+   "ab": "MANIFEST",
+   "active": true,
+   "cost": 14,
+   "cd": 6,
+   "desc": "A piercing throw for 170% that splits into two after the first machine it hits.",
+   "vfx": {
+    "k": "mark",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "courier",
+   "i": 13,
+   "name": "Hazard Pay",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. A throw that kills pays 8 extra credits and finds gear as if you had +30% magic find. A dash does not pay.",
+   "vfx": {
+    "k": "mark",
+    "col": "#3fbf8f",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "courier",
+   "i": 14,
+   "name": "Missed Connection",
+   "ab": "MISSED CONN",
+   "active": true,
+   "cost": 18,
+   "cd": 12,
+   "desc": "Mark a machine. If it dies within 5.3s, to you or to anyone with you, you appear where it fell and your next throw costs nothing.",
+   "vfx": {
+    "k": "mark",
+    "col": "#3fbf8f",
+    "r": 1.2,
+    "n": 0,
+    "life": 0.8,
+    "at": "foe",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "anon",
+   "i": 0,
+   "name": "Honeypot",
+   "ab": "HONEY- POT",
+   "active": true,
+   "cost": 14,
+   "cd": 9,
+   "desc": "Plant a lure. Machines swarm it for 3s, then it bursts for 395% and stuns.",
+   "vfx": {
+    "k": "patch",
+    "col": "#ff7a3c",
+    "r": 2.6,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "anon",
+   "i": 1,
+   "name": "Proxy Hop",
+   "ab": "PROXY HOP",
+   "active": true,
+   "cost": 10,
+   "cd": 3.5,
+   "desc": "Appear behind the nearest machine and stab for 285%, always a deadly strike.",
+   "vfx": {
+    "k": "ring",
+    "col": "#e6e2d6",
+    "r": 0.8,
+    "n": 1,
+    "life": 0.42,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "anon",
+   "i": 2,
+   "name": "OpSec",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. 12.5% chance to avoid any hit and +10% deadly strike.",
+   "vfx": {
+    "k": "mark",
+    "col": "#3f3f4c",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "anon",
+   "i": 3,
+   "name": "Logic Bomb",
+   "ab": "LOGIC BOMB",
+   "active": true,
+   "cost": 12,
+   "cd": 2.5,
+   "desc": "Lay a mine that blows for 550% when a machine steps near. Up to four.",
+   "vfx": {
+    "k": "patch",
+    "col": "#ff7a3c",
+    "r": 2.4,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "anon",
+   "i": 4,
+   "name": "Incognito",
+   "ab": "INCOG- NITO",
+   "active": true,
+   "cost": 16,
+   "cd": 12,
+   "desc": "Vanish for 4.5s. Machines forget you. Your next blow deals 400%.",
+   "vfx": {
+    "k": "ring",
+    "col": "#e6e2d6",
+    "r": 1.4,
+    "n": 1,
+    "life": 0.42,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "anon",
+   "i": 5,
+   "name": "Dox",
+   "ab": "DOX",
+   "active": true,
+   "cost": 12,
+   "cd": 6,
+   "desc": "Expose a machine and everything near it: +30% damage taken for 13s, and 200% now.",
+   "vfx": {
+    "k": "patch",
+    "col": "#d98cff",
+    "r": 3,
+    "n": 1,
+    "life": 0.62,
+    "at": "foe",
+    "tel": 1,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "anon",
+   "i": 6,
+   "name": "Zip Bomb",
+   "ab": "ZIP BOMB",
+   "active": true,
+   "cost": 22,
+   "cd": 8,
+   "desc": "One blast of 240% that unpacks into five more of 220%.",
+   "vfx": {
+    "k": "ring",
+    "col": "#ff7a3c",
+    "r": 2.2,
+    "n": 1,
+    "life": 0.42,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "anon",
+   "i": 7,
+   "name": "Sockpuppet",
+   "ab": "SOCK- PUPPET",
+   "active": true,
+   "cost": 24,
+   "cd": 18,
+   "desc": "Two copies of you fight for 15s, dealing 90% and drawing fire.",
+   "vfx": {
+    "k": "orbit",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 3,
+    "life": 0.55,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "anon",
+   "i": 8,
+   "name": "Legion",
+   "ab": "LEGION",
+   "active": true,
+   "cost": 35,
+   "cd": 20,
+   "desc": "A dozen unseen blades strike across the screen for 220% each.",
+   "vfx": {
+    "k": "ring",
+    "col": "#d98cff",
+    "r": 9,
+    "n": 1,
+    "life": 0.42,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "anon",
+   "i": 9,
+   "name": "Rehearsal",
+   "ab": "RE- HEARSE",
+   "active": true,
+   "cost": 10,
+   "cd": 1.4,
+   "desc": "A strike for 120%. Another within 3s adds a charge, up to three.",
+   "vfx": {
+    "k": "arc",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.22,
+    "at": "",
+    "tel": 0,
+    "reach": 3.2
+   }
+  },
+  {
+   "cls": "anon",
+   "i": 10,
+   "name": "The Dump",
+   "ab": "THE DUMP",
+   "active": true,
+   "cost": 8,
+   "cd": 4,
+   "desc": "Spend every charge. One is a rust bleed. Two is a silence. Three is a screen of blades for 150%. A plain attack spends one charge and bleeds. Charges do not survive a zone change.",
+   "vfx": {
+    "k": "mark",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "anon",
+   "i": 11,
+   "name": "No Attribution",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. While Incognito is up, laying a mine does not break it, and the mine arms faster. Nothing, while you can be seen.",
+   "vfx": {
+    "k": "mark",
+    "col": "#3f3f4c",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "anon",
+   "i": 12,
+   "name": "Dead Drop",
+   "ab": "DEAD DROP",
+   "active": true,
+   "cost": 12,
+   "cd": 3,
+   "desc": "Place a mark. Activate again to appear there. One mark. It does not explode.",
+   "vfx": {
+    "k": "patch",
+    "col": "#e6e2d6",
+    "r": 1.35,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "anon",
+   "i": 13,
+   "name": "Cutout",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. The first hit that would destroy a mine or a sockpuppet is ignored. It does not apply to you.",
+   "vfx": {
+    "k": "patch",
+    "col": "#3f3f4c",
+    "r": 1.9,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "anon",
+   "i": 14,
+   "name": "We Were Never Here",
+   "ab": "NEVER HERE",
+   "active": true,
+   "cost": 20,
+   "cd": 16,
+   "desc": "Every mine and sockpuppet goes off as a silence, and you drop into Incognito. If you have none, nothing happens.",
+   "vfx": {
+    "k": "mark",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "founder",
+   "i": 0,
+   "name": "Interns",
+   "ab": "INTERN",
+   "active": true,
+   "cost": 8,
+   "cd": 0.5,
+   "desc": "Summon an intern that fights for 60%. You keep up to 4. They follow you everywhere, step in front of a blow, and each one alive cuts the damage you take by 5%, up to 20%.",
+   "vfx": {
+    "k": "orbit",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 3,
+    "life": 0.55,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "founder",
+   "i": 1,
+   "name": "Cease & Desist",
+   "ab": "CEASE & DESIST",
+   "active": true,
+   "cost": 14,
+   "cd": 7,
+   "desc": "Bind every machine in an area for 3.5s and deal 155%.",
+   "vfx": {
+    "k": "patch",
+    "col": "#d98cff",
+    "r": 3,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 1,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "founder",
+   "i": 2,
+   "name": "Equity",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. Your workforce deals +40% damage and you gain +15% life.",
+   "vfx": {
+    "k": "mark",
+    "col": "#26262e",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "founder",
+   "i": 3,
+   "name": "Contractors",
+   "ab": "CONTR- ACTOR",
+   "active": true,
+   "cost": 14,
+   "cd": 1,
+   "desc": "Summon a drone that shoots for 80%. You keep up to 2.",
+   "vfx": {
+    "k": "orbit",
+    "col": "#59e0e6",
+    "r": 1.2,
+    "n": 3,
+    "life": 0.55,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "founder",
+   "i": 4,
+   "name": "Crunch",
+   "ab": "CRUNCH",
+   "active": true,
+   "cost": 20,
+   "cd": 16,
+   "desc": "For 13s your workforce attacks 60% faster and hits 30% harder.",
+   "vfx": {
+    "k": "ring",
+    "col": "#e6e2d6",
+    "r": 1.1,
+    "n": 1,
+    "life": 0.42,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "founder",
+   "i": 5,
+   "name": "Mech Suit",
+   "ab": "MECH SUIT",
+   "active": true,
+   "cost": 25,
+   "cd": 22,
+   "desc": "For 15s: double armor, and your attacks become slams of 285%. Heals you 30% of your life.",
+   "vfx": {
+    "k": "ring",
+    "col": "#e6e2d6",
+    "r": 2,
+    "n": 1,
+    "life": 0.42,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "founder",
+   "i": 6,
+   "name": "Chief of Staff",
+   "ab": "CHIEF",
+   "active": true,
+   "cost": 30,
+   "cd": 10,
+   "desc": "Summon one hulking enforcer that machines attack first. It hits for 220% in an arc.",
+   "vfx": {
+    "k": "orbit",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 3,
+    "life": 0.55,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "founder",
+   "i": 7,
+   "name": "Acqui-hire",
+   "ab": "ACQUI- HIRE",
+   "active": true,
+   "cost": 28,
+   "cd": 18,
+   "desc": "Turn the nearest machine to your side for 22s. Champions too.",
+   "vfx": {
+    "k": "mark",
+    "col": "#7be495",
+    "r": 1.2,
+    "n": 0,
+    "life": 0.8,
+    "at": "foe",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "founder",
+   "i": 8,
+   "name": "Layoffs",
+   "ab": "LAY- OFFS",
+   "active": true,
+   "cost": 10,
+   "cd": 12,
+   "desc": "Every summoned worker explodes for 400%. Each one heals you 5%.",
+   "vfx": {
+    "k": "mark",
+    "col": "#ff7a3c",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "founder",
+   "i": 9,
+   "name": "Garden Leave",
+   "ab": "GARDEN LEAVE",
+   "active": true,
+   "cost": 16,
+   "cd": 10,
+   "desc": "Requires a worker or a converted machine killed in the last 4s. Curse whatever killed them: 70% a second for 5.5s, and they cannot be healed. With no body, nothing happens.",
+   "vfx": {
+    "k": "mark",
+    "col": "#c9a868",
+    "r": 1.2,
+    "n": 0,
+    "life": 0.8,
+    "at": "foe",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "founder",
+   "i": 10,
+   "name": "Non-Compete",
+   "ab": "NON- COMPETE",
+   "active": true,
+   "cost": 14,
+   "cd": 8,
+   "desc": "One machine can attack only you for 6.5s. Your workforce will not hit it.",
+   "vfx": {
+    "k": "mark",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 0,
+    "life": 0.8,
+    "at": "foe",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "founder",
+   "i": 11,
+   "name": "Vesting",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. A worker gains a stack every 3s it stays alive. Each stack is +9% damage. Summoning over them, or laying them off, takes every stack.",
+   "vfx": {
+    "k": "mark",
+    "col": "#26262e",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "founder",
+   "i": 12,
+   "name": "Term Sheet",
+   "ab": "TERM SHEET",
+   "active": true,
+   "cost": 28,
+   "cd": 14,
+   "desc": "One officer. You may feed it a weapon from your pack. The weapon is consumed, and the officer strikes with that damage type for 150%. Empty-handed, it is weaker and it is Impact.",
+   "vfx": {
+    "k": "orbit",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 3,
+    "life": 0.55,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "founder",
+   "i": 13,
+   "name": "Org Debt",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. Each worker on the field cuts the damage you deal by 9% and raises theirs by 13%. It stacks. Swing it yourself with a full headcount and you are playing this class wrong.",
+   "vfx": {
+    "k": "patch",
+    "col": "#26262e",
+    "r": 1.5,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "founder",
+   "i": 14,
+   "name": "Liquidation",
+   "ab": "LIQUID- ATION",
+   "active": true,
+   "cost": 18,
+   "cd": 9,
+   "desc": "Enemy corpses within 5 paces explode for 185%. Your staff does not. Layoffs is the button that spends them.",
+   "vfx": {
+    "k": "ring",
+    "col": "#e6e2d6",
+    "r": 5,
+    "n": 1,
+    "life": 0.42,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "homesteader",
+   "i": 0,
+   "name": "Cold Frame",
+   "ab": "COLD FRAME",
+   "active": true,
+   "cost": 12,
+   "cd": 6,
+   "desc": "A rust patch with a 2.2-pace radius for 6 seconds. It slows, and deals 42% every half second. It ends if you enter a chassis. While you have a plot down you take 12% less, and 4% less for each further plot, up to 28%.",
+   "vfx": {
+    "k": "patch",
+    "col": "#c9803a",
+    "r": 2.2,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "homesteader",
+   "i": 1,
+   "name": "Wear the Hound",
+   "ab": "HOUND",
+   "active": true,
+   "cost": 8,
+   "cd": 1,
+   "desc": "Become the hound: faster, melee, less armour. Plot and flock skills grey out. A ranged weapon keeps its damage and loses its reach. Click Hound again to step out, or Shed. Your hands are busy for 0.7s either way.",
+   "vfx": {
+    "k": "mark",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "homesteader",
+   "i": 2,
+   "name": "Strays",
+   "ab": "STRAYS",
+   "active": true,
+   "cost": 10,
+   "cd": 1,
+   "desc": "A feral drone, up to 3, biting for 57%. Past 4.5 paces they stop obeying and will hit you if you are closest.",
+   "vfx": {
+    "k": "orbit",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 3,
+    "life": 0.55,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "homesteader",
+   "i": 3,
+   "name": "Compost",
+   "ab": "COMPOST",
+   "active": true,
+   "cost": 8,
+   "cd": 2,
+   "desc": "A corpse within 3 paces sinks. Your next plot skill deals 160% damage. With no body, nothing happens.",
+   "vfx": {
+    "k": "ring",
+    "col": "#c9803a",
+    "r": 3,
+    "n": 1,
+    "life": 0.42,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "homesteader",
+   "i": 4,
+   "name": "Wear the Hull",
+   "ab": "HULL",
+   "active": true,
+   "cost": 12,
+   "cd": 1,
+   "desc": "Climb into the hull: slower, more armour, no dash. Hound skills grey out. The same reach collapse. Drops the hound if you were wearing it. Click Hull again to step out, or Shed.",
+   "vfx": {
+    "k": "mark",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "homesteader",
+   "i": 5,
+   "name": "The Bull",
+   "ab": "BULL",
+   "active": true,
+   "cost": 18,
+   "cd": 8,
+   "desc": "One bull. It chooses its own target and hits for 150%. You cannot ride it.",
+   "vfx": {
+    "k": "orbit",
+    "col": "#ff7a3c",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.55,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "homesteader",
+   "i": 6,
+   "name": "Hedgerow",
+   "ab": "HEDGE",
+   "active": true,
+   "cost": 14,
+   "cd": 8,
+   "desc": "A line that blocks movement for 4 seconds. Machines and you.",
+   "vfx": {
+    "k": "mark",
+    "col": "#4e6a48",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "homesteader",
+   "i": 7,
+   "name": "Shed",
+   "ab": "SHED",
+   "active": true,
+   "cost": 4,
+   "cd": 1.2,
+   "desc": "Leave the form. Your hands are busy for 0.7s. Plot and flock work again.",
+   "vfx": {
+    "k": "mark",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "homesteader",
+   "i": 8,
+   "name": "Go Feral",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. Drones past the leash deal +65% damage and will not come back when you do.",
+   "vfx": {
+    "k": "mark",
+    "col": "#6a8f62",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "homesteader",
+   "i": 9,
+   "name": "Kill Frost",
+   "ab": "KILL FROST",
+   "active": true,
+   "cost": 22,
+   "cd": 14,
+   "desc": "Rust weather, 3.4 paces, for 8 seconds, 65% every half second. It ends the moment you enter a chassis.",
+   "vfx": {
+    "k": "patch",
+    "col": "#c9803a",
+    "r": 3.4,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "homesteader",
+   "i": 10,
+   "name": "Wear What You Killed",
+   "ab": "WEAR KILL",
+   "active": true,
+   "cost": 16,
+   "cd": 8,
+   "desc": "Consume a machine that is not elite and wear it until you shed. You deal its damage type. Your flock despawns. Your weapons lose their range.",
+   "vfx": {
+    "k": "mark",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "homesteader",
+   "i": 11,
+   "name": "Rootbound",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. Drones standing in your plots do not leash. Step out and the rule returns.",
+   "vfx": {
+    "k": "mark",
+    "col": "#6a8f62",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "homesteader",
+   "i": 12,
+   "name": "Salt the Earth",
+   "ab": "SALT",
+   "active": true,
+   "cost": 18,
+   "cd": 12,
+   "desc": "Every plot you have placed bursts for 140% rust and is gone.",
+   "vfx": {
+    "k": "mark",
+    "col": "#c9803a",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "homesteader",
+   "i": 13,
+   "name": "Too Big for the Door",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. The hull cannot dash. Armour in the hull rises the longer you have worn it: +15 every 2 seconds, up to 8 times.",
+   "vfx": {
+    "k": "mark",
+    "col": "#6a8f62",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "homesteader",
+   "i": 14,
+   "name": "Slaughter Weight",
+   "ab": "SLAUGH- TER",
+   "active": true,
+   "cost": 20,
+   "cd": 12,
+   "desc": "Each drone and the bull become a rust plot where they stand, 53% every half second. The flock is spent. You cannot do this from a chassis.",
+   "vfx": {
+    "k": "mark",
+    "col": "#c9803a",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "witness",
+   "i": 0,
+   "name": "Look",
+   "ab": "LOOK",
+   "active": true,
+   "cost": 4,
+   "cd": 0.5,
+   "desc": "Mark one machine with Testimony. The stack grows while you can see them and you are not casting. No Record cost. A swing against a marked machine hits 7% harder for each point of Testimony, up to six.",
+   "vfx": {
+    "k": "mark",
+    "col": "#e6dcc8",
+    "r": 1.2,
+    "n": 0,
+    "life": 0.8,
+    "at": "foe",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "witness",
+   "i": 1,
+   "name": "The Sentence",
+   "ab": "THE SENTENCE",
+   "active": true,
+   "cost": 8,
+   "cd": 2,
+   "desc": "Spend Record, up to 25. Delay that machine's next attack by 0.80s at a full page. Less Record, a shorter delay. For 2.4s afterward you take 48% less, and an empty page does not punish you while that holds.",
+   "vfx": {
+    "k": "mark",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "foe",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "witness",
+   "i": 2,
+   "name": "Margin",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. Below half life the Record fills 100% faster.",
+   "vfx": {
+    "k": "mark",
+    "col": "#8d9aab",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "witness",
+   "i": 3,
+   "name": "Cross-reference",
+   "ab": "CROSS- REF",
+   "active": true,
+   "cost": 14,
+   "cd": 6,
+   "desc": "Spend 20 Record. Copy that machine's last attack onto another machine you have Testimony on, at 100% of the blow.",
+   "vfx": {
+    "k": "mark",
+    "col": "#e6dcc8",
+    "r": 1.2,
+    "n": 0,
+    "life": 0.8,
+    "at": "foe",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "witness",
+   "i": 4,
+   "name": "Pull the Thread",
+   "ab": "PULL THE THREAD",
+   "active": true,
+   "cost": 12,
+   "cd": 4,
+   "desc": "Spend most of the Record. One Impact hit, 7.1 for each point of Testimony, a little more when the page you spend is full, and your weapon is not consulted. No Testimony, no blow, and an empty page is not spent. 42% more for each level after the first, so the page keeps up with the machines.",
+   "vfx": {
+    "k": "bolt",
+    "col": "#e6e2d6",
+    "r": 2.2,
+    "n": 1,
+    "life": 0.28,
+    "at": "foe",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "witness",
+   "i": 5,
+   "name": "Filed",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. Testimony does not decay for 4.0s after the machine leaves the screen.",
+   "vfx": {
+    "k": "mark",
+    "col": "#8d9aab",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "witness",
+   "i": 6,
+   "name": "Correction",
+   "ab": "CORRECT",
+   "active": true,
+   "cost": 10,
+   "cd": 8,
+   "desc": "Once per district. Spend the whole Record to restore the life you lost on the last hit, not a share of your maximum. An empty Record corrects nothing.",
+   "vfx": {
+    "k": "mark",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "witness",
+   "i": 7,
+   "name": "Redaction",
+   "ab": "REDACT",
+   "active": true,
+   "cost": 12,
+   "cd": 8,
+   "desc": "Spend 30 Record. For 2s machines can see you and cannot land a blow. They still path toward you. This is not stealth.",
+   "vfx": {
+    "k": "patch",
+    "col": "#e6e2d6",
+    "r": 1.4,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "witness",
+   "i": 8,
+   "name": "The Footnote",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. The Record fills 40% faster. Maximum life is 20% lower.",
+   "vfx": {
+    "k": "mark",
+    "col": "#8d9aab",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "witness",
+   "i": 9,
+   "name": "On the Record",
+   "ab": "ON THE RECORD",
+   "active": true,
+   "cost": 16,
+   "cd": 10,
+   "desc": "Spend 25 Record. A machine with high Testimony takes 60% more damage from everyone for 8s, including people with no points in this class.",
+   "vfx": {
+    "k": "mark",
+    "col": "#8d9aab",
+    "r": 1.2,
+    "n": 0,
+    "life": 0.8,
+    "at": "foe",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "witness",
+   "i": 10,
+   "name": "Unnamed Source",
+   "ab": "UNNAMED SOURCE",
+   "active": true,
+   "cost": 14,
+   "cd": 12,
+   "desc": "Spend 20 Record. Grant one ally, or your hireling, a single swing that deals Sound. Then it is gone. You never deal Sound.",
+   "vfx": {
+    "k": "mark",
+    "col": "#e6e2d6",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "witness",
+   "i": 11,
+   "name": "Colophon",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. 29% damage reduction. Record above 80: you take 20% less on top of that. Record below 20: you take 15% more. The meter is the defence.",
+   "vfx": {
+    "k": "mark",
+    "col": "#8d9aab",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "witness",
+   "i": 12,
+   "name": "Publish",
+   "ab": "PUBLISH",
+   "active": true,
+   "cost": 18,
+   "cd": 14,
+   "desc": "Consume all Testimony on screen. Each second you watched is 285% Impact. The Record drops to 0. 1% more for each level you have.",
+   "vfx": {
+    "k": "mark",
+    "col": "#e6dcc8",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "witness",
+   "i": 13,
+   "name": "Named Party",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. Allies deal +25% damage to machines you have Testimony on. You do not.",
+   "vfx": {
+    "k": "mark",
+    "col": "#8d9aab",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "witness",
+   "i": 14,
+   "name": "Retraction",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. If you would die with Record above 80, you drop to 1 life, the Record hits 0, and this cannot happen again for a long time. If you would die with an empty Record, you die.",
+   "vfx": {
+    "k": "mark",
+    "col": "#8d9aab",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "maxi",
+   "i": 0,
+   "name": "Tick Tock Next Block",
+   "ab": "TICK TOCK",
+   "active": true,
+   "cost": 9,
+   "cd": 2.4,
+   "desc": "Nine quick strikes of 90%. The tenth is a block and lands for 800%. While the strikes are landing, and for 2.2s after the block, you take 22% less.",
+   "vfx": {
+    "k": "arc",
+    "col": "#f7931a",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.22,
+    "at": "",
+    "tel": 0,
+    "reach": 2.6
+   }
+  },
+  {
+   "cls": "maxi",
+   "i": 1,
+   "name": "Have Fun Staying Poor",
+   "ab": "HAVE FUN STAYING POOR",
+   "active": true,
+   "cost": 12,
+   "cd": 4,
+   "desc": "Close range, 265%. It cannot miss, and it stuns for 1.9s.",
+   "vfx": {
+    "k": "bolt",
+    "col": "#f7931a",
+    "r": 2.2,
+    "n": 1,
+    "life": 0.28,
+    "at": "foe",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "maxi",
+   "i": 2,
+   "name": "Few Understand This",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. +15% damage for every machine still standing on screen, up to eight. Each one within six paces also cuts the damage you take by 6%, up to five.",
+   "vfx": {
+    "k": "mark",
+    "col": "#f7931a",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "maxi",
+   "i": 3,
+   "name": "Toxic Maximalism",
+   "ab": "TOXIC MAXI",
+   "active": true,
+   "cost": 0,
+   "cd": 1.5,
+   "desc": "Aura. Stays on until you put on another. You attack 30% faster and hit 45% harder, and so does anybody fighting beside you. You run 50% faster.",
+   "vfx": {
+    "k": "patch",
+    "col": "#f7931a",
+    "r": 2.2,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "maxi",
+   "i": 4,
+   "name": "Marked to Market",
+   "ab": "MARKED MKT",
+   "active": true,
+   "cost": 0,
+   "cd": 1.5,
+   "desc": "Aura. Everything within 4.3 paces of you takes +40% damage from every source.",
+   "vfx": {
+    "k": "patch",
+    "col": "#f7931a",
+    "r": 3.6,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "maxi",
+   "i": 5,
+   "name": "Orange Pill",
+   "ab": "ORANGE PILL",
+   "active": true,
+   "cost": 11,
+   "cd": 5,
+   "desc": "Charge through the line, untouchable, for 310% to everything you pass. Whatever survives takes +30% damage for 7.5s.",
+   "vfx": {
+    "k": "trail",
+    "col": "#f7931a",
+    "r": 3.4,
+    "n": 1,
+    "life": 0.32,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "maxi",
+   "i": 6,
+   "name": "Blessed Hashrate",
+   "ab": "BLESSED HASHRATE",
+   "active": true,
+   "cost": 16,
+   "cd": 1.1,
+   "desc": "Hammers spiral out from you, 220% each, and they do not stop at the first thing they meet.",
+   "vfx": {
+    "k": "orbit",
+    "col": "#f7931a",
+    "r": 1.2,
+    "n": 3,
+    "life": 0.55,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "maxi",
+   "i": 7,
+   "name": "Proof of Work",
+   "ab": "PROOF OF WORK",
+   "active": true,
+   "cost": 0,
+   "cd": 1.5,
+   "desc": "Aura. Everything near you takes 65% twice a second, for as long as you are near it.",
+   "vfx": {
+    "k": "patch",
+    "col": "#f7931a",
+    "r": 3.3,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "maxi",
+   "i": 8,
+   "name": "Twenty-One Million",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. +15% damage, +40% armour, and +18% damage reduction. The difficulty cannot dilute what you hit for.",
+   "vfx": {
+    "k": "mark",
+    "col": "#f7931a",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "maxi",
+   "i": 9,
+   "name": "The Halving",
+   "ab": "THE HALVING",
+   "active": true,
+   "cost": 16,
+   "cd": 8,
+   "desc": "Sound. Each machine within 4.2 paces loses 14.0% of its current life. It will not be pushed below 35% of its maximum.",
+   "vfx": {
+    "k": "patch",
+    "col": "#f7931a",
+    "r": 4.2,
+    "n": 1,
+    "life": 0.62,
+    "at": "",
+    "tel": 1,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "maxi",
+   "i": 10,
+   "name": "Running a Node",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. While an aura is on, allies and your hireling gain +16% damage. You gain half of that. With the aura off, nothing.",
+   "vfx": {
+    "k": "mark",
+    "col": "#f7931a",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "maxi",
+   "i": 11,
+   "name": "Cite Your Sources",
+   "ab": "CITE YOUR SOURCES",
+   "active": true,
+   "cost": 14,
+   "cd": 6,
+   "desc": "A volley of Sound, and only while an aura is on. Toxic Maximalism makes it fast and light. Marked to Market makes it slow and heavy. Proof of Work makes it tick. No aura, no volley.",
+   "vfx": {
+    "k": "orbit",
+    "col": "#f7931a",
+    "r": 1.2,
+    "n": 3,
+    "life": 0.55,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "maxi",
+   "i": 12,
+   "name": "Priced in Sound",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. Damage you deal that is not Sound becomes Sound, and you keep 70% of it.",
+   "vfx": {
+    "k": "mark",
+    "col": "#f7931a",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "maxi",
+   "i": 13,
+   "name": "The Dip",
+   "ab": "THE DIP",
+   "active": true,
+   "cost": 12,
+   "cd": 22,
+   "desc": "You ignore the next hit. You choose when. It does not fire itself when you fall.",
+   "vfx": {
+    "k": "ring",
+    "col": "#e6e2d6",
+    "r": 0.9,
+    "n": 1,
+    "life": 0.42,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  },
+  {
+   "cls": "maxi",
+   "i": 14,
+   "name": "Not Your Keys",
+   "ab": "",
+   "active": false,
+   "cost": 0,
+   "cd": 0,
+   "desc": "Passive. If a hireling or a rendered companion is alive, the hit that would kill you kills them instead, once a minute. Alone, it does nothing.",
+   "vfx": {
+    "k": "mark",
+    "col": "#f7931a",
+    "r": 1.2,
+    "n": 1,
+    "life": 0.8,
+    "at": "",
+    "tel": 0,
+    "reach": 0
+   }
+  }
+ ],
+ "melee": {
+  "scrapper": true,
+  "hacker": false,
+  "courier": false,
+  "anon": true,
+  "founder": false,
+  "homesteader": false,
+  "witness": true,
+  "maxi": true
+ },
+ "weapon": {
+  "scrapper": null,
+  "hacker": null,
+  "courier": null,
+  "anon": null,
+  "founder": null,
+  "homesteader": null,
+  "witness": null,
+  "maxi": null
+ }
+}
