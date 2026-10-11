@@ -118,7 +118,24 @@ function mpWaveSeed(n) {
 const mpHp = () => (mpIn() && MP.scale ? MP.scale.hp : 1);
 const mpDmg = () => (mpIn() && MP.scale ? MP.scale.dmg : 1);
 const mpXp = () => (mpIn() && MP.scale ? MP.scale.xp : 1);
-const mpHostileTo = uid => !!MP.hostile[uid];
+/* Hostility, from the only place that knows it for certain. MP.hostile remembers the
+   declarations this browser watched arrive, but it is empty after a reconnect and for
+   anyone who joined after the fact, while the server keeps the flags and ships them on
+   every roster. Reading both means the stand-in you can hit and the name painted red
+   can never disagree, which is what made a declared hostile unattackable. */
+function mpHostileTo(uid) {
+  if (!uid) return false;
+  if (MP.hostile[uid]) return true;
+  const me = MP.me && MP.me.uid;
+  if (!me || uid === me) return false;
+  for (let i = 0; i < (MP.roster || []).length; i++) {
+    const r = MP.roster[i];
+    if (!r || !r.hostile || !r.hostile.length) continue;
+    if (r.uid === uid && r.hostile.indexOf(me) >= 0) return true;
+    if (r.uid === me && r.hostile.indexOf(uid) >= 0) return true;
+  }
+  return false;
+}
 
 function mpSend(t, o) { if (mpOn()) try { MP.conn.send(JSON.stringify(Object.assign({ t }, o))); } catch (e) {} }
 
@@ -1294,7 +1311,7 @@ function mpGamePanel() {
   else {
     h += '<div class="list">';
     for (const r of others) {
-      const hos = mpHostileTo(r.uid) || (r.hostile || []).indexOf(me.uid) >= 0;
+      const hos = mpHostileTo(r.uid);
       const mate = mpInParty(r.uid);
       /* Name on its own line, actions under it: three buttons beside a name crushes the
          name to one word a line on a phone. */
@@ -1306,7 +1323,7 @@ function mpGamePanel() {
         '<button class="ghost' + (MP.muted[r.uid] ? ' on' : '') + '" data-mpm="' + r.uid + '">' + (MP.muted[r.uid] ? 'Unmute' : 'Mute') + '</button>' +
         (mate || hos ? '' : '<button class="ghost" data-mpi="' + r.uid + '">Invite</button>') +
         (hos ? '' : '<button class="ghost" data-mpt="' + r.uid + '">Trade</button>') +
-        (mpHostileTo(r.uid)
+        (MP.hostile[r.uid]
           ? '<button class="ghost" data-mpn="' + r.uid + '">Stand down</button>'
           : '<button class="ghost" data-mph="' + r.uid + '">Hostile</button>') + '</div>';
     }
@@ -1323,7 +1340,7 @@ function mpGamePanel() {
   return h;
 }
 
-if (typeof devOn === 'function' && devOn()) window.__mp={MP,send:mpSend,get on(){return mpOn()},get inGame(){return mpIn()},get roster(){return MP.roster},get me(){return MP.me},get scale(){return MP.scale},get mobHost(){return MP.mobHost},mpHp,mpXp,mpDmg,mute:mpMute,loadFriends:mpFriendsLoad,spendSats,satsFree,tradeLocked,tradeApply:mpTradeApply,takeHit:mpTakeHit,applyMobs:mpApplyMobs};
+if (typeof devOn === 'function' && devOn()) window.__mp={MP,send:mpSend,get on(){return mpOn()},get inGame(){return mpIn()},get roster(){return MP.roster},get me(){return MP.me},get scale(){return MP.scale},get mobHost(){return MP.mobHost},mpHostileTo,mpSyncEnts,mpHp,mpXp,mpDmg,mute:mpMute,loadFriends:mpFriendsLoad,spendSats,satsFree,tradeLocked,tradeApply:mpTradeApply,takeHit:mpTakeHit,applyMobs:mpApplyMobs};
 
 function mpWhere(zi) {
   if (zi === undefined || zi === null) return 'somewhere';
