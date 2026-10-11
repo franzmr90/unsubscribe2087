@@ -315,6 +315,178 @@ function fxPairs(cls){const seen={},out=[];
   return out}
 /* Baked in slices so the bar can move. rAF stops in a background tab, so a
    timer races it and whichever arrives first carries on. */
+/* Item art. Diablo's rule: a base type has a picture of its own, an
+   unidentified thing hides it, and a unique has one nobody else gets. The
+   plate is drawn from a hash of the name, so every base and every unique
+   gets a stable picture without a table anyone has to maintain.
+   Tech in the object, gothic in the niche it sits in, and the rarity is in
+   the metal rather than only the border. */
+const ITQC=['#e6e2d6','#8494ff','#ffe36b','#3fe06a','#d0aa62'];
+const ITS=88;
+function itHash(s){let h=2166136261;s=String(s||'');
+  for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+const itR=(h,i)=>{const v=Math.sin(((h%99991)+1)*0.0137+i*127.13)*43758.5453;return v-Math.floor(v)};
+
+/* the niche everything sits in: a pointed arch, etched traces, a rim of the
+   rarity's colour */
+function itFrame(g,s,col,q,h){
+  const m=s*.06;
+  g.save();
+  g.beginPath();
+  g.moveTo(m,s-m);g.lineTo(m,s*.4);g.quadraticCurveTo(s/2,-s*.1,s-m,s*.4);g.lineTo(s-m,s-m);g.closePath();
+  const gr=g.createLinearGradient(0,0,0,s);
+  gr.addColorStop(0,'#3a2f25');gr.addColorStop(.55,'#241c16');gr.addColorStop(1,'#120e0b');
+  g.fillStyle=gr;g.fill();
+  g.save();g.clip();
+  g.strokeStyle='rgba(255,255,255,.05)';g.lineWidth=1;
+  for(let i=0;i<4;i++){const y=s*(.22+itR(h,i+40)*.7),x=s*(.1+itR(h,i+50)*.3);
+    g.beginPath();g.moveTo(0,y);g.lineTo(x,y);g.lineTo(x,y-s*.12);g.stroke();
+    g.fillStyle='rgba(255,255,255,.07)';g.fillRect(x-1,y-s*.13,2,2)}
+  g.restore();
+  g.strokeStyle=col;g.globalAlpha=q>=3?.85:.45;g.lineWidth=1.3;g.stroke();
+  g.globalAlpha=1;g.restore();
+}
+/* A sigil nobody else has. Two same-slot uniques were coming out as near
+   twins, which defeats the point of a unique having a picture of its own. */
+function itSigil(g,s,col,h){const v=(itR(h,60)*7)|0,cx=s*.5,cy=s*.52,r=s*.13;
+  g.save();g.translate(cx,cy);g.rotate(itR(h,61)*6.283);
+  g.strokeStyle=col;g.lineWidth=1.6;g.fillStyle=col;g.globalAlpha=.95;
+  g.beginPath();
+  if(v===0){for(let i=0;i<5;i++){const a=i*1.2566-1.5708;g[i?'lineTo':'moveTo'](Math.cos(a)*r,Math.sin(a)*r)}g.closePath();g.stroke()}
+  else if(v===1){g.arc(0,0,r,0,6.283);g.stroke();g.beginPath();g.moveTo(-r,0);g.lineTo(r,0);g.stroke()}
+  else if(v===2){g.moveTo(0,-r);g.lineTo(r,r);g.lineTo(-r,r);g.closePath();g.stroke()}
+  else if(v===3){for(let i=0;i<3;i++){g.beginPath();g.arc(0,0,r*(.4+i*.3),.4,2.6);g.stroke()}}
+  else if(v===4){g.fillRect(-r*.2,-r,r*.4,r*2);g.fillRect(-r,-r*.2,r*2,r*.4)}
+  else if(v===5){g.moveTo(-r,-r);g.lineTo(r,r);g.moveTo(r,-r);g.lineTo(-r,r);g.stroke();g.beginPath();g.arc(0,0,r*.45,0,6.283);g.fill()}
+  else{const n=3+((itR(h,62)*4)|0);for(let i=0;i<n;i++){const a=i*6.283/n;g.beginPath();g.arc(Math.cos(a)*r*.8,Math.sin(a)*r*.8,r*.22,0,6.283);g.fill()}}
+  g.globalAlpha=1;g.restore()}
+/* a unique wears filigree and a lit back */
+function itAura(g,s,col){
+  const gr=g.createRadialGradient(s/2,s*.55,0,s/2,s*.55,s*.5);
+  gr.addColorStop(0,col);gr.addColorStop(1,'rgba(0,0,0,0)');
+  g.save();g.globalAlpha=.3;g.fillStyle=gr;g.fillRect(0,0,s,s);g.restore();
+  g.strokeStyle=col;g.lineWidth=1.1;g.globalAlpha=.8;
+  for(const sx of[1,-1]){g.save();g.translate(s/2+sx*s*.39,s*.42);g.scale(sx,1);
+    g.beginPath();g.moveTo(0,-s*.1);g.quadraticCurveTo(s*.07,0,0,s*.1);g.stroke();g.restore()}
+  g.globalAlpha=1;
+}
+/* brushed metal for the object itself, lit from the upper left */
+function itMetal(g,s,col,lit){
+  const gr=g.createLinearGradient(s*.2,s*.15,s*.8,s*.9);
+  gr.addColorStop(0,lit?'#fdf8ec':'#b3ab95');gr.addColorStop(.45,lit?'#c0b5a0':'#837c6c');
+  gr.addColorStop(1,'#4b463d');return gr;
+}
+const ITART={
+ weapon:(g,s,col,h,q)=>{const v=(itR(h,1)*4)|0,lw=s*(.09+itR(h,2)*.05);
+   g.strokeStyle=itMetal(g,s,col,1);g.lineWidth=lw;g.lineCap='round';
+   g.beginPath();g.moveTo(s*.28,s*.82);g.lineTo(s*.62,s*.3);g.stroke();
+   g.fillStyle=itMetal(g,s,col,1);
+   g.save();g.translate(s*.65,s*.26);g.rotate(itR(h,3)*.5-.25);
+   if(v===0){g.fillRect(-s*.13,-s*.1,s*.26,s*.2)}
+   else if(v===1){g.beginPath();g.moveTo(-s*.14,0);g.lineTo(0,-s*.15);g.lineTo(s*.14,0);g.lineTo(0,s*.13);g.closePath();g.fill()}
+   else if(v===2){g.beginPath();g.arc(0,0,s*.14,.6,4.2);g.closePath();g.fill()}
+   else{g.fillRect(-s*.15,-s*.07,s*.3,s*.14);g.fillRect(-s*.04,-s*.16,s*.08,s*.32)}
+   g.restore();
+   g.strokeStyle=col;g.globalAlpha=.75;g.lineWidth=1;
+   g.beginPath();g.moveTo(s*.32,s*.76);g.lineTo(s*.5,s*.5);g.stroke();g.globalAlpha=1},
+ helm:(g,s,col,h)=>{g.fillStyle=itMetal(g,s,col,1);
+   g.beginPath();g.arc(s/2,s*.54,s*.26,3.14159,0);g.lineTo(s*.76,s*.76);g.lineTo(s*.24,s*.76);g.closePath();g.fill();
+   g.fillStyle='#0c0a09';g.fillRect(s*.3,s*.5,s*.4,s*.09);
+   g.fillStyle=col;g.globalAlpha=.85;g.fillRect(s*.3,s*.5,s*.4*(.3+itR(h,4)*.6),s*.09);g.globalAlpha=1;
+   if(itR(h,5)>.5){g.strokeStyle=itMetal(g,s,col,1);g.lineWidth=2;
+     g.beginPath();g.moveTo(s*.5,s*.28);g.lineTo(s*.5,s*.14);g.stroke()}},
+ armor:(g,s,col,h)=>{g.fillStyle=itMetal(g,s,col,1);
+   g.beginPath();g.moveTo(s*.5,s*.22);g.lineTo(s*.78,s*.33);g.lineTo(s*.72,s*.8);g.lineTo(s*.28,s*.8);g.lineTo(s*.22,s*.33);g.closePath();g.fill();
+   g.strokeStyle='rgba(0,0,0,.5)';g.lineWidth=1.4;
+   for(let i=0;i<3;i++){const y=s*(.42+i*.13);g.beginPath();g.moveTo(s*.26,y);g.lineTo(s*.74,y);g.stroke()}
+   g.fillStyle=col;g.globalAlpha=.8;g.fillRect(s*.46,s*.36,s*.08,s*.1);g.globalAlpha=1},
+ gloves:(g,s,col,h)=>{g.fillStyle=itMetal(g,s,col,1);
+   g.fillRect(s*.32,s*.44,s*.36,s*.3);
+   for(let i=0;i<4;i++)g.fillRect(s*(.33+i*.09),s*(.26+itR(h,i+6)*.08),s*.07,s*.2);
+   g.fillStyle=col;g.globalAlpha=.8;g.fillRect(s*.32,s*.7,s*.36,s*.05);g.globalAlpha=1},
+ boots:(g,s,col,h)=>{g.fillStyle=itMetal(g,s,col,1);
+   g.beginPath();g.moveTo(s*.36,s*.24);g.lineTo(s*.58,s*.24);g.lineTo(s*.6,s*.6);g.lineTo(s*.78,s*.68);g.lineTo(s*.78,s*.8);g.lineTo(s*.34,s*.8);g.closePath();g.fill();
+   g.fillStyle=col;g.globalAlpha=.75;g.fillRect(s*.34,s*.74,s*.44,s*.06);g.globalAlpha=1},
+ belt:(g,s,col,h)=>{g.fillStyle=itMetal(g,s,col,1);g.fillRect(s*.14,s*.46,s*.72,s*.14);
+   g.fillStyle='#0c0a09';g.fillRect(s*.42,s*.4,s*.16,s*.26);
+   g.strokeStyle=col;g.lineWidth=1.6;g.strokeRect(s*.42,s*.4,s*.16,s*.26);
+   for(let i=0;i<3;i++)g.fillRect(s*(.2+i*.07),s*.5,s*.02,s*.06)},
+ ring:(g,s,col,h)=>{g.strokeStyle=itMetal(g,s,col,1);g.lineWidth=s*.08;
+   g.beginPath();g.arc(s/2,s*.58,s*.19,0,6.283);g.stroke();
+   g.fillStyle=col;g.beginPath();
+   const v=(itR(h,7)*3)|0;
+   if(v===0)g.arc(s/2,s*.33,s*.09,0,6.283);
+   else if(v===1){g.moveTo(s/2,s*.23);g.lineTo(s*.59,s*.34);g.lineTo(s/2,s*.44);g.lineTo(s*.41,s*.34);g.closePath()}
+   else g.rect(s*.42,s*.26,s*.16,s*.16);
+   g.fill();g.fillStyle='rgba(255,255,255,.7)';g.fillRect(s*.47,s*.3,s*.03,s*.03)},
+ amulet:(g,s,col,h)=>{g.strokeStyle=itMetal(g,s,col,1);g.lineWidth=2;
+   g.beginPath();g.moveTo(s*.3,s*.22);g.quadraticCurveTo(s*.5,s*.46,s*.7,s*.22);g.stroke();
+   g.fillStyle=col;g.beginPath();
+   const v=(itR(h,8)*3)|0;
+   if(v===0){g.moveTo(s/2,s*.4);g.lineTo(s*.66,s*.6);g.lineTo(s/2,s*.8);g.lineTo(s*.34,s*.6);g.closePath()}
+   else if(v===1)g.arc(s/2,s*.6,s*.16,0,6.283);
+   else{g.moveTo(s*.36,s*.44);g.lineTo(s*.64,s*.44);g.lineTo(s/2,s*.78);g.closePath()}
+   g.fill();
+   g.strokeStyle='rgba(0,0,0,.55)';g.lineWidth=1.2;g.stroke()},
+ offhand:(g,s,col,h)=>{g.fillStyle=itMetal(g,s,col,1);
+   g.beginPath();g.moveTo(s*.5,s*.2);g.lineTo(s*.76,s*.34);g.lineTo(s*.76,s*.62);g.lineTo(s*.5,s*.82);g.lineTo(s*.24,s*.62);g.lineTo(s*.24,s*.34);g.closePath();g.fill();
+   g.strokeStyle=col;g.lineWidth=1.4;g.globalAlpha=.85;g.stroke();g.globalAlpha=1;
+   g.fillStyle='rgba(0,0,0,.45)';
+   for(let i=0;i<3;i++)g.fillRect(s*.36,s*(.4+i*.1),s*.28,s*.04)},
+ charm:(g,s,col,h)=>{g.fillStyle=itMetal(g,s,col,1);g.fillRect(s*.3,s*.26,s*.4,s*.48);
+   g.strokeStyle=col;g.lineWidth=1.3;g.strokeRect(s*.3,s*.26,s*.4,s*.48);
+   g.fillStyle=col;g.globalAlpha=.9;
+   for(let i=0;i<4;i++){const x=s*(.36+itR(h,i+10)*.24),y=s*(.34+i*.1);g.fillRect(x,y,s*.06,s*.04)}
+   g.globalAlpha=1},
+ stim:(g,s,col,h)=>{g.fillStyle='rgba(220,235,245,.22)';
+   g.beginPath();g.moveTo(s*.4,s*.22);g.lineTo(s*.6,s*.22);g.lineTo(s*.6,s*.74);g.quadraticCurveTo(s*.5,s*.84,s*.4,s*.74);g.closePath();g.fill();
+   g.fillStyle=col;g.globalAlpha=.9;g.fillRect(s*.41,s*.5,s*.18,s*.26);g.globalAlpha=1;
+   g.strokeStyle='rgba(235,245,255,.6)';g.lineWidth=1.3;
+   g.beginPath();g.moveTo(s*.4,s*.22);g.lineTo(s*.6,s*.22);g.lineTo(s*.6,s*.74);g.quadraticCurveTo(s*.5,s*.84,s*.4,s*.74);g.closePath();g.stroke();
+   g.fillStyle=itMetal(g,s,col,1);g.fillRect(s*.37,s*.16,s*.26,s*.08)}
+};
+/* what an unidentified thing looks like: the right shape, wrapped and sealed */
+function itSealed(g,s,slot,h){
+  g.save();g.globalAlpha=.3;g.filter='grayscale(1)';
+  const f=ITART[slot]||ITART.charm;f(g,s,'#6c6657',h,0);
+  g.restore();
+  g.strokeStyle='#5d5444';g.lineWidth=s*.07;g.lineCap='round';
+  g.beginPath();g.moveTo(s*.16,s*.62);g.quadraticCurveTo(s*.5,s*.46,s*.84,s*.62);g.stroke();
+  g.beginPath();g.moveTo(s*.2,s*.4);g.quadraticCurveTo(s*.5,s*.56,s*.8,s*.4);g.stroke();
+  g.fillStyle='#8c2f28';g.beginPath();g.arc(s*.5,s*.52,s*.11,0,6.283);g.fill();
+  g.strokeStyle='#d2a05a';g.lineWidth=1.2;g.stroke();
+  g.fillStyle='#e8d6a8';g.font='700 '+(s*.15|0)+'px Cinzel,Georgia,serif';
+  g.textAlign='center';g.textBaseline='middle';g.fillText('?',s*.5,s*.535);
+}
+let ITC={};
+/* a data URI per picture, made once. The key decides the picture: a unique by
+   its own name, anything else by its base type, and anything unidentified by
+   the slot alone, because that is all you are allowed to know. */
+function itemArt(slot,key,q,idd){
+  const ck=(idd?'i':'x')+'|'+(idd?key:slot)+'|'+(idd?q:0);
+  if(ITC[ck])return ITC[ck];
+  const s=ITS,c=mk(s,s),g=c.getContext('2d'),h=itHash(idd?key:slot+'?');
+  let col=ITQC[q]||ITQC[0];
+  if(idd&&q>=4){const rgb=hex2rgb(col),w=itR(h,70);
+    col='rgb('+[Math.min(255,rgb[0]*(.82+w*.3))|0,Math.min(255,rgb[1]*(.78+itR(h,71)*.4))|0,Math.min(255,rgb[2]*(.6+itR(h,72)*.8))|0].join(',')+')'}
+  itFrame(g,s,idd?col:'#4e4639',idd?q:0,h);
+  if(idd){
+    if(q>=4)itAura(g,s,col);
+    const bg=g.createRadialGradient(s/2,s*.54,0,s/2,s*.54,s*.42);
+    bg.addColorStop(0,'rgba(0,0,0,.45)');bg.addColorStop(1,'rgba(0,0,0,0)');
+    g.fillStyle=bg;g.fillRect(0,0,s,s);
+    const f=ITART[slot]||ITART.charm;
+    g.save();g.translate(s/2,s/2);g.rotate((itR(h,20)-.5)*.12);g.translate(-s/2,-s/2);
+    f(g,s,col,h,q);g.restore();
+    if(q>=4)itSigil(g,s,col,h);
+  }else itSealed(g,s,slot,h);
+  const u=c.toDataURL('image/png');ITC[ck]=u;return u}
+/* the picture this item should wear */
+function itemArtFor(it){if(!it)return '';
+  const slot=it.charm?'charm':it.stim?'stim':(ITART[it.slot]?it.slot:'charm');
+  const uniq=it.q>=4&&it.name;
+  return itemArt(slot,uniq?('u:'+it.name):('b:'+(it.base||it.name||slot)),it.q|0,it.id!==false)}
+function itemImg(it){const u=itemArtFor(it);return u?'<img class="ic" src="'+u+'" alt="">':''}
 /* The loading screen. This character's sheets bake behind it, so no shape
    stops to draw itself in the middle of a fight. It holds for a beat even when
    the bake is quick, because a bar that flashes past reads as a glitch. */
