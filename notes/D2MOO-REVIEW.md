@@ -161,7 +161,7 @@ acting on, and four candidates checked and rejected — the rejections are
 recorded because each is the kind of thing that looks like an obvious gap
 until you check what our game actually does.
 
-## 7. Our monsters track you perfectly, every frame
+## 7. DONE - our monsters tracked you perfectly, every frame
 
 D2 gives every monster an **AI delay**: `aidel`, `aidel(N)`, `aidel(H)` in
 MonStats (`MonsterTbls.cpp:250`), read per difficulty and applied in
@@ -192,6 +192,34 @@ be twitchy and a hull ponderous.
 This is a feel change, not a refactor. It will alter every fight in the game
 and it will move the balance numbers, so it wants doing *before* the balance
 bot runs, not after.
+
+**Done.** `aiDecide`/`aiDelay` in `src/p2.js`, default `AIDEL` 0.15s, per-kind
+override as `aidel` on an `ET` entry (`0` disables). The heading is committed;
+whether to swing and where a shot is aimed stay live, so a monster that has
+walked past you still turns and hits you. A blocked move re-decides on the
+next frame rather than grinding into the wall for the rest of the interval,
+and the delay is jittered +/-18% so a pack does not re-decide in lockstep and
+move as one organism.
+
+`tools/ai-delay.js` measures it, driving the sim by hand at a fixed step:
+
+| | mean error | peak error | closed to | swings |
+|---|---|---|---|---|
+| before, slow weave | 0.00 deg | 0.0 deg | 0.24 | 4 |
+| after, slow weave  | 4.84 deg | 41.8 deg | 0.23 | 4 |
+| before, sharp juke | **0.00 deg** | **0.0 deg** | 1.17 | 4 |
+| after, sharp juke  | 17.84 deg | 172.3 deg | 1.15 | 4 |
+
+Before was *exactly* zero in both profiles, which is the finding in one number:
+pursuit was mathematically perfect whatever the player did. After, a sharp
+juke can leave a monster briefly committed the wrong way, while it still
+closes to the same distance and lands the same number of swings. More skill
+expression, no less lethality.
+
+0.15s is a first value, not a tuned one. It is the dial to turn after playing
+it, and the per-kind override is there so a hound can be twitchy and a hull
+ponderous. Fleeing monsters keep their own movement, and a lunge still aims
+live at the instant it commits.
 
 ## 8. Crowd control and leech do not weaken on higher difficulties
 
@@ -245,8 +273,8 @@ shape as the thing that is already there.
 ## Revised order
 
 1. Snapshot the drop count at spawn (finding 5) — fairness bug, four lines.
-2. Monster decision delay (7) — biggest change to how the game feels, and it
-   must land before any balance measurement is taken.
+2. ~~Monster decision delay (7)~~ **DONE**, measured above. The 0.15s default
+   still wants playing with.
 3. Difficulty divisors for control and leech (8) — the other half of a system
    half of which already exists.
 4. `noRatio` for bosses (4), then the table tail (3), then the drop cap.
