@@ -40,9 +40,31 @@ function beginDifficulty(d){
   G.gameId=(G.gameId||0)+1;        /* a new game, so a new world */
   return true;
 }
+/* Making a game. The difficulty is chosen here and fixed for the life of the
+   game, the way the server already does it for a multiplayer one.
+
+   Entering a difficulty you are part way through continues it: the quest log
+   is yours, kept on the wanderer, and only the world is rolled again, which
+   is what a new game does in Diablo. Entering a different difficulty, or one
+   you have already finished, begins it from nothing. */
+function createGame(d){
+  if(!G)return false;
+  d=Math.max(0,Math.min(2,d|0));
+  if(!diffUnlocked(d))return false;
+  const same=(G.diff|0)===d, finished=hasCleared(d);
+  if(!same||finished)beginDifficulty(d);
+  else{if(typeof resetZones==='function')resetZones();G.gameId=(G.gameId||0)+1}
+  G.inGame=1;
+  return true;
+}
+/* Leaving one. The wanderer is saved; the world is not kept warm. */
+function endGame(){if(!G)return;G.inGame=0;if(typeof resetZones==='function')resetZones()}
 /* What this wanderer has finished, per difficulty. Written when the last boss
    falls, read by the title to offer the next one. */
-function markCleared(d){if(!G)return;G.cleared=G.cleared||{};G.cleared[d|0]=1}
+function markCleared(d){if(!G)return;d=d|0;G.cleared=G.cleared||{};G.cleared[d]=1;
+  /* the gate is normally raised by the final blow; raising it here too keeps the
+     record and the unlock from ever disagreeing, and Math.max makes it a no-op. */
+  if(d<2)G.diffGate=Math.max(G.diffGate||0,d+1)}
 function hasCleared(d){return !!(G&&G.cleared&&G.cleared[d|0])}
 function flushBank(){if(!G||!G.act3||!(G.bankXp>0))return;const b=G.bankXp;G.bankXp=0;if(G.lvl>=lvlCap()){paraXp(b);return}if(!P||!W){G.xp=(G.xp||0)+b;while(G.xp>=xpNext(G.lvl)&&G.lvl<lvlCap()){G.xp-=xpNext(G.lvl);G.lvl++;G.sp++;G.ap+=5}return}gainXp(b,'bank')}
 function gotWord(w){G.words[w]=(G.words[w]||0)+1;G.st.wf[w]=1}

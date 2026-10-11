@@ -116,10 +116,30 @@ const END_WAKE=[
 const RESERVE=[
  {art:'node',text:'It does not happen with a vote or a war. One morning a baker in the Parcel Moors prices a loaf in sats because she is tired of repainting the sign. By evening the whole street has copied her.'},
  {art:'dawn',text:'Unity still creates credits by the trillion. Nobody is forcing anyone to stop taking them. People just save in the thing that holds still, and spend the thing that does not, until one day there is nothing left to spend it on.'}];
+function clockTime(sec){const t=Math.max(0,Math.round(sec||0)),h=(t/3600)|0,m=((t%3600)/60)|0;return h?h+'h '+m+'m':m+'m'}
+function endingName(){return G.ending==='wake'?'you asked her to come back':G.ending==='doubt'?'you gave her the part that doubts':'you left the world its difficulty'}
+function fateName(){const f=G.fate||fateOf();return f==='reserve'?'the street priced itself in sats':f==='stale'?'the two monies settled into a stalemate':'the credit held, for now'}
+function creditSlides(first){const c=CLS[G.cls],d=DIFFS[G.diff|0];const sl=[
+ {art:'dawn',text:'MANDATE is quiet. Not gone \u2014 a thing that size does not go \u2014 but quiet, the way a room is quiet after the extractor finally stops.'},
+ {art:'lake',text:'Stillwater keeps the bench, the tomatoes and the bad coffee. Gramps says he knew. Gramps did not know.'},
+ {art:'node',title:'THE LEDGER',text:'A '+(c?c.n:'wanderer')+', level '+(G.lvl||1)+', on '+(d?d.n:'Normal')+'. '+clockTime(G.time)+' walked. '+(G.kills||0)+' machines stopped, '+(G.deaths||0)+' trips back from the dark. Bitcoin adoption stands at '+Math.floor(G.adopt||0)+'%, and '+fateName()+'.'},
+ {art:'wanderer',title:'THE CHOICE',text:'At the last question, '+endingName()+'.'},
+ {art:'skyline',title:'UNSUBSCRIBE 2087',text:'Written, drawn and balanced by Micah Franz. Set after the novel Project Phonix. Built with Claude Code.'},
+ {art:'ticker',title:'THANK YOU',text:'For nine years a machine chose what the world saw. For the length of this game, you did. \u2014 This page is a placeholder; the real credits go here.'}];
+ if(first&&diffUnlocked((G.diff|0)+1))sl.push({art:'title',title:'AND AGAIN',text:(DIFFS[(G.diff|0)+1]||{n:'Hard'}).n+' is open. Your wanderer keeps everything but the world. Create a new game from the title.'});
+ sl.push({art:'title',title:'THE END',text:'Unsubscribe 2087'});
+ return sl}
+function gameOver(){
+  const d=G.diff|0, first=!hasCleared(d);
+  markCleared(d);
+  const sl=creditSlides(first);
+  save(true);
+  playScene(sl,()=>{mode='play';toTitle()});
+}
 function finalChoice(){const b=[
-  ['Leave the world its difficulty',()=>{G.ending='leave';addAdopt(10,'people begin to choose for themselves');playScene(END_LEAVE,()=>{mode='play';fateScene(()=>actDone(5))})}],
-  ['Ask her to come back',()=>{G.ending='wake';playScene(END_WAKE,()=>{mode='play';fateScene(()=>actDone(5))})}]];
-  if(G.module)b.push(['Give her the seventh part, and ask',()=>{G.ending='doubt';addAdopt(10,'she asks, and people answer for themselves');playScene(END_DOUBT,()=>{mode='play';fateScene(()=>actDone(5))})}]);
+  ['Leave the world its difficulty',()=>{G.ending='leave';addAdopt(10,'people begin to choose for themselves');playScene(END_LEAVE,()=>{mode='play';fateScene(()=>gameOver())})}],
+  ['Ask her to come back',()=>{G.ending='wake';playScene(END_WAKE,()=>{mode='play';fateScene(()=>gameOver())})}]];
+  if(G.module)b.push(['Give her the seventh part, and ask',()=>{G.ending='doubt';addAdopt(10,'she asks, and people answer for themselves');playScene(END_DOUBT,()=>{mode='play';fateScene(()=>gameOver())})}]);
   dlg('The last question','PROVIDENCE is quiet, and she is close. If you asked, she would come back and make everything easy again, for everyone, forever, without one lie.'+(G.module?' You are also holding the part of her that was kept back: how to reason when you do not know.':'')+' Nobody is watching. This one is yours.',b,4)}
 const INTRO2=[
  {art:'lift',text:'The button says UP, and so you go. Forty floors, then four hundred. The lift does not stop where the building does.'},
@@ -1276,10 +1296,10 @@ function drawSheet(){
     h+=menuBar('codex',[['guide','Guide'],['drops','Drops'],['fight','Fight'],['money','Money'],['words','Words'],['feats','Feats'],['memos','Memos']],'guide');
     h+=menuPane('codex','guide',guide)+menuPane('codex','drops',drops)+menuPane('codex','fight',fight)+menuPane('codex','money',money)+menuPane('codex','words',words)+menuPane('codex','feats',feats)+menuPane('codex','memos',memos)}
   if(tab==='opts'){
-    h+=`<h2>Options</h2><button class="ghost" data-walk="1">Walkthrough</button>`+scSayHTML();
+    h+=`<h2>Options</h2><button class="ghost" data-walk="1">Walkthrough</button>${hasCleared(G.diff|0)?'<button class="ghost" data-credits="1">Credits</button>':''}`+scSayHTML();
     h+=menuBar('opts',[['play','Play'],['fight','Fight'],['disp','Display'],['field','Names'],['hands','Hands'],['who','Characters'],['save','Save']],'play');
     let who=`<h3>Characters</h3><div class="list">${[0,1,2].slice(0,NSLOT).map(n=>{const i=n===SLOT?{lvl:G.lvl,cls:G.cls,act:heroAct(G),dead:heroDead(G)}:slotInfo(n);return i&&CLS[i.cls]?`<button class="li${n===SLOT?' on':''}" ${n===SLOT?'':`data-swslot="${n}"`}><i style="background:${CLS[i.cls].col}"></i><div><b>${i.dead?'Hardcore · fallen':'Level '+i.lvl+' '+CLS[i.cls].n}${n===SLOT?' · playing now':''}</b><span>Slot ${n+1} · Act ${actRoman(i.act)}${i.dead?' · begins again':n===SLOT?'':' · '+uiSay('click','tap')+' to switch'}</span></div></button>${n===SLOT?'':`<button class="ghost" data-delslot="${n}" style="margin:-4px 0 8px auto;display:block;font-size:10px;padding:5px 10px;min-height:0">Delete slot ${n+1}</button>`}`:`<button class="li" data-newslot="${n}"><div><b>Slot ${n+1} · empty</b><span>${uiSay('Click to create a new character here','Tap to create a new character here')}</span></div></button>`}).join('')}</div><p class="hint" style="font-size:13.5px">Your current character is saved before you switch. The town lockbox is shared between them.</p>`;
-    let fight=`<h3>Difficulty</h3><div class="row">${DIFFS.map((f,i)=>`<button class="${(G.diff||0)===i?'big':'ghost'}" data-diff="${i}" ${diffUnlocked(i)?'':'disabled'}>${f.n}</button>`).join('')}</div><p class="hint" id="diffHint" style="font-size:13.5px">Hard and Brutal machines have more life and hit harder, and pay more experience to match: every machine’s experience scales with how tough it is. ${diffUnlocked(1)?'':'Hard opens after you clear Act V on Normal. '}${diffUnlocked(2)?'':'Brutal opens after you clear Act V on Hard. '}A change applies to machines that spawn from now on.</p><button class="tog${G.hc?' on':''}" data-hc="1"><span>Hardcore: one life. If this hero dies, they are gone and a new wanderer starts from nothing. +25% experience and magic find.</span><i>${G.hc?'ON':'OFF'}</i></button>`;
+    let fight=`<h3>Difficulty</h3><div class="row">${DIFFS.map((f,i)=>`<button class="${(G.diff||0)===i?'big':'ghost'}" disabled>${f.n}</button>`).join('')}</div><p class="hint" id="diffHint" style="font-size:13.5px">This game is <b>${esc(DIFFS[G.diff||0].n)}</b>, and stays that way until it ends. Hard and Brutal machines have more life and hit harder, and pay more experience to match: every machine’s experience scales with how tough it is. ${diffUnlocked(1)?'':'Hard opens after you clear Act V on Normal. '}${diffUnlocked(2)?'':'Brutal opens after you clear Act V on Hard. '}To play another difficulty, leave for the title and create a new game.</p><button class="tog${G.hc?' on':''}" data-hc="1"><span>Hardcore: one life. If this hero dies, they are gone and a new wanderer starts from nothing. +25% experience and magic find.</span><i>${G.hc?'ON':'OFF'}</i></button>`;
     const LOOK={dmgOut:1,dmgIn:1,enemyBars:1,orbNums:1,selfBars:1,minimap:1,shake:1,sound:1,music:1,obj:1};
     const HAND={dyn:1,auto:1,autoEq:1,autoStim:1,tapTarget:1,cmpArrow:1};
     let disp='<h3>What you see</h3>';
@@ -1499,7 +1519,6 @@ const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.ta
   if(d.gact){gateAct=+d.gact}
   if(d.doc){if(!W.z.town)toast('Doctrines can only be changed in town');else if(G.doc===d.doc){}else if(!G.doc||spendSats(3,'Changing doctrine costs 3 sats')){G.doc=d.doc;calc();G.hp=Math.min(G.hp,S.maxHp);sfx('learn')}}
   if(d.track){G.track=d.track;sfx('ui')}
-  if(d.diff!==undefined){const i=+d.diff;if(!diffUnlocked(i)){toast(i>=2?'Brutal opens after you clear Act V on Hard.':'Hard opens after you clear Act V on Normal.');sfx('err')}else{G.diff=i;sfx('ui');toast(pick(DIFFSET))}}
   if(d.opt==='fx'){const o=['full','normal','thin'];const i=o.indexOf(OPT.fx);OPT.fx=o[(i<0?1:i+1)%3]}
   else if(d.opt==='aim'){const o=['auto','drag','quick'];const i=o.indexOf(OPT.aim);OPT.aim=o[(i<0?0:i+1)%3]}
   else if(d.opt==='ui'){const o=['auto','touch','mouse'];const i=o.indexOf(OPT.ui||'auto');OPT.ui=o[(i<0?0:i+1)%3];uiApply(true)}
@@ -1511,9 +1530,10 @@ const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.ta
   if(d.save){toast(save(true)?(CL?'Saved to your account':'Saved in this browser'):'This browser would not store the save. Use a save code instead.')}
   if(d.code){const o=saveObj();o.zs={};o.cur=null;copyText(btoa(unescape(encodeURIComponent(JSON.stringify(o)))),$('codeOut'));return}
   if(d.delslot!==undefined){const n=+d.delslot;$('sheet').hidden=true;mode='play';askWipe(n,()=>{if(G.tag&&G.tag.slot===n)tagDismiss(1);openSheet('opts',{})});return}
-  if(d.swslot!==undefined){const n=+d.swslot,i=slotInfo(n);if(!i)return;save(true);const fin=sv=>{if(applySave(sv)){SLOT=n;clDirty={};W=null;$('sheet').hidden=true;$('pop').hidden=true;startPlay()}else{toast('That save could not be loaded');drawSheet()}};if(i.cloud){b.disabled=true;cloudLoad(i.cloud,n).then(fin)}else fin(i.loc);return}
+  if(d.swslot!==undefined){const n=+d.swslot,i=slotInfo(n);if(!i)return;save(true);const fin=sv=>{if(applySave(sv)){SLOT=n;clDirty={};W=null;$('sheet').hidden=true;$('pop').hidden=true;toTitle(1);migrateDiff();openCreate(n)}else{toast('That save could not be loaded');drawSheet()}};if(i.cloud){b.disabled=true;cloudLoad(i.cloud,n).then(fin)}else fin(i.loc);return}
   if(d.newslot!==undefined){save(true);$('sheet').hidden=true;$('pop').hidden=true;$('hud').hidden=true;$('title').hidden=false;mode='title';music('scene');W=null;SLOT=+d.newslot;showContinue();const nh=$('newH');nh&&nh.scrollIntoView&&nh.scrollIntoView({block:'start'});return}
-  if(d.walk){const fromTitle=sheetCtx.from==='title';closeSheet();walkChoose(!!fromTitle);return}if(d.title){save(true);$('sheet').hidden=true;$('hud').hidden=true;$('title').hidden=false;mode='title';music('scene');showContinue();W=null;return}
+  if(d.walk){const fromTitle=sheetCtx.from==='title';closeSheet();walkChoose(!!fromTitle);return}
+  if(d.credits){closeSheet();playScene(creditSlides(),()=>{mode='play'});return}if(d.title){toTitle();return}
   if(d.dev&&devOn()){const k=d.dev;if(k==='lvl')gainXp(xpNext(G.lvl)-G.xp);if(k==='cr')G.credits+=5000*G.cpi*G.lvl;if(k==='zones')G.unlocked=5;if(k==='god')G.god=!G.god;if(k==='reset'){resetZones();toast('Every district is restocked')}
     if(k==='loot'){for(let q=1;q<=4;q++)for(let i=0;i<2;i++)W.drops.push({x:P.x+rnd(-2,2),y:P.y+rnd(-2,2),it:makeItem(G.lvl+1,q),t:1});toast('Loot scattered at your feet')}}
   if(d.vtab){VEND.tab=d.vtab;sel=null;drawSheet();return}
@@ -1698,7 +1718,9 @@ if(lootLabs)lootLabs.addEventListener('pointerdown',e=>{const b=e.target.closest
 const lootCard=$('lootCard');
 if(lootCard)lootCard.addEventListener('click',ev=>{const b=ev.target.closest&&ev.target.closest('button');if(!b)return;ev.preventDefault();ev.stopPropagation();sfx('ui');const d=LOOT.card;if(b.dataset.lpick){if(d)lootPickup(d);return}if(b.dataset.lcmp&&d)lootCompare(d)});
 $('bSwap').addEventListener('click',()=>{if(!SWAP||mode!=='play')return;const i=G.bag.indexOf(SWAP.it);if(i>=0&&equipFromBag(i))toast('Equipped '+SWAP.it.name);SWAP=null});
-$('bMenu').addEventListener('click',()=>openSheet('items',{}));$('bChars').addEventListener('click',()=>{sfx('ui');openSheet('opts',{})});
+$('bMenu').addEventListener('click',()=>openSheet('items',{}));$('bChars').addEventListener('click',()=>{sfx('ui');
+  dlg('Leave the game','Your wanderer is saved, and this game ends. Quests and acts you have finished stay finished; the districts are rolled again when you create the next one.',
+    [['Save and exit',()=>toTitle()],['Keep playing']],.4)});
 $('bMap').addEventListener('click',()=>{OPT.minimap=!OPT.minimap});
 $('bBug').addEventListener('click',bugAsk);
 $('bRecall').addEventListener('click',openPortal);
@@ -1738,6 +1760,20 @@ $('clsList').addEventListener('click',e=>{const b=e.target.closest('[data-cls]')
 $('bWalk').onclick=$('bWalkLead').onclick=()=>{sfx('ui');walkChoose(true)};
 if($('bTryGear')){if(!devOn())$('bTryGear').hidden=true;else $('bTryGear').onclick=()=>{sfx('ui');dlg('Test gear','Six uniques grant a skill only while you wear them. Once you are in the world, the hero sheet can put a test copy on you. A test copy is left out of every save, the lockbox, and a sale. The same names can also drop for real, and those save.',[['Good']])};}
 $('bLoadCode').onclick=()=>openSheet('load',{only:['load']});
+function toTitle(quiet){
+  if(typeof endGame==='function')endGame();
+  if(G)save(true);
+  $('sheet').hidden=true;$('pop').hidden=true;$('hud').hidden=true;$('dlg').hidden=true;$('death').hidden=true;$('scene').hidden=true;
+  const mk=$('mkgame');if(mk){mk.hidden=true;mk.innerHTML=''}
+  const sl=$('slots');if(sl)sl.hidden=false;
+  MKSLOT=-1;W=null;mode='title';$('title').hidden=false;
+  if(!quiet)music('scene');
+  showContinue();
+  /* the title is one long scroll; unhiding it keeps wherever it was last left,
+     and the browser restores that after layout, so reset it twice. */
+  const t=$('title');if(t){const top=()=>{t.scrollTop=0;const w=t.querySelector('.wrap');if(w)w.scrollTop=0;
+    try{t.scrollIntoView({block:'start'})}catch(e){}};top();requestAnimationFrame(top)}
+}
 function showContinue(){$('bCont').hidden=true;drawSlots()}
 /* three save slots: each row is a hero (the newer of this device's copy and the account's), or an empty place for a new one */
 function slotInfo(n){const loc=loadStored(n),cd=CLD[n];let lg=null;try{lg=loc&&loc.G&&CLS[loc.G.cls]?loc:null}catch(e){}
@@ -1746,13 +1782,56 @@ function slotInfo(n){const loc=loadStored(n),cd=CLD[n];let lg=null;try{lg=loc&&l
 async function wipeSlot(n){const cd=CLD[n];try{localStorage.removeItem(skey(n))}catch(e){}delete CLD[n];if(n===SLOT)clDirty={};
   if(CL){const kill=async id=>{try{await CL.doc(id).delete()}catch(e){try{await CL.doc(id).set({gone:1,s:'',t:Date.now()})}catch(e2){}}};for(const k of(cd&&cd.zk)||[])await kill(zdoc(n,k));await kill(mdoc(n))}}
 function askWipe(n,then){const i=slotInfo(n);if(!i)return;dlg('Delete this character?','The level '+i.lvl+' '+CLS[i.cls].n+' in slot '+(n+1)+' will be erased from this device and from your account. It cannot be brought back. The shared lockbox is not touched.',[['Keep it'],['Delete for good',()=>{wipeSlot(n).then(()=>{sfx('err');then&&then()})}]],2)}
+/* Choosing the difficulty a game is made at. Reached by picking a wanderer on
+   the title, and it is the only place a difficulty is set: once a game exists
+   it keeps the one it was made with. */
+let MKSLOT=-1;
+function openCreate(n){
+  MKSLOT=n;
+  const el=$('mkgame');if(!el)return;
+  const cls=CLS[G.cls], lv=G.lvl||1;
+  let h='<h4>New game</h4><div class="who">'+esc(cls?cls.n:'Wanderer')+' \u00b7 level '+lv+'</div>';
+  for(let d=0;d<DIFFS.length;d++){
+    const D=DIFFS[d], open=diffUnlocked(d), done=hasCleared(d), part=(G.diff|0)===d&&!done&&anyProgress();
+    const dot=d===2?'#e2443c':d===1?'#d98c3c':'#7be495';
+    let note;
+    if(!open)note=d>=2?'Opens when you finish Act V on Hard.':'Opens when you finish Act V on Normal.';
+    else if(part)note='Continue where you left off. The districts are rolled again.';
+    else if(done)note='Finished. Beginning it again starts the story over.';
+    else note='A new story at this difficulty.';
+    const lvlNote=open?(' \u00b7 monsters '+D.hp+'x life, '+D.dmg+'x damage'):'';
+    h+='<button class="dif'+(part?' on':'')+'" data-mkdiff="'+d+'"'+(open?'':' disabled')+'>'+
+       '<i style="background:'+(open?dot:'#4a4440')+'"></i><b>'+esc(D.n)+(done?' \u00b7 cleared':'')+'</b>'+
+       '<span>'+note+esc(lvlNote)+'</span></button>';
+  }
+  h+='<button class="ghost" data-mkback="1" style="width:100%;margin-top:4px">Back</button>';
+  el.innerHTML=h;el.hidden=false;
+  const sl=$('slots');if(sl)sl.hidden=true;
+  const bc=$('bCont');if(bc)bc.hidden=true;
+}
+function closeCreate(){const el=$('mkgame');if(el){el.hidden=true;el.innerHTML=''}
+  const sl=$('slots');if(sl)sl.hidden=false;MKSLOT=-1;showContinue()}
+/* Has this wanderer actually started the difficulty it is sitting on? */
+function anyProgress(){if(!G)return false;
+  if((G.unlocked||1)>1||(G.tier||0)>0)return true;
+  for(const k in (G.q||{}))if(G.q[k]>0)return true;
+  return false}
 function drawSlots(){const el=$('slots');if(!el)return;let h='';
-  for(let n=0;n<NSLOT;n++){const i=slotInfo(n);h+=i&&CLS[i.cls]?`<button class="li${SLOT===n?' on':''}" data-slot="${n}"><i style="background:${CLS[i.cls].col}"></i><div><b>${i.dead?'Hardcore · fallen':'Continue · level '+i.lvl+' '+CLS[i.cls].n}</b><span>Slot ${n+1} · Act ${actRoman(i.act)}${i.dead?' · begins again':i.cloud?' · saved to your account':''}</span></div></button><button class="ghost" data-slotdel="${n}" style="margin:-4px 0 8px auto;display:block;font-size:10px;padding:5px 10px;min-height:0">Delete slot ${n+1}</button>`:`<button class="li${SLOT===n?' on':''}" data-slotnew="${n}"><div><b>Slot ${n+1} · empty</b><span>${SLOT===n?'Choose a class below to begin here':uiSay('Click to start a new wanderer here','Tap to start a new wanderer here')}</span></div></button>`}
+  for(let n=0;n<NSLOT;n++){const i=slotInfo(n);h+=i&&CLS[i.cls]?`<button class="li${SLOT===n?' on':''}" data-slot="${n}"><i style="background:${CLS[i.cls].col}"></i><div><b>${i.dead?'Hardcore · fallen':'Level '+i.lvl+' '+CLS[i.cls].n}</b><span>Slot ${n+1} · Act ${actRoman(i.act)}${i.dead?' · begins again':' · '+uiSay('click','tap')+' to create a game'}${i.cloud?' · saved to your account':''}</span></div></button><button class="ghost" data-slotdel="${n}" style="margin:-4px 0 8px auto;display:block;font-size:10px;padding:5px 10px;min-height:0">Delete slot ${n+1}</button>`:`<button class="li${SLOT===n?' on':''}" data-slotnew="${n}"><div><b>Slot ${n+1} · empty</b><span>${SLOT===n?'Choose a class below to begin here':uiSay('Click to start a new wanderer here','Tap to start a new wanderer here')}</span></div></button>`}
   el.innerHTML=h;const cur=slotInfo(SLOT);$('newH').textContent=cur?'Replace the wanderer in slot '+(SLOT+1):'Begin a new wanderer in slot '+(SLOT+1)}
+$('mkgame').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled)return;sfx('ui');const d=b.dataset;
+  if(d.mkback){closeCreate();return}
+  if(d.mkdiff!==undefined){
+    const i=+d.mkdiff;
+    if(!createGame(i)){toast('That difficulty is not open yet');sfx('err');return}
+    const el=$('mkgame');if(el){el.hidden=true;el.innerHTML=''}
+    const sl=$('slots');if(sl)sl.hidden=false;
+    MKSLOT=-1;save(true);startPlay();
+  }});
 $('slots').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b||b.disabled)return;sfx('ui');
   if(b.dataset.slotdel!==undefined){askWipe(+b.dataset.slotdel,()=>{mode='title';drawSlots()});return}
   if(b.dataset.slotnew!==undefined){SLOT=+b.dataset.slotnew;drawSlots();return}
-  const n=+b.dataset.slot,i=slotInfo(n);if(!i)return;let sv;if(i.cloud){b.disabled=true;b.querySelector('b').textContent='Loading…';sv=await cloudLoad(i.cloud,n)}else sv=i.loc;if(applySave(sv)){SLOT=n;clDirty={};W=null;startPlay()}else drawSlots()});
+  const n=+b.dataset.slot,i=slotInfo(n);if(!i)return;let sv;if(i.cloud){b.disabled=true;b.querySelector('b').textContent='Loading…';sv=await cloudLoad(i.cloud,n)}else sv=i.loc;if(applySave(sv)){SLOT=n;clDirty={};W=null;migrateDiff();openCreate(n)}else drawSlots()});
 function pickSlot(){let n=0;try{n=+localStorage.getItem(SAVEKEY+'_slot')||0}catch(e){}SLOT=n<NSLOT?n:0}
 let last=0;
 function frame(t){uiPad();const dt=Math.min(.05,(t-last)/1000||0);last=t;tNow=t/1000;
@@ -1762,7 +1841,7 @@ function frame(t){uiPad();const dt=Math.min(.05,(t-last)/1000||0);last=t;tNow=t/
   if(mode==='scene'&&SC)drawScene(dt);else render();
   requestAnimationFrame(frame)}
 function start(d){resize();pickSlot();accLoad();drawCls();let hotSave=null;try{if(d&&d.save)hotSave=JSON.parse(d.save)}catch(e){}
-  if(hotSave&&applySave(hotSave))startPlay();else showContinue()
+  if(hotSave&&applySave(hotSave)&&G.inGame)startPlay();else showContinue()
   requestAnimationFrame(frame)}
 const hot=window.claude&&window.claude.hot;
 try{if(hot&&hot.snapshot)hot.snapshot(()=>G&&mode!=='title'?{save:JSON.stringify(saveObj())}:{})}catch(e){}
@@ -1785,4 +1864,4 @@ uiBoot();
 showDisc();
 cloudInit();
 function devOn(){try{if(window.__DEBUG)return true;var h=location.hostname;if(h==='localhost'||h==='127.0.0.1'||h==='::1')return true;if(location.protocol==='file:'||location.protocol==='about:')return true}catch(e){}return false}
-if(devOn())window.__g={beginDifficulty,markCleared,hasCleared,aiDecide,aiDelay,recSet,recGet,get AURACOL(){return AURACOL},itemArt,itemArtFor,itemImg,itemArch,itemTint,itemHead,itemSeed,get ITART(){return ITART},fxSheet,fxBlit,fxPairs,fxWarm,fxLoad,get FXART(){return FXART},migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,stimPackItem,giveStim,stimToBelt,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},set satShop(v){satShop=v},get shop(){return shop},set shop(v){shop=v},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},get LBOX(){return LBOX},adaptGearless,adaptSpawn,adaptDeath,nanReport,get LOOT_BOX(){return LOOT_BOX},lootShowAll,lootPrefs,SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith,openVend,vendAsk,vendBid,vendBuy,vendSell,vendBuyback,vendBuyStim,vendIdentify,vendBox,vendTabOf,buyPrice,sellValue,satCost,satPrice,boxPrice,get VEND(){return VEND},get BUYBACK(){return BUYBACK},get shopVia(){return shopVia},setShopVia(v){shopVia=+v||0},vendFlipLock,vendSellPlan,vendSellCommit,vendSellOpen,sellFilters,vendQuest,lootPasses,lootAuto,lootMigrate,lootLayout,lootName,lootPickup,lootOpen,lootCompare,lootPrefs,lootSave,lootLoad,layCorpse,reclaimCorpse,buyCorpse,corpseFee,repairQuote,repairOne,repairAll,repairList,wearWeapon,wearArmor,wearSlot,itemBroken,stampDura,migrateDurability,placeCorpses,deathCreditPct,encW,loanerWeapon,calmNearCorpse,resetZones,stampReq,canWear,blowPct,blowSpec,swingBlow,gearLive,gearQuiet,reqShortfall,cantEquipText,attrTip,driveStat,witImpact,pdmg,classWeapon,weaponRole};
+if(devOn())window.__g={gameOver,creditSlides,toTitle,openCreate,closeCreate,createGame,endGame,beginDifficulty,markCleared,hasCleared,aiDecide,aiDelay,recSet,recGet,get AURACOL(){return AURACOL},itemArt,itemArtFor,itemImg,itemArch,itemTint,itemHead,itemSeed,get ITART(){return ITART},fxSheet,fxBlit,fxPairs,fxWarm,fxLoad,get FXART(){return FXART},migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,stimPackItem,giveStim,stimToBelt,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},set satShop(v){satShop=v},get shop(){return shop},set shop(v){shop=v},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},get LBOX(){return LBOX},adaptGearless,adaptSpawn,adaptDeath,nanReport,get LOOT_BOX(){return LOOT_BOX},lootShowAll,lootPrefs,SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith,openVend,vendAsk,vendBid,vendBuy,vendSell,vendBuyback,vendBuyStim,vendIdentify,vendBox,vendTabOf,buyPrice,sellValue,satCost,satPrice,boxPrice,get VEND(){return VEND},get BUYBACK(){return BUYBACK},get shopVia(){return shopVia},setShopVia(v){shopVia=+v||0},vendFlipLock,vendSellPlan,vendSellCommit,vendSellOpen,sellFilters,vendQuest,lootPasses,lootAuto,lootMigrate,lootLayout,lootName,lootPickup,lootOpen,lootCompare,lootPrefs,lootSave,lootLoad,layCorpse,reclaimCorpse,buyCorpse,corpseFee,repairQuote,repairOne,repairAll,repairList,wearWeapon,wearArmor,wearSlot,itemBroken,stampDura,migrateDurability,placeCorpses,deathCreditPct,encW,loanerWeapon,calmNearCorpse,resetZones,stampReq,canWear,blowPct,blowSpec,swingBlow,gearLive,gearQuiet,reqShortfall,cantEquipText,attrTip,driveStat,witImpact,pdmg,classWeapon,weaponRole};

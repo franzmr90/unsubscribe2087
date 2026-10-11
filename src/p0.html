@@ -287,6 +287,18 @@ details.memo summary::-webkit-details-marker{display:none}
 @keyframes ldSheen{from{transform:translateX(-120%)}to{transform:translateX(120%)}}
 #load .cap{margin-top:12px;font:600 9px Cinzel,Georgia,serif;letter-spacing:.26em;text-transform:uppercase;color:#6b6252}
 @media (prefers-reduced-motion:reduce){#load .fil:after{animation:none}}
+/* Making a game from the title: the wanderer is chosen, then the difficulty,
+   which is then fixed for that game's life. */
+#mkgame{margin:14px 0 4px;border:1px solid var(--edge);background:rgba(5,4,9,.6);padding:14px}
+#mkgame[hidden]{display:none}
+#mkgame h4{font:700 11px Cinzel,Georgia,serif;letter-spacing:.2em;text-transform:uppercase;color:#c8a55a;margin:0 0 4px;text-align:center}
+#mkgame .who{font:600 12px Cinzel,Georgia,serif;color:#b4ab97;text-align:center;margin:0 0 12px}
+#mkgame .dif{display:block;width:100%;text-align:left;margin:0 0 8px;padding:10px 12px;border:1px solid var(--edge);background:rgba(12,9,8,.8);color:#d8cfb4;cursor:pointer}
+#mkgame .dif b{display:block;font:700 13px Cinzel,Georgia,serif;letter-spacing:.06em}
+#mkgame .dif span{display:block;font:500 11px/1.45 Georgia,serif;color:#8a8070;margin-top:2px}
+#mkgame .dif.on{border-color:var(--gold);background:rgba(40,30,14,.75)}
+#mkgame .dif[disabled]{opacity:.42;cursor:default}
+#mkgame .dif i{float:right;width:9px;height:9px;border-radius:50%;margin:5px 0 0 8px}
 #disc{position:fixed;inset:0;z-index:9500;background:#000;display:flex;align-items:center;justify-content:center;padding:26px;opacity:0;transition:opacity .5s ease}
 #disc[hidden]{display:none}
 #disc.in{opacity:1}
@@ -511,7 +523,7 @@ html[data-ui="touch"] .menuFoot button{min-height:44px}
     <div id="obj" hidden></div><div id="log"></div>
     <div id="stickzone"></div>
     <div id="stick" hidden><i id="knob"></i></div>
-    <div id="bbs"><button class="tb" id="bMenu">Menu</button><button class="tb" id="bChars">Characters</button></div>
+    <div id="bbs"><button class="tb" id="bMenu">Menu</button><button class="tb" id="bChars">Save &amp; exit</button></div>
     <button id="bSwap" hidden></button>
     <button id="bAct" hidden></button>
     <button id="bNames" type="button" hidden>Names</button>
@@ -537,6 +549,7 @@ html[data-ui="touch"] .menuFoot button{min-height:44px}
       <h3>Your wanderers</h3>
       <button type="button" class="walkLead" id="bWalkLead"><b>Walkthrough</b><span>How you move, fight, and get back up</span></button>
       <div class="list" id="slots"></div>
+      <div id="mkgame" hidden></div>
       <p id="cloudNote" style="font-size:13px;text-align:center">Looking for your saved game…</p>
       <p id="lanNote" hidden style="font-size:13px;text-align:center">This computer is hosting the game. Everyone else on your Wi-Fi opens the address in the launcher window. Leave that window open.</p>
       <h3 id="newH">Begin a new wanderer</h3>

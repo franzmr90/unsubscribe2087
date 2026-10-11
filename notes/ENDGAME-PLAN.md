@@ -148,3 +148,54 @@ short but has to be exactly right, and it wants a test that asserts a character
 keeps its level, skills, stash and gear across the transition while the world
 goes back to zero. That test is the real deliverable; the reset is four lines
 once the list is agreed.
+
+---
+
+## Built (2026-10-11)
+
+All of the above is now in the game, with two departures from the plan.
+
+**The game is a thing you create and a thing that ends.** `createGame(d)` in
+`src/p6.js` binds a difficulty at creation; `endGame()` ends it. Every entry
+into the world goes through the create panel on the title (`openCreate` in
+`src/p4.js`), and `startPlay()` sets `G.inGame`, so a page reload that finds a
+game already ended lands on the title rather than back in the world. Leaving is
+D2's Save and Exit: the HUD's **Save & exit** button confirms, saves, ends the
+game and returns to the title; quests and acts stay finished and the districts
+are rolled again on the next game.
+
+**The free difficulty toggle is gone.** The Options row now states what this
+game is and says it cannot be changed. That was listed above as "the thing in
+the way" and it is the whole reason the reset is not optional.
+
+**The ending ends the game.** All three endings run
+`fateScene(() => gameOver())`. `gameOver` marks the difficulty cleared, builds
+the credits from the run (class, level, time, kills, deaths, adoption, fate and
+the choice made), plays them through `playScene`, then returns to the title with
+the game over. `markCleared` also raises `G.diffGate`, so the record and the
+unlock cannot disagree.
+
+### Departure 1 — `actDone(5)` no longer fires on the final kill
+
+The plan kept its dialog for repeat clears. It advertises More, the Simulator
+and the boss rush, which are things you do by *staying in the game*, and the
+game now ends. Rather than print advice the player cannot act on, the credits
+carry a slide pointing at the next difficulty when one has just opened. The
+endgame content is still there; it is reached inside whatever game you create
+next. Whether a cleared campaign should instead stay open for More is a design
+question this change leaves on the table.
+
+### Departure 2 — the credits are a placeholder
+
+The prose is a skeleton with the numbers wired in. It is meant to be rewritten
+by hand.
+
+### Tests
+
+`tools/lifecycle-check.js` walks the whole loop over `file://`: leave play,
+land on the title with the game ended, open the create panel, refuse a locked
+difficulty, create on Hard and watch the world reset while the wanderer keeps
+its level, confirm no `data-diff` setter survives in Options, build the credits
+and check the ledger names the run, then run `gameOver` and land back on the
+title with the clear recorded and the next difficulty open. Sixteen checks.
+`tools/newgame-check.js` still proves the field-by-field reset.
