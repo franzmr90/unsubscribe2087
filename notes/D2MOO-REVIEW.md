@@ -151,3 +151,102 @@ this is the knob.
 5. Leave (6) unless populated solo games should drop more.
 
 Nothing here needs D2's data, and nothing needs a line of its code.
+
+---
+
+# Part two: a second pass for feel, not balance
+
+Asked what else is in here to make the game run smoother. Two findings worth
+acting on, and four candidates checked and rejected — the rejections are
+recorded because each is the kind of thing that looks like an obvious gap
+until you check what our game actually does.
+
+## 7. Our monsters track you perfectly, every frame
+
+D2 gives every monster an **AI delay**: `aidel`, `aidel(N)`, `aidel(H)` in
+MonStats (`MonsterTbls.cpp:250`), read per difficulty and applied in
+`MonsterMode.cpp:1096`. A monster re-decides every N frames, not every frame.
+That delay is most of why Diablo's monsters feel like they are reacting to you
+rather than attached to you, and it is what makes kiting a skill rather than a
+formality.
+
+Our AI tick (`src/p2.js:1703`) recomputes the vector to the target and steers
+along it **every single frame**:
+
+```js
+const dx=T.x-e.x, dy=T.y-e.y, d=Math.hypot(dx,dy)||1, t=ET[e.k];
+...
+mv(e, dx/d*sp, dy/d*sp);
+```
+
+There is a windup before damage (`e.wind`) and a cooldown between swings
+(`e.atk`), so attacks are telegraphed — but *movement* is frame-perfect
+pursuit. Nothing a player does can make a monster commit to a wrong heading,
+because it never commits to a heading at all.
+
+The change is small: give a monster a decision timer and a stored heading, and
+only recompute the heading when the timer expires. A tenth of a second is
+enough to feel different; the value belongs per monster in `ET` so a hound can
+be twitchy and a hull ponderous.
+
+This is a feel change, not a refactor. It will alter every fight in the game
+and it will move the balance numbers, so it wants doing *before* the balance
+bot runs, not after.
+
+## 8. Crowd control and leech do not weaken on higher difficulties
+
+`DifficultyLevelRecord` carries five divisors beside the resistance penalty:
+
+```
+MonsterColdDivisor, MonsterFreezeDivisor, AiCurseDivisor,
+LifeStealDivisor, ManaStealDivisor
+```
+
+On Nightmare and Hell, Diablo divides how long your cold and freeze hold, how
+long your curses last, and how much life and mana you leech. Difficulty does
+not only make monsters bigger; it makes your control over them weaker.
+
+Ours has the resistance half of that and not the rest. `resPen()`
+(`src/p10.js`) returns 0 / 20 / 50 by difficulty, and that is the whole of it:
+
+- `e.stun = Math.max(e.stun, X)` everywhere, with no difficulty term.
+- leech is `heal(d * Math.min(e.mp?4:15, lc) / 100)` (`src/p2.js:551`), a flat
+  percentage of damage with no difficulty term.
+
+So a stun or leech build keeps every bit of its strength into brutal, against
+monsters whose life has grown far faster than their damage. Leech is the
+sharper one: it pays a percentage of damage dealt, and damage dealt grows with
+the monster's health pool, so its absolute return *rises* as the game goes on.
+
+That is a plausible mechanical account of a late game that is either trivial or
+punishing depending on build, which is what an unmeasured Act III-V tends to
+feel like. A `ccDiv()` and `leechDiv()` beside `resPen()` would be the same
+shape as the thing that is already there.
+
+## Checked and rejected
+
+- **The experience penalty for out-levelling content.** D2 pays 13/256 of an
+  experience award at ten levels above the monster
+  (`SUnitDmg.cpp`, `SUNITDMG_ComputeExperienceGain`). We need no equivalent:
+  our experience scales off *zone* level, so Act I always pays Act I rates
+  however high you are. Different mechanism, same outcome.
+- **Scaling monster defence and accuracy by level.** D2 scales five stats off
+  MonLvl; we scale three. The missing two are defence and to-hit, and there is
+  no accuracy system in our game at all to consume them — every `miss` in
+  `p2.js` is a comment.
+- **A Faster Hit Recovery stat.** In D2 being hit-locked is how you die, so
+  gear that shortens it is sought after. Ours sets `P.hitStun=.45` on any
+  damage, but it gates exactly one skill index and never the player's attack or
+  movement. There is no hit-lock, so there is nothing for gear to answer.
+- **Porting any of the AI itself.** `AiThink.cpp` is 17,590 lines of
+  per-monster behaviour. The transferable idea is the delay in finding 7, not
+  the code.
+
+## Revised order
+
+1. Snapshot the drop count at spawn (finding 5) — fairness bug, four lines.
+2. Monster decision delay (7) — biggest change to how the game feels, and it
+   must land before any balance measurement is taken.
+3. Difficulty divisors for control and leech (8) — the other half of a system
+   half of which already exists.
+4. `noRatio` for bosses (4), then the table tail (3), then the drop cap.
