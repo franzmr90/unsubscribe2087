@@ -30,12 +30,13 @@ await p.evaluate(()=>__g.setMode('play'));await p.waitForTimeout(400);
 await p.evaluate(()=>{
   const P=__g.P,W=__g.W;
   const spec=[['patch','#f7931a',0,-3],['ring','#59e0e6',3,-3],['arc','#ffd9a0',-3,0],
-              ['trail','#9a6cff',3,0],['bolt','#59e0e6',-3,3],['orbit','#7be495',0,3],['mark','#ffe36b',3,3]];
+              ['trail','#9a6cff',3,0],['bolt','#59e0e6',-3,3],['orbit','#7be495',0,3],['mark','#ffe36b',3,3],
+              ['warn','#ff5d4d',-3,-3],['strike','#9a6cff',5,-1],['shard','#eef6ff',-5,1],['beam','#59e0e6',5,2]];
   window.__hold=setInterval(()=>{
     W.fx.length=0;
     for(const [k,col,ox,oy] of spec){
       W.fx.push({k,col,x:P.x+ox,y:P.y+oy,x2:P.x+ox+2.2,y2:P.y+oy+1.2,
-        t:k==='ring'||k==='arc'?0.35:0.12,life:1.2,r:1.8,w:1.2,n:4,dx:1,dy:0,
+        t:k==='warn'?0.62:(k==='ring'||k==='arc'?0.35:0.12),life:1.2,r:1.8,w:1.2,n:4,dx:1,dy:0,
         reach:k==='arc'?1.8:0,stay:k==='patch'?1:0});
     }
   },16);
