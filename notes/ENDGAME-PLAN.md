@@ -72,6 +72,28 @@ Plus `G.cleared = {0:1}` so "this character finished Normal" is a fact we can
 print on the credits and show on the slot, rather than inferred from
 `diffGate`.
 
+## Decisions taken
+
+Asked and answered, so these are settled:
+
+1. **Difficulty becomes one-way, but a cleared difficulty can be replayed.**
+   The Options control stops being a setter. Any difficulty that
+   `diffUnlocked` allows can be *begun*, and beginning one always runs the
+   reset — including re-entering one already cleared. You cannot slide
+   sideways into a finished world. Consequence accepted: "what difficulty is
+   this character on" is no longer monotonic, because starting a fresh Normal
+   run is legal.
+
+2. **Boss first-kill uniques pay again on each difficulty.** `G.bk` resets in
+   `beginDifficulty`. Each difficulty is its own campaign and pays its own
+   first kills. `G.diffGate` remains the durable record of what has been
+   cleared, so resetting `G.bk` cannot cost anyone an unlock.
+
+3. **Existing saves are left alone.** A character already sitting on Hard with
+   an unreset Normal world keeps it. The new rules gate transitions from here
+   on. Nothing is demoted and nothing is taken away, at the cost of some saves
+   being in a state the new rules would not produce.
+
 ## The thing in the way
 
 **The free difficulty toggle has to go, or the reset is optional.** If a player
@@ -83,8 +105,8 @@ D2's rule is that a character *moves* to the next difficulty and cannot go
 back. Matching that means the options control stops being a setter and becomes
 either nothing or a one-way "Begin Hard" that runs the reset.
 
-This is a behaviour change for existing saves, which is why it is a question
-below rather than a decision I have made.
+Settled above: the control becomes "Begin <difficulty>", and beginning one
+always resets. Existing saves keep whatever state they are already in.
 
 ## Sequence, end to end
 
@@ -103,16 +125,15 @@ fire on *subsequent* clears, not the first, or it competes with the credits.
 ## Risks
 
 - **Save compatibility.** Adding `G.cleared` is additive and safe; the pattern
-  is `migrateDiff`. Removing the toggle is not additive — a character currently
-  sitting on Brutal with a Normal world needs a defined outcome.
+  is `migrateDiff`. Settled: existing characters are left as they are.
 - **Tier and difficulty now overlap.** `G.tier` (More, +12 levels a step) is
   already the game's "harder replay" ladder, and `actDone(5)` advertises it.
   Two ladders need a stated relationship: I would keep tier as scaling *within*
   a difficulty and reset it to 0 on a difficulty change, which is what the list
   above does.
-- **Boss first-kill drops.** `bossKill2` gives a guaranteed unique on `n===1`.
-  If `G.bk` resets, every difficulty pays that again — defensible and D2-like,
-  but it is a loot decision, not a bug. Listed as a question.
+- **Boss first-kill drops.** Settled: `G.bk` resets, so every difficulty pays
+  its first kills again. Check nothing else reads `G.bk` as a lifetime total —
+  `migrateDiff` reads `G.bk.boss5`, but only once, behind `G.diffMigrated`.
 - **Hardcore.** `G.hc` plus a forced return to character select needs checking
   against `hcBegin`/`heroDead`, which already own that screen on death.
 - **Multiplayer.** `G.diff` feeds `zoneLevel`, so party members on different
