@@ -256,6 +256,22 @@ details.memo summary::-webkit-details-marker{display:none}
 #chatbar button.pip::after{content:'';display:inline-block;width:5px;height:5px;border-radius:3px;background:#59e0e6;margin-left:5px;vertical-align:middle}
 #pmw{position:fixed;inset:0;z-index:7100;background:rgba(6,5,12,.93);display:flex;align-items:center;justify-content:center;padding:16px}
 #pmw[hidden]{display:none}
+/* The loading screen, an ode to the one this game owes a great deal to:
+   a black field, a bronze-framed bar with diamond caps, and a travelling sheen. */
+#load{position:fixed;inset:0;z-index:9600;background:radial-gradient(120% 90% at 50% 42%,#1a120c 0%,#0a0706 58%,#000 100%);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .35s ease}
+#load[hidden]{display:none}
+#load.in{opacity:1}
+#load .in{width:min(360px,78vw);text-align:center}
+#load .ttl{font:700 15px Cinzel,Georgia,serif;letter-spacing:.3em;text-transform:uppercase;color:#c8a55a;margin:0 0 26px;text-shadow:0 0 18px rgba(200,165,90,.28)}
+#load .trk{position:relative;height:14px;border:1px solid #6b5a33;background:linear-gradient(#0b0908,#171009);box-shadow:inset 0 2px 5px rgba(0,0,0,.9),0 0 22px rgba(0,0,0,.85)}
+#load .trk:before,#load .trk:after{content:'';position:absolute;top:50%;width:8px;height:8px;background:#7a5c26;border:1px solid #c8a55a;transform:translateY(-50%) rotate(45deg)}
+#load .trk:before{left:-6px}
+#load .trk:after{right:-6px}
+#load .fil{position:absolute;left:1px;top:1px;bottom:1px;width:0;overflow:hidden;background:linear-gradient(90deg,#50290c,#a8661f 38%,#e0a94e 72%,#b8762a);box-shadow:0 0 12px rgba(224,169,78,.5);transition:width .3s linear}
+#load .fil:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,238,200,.5),transparent);animation:ldSheen 1.4s linear infinite}
+@keyframes ldSheen{from{transform:translateX(-120%)}to{transform:translateX(120%)}}
+#load .cap{margin-top:12px;font:600 9px Cinzel,Georgia,serif;letter-spacing:.26em;text-transform:uppercase;color:#6b6252}
+@media (prefers-reduced-motion:reduce){#load .fil:after{animation:none}}
 #disc{position:fixed;inset:0;z-index:9500;background:#000;display:flex;align-items:center;justify-content:center;padding:26px;opacity:0;transition:opacity .5s ease}
 #disc[hidden]{display:none}
 #disc.in{opacity:1}
@@ -532,5 +548,10 @@ html[data-ui="touch"] .menuFoot button{min-height:44px}
     <p class="pun">The economics are accurate.</p>
     <p class="warn">If you do not agree with any of the above, please stop playing immediately.</p>
     <small id="discSkip"><span data-ui-copy="mouse">Click anywhere to continue</span><span data-ui-copy="touch">Tap anywhere to continue</span></small>
+  </div></div>
+  <div id="load" hidden><div class="in">
+    <div class="ttl">Unsubscribe 2087</div>
+    <div class="trk"><div class="fil"></div></div>
+    <div class="cap">Forging</div>
   </div></div>
 </div>

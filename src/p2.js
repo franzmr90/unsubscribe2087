@@ -278,7 +278,7 @@ function applySave(o){if(!o||!o.G||!CLS[o.G.cls])return false;G=o.G;
   G.sats=G.sats||0;G.merc=G.merc||null;G.sq=(G.sq&&typeof G.sq==='object')?G.sq:{};
   if(G.q.q10===3&&(G.unlocked||0)<12)G.unlocked=12;for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;if(G.q.q5===3&&(G.unlocked||0)<7)G.unlocked=7;actBriefMigrate();if(G.hp<=0){if(!G.hc)G.hp=9999;o.cur=null}ZS={};for(const k in (o.zs||{})){let z=null;try{z=decW(o.zs[k])}catch(e){z=null}if(z)ZS[k]=z;else keepGround(o.zs[k])}if(o.opt){const raw=o.opt;OPT=Object.assign({},OPT_DEF,raw);lootMigrate(raw)}if(Array.isArray(o.buyback))G._buyback=o.buyback.filter(r=>r&&r.it&&!r.it.test);G._cur=o.cur||null;boonRefund();return true}
 function hcBegin(){const c=G&&CLS[G.cls]?G.cls:'scrapper';DY=null;const d=$('death');if(d)d.hidden=true;resetZones();newGame(c);G.hc=true;save(true)}
-function startPlay(){ensureG();if(G.hc&&G.hp<=0){hcBegin();return}mpConnect();mode='play';$('title').hidden=true;$('hud').hidden=false;calc();setSkillButtons();
+function startPlay(){ensureG();if(G.hc&&G.hp<=0){hcBegin();return}mpConnect();mode='play';$('title').hidden=true;$('hud').hidden=false;calc();setSkillButtons();try{fxLoad(G.cls)}catch(e){}
   if(!G.statNote){G.statNote=1;const spent=(G.at.mgt||0)+(G.at.ref||0)+(G.at.vit||0)+(G.at.bnd||0);if(spent>0)setTimeout(()=>toast('Attribute damage has changed. Sister Null can return your points.'),400)}
   const c=G._cur;delete G._cur;const cz=c&&ZONES[c.zi];
   if(cz&&(cz.town||cz.sim||ZS[c.zi])){const o={at:c,swap:1};if(cz.sim){o.wave=(c.sim&&c.sim.wave)||1;if(c.sim&&c.sim.rush)o.rush=1}enter(c.zi,o);if(cz.pre)return}else if(G.pre===1){enter(PREZ);return}else enter(HT());

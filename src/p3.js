@@ -224,28 +224,28 @@ function fxShow(f){if(!f)return false;if(f.k==='mark')return true;if(OPT.fx==='t
 const FXN=16;
 const fxh=n=>{const v=Math.sin(n*127.1)*43758.5453;return v-Math.floor(v)};
 const FXART={
- patch:{w:112,h:112,loop:1,rate:.5,f:(g,t,q,w)=>{const R=w/2,sp=t*.5236;
+ patch:{w:96,h:96,n:12,loop:1,rate:.5,f:(g,t,q,w)=>{const R=w/2,sp=t*.5236;
    const gr=g.createRadialGradient(0,0,0,0,0,R);gr.addColorStop(0,'rgba('+q+',.02)');gr.addColorStop(.74,'rgba('+q+',.15)');gr.addColorStop(1,'rgba('+q+',.01)');
    g.fillStyle=gr;g.beginPath();g.arc(0,0,R,0,6.283);g.fill();
    g.strokeStyle='rgba('+q+',.8)';g.lineWidth=2.2;g.beginPath();g.arc(0,0,R*.9,0,6.283);g.stroke();
    g.strokeStyle='rgba('+q+',1)';g.lineWidth=3.2;for(let i=0;i<12;i++){const a=sp+i*.5236;g.beginPath();g.arc(0,0,R*.9,a,a+.13);g.stroke()}
    g.strokeStyle='rgba('+q+',.28)';g.lineWidth=1.4;for(let i=0;i<3;i++){const a=-t*6.283+i*2.094;g.beginPath();g.arc(0,0,R*(.4+.16*i),a,a+1.2);g.stroke()}}},
- mark:{w:48,h:48,loop:1,rate:1.1,f:(g,t,q,w)=>{const R=w/2,s=Math.sin(t*6.283);
+ mark:{w:40,h:40,n:12,loop:1,rate:1.1,f:(g,t,q,w)=>{const R=w/2,s=Math.sin(t*6.283);
    g.strokeStyle='rgba('+q+',' +(.3+.25*s)+')';g.lineWidth=1.6;g.beginPath();g.arc(0,0,R*(.52+.12*s),0,6.283);g.stroke();
    g.save();g.rotate(t*1.5708);g.fillStyle='rgba('+q+',1)';g.fillRect(-R*.2,-R*.2,R*.4,R*.4);
    g.fillStyle='rgba(255,255,255,.85)';g.fillRect(-R*.08,-R*.08,R*.16,R*.16);g.restore()}},
- ring:{w:160,h:160,f:(g,t,q,w)=>{const R=w/2,r=R*(.1+.78*t),a=1-t;
+ ring:{w:104,h:104,n:8,f:(g,t,q,w)=>{const R=w/2,r=R*(.1+.78*t),a=1-t;
    g.fillStyle='rgba('+q+','+(a*.14)+')';g.beginPath();g.arc(0,0,r,0,6.283);g.fill();
    g.strokeStyle='rgba('+q+','+a+')';g.lineWidth=1.5+5*a;g.beginPath();g.arc(0,0,r,0,6.283);g.stroke();
    g.strokeStyle='rgba(255,255,255,'+(a*.7)+')';g.lineWidth=1.2;g.beginPath();g.arc(0,0,r*.93,0,6.283);g.stroke();
    g.fillStyle='rgba('+q+','+(a*.8)+')';for(let i=0;i<10;i++){const an=i*.6283+fxh(i)*.4,rr=r*(1.02+.1*fxh(i+7));g.beginPath();g.arc(Math.cos(an)*rr,Math.sin(an)*rr,1.6*a+.5,0,6.283);g.fill()}}},
- arc:{w:144,h:144,f:(g,t,q,w)=>{const R=w/2,a=1-t,sw=.85+t*.5;
+ arc:{w:96,h:96,n:8,f:(g,t,q,w)=>{const R=w/2,a=1-t,sw=.85+t*.5;
    g.lineCap='round';
    for(const[lw,cl,rr]of[[13,'rgba(255,170,80,'+a*.35+')',1],[6.5,'rgba(255,240,210,'+a+')',1],[2.6,'rgba(255,255,255,'+a*.85+')',.84]]){
      g.strokeStyle=cl;g.lineWidth=lw;g.beginPath();g.arc(0,0,R*.86*rr,-sw+t*.5,sw+t*.5);g.stroke()}
    g.lineCap='butt';
    g.fillStyle='rgba(255,245,220,'+a*.9+')';for(let i=0;i<7;i++){const an=-sw+i/6*sw*2+t*.5,rr=R*.86*(1+t*.18);g.beginPath();g.arc(Math.cos(an)*rr,Math.sin(an)*rr,1.8*a+.4,0,6.283);g.fill()}}},
- trail:{w:224,h:56,f:(g,t,q,w,h)=>{const L=w/2,a=1-t,N=14;
+ trail:{w:160,h:40,n:8,f:(g,t,q,w,h)=>{const L=w/2,a=1-t,N=14;
    const th=(p,o)=>(h*.44)*(1-p)*(1-p*.28)*a+(fxh(o+p*11+Math.floor(t*4))-.5)*h*.07;
    g.beginPath();
    for(let i=0;i<=N;i++){const p=i/N,x=-L+p*w;if(i)g.lineTo(x,-th(p,0));else g.moveTo(x,-th(p,0))}
@@ -258,7 +258,7 @@ const FXART={
    g.beginPath();g.moveTo(-L*.93,0);g.lineTo(L*.08,0);g.stroke();g.lineCap='butt';
    g.fillStyle='rgba('+q+','+a*.85+')';
    for(let i=0;i<9;i++){const x=-L+fxh(i*1.7)*w,y=(fxh(i+4)-.5)*h*.95*(.35+t);g.beginPath();g.arc(x,y,1.7*a+.4,0,6.283);g.fill()}}},
- bolt:{w:256,h:72,f:(g,t,q,w,h)=>{const L=w/2,a=1-t,seg=9;
+ bolt:{w:176,h:48,n:8,f:(g,t,q,w,h)=>{const L=w/2,a=1-t,seg=9;
    g.lineJoin='round';g.lineCap='round';
    const pts=[];for(let i=0;i<=seg;i++){const p=i/seg;pts.push([-L+p*w,(fxh(i*3.3+Math.floor(t*4))-.5)*h*.62*Math.sin(p*3.14159)])}
    for(const[lw,cl]of[[18,'rgba('+q+','+a*.16+')'],[9,'rgba('+q+','+a*.4+')'],[3.6,'rgba('+q+','+a+')'],[1.4,'rgba(255,255,255,'+a*.95+')']]){
@@ -266,7 +266,7 @@ const FXART={
    g.strokeStyle='rgba('+q+','+a*.65+')';g.lineWidth=1.3;
    for(let b=0;b<3;b++){const i=2+b*3,p=pts[i];if(!p)continue;g.beginPath();g.moveTo(p[0],p[1]);g.lineTo(p[0]+(fxh(b+t*5)-.5)*h*.7,p[1]+(fxh(b+9)-.5)*h*.9);g.stroke()}
    g.lineCap='butt'}},
- mote:{w:24,h:24,loop:1,rate:1.4,f:(g,t,q,w)=>{const R=w/2,s=.7+.3*Math.sin(t*6.283);
+ mote:{w:24,h:24,n:12,loop:1,rate:1.4,f:(g,t,q,w)=>{const R=w/2,s=.7+.3*Math.sin(t*6.283);
    const gr=g.createRadialGradient(0,0,0,0,0,R*s);gr.addColorStop(0,'rgba(255,255,255,.95)');gr.addColorStop(.4,'rgba('+q+',.85)');gr.addColorStop(1,'rgba('+q+',0)');
    g.fillStyle=gr;g.beginPath();g.arc(0,0,R*s,0,6.283);g.fill()}}
 };
@@ -274,19 +274,67 @@ let FXC={};
 function fxSheet(k,col){const key=k+'|'+col;if(key in FXC)return FXC[key];
   const d=FXART[k];if(!d){FXC[key]=null;return null}
   const rgb=hex2rgb(col&&col.charAt(0)==='#'&&col.length>=7?col:'#ffffff'),q=rgb[0]+','+rgb[1]+','+rgb[2];
-  const c=mk(d.w*FXN,d.h),g=c.getContext('2d');
-  for(let i=0;i<FXN;i++){const t=d.loop?i/FXN:i/(FXN-1);
+  const n=d.n||FXN,c=mk(d.w*n,d.h),g=c.getContext('2d');
+  for(let i=0;i<n;i++){const t=d.loop?i/n:i/(n-1);
     g.save();g.translate(i*d.w+d.w/2,d.h/2);d.f(g,t,q,d.w,d.h);g.restore()}
-  const sh={c:c,w:d.w,h:d.h,loop:d.loop||0,rate:d.rate||1};FXC[key]=sh;return sh}
+  const sh={c:c,w:d.w,h:d.h,n:n,loop:d.loop||0,rate:d.rate||1};FXC[key]=sh;return sh}
 /* One frame of a baked kind, centred on X,Y and stretched to w,h. Returns false
    when the kind has no painter so the caller can draw it the old way. */
 function fxBlit(k,col,u,X,Y,w,h,rot,alpha,squash){const sh=fxSheet(k,col);if(!sh)return false;
-  let i=sh.loop?Math.floor(tNow*sh.rate*FXN)%FXN:Math.floor(u*FXN);
-  if(i<0)i=0;if(i>=FXN)i=FXN-1;
+  if(w>sh.w*1.7)return false;
+  const n=sh.n;let i=sh.loop?Math.floor(tNow*sh.rate*n)%n:Math.floor(u*n);
+  if(i<0)i=0;if(i>=n)i=n-1;
   ctx.save();ctx.globalAlpha=alpha===undefined?1:alpha;ctx.translate(X,Y);
   if(squash)ctx.scale(1,squash);
   if(rot)ctx.rotate(rot);
   ctx.drawImage(sh.c,i*sh.w,0,sh.w,sh.h,-w/2,-h/2,w,h);ctx.restore();ctx.globalAlpha=1;return true}
+/* Every shape and colour the game can throw. Baking them up front costs a few
+   hundred milliseconds once; leaving it to chance costs a hitch the first time
+   each one fires, which is always mid-fight. */
+function fxPairs(cls){const seen={},out=[];
+  const add=(k,c)=>{if(!FXART[k]||!c)return;const key=k+'|'+c;if(seen[key])return;seen[key]=1;out.push([k,c])};
+  /* Read the table, not skvOf: a skill's colour can fall back to its damage
+     type, and that needs a live character, which there is not one of yet. So
+     every colour a row could resolve to gets baked. */
+  for(const c0 in SKV){if(cls&&c0!==cls)continue;const cls2=c0,rows=SKV[c0],cc=(CLS[c0]&&CLS[c0].col)||'#e6e2d6';
+    for(const i in rows){const row=rows[i],k=row.k;if(!FXART[k]&&k!=='orbit')continue;
+      const ks=k==='orbit'?['mote']:[k];
+      /* With a character in hand skvOf gives the one colour this skill will
+         actually wear. Without one it can throw, and every damage type the
+         skill might resolve to has to be covered instead. */
+      let exact=null;try{const v=skvOf(cls2,+i);if(v&&v.col)exact=v.col}catch(e){}
+      for(let z=0;z<ks.length;z++){
+        if(row.col){add(ks[z],row.col);continue}
+        if(exact){add(ks[z],exact);continue}
+        add(ks[z],cc);for(const ty in DTY)add(ks[z],DTY[ty].c)}}}
+  for(const i in AURACOL)add('patch',AURACOL[i]);
+  const extra=[['patch','#ff7a3c'],['patch','#e6e2d6'],['patch','#9a6cff'],['patch','#7be495'],
+    ['trail','#f7931a'],['bolt','#59e0e6'],['mark','#ffe36b'],['arc','#ffd9a0'],['mote','#59e0e6'],
+    ['ring','#59e0e6'],['ring','#ff7a3c'],['ring','#ffe36b']];
+  for(let i=0;i<extra.length;i++)add(extra[i][0],extra[i][1]);
+  return out}
+/* Baked in slices so the bar can move. rAF stops in a background tab, so a
+   timer races it and whichever arrives first carries on. */
+/* The loading screen. This character's sheets bake behind it, so no shape
+   stops to draw itself in the middle of a fight. It holds for a beat even when
+   the bake is quick, because a bar that flashes past reads as a glitch. */
+function fxLoad(cls){const el=$('load');if(!el)return Promise.resolve(0);
+  const fil=el.querySelector('.fil'),cap=el.querySelector('.cap'),t0=performance.now();
+  el.hidden=false;requestAnimationFrame(()=>el.classList.add('in'));
+  if(fil)fil.style.width='0%';if(cap)cap.textContent='Forging';
+  const hide=()=>{el.classList.remove('in');setTimeout(()=>{el.hidden=true},380)};
+  return fxWarm((n,t)=>{if(fil)fil.style.width=(100*n/Math.max(1,t)).toFixed(1)+'%';
+      if(cap&&n>=t)cap.textContent='Ready'},cls,1.5)
+    .then(n=>new Promise(r=>setTimeout(()=>{hide();r(n)},Math.max(0,900-(performance.now()-t0)))))
+    .catch(()=>{hide();return 0})}
+function fxWarm(cb,cls,budget){const pairs=fxPairs(cls);let i=0;const ms=budget||7;
+  const next=f=>{let ran=false;const go=()=>{if(ran)return;ran=true;f()};
+    try{requestAnimationFrame(go)}catch(e){}setTimeout(go,120)};
+  return new Promise(res=>{const step=()=>{
+    const t0=performance.now();
+    while(i<pairs.length&&performance.now()-t0<ms){try{fxSheet(pairs[i][0],pairs[i][1])}catch(e){}i++}
+    if(cb)try{cb(i,pairs.length)}catch(e){}
+    if(i<pairs.length)next(step);else res(pairs.length)};next(step)})}
 
 /* The skill button and the world share one vocabulary. sz is the box. */
 function glyph(g,cls,i,sz){const v=skvOf(cls,i);if(!v)return;const s=sz||24,col=v.col,k=v.k;

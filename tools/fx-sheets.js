@@ -67,7 +67,7 @@ console.log(`  one colour of every kind: ${total.toFixed(1)}ms`);
 // a looping sheet must be seamless: first and last frame differ, but the
 // wrap must not jump more than a normal step does
 const seam=await p.evaluate(()=>{
-  const sh=__g.fxSheet('patch','#f7931a'),n=16,W=sh.w,H=sh.h;
+  const sh=__g.fxSheet('patch','#f7931a'),n=sh.n,W=sh.w,H=sh.h;
   const c=document.createElement('canvas');c.width=W;c.height=H;
   const g=c.getContext('2d');
   const grab=i=>{g.clearRect(0,0,W,H);g.drawImage(sh.c,i*W,0,W,H,0,0,W,H);return g.getImageData(0,0,W,H).data};

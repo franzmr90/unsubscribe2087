@@ -15,7 +15,7 @@ const kinds=await p.evaluate(()=>Object.keys(__g.FXART));
 for(const k of kinds){
   const url=await p.evaluate((k)=>{
     const sh=__g.fxSheet(k,'#59e0e6');
-    const n=16,fw=sh.w,fh=sh.h;
+    const n=sh.n,fw=sh.w,fh=sh.h;
     // 8 frames per row so wide strips stay legible
     const per=8,rows=Math.ceil(n/per);
     const c=document.createElement('canvas');
