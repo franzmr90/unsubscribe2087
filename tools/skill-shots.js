@@ -72,11 +72,20 @@ for(const cls of classes){
       for(let q=3;q<live.length;q++){live[q].x=P.x+900;live[q].y=P.y+900}
       G.sk[sk.i]=5;G.slots[0]=sk.i;
       await sleep(120);
+      // only what THIS cast makes: the player carries ambient marks (a shrine
+      // buff, a status) that would otherwise be credited to every skill
+      const had=new Set(W.fx), hadP=new Set(W.projs||[]);
       try{__g.cast(0)}catch(e){}
-      // hold whatever it threw at a readable age
-      const snap=W.fx.map(f=>({f,life:f.life}));
-      const hold=setInterval(()=>{for(const s of snap){s.f.t=Math.min(s.life*0.45,s.life-0.01)}},16);
-      await sleep(260);
+      // let a projectile get clear of the caster before freezing it, or it
+      // sits inside the figure and reads as nothing at all
+      await sleep(110);
+      const snap=W.fx.filter(f=>!had.has(f)).map(f=>({f,life:f.life}));
+      const myP=(W.projs||[]).filter(x=>!hadP.has(x));
+      for(const q of myP){q.vx=0;q.vy=0}
+      const hold=setInterval(()=>{
+        for(const s of snap)s.f.t=Math.min(s.life*0.45,s.life-0.01);
+        for(const q of myP){q.vx=0;q.vy=0;q.life=Math.max(q.life,.6)}},16);
+      await sleep(240);
       const cx=(n%COLS)*CELL+PAD, cy=PAD+18+((n/COLS)|0)*(CELL+LBL);
       // the middle of the view, where the player stands
       const sx=(cv.width-cv.width*0.46)/2, sy=(cv.height-cv.height*0.34)/2;
@@ -84,7 +93,8 @@ for(const cls of classes){
       clearInterval(hold);
       g.strokeStyle='rgba(200,165,90,.28)';g.strokeRect(cx+.5,cy+.5,CELL-1,CELL*0.76-1);
       g.fillStyle='#d8cfb4';g.font='600 11px Cinzel,Georgia,serif';
-      const kinds=[...new Set(snap.map(s=>s.f.k))].join(',')||'(nothing)';
+      const kinds=[[...new Set(snap.map(s=>s.f.k))].join(','),myP.length?('proj x'+myP.length):'']
+        .filter(Boolean).join(' + ')||'(nothing drawn)';
       g.fillText(sk.i+' '+sk.name.slice(0,22),cx+2,cy+CELL*0.76+13);
       g.fillStyle='#8a8070';g.font='500 10px Cinzel,Georgia,serif';
       g.fillText(kinds,cx+2,cy+CELL*0.76+25);
