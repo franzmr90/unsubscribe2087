@@ -81,7 +81,7 @@ console.log(`  mean frame step ${seam.step.toFixed(2)}   wrap step ${seam.wrap.t
 if(seam.wrap>seam.step*1.5)fail.push(`looping patch is not seamless: wrap ${seam.wrap.toFixed(2)} vs mean step ${seam.step.toFixed(2)}`);
 
 // cast one skill of each shape and screenshot it
-const shots=[['scrapper',0,'arc'],['scrapper',1,'bolt'],['scrapper',4,'trail'],
+const shots=[['scrapper',0,'arc'],['scrapper',1,'trail'],['scrapper',4,'trail'],
              ['scrapper',12,'patch'],['hacker',7,'orbit'],['witness',0,'mark']];
 console.log('--- cast ---');
 for(const [cls,i,want] of shots){

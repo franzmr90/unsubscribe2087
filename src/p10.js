@@ -296,26 +296,26 @@ const skType=(cls,i)=>cls==='homesteader'&&i===6?null:cls==='hacker'&&i===14?(G.
 const SKV_LIFE={arc:.22,bolt:.28,trail:.32,beam:.34,strike:.28,ring:.42,patch:.62,orbit:.55,mark:.8};
 const SKV={scrapper:{
   0:{k:'arc',w:1.5,reach:2.4},
-  1:{k:'bolt',r:4,at:'foe'},
+  1:{k:'trail',r:6},
   2:{k:'patch',r:1.4},
   3:{k:'ring',r:2.5},
-  4:{k:'trail',r:3.2},
+  4:{k:'trail',r:5},
   5:{k:'ring',r:4},
-  6:{k:'patch',r:1.2},
+  6:{k:'orbit',n:3},
   7:{k:'trail',r:3,at:'foe'},
   8:{k:'mark'},
   9:{k:'patch',r:2.6},
   10:{k:'mark'},
   11:{k:'patch',r:1.6},
   12:{k:'patch',r:4.2,tel:1},
-  13:{k:'ring',r:1.2},
-  14:{k:'ring',r:1.1}
+  13:{k:'arc',w:2.2,reach:2.4},
+  14:{k:'orbit',n:3,col:'#ffb238'}
 },hacker:{
-  0:{k:'bolt',r:5,n:3},
-  1:{k:'mark',col:'#59e0e6'},
+  0:{k:'bolt',r:7,n:3,at:'foe'},
+  1:{k:'bolt',r:8},
   2:{k:'patch',r:1.5},
   3:{k:'ring',r:3.4},
-  4:{k:'trail',r:.8},
+  4:{k:'patch',r:.8},
   5:{k:'mark'},
   6:{k:'ring',r:3.5},
   7:{k:'orbit',n:3},
@@ -328,18 +328,18 @@ const SKV={scrapper:{
   14:{k:'bolt',r:6,at:'foe',n:1}
 },courier:{
   0:{k:'ring',r:2},
-  1:{k:'trail',r:3,col:'#3fbf8f'},
+  1:{k:'trail',r:5.3,col:'#3fbf8f'},
   2:{k:'mark'},
   3:{k:'patch',r:2.6},
   4:{k:'patch',r:2.6},
   5:{k:'mark'},
-  6:{k:'orbit',n:3},
+  6:{k:'trail',r:7,at:'foe'},
   7:{k:'mark',at:'foe',n:0},
   8:{k:'mark'},
-  9:{k:'trail',r:4.2},
+  9:{k:'trail',r:5.5,col:'#3fbf8f'},
   10:{k:'mark'},
   11:{k:'patch',r:1.8},
-  12:{k:'mark',col:'#e6e2d6'},
+  12:{k:'trail',r:6},
   13:{k:'mark'},
   14:{k:'mark',at:'foe',n:0,col:'#3fbf8f'}
 },anon:{
@@ -353,11 +353,11 @@ const SKV={scrapper:{
   7:{k:'orbit'},
   8:{k:'ring',r:9},
   9:{k:'arc',w:1,reach:3.2},
-  10:{k:'mark'},
+  10:{k:'ring',r:4.2},
   11:{k:'mark'},
-  12:{k:'patch',r:1.35},
+  12:{k:'ring',r:.4,col:'#8a8f9c'},
   13:{k:'patch',r:1.9},
-  14:{k:'mark'}
+  14:{k:'ring',r:3.2,col:'#d98cff'}
 },founder:{
   0:{k:'orbit'},
   1:{k:'patch',r:3,tel:1},

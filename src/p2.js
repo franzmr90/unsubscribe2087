@@ -833,8 +833,8 @@ const SKF={
  hacker:{
   0:(L,m)=>{if(P.oc>0){m*=1.3;P.oc=0;float(P.x,P.y,'Primed','#59e0e6',0)}P.ward=FORMULAS.brace.ward.sec;if(!chain(P,3+Math.floor(L/2),(1.2+.18*L)*m))W.fx.push({k:'bolt',x:P.x,y:P.y,x2:P.x+P.dir.x*3,y2:P.y+P.dir.y*3,t:0,life:.2})},
   1:(L,m)=>{P.oc=3;shoot(P.dir,(1.4+.2*L)*m,99,{spd:15,big:1})},
-  3:(L,m)=>burst(P.x,P.y,3.4,(.9+.2*L)*m,1.5+.2*L,'#59e0e6'),
-  4:(L,m)=>{const s=castSpot(2.5);W.allies.push({k:'turret',x:s?s.x:P.x+P.dir.x*.8,y:s?s.y:P.y+P.dir.y*.8,life:10+2*L,m:(.5+.08*L)*m,cd:0})},
+  3:(L,m)=>burst(P.x,P.y,3.4,(.9+.2*L)*m,1.5+.2*L,skvOf(G.cls,3).col),
+  4:(L,m)=>{const s=castSpot(2.5);const tx=s?s.x:P.x+P.dir.x*.8,ty=s?s.y:P.y+P.dir.y*.8;W.allies.push({k:'turret',x:tx,y:ty,life:10+2*L,m:(.5+.08*L)*m,cd:0});fxAim('patch',tx,ty,.8)},
   6:(L,m)=>{const s=castSpot(7),t=s?null:nearest(7),x=s?s.x:t?t.x:P.x+P.dir.x*4,y=s?s.y:t?t.y:P.y+P.dir.y*4;fxAim('ring',x,y,3.5);W.allies.push({k:'storm',x,y,life:4,m:(.7+.12*L)*m,cd:0})},
   7:(L,m)=>{for(let i=0;i<3;i++)W.allies.push({k:'minion',x:P.x+rnd(-.6,.6),y:P.y+rnd(-.6,.6),r:.2,life:15+L,m:(.4+.07*L)*m,cd:0,ph:rnd(0,6)})},
   9:(L,m)=>{const s=castSpot(4.5);const dx=s?s.x-P.x:P.dir.x,dy=s?s.y-P.y:P.dir.y;const pts=faultPts(dx,dy,s?Math.hypot(dx,dy):4.5);if(!pts.length){toast('No floor for the fault');return}P.castWait=.45;const mid=pts[pts.length>>1];W.allies.push({k:'fault',x:mid.x,y:mid.y,pts,life:3.2+.15*L,pulse:0,m:(.4+.06*L)*m,r:.75,dt:'heat'})},
@@ -844,12 +844,12 @@ const SKF={
  courier:{
   0:(L,m)=>{const n=3+Math.floor(L/2)+(S.sp.pod?2:0),a0=Math.atan2(P.dir.y,P.dir.x);for(let i=0;i<n;i++){const a=a0+(i-(n-1)/2)*.16;shoot({x:Math.cos(a),y:Math.sin(a)},(.9+.1*L)*m,S.sp.deadletter||Math.random()*100<S.pierce?99:0)}for(const e of W.ents.slice())if(dist(e,P)<2+e.r)hit(e,(.5+.06*L)*m)},
   1:(L,m)=>{const s=castSpot(5.3);let t=.24;if(s){const d=Math.hypot(s.x-P.x,s.y-P.y);t=Math.max(.05,Math.min(.24,d/22))}dash(22,t,0,null,skvOf(G.cls,1).col);P.haste=2+.3*L},
-  3:(L,m)=>{const s=castSpot(6);W.allies.push({k:'decoy',x:s?s.x:P.x,y:s?s.y:P.y,life:3,m:(2.5+.4*L)*m})},
-  4:(L,m)=>{const s=castSpot(6);W.allies.push({k:'trops',x:s?s.x:P.x,y:s?s.y:P.y,life:6,m:(.25+.05*L)*m,cd:0})},
+  3:(L,m)=>{const s=castSpot(6);W.allies.push({k:'decoy',x:s?s.x:P.x,y:s?s.y:P.y,life:3,m:(2.5+.4*L)*m});fxAim('patch',s?s.x:P.x,s?s.y:P.y,2.6)},
+  4:(L,m)=>{const s=castSpot(6);W.allies.push({k:'trops',x:s?s.x:P.x,y:s?s.y:P.y,life:6,m:(.25+.05*L)*m,cd:0});fxAim('patch',s?s.x:P.x,s?s.y:P.y,2.6)},
   6:(L,m)=>{P.volley={t:1.5,cd:0,m:(.5+.07*L)*m}},
   7:(L,m)=>{const t=nearest(7);if(!t){toast('No target in reach');return}face(t);hit(t,(3+.5*L)*m);t.mark=8},
   9:(L,m)=>shoot(P.dir,(1.1+.16*L)*m,99,{ret:1,life:.5,col:'#3fbf8f'}),
-  11:()=>{if(!P.lastThrow){toast('You have not thrown anything');return}for(const a of W.allies)if(a.k==='drop')a.life=0;const s=castSpot(4.5);let x,y;if(s){x=s.x;y=s.y}else{x=P.x-P.dir.x*.6;y=P.y-P.dir.y*.6;if(!free(x,y,.2)){x=P.x;y=P.y}}const t=P.lastThrow;W.allies.push({k:'drop',x,y,life:6,leash:4.5,r:.25});shoot({x:t.dx,y:t.dy},t.m,t.pierce,{from:{x,y},throw:1,dt:t.dt,col:t.col,life:t.life,spd:t.spd,ret:t.ret,split:t.split,lance:t.lance});float(x,y,'Second drop','#3fbf8f',0)},
+  11:()=>{if(!P.lastThrow){toast('You have not thrown anything');return}for(const a of W.allies)if(a.k==='drop')a.life=0;const s=castSpot(4.5);let x,y;if(s){x=s.x;y=s.y}else{x=P.x-P.dir.x*.6;y=P.y-P.dir.y*.6;if(!free(x,y,.2)){x=P.x;y=P.y}}const t=P.lastThrow;W.allies.push({k:'drop',x,y,life:6,leash:4.5,r:.25});shoot({x:t.dx,y:t.dy},t.m,t.pierce,{from:{x,y},throw:1,dt:t.dt,col:t.col,life:t.life,spd:t.spd,ret:t.ret,split:t.split,lance:t.lance});float(x,y,'Second drop','#3fbf8f',0);fxAim('patch',s?s.x:P.x,s?s.y:P.y,1.8)},
   12:(L,m)=>shoot(P.dir,(1+.14*L)*m,99,{split:1,lance:1,col:'#e6e2d6'}),
   14:(L)=>{const t=nearest(8);if(!t){toast('No machine to mark');return}face(t);for(const e of W.ents)e.mc=0;t.mc=4+.25*L;fxAim('mark',t.x,t.y);float(t.x,t.y,'Marked','#3fbf8f',0)}}
 };
@@ -880,9 +880,9 @@ Object.assign(SKF,{
   11:(L,m)=>{if(!P.aura){toast('No aura is on');return}const i=P.aura.i;if(i===3)P.cite={n:6,cd:0,gap:.14,m:(.35+.04*L)*m};else if(i===4)P.cite={n:3,cd:0,gap:.55,m:(.9+.12*L)*m};else P.cite={n:6,cd:0,gap:.5,m:(.22+.04*L)*m}},
   13:()=>{P.dip=1}},
  anon:{
-  0:(L,m)=>{const s=castSpot(6);W.allies.push({k:'decoy',x:s?s.x:P.x,y:s?s.y:P.y,life:3,m:(2.2+.35*L)*m,stun:.8})},
+  0:(L,m)=>{const s=castSpot(6);W.allies.push({k:'decoy',x:s?s.x:P.x,y:s?s.y:P.y,life:3,m:(2.2+.35*L)*m,stun:.8});fxAim('patch',s?s.x:P.x,s?s.y:P.y,2.6)},
   1:(L,m)=>{const s=castSpot(8);const ox=P.x,oy=P.y;parts(P.x,P.y,10,['#3f3f4c','#e6e2d6'],2);if(P.moveLand&&s){const end=blinkEnd(s.x,s.y);if(end&&Math.hypot(end.x-P.x,end.y-P.y)>=.2){P.x=end.x;P.y=end.y;P.dir={x:end.ux,y:end.uy};P.inv=Math.max(P.inv,.25)}}else{let t=null;if(s){let bd=1.5;for(const e of W.ents){if(!(e.hp>0))continue;const d=Math.hypot(e.x-s.x,e.y-s.y);if(d<bd){bd=d;t=e}}}else t=nearest(8);if(t){const d=dist(t,P)||1,nx=t.x+(t.x-P.x)/d*.9,ny=t.y+(t.y-P.y)/d*.9;if(free(nx,ny,P.r)){P.x=nx;P.y=ny}else{P.x=t.x-(t.x-P.x)/d*.8;P.y=t.y-(t.y-P.y)/d*.8}face(t);P.inv=Math.max(P.inv,.4);P.ambM=Math.max(1,S.critM);P.ambT=.05;hit(t,(1.6+.25*L)*m);P.swing=.18}else for(let i=0;i<8;i++){if(free(P.x+P.dir.x*.5,P.y+P.dir.y*.5,P.r)){P.x+=P.dir.x*.5;P.y+=P.dir.y*.5}}}if(ox!==P.x||oy!==P.y)fxTrail(ox,oy,P.x,P.y,skvOf(G.cls,1).col,.45)},
-  3:(L,m)=>{const ms=W.allies.filter(a=>a.k==='mine');if(ms.length>=4)W.allies.splice(W.allies.indexOf(ms[0]),1);const fast=P.stealth>0&&sl(11)&&!boonOn(11);const s=castSpot(5);W.allies.push({k:'mine',x:s?s.x:P.x,y:s?s.y:P.y,life:12,arm:fast?0.22:0.6,m:(3+.5*L)*m,r:2.4})},
+  3:(L,m)=>{const ms=W.allies.filter(a=>a.k==='mine');if(ms.length>=4)W.allies.splice(W.allies.indexOf(ms[0]),1);const fast=P.stealth>0&&sl(11)&&!boonOn(11);const s=castSpot(5);W.allies.push({k:'mine',x:s?s.x:P.x,y:s?s.y:P.y,life:12,arm:fast?0.22:0.6,m:(3+.5*L)*m,r:2.4});fxAim('patch',s?s.x:P.x,s?s.y:P.y,2.4)},
   4:(L,m)=>{P.stealth=3+.3*L;P.haste=P.stealth;parts(P.x,P.y,14,['#3f3f4c','#888'],2)},
   5:(L,m)=>{const s=castSpot(8);let t=null,c=s;if(!s){t=nearest(8);if(!t){toast('No target in reach');return}c={x:t.x,y:t.y}}else{let bd=3;for(const e of W.ents){if(!(e.hp>0))continue;const d=Math.hypot(e.x-s.x,e.y-s.y);if(d<bd){bd=d;t=e}}}if(t)face(t);fxAim('patch',c.x,c.y,3);if(t)hit(t,(1+.2*L)*m);for(const e of W.ents)if(dist(e,c)<3)e.mark=8+L},
   6:(L,m)=>{const s=castSpot(7),t=s?null:nearest(7),c=s||(t?{x:t.x,y:t.y}:{x:P.x+P.dir.x*4,y:P.y+P.dir.y*4});fxAim('ring',c.x,c.y,2.2);burst(c.x,c.y,2.2,(1.4+.2*L)*m,0,'#ff9a3c');for(let i=0;i<5;i++)W.allies.push({k:'blast',x:c.x+rnd(-2.6,2.6),y:c.y+rnd(-2.6,2.6),life:.2+i*.15,m:(1.2+.2*L)*m,r:1.7})},
