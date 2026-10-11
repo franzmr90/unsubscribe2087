@@ -542,7 +542,7 @@ function itemArtFor(it){if(!it)return '';
   const slot=it.charm?'charm':it.stim?'stim':(ITART[it.slot]?it.slot:'charm');
   const uniq=it.q>=4&&it.name;
   return itemArt(slot,uniq?('u:'+it.name):('b:'+(it.base||it.name||slot)),it.q|0,it.id!==false,itemArch(it))}
-function itemImg(it){const u=itemArtFor(it);return u?'<img class="ic" src="'+u+'" alt="">':''}
+function itemImg(it,cls){const u=itemArtFor(it);return u?'<img class="'+(cls||'ic')+'" src="'+u+'" alt="">':''}
 /* The loading screen. This character's sheets bake behind it, so no shape
    stops to draw itself in the middle of a fight. It holds for a beat even when
    the bake is quick, because a bar that flashes past reads as a glitch. */
