@@ -71,6 +71,15 @@ for(const cls of classes){
         live[q].name='';live[q].champ=0}
       for(let q=3;q<live.length;q++){live[q].x=P.x+900;live[q].y=P.y+900}
       G.sk[sk.i]=5;G.slots[0]=sk.i;
+      /* The Witness pays for nearly everything out of the Record, and starts
+         empty, so most of its casts bailed with "the page is blank" and the
+         sheet showed nothing. Fill the page and put Testimony on the staged
+         machines so the skills actually fire. */
+      if(cls==='witness'){
+        try{__g.recSet(100)}catch(e){}
+        for(let q=0;q<Math.min(3,live.length);q++){
+          live[q].tes=4;live[q].watch=3;live[q].acc=1}
+      }
       await sleep(120);
       // only what THIS cast makes: the player carries ambient marks (a shrine
       // buff, a status) that would otherwise be credited to every skill

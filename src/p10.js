@@ -376,19 +376,19 @@ const SKV={scrapper:{
   14:{k:'ring',r:5}
 },maxi:{
   0:{k:'arc',w:1,reach:2.6},
-  1:{k:'bolt',r:2.2,at:'foe',n:1},
+  1:{k:'arc',w:1.2,reach:2.6},
   2:{k:'mark'},
   3:{k:'patch',r:2.2},
-  4:{k:'patch',r:3.6},
+  4:{k:'patch',r:3.6,col:'#e2443c'},
   5:{k:'trail',r:3.4},
-  6:{k:'orbit',n:3},
-  7:{k:'patch',r:3.3},
+  6:{k:'orbit',n:5},
+  7:{k:'patch',r:3.3,col:'#59e0e6'},
   8:{k:'mark'},
   9:{k:'patch',r:4.2,tel:1},
   10:{k:'mark'},
   11:{k:'orbit',n:3},
   12:{k:'mark'},
-  13:{k:'ring',r:.9},
+  13:{k:'ring',r:.9,col:'#f7931a'},
   14:{k:'mark'}
 },homesteader:{
   0:{k:'patch',r:2.2},
@@ -408,25 +408,30 @@ const SKV={scrapper:{
   14:{k:'mark'}
 },witness:{
   0:{k:'mark',at:'foe',n:0,col:'#e6dcc8'},
-  1:{k:'mark',at:'foe'},
+  1:{k:'mark',at:'foe',n:0},
   2:{k:'mark'},
   3:{k:'mark',at:'foe',n:0,col:'#e6dcc8'},
-  4:{k:'bolt',r:2.2,at:'foe',n:1},
+  4:{k:'bolt',r:2.2,at:'foe',n:1,col:'#e6dcc8'},
   5:{k:'mark'},
-  6:{k:'mark'},
+  6:{k:'mark',n:0},
   7:{k:'patch',r:1.4},
   8:{k:'mark'},
   9:{k:'mark',at:'foe',n:0,col:'#8d9aab'},
-  10:{k:'mark'},
+  10:{k:'mark',n:0,col:'#f7931a'},
   11:{k:'mark'},
-  12:{k:'mark',col:'#e6dcc8'},
+  12:{k:'mark',n:0,col:'#e6dcc8'},
   13:{k:'mark'},
   14:{k:'mark'}
 }};
 function skvOf(cls,i){const row=(SKV[cls]||{})[i];if(!row)return null;const sk=CLS[cls]&&CLS[cls].sk[i];let col=row.col;
   if(!col&&sk&&sk.a){const ty=skType(cls,i);if(DTY[ty])col=DTY[ty].c}if(!col)col=(CLS[cls]&&CLS[cls].col)||'#e6e2d6';
   return {k:row.k,col:col,r:row.r||1.2,w:row.w||1,n:row.n!=null?row.n:(row.k==='orbit'?3:1),life:row.life||SKV_LIFE[row.k]||.4,at:row.at||'',tel:row.tel?1:0,reach:row.reach||0}}
-function skvPlay(cls,i,x,y,dir,remote){const v=skvOf(cls,i);if(!v||!W||!W.fx)return;const dx=(dir&&dir.x)||1,dy=(dir&&dir.y)||0;
+function skvPlay(cls,i,x,y,dir,remote){const v=skvOf(cls,i);if(!v||!W||!W.fx)return;
+  /* The three Maximalist auras scale their reach with rank, so a fixed patch
+     here states a radius that is only right at one level. drawAura paints the
+     true field every frame; the row stays for the button glyph. */
+  if(cls==='maxi'&&(i===3||i===4||i===7))return;
+const dx=(dir&&dir.x)||1,dy=(dir&&dir.y)||0;
   let px=x,py=y,x2=x+dx*(v.r||3),y2=y+dy*(v.r||3);
   if(v.at==='back'){x2=x-dx*(v.r||3);y2=y-dy*(v.r||3)}
   if(v.at==='foe'&&!remote){const t=nearest(8);if(t){x2=t.x;y2=t.y;if(v.k==='mark'||v.k==='patch'||v.k==='ring'||v.k==='strike'){px=t.x;py=t.y}}}

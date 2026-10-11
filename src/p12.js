@@ -38,7 +38,7 @@ function maxiSet(i, L) {
   if (P.aura && P.aura.i === i) { P.aura = null; sfx('ui'); return; }
   P.aura = { i, L, t: 0 };
   sfx('buff');
-  W.fx.push({ k: 'ring', x: P.x, y: P.y, r: 3.2, t: 0, life: .45, col: '#f7931a' });
+  W.fx.push({ k: 'ring', x: P.x, y: P.y, r: auraVisR(i, L), t: 0, life: .45, col: auraCol(i) });
 }
 
 /* One aura per Maximalist. A second Maximalist's different aura is a second holder.
