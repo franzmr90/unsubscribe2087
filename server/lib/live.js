@@ -46,10 +46,14 @@ const TOWNS = new Set([0, 17, 18, 21, 27]);
 const SIM_ZONE = 6;
 /* Three difficulties, chosen when the game is made and fixed for its life, the way
    Diablo II's were. Harder monsters, and more experience for beating them. */
+/* The three the game itself names, in the order the create panel shows them. The
+   multipliers live in the page's own DIFFS table and are applied there, once, from
+   the difficulty the game hands the player on join. The server keeps the names and
+   the index so the lobby can print them and the page can bind to them. */
 const DIFFS = {
-  normal:    { n: 'Normal',    hp: 1,   dmg: 1,   xp: 1   },
-  nightmare: { n: 'Nightmare', hp: 2.5, dmg: 1.6, xp: 1.8 },
-  hell:      { n: 'Hell',      hp: 5,   dmg: 2.4, xp: 2.8 }
+  normal: { n: 'Normal', i: 0 },
+  hard:   { n: 'Hard',   i: 1 },
+  brutal: { n: 'Brutal', i: 2 }
 };
 
 const live = new Map();            /* uid -> player */
@@ -136,7 +140,7 @@ function gamePlayers(g) { return g ? [...g.players].map(u => live.get(u)).filter
 function gameInfo(g) {
   return {
     id: g.id, name: g.name, n: g.players.size, max: MAX_GAME, locked: !!g.pass,
-    host: g.host, created: g.created, diff: g.diff, diffName: DIFFS[g.diff].n
+    host: g.host, created: g.created, diff: g.diff, diffName: (DIFFS[g.diff] || DIFFS.normal).n, di: (DIFFS[g.diff] || DIFFS.normal).i
   };
 }
 function lobby() {
@@ -352,12 +356,15 @@ function pushRoster(g) {
    4.5× the experience, so going in together is harder and pays more. */
 function gameScale(g) {
   const n = g ? g.players.size : 1;
-  const d = DIFFS[(g && g.diff) || 'normal'];
+  const key = (g && g.diff) || 'normal';
+  const d = DIFFS[key] || DIFFS.normal;
+  /* Player count only. The difficulty multiplier is the page's, applied there from the
+     difficulty this scale names, so it is counted once rather than once per system. */
   return {
-    players: n, diff: (g && g.diff) || 'normal', diffName: d.n,
-    hp: d.hp * (1 + .5 * (n - 1)),
-    dmg: d.dmg,
-    xp: d.xp * (1 + .5 * (n - 1))
+    players: n, diff: key, diffName: d.n, di: d.i,
+    hp: 1 + .5 * (n - 1),
+    dmg: 1,
+    xp: 1 + .5 * (n - 1)
   };
 }
 

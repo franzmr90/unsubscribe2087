@@ -104,6 +104,34 @@ function mpMapSpec(zi, o) {
   }
   return { seed: have.seed, key: have.key, roll: have.roll, tpl: have.tpl || null };
 }
+/* A game owns its difficulty, and a district owns its tier. Both used to be read off
+   whoever was looking: two people in one game, on different difficulties, generated
+   different monsters from the same seed and the mob sync -- keyed on tier -- quietly
+   matched nothing. Joining binds the character to the game instead.
+
+   This is not beginDifficulty. Nothing of the character's story is reset: quests, acts
+   and the gate are theirs and survive. Only the world is dropped, because it was built
+   at the old numbers. */
+function mpBindGame(g) {
+  if (!G || !g) return;
+  const d = mpDiffIndex(g.diff);
+  const tierWas = G.tier | 0;
+  if ((G.diff | 0) === d && !tierWas) return;
+  G.diff = d;
+  /* More is a solo ladder. In a shared district everyone must stand on the same rung,
+     and the server has no notion of one, so the rung is the ground. */
+  G.tier = 0;
+  if (typeof resetZones === 'function') resetZones();
+  /* Re-enter where they stand so the district is rebuilt at the game's numbers. W is
+     left alone: in a game enter() waits on the server for the seed and returns without
+     building anything, so dropping the world first leaves the renderer with nothing. */
+  if (typeof W !== 'undefined' && W && typeof enter === 'function' && mode === 'play') enter(W.zi, { fresh: 1 });
+  const bits = [];
+  bits.push('This game is ' + ((DIFFS[d] && DIFFS[d].n) || 'Normal') + '.');
+  if (tierWas) bits.push('More is off while you are in it.');
+  toast(bits.join(' '));
+}
+
 function mpWaveSeed(n) {
   const s = MP.sim && MP.sim.seed;
   if (!s) return null;
@@ -118,6 +146,15 @@ function mpWaveSeed(n) {
 const mpHp = () => (mpIn() && MP.scale ? MP.scale.hp : 1);
 const mpDmg = () => (mpIn() && MP.scale ? MP.scale.dmg : 1);
 const mpXp = () => (mpIn() && MP.scale ? MP.scale.xp : 1);
+/* normal/hard/brutal <-> 0/1/2. The server names the game's difficulty; the page owns
+   what the name costs you, so everything is multiplied once. */
+const MPDIFFK = ['normal', 'hard', 'brutal'];
+function mpDiffIndex(k) {
+  const d = MP.diffs && MP.diffs[k];
+  if (d && d.i != null) return Math.max(0, Math.min(2, d.i | 0));
+  const i = MPDIFFK.indexOf(k);
+  return i < 0 ? 0 : i;
+}
 /* Hostility, from the only place that knows it for certain. MP.hostile remembers the
    declarations this browser watched arrive, but it is empty after a reconnect and for
    anyone who joined after the fact, while the server keeps the flags and ships them on
@@ -224,6 +261,7 @@ function mpRecv(m) {
     MP.game = m.game; MP.scale = m.scale || null;
     MP.view = m.game ? 'game' : 'lobby';
     if (m.maps) mpStoreMaps(m.maps);
+    if (m.game) mpBindGame(m.game);
     if (!m.game) {
       MP.resume = null; MP.gamePass = '';
       MP.maps = {};
@@ -1049,7 +1087,7 @@ function mpLobbyPanel() {
     for (const g of MP.lobby) {
       const full = g.n >= g.max;
       h += '<button class="li' + (full ? '' : '') + '" ' + (full ? '' : 'data-mpj="' + g.id + '"') + (full ? ' disabled' : '') + '>' +
-        '<i style="background:' + (g.diff === 'hell' ? '#e2443c' : g.diff === 'nightmare' ? '#d98c3c' : '#7be495') + '"></i>' +
+        '<i style="background:' + (g.diff === 'brutal' ? '#e2443c' : g.diff === 'hard' ? '#d98c3c' : '#7be495') + '"></i>' +
         '<div><b>' + esc(g.name) + (g.locked ? ' \u00b7 locked' : '') + '</b>' +
         '<span>' + esc(g.diffName) + ' \u00b7 ' + g.n + ' of ' + g.max + (full ? ' \u00b7 full' : '') + '</span></div>' +
         '<span class="pr">' + (full ? '' : 'Join') + '</span></button>';
@@ -1060,16 +1098,19 @@ function mpLobbyPanel() {
   h += '<h3>Start one</h3>';
   h += '<div class="row"><input id="mpName" maxlength="40" value="' + esc(MP.mkName) + '" placeholder="A name for your game" style="flex:1;background:#0a0912;border:1px solid #3a3350;color:#e8e2d4;border-radius:6px;padding:10px;font:15px Georgia,serif"></div>';
   h += '<div class="row">';
-  for (const k of ['normal', 'nightmare', 'hell']) {
-    const d = MP.diffs && MP.diffs[k];
-    h += '<button class="ghost' + (MP.mkDiff === k ? ' on' : '') + '" data-mpd="' + k + '">' + (d ? esc(d.n) : k) + '</button>';
+  for (const k of ['normal', 'hard', 'brutal']) {
+    const d = MP.diffs && MP.diffs[k], i = mpDiffIndex(k);
+    /* The same gate the title's create panel uses. A game you could not start alone is
+       not one you can start by going through the lobby. */
+    const open = typeof diffUnlocked !== 'function' || diffUnlocked(i);
+    h += '<button class="ghost' + (MP.mkDiff === k ? ' on' : '') + '" data-mpd="' + k + '"' + (open ? '' : ' disabled') + '>' + (d ? esc(d.n) : k) + '</button>';
   }
   h += '</div>';
-  const d = MP.diffs && MP.diffs[MP.mkDiff];
-  if (d) h += '<p style="font-size:13px">' + (MP.mkDiff === 'normal'
+  const di = mpDiffIndex(MP.mkDiff), D = DIFFS[di];
+  if (D) h += '<p style="font-size:13px">' + (di === 0
       ? 'Monsters as the game was written. Start here.'
-      : 'Monsters with ' + d.hp + '\u00d7 the health and ' + d.dmg + '\u00d7 the bite, worth ' + d.xp + '\u00d7 the experience.') +
-    ' Every extra person in the game adds half again to monster health and to what they are worth, so eight people face monsters four and a half times tougher than one person does \u2014 and are paid for it.</p>';
+      : 'Monsters with ' + D.hp + '\u00d7 the health and ' + D.dmg + '\u00d7 the bite, worth ' + D.xp + '\u00d7 the experience.') +
+    ' The game keeps this difficulty for as long as it lasts, and everyone who joins plays it. Every extra person in the game adds half again to monster health and to what they are worth, so eight people face monsters four and a half times tougher than one person does \u2014 and are paid for it.</p>';
   h += '<div class="row"><input id="mpPass" maxlength="40" placeholder="Password (optional)" style="flex:1;background:#0a0912;border:1px solid #3a3350;color:#e8e2d4;border-radius:6px;padding:10px;font:15px Georgia,serif"></div>';
   h += '<div class="row"><button class="big" data-mpk="1">Make the game</button></div>';
   return h;

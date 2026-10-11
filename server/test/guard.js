@@ -59,7 +59,7 @@ ok('quest flags are the real ones, and only move forward', guard.questStep({}, '
   const A = reg('Ada'), B = reg('Bea');
   const sess = auth.readSession(decodeURIComponent(A.cookie.split('=')[1]));
   const a = await client(A.cookie), b = await client(B.cookie);
-  a.send({ t: 'game.create', name: 'Cap', diff: 'hell' });
+  a.send({ t: 'game.create', name: 'Cap', diff: 'brutal' });
   ok('the game was created', await until(() => a.last.game && a.last.game.game && a.last.game.game.id, 1500), JSON.stringify(a.last.game));
   b.send({ t: 'game.join', id: a.last.game.game.id });
   ok('the second player joined', await until(() => b.last.game && b.last.game.game && b.last.game.game.id === a.last.game.game.id, 1500));

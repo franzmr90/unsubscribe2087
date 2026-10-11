@@ -441,7 +441,16 @@ function spawn(k,x,y,o){
   const e={k,x,y,r:t.r*(ch?1.2:1),hp,max:hp,dmg:t.dmg*L[1]*(ch?1.3:1)*(isBoss(k)?1.35:1)*dy.dmg,ward:0,spd:t.spd,cd:rnd(0,1),wind:0,stun:0,slow:0,mark:0,flash:0,aggro:false,champ:ch,su,sz:su?1.4:ch?1.22:1,ph:rnd(0,6),mods:{},b1:3,b2:6,b3:0,arcCd:0,healCd:rnd(2,5),name:t.n,minion:o.minion?1:0};
   if(!isBoss(k)&&W.z.lvl)e.name=(ZADJ[W.zi]?ZADJ[W.zi]+' ':'')+t.n;
   if(su){e.name=o.su.n;e.q=o.su.q;for(const m of o.su.mods)e.mods[m]=1}
-  else if(ch){e.name=pick(CN1)+pick(CN2)+' '+pick(CN3);const ks=Object.keys(MODS).sort(()=>Math.random()-.5);e.mods[ks[0]]=1;if(G.tier>0||ml>=9)e.mods[ks[1]]=1}
+  else if(ch){e.name=pick(CN1)+pick(CN2)+' '+pick(CN3);
+    /* A shared map is generated from one seed on every browser at once, so this line has
+       to draw the same number of times wherever it runs. sort() with a random comparator
+       does not: the call count is the engine's own business, and Chrome and Safari part
+       company at the first champion, taking the rest of the district with them. A
+       Fisher-Yates pass is exactly ks.length-1 draws on every engine there is.
+       The second mod reads the world's tier, not the player's: in a shared district the
+       monster belongs to the map, not to whoever is looking at it. */
+    const ks=Object.keys(MODS);for(let i=ks.length-1;i>0;i--){const j=(Math.random()*(i+1))|0,t=ks[i];ks[i]=ks[j];ks[j]=t}
+    e.mods[ks[0]]=1;if((W.tier|0)>0||ml>=9)e.mods[ks[1]]=1}
   if(e.mods.fast)e.spd*=1.5;if(e.mods.strong)e.dmg*=1.6;
   if(o.minion&&W.boss&&(W.boss.k==='boss3'||W.boss.k==='boss4'||W.boss.k==='boss5')){e.dmg*=.55;e.hp*=.75;e.max=e.hp}
   if(defragAct1(e)){e.dty='impact';e.dmg*=.7}

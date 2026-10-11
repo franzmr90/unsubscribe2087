@@ -204,7 +204,7 @@ function disableNetem() {
     for (let g = 0; g < games; g++) {
       const group = bots.slice(g * PER, g * PER + PER);
       if (!group.length) break;
-      group[0].send({ t: 'game.create', name: 'Soak ' + g, diff: g % 2 ? 'nightmare' : 'normal' });
+      group[0].send({ t: 'game.create', name: 'Soak ' + g, diff: g % 2 ? 'hard' : 'normal' });
     }
     const joinBudget = appDelay ? 5000 : 2000;
     const joinDeadline = Date.now() + joinBudget;

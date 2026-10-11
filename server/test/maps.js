@@ -119,7 +119,7 @@ const same = (a, b) => a && b && a.floor === b.floor && a.start === b.start && a
   const B = await player('Wren');
   await until(A, () => __mp.on ? 1 : 0);
   await until(B, () => __mp.on ? 1 : 0);
-  await A.evaluate(() => __mp.send('game.create', { name: 'Shared', diff: 'nightmare' }));
+  await A.evaluate(() => __mp.send('game.create', { name: 'Shared', diff: 'hard' }));
   const made = await until(A, () => __mp.MP.game && __mp.MP.game.id);
   ok('the browser game exists', !!made);
   await B.evaluate(id => __mp.send('game.join', { id }), made);
@@ -149,6 +149,41 @@ const same = (a, b) => a && b && a.floor === b.floor && a.start === b.start && a
   ok('leaving the game is allowed', !!(await until(A, () => __mp.MP.game ? 0 : 1)));
   const home = await draw(A, 1);
   ok('a district after the game is that character\'s own', !!(home && !home.shared && home.ents !== g1.ents), home && home.shared);
+
+  /* The reported bug: two people in one game, on different difficulties, drew different
+     monsters from the same seed, and the mob sync -- keyed on tier -- matched nothing.
+     Joining binds both to the game, so the districts and the monsters in them agree. */
+  await B.evaluate(() => __mp.send('game.leave'));
+  await until(B, () => __mp.MP.game ? 0 : 1);
+  await A.evaluate(() => { __g.G.diffGate = 2; __g.G.maxTier = 2; __g.G.diff = 0; __g.G.tier = 0; });
+  await B.evaluate(() => { __g.G.diffGate = 2; __g.G.maxTier = 2; __g.G.diff = 2; __g.G.tier = 2; });
+  const be = {
+    a: await A.evaluate(() => ({ diff: __g.G.diff | 0, tier: __g.G.tier | 0 })),
+    b: await B.evaluate(() => ({ diff: __g.G.diff | 0, tier: __g.G.tier | 0 }))
+  };
+  ok('they really were on different difficulties', be.a.diff === 0 && be.b.diff === 2 && be.b.tier === 2, JSON.stringify(be));
+
+  await A.evaluate(() => __mp.send('game.create', { name: 'Split', diff: 'hard' }));
+  const sid = await until(A, () => __mp.MP.game && __mp.MP.game.id);
+  await B.evaluate(i => __mp.send('game.join', { id: i }), sid);
+  await until(B, () => __mp.MP.game ? 1 : 0);
+  await wait(500);
+  const af = {
+    a: await A.evaluate(() => ({ diff: __g.G.diff | 0, tier: __g.G.tier | 0 })),
+    b: await B.evaluate(() => ({ diff: __g.G.diff | 0, tier: __g.G.tier | 0 }))
+  };
+  ok('joining binds both to the game\'s difficulty', af.a.diff === 1 && af.b.diff === 1, JSON.stringify(af));
+  ok('and puts the More ladder away', af.a.tier === 0 && af.b.tier === 0, JSON.stringify(af));
+
+  const m1 = await draw(A, 3), m2 = await draw(B, 3);
+  ok('they now draw the same district', same(m1, m2), JSON.stringify({ a: m1 && m1.seed, b: m2 && m2.seed }));
+  /* Not just the layout: what the monsters actually are. */
+  const stat = pg => pg.evaluate(() => __g.W.ents.filter(e => !e.mp)
+    .map(e => e.k + ':' + Math.round(e.max) + ':' + Math.round(e.dmg) + ':' + Object.keys(e.mods || {}).sort().join('+'))
+    .sort().join('|'));
+  const s1 = await stat(A), s2 = await stat(B);
+  ok('and the same monsters, life and bite and mods alike', !!s1 && s1 === s2,
+    JSON.stringify({ a: (s1 || '').slice(0, 90), b: (s2 || '').slice(0, 90) }));
 
   ok('no page errors', errs.length === 0, errs.slice(0, 3).join(' | '));
 

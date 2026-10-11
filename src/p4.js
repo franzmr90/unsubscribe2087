@@ -1554,7 +1554,11 @@ const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.ta
   if(d.vbag!==undefined){if(vendDragged||vendLockFired){vendDragged=false;vendLockFired=false;return}sel={vbag:+d.vbag}}
   if(d.vback!==undefined)sel={vback:+d.vback};
   if(d.go){if(mpPortalBlocked())return;if(actBriefHold(+d.go)){actBriefDeny();return}closeSheet();enter(+d.go);return}
-  if(d.tier){G.tier=clamp(G.tier+ +d.tier,0,G.maxTier);resetZones()}
+  /* More raises the monster level of your own districts. In a shared game everyone has
+     to stand on the same rung, and the game does not carry one, so the rung is the
+     ground and the ladder is put away until you leave. */
+  if(d.tier){if(typeof mpIn==='function'&&mpIn()){toast('More is for your own game. Leave this one first.');sfx('err')}
+    else{G.tier=clamp(G.tier+ +d.tier,0,G.maxTier);resetZones()}}
   drawSheet()};
 $('sheet').addEventListener('click',ev=>{if(webPanMoved){webPanMoved=0;if(ev.target.closest&&ev.target.closest('#webStage'))return}sheetClick(ev)});
 

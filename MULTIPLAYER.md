@@ -31,13 +31,21 @@ by the number of people on the server.
 
 ### Difficulty
 
-Chosen when the game is made and fixed for its life, as Diablo II's were.
+Chosen when the game is made and fixed for its life, as Diablo II's were. The three are
+the same three the title screen offers, with the same numbers, because they are the same
+table: `DIFFS` in `src/p6.js`.
 
 | | Monster health | Monster damage | Experience |
 |---|---|---|---|
-| **Normal** | 1× | 1× | 1× |
-| **Nightmare** | 2.5× | 1.6× | 1.8× |
-| **Hell** | 5× | 2.4× | 2.8× |
+| **Normal** | 1.25× | 1.3× | 1× |
+| **Hard** | 1.8× | 1.75× | 1.2× |
+| **Brutal** | 2.6× | 2.4× | 1.45× |
+
+**Joining a game binds your character to its difficulty**, and puts the More ladder away
+until you leave. Both used to be read off whoever was looking, so two people in one game
+on different difficulties generated different monsters from the same seed — and the
+monster sync, keyed on tier, quietly matched nothing. The server names the difficulty and
+its index; the page owns what the name costs, and applies it once.
 
 On top of that, **every extra person in the game adds half again** to monster health and to
 what monsters are worth — so eight people face monsters four and a half times tougher than

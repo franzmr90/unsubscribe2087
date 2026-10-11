@@ -74,20 +74,23 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   /* ---- the lobby arrives before you are in anything ---- */
   const lob = await A.wait('lobby');
   ok('you land in the lobby', !!lob && Array.isArray(lob.games), JSON.stringify(lob && Object.keys(lob)));
-  ok('the lobby names the difficulties', !!(lob && lob.diffs && lob.diffs.hell), JSON.stringify(lob && lob.diffs && Object.keys(lob.diffs)));
+  ok('the lobby names the difficulties', !!(lob && lob.diffs && lob.diffs.normal && lob.diffs.hard && lob.diffs.brutal), JSON.stringify(lob && lob.diffs && Object.keys(lob.diffs)));
   ok('the lobby starts empty', lob.games.length === 0);
 
   /* ---- anyone can make one, with a name and a difficulty ---- */
   B.forget('lobby');          /* drop the empty one B got on connecting */
-  A.send({ t: 'game.create', name: 'The Marrow', diff: 'hell' });
+  A.send({ t: 'game.create', name: 'The Marrow', diff: 'brutal' });
   const g = await A.wait('game');
   ok('making a game puts you in it', !!(g && g.game && g.game.name === 'The Marrow'), JSON.stringify(g && g.game));
-  ok('the difficulty is kept', g.game.diff === 'hell' && g.game.diffName === 'Hell');
+  ok('the difficulty is kept', g.game.diff === 'brutal' && g.game.diffName === 'Brutal');
   ok('a game holds eight', g.game.max === 8);
 
   /* ---- difficulty and party size both bite ---- */
-  ok('hell makes monsters tougher', g.scale.hp === 5 && g.scale.dmg === 2.4, JSON.stringify(g.scale));
-  ok('and worth more', g.scale.xp === 2.8, JSON.stringify(g.scale));
+  /* The multiplier for the difficulty itself belongs to the page, so that it is applied
+     once rather than once per system. The server names the difficulty and its index, and
+     scales by how many people are in the game. */
+  ok('the scale names the difficulty for the page to apply', g.scale.diff === 'brutal' && g.scale.di === 2, JSON.stringify(g.scale));
+  ok('and alone it scales by nobody', g.scale.hp === 1 && g.scale.dmg === 1 && g.scale.xp === 1, JSON.stringify(g.scale));
 
   const lob2 = await B.wait('lobby');
   ok('others see the open game', lob2.games.some(x => x.name === 'The Marrow'), JSON.stringify(lob2.games));
@@ -101,8 +104,8 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   await wait(400);
   const ros = await A.wait('roster');
   ok('the roster is the game', !!ros && ros.players.length === 2, JSON.stringify(ros && ros.players.length));
-  ok('a second player makes monsters tougher again', ros.scale.hp === 7.5, JSON.stringify(ros.scale));
-  ok('and worth more again', Math.abs(ros.scale.xp - 4.2) < 1e-9, JSON.stringify(ros.scale));
+  ok('a second player makes monsters tougher again', ros.scale.hp === 1.5, JSON.stringify(ros.scale));
+  ok('and worth more again', Math.abs(ros.scale.xp - 1.5) < 1e-9, JSON.stringify(ros.scale));
 
   /* ---- one pool, killer included. A member ten below the monster takes 5% of the
      level-weighted share (23), which was the full 450 before the curve. ---- */

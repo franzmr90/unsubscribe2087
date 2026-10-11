@@ -18,8 +18,11 @@ node server/test/admin.js
 node server/test/maps.js
 node server/test/plaus.js
 node deploy/dry-run.js
-node server/test/lan.js
 node server/test/mobs.js
 node server/test/coop.js
 node server/test/live.js
 node tools/soak.js --bots 20 --seconds 8 --check
+# Last on purpose: it needs a host with an RFC1918 address, so it cannot run in a cloud
+# container, and `set -e` used to let it abort everything after it -- which is how the
+# four browser suites above went unrun for a while.
+node server/test/lan.js

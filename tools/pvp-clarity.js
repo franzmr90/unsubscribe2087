@@ -43,7 +43,7 @@ const sheet=await p.evaluate(()=>{
   MP.on=true;
   MP.conn={readyState:1,send(){}};
   MP.me={uid:'a',name:'Ines'};
-  MP.game={name:'Yard',diffName:'Hell',n:2,max:8,diff:'hell'};
+  MP.game={name:'Yard',diffName:'Brutal',n:2,max:8,diff:'brutal',di:2};
   MP.scale={hp:5,dmg:2.4,xp:2.8,players:2};
   MP.roster=[
     {uid:'a',name:'Ines',lvl:9,cls:'scrapper',zi:1},
@@ -54,7 +54,7 @@ const sheet=await p.evaluate(()=>{
     {uid:'a',name:'Ines',lvl:9,cls:'scrapper',zi:1},
     {uid:'b',name:'Vale',lvl:9,cls:'hacker',zi:1}
   ]};
-  MP.diffs={normal:{n:'Normal',hp:1,dmg:1,xp:1},nightmare:{n:'Nightmare',hp:2.5,dmg:1.6,xp:1.8},hell:{n:'Hell',hp:5,dmg:2.4,xp:2.8}};
+  MP.diffs={normal:{n:'Normal',i:0},hard:{n:'Hard',i:1},brutal:{n:'Brutal',i:2}};
   __g.openSheet('party',{});
   return document.getElementById('sheetIn').innerText;
 });
