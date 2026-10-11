@@ -24,12 +24,19 @@ await p.evaluate(()=>__g.setMode('play'));await p.waitForTimeout(1800);await cle
 
 const cases=[['courier',3,'decoy'],['courier',4,'trops'],['courier',11,'drop'],
              ['anon',0,'decoy'],['anon',3,'mine'],
-             ['anon',5,'<none>'],['anon',6,'<none>']];   // the two that already aimed
+             ['homesteader',9,'plot'],['homesteader',0,'plot'],['homesteader',6,'hedge','dir'],
+             ['anon',5,'<none>'],['anon',6,'<none>']];   // the last two already aimed
 const res=await p.evaluate(async(cases)=>{
   const G=__g.G,P=__g.P,W=__g.W,out=[];
   const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-  for(const [cls,i,kind] of cases){
+  const baseP={};for(const k in P)if(typeof P[k]==='number')baseP[k]=P[k];
+  const allies0=(W.allies||[]).length;
+  for(const [cls,i,kind,mode] of cases){
     G.cls=cls;__g.calc();
+    for(const k in baseP)P[k]=baseP[k];
+    for(const k in P)if(typeof P[k]==='number'&&!(k in baseP))P[k]=0;
+    G.form=null;P.compost=0;
+    if(W.allies)W.allies.length=Math.min(W.allies.length,allies0);
     P.x=W.N/2;P.y=W.N/2;P.dir={x:1,y:0};P.cd=P.cd||{};for(const k in P.cd)P.cd[k]=0;
     P.castWait=0;P.silence=0;G.en=99999;
     W.fx.length=0;
@@ -42,7 +49,7 @@ const res=await p.evaluate(async(cases)=>{
     const made=(W.allies||[]).slice(n0);
     const disc=W.fx.filter(f=>f.k==='patch'||f.k==='ring').pop();
     const tgt=made[0]||null;
-    out.push({cls,i,kind,
+    out.push({cls,i,kind,mode:mode||'aim',
       hasDisc:!!disc, placed:made.length>0,
       discToAim: disc?Math.hypot(disc.x-(P.x+4),disc.y-P.y):null,
       discAtPlayer: disc?Math.hypot(disc.x-P.x,disc.y-P.y):null,
@@ -60,7 +67,10 @@ for(const r of res){
   console.log(`  ${r.cls} ${String(r.i).padEnd(3)} ${String(r.kind).padEnd(8)} ${f(r.discToAim)}        ${f(r.discAtPlayer)}        ${f(r.hazardAtPlayer)}`);
   if(!r.placed){console.log(`       (placed nothing this run -- skipped)`);continue}
   if(!r.hasDisc){fail.push(`${r.cls} ${r.i}: no disc drawn at all`);continue}
-  if(r.discToAim>0.35)
+  if(r.mode==='dir'){
+    if(r.discAtPlayer<1)
+      fail.push(`${r.cls} ${r.i}: direction-only, but its circle is on the caster (${r.discAtPlayer.toFixed(2)} away)`);
+  }else if(r.discToAim>0.35)
     fail.push(`${r.cls} ${r.i}: aimed 4 paces out, circle drawn ${r.discToAim.toFixed(2)} off the aim point (${r.discAtPlayer.toFixed(2)} from the caster)`);
 }
 if(errs.length)fail.push('page errors: '+errs.slice(0,3).join(' | '));

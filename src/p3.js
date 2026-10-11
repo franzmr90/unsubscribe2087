@@ -343,6 +343,7 @@ function fxPairs(cls){const seen={},out=[];
         if(exact){add(ks[z],exact);continue}
         add(ks[z],cc);for(const ty in DTY)add(ks[z],DTY[ty].c)}}}
   for(const i in AURACOL){add('patch',AURACOL[i]);add('ring',AURACOL[i])}
+  for(const ty in DTY)add('mote',DTY[ty].c);
   const extra=[['warn','#ff5d4d'],['strike','#9a6cff'],['shard','#eef6ff'],['beam','#59e0e6'],['beam','#ff7a3c'],['patch','#ff7a3c'],['patch','#e6e2d6'],['patch','#9a6cff'],['patch','#7be495'],
     ['trail','#f7931a'],['bolt','#59e0e6'],['mark','#ffe36b'],['arc','#ffd9a0'],['mote','#59e0e6'],
     ['ring','#59e0e6'],['ring','#ff7a3c'],['ring','#ffe36b']];

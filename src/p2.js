@@ -510,7 +510,7 @@ function stateMarks(){if(!W||!W.fx||!P)return;const live={};
   if(P.reh>0&&P.rehT>0)keep('reh',{k:'mark',x:P.x,y:P.y,col:'#e6e2d6',n:P.reh});
   if(P.dip)keep('dip',{k:'mark',x:P.x,y:P.y,col:'#f7931a'});
   if(P.dump&&P.dump.t>0){const k=P.dump.k,col=k==='silence'?'#d98cff':k==='blades'?'#e6e2d6':'#c9803a',n=k==='silence'?2:k==='blades'?3:1;keep('dump',{k:'mark',x:P.x+.45,y:P.y,col:col,n:n})}
-  if(W.allies)for(let i=0;i<W.allies.length;i++){const a=W.allies[i];if(a&&a.vest>0)keep('vest'+i,{k:'mark',x:a.x,y:a.y,col:'#e0bd6e',n:a.vest})}
+  if(W.allies)for(let i=0;i<W.allies.length;i++){const a=W.allies[i];if(a&&a.vest>0)keep('vest'+i,{k:'mark',x:a.x,y:a.y,col:'#e0bd6e',n:a.vest});if(P.crunch>0&&a.per)keep('cr'+i,{k:'mark',x:a.x+.35,y:a.y,col:'#e0bd6e',n:0})}
   let noted=0;
   if(W.ents)for(let i=0;i<W.ents.length;i++){const e=W.ents[i];if(!e)continue;if(e.nc>0)keep('nc'+i,{k:'mark',x:e.x,y:e.y,col:'#e0bd6e'});if(e.leave)keep('lv'+i,{k:'patch',x:e.x,y:e.y,r:1.15,col:'#c9a868'});if(!(e.hp>0)||noted>=12)continue;if((e.tes||0)>0){keep('tes'+i,{k:'mark',x:e.x,y:e.y,col:'#e6dcc8',n:e.tes});noted++}if(noted<12&&e.onRecT>0){keep('orec'+i,{k:'mark',x:e.x+.35,y:e.y,col:'#8d9aab'});noted++}if(noted<12&&e.mc>0){keep('mc'+i,{k:'mark',x:e.x,y:e.y,col:'#3fbf8f'});noted++}}
   if(P.two&&P.two.n>0)keep('two',{k:'mark',x:P.x,y:P.y,col:'#d9822b',n:P.two.n});
@@ -904,7 +904,7 @@ Object.assign(SKF,{
   8:(L,m)=>{const ws=W.allies.filter(a=>a.per);if(!ws.length){toast('You have no workforce to lay off');return}for(const a of ws){W.allies.splice(W.allies.indexOf(a),1);burst(a.x,a.y,2.4,(2+.4*L)*m,0,'#ff5d4d');heal(S.maxHp*.05)}},
   9:(L,m)=>{const g=P.grave;if(!g||g.t<=0||!g.src||g.src.hp<=0||W.ents.indexOf(g.src)<0){toast('You have nobody to put on leave');return}const e=g.src;e.noheal=4+.3*L;e.leave={dps:(.4+.06*L)*m,t:4+.3*L,c:0};if(typeof mpNoteCurse==='function')mpNoteCurse(e,'leave',1,e.noheal);P.grave=null;fxAim('mark',e.x,e.y)},
   10:(L)=>{const t=nearest(7);if(!t){toast('Nobody to bind');return}face(t);for(const e of W.ents)e.nc=0;t.nc=5+.3*L},
-  12:(L,m)=>{const bag=G.bag||[],ix=bag.findIndex(it=>it&&it.slot==='weapon');let dt='impact',weak=.55,fed=null;if(ix>=0){fed=bag.splice(ix,1)[0];dt=fed.dt||'impact';weak=1}summon({kind:'officer',per:1,m:(.9+.12*L)*m*weak,ivl:.7,hp:S.maxHp*(1.1+.1*L),max:S.maxHp*(1.1+.1*L),taunt:1,r:.42,holdDt:1,dt},1);toast(fed?'The officer takes '+(fed.name||fed.base||'the weapon'):'The officer is empty-handed')},
+  12:(L,m)=>{const bag=G.bag||[],ix=bag.findIndex(it=>it&&it.slot==='weapon');let dt='impact',weak=.55,fed=null;if(ix>=0){fed=bag.splice(ix,1)[0];dt=fed.dt||'impact';weak=1}summon({kind:'officer',per:1,m:(.9+.12*L)*m*weak,ivl:.7,hp:S.maxHp*(1.1+.1*L),max:S.maxHp*(1.1+.1*L),taunt:1,r:.42,holdDt:1,dt},1);for(let z=W.fx.length-1;z>=0;z--){const f=W.fx[z];if(f.stay||f.k!=='orbit')continue;f.col=(DTY[dt]||{}).c||f.col;break}toast(fed?'The officer takes '+(fed.name||fed.base||'the weapon'):'The officer is empty-handed')},
   14:(L,m)=>founderLiq(L,m)},
  homesteader:{
   0:(L,m)=>{if(hsHands())return;const s=castSpot(4);const x=s?s.x:P.x+P.dir.x*1.2,y=s?s.y:P.y+P.dir.y*1.2;fxAim('patch',x,y,HS.plotR);hsPlacePlot(x,y,{life:HS.plotLife,r:HS.plotR,m:(.22+.04*L)*m})},
@@ -915,9 +915,10 @@ Object.assign(SKF,{
   4:()=>{if(hsForm()==='hull'){hsShed();return}hsDropPlots();hsSetForm('hull',null);parts(P.x,P.y,12,['#4e6a48','#2a2418'],2,1.3)},
   5:(L,m)=>{if(hsHands())return;hsSumFlock({kind:'bull',m:(.9+.12*L)*m,ivl:.9,rng:1.35,bite:10+2*L,r:.46,spd:3.4,dt:'heat'},1)},
   6:()=>{if(hsHands())return;const mul=P.compost||1;P.compost=0;const life=hsDur(HS.hedgeLife)*(mul>1?mul:1);const s=castSpot(4);const dx=s?s.x-P.x:P.dir.x,dy=s?s.y-P.y:P.dir.y;
+    {const hl=Math.hypot(dx,dy)||1;fxAim('patch',P.x+dx/hl*1.2,P.y+dy/hl*1.2,1.6)}
     for(const h of hedgePts(dx,dy))W.allies.push({k:'hedge',plot:1,x:h.x,y:h.y,life,r:h.r})},
   7:()=>{hsShed()},
-  9:(L,m)=>{if(hsHands())return;const s=castSpot(4);hsPlacePlot(s?s.x:P.x,s?s.y:P.y,{life:HS.frostLife,r:HS.frostR,m:(.35+.06*L)*m})},
+  9:(L,m)=>{if(hsHands())return;const s=castSpot(4);const fx=s?s.x:P.x,fy=s?s.y:P.y;fxAim('patch',fx,fy,HS.frostR);hsPlacePlot(fx,fy,{life:HS.frostLife,r:HS.frostR,m:(.35+.06*L)*m})},
   10:()=>{let t=null,bd=3.2;for(const e of W.ents){if(e.mp||e.hp<=0)continue;const d=dist(e,P);if(d<bd){bd=d;t=e}}
     if(!t){toast('No machine in reach');return}if(t.champ||t.su||isBoss(t.k)){toast('That one is too much machine to wear');return}
     const dt=foeType(t);W.ents.splice(W.ents.indexOf(t),1);parts(t.x,t.y,12,['#6a8f62','#5a6078'],2.2,1.3);hsDropPlots();hsDropFlock();hsSetForm('worn',dt);if(P.fm)P.fm.dt=dt},
