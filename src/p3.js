@@ -356,8 +356,17 @@ function fxPairs(cls){const seen={},out=[];
    gets a stable picture without a table anyone has to maintain.
    Tech in the object, gothic in the niche it sits in, and the rarity is in
    the metal rather than only the border. */
-const ITQC=['#e6e2d6','#8494ff','#ffe36b','#3fe06a','#d0aa62'];
 const ITS=88;
+/* One reading of an item, shared by the picture in the pack and the thing in
+   your hand. The speed class decides the archetype, the name decides the head,
+   and a unique's tint comes from the same place in both. */
+function itemSeed(it){return it?itHash(it.q>=4&&it.name?('u:'+it.name):('b:'+(it.base||it.name||it.slot))):0}
+function itemArch(it){return (it&&it.slot==='weapon')?(it.spd<0?0:it.spd>0?1:2):0}
+function itemHead(it){return (itR(itemSeed(it),1)*4)|0}
+function tintOf(q,h){const base=QCOL[q|0]||QCOL[0];if((q|0)<4)return base;
+  const c=hex2rgb(base);return 'rgb('+[Math.min(255,c[0]*(.82+itR(h,70)*.3))|0,
+    Math.min(255,c[1]*(.78+itR(h,71)*.4))|0,Math.min(255,c[2]*(.6+itR(h,72)*.8))|0].join(',')+')'}
+function itemTint(it){return tintOf((it&&it.q)|0,itemSeed(it))}
 function itHash(s){let h=2166136261;s=String(s||'');
   for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
 const itR=(h,i)=>{const v=Math.sin(((h%99991)+1)*0.0137+i*127.13)*43758.5453;return v-Math.floor(v)};
@@ -412,15 +421,29 @@ function itMetal(g,s,col,lit){
   gr.addColorStop(1,'#4b463d');return gr;
 }
 const ITART={
- weapon:(g,s,col,h,q)=>{const v=(itR(h,1)*4)|0,lw=s*(.09+itR(h,2)*.05);
-   g.strokeStyle=itMetal(g,s,col,1);g.lineWidth=lw;g.lineCap='round';
-   g.beginPath();g.moveTo(s*.28,s*.82);g.lineTo(s*.62,s*.3);g.stroke();
+ weapon:(g,s,col,h,q,arch)=>{const v=(itR(h,1)*4)|0,hv=arch===0,ft=arch===1;
+   g.strokeStyle=itMetal(g,s,col,1);g.lineWidth=s*(hv?.11:ft?.055:.075);g.lineCap='round';
+   g.beginPath();g.moveTo(s*.28,s*.82);g.lineTo(s*(ft?.58:.62),s*(ft?.34:.3));g.stroke();g.lineCap='butt';
    g.fillStyle=itMetal(g,s,col,1);
-   g.save();g.translate(s*.65,s*.26);g.rotate(itR(h,3)*.5-.25);
-   if(v===0){g.fillRect(-s*.13,-s*.1,s*.26,s*.2)}
-   else if(v===1){g.beginPath();g.moveTo(-s*.14,0);g.lineTo(0,-s*.15);g.lineTo(s*.14,0);g.lineTo(0,s*.13);g.closePath();g.fill()}
-   else if(v===2){g.beginPath();g.arc(0,0,s*.14,.6,4.2);g.closePath();g.fill()}
-   else{g.fillRect(-s*.15,-s*.07,s*.3,s*.14);g.fillRect(-s*.04,-s*.16,s*.08,s*.32)}
+   g.save();g.translate(s*.66,s*.25);g.rotate(itR(h,3)*.4-.2);
+   if(hv){
+     if(v===0)g.fillRect(-s*.15,-s*.12,s*.3,s*.24);
+     else if(v===1){g.beginPath();for(let i=0;i<8;i++){const a=i*.785+.39;g[i?'lineTo':'moveTo'](Math.cos(a)*s*.16,Math.sin(a)*s*.16)}g.closePath();g.fill()}
+     else if(v===2){g.beginPath();g.moveTo(-s*.16,-s*.04);g.lineTo(s*.06,-s*.16);g.lineTo(s*.16,0);g.lineTo(s*.06,s*.16);g.closePath();g.fill()}
+     else{g.fillRect(-s*.17,-s*.07,s*.34,s*.14);g.fillRect(-s*.05,-s*.17,s*.1,s*.34)}
+   }else if(ft){
+     if(v===0){g.beginPath();g.moveTo(-s*.04,s*.1);g.lineTo(s*.04,s*.1);g.lineTo(s*.02,-s*.23);g.lineTo(-s*.02,-s*.23);g.closePath();g.fill()}
+     else if(v===1){g.beginPath();g.moveTo(-s*.05,s*.1);g.quadraticCurveTo(s*.15,-s*.06,s*.03,-s*.23);g.lineTo(-s*.05,-s*.2);g.closePath();g.fill()}
+     else if(v===2){g.beginPath();g.moveTo(-s*.05,s*.1);g.lineTo(s*.04,s*.09);
+       for(let i=0;i<4;i++){g.lineTo(s*.015,-s*(.01+i*.055));g.lineTo(s*.06,-s*(.04+i*.055))}
+       g.lineTo(0,-s*.23);g.closePath();g.fill()}
+     else{g.fillRect(-s*.07,-s*.23,s*.05,s*.33);g.fillRect(s*.02,-s*.23,s*.05,s*.33)}
+   }else{
+     if(v===0){g.beginPath();g.arc(0,-s*.07,s*.11,0,6.283);g.fill()}
+     else if(v===1){g.fillRect(-s*.02,-s*.21,s*.04,s*.26);g.fillRect(-s*.13,-s*.21,s*.04,s*.17);g.fillRect(s*.09,-s*.21,s*.04,s*.17)}
+     else if(v===2){g.lineWidth=s*.035;g.strokeStyle=itMetal(g,s,col,1);g.beginPath();g.arc(0,-s*.07,s*.12,0,6.283);g.stroke()}
+     else{g.beginPath();g.moveTo(-s*.02,-s*.23);g.lineTo(s*.17,-s*.14);g.lineTo(-s*.02,-s*.05);g.closePath();g.fill()}
+   }
    g.restore();
    g.strokeStyle=col;g.globalAlpha=.75;g.lineWidth=1;
    g.beginPath();g.moveTo(s*.32,s*.76);g.lineTo(s*.5,s*.5);g.stroke();g.globalAlpha=1},
@@ -497,13 +520,11 @@ let ITC={};
 /* a data URI per picture, made once. The key decides the picture: a unique by
    its own name, anything else by its base type, and anything unidentified by
    the slot alone, because that is all you are allowed to know. */
-function itemArt(slot,key,q,idd){
-  const ck=(idd?'i':'x')+'|'+(idd?key:slot)+'|'+(idd?q:0);
+function itemArt(slot,key,q,idd,arch){arch=arch|0;
+  const ck=(idd?'i':'x')+'|'+(idd?key:slot)+'|'+(idd?q:0)+'|'+(idd?arch:0);
   if(ITC[ck])return ITC[ck];
   const s=ITS,c=mk(s,s),g=c.getContext('2d'),h=itHash(idd?key:slot+'?');
-  let col=ITQC[q]||ITQC[0];
-  if(idd&&q>=4){const rgb=hex2rgb(col),w=itR(h,70);
-    col='rgb('+[Math.min(255,rgb[0]*(.82+w*.3))|0,Math.min(255,rgb[1]*(.78+itR(h,71)*.4))|0,Math.min(255,rgb[2]*(.6+itR(h,72)*.8))|0].join(',')+')'}
+  const col=tintOf(q,h);
   itFrame(g,s,idd?col:'#4e4639',idd?q:0,h);
   if(idd){
     if(q>=4)itAura(g,s,col);
@@ -512,7 +533,7 @@ function itemArt(slot,key,q,idd){
     g.fillStyle=bg;g.fillRect(0,0,s,s);
     const f=ITART[slot]||ITART.charm;
     g.save();g.translate(s/2,s/2);g.rotate((itR(h,20)-.5)*.12);g.translate(-s/2,-s/2);
-    f(g,s,col,h,q);g.restore();
+    f(g,s,col,h,q,arch);g.restore();
     if(q>=4)itSigil(g,s,col,h);
   }else itSealed(g,s,slot,h);
   const u=c.toDataURL('image/png');ITC[ck]=u;return u}
@@ -520,7 +541,7 @@ function itemArt(slot,key,q,idd){
 function itemArtFor(it){if(!it)return '';
   const slot=it.charm?'charm':it.stim?'stim':(ITART[it.slot]?it.slot:'charm');
   const uniq=it.q>=4&&it.name;
-  return itemArt(slot,uniq?('u:'+it.name):('b:'+(it.base||it.name||slot)),it.q|0,it.id!==false)}
+  return itemArt(slot,uniq?('u:'+it.name):('b:'+(it.base||it.name||slot)),it.q|0,it.id!==false,itemArch(it))}
 function itemImg(it){const u=itemArtFor(it);return u?'<img class="ic" src="'+u+'" alt="">':''}
 /* The loading screen. This character's sheets bake behind it, so no shape
    stops to draw itself in the middle of a fight. It holds for a beat even when
@@ -606,8 +627,8 @@ function drawPlayer(X,Y){
   else if(G.cls==='witness'){ctx.beginPath();ctx.arc(X,hy-1,7,3.3,6.05);ctx.closePath();ctx.fillStyle='#2c3442';ctx.fill();ctx.stroke();ctx.fillStyle='#3a4250';ctx.fillRect(X-9,Y-24+b,18,10)}
   else{box(X-f*11-4,Y-30+b,8,12,2,'#8a6a40');ctx.strokeStyle='#5a4326';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X-7,Y-30+b);ctx.lineTo(X+7,Y-14+b);ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4;
     ctx.beginPath();ctx.arc(X,hy-1,7,3.14,0);ctx.closePath();ctx.fillStyle='#1f5a44';ctx.fill();ctx.stroke();box(X+(f>0?2:-11),hy-2.5,9,2.5,1,'#1f5a44')}
-  const E=G.eq,qc=it=>QCOL[it.q];ctx.strokeStyle=OL;ctx.lineWidth=1.4;
-  if(Object.values(E).some(i=>i&&i.q===4))glow(X,Y-4,28,'#d0aa62',.28);
+  const E=G.eq,qc=it=>itemTint(it);ctx.strokeStyle=OL;ctx.lineWidth=1.4;
+  {const u4=Object.values(E).filter(i=>i&&i.q===4);if(u4.length)glow(X,Y-4,28,itemTint(u4[0]),.28)}
   if(E.armor){const t=tierOf(E.armor.il);if(t===0){ctx.fillStyle=qc(E.armor);ctx.fillRect(X-8,Y-27+b,16,1.6);ctx.fillRect(X-8,Y-16+b,16,1.6)}else{box(X-8.5,Y-31+b,17,13,3,['','#4a4458','#8a94a8','#d8d0f0'][t]);if(t>=2){box(X-12.5,Y-33+b,6.5,6.5,2,t===3?'#f0ecff':'#a8b0c0');box(X+6,Y-33+b,6.5,6.5,2,t===3?'#f0ecff':'#a8b0c0')}ctx.fillStyle=qc(E.armor);ctx.fillRect(X-1,Y-29+b,2,9)}}
   if(E.belt){ctx.fillStyle=qc(E.belt);ctx.fillRect(X-8,Y-14.5+b,16,2.4);ctx.fillStyle='#0b0912';ctx.fillRect(X-1.5,Y-15+b,3,3.4)}
   if(E.boots){const t=tierOf(E.boots.il);ctx.fillStyle=['#6a5a48','#4a5060','#8a94a8','#e0d8ff'][t];ctx.fillRect(X-7,Y-5,6,5);ctx.fillRect(X+1,Y-5,6,5);ctx.fillStyle=qc(E.boots);ctx.fillRect(X-7,Y-5,6,1.3);ctx.fillRect(X+1,Y-5,6,1.3)}
