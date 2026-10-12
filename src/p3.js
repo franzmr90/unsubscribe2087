@@ -1064,7 +1064,11 @@ function drawObj(o,X,Y){
 
 /* ================= frame ================= */
 /* what lies beyond the edge of a district: weather for the Cloud, a red hum for the Board, a far city for the ground */
-const BGK={chain:4,mempool:4,blocks:4,room:4,reactor:2,shaft:2,garden:2,lake:2,walk:2,mezz:2,landing:2,vest:3,minutes:3,chairs:3,rack:3,wait:3,still:4};
+/* Which sky a district stands under. Anything unlisted falls through to 1, the
+   dead city, which was wrong for all of Act IV: the Gentle Years are not a ruin,
+   they are a place that has been seen to. 5 is that, 6 is the 2015 prequel, where
+   the sky is still only the sky. */
+const BGK={chain:4,mempool:4,blocks:4,room:4,reactor:2,shaft:2,garden:2,lake:2,walk:2,mezz:2,landing:2,vest:3,minutes:3,chairs:3,rack:3,wait:3,still:4,cutler:5,mile:5,sofa:5,list:5,kitchen:5,garage:1,vault:4,cage:6};
 /* Full-screen gradients are the expensive part of a backdrop and they never change
    until the style or the viewport does, so bake them once and blit. */
 let BGC=null,BGK2='';
@@ -1074,6 +1078,15 @@ function bgBase(k){const key=k+'|'+Math.round(VW)+'x'+Math.round(VH);if(BGK2===k
   else if(k===3){const q=g.createRadialGradient(w/2,h/2,40,w/2,h/2,h*.8);q.addColorStop(0,'#200c11');q.addColorStop(1,'#050308');g.fillStyle=q;g.fillRect(0,0,w,h)}
   else if(k===4){g.fillStyle=G2(0,0,[[0,'#03050b'],[.7,'#05070f'],[1,'#080a14']]);g.fillRect(0,0,w,h);
     const q=g.createRadialGradient(w/2,h*.72,10,w/2,h*.72,h*.6);q.addColorStop(0,'rgba(247,147,26,.10)');q.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=q;g.fillRect(0,h*.2,w,h*.8)}
+  else if(k===5){/* the Gentle Years: a sky that has been seen to, at a golden hour
+       that does not end, because nobody asked for it to */
+    g.fillStyle=G2(0,0,[[0,'#8a6490'],[.14,'#cd7f78'],[.3,'#f3a76a'],[.46,'#ffc890'],[1,'#ffe3bc']]);g.fillRect(0,0,w,h);
+    const q=g.createRadialGradient(w*.5,h*.3,10,w*.5,h*.3,h*.55);
+    q.addColorStop(0,'rgba(255,232,190,.45)');q.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=q;g.fillRect(0,0,w,h)}
+  else if(k===6){/* 2015: the one daylight in the game, and nothing wrong with it yet */
+    g.fillStyle=G2(0,0,[[0,'#9fc4e0'],[.55,'#cfe0ea'],[1,'#e8e4d8']]);g.fillRect(0,0,w,h);
+    const q=g.createRadialGradient(w*.68,h*.2,8,w*.68,h*.2,h*.8);
+    q.addColorStop(0,'rgba(255,250,232,.5)');q.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=q;g.fillRect(0,0,w,h)}
   else{g.fillStyle=G2(0,0,[[0,'#09070f'],[.55,'#120d1c'],[1,'#1a1326']]);g.fillRect(0,0,w,h);
     const q=g.createLinearGradient(0,h*.3,0,h*.62);q.addColorStop(0,'rgba(0,0,0,0)');q.addColorStop(1,'rgba(150,90,60,.14)');g.fillStyle=q;g.fillRect(0,h*.3,w,h*.34)}
   return BGC=c}
@@ -1102,6 +1115,29 @@ function backdrop(){const k=BGK[W.z.style]||1,px=(P.x-P.y)*3,py=(P.x+P.y)*1.5,t=
     for(let i=0;i<60;i++){const x=((i*89-px*.3)%VW+VW)%VW,y=((i*53-py*.3)%VH+VH)%VH;ctx.fillStyle='rgba(190,215,255,'+(.15+.25*Math.abs(Math.sin(t*.8+i)))+')';ctx.fillRect(x,y,1.5,1.5)}
     ctx.fillStyle='rgba(247,147,26,.16)';
     for(let i=0;i<9;i++){const y=((i*131+t*7-py*1.1)%(VH+120)+VH+120)%(VH+120)-60,x=((i*197-px*1.1)%(VW+160)+VW+160)%(VW+160)-80;ctx.fillRect(x,y,14,1.5);ctx.fillRect(x+20,y,6,1.5)}}
+  else if(k===5){/* The Gentle Years. Not a dead city: a kept one. Low houses in
+       even rows, every window lit, and the lights come on together because
+       something decided they should. */
+    /* long slow cloud, high up, because nothing in this sky hurries */
+    ctx.fillStyle='rgba(255,238,214,.16)';
+    for(let i=0;i<5;i++){const x=((i*241+t*3-px*.4)%(VW+320)+VW+320)%(VW+320)-160,y=VH*(.05+i*.045),w0=120+i%3*50;
+      ctx.beginPath();ctx.ellipse(x,y,w0,w0*.16,0,0,6.283);ctx.fill()}
+    skyline(13,VH*.27,12,26,.3,'rgba(120,80,92,.45)',px,'rgba(255,240,200,.75)',t);
+    /* a row of porch lights that came on together, because something decided they should */
+    const pulse=.6+.2*Math.sin(t*.7);
+    for(let i=0;i<16;i++){const x=((i*83-px*.75)%(VW+120)+VW+120)%(VW+120)-60,y=VH*.315;
+      ctx.fillStyle='rgba(255,226,180,'+(pulse*.45).toFixed(3)+')';
+      ctx.beginPath();ctx.ellipse(x,y,14,4.5,0,0,6.283);ctx.fill();
+      ctx.fillStyle='rgba(255,240,212,'+pulse.toFixed(3)+')';ctx.fillRect(x-1.3,y-2,2.6,4)}
+    skyline(29,VH*.36,9,20,1.3,'rgba(64,40,50,.92)',px,'rgba(255,242,206,.85)',t)}
+  else if(k===6){/* 2015. A working afternoon, an ordinary skyline, and no glow on
+       anything. The only time in the game the sky is just the sky. */
+    skyline(7,VH*.24,34,96,.26,'rgba(150,165,185,.45)',px,null,t);
+    skyline(37,VH*.32,22,56,.7,'rgba(104,120,142,.6)',px,null,t);
+    skyline(61,VH*.38,12,30,1.5,'rgba(62,74,92,.75)',px,null,t);
+    ctx.fillStyle='rgba(255,255,255,.22)';
+    for(let i=0;i<6;i++){const x=((i*211+t*4-px*.35)%(VW+360)+VW+360)%(VW+360)-180,y=VH*(.04+i*.035),w0=140+i%3*60;
+      ctx.beginPath();ctx.ellipse(x,y,w0,w0*.2,0,0,6.283);ctx.ellipse(x+w0*.45,y+6,w0*.6,w0*.14,0,0,6.283);ctx.fill()}}
   else{/* the ground: a dead city going back a long way */
     skyline(3,VH*.60,46,150,.26,'rgba(16,12,26,.85)',px,'rgba(255,207,122,.42)',t);
     skyline(41,VH*.74,30,86,.7,'rgba(10,7,18,.92)',px,'rgba(255,170,90,.28)',t);

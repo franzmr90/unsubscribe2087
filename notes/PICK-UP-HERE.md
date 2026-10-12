@@ -111,9 +111,15 @@ was reported to mean.
 | | Item | Where | Notes |
 |---|---|---|---|
 | 1 | **Eighteen creatures borrow nine drawing routines** | `src/p11.js:10-22` | This one holds up. Each has its own stats and its own palette, but `spr` points at another creature's drawing, and none has a branch of its own in `drawEnemy`. Oracle, Well-Wisher and Camera are the Siren in three colours. They need a mark that reads at a glance in motion. |
-| 2 | **Eight styles with no backdrop** | `BGK` in `src/p3.js:932` | `cutler mile sofa list kitchen garage vault cage` fall through to the default horizon. All thirteen Act IV/V styles do have tile palettes, so the ground is right and the sky is not. |
+| 2 | ~~Eight styles with no backdrop~~ **DONE** | `BGK` in `src/p3.js` | Two new skies: the Gentle Years (a kept place, not a ruin) for Act IV, and 2015 daylight for the prequel -- the only daylight in the game. `tools/sky-sheet.js` shoots them. |
 | 3 | **`p8` and `p9` have no effects at all; `p5` and `p6` have one each** | those files | Some of that is correct -- a money conversation needs no particle. Shrines and shapeShift are not conversations. Check each before assuming it is a gap. |
 | 4 | **`tools/vfx-wire-check.js` is red on `main`** | that file | Stale expectations, not a bug. See the open items below. |
+
+### The graphics plan
+
+`notes/GRAPHICS-PLAN.md` is the ladder: what to improve, cheapest first, in the two
+currencies that matter (bytes on the page, milliseconds at the curtain). It also
+records why three.js is not the lever, with the measurements behind that.
 
 ### The budget, measured
 
