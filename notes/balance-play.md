@@ -12,14 +12,14 @@ Levels, web and worn are how much progression actually happened.
 
 | District | Class | Difficulty | Waves | Seconds | Damage taken | Died | Left | Skills | Casts | Levels | Web | Took/Wore |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| zone 12 | witness | Normal | 0/4 | 70 | 1056 | 0 | 5 | 1 | 1 | 1 | 3 | 0/0 |
+| zone 12 | witness | Normal | 0/4 | 70 | 0 | 0 | 5 | 0 | 0 | 0 | 3 | 0/0 |
 
 ## Totals
 
 | Difficulty | Samples | Died | Cleared every wave | Mean distinct skills cast |
 |---|---:|---:|---:|---:|
-| Normal | 1 | 0 (0%) | 0 | 1.0 |
+| Normal | 1 | 0 (0%) | 0 | 0.0 |
 
 | Class | Died (all difficulties) | Mean distinct skills |
 |---|---:|---:|
-| witness | 0/1 | 1.0 |
+| witness | 0/1 | 0.0 |

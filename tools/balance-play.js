@@ -154,11 +154,25 @@ for (const cls of CLASSES) {
         for (let i = 0; i < SK.length; i++) {
           const s = SK[i]; if (!s || !s.a) continue;          /* passives are never cast */
           const v = V[i] || {}, r = v.r || v.reach || 0;
-          let role = 'buff';
+          /* 'buff' must not be the default. It was, and 'mark' -- which is the
+             most common kind in the game, 43 of them, and which carries
+             at:'foe' when it lands on an enemy -- fell into it along with
+             'bolt'. Buffs fire once every eight seconds, so every one of those
+             attacks was being used as a rare self-cast. The witness is almost
+             entirely mark/at:foe and so cast about once a fight; every other
+             class lost whatever share of its kit is a mark. A skill is a buff
+             only when it says it is self-directed. */
+          let role;
           if (v.k === 'ring' || v.k === 'patch') role = r >= 2 ? 'aoe' : 'melee';
-          else if (v.k === 'trail') role = r >= 4.5 ? 'ranged' : 'melee';
+          else if (v.k === 'trail' || v.k === 'bolt') role = r >= 4.5 ? 'ranged' : 'melee';
           else if (v.k === 'arc') role = 'melee';
-          kit.push({i, role, r: r || 2.2, cost: s.cost || 0, cd: s.cd || 0});
+          else if (v.at === 'foe') role = r >= 4.5 ? 'ranged' : 'melee';  /* it has a target */
+          else if (v.k === 'mark' || v.k === 'orbit') role = 'buff';      /* on yourself */
+          else role = 'melee';
+          /* a targeted effect with no radius of its own is still thrown at the
+             thing it names, and aim() checks whether the cast actually fired,
+             so a reach guessed too long corrects itself */
+          kit.push({i, role, r: r || (v.at === 'foe' ? 6 : 2.2), cost: s.cost || 0, cd: s.cd || 0});
         }
         const charge = cls === 'witness';
         const BU = (g.BUILDS[cls] || []).find(x => x.k === build) || {};
