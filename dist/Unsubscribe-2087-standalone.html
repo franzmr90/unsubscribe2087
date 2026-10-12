@@ -5433,7 +5433,26 @@ const MAT={
  lake:   {m:[.095,5,11 ], g:.030, w:[2,.030], c:0, v:.18, s:.26, p:0, r:.24, b:.48},
  walk:   {m:[.075,6,8.5], g:.045, w:[9,.055], c:2, v:.30, s:.06, p:0, r:.34, b:.55},
  mezz:   {m:[.050,5,10 ], g:.022, w:[5,.040], c:0, v:.20, s:.18, p:0, r:.20, b:.45},
- landing:{m:[.060,5,9  ], g:.030, w:[6,.045], c:1, v:.24, s:.10, p:0, r:.26, b:.50}
+ landing:{m:[.060,5,9  ], g:.030, w:[6,.045], c:1, v:.24, s:.10, p:0, r:.26, b:.50},
+ /* Act III is an institution, so the question each row answers is what the
+    surface is made of rather than how ruined it is. Carpet does not crack and
+    has no slab seam to settle into, so the Nine Chairs run c:0 and the lowest
+    settle in the game and spend it all on mottle instead. A server room's
+    raised floor is the opposite: panel seams are the loudest thing in it.
+
+    The Nine Chairs is also the floor the Director disappears into, and the
+    mottle was expected to help. It does not: tools/floor-sep.js puts that pair
+    at dE 0.6 after the pass against 0.0 before, which is nothing. A body that
+    *is* a floor colour cannot be separated by varying the floor's lightness
+    around it, because the variation moves both ways past the body. rimOn() is
+    what carries that pair, and this row is tuned for what carpet looks like
+    rather than for a separation it cannot buy. */
+ vest:   {m:[.085,6,8.5], g:.045, w:[8,.055], c:1, v:.30, s:.06, p:0, r:.36, b:.58},
+ minutes:{m:[.095,6,9  ], g:.050, w:[6,.050], c:1, v:.26, s:.05, p:0, r:.34, b:.55},
+ chairs: {m:[.110,7,9.5], g:.055, w:[4,.035], c:0, v:.14, s:.03, p:0, r:.30, b:.50},
+ rack:   {m:[.045,5,9  ], g:.028, w:[6,.045], c:0, v:.34, s:.14, p:0, r:.24, b:.52},
+ still:  {m:[.090,5,11 ], g:.030, w:[2,.030], c:0, v:.16, s:.24, p:0, r:.22, b:.46},
+ wait:   {m:[.090,6,8.5], g:.045, w:[7,.050], c:2, v:.28, s:.05, p:0, r:.38, b:.60}
 };
 function material(g,st0,s,v){const M=MAT[st0];if(!M)return;const R=mseed(st0+'/'+v);
   const rgba=(c,a)=>'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')',

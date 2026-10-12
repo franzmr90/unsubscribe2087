@@ -123,9 +123,23 @@ was reported to mean.
 | | | state |
 |---|---|---|
 | 1 | Lighting rework | **done.** `GLW` adds the lamp's own colour back, and four constants beside `OL0` in `src/p3.js` tune the player's own light against ambient. |
-| 2 | Environment textures, one act at a time | **Acts I and II done.** See below. Acts III-V still have no `MAT` row, so they are untouched. |
+| 2 | Environment textures, one act at a time | **Acts I-III done.** See below. Acts IV-V still have no `MAT` row, so they are untouched. |
 | 3 | Act-scoped streamed actors | not started |
 | 4 | WebGL blit layer | not started, and still not obviously worth it |
+
+**Act III's textures.** `MAT` rows for `vest minutes chairs rack still wait`.
+Act III is an institution, so each row answers what the surface is *made of*
+rather than how ruined it is. Carpet does not crack and has no slab seam, so the
+Nine Chairs run `c:0` and the lowest settle in the game and spend it on mottle;
+a server room's raised floor is the opposite, and its panel seams are the
+loudest thing in it.
+
+The Nine Chairs is also the floor the Director disappears into, and the mottle
+was expected to help. **It does not** -- `tools/floor-sep.js` puts that pair at
+dE 0.6 after the pass against 0.0 before. A body that *is* a floor colour cannot
+be separated by varying the floor's lightness around it, because the variation
+moves both ways past the body. `rimOn()` is what carries that pair, and the row
+is tuned for what carpet looks like instead.
 
 **Act II's textures.** `MAT` rows for `shaft garden lake walk mezz landing`.
 The useful thing learned here is that the amounts are not a global recipe: Act I
