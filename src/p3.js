@@ -344,9 +344,22 @@ function fxPairs(cls){const seen={},out=[];
         add(ks[z],cc);for(const ty in DTY)add(ks[z],DTY[ty].c)}}}
   for(const i in AURACOL){add('patch',AURACOL[i]);add('ring',AURACOL[i])}
   for(const ty in DTY)add('mote',DTY[ty].c);
-  const extra=[['warn','#ff5d4d'],['strike','#9a6cff'],['shard','#eef6ff'],['beam','#59e0e6'],['beam','#ff7a3c'],['patch','#ff7a3c'],['patch','#e6e2d6'],['patch','#9a6cff'],['patch','#7be495'],
-    ['trail','#f7931a'],['bolt','#59e0e6'],['mark','#ffe36b'],['arc','#ffd9a0'],['mote','#59e0e6'],
-    ['ring','#59e0e6'],['ring','#ff7a3c'],['ring','#ffe36b']];
+  /* Everything the world itself can ask for, as opposed to a skill. A pair that
+     is not in this list is baked the first time something draws it, which is the
+     frame that thing is already swinging in -- and against a hostile player
+     waiting at the door, a hitch is a death. tools/lazy-bake.js walks the zones
+     and fails if any sheet is born after the loading curtain lifts; when it
+     names one, it belongs here. The ring colours are boss slams, which is
+     exactly the worst moment to stop and draw. */
+  const extra=[['warn','#ff5d4d'],['strike','#9a6cff'],['shard','#eef6ff'],['beam','#59e0e6'],['beam','#ff7a3c'],
+    ['patch','#ff7a3c'],['patch','#e6e2d6'],['patch','#9a6cff'],['patch','#7be495'],['patch','#c9b6ff'],
+    ['trail','#f7931a'],['trail','#c9b6ff'],
+    ['mark','#ffe36b'],['mark','#e6dcc8'],['mark','#c9b6ff'],
+    ['arc','#ffd9a0'],['mote','#59e0e6'],['mote','#c9b6ff'],
+    ['bolt','#59e0e6'],['bolt','#7be495'],['bolt','#c9803a'],['bolt','#e6dcc8'],['bolt','#e6e2d6'],
+    ['ring','#59e0e6'],['ring','#ff7a3c'],['ring','#ffe36b'],['ring','#7be495'],['ring','#9a6cff'],
+    ['ring','#b48cff'],['ring','#d98cff'],['ring','#e6e2d6'],['ring','#ff5d4d'],['ring','#ff9a3c'],
+    ['ring','#ffb238'],['ring','#ffffff'],['ring','#c9b6ff']];
   for(let i=0;i<extra.length;i++)add(extra[i][0],extra[i][1]);
   return out}
 /* Baked in slices so the bar can move. rAF stops in a background tab, so a
