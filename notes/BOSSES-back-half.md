@@ -328,7 +328,7 @@ commit message.
 
 ## Open questions for Micah
 
-- Is "keep the page size flat" a hard zero, or is about +5 KB net acceptable?
-  A hard zero needs more cuts than the ones above.
+- ~~Is "keep the page size flat" a hard zero?~~ Answered 2026-10-12: small
+  gains are fine, keep it minimal. The ~+5 KB net plan above stands.
 - Should Act I-III superuniques get the same treatment later, or should
   scripted superuniques be the thing that marks the back half as harder?
