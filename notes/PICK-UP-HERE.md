@@ -13,21 +13,23 @@ Last true as of **2026-10-12**, `main` at `859cc2d`.
 
 **A game that holds together end to end.** The front half -- Acts I to III --
 has had passes for balance, skills, effects, items and readability. The back
-half has not, and it shows: the last two bosses are the Act III boss recoloured,
-every Act IV and V creature is a reskin of an Act I creature, and the file that
-holds a third of the game draws no effects at all. The goal is parity, so that
-a player who reaches Act V is still playing a game somebody finished.
+half has had less. The eighteen Act IV and V creatures borrow nine drawing routines
+between them, and eight of its thirteen zone styles have no sky. The goal is
+parity, so that a player who reaches Act V is still playing a game somebody
+finished.
 
 Three tests of done, in order of how much they matter:
 
-1. **Nothing in the back half is borrowed without a reason.** The Curator and
-   PROVIDENCE have their own bodies and their own tells. The eighteen reskinned
-   creatures read as themselves.
-2. **Every system the player can see has something to show for it.** Shrines,
-   subpoenas, shapeShift, dodge and the boss rush are moments; none of them
-   currently draws anything.
-3. **The suites still pass and the file still fits.** Art that costs a megabyte
-   is not art we can ship; the whole game is one HTML page.
+1. **Nothing in the back half is borrowed without a reason.** The two final
+   bosses already pass this; the eighteen Act IV/V creatures do not, and should
+   read as themselves rather than as three colours of the same Siren.
+2. **Every system the player can see has something to show for it.** Check each
+   before calling it a gap -- a money conversation needs no particle -- but
+   shrines and shapeShift are not conversations.
+3. **It still loads before you can tell.** The ceiling is the pause at a zone
+   boundary or on joining, not a byte count. `node tools/bake-budget.js` reports
+   it; today it is 31ms against a 900ms curtain, so the game can get a good deal
+   bigger. Keep new art in the boot bake rather than baking it on first sight.
 
 ---
 
@@ -71,22 +73,65 @@ These are the habits that actually caught things, not general advice:
 From the audit of 2026-10-12. All eight classes and all 120 skills already have
 art rows; this is what does not.
 
-### The back half
+### CORRECTION, 2026-10-12: the first audit was wrong about the bosses
+
+The first version of this backlog led with "the final bosses are clones of the
+Act III boss". That was wrong, and it is left here rather than deleted because
+the mistake is instructive: it came from reading a data table and not the code
+that draws or drives it.
+
+- **`boss4` and `boss5` have their own stats** (`src/p11.js:16,23`): The Curator
+  at 2400 life, PROVIDENCE at 3000, each with its own damage, sight, reach and
+  palette. Hand-tuned, not copied.
+- **Both have their own renderer branches** (`src/p3.js:762,783`), and they are
+  among the more considered drawings in the file. The Curator is a bone-white
+  frame with open empty hands held away from the body and six attending lights,
+  whose face goes from a smile to a flat line below half life. PROVIDENCE is a
+  dark wedge behind forty-one fans -- the forty-one ways it has already seen the
+  conversation go -- which go out as you take its life away.
+- **Both have their own AI** (`BAI` in `src/p11.js:218`), with their own shot
+  patterns, their own summons, and a dialogue turn mid-fight. The Curator stops
+  the fight at half life to ask whether you are proud of her, and the answer
+  moves her health either way.
+- **What they do share with boss3 is the drop table**, which is the `c('boss3',
+  ...)` line at `src/p11.js:24`. `c()` builds `TC` entries, not `ET` ones. A
+  final boss dropping like a final boss is a decision, not an oversight.
+- The `spr:'boss'` and `spr:'mono'` fields on those two are dead: `drawEnemy`
+  branches on `e.k` before it ever consults `spr`.
+
+The claim that `p11.js` "draws no effects" was also wrong, and in the same way.
+It has its own `ringShot` and `callIn` helpers, coloured projectiles, a warn
+telegraph, and per-boss phase dialogue. The grep behind the claim counted only
+`fxFoo(` calls and missed `W.fx.push`; the grep that replaced it dropped the
+word boundary and counted every `sfx(` instead. Neither number meant what it
+was reported to mean.
+
+### What is actually left
 
 | | Item | Where | Notes |
 |---|---|---|---|
-| 1 | **The final bosses are clones** | `src/p11.js:16,23` | `boss4: c('boss3', 'The Curator')` and `boss5: c('boss3', 'PROVIDENCE')` borrow MANDATE's body *and* behaviour. New names, palettes, resistances; nothing else. The credits now fire straight after one of them. **Start here.** |
-| 2 | **`p11.js` draws no effects** | all of `src/p11.js` | Zero `fx*` calls against 40 in `p2.js`. That is the prequel (zone 33), Act IV (21-26) and Act V (27-32). Nine `sfx()` calls are the only feedback in the file. |
-| 3 | **Eighteen creatures, nine borrowed bodies** | `src/p11.js:25-26` | Oracle, Well-Wisher and Camera are all the Siren. Validator, Firewall and Companion are all the Enforcer. They need marks that distinguish them at a glance. |
-| 4 | **Eight styles with no backdrop** | `BGK` in `src/p3.js:932` | `cutler mile sofa list kitchen garage vault cage` fall through to the default horizon. All thirteen Act IV/V styles do have tile palettes, so the ground is right and the sky is not. |
+| 1 | **Eighteen creatures borrow nine drawing routines** | `src/p11.js:10-22` | This one holds up. Each has its own stats and its own palette, but `spr` points at another creature's drawing, and none has a branch of its own in `drawEnemy`. Oracle, Well-Wisher and Camera are the Siren in three colours. They need a mark that reads at a glance in motion. |
+| 2 | **Eight styles with no backdrop** | `BGK` in `src/p3.js:932` | `cutler mile sofa list kitchen garage vault cage` fall through to the default horizon. All thirteen Act IV/V styles do have tile palettes, so the ground is right and the sky is not. |
+| 3 | **`p8` and `p9` have no effects at all; `p5` and `p6` have one each** | those files | Some of that is correct -- a money conversation needs no particle. Shrines and shapeShift are not conversations. Check each before assuming it is a gap. |
+| 4 | **`tools/vfx-wire-check.js` is red on `main`** | that file | Stale expectations, not a bug. See the open items below. |
 
-### The systems with nothing to show
+### The budget, measured
 
-`p5` (side quests, bounties, shapeShift), `p6` (nodes, events, feats, boss
-rush), `p7` (charms, subpoenas, proof-of-work shrines, dodge, Mr. Float), `p8`
-(money talk, shitcoiners) and `p9` (Unity campaigns, fate) make **zero** `fx`
-calls between them. Some of that is correct -- a conversation needs no
-particle. Shrines, subpoenas, shapeShift and dodge are not conversations.
+`node tools/bake-budget.js` reports what a player actually waits for. As of
+today: a cold flipbook bake is 17-78ms depending on class, mean 31ms, holding
+8-11MB of canvas. The loading screen holds for 900ms minimum, so there is
+roughly thirty times the current cost in headroom before anybody notices.
+
+Two things that budget depends on, and that new art must not break:
+
+- **Sheets cache for the session**, so a zone boundary costs nothing. Anything
+  baked lazily on first sight of a monster would instead cost a hitch in the
+  middle of play. New art belongs in `fxPairs` so it bakes at boot, behind the
+  curtain, with everything else.
+- **A joining player pays the bake once**, at `startPlay`, not per zone.
+
+So the ceiling is not bytes. Measure with the tool, spend against the headroom,
+and keep the bake in one place.
 
 ### A different kind of work
 
