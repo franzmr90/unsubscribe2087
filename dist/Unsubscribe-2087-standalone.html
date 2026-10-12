@@ -5452,7 +5452,31 @@ const MAT={
  chairs: {m:[.110,7,9.5], g:.055, w:[4,.035], c:0, v:.14, s:.03, p:0, r:.30, b:.50},
  rack:   {m:[.045,5,9  ], g:.028, w:[6,.045], c:0, v:.34, s:.14, p:0, r:.24, b:.52},
  still:  {m:[.090,5,11 ], g:.030, w:[2,.030], c:0, v:.16, s:.24, p:0, r:.22, b:.46},
- wait:   {m:[.090,6,8.5], g:.045, w:[7,.050], c:2, v:.28, s:.05, p:0, r:.38, b:.60}
+ wait:   {m:[.090,6,8.5], g:.045, w:[7,.050], c:2, v:.28, s:.05, p:0, r:.38, b:.60},
+ /* Act IV is the Gentle Years, which the backdrop work already settled as a
+    kept place rather than a ruin: an avenue, a sofa, a kitchen table. So the
+    wear here is the wear of being lived in, not of being abandoned, and the
+    Sofa takes the Nine Chairs' treatment because soft furnishing does not
+    crack. Tomari is the one industrial floor in the act and the only one that
+    gets grime. */
+ cutler: {m:[.075,6,9  ], g:.040, w:[6,.045], c:1, v:.26, s:.06, p:0, r:.30, b:.52},
+ mile:   {m:[.070,6,9  ], g:.038, w:[7,.050], c:1, v:.26, s:.08, p:0, r:.28, b:.50},
+ sofa:   {m:[.095,6,9.5], g:.045, w:[4,.035], c:0, v:.16, s:.04, p:0, r:.26, b:.50},
+ reactor:{m:[.070,6,8.5], g:.045, w:[6,.045], c:2, v:.32, s:.12, p:0, r:.40, b:.58},
+ list:   {m:[.080,6,8.5], g:.042, w:[6,.045], c:2, v:.28, s:.05, p:0, r:.32, b:.54},
+ kitchen:{m:[.085,6,9  ], g:.040, w:[7,.050], c:1, v:.24, s:.10, p:0, r:.26, b:.48},
+ /* Act V, and the prequel's one daylight zone. The Room keeps the lowest
+    numbers in the table on purpose: FD.room is plain because that was always
+    the joke about it, and a material pass that made it interesting would be
+    improving away the point. The Garage is the opposite and the dirtiest floor
+    in the game -- it is a garage. */
+ garage: {m:[.105,7,8.5], g:.055, w:[8,.060], c:3, v:.30, s:.07, p:0, r:.44, b:.64},
+ chain:  {m:[.085,6,8.5], g:.045, w:[5,.045], c:1, v:.28, s:.12, p:0, r:.36, b:.56},
+ mempool:{m:[.090,5,11 ], g:.035, w:[3,.035], c:0, v:.18, s:.20, p:0, r:.26, b:.50},
+ vault:  {m:[.080,6,9  ], g:.048, w:[6,.050], c:2, v:.30, s:.04, p:0, r:.36, b:.56},
+ blocks: {m:[.080,6,9  ], g:.045, w:[5,.045], c:1, v:.28, s:.14, p:0, r:.34, b:.56},
+ room:   {m:[.030,4,11 ], g:.018, w:[2,.025], c:0, v:.12, s:.03, p:0, r:.14, b:.50},
+ cage:   {m:[.055,5,9.5], g:.030, w:[5,.040], c:0, v:.22, s:.10, p:0, r:.20, b:.46}
 };
 function material(g,st0,s,v){const M=MAT[st0];if(!M)return;const R=mseed(st0+'/'+v);
   const rgba=(c,a)=>'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')',

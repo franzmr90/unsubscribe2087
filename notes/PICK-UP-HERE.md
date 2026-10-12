@@ -123,9 +123,21 @@ was reported to mean.
 | | | state |
 |---|---|---|
 | 1 | Lighting rework | **done.** `GLW` adds the lamp's own colour back, and four constants beside `OL0` in `src/p3.js` tune the player's own light against ambient. |
-| 2 | Environment textures, one act at a time | **Acts I-III done.** See below. Acts IV-V still have no `MAT` row, so they are untouched. |
+| 2 | Environment textures, one act at a time | **done, all 31 styles.** See below. |
 | 3 | Act-scoped streamed actors | not started |
 | 4 | WebGL blit layer | not started, and still not obviously worth it |
+
+**Acts IV and V, and the prequel.** The last thirteen rows. Act IV is the
+Gentle Years, which the backdrop work already settled as a kept place rather
+than a ruin, so its wear is the wear of being lived in; the Sofa takes the Nine
+Chairs' treatment because soft furnishing does not crack, and Tomari is the only
+industrial floor in the act. In Act V the Garage is the dirtiest floor in the
+game and **the Room keeps the lowest numbers in the table on purpose** --
+`FD.room` is plain because that was always the joke about it, and a material
+pass that made it interesting would be improving away the point.
+
+That closes rung 2. Every style has a row; the knobs are `MAT` in `src/p3.js`
+and they are meant to be re-tuned by eye rather than left as first guesses.
 
 **Act III's textures.** `MAT` rows for `vest minutes chairs rack still wait`.
 Act III is an institution, so each row answers what the surface is *made of*
