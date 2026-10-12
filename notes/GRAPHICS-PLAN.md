@@ -15,6 +15,80 @@ room at all for downloaded art**. That asymmetry decides the whole plan.
 
 ---
 
+## If the byte budget goes away
+
+Asked 2026-10-12: *what if bytes are free, as long as it still runs well on a
+high-end phone?* It changes the plan substantially, and it moves the constraint
+somewhere less obvious.
+
+**Download was never the constraint that bites a phone. Decoded texture memory
+is.** The art spike's atlas is 640x800 at `cell:80`, `dirs:8`, albedo plus a
+normal map. On disk that is ~288KB. In memory a texture is width x height x 4,
+whatever it was compressed to:
+
+| | |
+|---|---|
+| one atlas, 640x800 | **1.95MB decoded** |
+| albedo + normal, per actor | **3.91MB** |
+| the full roster, ~50 actors | **14.1MB to download, 195MB resident** |
+
+So the naive version *just* fits the Artifact's 16MB page ceiling and then dies
+on the device. That is the number to design against, not the download.
+
+### What that implies, in order
+
+1. **Drop the normal maps until something can use them.** Canvas2D cannot. They
+   are half of every actor's memory, today, for nothing. The pipeline should
+   keep emitting them -- see the WebGL note below -- but the build should not
+   ship them.
+2. **Scope the atlases to an act and stream them.** Ten to twelve actors resident
+   instead of fifty: ~40MB, which a high-end phone will hold. It also lands
+   exactly on the rule we already have -- load before the player is killable --
+   because an act boundary is a town, and a town is where the curtain can fall
+   without anybody being in danger.
+3. **Re-examine `cell:80` for a 40px actor.** `scale:2` is there for hi-dpi and
+   it costs 4x the memory of `scale:1`. Measure the two side by side at phone
+   size before paying it.
+4. **Five directions, not eight.** The other three are mirrors.
+5. **Only then** consider GPU-compressed textures (KTX2/Basis), which stay
+   compressed *in VRAM* -- that, not download size, is the real argument for
+   them, and it requires WebGL.
+
+### Does three.js become the answer now?
+
+The byte argument against it is gone, so the question deserves a straight
+re-answer: **still no, but the runner-up changes.**
+
+What genuinely improves with a GPU path is **normal-mapped dynamic lighting on
+2D sprites**. This game already has a light system (`LIGHTS`, 16 of them) and the
+art pipeline already emits normal maps that Canvas2D throws away. Lighting a
+pre-rendered sprite with the lamp it is standing next to is most of what people
+mean when they say a 2D game looks 3D, and it is the one thing the current
+renderer structurally cannot do.
+
+That argues for **a WebGL blit layer, not three.js**. three.js is a 3D scene
+graph; for lit 2D quads in a fixed isometric projection it is mostly weight we
+would carry and not use. A thin WebGL sprite layer -- or a 2D library built for
+it -- does the same job in a fraction of the surface area, and keeps the
+projection, the determinism and the gameplay exactly as they are.
+
+**three.js earns its place only if the camera is meant to move in 3D.** That is a
+design decision about what the game is, not a rendering one, and nothing on the
+list asks for it.
+
+### What has to be measured before any of this starts
+
+**A real phone.** The container's frame profile is not a proxy: `frame-prof.js`
+reports 16-17ms here on a build that measured 9.2ms in `notes/frame-prof.json`
+when that file was written, and the pre-today build measures the same 16-17ms as
+the current one. The relative comparison is sound -- today's graphics work costs
+nothing measurable -- but the absolute number is contention, not hardware.
+
+The LAN build is the way to get a true one: the server serves the game to a phone
+on the home network, which is already set up and working.
+
+---
+
 ## Three.js: the honest answer is no, and not for the reason you would expect
 
 Not "too hard". The repo already proved the hard part is elsewhere.
