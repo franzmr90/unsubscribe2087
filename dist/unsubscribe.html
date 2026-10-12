@@ -5979,6 +5979,127 @@ function drawAura(){
   /* own=2: the player's own field is not an optional flourish */
   light(X,Y,rx*1.15,rgba(v.g,.5),.55+.12*pulse,2);
 }
+
+/* ================= the Act IV and V creatures =================
+   Eighteen of them share nine bodies from Acts I-III, each with its own stats
+   and its own palette. Colour alone does not carry at this size and in motion:
+   the Oracle and the Well-Wisher are both the Siren, and from across a room in
+   a fight they were the same thing twice. So each gets one attachment that
+   changes its outline rather than its hue -- a parcel in the mouth, a scope
+   glint, a block coming loose -- and nothing else about the borrowed body
+   changes. Drawn straight to the canvas, so none of it costs a baked sheet.
+   Act IV marks are soft and attentive, Act V's are ledger and orange. */
+const MOBMARK={
+ /* --- Act IV, the Gentle Years --- */
+ daemon(X,Y,s,e){/* it was already running before you got here, and there are copies */
+   ctx.save();
+   for(let i=1;i<=2;i++){ctx.globalAlpha=.42/i;
+     const o=(5+i*4)*s*((e.fx||1)>0?-1:1),y=Y-6*s-Math.sin(tNow*3+i)*1.5*s;
+     ctx.fillStyle='#7be495';ctx.beginPath();ctx.ellipse(X+o,y,6*s,5*s,0,0,6.283);ctx.fill()}
+   ctx.restore();
+   glow(X,Y-8*s,13*s,'#7be495',.3)},
+ wdog(X,Y,s,e){/* it is watching, and it sweeps */
+   const y=Y-34*s,a=Math.sin(tNow*1.5)*.7;
+   ctx.save();ctx.globalAlpha=.5;ctx.strokeStyle='#7be495';ctx.lineWidth=1.2*s;
+   ctx.beginPath();ctx.moveTo(X,y);ctx.lineTo(X+Math.sin(a)*22*s,y+Math.cos(a)*16*s);ctx.stroke();ctx.restore();
+   eye(X,y,2.2*s,'#7be495')},
+ fwall(X,Y,s,e){/* a wall, carried */
+   const w=15*s,h=20*s,x=X+((e.fx||1)>0?10:-10-w)*s*1.4,y=Y-36*s;
+   ctx.save();ctx.globalAlpha=.75;ctx.fillStyle='#4a6e8a';ctx.strokeStyle='#9fd0ff';ctx.lineWidth=1*s;
+   for(let r=0;r<3;r++)for(let c=0;c<2;c++){const bx=x+c*w/2+(r%2?w/4:0);
+     ctx.beginPath();ctx.rect(bx,y+r*h/3,w/2-1,h/3-1);ctx.fill();ctx.stroke()}
+   ctx.restore()},
+ cam(X,Y,s,e){/* it is recording, and it wants you to know */
+   const y=Y-50*s,d=(e.fx||1)>0?1:-1;
+   /* a housing and a lens barrel, so the outline says camera before the colour does */
+   box(X-6*s,y-4*s,12*s,9*s,2,'#2f3440');
+   poly([X+6*s*d,y-2*s,X+12*s*d,y-4.5*s,X+12*s*d,y+4.5*s,X+6*s*d,y+2*s],'#454b5a');
+   const on=Math.sin(tNow*3)>0;
+   eye(X-3*s,y-6.5*s,1.7*s,on?'#ff3b30':'#4a1512')},
+ gap(X,Y,s,e){/* the gap is the point: two halves, and the arc that should not cross it */
+   const y=Y-30*s;ctx.save();ctx.strokeStyle='#59e0e6';ctx.lineWidth=1.3*s;ctx.globalAlpha=.5+.4*Math.sin(tNow*9);
+   ctx.beginPath();for(let i=0;i<5;i++){const t=i/4,xx=X-14*s+28*s*t,yy=y+Math.sin(t*6.283+tNow*7)*4*s;i?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy)}
+   ctx.stroke();ctx.restore();ctx.strokeStyle=OL;ctx.lineWidth=1.4},
+ wisher(X,Y,s,e){/* it only ever wanted the best for you */
+   const y=Y-50*s+Math.sin(tNow*1.6)*2.5*s,r=7*s;
+   glow(X,y,20*s,'#ffd9a0',.5);
+   ctx.fillStyle='#ffd9a0';ctx.lineWidth=1.2*s;ctx.beginPath();
+   ctx.moveTo(X,y+r*.95);
+   ctx.bezierCurveTo(X-r*1.15,y-r*.1,X-r*.5,y-r*.95,X,y-r*.3);
+   ctx.bezierCurveTo(X+r*.5,y-r*.95,X+r*1.15,y-r*.1,X,y+r*.95);
+   ctx.closePath();ctx.fill();ctx.stroke();ctx.lineWidth=1.4},
+ companion(X,Y,s,e){/* on a lead, and the other end of it is nobody */
+   const d=(e.fx||1)>0?1:-1;
+   ctx.save();ctx.strokeStyle='#7be495';ctx.lineWidth=2.4*s;ctx.lineCap='round';ctx.globalAlpha=.9;
+   ctx.beginPath();ctx.moveTo(X,Y-32*s);
+   for(let i=1;i<=6;i++)ctx.lineTo(X-i*4.5*s*d,Y-30*s+Math.sin(tNow*2+i*.8)*2.4*s+i*2.2*s);
+   ctx.stroke();ctx.restore();
+   /* the collar it is wearing, so the lead has somewhere to come from */
+   ctx.strokeStyle='#7be495';ctx.lineWidth=2*s;
+   ctx.beginPath();ctx.ellipse(X,Y-32*s,7*s,2.6*s,0,0,6.283);ctx.stroke();
+   ctx.strokeStyle=OL;ctx.lineWidth=1.4},
+ lull(X,Y,s,e){/* it is singing you down */
+   const my=Y-54*s+Math.sin(tNow*1.1)*2*s,r=5.5*s;
+   glow(X,my,16*s,'#bfe0ff',.4);
+   /* A crescent as one path: an outer arc and an inner arc wound the other way.
+      Carving it with destination-out would take the floor behind it with it. */
+   ctx.fillStyle='#bfe0ff';ctx.beginPath();
+   ctx.arc(X,my,r,.62,-.62,false);
+   ctx.arc(X+r*.70,my,r*.95,-.92,.92,true);
+   ctx.closePath();ctx.fill();ctx.stroke();
+   for(let i=0;i<3;i++){const t=(tNow*.45+i/3)%1;
+     ctx.save();ctx.globalAlpha=.8*(1-t);ctx.fillStyle='#bfe0ff';
+     ctx.beginPath();ctx.arc(X+8*s+Math.sin(t*5+i)*5*s,my-4*s-t*16*s,2.4*s*(1-t*.4),0,6.283);
+     ctx.fill();ctx.restore()}},
+ ctkr(X,Y,s,e){/* here to help */
+   const y=Y-46*s,w=3*s,l=9*s;ctx.fillStyle='#e8f0e0';ctx.strokeStyle='#7be495';ctx.lineWidth=1*s;
+   ctx.beginPath();ctx.rect(X-w/2,y-l/2,w,l);ctx.rect(X-l/2,y-w/2,l,w);ctx.fill();ctx.stroke();
+   ctx.strokeStyle=OL;ctx.lineWidth=1.4},
+ fetch(X,Y,s,e){/* it has brought you something */
+   const x=X+((e.fx||1)>0?13:-13)*s,y=Y-16*s;
+   box(x-4*s,y-4*s,8*s,8*s,1.5,'#e0c890');
+   ctx.strokeStyle='#8a6a4a';ctx.lineWidth=1*s;ctx.beginPath();
+   ctx.moveTo(x-4*s,y);ctx.lineTo(x+4*s,y);ctx.moveTo(x,y-4*s);ctx.lineTo(x,y+4*s);ctx.stroke();
+   ctx.strokeStyle=OL;ctx.lineWidth=1.4},
+ /* --- Act V, the Awakening --- */
+ orphan(X,Y,s,e){/* a block that never made it in */
+   const y=Y-20*s-Math.abs(Math.sin(tNow*2.2))*7*s,r=tNow*1.6;
+   ctx.save();ctx.translate(X,y);ctx.rotate(r);
+   box(-3.5*s,-3.5*s,7*s,7*s,1,'#f7931a');ctx.restore()},
+ valid(X,Y,s,e){/* it checked, and it says yes */
+   const y=Y-46*s;ctx.save();ctx.strokeStyle='#f7931a';ctx.lineWidth=2.2*s;ctx.lineCap='round';
+   ctx.beginPath();ctx.moveTo(X-5*s,y);ctx.lineTo(X-1.5*s,y+3.5*s);ctx.lineTo(X+5*s,y-4*s);ctx.stroke();ctx.restore();
+   ctx.strokeStyle=OL;ctx.lineWidth=1.4},
+ claim(X,Y,s,e){/* paper, which is the attack */
+   const y=Y-22*s;ctx.save();ctx.globalAlpha=.9;
+   for(let i=0;i<2;i++){const t=(tNow*.7+i/2)%1,xx=X-(6+t*16)*s*((e.fx||1)>0?1:-1),yy=y+Math.sin(t*5+i)*4*s;
+     ctx.save();ctx.translate(xx,yy);ctx.rotate(Math.sin(t*6+i)*.6);
+     ctx.fillStyle='#f0ead8';ctx.strokeStyle='#989078';ctx.lineWidth=.9*s;
+     ctx.beginPath();ctx.rect(-3*s,-4*s,6*s,8*s);ctx.fill();ctx.stroke();ctx.restore()}
+   ctx.restore();ctx.strokeStyle=OL;ctx.lineWidth=1.4},
+ custod(X,Y,s,e){/* it is holding it for you */
+   const y=Y-40*s;ctx.fillStyle='#e0bd6e';ctx.strokeStyle='#40404a';ctx.lineWidth=1*s;
+   ctx.beginPath();ctx.rect(X-5*s,y-3*s,10*s,8*s);ctx.fill();ctx.stroke();
+   ctx.beginPath();ctx.arc(X,y-3*s,3.2*s,Math.PI,0);ctx.stroke();
+   ctx.fillStyle='#40404a';ctx.beginPath();ctx.arc(X,y+1*s,1.3*s,0,6.283);ctx.fill();
+   ctx.strokeStyle=OL;ctx.lineWidth=1.4},
+ sniper(X,Y,s,e){/* it is waiting for the fee to drop */
+   const y=Y-34*s,r=5.5*s;ctx.save();ctx.strokeStyle='#f7931a';ctx.lineWidth=1.1*s;
+   ctx.globalAlpha=.55+.35*Math.sin(tNow*4);
+   ctx.beginPath();ctx.arc(X,y,r,0,6.283);ctx.moveTo(X-r-2*s,y);ctx.lineTo(X+r+2*s,y);
+   ctx.moveTo(X,y-r-2*s);ctx.lineTo(X,y+r+2*s);ctx.stroke();ctx.restore();
+   ctx.strokeStyle=OL;ctx.lineWidth=1.4},
+ oracle(X,Y,s,e){/* it is telling everyone what a thing is worth */
+   const y=Y-44*s;ctx.save();ctx.strokeStyle='#f7931a';ctx.lineWidth=1.3*s;
+   for(let i=1;i<=3;i++){const t=(tNow*1.1+i/3)%1;ctx.globalAlpha=.55*(1-t);
+     ctx.beginPath();ctx.arc(X,y,(4+t*12)*s,-2.5,-.64);ctx.stroke()}
+   ctx.restore();eye(X,y,1.8*s,'#f7931a');ctx.strokeStyle=OL;ctx.lineWidth=1.4}
+};
+function mobMark(e,X,Y,s){const m=MOBMARK[e.k];if(!m)return;
+  ctx.save();ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.lineJoin='round';
+  try{m(X,Y,s,e)}catch(err){}
+  ctx.restore()}
+
 function drawEnemy(e,X,Y){
   const s=e.sz,t=ET[e.k],k=t.spr||e.k,fl=e.flash>0,c1=fl?'#fff':t.pal[0],c2=fl?'#fff':t.pal[1],bob=Math.sin(e.ph*4)*2,f=e.fx||1,mov=e.aggro&&e.stun<=0;
   ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.lineJoin='round';
@@ -6058,6 +6179,7 @@ function drawEnemy(e,X,Y){
     if(B){box(X-6*u,Y-40*u+b,12*u,16*u,1,'#e6e2d6');poly([X-2.5*u,Y-40*u+b,X+2.5*u,Y-40*u+b,X+3.5*u,Y-23*u+b,X,Y-18*u+b,X-3.5*u,Y-23*u+b],'#b3261e');
       ctx.fillStyle=e.hp<e.max*.5?'#ff3b30':'#e0bd6e';ctx.font='900 '+8*u+'px Cinzel,serif';ctx.textAlign='center';ctx.fillText(e.slam?'!!':e.k==='boss4'?(e.hp<e.max*.5?':(':':)'):e.k==='boss2'?(e.hp<e.max*.5?'…':'SVP'):e.hp<e.max*.5?'>:(':'VP',X,Y-45*u+b);glow(X,Y-48*u+b,40,'#e0bd6e',.4);light(X,Y-40*u,150,'#e0bd6e')}
     else{ctx.fillStyle='#ff3b30';ctx.fillRect(X-6*u,Y-50*u+b,12*u,3*u);glow(X,Y-48*u+b,18*u,'#ff3b30',.5);eye(X-18*u,Y-40*u+b,1.6*u,'#ffe36b');eye(X+18*u,Y-40*u+b,1.6*u,'#ffe36b')}}
+  mobMark(e,X,Y,s);
   const top=Y-(e.k==='boss5'?172:e.k==='boss4'?122:k==='mono'?160:k==='boss'?112:k==='mech'?76*s:k==='tick'?20:k==='hound'?36*s:56*s);
   if(e.stun>0){ctx.fillStyle='#59e0e6';ctx.font='700 10px Cinzel,serif';ctx.textAlign='center';ctx.fillText('STUNNED',X,top-4)}
   if(OPT.enemyBars&&e.hp<e.max&&k!=='boss'&&k!=='mono'&&e.k!=='boss4'&&e.k!=='boss5'){const w=30*s;ctx.fillStyle='#050409';ctx.fillRect(X-w/2-1,top-1,w+2,5);ctx.fillStyle=e.su?'#d0aa62':e.champ?'#8494ff':'#d23a2e';ctx.fillRect(X-w/2,top,w*Math.max(0,e.hp/e.max),3)}
@@ -8277,7 +8399,7 @@ uiBoot();
 showDisc();
 cloudInit();
 function devOn(){try{if(window.__DEBUG)return true;var h=location.hostname;if(h==='localhost'||h==='127.0.0.1'||h==='::1')return true;if(location.protocol==='file:'||location.protocol==='about:')return true}catch(e){}return false}
-if(devOn())window.__g={gameOver,creditSlides,toTitle,openCreate,closeCreate,createGame,endGame,beginDifficulty,markCleared,hasCleared,aiDecide,aiDelay,recSet,recGet,get AURACOL(){return AURACOL},itemArt,itemArtFor,itemImg,itemArch,itemTint,itemHead,itemSeed,get ITART(){return ITART},fxSheet,fxBlit,fxPairs,fxWarm,fxLoad,get FXART(){return FXART},get FXC(){return FXC},migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,stimPackItem,giveStim,stimToBelt,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},set satShop(v){satShop=v},get shop(){return shop},set shop(v){shop=v},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},get LBOX(){return LBOX},adaptGearless,adaptSpawn,adaptDeath,nanReport,get LOOT_BOX(){return LOOT_BOX},lootShowAll,lootPrefs,SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith,openVend,vendAsk,vendBid,vendBuy,vendSell,vendBuyback,vendBuyStim,vendIdentify,vendBox,vendTabOf,buyPrice,sellValue,satCost,satPrice,boxPrice,get VEND(){return VEND},get BUYBACK(){return BUYBACK},get shopVia(){return shopVia},setShopVia(v){shopVia=+v||0},vendFlipLock,vendSellPlan,vendSellCommit,vendSellOpen,sellFilters,vendQuest,lootPasses,lootAuto,lootMigrate,lootLayout,lootName,lootPickup,lootOpen,lootCompare,lootPrefs,lootSave,lootLoad,layCorpse,reclaimCorpse,buyCorpse,corpseFee,repairQuote,repairOne,repairAll,repairList,wearWeapon,wearArmor,wearSlot,itemBroken,stampDura,migrateDurability,placeCorpses,deathCreditPct,encW,loanerWeapon,calmNearCorpse,resetZones,stampReq,canWear,blowPct,blowSpec,swingBlow,gearLive,gearQuiet,reqShortfall,cantEquipText,attrTip,driveStat,witImpact,pdmg,classWeapon,weaponRole};
+if(devOn())window.__g={gameOver,creditSlides,toTitle,openCreate,closeCreate,createGame,endGame,beginDifficulty,markCleared,hasCleared,aiDecide,aiDelay,recSet,recGet,get AURACOL(){return AURACOL},itemArt,itemArtFor,itemImg,itemArch,itemTint,itemHead,itemSeed,get ITART(){return ITART},fxSheet,fxBlit,fxPairs,fxWarm,fxLoad,get FXART(){return FXART},get FXC(){return FXC},get MOBMARK(){return MOBMARK},migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,stimPackItem,giveStim,stimToBelt,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},set satShop(v){satShop=v},get shop(){return shop},set shop(v){shop=v},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},get LBOX(){return LBOX},adaptGearless,adaptSpawn,adaptDeath,nanReport,get LOOT_BOX(){return LOOT_BOX},lootShowAll,lootPrefs,SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith,openVend,vendAsk,vendBid,vendBuy,vendSell,vendBuyback,vendBuyStim,vendIdentify,vendBox,vendTabOf,buyPrice,sellValue,satCost,satPrice,boxPrice,get VEND(){return VEND},get BUYBACK(){return BUYBACK},get shopVia(){return shopVia},setShopVia(v){shopVia=+v||0},vendFlipLock,vendSellPlan,vendSellCommit,vendSellOpen,sellFilters,vendQuest,lootPasses,lootAuto,lootMigrate,lootLayout,lootName,lootPickup,lootOpen,lootCompare,lootPrefs,lootSave,lootLoad,layCorpse,reclaimCorpse,buyCorpse,corpseFee,repairQuote,repairOne,repairAll,repairList,wearWeapon,wearArmor,wearSlot,itemBroken,stampDura,migrateDurability,placeCorpses,deathCreditPct,encW,loanerWeapon,calmNearCorpse,resetZones,stampReq,canWear,blowPct,blowSpec,swingBlow,gearLive,gearQuiet,reqShortfall,cantEquipText,attrTip,driveStat,witImpact,pdmg,classWeapon,weaponRole};
 /* late additions that need the dialogue tables */
 QRW.push(
  ['q16','gramps','“I do not remember the nine years after I clicked.” You gain 1 skill point.',()=>G.sp++,'Gramps'],
