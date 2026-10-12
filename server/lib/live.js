@@ -42,6 +42,7 @@ const PVP_SCALE = 0.25;            /* players are much tougher to each other tha
 /* Stand in town this long before the first declaration. The minute between
    naming the same person again, and the ten-second portal lock, stay. */
 const HOSTILE_ARM = 3000;
+const MOB_LIST_MAX = 160;           /* machines in one host report; a district is about eighty */
 const TOWNS = new Set([0, 17, 18, 21, 27]);
 const SIM_ZONE = 6;
 /* Three difficulties, chosen when the game is made and fixed for its life, the way
@@ -1277,7 +1278,9 @@ const HANDLERS = {
     const z = mobZone(g, sample);
     if (z.host !== p.uid) return;
     z.pushedAt = Date.now();
-    const list = Array.isArray(m.list) ? m.list.slice(0, 60) : [];
+    /* An Act I district starts near eighty machines. A list cut at sixty left the rest
+       unknown here, and a machine the server has never heard of cannot be hit by anyone. */
+    const list = Array.isArray(m.list) ? m.list.slice(0, MOB_LIST_MAX) : [];
     const seen = {};
     const diffHp = diffHpOf(g);
     for (let i = 0; i < list.length; i++) {

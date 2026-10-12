@@ -184,6 +184,11 @@ Treat them as illustration, not effects, and schedule them separately.
 Kept short on purpose. The commit log is the record; this is only what stops
 somebody redoing it.
 
+- **Four bots play Act I together, then fight.** `tools/party-playtest.js`.
+  Its run found and fixed eight multiplayer bugs: quest sharing, per-character
+  districts, the 60-monster cap, host-only monster aim, Pryce's ring and slam,
+  hostile players unclickable, a Witness's left click, and the unannounced duel.
+  Write-up and what is still open: `notes/PLAYTEST-multiplayer.md`.
 - **The game is created and ended, not toggled.** A difficulty is bound when a
   game is made, in single player and multiplayer alike. Leaving is D2's Save and
   Exit. The ending marks the clear, rolls credits and returns to the title.
@@ -210,6 +215,6 @@ somebody redoing it.
 
 All 120 skills across 8 classes have art rows. Server suites: `run` 39, `wire`
 13, `social` 59, `games` 40, `capacity` 5, `bug` 15, `intake` 31, `disclaimer`
-11, `maxi` 23, `invite` 9, `guard` 22, `reconnect` 13, `admin` 10, `maps` 22,
-`plaus` 60, deploy dry-run 20, `mobs` 19, `coop` 40, `live` 100, soak clean at
+11, `maxi` 23, `invite` 9, `guard` 22, `reconnect` 13, `admin` 10, `maps` 25,
+`plaus` 60, deploy dry-run 20, `mobs` 21, `coop` 40, `live` 100, soak clean at
 20 bots. 34/34 zones, the acts walk clean. `lan.js` unproven here by design.

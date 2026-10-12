@@ -87,6 +87,20 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   await wait(40);
   ok('a dead machine does not die again', of(B, 'mkill').length === kills);
 
+  /* An Act I district starts near eighty machines. Every one of them has to be known here,
+     or the ones past the cut cannot be hit by anyone. */
+  await wait(1100);
+  const crowd = [];
+  for (let i = 0; i < 85; i++) crowd.push({ id: 300 + i, k: 'tick', x: 12 + (i % 5) * .1, y: 10.5, hp: 30, max: 30, ml: 5 });
+  A.send({ t: 'mobs', zi: 1, tier: 0, list: crowd });
+  await wait(60);
+  const crowdSeen = of(B, 'mobs').pop();
+  ok('a district of eighty-five machines reaches the guest whole', !!(crowdSeen && crowdSeen.list.filter(r => r.id >= 300).length === 85), crowdSeen && String(crowdSeen.list.length));
+  const lastBefore = of(B, 'mhp').length;
+  B.send({ t: 'mhit', zi: 1, tier: 0, id: 384, d: 1 });
+  await wait(50);
+  ok('and the eighty-fifth can be hit', of(B, 'mhp').slice(lastBefore).some(m => m.id === 384));
+
   A.send({ t: 'mobs', zi: 1, tier: 0, list: [{ id: 2, k: 'tick', x: 8, y: 8, hp: 30, max: 30, ml: 5 }] });
   await wait(40);
   A.send({ t: 'invite', uid: vale });

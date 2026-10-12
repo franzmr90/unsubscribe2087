@@ -244,18 +244,18 @@ const skipPick=it=>!it.charm&&G.eq[it.slot]&&(OPT['pk'+it.q]===false||(OPT.pkBet
 /* the machines read the fight: one-shot kills push them up, repeated deaths in a district ease it */
 let osWin=[];
 function adaptKill(e){if(!OPT.dyn||e.minion||e.champ||e.su||isBoss(e.k)||W.z.sim)return;osWin.push(e.hits<=1?1:0);if(osWin.length<12)return;const n=osWin.reduce((a,b)=>a+b,0);osWin=[];
-  if(n>=9&&(G.adapt||0)<6){G.adapt=(G.adapt||0)+1;for(const o of W.ents)if(!o.aggro&&!isBoss(o.k)){o.hp*=1.2;o.max*=1.2;o.dmg*=1.1}toast(pick(DIFFUP));sfx('growl')}
+  if(n>=9&&(G.adapt||0)<6){G.adapt=(G.adapt||0)+1;for(const o of W.ents)if(!o.aggro&&!isBoss(o.k)&&!o.mid){o.hp*=1.2;o.max*=1.2;o.dmg*=1.1}toast(pick(DIFFUP));sfx('growl')}
   else if(n<=2&&(G.adapt||0)>0&&Math.random()<.3)G.adapt--}
 function adaptDeath(){partyDeath();if(!OPT.dyn||W.z.sim||W.z.town||G.hc)return;G.dz=G.dz||{};G.ez=G.ez||{};const zi=W.zi,d=G.dz[zi]=(G.dz[zi]||0)+1;osWin=[];if((G.adapt||0)>0)G.adapt--;
   /* Was every second death. One death in a district is already the signal. */
-  if((G.ez[zi]||0)<4){G.ez[zi]=(G.ez[zi]||0)+1;for(const o of W.ents){o.hp*=.8;o.max*=.8;o.dmg*=.8}W.eased=1}}
+  if((G.ez[zi]||0)<4){G.ez[zi]=(G.ez[zi]||0)+1;for(const o of W.ents)if(!o.mid){o.hp*=.8;o.max*=.8;o.dmg*=.8}W.eased=1}}
 /* A hero who has just died is holding a loaner and nothing else: their gear is on
    the corpse they now have to walk back to. adaptKill measured them while geared,
    so scaling the machines to that fight is what makes the walk impossible -- the
    reading and the hero it is applied to are from two different power levels. While
    the loaner is in hand the reading is held, not spent. */
 function adaptGearless(){const w=G&&G.eq&&G.eq.weapon;return !!(w&&w.loan)}
-function adaptSpawn(e){if(!OPT.dyn||W.z.sim)return;const a=adaptGearless()?0:(G.adapt||0),z=(G.ez||{})[W.zi]||0,h=(1+.2*a)*Math.pow(.8,z),d=(1+.1*a)*Math.pow(.8,z);e.hp*=h;e.max*=h;e.dmg*=d}
+function adaptSpawn(e){if(!OPT.dyn||W.z.sim)return;if(typeof mpMobShared==='function'&&mpMobShared())return;/* one character's adaptation is not the party's machine */const a=adaptGearless()?0:(G.adapt||0),z=(G.ez||{})[W.zi]||0,h=(1+.2*a)*Math.pow(.8,z),d=(1+.1*a)*Math.pow(.8,z);e.hp*=h;e.max*=h;e.dmg*=d}
 
 const DIFFUP=['Difficulty adjustment: +20%. Blocks were coming too fast.','Retarget. You were finding kills quicker than one every ten minutes.','Difficulty rises. The network has noticed your hashrate.','Too much hashpower in this district. The machines retarget upward.','Upward adjustment. Nobody said the next epoch would be easier.'];
 const DIFFDN=['Difficulty adjustment: −20%. Some hashrate left the network. Twice.','Downward retarget. Nobody was finding the next block.','Difficulty drops. Even the timechain eases off when the miners go dark.','The machines here retarget downward. Tick tock, next block.','Adjustment: −20%. The protocol is patient with you.'];
