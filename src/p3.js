@@ -186,6 +186,12 @@ function weather(){const wx=TX.wx;if(!wx)return;const dt=Math.min(.05,Math.max(0
 /* ================= canvas ================= */
 const cv=$('cv'),ctx=cv.getContext('2d');let VW=400,VH=700,ZM=1,DPR=1,CW=400,CH=700,cx=0,cy=0;
 const LC=mk(8,8),lg=LC.getContext('2d');let LIGHTS=[];
+/* The veil above only ever subtracts darkness, so a lamp could never put its own
+   colour on the floor: near the player there was no darkness left for it to
+   remove. GLW is the other half -- the light a lamp adds, composited with
+   'lighter' so it brightens and tints whatever it falls on. Quarter res like the
+   veil, one extra composite. */
+const GLW=mk(8,8),glg=GLW.getContext('2d');
 /* Every name and bubble this frame has already printed, in screen pixels. A new one
    that would land on a rectangle already taken steps up until it is clear, so two
    people standing together, or a pile of drops, do not print over each other.
@@ -201,12 +207,19 @@ function boxFree(x,y,w,h){for(let i=0;i<LBOX.length;i++){const b=LBOX[i];
 function txtSlot(x,y,w,h,step,tries){for(let i=0;i<tries;i++){const yy=y-i*step;
   if(boxFree(x,yy,w,h))return yy}return null}
 function txtClaim(x,y,w,h){LBOX.push({x,y,w,h})}
-function resize(){const r=cv.getBoundingClientRect();CW=r.width;CH=r.height;DPR=Math.min(2,window.devicePixelRatio||1);cv.width=Math.max(1,CW*DPR);cv.height=Math.max(1,CH*DPR);ZM=clamp(Math.min(CW,CH)/560,.68,1.25);VW=CW/ZM;VH=CH/ZM;LC.width=Math.ceil(VW/4);LC.height=Math.ceil(VH/4)}
+function resize(){const r=cv.getBoundingClientRect();CW=r.width;CH=r.height;DPR=Math.min(2,window.devicePixelRatio||1);cv.width=Math.max(1,CW*DPR);cv.height=Math.max(1,CH*DPR);ZM=clamp(Math.min(CW,CH)/560,.68,1.25);VW=CW/ZM;VH=CH/ZM;LC.width=Math.ceil(VW/4);GLW.width=Math.ceil(VW/4);GLW.height=Math.ceil(VH/4);LC.height=Math.ceil(VH/4)}
 addEventListener('resize',resize);
 const SX=(x,y)=>(x-y)*32-cx+VW/2, SY=(x,y)=>(x+y)*16-cy+VH*.44;
 /* Every shape an actor is made of is stroked with this. Keeping it a variable
    means one assignment relights a whole figure -- see rimLight. */
 const OL0='#0b0912';let OL=OL0;
+/* Lighting, in three numbers. They are a set: loosening one undoes another, so
+   tune them together and look at a district with monsters in it, not an empty
+   one. tools/light-check.js measures what they do. */
+const PCARRY_S=.72,   /* how bright the light the player carries is */
+      PCARRY_R=.78,   /* and how far it reaches */
+      PFILL_K=.34,    /* what is left of the flat fill over the whole view */
+      GLOW_K=.30;     /* how much a lamp gives back, additively */
 function shadow(X,Y,r){ctx.fillStyle='rgba(0,0,0,.26)';ctx.beginPath();ctx.ellipse(X,Y,r*1.18,r*.6,0,0,6.283);ctx.fill();
   ctx.fillStyle='rgba(0,0,0,.44)';ctx.beginPath();ctx.ellipse(X,Y,r*.72,r*.36,0,0,6.283);ctx.fill()}
 function box(x,y,w,h,r,col){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=col;ctx.fill();ctx.stroke()}
@@ -1308,7 +1321,14 @@ function render(){
     else if(q.k===1){const e=q.o,X=SX(e.x,e.y),Y=SY(e.x,e.y);drawEnemy(e,X,Y);if(e.k==='bull'&&e.say&&e.aggro&&((tNow*.5+e.ph)%6)<2.2)bubble(X,Y-58,['Moo.','Number go up.','Up only.','This time is different.','Have fun staying poor.'][(e.ph*10|0)%5])}
     else if(q.k===2)drawNpc(q.o,SX(q.o.x,q.o.y),SY(q.o.x,q.o.y));
     else if(q.k===11)mpDraw(q.o,SX(q.o.x,q.o.y),SY(q.o.x,q.o.y));
-    else if(q.k===3){const X=SX(P.x,P.y),Y=SY(P.x,P.y);drawPlayer(X,Y);light(X,Y-20,z.town?400:310,null,1,2);light(X,Y-20,1150,null,TX.fill,2)}
+    else if(q.k===3){const X=SX(P.x,P.y),Y=SY(P.x,P.y);drawPlayer(X,Y);
+      /* The player used to carry a 310px light at full strength and a 1150px
+         fill over the whole view, which is why a district's own `amb` barely
+         showed and a lamp could not light anything. A tighter, softer carry
+         gives the authored darkness back its meaning -- and the lamps something
+         to be brighter than. */
+      light(X,Y-20,(z.town?400:310)*PCARRY_R,null,PCARRY_S,2);
+      light(X,Y-20,1150,null,TX.fill*PFILL_K,2)}
     else if(q.k===8){const m=q.o,X=SX(m.x,m.y),Y=SY(m.x,m.y),t=MERCS[G.merc.k],fl=m.flash>0;ctx.strokeStyle='#7be495';ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(X,Y,14,7,0,0,6.283);ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4;
       if(G.merc.k==='hound'){shadow(X,Y,12);const y=Y-11,f=m.fx,lp=m.mov?Math.sin(m.ph*16)*3:0;ctx.fillStyle='#3a2e22';for(const[ox,ph]of[[-8,1],[-4,-1],[5,1],[9,-1]])ctx.fillRect(X+f*ox-1.5,y,3,11+ph*lp*.6);box(X-11,y-7,22,10,4,fl?'#fff':t.col);box(X+f*8-5,y-13,11,9,3,fl?'#fff':t.col);poly([X+f*8,y-13,X+f*5,y-19,X+f*11,y-14],t.col);ctx.fillStyle='#0b0912';ctx.fillRect(X+f*11-1,y-10,2,2)}
       else{const b=human(X,Y,{c:fl?'#fff':t.col,c2:'rgba(0,0,0,.35)',ph:m.ph*9,mov:m.mov,f:m.fx,skin:G.merc.k==='guard'?'#6c7c94':'#d9b08c',leg:'#2a2433'});
@@ -1371,6 +1391,18 @@ function render(){
   for(const L of LIGHTS){if(!L.col||L.r<90)continue;const r=L.r*.85*k,g=lg.createRadialGradient(L.X*k,L.Y*k,0,L.X*k,L.Y*k,r);g.addColorStop(0,L.col);g.addColorStop(1,'rgba(0,0,0,0)');lg.globalAlpha=.55;lg.fillStyle=g;lg.fillRect(L.X*k-r,L.Y*k-r,r*2,r*2)}
   lg.globalAlpha=1;lg.globalCompositeOperation='source-over';
   ctx.imageSmoothingEnabled=true;ctx.drawImage(LC,0,0,VW,VH);
+  /* and then what the lamps give back */
+  if(OPT.fx!=='thin'){const gw=GLW.width,gh=GLW.height,k3=gw/VW;
+    glg.globalCompositeOperation='source-over';glg.clearRect(0,0,gw,gh);
+    let lit=0;
+    for(const L of LIGHTS){if(!L.col)continue;lit=1;
+      const r=L.r*.9*k3,g=glg.createRadialGradient(L.X*k3,L.Y*k3,0,L.X*k3,L.Y*k3,r);
+      g.addColorStop(0,L.col);g.addColorStop(.4,L.col);g.addColorStop(1,'rgba(0,0,0,0)');
+      glg.globalAlpha=GLOW_K*(L.s===undefined?1:L.s);glg.fillStyle=g;
+      glg.fillRect(L.X*k3-r,L.Y*k3-r,r*2,r*2)}
+    glg.globalAlpha=1;
+    if(lit){ctx.globalCompositeOperation='lighter';ctx.drawImage(GLW,0,0,VW,VH);
+      ctx.globalCompositeOperation='source-over'}}
   weather();
   // labels and floating text above the darkness
   ctx.drawImage(vigCanvas(),0,0,VW,VH);
