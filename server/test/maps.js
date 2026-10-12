@@ -65,7 +65,7 @@ const same = (a, b) => a && b && a.floor === b.floor && a.start === b.start && a
   /* ---- two browsers draw the district ---- */
   const browser = await chromium.launch();
   const errs = [];
-  async function player(name) {
+  async function player(name, cls) {
     const ctx = await browser.newContext({ viewport: { width: 390, height: 800 } });
     const p = await ctx.newPage();
     p.on('pageerror', e => errs.push(name + ': ' + e.message));
@@ -79,7 +79,7 @@ const same = (a, b) => a && b && a.floor === b.floor && a.start === b.start && a
     await p.waitForTimeout(700);
     await p.evaluate(() => __g.skipDisc());
     await p.waitForTimeout(200);
-    await p.click('[data-cls=scrapper]');
+    await p.click('[data-cls=' + (cls || 'scrapper') + ']');
     await p.waitForTimeout(700);
     for (let i = 0; i < 12; i++) {
       await p.evaluate(() => {
@@ -184,6 +184,29 @@ const same = (a, b) => a && b && a.floor === b.floor && a.start === b.start && a
   const s1 = await stat(A), s2 = await stat(B);
   ok('and the same monsters, life and bite and mods alike', !!s1 && s1 === s2,
     JSON.stringify({ a: (s1 || '').slice(0, 90), b: (s2 || '').slice(0, 90) }));
+
+  /* Found by four bots playing Act I together: a district drawn from one seed still came
+     out different on a browser whose character had a different class (the blade on the
+     Moors floor is rolled for that class, out of the map's own draws), had already
+     finished the district's quest (so its named machine was not drawn), or had adapted
+     to its deaths. Every machine after the first difference was a different machine
+     under the same number. */
+  const C = await player('Cyd', 'hacker');
+  await until(C, () => __mp.on ? 1 : 0);
+  await C.evaluate(i => __mp.send('game.join', { id: i }), sid);
+  await until(C, () => __mp.MP.game ? 1 : 0);
+  await wait(400);
+  const kinds = pg => pg.evaluate(() => __g.W.ents.filter(e => e.mid).map(e => e.mid + e.k + (e.su ? '!' : '')).join(' '));
+  await A.evaluate(() => { __g.OPT.dyn = true; __g.G.adapt = 2; __g.G.q.q2 = 3; __g.G.lvl = 12; });
+  await C.evaluate(() => { __g.OPT.dyn = true; __g.G.adapt = 0; __g.G.q.q2 = 1; __g.G.lvl = 12; });
+  const c1a = await draw(A, 1), c1c = await draw(C, 1);
+  ok('a hacker and a scrapper draw the same Moors', same(c1a, c1c) && (await kinds(A)) === (await kinds(C)), JSON.stringify({ a: (c1a && c1a.ents || '').slice(0, 80), c: (c1c && c1c.ents || '').slice(0, 80) }));
+  const c2a = await draw(A, 2), c2c = await draw(C, 2);
+  const ka = await kinds(A), kc = await kinds(C);
+  ok('one who has finished Marla and one who has not draw the same Galleria, Marla included', same(c2a, c2c) && ka === kc && ka.includes('!'), JSON.stringify({ a: ka.slice(0, 80), c: kc.slice(0, 80) }));
+  const life = pg => pg.evaluate(() => __g.W.ents.filter(e => e.mid).slice(0, 12).map(e => Math.round(e.max)).join(','));
+  const la = await life(A), lc = await life(C);
+  ok('one character\'s adaptation does not thicken the party\'s machines', la === lc, la + ' / ' + lc);
 
   ok('no page errors', errs.length === 0, errs.slice(0, 3).join(' | '));
 

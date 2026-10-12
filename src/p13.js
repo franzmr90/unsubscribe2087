@@ -343,7 +343,11 @@ function mpRecv(m) {
     /* The server's share. The killer's own share is already final; everyone else's still meets the local multipliers. */
     if (G && mode !== 'title') { gainXp(m.amount, m.self ? 'share' : 1); if (mode === 'play') float(P.x, P.y, '+' + m.amount + ' party', '#9fd0ff', 1); }
   } else if (m.t === 'quest') {
-    if (G && G.q[m.k] !== undefined && G.q[m.k] < m.v) { G.q[m.k] = m.v; toast(m.from + ' finished ' + (QUESTS[m.k] ? QUESTS[m.k].n : m.k) + ' with you.'); }
+    if (G && G.q[m.k] !== undefined && G.q[m.k] < m.v) {
+      G.q[m.k] = m.v;
+      /* The cage is opened once, for the party. Marrow walks home with all of you. */
+      if (m.k === 'q3' && m.v >= 2) G.marrow = true;
+      toast(m.from + ' finished ' + (QUESTS[m.k] ? QUESTS[m.k].n : m.k) + ' with you.'); }
   } else if (m.t === 'pvp') {
     mpTakeHit(m);
   } else if (m.t === 'pail') {
@@ -621,6 +625,46 @@ function mpMobGone(e) {
   if (!mpMobHost() || !e || !e.mid || !W || !G) return;
   mpSend('mgone', { zi: W.zi, tier: G.tier | 0, id: e.mid });
 }
+/* The host runs the machines, so the host decides whom each one goes for. Without this
+   every machine in a shared district went for the host alone: it woke on the host's
+   distance, chased the host across the map, and stood still beside anybody else. A
+   person nearer than the host's own target is the target. */
+function mpMobTarget(e, T) {
+  if (!mpMobHost() || !MP.others || !MP.others.length || e.nc > 0) return null;
+  let best = null, bd = T ? Math.hypot(T.x - e.x, T.y - e.y) : 1e9;
+  for (let i = 0; i < MP.others.length; i++) {
+    const o = MP.others[i];
+    if (!o || !(o.hp > 0) || o.x == null) continue;
+    const d = Math.hypot(o.x - e.x, o.y - e.y);
+    if (d < bd) { bd = d; best = o; }
+  }
+  if (best) best.mpo = 1;
+  return best;
+}
+/* A blow aimed at a person on another browser goes to them, and only them. */
+function mpMobStrike(o, e, d, slow) {
+  if (!mpMobHost() || !o || !o.uid || !(d > 0)) return;
+  mpSend('mdmg', { uid: o.uid, d: Math.round(d), name: (e && e.name) || 'a machine', slow: slow ? 1 : 0 });
+}
+/* A machine's shot that was not aimed at anyone in particular (a boss's ring, say) still
+   lands on whoever it passes through, not only on the host. */
+function mpProjHit(p) {
+  if (!mpMobHost() || !MP.others) return false;
+  for (let i = 0; i < MP.others.length; i++) {
+    const o = MP.others[i];
+    if (!o || !(o.hp > 0) || o.x == null) continue;
+    if (Math.hypot(o.x - p.x, o.y - p.y) < .55) { mpMobStrike(o, p.src, p.dmg, p.slow); return true; }
+  }
+  return false;
+}
+/* Everyone else inside a blast the host saw go off. */
+function mpMobBlast(e, x, y, r, d) {
+  if (!mpMobHost() || !MP.others || !(d > 0)) return;
+  for (let i = 0; i < MP.others.length; i++) {
+    const o = MP.others[i];
+    if (o && o.hp > 0 && o.x != null && Math.hypot(o.x - x, o.y - y) < r) mpMobStrike(o, e, d);
+  }
+}
 function mpMobSplash(e, d) {
   if (!mpMobHost() || !e || !(d > 0) || !MP.others) return;
   const reach = ((ET[e.k] && ET[e.k].range) || 1) + 1.4;
@@ -648,7 +692,7 @@ function mpMobPush(soon) {
       hp: Math.round(e.hp), max: Math.round(e.max || e.hp), ml: W.ml | 0,
       champ: e.champ ? 1 : 0, su: e.su ? 1 : 0, min: e.minion ? 1 : 0, xpm: e.xpM || 1
     });
-    if (list.length >= 60) break;
+    if (list.length >= 160) break;
   }
   mpSend('mobs', { zi: W.zi, tier: G.tier | 0, list });
 }
@@ -674,6 +718,14 @@ function mpApplyMobs(m) {
     if (!row || !(row.id > 0)) continue;
     let e = null;
     for (let j = 0; j < W.ents.length; j++) if (W.ents[j].mid === row.id) { e = W.ents[j]; break; }
+    /* The same number on a different machine means this browser drew the district apart
+       from the host's. The server's list is the district; take its machine. */
+    if (e && !host && e.k !== row.k) {
+      const at = W.ents.indexOf(e);
+      if (at >= 0) W.ents.splice(at, 1);
+      if (W.boss === e) W.boss = null;
+      e = null;
+    }
     if (!e) e = mpStub(row);
     if (!e) continue;
     if (!host) {
@@ -685,6 +737,16 @@ function mpApplyMobs(m) {
     }
     if (row.curse) mpPaintCurse(e, row.curse);
     if (row.tes) e.partyTes = Math.max(e.partyTes || 0, row.tes | 0);
+  }
+  /* A full snapshot names every machine still standing. One this browser drew that the
+     server has never heard of cannot be hit by anyone, so it should not be standing here. */
+  if (m.snap && !host && (m.list || []).length) {
+    const live = {};
+    for (let i = 0; i < m.list.length; i++) if (m.list[i]) live[m.list[i].id | 0] = 1;
+    for (let i = W.ents.length - 1; i >= 0; i--) {
+      const e = W.ents[i];
+      if (e && e.mid && !e.mp && !live[e.mid] && e.tx == null) { W.ents.splice(i, 1); if (W.boss === e) W.boss = null; }
+    }
   }
   if (m.next) MP.mobNext = m.next;
   if (m.you || host) {
@@ -849,11 +911,15 @@ function mpTakeHit(m) {
   if (!G || mode === 'title') return;
   if (mode === 'sheet') closeSheet();
   const was = G.hp;
+  /* The rig's fall leaves you on 1 life behind nine seconds of cover that a pvp hit ignores.
+     Once you have fallen there, the next blow is not a second fall. */
+  const rig = () => !!(W && W.z && W.z.sim && P && P.inv > 8);
+  if (rig()) return;
   /* Through the game's own damage path, so armour and resistances apply to a person the
      same way they apply to a machine, and death — including the rig's painless kind —
      is the code that already exists rather than a second copy of it. */
   hurt(m.dmg, 0, { name: m.from, pvp: 1, crit: m.kind === 'crit' ? 1 : 0, critM: m.kind === 'crit' ? (+m.critM || 2) : 0, dty: m.dty || 'impact' });
-  if (G.hp <= 0 && was > 0) mpSend('died', { uid: m.fromUid });
+  if (was > 0 && (G.hp <= 0 || rig())) mpSend('died', { uid: m.fromUid });
 }
 
 /* ---------- the rig ---------- */

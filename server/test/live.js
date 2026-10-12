@@ -278,23 +278,23 @@ async function until(page, fn, arg, ms) {
   ok('On the Record and Testimony paint from the mob snapshot', !!painted && painted.tes === 4 && painted.rec >= 1.6 && painted.t > 0, JSON.stringify(painted));
 
   /* Area ticks still land after the swing packet budget is spent.
-     The mob list is the host's. Either client can be host, depending on who walked in first. */
+     The mob list is the host's. The id sits clear of the district's own, which the host now reports in full. Either client can be host, depending on who walked in first. */
   const where = await A.evaluate(() => {
     __g.P.x = 10; __g.P.y = 10;
-    const e = { mid: 77, k: 'boss5', x: 10, y: 10, hp: 400000, max: 400000, r: .3, mods: {}, sz: 1, ph: 0 };
+    const e = { mid: 9077, k: 'boss5', x: 10, y: 10, hp: 400000, max: 400000, r: .3, mods: {}, sz: 1, ph: 0 };
     __g.W.ents.push(e);
     __mp.send('move', { x: 10, y: 10, zi: __g.W.zi, tier: __g.G.tier | 0, hp: __g.G.hp, hpm: __g.S.maxHp, lvl: __g.G.lvl, au: 7, aL: 1 });
     return { zi: __g.W.zi, tier: __g.G.tier | 0 };
   });
   const aHost = await A.evaluate(() => !!(__mp.mobHost && __mp.me && __mp.mobHost === __mp.me.uid));
   await (aHost ? A : B).evaluate(w => {
-    __mp.send('mobs', { zi: w.zi, tier: w.tier, list: [{ id: 77, k: 'boss5', x: 10, y: 10, hp: 400000, max: 400000, ml: 20 }] });
+    __mp.send('mobs', { zi: w.zi, tier: w.tier, list: [{ id: 9077, k: 'boss5', x: 10, y: 10, hp: 400000, max: 400000, ml: 20 }] });
   }, where);
   await wait(250);
-  await A.evaluate(() => { for (let i = 0; i < 20; i++) __mp.send('mhit', { zi: __g.W.zi, tier: __g.G.tier | 0, id: 77, d: 10, sk: -1 }); });
-  const swung = await until(A, () => { const e = __g.W.ents.find(x => x.mid === 77); return e && e.hp < 400000 ? 400000 - e.hp : 0; });
-  await A.evaluate(() => { for (let i = 0; i < 6; i++) __mp.send('mhit', { zi: __g.W.zi, tier: __g.G.tier | 0, id: 77, d: 10, sk: 7, area: 1 }); });
-  const pulsed = await until(A, base => { const e = __g.W.ents.find(x => x.mid === 77); return e && (400000 - e.hp) > base ? 400000 - e.hp : 0; }, swung);
+  await A.evaluate(() => { for (let i = 0; i < 20; i++) __mp.send('mhit', { zi: __g.W.zi, tier: __g.G.tier | 0, id: 9077, d: 10, sk: -1 }); });
+  const swung = await until(A, () => { const e = __g.W.ents.find(x => x.mid === 9077); return e && e.hp < 400000 ? 400000 - e.hp : 0; });
+  await A.evaluate(() => { for (let i = 0; i < 6; i++) __mp.send('mhit', { zi: __g.W.zi, tier: __g.G.tier | 0, id: 9077, d: 10, sk: 7, area: 1 }); });
+  const pulsed = await until(A, base => { const e = __g.W.ents.find(x => x.mid === 9077); return e && (400000 - e.hp) > base ? 400000 - e.hp : 0; }, swung);
   ok('a Proof of Work tick still lands when the swing budget is spent', !!swung && !!pulsed && pulsed > swung, JSON.stringify({ swung, pulsed }));
 
   /* ---- a trade, in town, both confirm, one swap ---- */

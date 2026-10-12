@@ -10,7 +10,12 @@ function wpick(pairs){let s=0;for(const p of pairs)s+=p[1];let r=Math.random()*s
    that draw keep the ordinary one. Solo play never sets a seed, so it is unchanged. */
 let mapShared=false;
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296}}
-function withMapRng(seed,fn){if(seed==null)return fn();const prev=Math.random,was=mapShared;Math.random=mulberry32(seed>>>0);mapShared=true;try{return fn()}finally{Math.random=prev;mapShared=was}}
+function withMapRng(seed,fn){if(seed==null)return fn();const prev=Math.random,was=mapShared,wasOwn=ownRng0;ownRng0=prev;Math.random=mulberry32(seed>>>0);mapShared=true;try{return fn()}finally{Math.random=prev;mapShared=was;ownRng0=wasOwn}}
+/* Inside a shared draw, anything that is one character's own -- the blade on the Moors floor,
+   rolled for that class -- steps out to the ordinary generator, or it would spend a different
+   number of the map's draws on each browser and every monster after it would differ. */
+let ownRng0=null;
+function ownRng(fn){if(!mapShared||!ownRng0)return fn();const cur=Math.random;Math.random=ownRng0;mapShared=false;try{return fn()}finally{Math.random=cur;mapShared=true}}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* ================= classes and skill trees =================
