@@ -41,7 +41,7 @@ for(const fx of ['full','thin']){
   ok(r.nbad===0,'every tile is the size its own ts says'+(r.nbad?' ('+r.nbad+' wrong: '+r.bad.join('; ')+')':''));
   ok(r.ts===(fx==='thin'?1:2),'built at '+(fx==='thin'?1:2)+'x under fx='+fx);
 }
-const mat=await p.evaluate(()=>{const g=window.__g,need=['m','g','w','c','v','s','p','r'],bad=[];
+const mat=await p.evaluate(()=>{const g=window.__g,need=['m','g','w','c','v','s','p','r','b'],bad=[];
   for(const k in g.MAT)for(const f of need)if(g.MAT[k][f]===undefined)bad.push(k+'.'+f);
   return {bad,keys:Object.keys(g.MAT),unknown:Object.keys(g.MAT).filter(k=>!g.STY[k])}});
 ok(mat.bad.length===0,'every MAT row is complete'+(mat.bad.length?' (missing '+mat.bad.join(', ')+')':''));

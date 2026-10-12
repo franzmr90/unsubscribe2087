@@ -123,9 +123,24 @@ was reported to mean.
 | | | state |
 |---|---|---|
 | 1 | Lighting rework | **done.** `GLW` adds the lamp's own colour back, and four constants beside `OL0` in `src/p3.js` tune the player's own light against ambient. |
-| 2 | Environment textures, one act at a time | **Act I done.** See below. Acts II-V still have no `MAT` row, so they are untouched. |
+| 2 | Environment textures, one act at a time | **Acts I and II done.** See below. Acts III-V still have no `MAT` row, so they are untouched. |
 | 3 | Act-scoped streamed actors | not started |
 | 4 | WebGL blit layer | not started, and still not obviously worth it |
+
+**Act II's textures.** `MAT` rows for `shaft garden lake walk mezz landing`.
+The useful thing learned here is that the amounts are not a global recipe: Act I
+is a derelict street, Act II is a tower that is still being looked after. Carry
+Act I's weathering across and a tended sky garden reads as a car park, which is
+the asphalt mistake pointing the other way. Only the Updraft takes Act I's
+weight, and it takes it as soot rather than rain -- which is what the new `b`
+knob is for, the fraction of the lightness swing that is dark.
+
+One authored painter changed, which `MAT` could not reach: `FD.garden` drew the
+same bright frame at the same inset and the same nine plants at the same spacing
+on every variant, so five tiles across a district read as one hard lattice. Same
+tiling problem, one layer down. The frame is quieter, its inset and the planting
+move with the variant, and the pond is no longer a perfect circle. Beds, plants
+and water still read.
 
 **Act I's textures.** Two changes, which are separable:
 
@@ -225,6 +240,13 @@ Treat them as illustration, not effects, and schedule them separately.
 - **`text/GAME-TEXT.md` and `.docx` are edited by hand.** `node
   tools/text/export.js` writes them, `import.js` reads them back,
   `roundtrip.js` proves export, import, build and smoke still agree.
+- **`floorDetail` still calls `Math.random`.** The grass in the Moors, the
+  scratches on Tribunal Row and the Cathedral's curves differ from build to
+  build, and between two people standing in the same shared district. It is
+  cosmetic, not geometry, so it is not the desync `server/test/maps.js` guards
+  -- but `notes/GRAPHICS-PLAN.md` says anything seeded draws from the map seed,
+  and this does not. It also means a tile set cannot be compared byte for byte
+  between builds, which is worth knowing before trying to prove one unchanged.
 - **`tools/palette-check.js` reads the authored palette, not the screen.** It
   scores `STY[].f`, so anything that paints *on* a floor is invisible to it and
   "unchanged" from it means nothing. `tools/floor-sep.js` is the pixel version:
