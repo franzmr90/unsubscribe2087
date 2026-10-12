@@ -62,6 +62,17 @@ These are the habits that actually caught things, not general advice:
 - **A tool that fails is either a bug or a stale expectation.** Decide which and
   say so. Do not leave a red check sitting on `main` unexplained -- see the
   open items below for two that were.
+- **A flaky test is a bug in the test until proven otherwise.**
+  `tools/skill-aim.js` failed about one run in five and was written off as
+  flake. It was picking up the wrong effect, twice over. It waited 60ms with
+  the loop running and then took the *last* patch or ring in `W.fx`, so a tick
+  detonating near the player (`src/p2.js`, `if(e.k==='tick')`, which pushes its
+  own `ring` at `#ff9a3c`) got measured instead -- and the zone it runs in is
+  full of ticks. Underneath that, `fxAim()` does not create an effect, it
+  *relocates* the one `skvPlay()` pushed at the caster, so the disc under test
+  is the **first** patch or ring, not the last; a burst that killed something
+  put the dead thing's rings on the end. The game was correct in every failing
+  run. Read the effect synchronously and take the first: 20 runs clean.
 - **Check the claim before reporting it.** Two documents in this folder had
   confident headline findings that were wrong on inspection. Both corrections
   are left visible in the files.
@@ -281,11 +292,6 @@ Treat them as illustration, not effects, and schedule them separately.
 - **`text/GAME-TEXT.md` and `.docx` are edited by hand.** `node
   tools/text/export.js` writes them, `import.js` reads them back,
   `roundtrip.js` proves export, import, build and smoke still agree.
-- **`tools/skill-aim.js` is intermittent.** It fails about one run in five, on
-  `homesteader 0`, with the miss distance differing run to run (3.41, 3.58). It
-  does this at `main` as well as on the current tree, so it is a flaky tool
-  rather than a regression -- but it has not been diagnosed, and a checker that
-  cries wolf one time in five will eventually be ignored on the run that matters.
 - **`floorDetail` still calls `Math.random`.** The grass in the Moors, the
   scratches on Tribunal Row and the Cathedral's curves differ from build to
   build, and between two people standing in the same shared district. It is

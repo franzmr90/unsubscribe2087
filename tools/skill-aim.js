@@ -2,7 +2,37 @@
    node tools/skill-aim.js
    The contact sheets cast without aiming, so castSpot returns null and the
    hazard lands at the caster's feet -- which hides exactly this bug. This
-   aims first. */
+   aims first.
+
+   The disc is read back synchronously, the instant cast() returns, and that
+   matters. This test used to wait 60ms and then take the last patch or ring in
+   W.fx, and it failed about one run in five. The game was right every time: the
+   hazard was on the aim point in every failing run too. What moved was which
+   effect the test picked up. A tick that closes to within 0.9 of the player
+   detonates (src/p2.js, `if(e.k==='tick')`) and pushes its own
+   {k:'ring', col:'#ff9a3c'} at wherever it happened to be standing -- and the
+   zone this runs in is the Parcel Moors, which is full of ticks, with the
+   player on G.god so nothing stops them arriving. Any run where one reached the
+   player inside those 60ms ended with the test measuring the tick's ring
+   instead of the skill's, from a position that moved run to run.
+
+   Every skill here pushes its disc inside cast(), before the loop gets a turn,
+   so reading it before the first await removes that race rather than papering
+   over it. The sleep is still needed afterwards for the allies a skill spawns.
+
+   There was a second race underneath it, and it is the more interesting one.
+   fxAim() does not create an effect: it walks W.fx backwards, finds the last
+   one of that kind, and moves it to the aim point. The effect it moves is the
+   one skvPlay() pushed at the caster when the cast began -- so the disc under
+   test is the FIRST patch or ring in the array, not the last. Taking the last
+   worked only while nothing else pushed one. anon 6 bursts for damage at the
+   aim point, and when that burst synchronously killed something standing in
+   it, the dead thing's own burst -- two more rings, at its own position -- went
+   on the end of the array and got measured instead.
+
+   Taking the first still catches the bug this exists for: if fxAim failed to
+   relocate skvPlay's effect, that first entry would still be sitting on the
+   caster, four paces from the aim point. */
 const {chromium}=require('playwright');
 const fs=require('fs'),path=require('path');
 const root=path.join(__dirname,'..');
@@ -45,12 +75,16 @@ const res=await p.evaluate(async(cases)=>{
     P.spot={x:P.x+4,y:P.y};
     G.sk[i]=5;G.slots[0]=i;
     try{__g.cast(0)}catch(e){}
+    /* before any await: nothing else has had a chance to push an effect yet */
+    const own=W.fx.filter(f=>f.k==='patch'||f.k==='ring');
     await sleep(60);
     const made=(W.allies||[]).slice(n0);
-    const disc=W.fx.filter(f=>f.k==='patch'||f.k==='ring').pop();
+    const late=!own.length;
+    const pool=late?W.fx.filter(f=>f.k==='patch'||f.k==='ring'):own;
+    const disc=pool[0];
     const tgt=made[0]||null;
     out.push({cls,i,kind,mode:mode||'aim',
-      hasDisc:!!disc, placed:made.length>0,
+      hasDisc:!!disc, placed:made.length>0, late,
       discToAim: disc?Math.hypot(disc.x-(P.x+4),disc.y-P.y):null,
       discAtPlayer: disc?Math.hypot(disc.x-P.x,disc.y-P.y):null,
       hazardAtPlayer: tgt?Math.hypot(tgt.x-P.x,tgt.y-P.y):null});
@@ -67,6 +101,7 @@ for(const r of res){
   console.log(`  ${r.cls} ${String(r.i).padEnd(3)} ${String(r.kind).padEnd(8)} ${f(r.discToAim)}        ${f(r.discAtPlayer)}        ${f(r.hazardAtPlayer)}`);
   if(!r.placed){console.log(`       (placed nothing this run -- skipped)`);continue}
   if(!r.hasDisc){fail.push(`${r.cls} ${r.i}: no disc drawn at all`);continue}
+  if(r.late)console.log(`       (no disc until after the cast returned -- read from a live world, so this one can still race)`);
   if(r.mode==='dir'){
     if(r.discAtPlayer<1)
       fail.push(`${r.cls} ${r.i}: direction-only, but its circle is on the caster (${r.discAtPlayer.toFixed(2)} away)`);
