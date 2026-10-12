@@ -1,34 +1,34 @@
 [
   {
     "name": "dense-1",
-    "n": 26,
+    "n": 18,
     "party": 0,
-    "update": 0.21,
-    "render": 16.502,
-    "frame": 16.712,
+    "update": 0.231,
+    "render": 23.306,
+    "frame": 23.537,
     "median": 1.7,
-    "p95": 5.3,
+    "p95": 5.7,
     "peak": {
-      "ents": 26,
-      "projs": 16,
-      "parts": 36,
+      "ents": 18,
+      "projs": 11,
+      "parts": 26,
       "fx": 1,
       "texts": 0
     }
   },
   {
     "name": "dense-4",
-    "n": 21,
+    "n": 26,
     "party": 3,
-    "update": 0.291,
-    "render": 16.734,
-    "frame": 17.025,
+    "update": 0.246,
+    "render": 21.351,
+    "frame": 21.596,
     "median": 1.8,
-    "p95": 4,
+    "p95": 6.8,
     "peak": {
-      "ents": 21,
-      "projs": 12,
-      "parts": 58,
+      "ents": 26,
+      "projs": 16,
+      "parts": 49,
       "fx": 1,
       "texts": 9
     }
@@ -37,34 +37,34 @@
     "name": "boss-1",
     "n": 9,
     "party": 0,
-    "update": 0.232,
-    "render": 16.537,
-    "frame": 16.769,
+    "update": 0.16,
+    "render": 21.379,
+    "frame": 21.539,
     "median": 1.6,
-    "p95": 8.5,
+    "p95": 3.5,
     "peak": {
       "ents": 9,
       "projs": 12,
-      "parts": 20,
+      "parts": 15,
       "fx": 2,
-      "texts": 7
+      "texts": 10
     }
   },
   {
     "name": "boss-4",
     "n": 9,
     "party": 3,
-    "update": 0.177,
-    "render": 17.826,
-    "frame": 18.003,
+    "update": 0.167,
+    "render": 22.776,
+    "frame": 22.942,
     "median": 1.5,
-    "p95": 5.1,
+    "p95": 4.3,
     "peak": {
       "ents": 9,
       "projs": 0,
       "parts": 54,
       "fx": 2,
-      "texts": 19
+      "texts": 21
     }
   }
 ]

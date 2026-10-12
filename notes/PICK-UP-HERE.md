@@ -5,7 +5,7 @@ The one live document. Everything else in `notes/` is history kept on purpose;
 Read this first, update it last, and keep it to one page of truth rather than a
 record of everything that happened.
 
-Last true as of **2026-10-12**, `main` at `859cc2d`.
+Last true as of **2026-10-12**, `main` at `b0658cc`.
 
 ---
 
@@ -115,6 +115,52 @@ was reported to mean.
 | 3 | **`p8` and `p9` have no effects at all; `p5` and `p6` have one each** | those files | Some of that is correct -- a money conversation needs no particle. Shrines and shapeShift are not conversations. Check each before assuming it is a gap. |
 | 4 | **`tools/vfx-wire-check.js` is red on `main`** | that file | Stale expectations, not a bug. See the open items below. |
 
+### The graphics ladder, and where it has got to
+
+`notes/RENDERER-DECISION.md` is the record of why the fork that matters is art
+*source*, not renderer, and why three.js is not the lever. Its four rungs:
+
+| | | state |
+|---|---|---|
+| 1 | Lighting rework | **done.** `GLW` adds the lamp's own colour back, and four constants beside `OL0` in `src/p3.js` tune the player's own light against ambient. |
+| 2 | Environment textures, one act at a time | **Act I done.** See below. Acts II-V still have no `MAT` row, so they are untouched. |
+| 3 | Act-scoped streamed actors | not started |
+| 4 | WebGL blit layer | not started, and still not obviously worth it |
+
+**Act I's textures.** Two changes, which are separable:
+
+- **Tiles build at 2x and are drawn down** (`tscale()`). The floor raster already
+  ran at `DPR*ZM`, so a 66x34 tile was being upscaled on every hi-dpi screen.
+  Costs 388KB resident for the one style held, against 97KB, and about **1ms of
+  a moving frame** -- a moving camera rebuilds the floor raster every frame, so
+  each tile blit is now a downscale. `OPT.fx==='thin'` drops back to 1x, so the
+  setting that already exists for a weak device covers it.
+- **A `material()` pass** over `floorDetail`, and `faceMat()` over `faceDetail`.
+  floorDetail draws what a tile *is*; material draws what it has been through.
+  Driven by `MAT`, which has a row only for `town moor mall farm trib hq` -- a
+  style with no row is left exactly as it was, which is how the rest of the
+  acts stay untouched until somebody tunes them.
+
+Three things learned doing it, all of which cost a revision:
+
+- **A material layer must modulate, not repaint.** The mottle went down with
+  `source-over` first and lifted the Moors' black asphalt back toward the grass
+  around it, so the road stopped reading. `soft-light` keeps local tone.
+- **Any feature you can recognise shows where the grid is.** A district has five
+  floor tiles. A puddle on each, with a bright closed rim, read as somebody
+  having drawn circles on the floor. Cracks and water are on a subset of
+  variants now, and the puddle lost its rim. Mottle and grain can go on every
+  tile because neither is recognisable.
+- **The lit scene hid both.** `tools/tile-sheet.js` shoots the tiles themselves
+  and reports mean lightness, within-tile variance and the span across variants;
+  the first look at that sheet is what made both problems obvious.
+
+Measured, base to now: mean lightness moved at most 1.9 L\* across the six
+styles, within-tile variance rose **15-28%**, worst-case build 2.0ms to 5.6ms.
+
+`notes/GRAPHICS-PLAN.md` is the older and longer ladder, with the byte and
+millisecond budgets behind it.
+
 ### The graphics plan
 
 `notes/GRAPHICS-PLAN.md` is the ladder: what to improve, cheapest first, in the two
@@ -150,6 +196,11 @@ Treat them as illustration, not effects, and schedule them separately.
 
 ## Open, not blocked on a session here
 
+- **Act I's texture numbers have never been taken on a phone.** The +1ms of a
+  moving frame is a container CPU; a phone's fill rate is the number that
+  decides, and a downscaling blit is exactly the kind of work it is worst at.
+  `?perf=1` over the LAN build, walk a district, screenshot the readout. If it
+  bites, `tscale()` is one line and thin effects already fall back.
 - **`tools/vfx-wire-check.js` fails on `main`.** The old note blamed a missing
   SKV table on a branch; that is no longer true -- SKV is in `main` with all 120
   rows. It now fails because the skill graphics passes deliberately re-kinded
@@ -174,6 +225,11 @@ Treat them as illustration, not effects, and schedule them separately.
 - **`text/GAME-TEXT.md` and `.docx` are edited by hand.** `node
   tools/text/export.js` writes them, `import.js` reads them back,
   `roundtrip.js` proves export, import, build and smoke still agree.
+- **`tools/palette-check.js` reads the authored palette, not the screen.** It
+  scores `STY[].f`, so anything that paints *on* a floor is invisible to it and
+  "unchanged" from it means nothing. `tools/floor-sep.js` is the pixel version:
+  54 of 114 actor/district pairs sit under the dE 18 rule at the 5th percentile
+  of real floor pixels, against 55 before the material pass. Keep both.
 - **The credits prose is a placeholder.** `creditSlides()` in `src/p4.js` wires
   the numbers in; the words are meant to be rewritten.
 

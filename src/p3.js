@@ -60,6 +60,15 @@ const STY={
  wait:{like:'trib',f:['#2a1418','#24101a','#321a1e'],w:['#6a5a4a','#4e4236','#382e26'],glow:'#ffb080',mote:'#ff8a6a'},
  mezz:{like:'hq',f:['#8a8898','#7e7c8c','#9694a4'],w:['#f4f0ff','#b8b0d8','#8a82b0'],glow:'#d8c8ff',mote:'#d8c8ff'}};
 let TX={};
+/* Tiles are built at twice the size they are drawn, so a hi-dpi screen gets
+   pixels where it used to get an upscale. It costs 4x the tile memory (388KB
+   for the one style that is resident, against 97KB) and about 1ms of the frame
+   while the camera is moving, because a moving camera rebuilds the floor raster
+   and each tile blit is now a downscale. Thin effects drop back to 1, so the
+   setting that already exists for a weak device covers this too. The factor a
+   tile was built at rides on TX, not on this, so a mid-game change of setting
+   cannot leave the draw sites scaling by the wrong number. */
+function tscale(){return OPT.fx==='thin'?1:2}
 function mk(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return c}
 function noise(g,w,h,n,a){for(let i=0;i<n;i++){g.fillStyle=Math.random()<.5?`rgba(0,0,0,${a})`:`rgba(255,255,255,${a*.6})`;g.fillRect(rnd(0,w),rnd(0,h),rnd(1,2.5),rnd(1,2.5))}}
 function floorDetail(g,st,v,s,st0){
@@ -145,16 +154,115 @@ function faceDetail(g,st,H,v,side,s,st0){
   if(st==='trib'){for(let i=0;i<7;i++){g.fillStyle=i%2?'#1c1c1a':'#e0bd3a';g.fillRect(i*5,H-8,5,5)}if(tall){win(10,9,13,16,'#1b1b22');g.fillStyle='#93782a';for(let x=12;x<23;x+=3)g.fillRect(x,9,1,16)}}
   if(st==='hq'){g.fillStyle='rgba(20,24,40,.6)';g.fillRect(2,3,29,H-7);for(let x=2;x<33;x+=10){g.fillStyle=s.w[0];g.fillRect(x,3,1.2,H-7)}for(let y=3;y<H-4;y+=11){g.fillStyle=s.w[0];g.fillRect(2,y,29,1.2)}g.fillStyle='rgba(255,255,255,.12)';g.beginPath();g.moveTo(4,H-6);g.lineTo(14,4);g.lineTo(19,4);g.lineTo(9,H-6);g.fill()}
 }
-function wallTex(s,st,H,v,st0){const c=mk(66,34+H),g=c.getContext('2d');
-  g.save();g.transform(1,.5,0,1,0,17);g.fillStyle=s.w[1];g.fillRect(0,0,33,H);faceDetail(g,st,H,v,0,s,st0);g.restore();
-  g.save();g.transform(1,-.5,0,1,33,34);g.fillStyle=s.w[2];g.fillRect(0,0,33,H);faceDetail(g,st,H,v,1,s,st0);g.restore();
+/* ---- surface material -------------------------------------------------------
+   floorDetail draws what a tile *is*: Tribunal Row's gold inlay, the Fields'
+   irrigation line. material draws what it has been through -- that it is
+   mottled rather than one flat colour, that the slab has settled at its edges,
+   that somebody has walked on it. It paints in the same unprojected 33x33
+   square floorDetail uses, so the wear lies in the ground plane rather than on
+   the screen.
+
+   A style with no MAT row is left exactly as it was, which is how this arrives
+   one act at a time. Everything is seeded off (style, variant), never
+   Math.random, so the ground is the same ground for everybody in a shared
+   district and so an A/B screenshot is comparable. */
+function mseed(k){let h=2166136261;for(let i=0;i<k.length;i++){h^=k.charCodeAt(i);h=Math.imul(h,16777619)}
+  return()=>{h^=h<<13;h>>>=0;h^=h>>>17;h^=h<<5;h>>>=0;return h/4294967296}}
+const MAT={
+ /*      mottle a/n/r    grain  scuff n/a   crack  settle  sheen  water  grime */
+ town:{m:[.085,6,8.5], g:.05,  w:[7,.055], c:0, v:.30, s:0,   p:0, r:.34},
+ moor:{m:[.125,7,7.5], g:.06,  w:[5,.045], c:3, v:.22, s:.10, p:1, r:.46},
+ mall:{m:[.065,5,9.5], g:.03,  w:[9,.050], c:0, v:.24, s:.20, p:0, r:.26},
+ farm:{m:[.100,6,8.0], g:.05,  w:[4,.040], c:1, v:.34, s:.07, p:0, r:.30},
+ trib:{m:[.075,5,8.5], g:.045, w:[8,.065], c:4, v:.28, s:.04, p:0, r:.38},
+ hq:  {m:[.055,5,10 ], g:.025, w:[5,.040], c:0, v:.20, s:.16, p:0, r:.22}
+};
+function material(g,st0,s,v){const M=MAT[st0];if(!M)return;const R=mseed(st0+'/'+v);
+  const rgba=(c,a)=>'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')',
+        blob=(x,y,r,col,a)=>{const q=g.createRadialGradient(x,y,0,x,y,r);
+          q.addColorStop(0,rgba(col,a));q.addColorStop(1,rgba(col,0));
+          g.fillStyle=q;g.fillRect(x-r,y-r,r*2,r*2)};
+  /* Mottle, so no two parts of a slab are the same colour. The lightness swing
+     goes down through soft-light rather than source-over: a material layer has
+     to *modulate* the tone underneath it, not repaint it. Painted flat, the
+     first version lifted the Moors' black asphalt back toward the grass around
+     it and the road stopped reading. Only the faint sibling-tone pass is drawn
+     normally, and it stays inside the authored palette so it cannot move a
+     floor away from the actors standing on it. */
+  g.globalCompositeOperation='soft-light';
+  for(let i=0;i<M.m[1];i++){const r=M.m[2]*(.55+R()*.95);
+    blob(R()*33,R()*33,r,R()<.5?[255,255,255]:[0,0,0],M.m[0]*3.4)}
+  g.globalCompositeOperation='source-over';
+  for(let i=0;i<M.m[1];i++){const r=M.m[2]*(.7+R()*.8);
+    blob(R()*33,R()*33,r,hex2rgb(s.f[(i+v)%3]),M.m[0]*.5)}
+  /* the slab has settled: darker toward its edges. A radial falloff rather than
+     four lines, because a grid of lines over a whole district reads as graph
+     paper and this reads as a seam. */
+  if(M.v>0){const q=g.createRadialGradient(16.5,16.5,6,16.5,16.5,24);
+    q.addColorStop(0,'rgba(0,0,0,0)');q.addColorStop(1,'rgba(0,0,0,'+M.v+')');
+    g.fillStyle=q;g.fillRect(0,0,33,33)}
+  /* walked on. Soft-light again, so a scuff on asphalt stays dark asphalt. */
+  g.globalCompositeOperation='soft-light';g.lineCap='round';
+  for(let i=0;i<M.w[0];i++){const x=R()*33,y=R()*33,a=R()*6.283,l=2+R()*7;
+    g.strokeStyle='rgba(255,255,255,'+(M.w[1]*(.4+R()*.8)).toFixed(3)+')';g.lineWidth=.4+R()*.9;
+    g.beginPath();g.moveTo(x,y);g.lineTo(x+Math.cos(a)*l,y+Math.sin(a)*l);g.stroke()}
+  g.globalCompositeOperation='source-over';
+  /* Cracks get a jointed line each, because a crack turns and a scuff does not.
+     Only some variants get the full count: a district has five floor tiles and
+     repeats them everywhere, so any feature distinctive enough to recognise is
+     also distinctive enough to show where the grid is. Mottle and grain can go
+     on every tile because neither is recognisable; a crack cannot. */
+  const nc=Math.round(M.c*(v%3)/2);
+  for(let i=0;i<nc;i++){let x=R()*33,y=R()*33,a=R()*6.283;
+    g.strokeStyle='rgba(0,0,0,'+(.18+R()*.16).toFixed(3)+')';g.lineWidth=.5+R()*.6;
+    g.beginPath();g.moveTo(x,y);
+    for(let j=0;j<3;j++){a+=(R()-.5)*1.5;x+=Math.cos(a)*(3+R()*5);y+=Math.sin(a)*(3+R()*5);g.lineTo(x,y)}
+    g.stroke()}
+  /* a polished floor keeps a little of the district's own lamp colour */
+  if(M.s>0)blob(8+R()*17,8+R()*17,13+R()*7,hex2rgb(s.glow),M.s);
+  /* Standing water. It rains in the Moors, and a puddle is the only thing down
+     there that gives the sky back. Two variants of the five, one each: a closed
+     bright ring on every tile read as somebody had drawn circles on the floor,
+     which is the same tiling problem as the cracks and worse, because a ring is
+     a shape the eye looks for. What is left is a dark dish and a highlight on
+     one side of it, and the shape only resolves when a lamp is near. */
+  if(M.p&&v%5<2){const x=7+R()*19,y=7+R()*19,rx=4.5+R()*4.5,ry=rx*(.5+R()*.22);
+    g.save();g.translate(x,y);g.scale(1,ry/rx);
+    blob(0,0,rx,[14,20,26],.45);
+    g.strokeStyle='rgba(159,208,255,.09)';g.lineWidth=.7;
+    g.beginPath();g.arc(0,0,rx*.80,2.5,5.2);g.stroke();
+    g.restore();
+    blob(x-rx*.22,y-ry*.35,rx*.55,hex2rgb(s.glow),.16)}
+  /* grain last, so it sits on top of everything above it */
+  g.globalCompositeOperation='soft-light';
+  if(M.g>0)for(let i=0;i<190;i++){
+    g.fillStyle=R()<.5?'rgba(0,0,0,'+M.g+')':'rgba(255,255,255,'+(M.g*.6).toFixed(3)+')';
+    g.fillRect(R()*33,R()*33,.5+R()*.7,.5+R()*.7)}
+  g.globalCompositeOperation='source-over';
+}
+/* The same, for a wall face. The crease where a wall meets the ground is the
+   cheapest thing in the renderer that makes geometry feel solid. */
+function faceMat(g,st0,H,v,side,s){const M=MAT[st0];if(!M||!(M.r>0))return;
+  const R=mseed(st0+'/f'+side+'/'+v),d=Math.min(H,17);
+  const q=g.createLinearGradient(0,H-d,0,H);
+  q.addColorStop(0,'rgba(0,0,0,0)');q.addColorStop(1,'rgba(0,0,0,'+M.r+')');
+  g.fillStyle=q;g.fillRect(0,H-d,33,d);
+  /* streaks: what weather does to a wall nobody washes */
+  for(let i=0;i<4;i++){const x=R()*33,w=.8+R()*2.2,t=R()*H*.5,b=Math.min(H,t+H*(.3+R()*.6));
+    const k=g.createLinearGradient(0,t,0,b);
+    k.addColorStop(0,'rgba(0,0,0,0)');k.addColorStop(.3,'rgba(0,0,0,'+(.10+R()*.10).toFixed(3)+')');k.addColorStop(1,'rgba(0,0,0,0)');
+    g.fillStyle=k;g.fillRect(x,t,w,b-t)}
+}
+function wallTex(s,st,H,v,st0,TS){const c=mk(66*TS,(34+H)*TS),g=c.getContext('2d');g.scale(TS,TS);
+  g.save();g.transform(1,.5,0,1,0,17);g.fillStyle=s.w[1];g.fillRect(0,0,33,H);faceDetail(g,st,H,v,0,s,st0);faceMat(g,st0,H,v,0,s);g.restore();
+  g.save();g.transform(1,-.5,0,1,33,34);g.fillStyle=s.w[2];g.fillRect(0,0,33,H);faceDetail(g,st,H,v,1,s,st0);faceMat(g,st0,H,v,1,s);g.restore();
   g.beginPath();g.moveTo(33,0);g.lineTo(66,17);g.lineTo(33,34);g.lineTo(0,17);g.closePath();g.fillStyle=s.w[0];g.fill();g.strokeStyle='rgba(255,255,255,.2)';g.lineWidth=1;g.stroke();
   g.strokeStyle='rgba(0,0,0,.5)';g.beginPath();g.moveTo(33,34);g.lineTo(33,34+H);g.stroke();
   g.globalCompositeOperation='source-atop';noise(g,66,34+H,H>20?110:40,.07);return c}
-function buildTextures(st0){if(TX.style===st0)return;const s=STY[st0],st=s.like||st0;TX={style:st0,s,floor:[],wall:[],low:null};
-  for(let v=0;v<5;v++){const c=mk(66,34),g=c.getContext('2d');g.beginPath();g.moveTo(33,0);g.lineTo(66,17);g.lineTo(33,34);g.lineTo(0,17);g.closePath();g.clip();
-    g.fillStyle=s.f[v%3];g.fillRect(0,0,66,34);g.save();g.transform(1,.5,-1,.5,33,0);floorDetail(g,st,v,s,st0);g.restore();noise(g,66,34,55,.07);TX.floor.push(c)}
-  for(let v=0;v<2;v++)TX.wall.push(wallTex(s,st,46,v,st0));TX.low=wallTex(s,st,12,0,st0);
+function buildTextures(st0){if(TX.style===st0&&TX.ts===tscale())return;const s=STY[st0],st=s.like||st0;const TS=tscale();TX={style:st0,s,ts:TS,floor:[],wall:[],low:null};
+  for(let v=0;v<5;v++){const c=mk(66*TS,34*TS),g=c.getContext('2d');g.scale(TS,TS);g.beginPath();g.moveTo(33,0);g.lineTo(66,17);g.lineTo(33,34);g.lineTo(0,17);g.closePath();g.clip();
+    g.fillStyle=s.f[v%3];g.fillRect(0,0,66,34);g.save();g.transform(1,.5,-1,.5,33,0);floorDetail(g,st,v,s,st0);material(g,st0,s,v);g.restore();noise(g,66,34,55,.07);TX.floor.push(c)}
+  for(let v=0;v<2;v++)TX.wall.push(wallTex(s,st,46,v,st0,TS));TX.low=wallTex(s,st,12,0,st0,TS);
   TX.amb=hex2rgb(AMBC[st0]||AMBC[st]||'#040308');
   {const L=hex2rgb(s.f[0]);TX.fill=clamp(.38-(L[0]+L[1]+L[2])/765*.85,.04,.28)}
   const wx=TX.wx=Object.assign({k:'mote',n:28,sp:.016},WX[st0]||WX[st]||{});wx.c=wx.c||s.mote;
@@ -1292,7 +1400,7 @@ function render(){
     FG.setTransform(DPR*ZM,0,0,DPR*ZM,0,0);FG.clearRect(0,0,VW,VH);pen=FG;FCK=fkey}
   for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){
     const X=SX(x+.5,y+.5),Y=SY(x+.5,y+.5);if(X<-40||X>VW+40||Y<-70||Y>VH+70)continue;const t=W.map[y*N+x];if(!W.seen[y*N+x])continue;
-    if(t!==0){if(pen){pen.drawImage(TX.floor[(x*7+y*13+((x*y)%3))%5],X-33,Y-17);const sn=W.seen;if(!z.town&&(!sn[y*N+x+1]||!sn[y*N+x-1]||!sn[(y+1)*N+x]||!sn[(y-1)*N+x])){pen.fillStyle='rgba(5,4,9,.6)';pen.beginPath();pen.moveTo(X-33,Y);pen.lineTo(X,Y-17);pen.lineTo(X+33,Y);pen.lineTo(X,Y+17);pen.fill()}}}
+    if(t!==0){if(pen){pen.drawImage(TX.floor[(x*7+y*13+((x*y)%3))%5],X-33,Y-17,66,34);const sn=W.seen;if(!z.town&&(!sn[y*N+x+1]||!sn[y*N+x-1]||!sn[(y+1)*N+x]||!sn[(y-1)*N+x])){pen.fillStyle='rgba(5,4,9,.6)';pen.beginPath();pen.moveTo(X-33,Y);pen.lineTo(X,Y-17);pen.lineTo(X+33,Y);pen.lineTo(X,Y+17);pen.fill()}}}
     else{const h=W.wh[y*N+x];if(h)dl.push({d:x+y+1,k:0,X,Y,h,near:h>1&&x+y+1>pd&&Math.abs(x+.5-P.x)<3.2&&Math.abs(y+.5-P.y)<3.2})}}
   if(FC){ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.drawImage(FC,0,0);ctx.restore()}
   for(const d of W.decals){const X=SX(d.x,d.y),Y=SY(d.x,d.y);ctx.fillStyle='rgba(5,4,9,.42)';ctx.beginPath();ctx.ellipse(X,Y,d.r*30,d.r*15,d.a,0,6.283);ctx.fill();ctx.fillStyle='rgba(60,50,40,.5)';ctx.fillRect(X-4+d.a*3,Y-2,5,2);ctx.fillRect(X+3-d.a*2,Y+2,4,2)}
@@ -1317,7 +1425,7 @@ function render(){
   dl.push({d:pd,k:3});
   dl.sort((a,b)=>a.d-b.d);
   for(const q of dl){
-    if(q.k===0){const tex=q.h===1?TX.low:TX.wall[q.h-2];if(q.near)ctx.globalAlpha=.32;ctx.drawImage(tex,q.X-33,q.Y-17-(tex.height-34));ctx.globalAlpha=1}
+    if(q.k===0){const tex=q.h===1?TX.low:TX.wall[q.h-2],th=tex.height/TX.ts;if(q.near)ctx.globalAlpha=.32;ctx.drawImage(tex,q.X-33,q.Y-17-(th-34),66,th);ctx.globalAlpha=1}
     else if(q.k===1){const e=q.o,X=SX(e.x,e.y),Y=SY(e.x,e.y);drawEnemy(e,X,Y);if(e.k==='bull'&&e.say&&e.aggro&&((tNow*.5+e.ph)%6)<2.2)bubble(X,Y-58,['Moo.','Number go up.','Up only.','This time is different.','Have fun staying poor.'][(e.ph*10|0)%5])}
     else if(q.k===2)drawNpc(q.o,SX(q.o.x,q.o.y),SY(q.o.x,q.o.y));
     else if(q.k===11)mpDraw(q.o,SX(q.o.x,q.o.y),SY(q.o.x,q.o.y));
