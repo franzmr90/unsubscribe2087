@@ -1,4 +1,12 @@
-/* Frame time in a dense district and a boss fight.
+/* CAREFUL WHAT THIS MEASURES. It calls render() in a tight loop with no yield to
+   the browser, so Canvas2D work backs up against the GPU queue and each call
+   blocks. The number it reports is throughput under saturation -- good for
+   comparing two builds, wrong for "a frame costs this much". Under real rAF
+   pacing the same scene is a fraction of it: the in-game readout (?perf=1)
+   measured 3.5ms median with 83 entities where this reports 16. Use this to
+   compare, and the readout to decide.
+
+   Frame time in a dense district and a boss fight.
    One player, then the same room with three extra companions swinging.
    Usage: node tools/frame-prof.js
    Writes notes/frame-prof.json */

@@ -50,6 +50,15 @@ button:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
 #obj{position:absolute;left:6px;top:96px;max-width:148px;padding:3px 6px;background:rgba(8,6,14,.4);border:0;border-left:2px solid var(--gold);opacity:.8;text-shadow:0 1px 2px #000;font:500 9.5px/1.25 var(--body);color:var(--ink);text-align:left;pointer-events:auto}#obj b.sd{color:var(--volt);margin-top:3px}#obj b{display:block;font:700 7.5px Cinzel,serif;letter-spacing:.08em;color:var(--gold);text-transform:uppercase}
 #log{position:absolute;left:auto;right:8px;top:auto;bottom:calc(228px + env(safe-area-inset-bottom,0px));width:min(156px,42vw);display:flex;flex-direction:column;align-items:flex-end;gap:3px;pointer-events:none;z-index:2}
 #log div{background:rgba(11,9,16,.9);border:1px solid var(--edge);padding:3px 6px;font-size:10.5px;line-height:1.25;text-align:left;max-width:100%}
+/* The frame readout. Off unless asked for, and sized to be screenshotted on a
+   phone rather than read across a room. */
+#perf{position:absolute;right:calc(6px + env(safe-area-inset-right,0px));top:calc(132px + env(safe-area-inset-top,0px));z-index:7;pointer-events:auto;
+  background:rgba(5,4,9,.86);border:1px solid var(--edge);color:var(--ink);
+  font:600 11px/1.45 ui-monospace,Menlo,monospace;padding:6px 8px;white-space:pre;
+  max-width:62vw;text-align:left;user-select:text;-webkit-user-select:text}
+#perf b{color:var(--q2);font-weight:700}
+#perf.bad b{color:var(--bad)}
+#perf.full{left:calc(6px + env(safe-area-inset-left,0px));max-width:none;font-size:10.5px}
 #stickzone{position:absolute;left:0;bottom:0;width:55%;height:60%}
 #stick{position:absolute;width:104px;height:104px;margin:-52px 0 0 -52px;border:2px solid rgba(200,165,90,.4);border-radius:50%;background:rgba(11,9,16,.35);pointer-events:none}
 #stick i{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e8cf8e,#7a5c22)}
@@ -520,6 +529,7 @@ html[data-ui="touch"] .menuFoot button{min-height:44px}
     <div id="boss" hidden><span id="bossn"></span><div class="bar"><i id="bossb"></i></div></div>
     <div id="buffs"></div>
     <div id="obj" hidden></div><div id="log"></div>
+    <div id="perf" hidden></div>
     <div id="stickzone"></div>
     <div id="stick" hidden><i id="knob"></i></div>
     <div id="bbs"><button class="tb" id="bMenu">Menu</button><button class="tb" id="bChars">Save &amp; exit</button></div>

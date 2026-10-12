@@ -76,16 +76,31 @@ projection, the determinism and the gameplay exactly as they are.
 design decision about what the game is, not a rendering one, and nothing on the
 list asks for it.
 
-### What has to be measured before any of this starts
+### What the frame actually costs, and a correction
 
-**A real phone.** The container's frame profile is not a proxy: `frame-prof.js`
-reports 16-17ms here on a build that measured 9.2ms in `notes/frame-prof.json`
-when that file was written, and the pre-today build measures the same 16-17ms as
-the current one. The relative comparison is sound -- today's graphics work costs
-nothing measurable -- but the absolute number is contention, not hardware.
+**`frame-prof.js` was being read wrong, by me, twice.** It times `render()` in a
+tight loop with no yield, so Canvas2D work backs up against the GPU queue and
+each call blocks. Its 16-17ms is throughput under saturation. It is a fine way to
+compare two builds and a bad way to answer "does a frame fit".
 
-The LAN build is the way to get a true one: the server serves the game to a phone
-on the home network, which is already set up and working.
+Under real rAF pacing, measured by the in-game readout:
+
+| scene | work median | render | fps |
+|---|---|---|---|
+| a quiet district, 75 entities | **1.9ms** | 1.5ms | 59.9 |
+| 83 entities, 57 particles, four skills at 10Hz | **3.5ms** (p95 6.5) | 2.9ms | 59.9 |
+
+So roughly **21% of a 60Hz frame in a heavy fight**, on this container's CPU, and
+about 13ms of headroom. That is a great deal more room than the earlier reading
+suggested, and it moves the risk in favour of richer art rather than against it.
+
+**A real phone is still the number that decides.** A phone's GPU, memory
+bandwidth and thermal behaviour are nothing like a container's, and the 195MB
+resident figure above is a device limit, not a CPU one. Turn the readout on with
+`?perf=1` over the LAN build and walk a district; it stays on for that browser
+until `?perf=0`. Tap it for the full report, which is meant to be screenshotted
+-- the clipboard API needs a secure context and the LAN build is plain http, so a
+copy button would fail on exactly the device it exists for.
 
 ---
 

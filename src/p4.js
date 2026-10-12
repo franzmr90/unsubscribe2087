@@ -1838,13 +1838,98 @@ $('slots').addEventListener('click',async e=>{const b=e.target.closest('button')
   const n=+b.dataset.slot,i=slotInfo(n);if(!i)return;let sv;if(i.cloud){b.disabled=true;b.querySelector('b').textContent='Loading…';sv=await cloudLoad(i.cloud,n)}else sv=i.loc;if(applySave(sv)){SLOT=n;clDirty={};W=null;migrateDiff();openCreate(n)}else drawSlots()});
 function pickSlot(){let n=0;try{n=+localStorage.getItem(SAVEKEY+'_slot')||0}catch(e){}SLOT=n<NSLOT?n:0}
 let last=0;
+
+/* ================= the frame readout =================
+   Off for everybody unless asked for, because the question it answers cannot be
+   answered from here: this container profiles 16-17ms on a build whose saved
+   profile says 9.2ms, which is contention, not hardware. The only true number
+   comes off a real phone, and the LAN build is how a phone gets the game.
+
+   Turn it on with ?perf=1 and it stays on for that browser until ?perf=0. Tap it
+   to expand to the full report, which is meant to be screenshotted -- the
+   clipboard API needs a secure context and the LAN build is plain http, so a
+   copy button would simply fail on the device this exists for. */
+let PERF=null;
+function perfWanted(){
+  let q=null;
+  try{q=new URLSearchParams(location.search).get('perf')}catch(e){}
+  try{if(q==='1'){localStorage.setItem('u2087_perf','1');return true}
+      if(q==='0'){localStorage.removeItem('u2087_perf');return false}
+      return localStorage.getItem('u2087_perf')==='1'}catch(e){return q==='1'}
+}
+function perfInit(){
+  if(!perfWanted())return;
+  const el=$('perf');if(!el)return;
+  PERF={el,full:0,n:0,at:0,frames:[],upd:[],ren:[],gaps:[],worst:0,since:performance.now()};
+  el.hidden=false;
+  el.addEventListener('click',()=>{PERF.full=!PERF.full;el.classList.toggle('full',!!PERF.full);perfPaint(1)});
+}
+/* Two different numbers, and conflating them is the easy mistake: `work` is how
+   long our own update and render take, `fps` is how often the device actually
+   put a frame up. A phone locked to 60 shows 60 whatever we do, right up until
+   the work exceeds the budget; our work is the part we control, so both are
+   reported and neither is derived from the other. */
+function perfMark(a,b,c,gap){
+  if(!PERF)return;
+  PERF.frames.push(c);PERF.upd.push(a);PERF.ren.push(b);
+  if(gap>0&&gap<500)PERF.gaps.push(gap);
+  if(c>PERF.worst)PERF.worst=c;
+  if(PERF.frames.length>180){PERF.frames.shift();PERF.upd.shift();PERF.ren.shift()}
+  if(PERF.gaps.length>180)PERF.gaps.shift();
+  const now=performance.now();
+  if(now-PERF.at<250)return;
+  PERF.at=now;perfPaint(0);
+}
+const pQ=(a,f)=>{if(!a.length)return 0;const b=a.slice().sort((x,y)=>x-y);
+  return b[Math.min(b.length-1,Math.floor(b.length*f))]};
+const p1=v=>(Math.round(v*10)/10).toFixed(1);
+function perfSheets(){
+  let n=0,px=0;
+  try{for(const k in FXC){const sh=FXC[k];if(sh&&sh.c){n++;px+=sh.c.width*sh.c.height}}}catch(e){}
+  return {n,mb:+(px*4/1048576).toFixed(1)};
+}
+function perfPaint(force){
+  if(!PERF)return;
+  const f=PERF.frames,med=pQ(f,.5),p95=pQ(f,.95);
+  const gap=pQ(PERF.gaps,.5),fps=gap>0?Math.min(999,1000/gap):0;
+  /* red when our own work will not fit a 60Hz frame, or the device has stopped
+     making one. Either is the thing we are here to find out. */
+  PERF.el.classList.toggle('bad',med>16.7||(PERF.gaps.length>30&&fps<55));
+  const w=W&&W.ents?W.ents.length:0;
+  let h='<b>'+p1(fps)+' fps</b>  work '+p1(med)+'ms  p95 '+p1(p95);
+  if(PERF.full||force===1&&PERF.full){
+    const sh=perfSheets();
+    let mem='n/a (not Safari)';
+    try{if(performance.memory)mem=(performance.memory.usedJSHeapSize/1048576).toFixed(0)+'MB of '+
+      (performance.memory.jsHeapSizeLimit/1048576).toFixed(0)+'MB'}catch(e){}
+    h+='\n'+
+      'work    median '+p1(med)+'ms  p95 '+p1(p95)+'  worst '+p1(PERF.worst)+'ms\n'+
+      '  update '+p1(pQ(PERF.upd,.5))+'ms   render '+p1(pQ(PERF.ren,.5))+'ms\n'+
+      'frames  '+p1(fps)+'/s  (gap median '+p1(gap)+'ms, p95 '+p1(pQ(PERF.gaps,.95))+'ms)\n'+
+      'budget  '+Math.round(med/16.67*100)+'% of a 60Hz frame\n'+
+      'ents '+w+'  projs '+((W&&W.projs&&W.projs.length)||0)+
+        '  parts '+((W&&W.parts&&W.parts.length)||0)+'  fx '+((W&&W.fx&&W.fx.length)||0)+'\n'+
+      'zone    '+((W&&W.z&&W.z.n)||'-')+'\n'+
+      'sheets  '+sh.n+'  ~'+sh.mb+'MB canvas\n'+
+      'screen  '+innerWidth+'x'+innerHeight+' @'+(window.devicePixelRatio||1)+'  cores '+
+        (navigator.hardwareConcurrency||'?')+'\n'+
+      'heap    '+mem+'\n'+
+      'build   '+(window.__BUILD||'dev')+'\n'+
+      '(tap to shrink)';
+  }else h+='   <b>tap</b>';
+  PERF.el.innerHTML=h;
+}
+
 function frame(t){uiPad();const dt=Math.min(.05,(t-last)/1000||0);last=t;tNow=t/1000;
   if(mode==='offsite'){offsiteTick(dt);offsiteDraw();requestAnimationFrame(frame);return}
+  const t0=PERF?performance.now():0;
   if(mode==='play'){if(hitStop>0)hitStop-=dt;else update(dt);if(G&&W&&(mode==='play'||mode==='dying'))hud()}
   else if(mode==='dying'&&DY){DY.t+=dt;tickFx(dt*.6);shake=Math.max(0,shake-dt*20);if(DY.t>2.5&&!DY.shown){DY.shown=1;showDeath()}}
+  const t1=PERF?performance.now():0;
   if(mode==='scene'&&SC)drawScene(dt);else render();
+  if(PERF){const t2=performance.now();perfMark(t1-t0,t2-t1,t2-t0,t-(PERF.lastT||t));PERF.lastT=t}
   requestAnimationFrame(frame)}
-function start(d){resize();pickSlot();accLoad();drawCls();let hotSave=null;try{if(d&&d.save)hotSave=JSON.parse(d.save)}catch(e){}
+function start(d){resize();perfInit();pickSlot();accLoad();drawCls();let hotSave=null;try{if(d&&d.save)hotSave=JSON.parse(d.save)}catch(e){}
   if(hotSave&&applySave(hotSave)&&G.inGame)startPlay();else showContinue()
   requestAnimationFrame(frame)}
 const hot=window.claude&&window.claude.hot;
@@ -1868,4 +1953,4 @@ uiBoot();
 showDisc();
 cloudInit();
 function devOn(){try{if(window.__DEBUG)return true;var h=location.hostname;if(h==='localhost'||h==='127.0.0.1'||h==='::1')return true;if(location.protocol==='file:'||location.protocol==='about:')return true}catch(e){}return false}
-if(devOn())window.__g={gameOver,creditSlides,toTitle,openCreate,closeCreate,createGame,endGame,beginDifficulty,markCleared,hasCleared,aiDecide,aiDelay,recSet,recGet,get AURACOL(){return AURACOL},itemArt,itemArtFor,itemImg,itemArch,itemTint,itemHead,itemSeed,get ITART(){return ITART},fxSheet,fxBlit,fxPairs,fxWarm,fxLoad,get FXART(){return FXART},get FXC(){return FXC},get MOBMARK(){return MOBMARK},get STY(){return STY},get BGK(){return BGK},migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,stimPackItem,giveStim,stimToBelt,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},set satShop(v){satShop=v},get shop(){return shop},set shop(v){shop=v},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},get LBOX(){return LBOX},adaptGearless,adaptSpawn,adaptDeath,nanReport,get LOOT_BOX(){return LOOT_BOX},lootShowAll,lootPrefs,SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith,openVend,vendAsk,vendBid,vendBuy,vendSell,vendBuyback,vendBuyStim,vendIdentify,vendBox,vendTabOf,buyPrice,sellValue,satCost,satPrice,boxPrice,get VEND(){return VEND},get BUYBACK(){return BUYBACK},get shopVia(){return shopVia},setShopVia(v){shopVia=+v||0},vendFlipLock,vendSellPlan,vendSellCommit,vendSellOpen,sellFilters,vendQuest,lootPasses,lootAuto,lootMigrate,lootLayout,lootName,lootPickup,lootOpen,lootCompare,lootPrefs,lootSave,lootLoad,layCorpse,reclaimCorpse,buyCorpse,corpseFee,repairQuote,repairOne,repairAll,repairList,wearWeapon,wearArmor,wearSlot,itemBroken,stampDura,migrateDurability,placeCorpses,deathCreditPct,encW,loanerWeapon,calmNearCorpse,resetZones,stampReq,canWear,blowPct,blowSpec,swingBlow,gearLive,gearQuiet,reqShortfall,cantEquipText,attrTip,driveStat,witImpact,pdmg,classWeapon,weaponRole};
+if(devOn())window.__g={perfInit,perfPaint,get PERF(){return PERF},gameOver,creditSlides,toTitle,openCreate,closeCreate,createGame,endGame,beginDifficulty,markCleared,hasCleared,aiDecide,aiDelay,recSet,recGet,get AURACOL(){return AURACOL},itemArt,itemArtFor,itemImg,itemArch,itemTint,itemHead,itemSeed,get ITART(){return ITART},fxSheet,fxBlit,fxPairs,fxWarm,fxLoad,get FXART(){return FXART},get FXC(){return FXC},get MOBMARK(){return MOBMARK},get STY(){return STY},get BGK(){return BGK},migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,stimPackItem,giveStim,stimToBelt,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},set satShop(v){satShop=v},get shop(){return shop},set shop(v){shop=v},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},get LBOX(){return LBOX},adaptGearless,adaptSpawn,adaptDeath,nanReport,get LOOT_BOX(){return LOOT_BOX},lootShowAll,lootPrefs,SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith,openVend,vendAsk,vendBid,vendBuy,vendSell,vendBuyback,vendBuyStim,vendIdentify,vendBox,vendTabOf,buyPrice,sellValue,satCost,satPrice,boxPrice,get VEND(){return VEND},get BUYBACK(){return BUYBACK},get shopVia(){return shopVia},setShopVia(v){shopVia=+v||0},vendFlipLock,vendSellPlan,vendSellCommit,vendSellOpen,sellFilters,vendQuest,lootPasses,lootAuto,lootMigrate,lootLayout,lootName,lootPickup,lootOpen,lootCompare,lootPrefs,lootSave,lootLoad,layCorpse,reclaimCorpse,buyCorpse,corpseFee,repairQuote,repairOne,repairAll,repairList,wearWeapon,wearArmor,wearSlot,itemBroken,stampDura,migrateDurability,placeCorpses,deathCreditPct,encW,loanerWeapon,calmNearCorpse,resetZones,stampReq,canWear,blowPct,blowSpec,swingBlow,gearLive,gearQuiet,reqShortfall,cantEquipText,attrTip,driveStat,witImpact,pdmg,classWeapon,weaponRole};
