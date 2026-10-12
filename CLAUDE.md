@@ -56,7 +56,8 @@ Artifact URL: https://claude.ai/artifact/5i4v5MTCPoKQjHbi14NCxg (capabilities db
 
 ## Known gaps
 A snapshot, not a backlog -- `notes/PICK-UP-HERE.md` carries the current one.
-- Acts III-V balance is unmeasured; the old balance bot stalls on dialog locks and needs a rewrite.
+- Acts III-V balance is measured and uneven: `node tools/balance.js` (~2 min, 359 fights)
+  writes `notes/balance-acts-3-5.md`. It does NOT stall -- that note was stale.
 - Cloud (account) paths for save slots, lockbox, character switching, delete and companion are untested.
 - Companion feel, party-pressure step logic, boss4/boss5 tuning are first guesses.
 - Held for later: real sats over Lightning, auction house.
