@@ -3,6 +3,12 @@
 Diablo 2-style isometric action RPG. On a phone: a touch stick and buttons. On a desk the mouse is the default: left click walks and strikes, right click casts. Set in 2087 as the
 aftermath of the author's novel *Project Phonix*. One self-contained HTML page, published as a claude.ai Artifact.
 
+## Start here
+`notes/PICK-UP-HERE.md` is the one live document: the goal, what is next, what is open, and the
+habits worth keeping. Read it before planning work, and update it when the answer changes. The rest
+of `notes/` is history kept on purpose, mostly one file per old branch -- useful to search, not to
+trust as current.
+
 ## Build
 `./build.sh` concatenates `src/p0.html` (CSS + markup, `<title>` first, no doctype/html/head/body) and the
 scripts, in this order, inside one IIFE: formulas p1 p2 p5 p6 p7 p8 p9 p10 p11 p3 p4 p12 p13 offsite. Output: `dist/unsubscribe.html`.
@@ -49,6 +55,7 @@ by hand and read back with `import.js`. `roundtrip.js` proves export, import, bu
 Artifact URL: https://claude.ai/artifact/5i4v5MTCPoKQjHbi14NCxg (capabilities db + user; omit `capabilities` and `icon` on republish).
 
 ## Known gaps
+A snapshot, not a backlog -- `notes/PICK-UP-HERE.md` carries the current one.
 - Acts III-V balance is unmeasured; the old balance bot stalls on dialog locks and needs a rewrite.
 - Cloud (account) paths for save slots, lockbox, character switching, delete and companion are untested.
 - Companion feel, party-pressure step logic, boss4/boss5 tuning are first guesses.
