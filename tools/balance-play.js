@@ -119,12 +119,21 @@ for (const cls of CLASSES) {
         G.sp = (G.lvl - 1) * 1; G.ap = (G.lvl - 1) * 5;
         G.sk = G.sk.map(() => 0); G.web = {}; G.at = {mgt:0, ref:0, vit:0, bnd:0};
         G.dz = {}; G.adapt = 0;
+        /* shapeShift() costs SHIFT_COST sats and returns early if you cannot
+           pay. Without this the class never changed: every hero in this harness
+           was a scrapper carrying another class's skill-point plan, and the
+           per-class table was eight rows of the same class. balance.js sets
+           G.sats for exactly this reason. */
+        G.sats = 80;
         for (let i = 1; i <= 25; i++) G.q['q' + i] = 3;
         g.setMode('play');
         if (!g.W || g.W.zi !== 0) g.enter(0);   /* null W needs entering, not skipping */
         g.shapeShift(cls, build);
       }, {cls, build: BUILD[cls], zi, di});
       if (await dismiss(page) !== 'play') { rows.push({cls, zi, di, bad: 'setup'}); continue; }
+      /* and prove it took, rather than trusting it */
+      const got = await page.evaluate(() => __g.G.cls);
+      if (got !== cls) { rows.push({cls, zi, di, bad: 'class is ' + got}); continue; }
 
       await page.evaluate(zi => __g.enter(zi), zi);
       if (await dismiss(page) !== 'play') { rows.push({cls, zi, di, bad: 'enter'}); continue; }
@@ -151,6 +160,7 @@ for (const cls of CLASSES) {
           else if (v.k === 'arc') role = 'melee';
           kit.push({i, role, r: r || 2.2, cost: s.cost || 0, cd: s.cd || 0});
         }
+        const charge = cls === 'witness';
         const BU = (g.BUILDS[cls] || []).find(x => x.k === build) || {};
         const arms = BU.web || [];
         const used = {}; let levels = 0, webN = 0, equips = 0, lastBuff = -9, refused = 0, picked = 0;
@@ -268,6 +278,18 @@ for (const cls of CLASSES) {
              by it put a NaN into P.dir, which reaches the renderer as a
              non-finite radial gradient. Keep the facing we have in that case. */
           if (gaveGround) return;                 /* already moved this tick */
+
+          /* The witness does not swing its way to a cast. Page fills at 8 a
+             second, times 1.6 while standing still and times 0.45 while
+             swinging, and only while something hostile is in sight; its real
+             skills need 20 to 30 of it. So a witness that walks and swings --
+             which is what this pilot did everywhere else -- fills at about a
+             third of the rate the class is built around, and casts roughly
+             once a fight. Nothing fired this tick, so watch instead: no step,
+             no swing. That is what the class is for, and it is the only place
+             in here that knows a class's own resource by name. */
+          if (charge && g.recGet && g.recGet() < 32) return;
+
           if (nd > 1.4) step(near.x, near.y);
           else {
             if (nd > .001) P.dir = {x: (near.x - P.x) / nd, y: (near.y - P.y) / nd};
@@ -308,6 +330,7 @@ for (const cls of CLASSES) {
         g.W.bi = 1;                                   /* no boss entrance cinematic */
         levelUp();                                   /* spend what the level grants before the first fight */
         let t = 0, died = 0, cleared = 0, lost = 0, stimsUsed = 0;
+        let frame = 0;
         let hpWas = G.hp, stimWas = G.stims;
         /* An empty wave would read as an instant clear, which is exactly how the
            first version of this harness reported four flawless waves in 0.1s
@@ -316,6 +339,14 @@ for (const cls of CLASSES) {
         while (t < secs && !died && cleared < waves) {
           fight();
           g.update(1 / 30); t += 1 / 30; g.W.t = t;
+          /* The witness only fills its page while something hostile is *seen*,
+             and witSeen() projects to screen coordinates -- so with no render
+             the camera stays where the title screen left it, every enemy counts
+             as off-screen, the page never fills and the whole kit is blocked
+             for the entire run. That is the harness, not the game. Render so
+             the camera is real; every 2nd tick is enough for a camera that
+             follows a walking hero, and it halves the cost. */
+          if ((frame++ & 1) === 0) g.render();
           if (G.hp < hpWas) lost += hpWas - G.hp;
           hpWas = G.hp;
           if (G.stims < stimWas) { stimsUsed += stimWas - G.stims; stimWas = G.stims; }
