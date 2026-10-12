@@ -81,14 +81,22 @@ page** and **milliseconds at the curtain**.
 
 ### Tier 1 — free. Zero bytes, spends boot time we already have.
 
-1. **Write the readability rules down, then enforce them.** D2's trick was
-   palette separation: cool ground, warm monsters, one bright focal point each.
-   Act I breaks it (orange ticks on sodium ground) and that is why the spike's
-   3D tick vanished. This is a data change to `pal` and `TX`, and it is probably
-   the largest single improvement available. *0 bytes, 0ms.*
-2. **Rim light every actor.** One bright stroke along the edge facing the key
-   light. It is the main reason 3D reads as 3D, and in 2D it is a stroke.
-   *~30 lines, 0ms.*
+1. ~~**Write the readability rules down, then enforce them.**~~ **DONE.** The
+   rule is: *an actor stands dE 18 (OKLab x100) clear of every floor it spawns
+   on, and carries one bright point of its own.* `tools/palette-check.js` scores
+   it. 40 of 131 monster/district pairs were under it, across 12 actors, and the
+   Director's body was **exactly** a floor colour of the Nine Chairs -- standing
+   in it, the mass of the thing disappeared and only its faceplate read.
+2. ~~**Rim light every actor.**~~ **DONE, and it is what fixed rule 1.** The
+   obvious repair was to repaint the twelve bodies, and `tools/palette-fix.js`
+   was written to say what to repaint. Reading its answers is what ruled it out:
+   to clear the rule it wanted the Warden pure black and the Oracle mid-grey,
+   because it optimises a number against palettes somebody authored on purpose.
+   `rimOn()` in `src/p3.js` mixes the district's own glow into an actor's
+   outline instead, in proportion to how far under the rule it is, so authored
+   colour is untouched and the figure simply stops being the same object as the
+   floor. A light pool *behind* the actor was tried first and reads as a stain:
+   it is surround contrast, not a rim. The edge has to be the lit thing.
 3. **Contact shadows that mean something.** `shadow()` is one flat ellipse.
    Tighten it under the feet, soften it with height, darken it near lamps.
    *0 bytes.*

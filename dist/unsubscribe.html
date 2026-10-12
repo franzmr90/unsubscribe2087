@@ -5419,7 +5419,9 @@ function txtClaim(x,y,w,h){LBOX.push({x,y,w,h})}
 function resize(){const r=cv.getBoundingClientRect();CW=r.width;CH=r.height;DPR=Math.min(2,window.devicePixelRatio||1);cv.width=Math.max(1,CW*DPR);cv.height=Math.max(1,CH*DPR);ZM=clamp(Math.min(CW,CH)/560,.68,1.25);VW=CW/ZM;VH=CH/ZM;LC.width=Math.ceil(VW/4);LC.height=Math.ceil(VH/4)}
 addEventListener('resize',resize);
 const SX=(x,y)=>(x-y)*32-cx+VW/2, SY=(x,y)=>(x+y)*16-cy+VH*.44;
-const OL='#0b0912';
+/* Every shape an actor is made of is stroked with this. Keeping it a variable
+   means one assignment relights a whole figure -- see rimLight. */
+const OL0='#0b0912';let OL=OL0;
 function shadow(X,Y,r){ctx.fillStyle='rgba(0,0,0,.26)';ctx.beginPath();ctx.ellipse(X,Y,r*1.18,r*.6,0,0,6.283);ctx.fill();
   ctx.fillStyle='rgba(0,0,0,.44)';ctx.beginPath();ctx.ellipse(X,Y,r*.72,r*.36,0,0,6.283);ctx.fill()}
 function box(x,y,w,h,r,col){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=col;ctx.fill();ctx.stroke()}
@@ -6100,8 +6102,57 @@ function mobMark(e,X,Y,s){const m=MOBMARK[e.k];if(!m)return;
   try{m(X,Y,s,e)}catch(err){}
   ctx.restore()}
 
+
+/* ================= reading a figure against its ground =================
+   Diablo II's readability came from palette separation: a cool ground, warm
+   actors, one bright point on each. This game breaks it in places, and
+   measurably -- tools/palette-check.js scores every monster against the floor of
+   every district it spawns in, in OKLab, and the Director's body is *exactly* a
+   floor colour of the Nine Chairs. Standing in it, the mass of the thing
+   disappears and only its faceplate carries. The art spike found the same when
+   it rendered a monster in 3D: the drawn art was holding readability up with one
+   bright point, and nothing else inherits that for free.
+
+   The obvious fix is to repaint the bodies. tools/palette-fix.js will tell you
+   what to repaint, and looking at its answers is what ruled it out: to clear the
+   rule it wants the Warden pure black and the Oracle mid-grey, because it is
+   optimising a number against palettes somebody authored on purpose.
+
+   So light the edge instead. A soft backlight behind the actor, in the
+   district's own glow, engaged only where the contrast is actually low and in
+   proportion to how low. Authored colour is untouched; the thing simply stops
+   being the same object as the carpet. */
+function oklab(hex){const c=hex2rgb(hex),f=v=>{v/=255;return v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4)};
+  const r=f(c[0]),g=f(c[1]),b=f(c[2]);
+  const l=Math.cbrt(.4122214708*r+.5363325363*g+.0514459929*b);
+  const m=Math.cbrt(.2119034982*r+.6806995451*g+.1073969566*b);
+  const s2=Math.cbrt(.0883024619*r+.2817188376*g+.6299787005*b);
+  return [.2104542553*l+.7936177850*m-.0040720468*s2,
+          1.9779984951*l-2.4285922050*m+.4505937099*s2,
+          .0259040371*l+.7827717662*m-.8086757660*s2]}
+function labD(a,b){const x=oklab(a),y=oklab(b);return Math.hypot(x[0]-y[0],x[1]-y[1],x[2]-y[2])*100}
+/* The rule, and the one number in it: an actor should stand dE 18 clear of its
+   floor. Cached per style and kind, because this is per-frame code. */
+const RIM_MIN=18,RIMC={};
+function rimNeed(k){const key=TX.style+'|'+k;if(key in RIMC)return RIMC[key];
+  let v=0;const t=ET[k],f=TX.s&&TX.s.f;
+  if(t&&t.pal&&t.pal[0]&&f&&f.length){let d=1e9;
+    for(let i=0;i<f.length;i++)d=Math.min(d,labD(t.pal[0],f[i]));
+    if(d<RIM_MIN)v=Math.min(1,(RIM_MIN-d)/RIM_MIN)}
+  return RIMC[key]=v}
+function rimOn(e){
+  if(OPT.fx==='thin')return 0;
+  const amt=rimNeed(e.k);if(!(amt>0))return 0;
+  const g=hex2rgb((TX.s&&TX.s.glow)||'#ffcf7a'),k=.20+.38*amt;
+  /* the district's own light, mixed into the outline rather than replacing it,
+     so a figure that only half needs it only half gets it */
+  const o=hex2rgb(OL0),m=i=>Math.round(o[i]+(g[i]-o[i])*k);
+  OL='rgb('+m(0)+','+m(1)+','+m(2)+')';
+  return 1}
+
 function drawEnemy(e,X,Y){
   const s=e.sz,t=ET[e.k],k=t.spr||e.k,fl=e.flash>0,c1=fl?'#fff':t.pal[0],c2=fl?'#fff':t.pal[1],bob=Math.sin(e.ph*4)*2,f=e.fx||1,mov=e.aggro&&e.stun<=0;
+  const lit=rimOn(e);
   ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.lineJoin='round';
   if(e.champ){ctx.strokeStyle=e.su?'#d0aa62':'#8494ff';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(X,Y,20*s,10*s,0,0,6.283);ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4}
   if(e.mark>0){ctx.strokeStyle='#ff5d4d';ctx.beginPath();ctx.ellipse(X,Y,14*s,7*s,0,0,6.283);ctx.stroke();ctx.strokeStyle=OL}
@@ -6180,6 +6231,7 @@ function drawEnemy(e,X,Y){
       ctx.fillStyle=e.hp<e.max*.5?'#ff3b30':'#e0bd6e';ctx.font='900 '+8*u+'px Cinzel,serif';ctx.textAlign='center';ctx.fillText(e.slam?'!!':e.k==='boss4'?(e.hp<e.max*.5?':(':':)'):e.k==='boss2'?(e.hp<e.max*.5?'…':'SVP'):e.hp<e.max*.5?'>:(':'VP',X,Y-45*u+b);glow(X,Y-48*u+b,40,'#e0bd6e',.4);light(X,Y-40*u,150,'#e0bd6e')}
     else{ctx.fillStyle='#ff3b30';ctx.fillRect(X-6*u,Y-50*u+b,12*u,3*u);glow(X,Y-48*u+b,18*u,'#ff3b30',.5);eye(X-18*u,Y-40*u+b,1.6*u,'#ffe36b');eye(X+18*u,Y-40*u+b,1.6*u,'#ffe36b')}}
   mobMark(e,X,Y,s);
+  if(lit){OL=OL0;ctx.strokeStyle=OL}
   const top=Y-(e.k==='boss5'?172:e.k==='boss4'?122:k==='mono'?160:k==='boss'?112:k==='mech'?76*s:k==='tick'?20:k==='hound'?36*s:56*s);
   if(e.stun>0){ctx.fillStyle='#59e0e6';ctx.font='700 10px Cinzel,serif';ctx.textAlign='center';ctx.fillText('STUNNED',X,top-4)}
   if(OPT.enemyBars&&e.hp<e.max&&k!=='boss'&&k!=='mono'&&e.k!=='boss4'&&e.k!=='boss5'){const w=30*s;ctx.fillStyle='#050409';ctx.fillRect(X-w/2-1,top-1,w+2,5);ctx.fillStyle=e.su?'#d0aa62':e.champ?'#8494ff':'#d23a2e';ctx.fillRect(X-w/2,top,w*Math.max(0,e.hp/e.max),3)}
@@ -8435,7 +8487,7 @@ uiBoot();
 showDisc();
 cloudInit();
 function devOn(){try{if(window.__DEBUG)return true;var h=location.hostname;if(h==='localhost'||h==='127.0.0.1'||h==='::1')return true;if(location.protocol==='file:'||location.protocol==='about:')return true}catch(e){}return false}
-if(devOn())window.__g={gameOver,creditSlides,toTitle,openCreate,closeCreate,createGame,endGame,beginDifficulty,markCleared,hasCleared,aiDecide,aiDelay,recSet,recGet,get AURACOL(){return AURACOL},itemArt,itemArtFor,itemImg,itemArch,itemTint,itemHead,itemSeed,get ITART(){return ITART},fxSheet,fxBlit,fxPairs,fxWarm,fxLoad,get FXART(){return FXART},get FXC(){return FXC},get MOBMARK(){return MOBMARK},migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,stimPackItem,giveStim,stimToBelt,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},set satShop(v){satShop=v},get shop(){return shop},set shop(v){shop=v},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},get LBOX(){return LBOX},adaptGearless,adaptSpawn,adaptDeath,nanReport,get LOOT_BOX(){return LOOT_BOX},lootShowAll,lootPrefs,SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith,openVend,vendAsk,vendBid,vendBuy,vendSell,vendBuyback,vendBuyStim,vendIdentify,vendBox,vendTabOf,buyPrice,sellValue,satCost,satPrice,boxPrice,get VEND(){return VEND},get BUYBACK(){return BUYBACK},get shopVia(){return shopVia},setShopVia(v){shopVia=+v||0},vendFlipLock,vendSellPlan,vendSellCommit,vendSellOpen,sellFilters,vendQuest,lootPasses,lootAuto,lootMigrate,lootLayout,lootName,lootPickup,lootOpen,lootCompare,lootPrefs,lootSave,lootLoad,layCorpse,reclaimCorpse,buyCorpse,corpseFee,repairQuote,repairOne,repairAll,repairList,wearWeapon,wearArmor,wearSlot,itemBroken,stampDura,migrateDurability,placeCorpses,deathCreditPct,encW,loanerWeapon,calmNearCorpse,resetZones,stampReq,canWear,blowPct,blowSpec,swingBlow,gearLive,gearQuiet,reqShortfall,cantEquipText,attrTip,driveStat,witImpact,pdmg,classWeapon,weaponRole};
+if(devOn())window.__g={gameOver,creditSlides,toTitle,openCreate,closeCreate,createGame,endGame,beginDifficulty,markCleared,hasCleared,aiDecide,aiDelay,recSet,recGet,get AURACOL(){return AURACOL},itemArt,itemArtFor,itemImg,itemArch,itemTint,itemHead,itemSeed,get ITART(){return ITART},fxSheet,fxBlit,fxPairs,fxWarm,fxLoad,get FXART(){return FXART},get FXC(){return FXC},get MOBMARK(){return MOBMARK},get STY(){return STY},get BGK(){return BGK},migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,stimPackItem,giveStim,stimToBelt,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},set satShop(v){satShop=v},get shop(){return shop},set shop(v){shop=v},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},get LBOX(){return LBOX},adaptGearless,adaptSpawn,adaptDeath,nanReport,get LOOT_BOX(){return LOOT_BOX},lootShowAll,lootPrefs,SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith,openVend,vendAsk,vendBid,vendBuy,vendSell,vendBuyback,vendBuyStim,vendIdentify,vendBox,vendTabOf,buyPrice,sellValue,satCost,satPrice,boxPrice,get VEND(){return VEND},get BUYBACK(){return BUYBACK},get shopVia(){return shopVia},setShopVia(v){shopVia=+v||0},vendFlipLock,vendSellPlan,vendSellCommit,vendSellOpen,sellFilters,vendQuest,lootPasses,lootAuto,lootMigrate,lootLayout,lootName,lootPickup,lootOpen,lootCompare,lootPrefs,lootSave,lootLoad,layCorpse,reclaimCorpse,buyCorpse,corpseFee,repairQuote,repairOne,repairAll,repairList,wearWeapon,wearArmor,wearSlot,itemBroken,stampDura,migrateDurability,placeCorpses,deathCreditPct,encW,loanerWeapon,calmNearCorpse,resetZones,stampReq,canWear,blowPct,blowSpec,swingBlow,gearLive,gearQuiet,reqShortfall,cantEquipText,attrTip,driveStat,witImpact,pdmg,classWeapon,weaponRole};
 /* late additions that need the dialogue tables */
 QRW.push(
  ['q16','gramps','“I do not remember the nine years after I clicked.” You gain 1 skill point.',()=>G.sp++,'Gramps'],
