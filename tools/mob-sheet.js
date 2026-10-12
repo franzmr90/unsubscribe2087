@@ -8,7 +8,9 @@ const path=require('path');
 const root=path.join(__dirname,'..');
 const URL='file://'+path.join(root,'dist/Unsubscribe-2087-standalone.html');
 const TAG=process.argv[2]||'now';
-const PAIRS=[['daemon','tick'],['wdog','hound'],['fwall','bot'],['cam','ad'],
+const PAIRS=[['seer','hr'],['lancer','hound'],['splitter','bot'],['director','mech'],
+ ['proxy','bot'],['gob','drone'],['shill','hr'],['bull','hound'],
+ ['daemon','tick'],['wdog','hound'],['fwall','bot'],['cam','ad'],
  ['wisher','ad'],['companion','bot'],['lull','hr'],['fetch','hound'],
  ['orphan','tick'],['valid','bot'],['claim','drone'],['sniper','hound'],
  ['oracle','ad'],['ctkr','mech'],['custod','mech'],['gap','mech']];

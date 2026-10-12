@@ -973,6 +973,68 @@ function drawAura(){
    changes. Drawn straight to the canvas, so none of it costs a baked sheet.
    Act IV marks are soft and attentive, Act V's are ledger and orange. */
 const MOBMARK={
+ /* --- Acts II and III. These were missed by the first pass, which only went
+    through the back half, and they are the ones a player meets first. Each
+    mark says what the creature's own numbers say about it: the Persuader has
+    drain, the Dividend Drone has dmg 0 and flee, the Shitcoiner has sight 0. */
+ seer(X,Y,s,e){/* it takes something off you while it talks, so the tell is a
+    thread that is always pulling in rather than pointing out */
+   const f=(e.fx||1)>0?1:-1,y=Y-26*s,t=(tNow*1.6)%1,hx=X+10*s*f;
+   ctx.save();ctx.globalAlpha=.55;ctx.strokeStyle='#b48cff';ctx.lineWidth=1.1*s;
+   ctx.beginPath();ctx.moveTo(hx,y);ctx.quadraticCurveTo(X+20*s*f,y+6*s,X+14*s*f,y+16*s);ctx.stroke();
+   ctx.globalAlpha=.6-t*.6;ctx.beginPath();ctx.arc(hx,y,(11-t*8)*s,0,6.283);ctx.stroke();ctx.restore();
+   eye(hx,y,2*s,'#b48cff')},
+ lancer(X,Y,s,e){/* the one in the Updraft that closes the distance, so what has
+    to read is the thing out in front, not the body behind it */
+   const f=(e.fx||1)>0?1:-1,y=Y-16*s,x=X+12*s*f;
+   ctx.save();ctx.strokeStyle='#ffe36b';ctx.lineWidth=2*s;ctx.lineCap='round';
+   ctx.beginPath();ctx.moveTo(x-6*s*f,y+4*s);ctx.lineTo(x+16*s*f,y-3*s);ctx.stroke();ctx.restore();
+   poly([x+17*s*f,y-4*s,x+9*s*f,y-8*s,x+9*s*f,y+1*s],'#ffe36b');
+   glow(x+15*s*f,y-3*s,9*s,'#ffe36b',.35)},
+ splitter(X,Y,s,e){/* a subsidiary is the same company again with a different
+    name on it, so there is always a smaller one coming off the side */
+   const f=(e.fx||1)>0?-1:1,b=Math.sin(tNow*2)*.5+.5;
+   ctx.save();ctx.globalAlpha=.45+b*.3;ctx.fillStyle='#8a5ab8';
+   ctx.beginPath();ctx.ellipse(X+(11+b*5)*s*f,Y-13*s,5.5*s,7*s,0,0,6.283);
+   ctx.fill();ctx.stroke();ctx.restore()},
+ director(X,Y,s,e){/* The Director's body was measured as exactly a floor colour
+    of the Nine Chairs, and tools/floor-sep.js says the material pass did not
+    help: dE 0.6. rimOn() holds the edge; this is the bright focal point the
+    palette rule asks every actor to carry, and it is deliberately the loudest
+    thing on it. */
+   const y=Y-40*s;
+   ctx.save();ctx.fillStyle='#c22d35';ctx.fillRect(X-9*s,y,18*s,3.2*s);ctx.restore();
+   glow(X,y+1.6*s,17*s,'#ff5d4d',.5);
+   const a=Math.sin(tNow*.9)*.5;
+   ctx.save();ctx.globalAlpha=.3;ctx.strokeStyle='#ff5d4d';ctx.lineWidth=1.2*s;
+   ctx.beginPath();ctx.moveTo(X,y+2*s);ctx.lineTo(X+Math.sin(a)*26*s,y+2*s+Math.cos(a)*18*s);
+   ctx.stroke();ctx.restore()},
+ proxy(X,Y,s,e){/* it is standing in for somebody who is not here */
+   const f=(e.fx||1)>0?-1:1;
+   ctx.save();ctx.globalAlpha=.32;ctx.strokeStyle='#d8d8e0';ctx.lineWidth=1.2*s;
+   ctx.beginPath();ctx.ellipse(X+9*s*f,Y-20*s,7*s,13*s,0,0,6.283);ctx.stroke();ctx.restore()},
+ gob(X,Y,s,e){/* dmg 0 and flee 1: it never hits you and it is always leaving,
+    so the thing that has to read is that it is worth chasing */
+   const y=Y-18*s,b=Math.sin(tNow*6)*1.5*s,f=(e.fx||1)>0?1:-1;
+   ctx.save();ctx.fillStyle='#e0bd6e';
+   ctx.beginPath();ctx.ellipse(X,y+b,8*s,7*s,0,0,6.283);ctx.fill();ctx.stroke();ctx.restore();
+   glow(X,y,15*s,'#fff3c8',.4);
+   for(let i=0;i<3;i++){const t=(tNow*1.4+i*.33)%1;
+     ctx.save();ctx.globalAlpha=.8-t*.8;ctx.fillStyle='#fff3c8';
+     ctx.beginPath();ctx.arc(X-(6+t*16)*s*f,Y-6*s+t*t*14*s,1.8*s,0,6.283);ctx.fill();ctx.restore()}},
+ shill(X,Y,s,e){/* sight 0. It is not looking at you, it is announcing, and the
+    colours are the loudest pair in the game because that is the joke */
+   const t=(tNow*2.2)%1,y=Y-30*s;
+   ctx.save();ctx.globalAlpha=.75;ctx.fillStyle=((tNow*4)|0)%2?'#3fe06a':'#e04ad0';
+   ctx.fillRect(X-11*s,y,22*s,4*s);ctx.restore();
+   ctx.save();ctx.globalAlpha=.5-t*.5;ctx.strokeStyle='#e04ad0';ctx.lineWidth=1.3*s;
+   ctx.beginPath();ctx.arc(X,y+2*s,(6+t*16)*s,0,6.283);ctx.stroke();ctx.restore()},
+ bull(X,Y,s,e){/* the Bull Run's own animal, head down */
+   const f=(e.fx||1)>0?1:-1,y=Y-20*s,x=X+6*s*f;
+   ctx.save();ctx.strokeStyle='#e0bd6e';ctx.lineWidth=1.8*s;ctx.lineCap='round';
+   for(const d of [-1,1]){ctx.beginPath();ctx.moveTo(x,y+d*3*s);
+     ctx.quadraticCurveTo(x+9*s*f,y+d*5*s,x+12*s*f,y+d*9*s);ctx.stroke()}
+   ctx.restore();glow(x+8*s*f,y,11*s,'#e0bd6e',.3)},
  /* --- Act IV, the Gentle Years --- */
  daemon(X,Y,s,e){/* it was already running before you got here, and there are copies */
    ctx.save();
@@ -1197,6 +1259,26 @@ function drawEnemy(e,X,Y){
     box(X-7*s,hy-7*s,14*s,13*s,3,'#e8eef0');ctx.fillStyle='#17121e';ctx.beginPath();ctx.arc(X-3*s,hy-2*s,1.3*s,0,6.283);ctx.arc(X+3*s,hy-2*s,1.3*s,0,6.283);ctx.fill();
     ctx.strokeStyle='#17121e';ctx.lineWidth=1.3;ctx.beginPath();ctx.arc(X,hy,3.6*s,.3,2.84);ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4;
     poly([X-1.5*s,Y-30*s+b,X+1.5*s,Y-30*s+b,X+2.5*s,Y-19*s+b,X,Y-16*s+b,X-2.5*s,Y-19*s+b],'#b3261e');box(X+f*8*s,Y-24*s+b,7*s,9*s,1,'#f0ead8')}
+  else if(e.k==='boss3'){/* A mandate is not a person, so there is nobody behind
+    the bench: only the bench, the line it has written, and the seal. It shared
+    mono's body with PROVIDENCE until now, and mono is a tall narrow wedge --
+    so this is deliberately wide and low. At the far end of a room the
+    silhouette alone should say which of the two you are looking at. It also
+    has spd 0, and a thing that cannot move should look like it never meant to. */
+    shadow(X,Y,46);const p=e.hp/e.max;
+    poly([X-62,Y-14,X+62,Y-14,X+54,Y-56,X-54,Y-56],fl?'#fff':'#0b0912');
+    poly([X-54,Y-56,X+54,Y-56,X+46,Y-74,X-46,Y-74],fl?'#fff':'#141222');
+    /* the line of the decree, as long as the mandate still holds */
+    ctx.fillStyle='#fff';ctx.fillRect(X-44,Y-66,88*p,2.5);
+    if(p<.5){ctx.save();ctx.globalAlpha=.5;ctx.fillStyle='#fff';
+      for(let i=0;i<4;i++)ctx.fillRect(X-44+i*24,Y-66+((i%2)?3:-3),10,2);ctx.restore()}
+    /* the seal: the only round thing on it, and the only part that moves */
+    const sy=Y-92+Math.sin(tNow*.8)*2;
+    ctx.fillStyle=fl?'#fff':'#0b0912';ctx.beginPath();ctx.arc(X,sy,17,0,6.283);ctx.fill();ctx.stroke();
+    ctx.strokeStyle='#fff';ctx.lineWidth=1.6;ctx.beginPath();ctx.arc(X,sy,11,0,6.283);ctx.stroke();
+    ctx.strokeStyle=OL;ctx.lineWidth=1.4;
+    eye(X,sy,p<.5?4.5:3,p<.5?'#ff5d4d':'#fff');
+    glow(X,sy,34,p<.5?'#ff5d4d':'#9fd0ff',.3)}
   else if(k==='mono'){shadow(X,Y,34);const p=e.hp/e.max;poly([X-26,Y-150,X+26,Y-150,X+30,Y,X-30,Y],fl?'#fff':'#07060b');ctx.fillStyle='#fff';ctx.fillRect(X-18,Y-96,36*p,2.5);ctx.fillStyle=p<.5?'#ff3b30':'#ffffff';ctx.fillRect(X-1.5,Y-128,3,22);glow(X,Y-100,70,p<.5?'#ff3b30':'#ffffff',.3);light(X,Y-80,200,'#ffffff')}
   else{const B=k==='boss',u=B?1.9:1.25*s;shadow(X,Y,21*u);const b=mov?Math.abs(Math.sin(e.ph*5))*1.5:0;
     box(X-12*u,Y-14*u,9*u,14*u,2,'#23202c');box(X+3*u,Y-14*u,9*u,14*u,2,'#23202c');

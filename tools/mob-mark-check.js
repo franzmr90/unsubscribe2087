@@ -8,7 +8,9 @@
 const {chromium}=require('playwright');
 const path=require('path');
 const URL='file://'+path.join(__dirname,'..','dist/Unsubscribe-2087-standalone.html');
-const PAIRS=[['daemon','tick'],['wdog','hound'],['fwall','bot'],['cam','ad'],['gap','mech'],
+const PAIRS=[['seer','hr'],['lancer','hound'],['splitter','bot'],['director','mech'],
+ ['proxy','bot'],['gob','drone'],['shill','hr'],['bull','hound'],
+ ['daemon','tick'],['wdog','hound'],['fwall','bot'],['cam','ad'],['gap','mech'],
  ['wisher','ad'],['companion','bot'],['lull','hr'],['ctkr','mech'],['fetch','hound'],
  ['orphan','tick'],['valid','bot'],['claim','drone'],['custod','mech'],['sniper','hound'],['oracle','ad']];
 async function clearUI(p){for(let i=0;i<50;i++){const st=await p.evaluate(()=>{

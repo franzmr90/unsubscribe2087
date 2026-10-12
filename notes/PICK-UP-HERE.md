@@ -110,10 +110,25 @@ was reported to mean.
 
 | | Item | Where | Notes |
 |---|---|---|---|
-| 1 | **Eighteen creatures borrow nine drawing routines** | `src/p11.js:10-22` | This one holds up. Each has its own stats and its own palette, but `spr` points at another creature's drawing, and none has a branch of its own in `drawEnemy`. Oracle, Well-Wisher and Camera are the Siren in three colours. They need a mark that reads at a glance in motion. |
+| 1 | ~~Creatures borrow drawing routines~~ **DONE** | `MOBMARK` in `src/p3.js` | 38 creatures, 14 bodies. All 24 that borrow one now carry a mark; `tools/mob-mark-check.js` holds it and `tools/mob-sheet.js` shows each beside the body it borrows. MANDATE got a body rather than a mark -- see below. |
 | 2 | ~~Eight styles with no backdrop~~ **DONE** | `BGK` in `src/p3.js` | Two new skies: the Gentle Years (a kept place, not a ruin) for Act IV, and 2015 daylight for the prequel -- the only daylight in the game. `tools/sky-sheet.js` shoots them. |
 | 3 | **`p8` and `p9` have no effects at all; `p5` and `p6` have one each** | those files | Some of that is correct -- a money conversation needs no particle. Shrines and shapeShift are not conversations. Check each before assuming it is a gap. |
 | 4 | **`tools/vfx-wire-check.js` is red on `main`** | that file | Stale expectations, not a bug. See the open items below. |
+
+### How drawEnemy dispatches, since this has been got wrong twice
+
+`const k = t.spr || e.k`, and then a chain in which **some branches test `e.k`
+and some test `k`**. An `e.k` branch is a specific override and must come before
+the `k` branch for the body it would otherwise fall into. That is why boss4 and
+boss5 have their own bodies despite carrying `spr:'boss'` and `spr:'mono'`, and
+why their `spr` fields are dead.
+
+**MANDATE did not.** It carries `spr:'mono'` and had no `e.k` branch, so Act
+III's boss was drawing as PROVIDENCE's body. It has its own now: mono is a tall
+narrow wedge, so the bench is deliberately wide and low, and at the far end of a
+room the silhouette alone says which of the two you are looking at. It keeps its
+own AI and its half-life dialogue, which is how the change was confirmed not to
+have broken the fight.
 
 ### The graphics ladder, and where it has got to
 
@@ -266,6 +281,11 @@ Treat them as illustration, not effects, and schedule them separately.
 - **`text/GAME-TEXT.md` and `.docx` are edited by hand.** `node
   tools/text/export.js` writes them, `import.js` reads them back,
   `roundtrip.js` proves export, import, build and smoke still agree.
+- **`tools/skill-aim.js` is intermittent.** It fails about one run in five, on
+  `homesteader 0`, with the miss distance differing run to run (3.41, 3.58). It
+  does this at `main` as well as on the current tree, so it is a flaky tool
+  rather than a regression -- but it has not been diagnosed, and a checker that
+  cries wolf one time in five will eventually be ignored on the run that matters.
 - **`floorDetail` still calls `Math.random`.** The grass in the Moors, the
   scratches on Tribunal Row and the Cathedral's curves differ from build to
   build, and between two people standing in the same shared district. It is
