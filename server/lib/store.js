@@ -10,6 +10,27 @@ const path = require('path');
 
 const DATA = process.env.DATA_DIR || path.join(__dirname, '..', 'data');
 
+/* The home-network launchers keep saves in a folder outside the unzipped kit, so a new
+   copy of the kit finds the accounts the old one made. DATA_FROM names the folder an
+   older kit used; on the first boot with an empty data folder, it is copied across once.
+   The old folder is left where it was, as a backup. */
+function adopt(to, from) {
+  if (!from) return false;
+  try {
+    if (path.resolve(from) === path.resolve(to)) return false;
+    if (fs.existsSync(path.join(to, 'users.json'))) return false;
+    if (!fs.existsSync(path.join(from, 'users.json'))) return false;
+    fs.mkdirSync(to, { recursive: true });
+    fs.cpSync(from, to, { recursive: true });
+    console.log('Moved the saves from ' + from + ' to ' + to + '. The old folder is untouched.');
+    return true;
+  } catch (e) {
+    console.error('Could not copy the old saves from ' + from + ': ' + e.message);
+    return false;
+  }
+}
+const ADOPTED = adopt(DATA, process.env.DATA_FROM);
+
 function ensure(dir) { fs.mkdirSync(dir, { recursive: true }); }
 
 function readJSON(file, fallback) {
@@ -86,4 +107,4 @@ const docs = {
 };
 
 ensure(DATA);
-module.exports = { Table, docs, DATA, readJSON, writeJSON, ensure };
+module.exports = { Table, docs, DATA, ADOPTED, adopt, readJSON, writeJSON, ensure };

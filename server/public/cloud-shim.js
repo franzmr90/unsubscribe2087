@@ -8,7 +8,26 @@
    It also puts the sign-in panel on screen, because the game has no idea accounts exist. */
 (function () {
   'use strict';
-  var me = null, csrf = '', booted = false, inviteRequired = false;
+  var me = null, csrf = '', booted = false, inviteRequired = false, accountRequired = false;
+
+  /* The game keeps a copy of its three slots and the shared lockbox in this browser, under
+     fixed names. On a computer more than one person signs in to, those names belonged to
+     whoever played last, and the next account opened the same three characters. So while
+     someone is signed in, the game's own keys are filed under their account id. The server
+     writes the id into the page, because the game reads its slots before any request could
+     come back. Settings that belong to the device, like touch or mouse, stay shared. */
+  var UID = typeof window.__u2087uid === 'string' ? window.__u2087uid : '';
+  var OWN = /^(unsub2087|u2087-trade$)/;
+  if (UID) {
+    try {
+      var LS = window.localStorage, SP = Storage.prototype;
+      var get0 = SP.getItem, set0 = SP.setItem, del0 = SP.removeItem;
+      var key = function (st, k) { return st === LS && typeof k === 'string' && OWN.test(k) ? 'acct:' + UID + ':' + k : k; };
+      SP.getItem = function (k) { return get0.call(this, key(this, k)); };
+      SP.setItem = function (k, v) { return set0.call(this, key(this, k), v); };
+      SP.removeItem = function (k) { return del0.call(this, key(this, k)); };
+    } catch (e) {}
+  }
 
   /* The game looks for this before it tries to open a socket. Only this server serves the
      page with this file in it, so only here is there anybody to talk to. */
@@ -30,6 +49,7 @@
   var ready = api('/api/me', undefined, 'GET').then(function (j) {
     me = j.user; csrf = j.csrf || '';
     inviteRequired = !!j.inviteRequired;
+    accountRequired = !!j.accountRequired;
     return j;
   }).catch(function () { return {}; });
 
@@ -111,7 +131,9 @@
   }
 
   function open(m) { mode = m || mode; el('acc').className = ''; draw(); }
-  function close() { el('acc').className = 'off'; tag(); }
+  function close() { if (accountRequired && !me) return; el('acc').className = 'off'; tag(); }
+  /* On a home game there is no playing without an account, so no way round the panel. */
+  function skipLink() { return accountRequired && !me ? '' : '<a data-m="skip">Play without an account</a>'; }
 
   var QS = new URLSearchParams(location.search);
   var linkToken = QS.get('t');
@@ -124,12 +146,12 @@
         '<button data-m="up" class="' + (mode === 'up' ? 'on' : '') + '">New account</button></div>';
     }
     if (mode === 'in') {
-      h += '<h2>Welcome back</h2><p class="sub">Your characters follow you to any device you sign in on.</p>' +
+      h += '<h2>Welcome back</h2><p class="sub">' + (accountRequired ? 'Everyone here has their own account and their own three characters. Make one the first time; after that, sign in from any device in the house.' : 'Your characters follow you to any device you sign in on.') + '</p>' +
         '<label>Name</label><input id="f_name" autocomplete="username" autocapitalize="off">' +
         '<label>Password</label><input id="f_pass" type="password" autocomplete="current-password">' +
         '<button id="go">Sign in</button>' +
         '<div id="accMsg"></div>' +
-        '<div id="accFoot"><a data-m="forgot">Forgotten your password?</a> &middot; <a data-m="skip">Play without an account</a></div>';
+        '<div id="accFoot"><a data-m="forgot">Forgotten your password?</a>' + (skipLink() ? ' &middot; ' + skipLink() : '') + '</div>';
     } else if (mode === 'up') {
       h += '<h2>Make an account</h2><p class="sub">An email address is optional, and the only way to recover a forgotten password or mail yourself a backup.</p>' +
         '<label>Name</label><input id="f_name" autocomplete="username" autocapitalize="off">' +
@@ -137,7 +159,7 @@
         '<label>Email (optional)</label><input id="f_email" type="email" autocomplete="email" autocapitalize="off">' +
         (inviteRequired ? '<label>Invite code</label><input id="f_invite" autocomplete="off" autocapitalize="off">' : '') +
         '<button id="go">Create it</button><div id="accMsg"></div>' +
-        '<div id="accFoot"><a data-m="skip">Play without an account</a></div>';
+        '<div id="accFoot">' + skipLink() + '</div>';
     } else if (mode === 'forgot') {
       h += '<h2>Recover your account</h2><p class="sub">Give the address on the account and a one-time link comes back. It expires in half an hour.</p>' +
         '<label>Email</label><input id="f_email" type="email" autocomplete="email" autocapitalize="off">' +
@@ -243,7 +265,7 @@
   }
 
   function refresh() {
-    return api('/api/me', undefined, 'GET').then(function (j) { me = j.user; csrf = j.csrf || ''; inviteRequired = !!j.inviteRequired; tag(); draw(); });
+    return api('/api/me', undefined, 'GET').then(function (j) { me = j.user; csrf = j.csrf || ''; inviteRequired = !!j.inviteRequired; accountRequired = !!j.accountRequired; tag(); draw(); });
   }
 
   function boot() {
@@ -259,7 +281,8 @@
       }
       /* Someone who has played here before and signed out gets the panel; a first-time
          visitor gets the game, and the corner tag if they want an account later. */
-      if (!me && localStorage.getItem('u2087_seen')) open('in');
+      if (!me && accountRequired) open('in');
+      else if (!me && localStorage.getItem('u2087_seen')) open('in');
       else if (!me) { try { localStorage.setItem('u2087_seen', '1'); } catch (e) {} }
     });
   }

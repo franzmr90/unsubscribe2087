@@ -85,5 +85,7 @@ launcher may already hold the port. Stop the launcher first.
 
 ## Where the data lives
 
-Accounts and characters go in `saves/` next to the launcher. Delete it to start
-clean. The suites never touch it — they use a temp directory and clean up.
+Accounts and characters go in `Unsubscribe 2087 saves` in the home folder, outside
+the kit, so a fresh unzip keeps them. The launcher prints the path on boot. An older
+kit's `saves/` next to the launcher is copied there once. Delete the home-folder one
+to start clean. The suites never touch it — they use a temp directory and clean up.

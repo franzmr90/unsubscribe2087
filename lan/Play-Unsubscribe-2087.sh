@@ -29,10 +29,12 @@ say "Public networks should stay blocked. Details are in LAN-PLAY.md."
 say "Leave this window open. Closing it stops the game for everyone."
 say ""
 
-mkdir -p saves
 export LAN=1
 export PORT="${PORT:-8087}"
-export DATA_DIR="$PWD/saves"
+# Accounts and characters live outside this folder, so a newer copy of the kit unzipped
+# somewhere else still finds them. A saves folder from an older kit is copied across once.
+export DATA_DIR="${DATA_DIR:-$HOME/Unsubscribe 2087 saves}"
+export DATA_FROM="$PWD/saves"
 unset GITHUB_TOKEN TLS_KEY TLS_CERT INVITE_REQUIRED INVITE_CODES ALLOWLIST BUG_WEBHOOK_URL BUG_WEBHOOK_KEY PUBLIC_ORIGIN
 node server/server.js
 status=$?
