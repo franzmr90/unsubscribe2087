@@ -62,6 +62,21 @@ These are the habits that actually caught things, not general advice:
 - **A tool that fails is either a bug or a stale expectation.** Decide which and
   say so. Do not leave a red check sitting on `main` unexplained -- see the
   open items below for two that were.
+- **A bot that plays badly reads as a game that is too hard.** `tools/balance.js`
+  pilots its hero by pressing the first skill button and walking in, and its 74%
+  Brutal death rate was mostly that. `tools/balance-play.js` spends points and
+  web nodes on level-up, picks skills by what `SKV[cls][i].k` says they are
+  shaped like, loots and re-gears between waves, and fights four waves instead
+  of one pack. Building it turned up five faults that each reported a clean
+  result: a pack spawned into a wall (instant flawless clear), one wandering
+  district monster that made "all dead" never true (a 70s stalemate), a cast
+  counted whether or not the game performed it (War Horn firing 1869 times on a
+  10s cooldown), a refusal treated as permanent (the witness casting once a
+  fight), and three kiting classes that retreated for the whole fight and cast
+  **nothing** -- 0.0 distinct skills and the three worst death rates in the
+  report, all of it the pilot. Every one of those looked like a balance finding.
+  So the report leads with distinct skills cast, levels, web nodes and items
+  taken/worn: if the pilot column is wrong the rest of the row is fiction.
 - **A flaky test is a bug in the test until proven otherwise.**
   `tools/skill-aim.js` failed about one run in five and was written off as
   flake. It was picking up the wrong effect, twice over. It waited 60ms with

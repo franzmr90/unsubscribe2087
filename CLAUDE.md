@@ -56,8 +56,11 @@ Artifact URL: https://claude.ai/artifact/5i4v5MTCPoKQjHbi14NCxg (capabilities db
 
 ## Known gaps
 A snapshot, not a backlog -- `notes/PICK-UP-HERE.md` carries the current one.
-- Acts III-V balance is measured and uneven: `node tools/balance.js` (~2 min, 359 fights)
-  writes `notes/balance-acts-3-5.md`. It does NOT stall -- that note was stale.
+- Acts III-V balance: `node tools/balance.js` is the controlled fight (one pack, a hero that
+  presses one button) -> `notes/balance-acts-3-5.md`. `node tools/balance-play.js` is the same
+  hero played properly (points, web, situational skills, loot, four waves) ->
+  `notes/balance-play.md`. Read balance-play's skills/levels/web/worn columns first; a
+  mis-piloted class reads exactly like a hard game. The witness is still mis-piloted.
 - Cloud (account) paths for save slots, lockbox, character switching, delete and companion are untested.
 - Companion feel, party-pressure step logic, boss4/boss5 tuning are first guesses.
 - Held for later: real sats over Lightning, auction house.

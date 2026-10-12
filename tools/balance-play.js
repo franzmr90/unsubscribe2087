@@ -79,6 +79,7 @@ async function dismiss(page) {
   for (let i = 0; i < 40; i++) {
     const st = await page.evaluate(() => {
       if (__g.mode === 'intro') { __g.ltEnd(); return 'x'; }
+      if (__g.mode === 'dying') { const r = document.getElementById('bRise'); if (r) { r.click(); return 'x'; } }
       const s = document.getElementById('scene');
       if (s && !s.hidden) { const b = document.getElementById('scSkip'); if (b) b.click(); return 'x'; }
       const d = document.getElementById('dlg');
@@ -120,7 +121,7 @@ for (const cls of CLASSES) {
         G.dz = {}; G.adapt = 0;
         for (let i = 1; i <= 25; i++) G.q['q' + i] = 3;
         g.setMode('play');
-        if (g.W && g.W.zi !== 0) g.enter(0);
+        if (!g.W || g.W.zi !== 0) g.enter(0);   /* null W needs entering, not skipping */
         g.shapeShift(cls, build);
       }, {cls, build: BUILD[cls], zi, di});
       if (await dismiss(page) !== 'play') { rows.push({cls, zi, di, bad: 'setup'}); continue; }
@@ -230,10 +231,18 @@ for (const cls of CLASSES) {
           const hp = G.hp / S.maxHp;
 
           if (hp < prof.stim && G.stims > 0 && G.hp < S.maxHp * .92) g.stim();
+
+          /* Move first, then cast anyway. Backing off used to return before the
+             cast, so the three kiting classes -- hacker, courier, founder --
+             retreated for the whole fight and cast literally nothing: 0.0
+             distinct skills and the three worst death rates in the report, all
+             of it this pilot rather than the game. A person throws while giving
+             ground, so giving ground is a move, not a turn. */
           const w = warnHere();
-          if (w) { step(P.x - (w.x - P.x), P.y - (w.y - P.y)); return; }
-          if (prof.kite && nd < (prof.near || 3)) { step(P.x - (near.x - P.x), P.y - (near.y - P.y)); return; }
-          if (!prof.kite && hp < (prof.back || .36) && nd < 2) { step(P.x - (near.x - P.x), P.y - (near.y - P.y)); return; }
+          if (w) step(P.x - (w.x - P.x), P.y - (w.y - P.y));
+          else if (prof.kite && nd < (prof.near || 3)) step(P.x - (near.x - P.x), P.y - (near.y - P.y));
+          else if (!prof.kite && hp < (prof.back || .36) && nd < 2) step(P.x - (near.x - P.x), P.y - (near.y - P.y));
+          const gaveGround = !!w || (prof.kite && nd < (prof.near || 3));
 
           /* choose by situation, biggest-first for a crowd and cheapest otherwise */
           const aim = (k, x, y) => {
@@ -249,14 +258,21 @@ for (const cls of CLASSES) {
           /* try in order, and fall through when the game declines rather than
              spending the tick on a skill that will not fire */
           if (n >= 3) for (const k of of('aoe').sort((p, q) => q.cd - p.cd)) if (aim(k, cx, cy)) return;
-          if (nd > 2.6) for (const k of of('ranged').filter(k => k.r >= nd - .8).sort((p, q) => p.cost - q.cost))
+          if (nd > 2.6 || prof.kite) for (const k of of('ranged').filter(k => k.r >= nd - .8).sort((p, q) => p.cost - q.cost))
             if (aim(k, near.x, near.y)) return;
           if (g.W.t - lastBuff > 8) for (const k of of('buff').sort((p, q) => q.cd - p.cd))
             if (aim(k, P.x, P.y)) { lastBuff = g.W.t; return; }
           if (nd <= 3.2) for (const k of of('melee').sort((p, q) => p.cost - q.cost))
             if (aim(k, near.x, near.y)) return;
+          /* nd can be 0 when something is standing exactly on you, and dividing
+             by it put a NaN into P.dir, which reaches the renderer as a
+             non-finite radial gradient. Keep the facing we have in that case. */
+          if (gaveGround) return;                 /* already moved this tick */
           if (nd > 1.4) step(near.x, near.y);
-          else { P.dir = {x: (near.x - P.x) / nd, y: (near.y - P.y) / nd}; g.attack && g.attack(); }
+          else {
+            if (nd > .001) P.dir = {x: (near.x - P.x) / nd, y: (near.y - P.y) / nd};
+            g.attack && g.attack();
+          }
         }
 
         /* ---- the run ---------------------------------------------------- */
