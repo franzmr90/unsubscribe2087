@@ -5,7 +5,24 @@ The one live document. Everything else in `notes/` is history kept on purpose;
 Read this first, update it last, and keep it to one page of truth rather than a
 record of everything that happened.
 
-Last true as of **2026-10-12**, `main` at `b0658cc`.
+Last true as of **2026-10-13**. `main` is at `b0658cc`; twelve commits ahead of
+it on `claude/unsubscribe-2087-story-fb99ov`, all pushed, nothing uncommitted.
+That branch has not been merged -- merging is the author's call.
+
+## Next, if you only do one thing
+
+**Run `node tools/balance-play.js` a second time and see whether run A
+reproduces.** It takes about an hour. Run A is committed in
+`notes/balance-play.md` and says two things worth acting on -- Normal has zero
+deaths across 120 four-wave fights, and Hard and Brutal come out at the same
+difficulty. Neither has been verified. A second run was started and killed
+before it finished, so this is genuinely outstanding rather than merely
+cautious: seven bugs in that harness have each produced a clean, plausible
+report, and one clean run is not evidence.
+
+If it reproduces, those two findings are small specific changes rather than a
+rebalance, and they are the author's to make. Nothing in this session changed a
+balance number.
 
 ---
 
@@ -314,6 +331,15 @@ Treat them as illustration, not effects, and schedule them separately.
   -- but `notes/GRAPHICS-PLAN.md` says anything seeded draws from the map seed,
   and this does not. It also means a tile set cannot be compared byte for byte
   between builds, which is worth knowing before trying to prove one unchanged.
+- **Run B of `balance-play` was never taken.** See Next, at the top. Run A sits
+  in `notes/balance-play.md` with a header saying so.
+- **The homesteader is the one class still mis-piloted.** 4.3 distinct skills,
+  the lowest in run A. Its kit is blocked while it is wearing a chassis and the
+  pilot does not shed one on purpose, the way the witness's page had to be
+  taught. Read its rows as a floor. Everything else sits between 5.7 and 7.6.
+- **`balance-play` rewrites a 360-row table on every run**, so the file churns
+  in `git`. If that gets annoying, write runs to timestamped files and track
+  only the comparison.
 - **`tools/palette-check.js` reads the authored palette, not the screen.** It
   scores `STY[].f`, so anything that paints *on* a floor is invisible to it and
   "unchanged" from it means nothing. `tools/floor-sep.js` is the pixel version:
@@ -329,6 +355,22 @@ Treat them as illustration, not effects, and schedule them separately.
 Kept short on purpose. The commit log is the record; this is only what stops
 somebody redoing it.
 
+- **Every district has a surface.** `MAT` in `src/p3.js`, all 31 styles, plus
+  tiles built at 2x and drawn down. `tools/tile-sheet.js` shoots the tiles
+  alone, `tools/tile-scale.js` holds the arithmetic, `tools/floor-sep.js`
+  measures actor-against-floor on real pixels rather than on the declared
+  palette the way `palette-check.js` does. Rungs 1 and 2 of
+  `notes/RENDERER-DECISION.md` are done; rung 3 is not started and is gated on
+  a phone measurement nobody has taken.
+- **No creature borrows a body without a tell.** 38 creatures, 14 bodies, and
+  all 24 that share one now carry a mark. MANDATE got a body of its own rather
+  than a mark -- it was drawing as PROVIDENCE. `tools/mob-mark-check.js`,
+  `tools/mob-sheet.js`.
+- **Acts III-V are measured twice over.** `tools/balance.js` is the controlled
+  fight; `tools/balance-play.js` is the same hero piloted properly. See Next,
+  above, before trusting either.
+- **`tools/skill-aim.js` is not flaky any more.** It was measuring the wrong
+  circle, twice over, and the game was right in every failing run.
 - **The game is created and ended, not toggled.** A difficulty is bound when a
   game is made, in single player and multiplayer alike. Leaving is D2's Save and
   Exit. The ending marks the clear, rolls credits and returns to the title.
