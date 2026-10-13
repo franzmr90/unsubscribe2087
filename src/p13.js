@@ -160,6 +160,9 @@ function mpDiffIndex(k) {
    anyone who joined after the fact, while the server keeps the flags and ships them on
    every roster. Reading both means the stand-in you can hit and the name painted red
    can never disagree, which is what made a declared hostile unattackable. */
+
+function inArenaRing(x,y){if(!W||!W.arenaRing)return false;const r=W.arenaRing;return Math.hypot(x-r.cx,y-r.cy)<r.r;}
+function arenaDuelAllowed(o){if(!W||!W.z||!W.z.arena)return false;return inArenaRing(P.x,P.y)&&inArenaRing(o.x,o.y);}
 function mpHostileTo(uid) {
   if (!uid) return false;
   if (MP.hostile[uid]) return true;
@@ -502,13 +505,13 @@ function mpZone(m) {
    game already knows how to aim finds them. */
 function mpSyncEnts() {
   if (!W || !W.ents) return;
-  const safe = W.z && W.z.town;   /* town is safe, so there is nothing to aim at in one */
+  const safe = W.z && W.z.town && !W.z.arena;   /* town is safe, arena is not */
   for (let i = W.ents.length - 1; i >= 0; i--) {
     const e = W.ents[i];
-    if (e.mp && !MP.others.some(o => o.uid === e.mp && mpHostileTo(o.uid))) W.ents.splice(i, 1);
+    if (e.mp && !MP.others.some(o => o.uid === e.mp && (mpHostileTo(o.uid) || (typeof arenaDuelAllowed==='function'&&arenaDuelAllowed(o))))) W.ents.splice(i, 1);
   }
   for (const o of MP.others) {
-    if (safe || !mpHostileTo(o.uid)) continue;
+    if (safe || !(mpHostileTo(o.uid) || (typeof arenaDuelAllowed==='function'&&arenaDuelAllowed(o)))) continue;
     let e = W.ents.find(q => q.mp === o.uid);
     if (!e) {
       e = { mp: o.uid, k: 'player', x: o.x, y: o.y, r: .55, sz: 1, hp: o.hp, max: o.hpm, flash: 0,

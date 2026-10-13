@@ -306,6 +306,7 @@ function buildTown(zi){zi=zi||0;if(ZONES[zi].pre)return buildPre();const act=ZON
   W=blankW(zi,26);const N=26;for(let y=3;y<=22;y++)for(let x=3;x<=22;x++)if(act!==2||Math.hypot(x-12.5,y-12.5)<10.4)W.map[y*N+x]=1;
   const road=(x0,y0,x1,y1)=>{for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++)W.map[y*N+x]=1};
   if(act===1){road(11,23,13,24);W.exit={x:12.5,y:24.3,ix:12.5,iy:21.5};for(const[x,y]of[[5,5],[20,5],[5,20],[20,20],[12,3],[3,12],[22,13]])solid('lamp',x,y)}
+  if(act===1)solid('sign',8,20,{text:'DUELING ARENA',toArena:1});
   else if(act===2){road(22,11,24,13);W.exit={x:24.3,y:12.5,ix:21,iy:12.5};for(const[x,y]of[[12,3],[3,12],[12,22],[6,6],[19,6],[6,19],[19,19]])solid('lamp',x,y)}
   else{road(11,1,13,2);W.exit={x:12.5,y:1.7,ix:12.5,iy:4.2};for(const[x,y]of[[3,12],[22,13],[12,22],[5,5],[20,5]])solid('lamp',x,y);for(const[x,y]of[[8,10],[16,10],[8,15],[16,15],[4,21],[21,21]])solid('prop',x,y,{v:1})}
   W.portals.push({x:W.exit.x,y:W.exit.y,kind:'exit'});
@@ -464,6 +465,20 @@ function mapPrint(){if(!W||!W.map)return null;let floor=0;for(let i=0;i<W.map.le
   const res=(W.npcs||[]).filter(n=>n.id==='res').map(n=>(+n.x).toFixed(2)+','+(+n.y).toFixed(2)).sort().join('|');
   const st=W.start?(+W.start.x).toFixed(2)+','+(+W.start.y).toFixed(2):'';
   return {zi:W.zi,seed:W.mapSeed||0,floor,start:st,ents,portals,res,shared:W.sharedKey||''}}
+
+function buildArena(){
+  W=blankW(ZONES.findIndex(z=>z.arena),30);const N=30;
+  for(let y=2;y<=27;y++)for(let x=2;x<=27;x++)W.map[y*N+x]=1;
+  /* inner duel circle marked by a low wall ring of props */
+  const cx=15,cy=15,r=6.5;
+  for(let a=0;a<16;a++){const ang=a/16*6.283;solid('prop',Math.round(cx+Math.cos(ang)*r),Math.round(cy+Math.sin(ang)*r),{v:2});}
+  for(const[x,y]of[[5,5],[24,5],[5,24],[24,24],[15,4],[15,25],[4,15],[25,15]])solid('lamp',x,y);
+  classifyWalls();W.seen.fill(1);initRuntime();
+  W.start={x:15,y:8}; /* spectators start outside the ring */
+  W.portals.push({x:15,y:3,kind:'home'});
+  W.arenaRing={cx,cy,r};
+  solid('sign',15,6,{text:'DUELING ARENA'});
+}
 function enter(zi,o){setTimeout(mpBeat,0);
   o=o||{};if(actBriefHold(zi)){actBriefDeny();return false}
   const spec=(typeof mpMapSpec==='function')?mpMapSpec(zi,o):null;
@@ -472,7 +487,7 @@ function enter(zi,o){setTimeout(mpBeat,0);
   const z=ZONES[zi];G.zone=zi;if(!z.sim)G.town=townOf(zi);let old=0;
   if(spec&&spec.tpl&&typeof mpApplyTpl==='function')mpApplyTpl(zi,spec.tpl);
   const slot=spec&&spec.key?spec.key:zi;
-  if(z.town)withMapRng(spec&&spec.seed,()=>buildTown(zi));else if(z.sim)buildSim(o.wave||1,o.rush);else if(!o.fresh&&ZS[slot]&&ZS[slot].tier===G.tier){W=ZS[slot];old=1;ensureCage();initRuntime()}else withMapRng(spec&&spec.seed,()=>genZone(zi));
+  if(z.arena)buildArena();else if(z.town)withMapRng(spec&&spec.seed,()=>buildTown(zi));else if(z.sim)buildSim(o.wave||1,o.rush);else if(!o.fresh&&ZS[slot]&&ZS[slot].tier===G.tier){W=ZS[slot];old=1;ensureCage();initRuntime()}else withMapRng(spec&&spec.seed,()=>genZone(zi));
   if(spec&&spec.key){W.sharedKey=spec.key;W.mapSeed=spec.seed|0}
   let at=o.at||W.start;if(o.from==='next'){const p=W.portals.find(p=>p.kind==='next');at=nearFree(p||W.goal||W.start)}else if(o.from==='exit'&&W.exit)at={x:W.exit.ix,y:W.exit.iy};else if(o.at&&!(o.exact&&walk(at.x,at.y))&&!free(at.x,at.y,.3))at=nearFree(at,1.2);
   MO=null;HOVER=null;P={x:at.x,y:at.y,r:.32,dir:{x:1,y:0},atk:0,cd:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],silence:0,oc:0,swing:0,flash:0,inv:.5,slow:0,buff:0,haste:0,guard:0,dash:null,volley:null,moving:false,warn:0,movedT:0,spin:0,walkPh:0,shr:null,band:10,hb:0,stealth:0,ambT:0,ambM:1,mech:0,crunch:0,streak:0,streakT:0};BLOOD=[];for(const a of carry){a.x=P.x+rnd(-1,1);a.y=P.y+rnd(-1,1);W.allies.push(a)}spawnMerc();evEnd(1);if(old&&W.leftT!==undefined&&G.time-W.leftT>150&&repop())setTimeout(()=>toast('You were gone a while. The machines have drifted back.'),900);if(!z.town&&!z.sim){placeQuestObjs();withMapRng(spec&&spec.seed,()=>ensureNode());}p7Enter();if(!z.town&&!z.sim){for(const k in SQ){const st=sqStep(k);if(st&&st.t==='esc'&&st.zi===zi)escStart(k,SQ[k].steps[G.sq[k].s-1].esc)}}if(z.town)for(const k in sqSkip)delete sqSkip[k];
@@ -1310,6 +1325,8 @@ function giveStim(){if(beltHasRoom()){G.stims=(G.stims||0)+1;return 'belt'}const
 function stimToBelt(i){const it=G.bag&&G.bag[i];if(!it||!it.stim)return false;if(typeof tradeLocked==='function'&&tradeLocked(it))return false;if(!beltHasRoom()){toast('You cannot carry another');sfx('err');return false}G.bag.splice(i,1);G.stims=(G.stims||0)+1;sfx('equip');return true}
 
 /* ================= interaction ================= */
+
+function enterArena(){const zi=ZONES.findIndex(z=>z.arena);if(zi<0)return;sfx('portal');enter(zi);}
 function useObj(o){
   if(o.k==='chest'){o.used=1;sfx('chest');if(Math.random()<.3)addDrop({sat:ri(2,5)},o.x,o.y);if(Math.random()<.2)addDrop({word:pick(WK)},o.x,o.y);parts(o.x,o.y,14,['#c9a868','#ffe36b'],2.5);dropFrom('chest',o.x,o.y,W.ml)}
   else if(o.k==='shrine'){o.used=1;sfx('shrine');if(o.sk==='eyes'){eggLaser();return}const s=SHR[o.sk];toast(s[0]+': '+s[1]);parts(o.x,o.y,24,['#59e0e6','#fff'],2,1.6);
@@ -1340,7 +1357,7 @@ function findAct(){for(const o of W.objs)if(o.k==='qobj'&&!o.used&&Math.hypot(o.
     const rs=resStep();if(rs)for(const n of W.npcs)if(n.id==='res'&&!n.got)chk(n.x,n.y,rs.label,()=>sqRes(n));
     if(!rs)for(const n of W.npcs)if(n.id==='res')chk(n.x,n.y,'Talk to a Resident',()=>convo('res'));
     for(const n of W.npcs)if(n.id!=='res')chk(n.x,n.y,n.id==='gate'?'Use the Transit Gate':n.id==='vr'?'Use the VR rig':n.id==='board'?'Read the bounty board':n.id==='stash'?'Open your lockbox':n.id==='ubi'?'Collect the Stipend':n.act||'Talk to '+n.name,()=>talkTo(n.id))}
-  for(const o of W.objs){if(o.used)continue;if(o.k==='chest')chk(o.x,o.y,'Open lockbox',()=>useObj(o));else if(o.k==='shrine')chk(o.x,o.y,SHR[o.sk][0],()=>useObj(o));else if(o.k==='memo')chk(o.x,o.y,'Read the memo',()=>useObj(o));else if(o.k==='cage')chk(o.x,o.y,'Open the cage',()=>useObj(o));else if(o.k==='page')chk(o.x,o.y,'Read the letter',()=>useObj(o));else if(o.k==='minute')chk(o.x,o.y,'Strike the minutes',()=>useObj(o));else if(o.k==='stray')chk(o.x,o.y,'Help the stranger',()=>useObj(o));else if(o.k==='qobj'){const st=sqStep(o.q);if(st)chk(o.x,o.y,st.label,()=>sqUse(o))}else if(o.k==='dnode'&&!G.nodes[W.zi])chk(o.x,o.y,cause()?'Bring this node online (free)':'Bring this node online (5 sats)',()=>lightNode(o));else if(o.k==='leg')chk(o.x,o.y,'Pick up the servo leg',()=>legTake(o));else if(o.k==='pow'&&!W.pow)chk(o.x,o.y,'Begin proof of work (hold 60 seconds)',()=>powStart(o));else if(o.k==='corpse')chk(o.x,o.y,'Take your gear',()=>useObj(o));else if(o.k==='arc'&&typeof arcLabel==='function'){const lab=arcLabel(o);if(lab)chk(o.x,o.y,lab,()=>arcUse(o))}}
+  for(const o of W.objs){if(o.used)continue;if(o.k==='chest')chk(o.x,o.y,'Open lockbox',()=>useObj(o));else if(o.k==='shrine')chk(o.x,o.y,SHR[o.sk][0],()=>useObj(o));else if(o.k==='memo')chk(o.x,o.y,'Read the memo',()=>useObj(o));else if(o.k==='cage')chk(o.x,o.y,'Open the cage',()=>useObj(o));else if(o.k==='page')chk(o.x,o.y,'Read the letter',()=>useObj(o));else if(o.k==='minute')chk(o.x,o.y,'Strike the minutes',()=>useObj(o));else if(o.k==='stray')chk(o.x,o.y,'Help the stranger',()=>useObj(o));else if(o.k==='qobj'){const st=sqStep(o.q);if(st)chk(o.x,o.y,st.label,()=>sqUse(o))}else if(o.k==='dnode'&&!G.nodes[W.zi])chk(o.x,o.y,cause()?'Bring this node online (free)':'Bring this node online (5 sats)',()=>lightNode(o));else if(o.k==='leg')chk(o.x,o.y,'Pick up the servo leg',()=>legTake(o));else if(o.k==='pow'&&!W.pow)chk(o.x,o.y,'Begin proof of work (hold 60 seconds)',()=>powStart(o));else if(o.k==='corpse')chk(o.x,o.y,'Take your gear',()=>useObj(o));else if(o.k==='arc'&&typeof arcLabel==='function'){const lab=arcLabel(o);if(lab)chk(o.x,o.y,lab,()=>arcUse(o))}else if(o.k==='sign'&&o.toArena)chk(o.x,o.y,'Enter the Dueling Arena',()=>enterArena());}
   return best}
 
 
