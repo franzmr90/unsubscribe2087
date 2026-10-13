@@ -52,6 +52,12 @@ Three tests of done, in order of how much they matter:
 
 ## How we work
 
+- **Merge every three to five commits, and say so out loud.** The author asked
+  for the reminder on 2026-10-13, after a run of fourteen commits sat on one
+  branch for a whole session. A thread should count its own commits since the
+  last merge and, at three, offer to merge; at five, say plainly that the
+  branch is overdue. Merging stays the author's call -- the reminder is the
+  thread's job, the decision is not.
 - **Branch per feature, merge, delete.** Start from a current `main`, branch
   named for the thing, merge with `--ff-only` when it is done, delete the
   branch. The repo has 131 branches and 58 unmerged leftovers because the last

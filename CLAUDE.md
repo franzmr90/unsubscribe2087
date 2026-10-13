@@ -34,6 +34,11 @@ All files share one scope, so load order decides what a top-level statement may 
 
 Zones: 0 Stillwater, 1-5 Act I, 6 Simulator, 7-11 Act II, 12-16 Act III, 17/18 towns II/III, 19 subpoena, 20 Bull Run, 21-33 see p11.
 
+## Merging
+Merge to `main` every three to five commits with `--ff-only`, never in a batch at the end of a
+session. Count the commits since the last merge; at three, offer. At five, say the branch is
+overdue. The merge itself is the author's call -- ask, do not merge unprompted.
+
 ## Editing
 Lines are long. Patch with small Python scripts that assert the anchor text exists before replacing
 (`tools/ctx.py <regex>` prints matches with context). Rebuild, test, then publish.
