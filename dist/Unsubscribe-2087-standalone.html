@@ -2190,8 +2190,23 @@ function hit(e,m,nl){if(e.hp<=0)return;let[d,c]=pdmg(m,e);d=typed(e,d);if(G.cls=
   if(S.sp.intern&&!procLock&&Math.random()<.2){procLock=true;chain(e,3,.8);procLock=false}}
 function chain(from,n,m){const done=new Set();let f={x:from.x,y:from.y};for(let i=0;i<n;i++){let b=null,bd=i||from!==P?4.5:7;for(const e of W.ents)if(!done.has(e)){const d=dist(e,f);if(d<bd){bd=d;b=e}}if(!b)break;done.add(b);W.fx.push({k:'bolt',x:f.x,y:f.y,x2:b.x,y2:b.y,t:0,life:.2});f={x:b.x,y:b.y};hit(b,m)}return done.size}
 function boomFx(e){const low=!G.act2;return {k:'warn',x:e.x,y:e.y,r:low?1.35:2.2,t:0,life:low?1.35:.7,boom:e.dmg*(low?.85:1.5)}}
-function placeMinute(e){if(W.objs.some(o=>o.k==='minute'&&!o.used))return;W.objs.push({k:'minute',x:e.x,y:e.y})}
-function ensureMinute(){if(W.zi!==13||G.q.q12!==1||!G.q12down||W.objs.some(o=>o.k==='minute'&&!o.used))return;const p=W.suAt||W.goal||{x:P.x,y:P.y};W.objs.push({k:'minute',x:p.x,y:p.y})}
+/* The minutes used to be able to land on the gate out. Every pick path -- findAct,
+   take and pickScreen -- tests the portals first and takes a new best only on a
+   strictly shorter distance, so a prop sharing the gate's tile loses every tie and
+   can never be struck. Stagger it a couple of tiles clear instead. */
+function offPortal(p,minD){const d0=minD||2.6,N=W.N,far=q=>(W.portals||[]).every(t=>Math.hypot(t.x-q.x,t.y-q.y)>=d0);
+  if(far(p))return{x:p.x,y:p.y};
+  for(let r=d0;r<=d0+3.5;r+=.7)for(let a=0;a<12;a++){const th=(a+p.x)*Math.PI/6,q={x:p.x+Math.cos(th)*r,y:p.y+Math.sin(th)*r};
+    if(q.x>1.5&&q.y>1.5&&q.x<N-1.5&&q.y<N-1.5&&free(q.x,q.y,.4)&&far(q))return q}
+  return{x:p.x,y:p.y}}
+function placeMinute(e){if(W.objs.some(o=>o.k==='minute'&&!o.used))return;const p=offPortal({x:e.x,y:e.y});W.objs.push({k:'minute',x:p.x,y:p.y})}
+/* Re-entering the hall with the Secretary already dead leaves W.suAt unset, so this
+   fell back to W.goal -- the gate's own tile. It also repairs a minute an older save
+   already parked there. */
+function ensureMinute(){if(W.zi!==13||G.q.q12!==1||!G.q12down)return;
+  const ex=W.objs.find(o=>o.k==='minute'&&!o.used);
+  if(ex){const q=offPortal(ex);ex.x=q.x;ex.y=q.y;return}
+  const p=offPortal(W.suAt||W.goal||{x:P.x,y:P.y});W.objs.push({k:'minute',x:p.x,y:p.y})}
 function ensurePage(){if(W.zi!==9||(G.q.q8||0)!==1||G.q8page||W.objs.some(o=>o.k==='page'&&!o.used))return;const p=freeSpot(12);W.objs.push({k:'page',x:p.x,y:p.y})}
 function tallyKill(e){if(e.minion||e.su||e.q||!W||W.z.sim)return;for(const k in QUESTS){const q=QUESTS[k],t=q.tally;if(!t||G.q[k]!==1||W.zi!==q.zi||!t.kinds.includes(e.k))continue;G.qt=G.qt||{};if((G.qt[t.key]||0)>=t.n)continue;G.qt[t.key]=(G.qt[t.key]||0)+1;float(e.x,e.y,t.item+' '+G.qt[t.key]+'/'+t.n,'#59e0e6');sfx('pick');if(G.qt[t.key]>=t.n&&G.qt[t.key+'Down']){G.q[k]=2;mpShareQuest(k,2);sfx('quest');toast('Quest complete: return to '+q.back)}}}
 function kill(e,opt){
