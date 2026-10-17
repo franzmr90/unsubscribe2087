@@ -5,9 +5,19 @@ The one live document. Everything else in `notes/` is history kept on purpose;
 Read this first, update it last, and keep it to one page of truth rather than a
 record of everything that happened.
 
-Last true as of **2026-10-13**. `main` is at `b0658cc`; twelve commits ahead of
-it on `claude/unsubscribe-2087-story-fb99ov`, all pushed, nothing uncommitted.
-That branch has not been merged -- merging is the author's call.
+Last true as of **2026-10-17**. `main` is at `28e2fb1`. Ahead of it on
+`claude/hopeful-sagan-oybxk1`: the minutes fix and this refresh, both pushed,
+nothing uncommitted. That branch has not been merged -- merging is the
+author's call.
+
+**The published artifact is still at `fed8a52` (2026-10-12).** Nothing since has
+been published, so every district surface, the creature marks, both new skies,
+the 2x tiles and the perf readout exist only in the repo. A player on the live
+page is playing the game as it was before any of that landed.
+
+`.claude/` -- a settings file and two agent definitions -- is a trial merged on
+2026-10-17, not a settled choice. Keep or revert is due 2026-10-21; `git revert
+28e2fb1` undoes exactly those three files.
 
 ## Next, if you only do one thing
 
