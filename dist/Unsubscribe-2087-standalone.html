@@ -5702,10 +5702,10 @@ const PAINT={
 function deadBake(DS,st){
   const TS=TX.ts,w=STY[st].w,P=(c,o)=>'rgba('+hex2rgb(c).join(',')+','+o+')';
   const mx=(a,b,t)=>{const A=hex2rgb(a),B=hex2rgb(b);return'#'+A.map((v,i)=>('0'+Math.round(v+(B[i]-v)*t).toString(16)).slice(-2)).join('')};
-  const rock=DS.pal.rock.map(q=>mx(w[q[0]],q[1],q[2]));
+  const rock=(DS.pal.rock||[]).map(q=>mx(w[q[0]],q[1],q[2]));
   const sp=(W0,H0,bx,by,f)=>{const c=mk(Math.ceil(W0*TS),Math.ceil(H0*TS)),g=c.getContext('2d');g.scale(TS,TS);f(g);return{c,w:W0,h:H0,bx,by}};
   const poly=(g,pts,fill,stroke)=>{g.beginPath();g.moveTo(pts[0],pts[1]);for(let i=2;i<pts.length;i+=2)g.lineTo(pts[i],pts[i+1]);g.closePath();if(fill){g.fillStyle=fill;g.fill()}if(stroke){g.strokeStyle=stroke;g.lineWidth=1;g.stroke()}};
-  const E={TS,pal:DS.pal,rock,sp,poly,P},out={};
+  const E={TS,pal:DS.pal,rock,sp,poly,P,mx},out={};
   for(const k in DS.props){const pr=DS.props[k],a=out[k]=[];for(let i=0;i<pr.n;i++)a.push(PAINT[pr.paint](E,pr,i))}
   return out}
 /* The world is cut into square pages of 512 world px. Each is painted once into its own canvas and kept, so a frame only blits
@@ -5717,16 +5717,16 @@ const DPG=512;
 function deadPage(DS,D,dd,N,pi,pj,sc){
   const M=N+DPAD*2,x0=pi*DPG,y0=pj*DPG,c=mk(Math.ceil(DPG*sc),Math.ceil(DPG*sc)),g=c.getContext('2d');g.scale(sc,sc);
   const at=(x,y)=>{const X=x+DPAD,Y=y+DPAD;return X<0||Y<0||X>=M||Y>=M?60:dd[Y*M+X]};
-  const rp=DS.ramp,fg=DS.fog,bands=DS.bands,ng=D.ground.length,F=D.fog[0];
+  const rp=DS.ramp,fg=DS.fog,bands=DS.bands,ng=D.ground.length,F=fg&&D.fog[0],gp=DS.gap;
   const sA=Math.ceil((y0-24)/16),sB=Math.floor((y0+DPG+136)/16),tA=Math.floor((x0-100)/32),tB=Math.ceil((x0+DPG+100)/32);
   for(let pass=0;pass<2;pass++)for(let s=sA;s<=sB;s++){const Y=s*16-y0;
-    for(let t=tA+(((s+tA)%2+2)%2);t<=tB;t+=2){const x=(s+t)/2,y=(s-t)/2;let d=at(x,y);if(d<DS.edge&&(x<0||y<0||x>=N||y>=N))d=DS.edge;const X=t*32-x0;
-      if(pass===0){if(Y<-20||Y>DPG+20)continue;g.drawImage(D.ground[(dh(x,y,1)*ng)|0],X-34,Y-18,68,36);
-        if(d<rp.near[0]||d>rp.far[0]){g.fillStyle='rgba('+rp.col+','+(d<rp.near[0]?rp.near[1]:Math.min(rp.far[2],(d-rp.far[0])*rp.far[1]))+')';g.beginPath();g.moveTo(X-33,Y);g.lineTo(X,Y-17);g.lineTo(X+33,Y);g.lineTo(X,Y+17);g.fill()}continue}
+    for(let t=tA+(((s+tA)%2+2)%2);t<=tB;t+=2){const x=(s+t)/2,y=(s-t)/2;let d=at(x,y);if(d<DS.edge&&(x<0||y<0||x>=N||y>=N))d=DS.edge;const X=t*32-x0;let ga=1;if(gp&&d>=gp[0]){ga=1-(d-gp[0])/gp[1];if(ga<=0)continue}
+      g.globalAlpha=ga;if(pass===0){if(Y<-20||Y>DPG+20){g.globalAlpha=1;continue}g.drawImage(D.ground[(dh(x,y,1)*ng)|0],X-34,Y-18,68,36);
+        if(d<rp.near[0]||d>rp.far[0]){g.fillStyle='rgba('+rp.col+','+(d<rp.near[0]?rp.near[1]:Math.min(rp.far[2],(d-rp.far[0])*rp.far[1]))+')';g.beginPath();g.moveTo(X-33,Y);g.lineTo(X,Y-17);g.lineTo(X+33,Y);g.lineTo(X,Y+17);g.fill()}g.globalAlpha=1;continue}
       const r=dh(x,y,2),r2=dh(x,y,3),px=(dh(x,y,4)-.5)*26,py=(dh(x,y,5)-.5)*8;let S=null;
       for(const b of bands){if(d>=b.d[0]&&d<b.d[1]){for(const q of b.pick)if(r<q[0]){const a=D[q[1]];S=a[(r2*a.length)|0];break}break}}
-      if(S)g.drawImage(S.c,X+px-S.bx,Y+py+4-S.by,S.w,S.h);
-      if(d<=fg.dmax&&dh(x,y,6)<fg.p){g.globalAlpha=fg.a[0]+dh(x,y,7)*fg.a[1];g.drawImage(F.c,X-F.w/2+px*fg.dx,Y+fg.dy,F.w,F.h);g.globalAlpha=1}}}
+      if(S){g.globalAlpha=ga;g.drawImage(S.c,X+px-S.bx,Y+py+4-S.by,S.w,S.h);g.globalAlpha=1}
+      g.globalAlpha=1;if(fg&&d<=fg.dmax&&dh(x,y,6)<fg.p){g.globalAlpha=fg.a[0]+dh(x,y,7)*fg.a[1];g.drawImage(F.c,X-F.w/2+px*fg.dx,Y+fg.dy,F.w,F.h);g.globalAlpha=1}}}
   return c}
 /* the pages that touch the screen: calls f(pi,pj) for each, in raster order */
 function deadVisit(f){const wx0=cx-VW/2,wy0=cy-VH*.44;
@@ -5743,6 +5743,88 @@ function deadArt(g,DS){
   if(C.m.size>DEADCAP){const old=[...C.m].filter(e=>e[1].u<C.n).sort((a,b)=>a[1].u-b[1].u);for(const e of old){if(C.m.size<=DEADCAP)break;C.m.delete(e[0])}}}
 /* on zone enter: bake the sprites and the pages around the spawn, so the first frame does not pay for them */
 function deadPrime(){const DS=W&&W.z&&DEAD[W.z.style];if(!DS||!P)return;cx=(P.x-P.y)*32;cy=(P.x+P.y)*16;const S=deadSet(DS);const f=mk(1,1).getContext('2d');deadVisit((pi,pj)=>{f.drawImage(deadGet(DS,S,pi,pj).c,0,0,1,1)})}  /* the 1px blit makes the browser rasterise each page now, not on the first frame */
+/* ===== mode:'mass' (dungeons): the black beyond the wall ring becomes solid mass: rock, concrete, masonry, plaster or etched slab,
+   with blocks and columns/pipes standing out of it. Same pages, same distance field, same cache as the scene mode. Data per style:
+   pal {lo,mid,hi,ol,acc,kind}: three tones, outline, glow accent (or null) and the surface kind for MSURF. gap [d,fade]: past d tiles the
+   mass fades out and the sky backdrop (Cloud zones) shows through. */
+function msurf(g,k,w,h,R,E,o){
+  const r=(a,b)=>a+R()*(b-a),A=E.P,pal=E.pal,acc=pal.acc,dk=a=>'rgba(0,0,0,'+a+')',lt=a=>'rgba(255,250,235,'+a+')';
+  g.fillStyle=o.base;g.fillRect(0,0,w,h);
+  const mottle=(n,sc)=>{for(let i=0;i<n;i++){g.fillStyle=i%2?dk(r(.07,.17)):lt(r(.04,.1));g.beginPath();g.ellipse(r(0,w),r(0,h),r(2,w*sc),r(1.5,h*sc),r(0,3),0,6.283);g.fill()}};
+  const glowLine=pts=>{g.lineJoin='round';g.strokeStyle=A(acc,.16);g.lineWidth=3.4;g.beginPath();pts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.stroke();g.strokeStyle=A(acc,.62);g.lineWidth=1;g.stroke()};
+  if(k==='rock'){let y=r(0,3);while(y<h){const th=r(3,8);g.fillStyle=R()<.5?dk(r(.1,.24)):lt(r(.05,.12));g.beginPath();g.moveTo(0,y);g.lineTo(w,y+r(-2,2));g.lineTo(w,y+th);g.lineTo(0,y+th+r(-1,1));g.fill();g.fillStyle=dk(.28);g.fillRect(0,y,w,.7);y+=th}
+    for(let i=0;i<3;i++){let x=r(2,w-2),y2=r(0,h*.4);g.strokeStyle=dk(.5);g.lineWidth=.8;g.beginPath();g.moveTo(x,y2);for(let j=0;j<5;j++){x+=r(-3,3);y2+=r(2,h*.14);g.lineTo(x,y2)}g.stroke()}
+    for(let i=0;i<Math.ceil(w*h/90);i++){g.fillStyle=i%3?dk(r(.15,.3)):lt(r(.06,.14));g.fillRect(r(0,w),r(0,h),r(1,3.4),r(.8,1.5))}
+    if(acc&&o.vein){let x=r(0,w*.3),y=r(0,h);const p=[[x,y]];for(let j=0;j<5;j++){x+=w/5;y+=r(-5,5);p.push([x,y])}glowLine(p)}}
+  else if(k==='brick'){const bh=o.bh||5,bw=o.bw||11;let row=0;for(let y=0;y<h;y+=bh,row++){for(let x=-(row%2)*bw/2;x<w;x+=bw){g.fillStyle=R()<.5?dk(r(0,.26)):lt(r(0,.12));g.fillRect(x,y,bw,bh);if(R()<.04){g.fillStyle=dk(.35);g.fillRect(x+1,y+1,bw-2,bh-2)}g.fillStyle=dk(.5);g.fillRect(x,y,.8,bh)}g.fillStyle=dk(.55);g.fillRect(0,y,w,.9);g.fillStyle=lt(.05);g.fillRect(0,y+1,w,.7)}
+    mottle(3,.4)}
+  else if(k==='panel'){const cw=o.cw||r(14,22),ch=o.ch||r(14,22);g.fillStyle=lt(.0);
+    for(let y=0;y<=h;y+=ch)for(let x=0;x<=w;x+=cw){g.fillStyle=R()<.4?dk(r(.05,.16)):lt(r(.03,.1));g.fillRect(x,y,cw,ch)}
+    for(let y=0;y<=h;y+=ch){g.fillStyle=dk(.5);g.fillRect(0,y,w,.9);g.fillStyle=lt(.07);g.fillRect(0,y+1,w,.7)}
+    for(let x=0;x<=w;x+=cw){g.fillStyle=dk(.5);g.fillRect(x,0,.9,h);g.fillStyle=lt(.07);g.fillRect(x+1,0,.7,h);for(let y=0;y<=h;y+=ch){g.fillStyle=lt(.2);g.fillRect(x+2,y+2,1.3,1.3);g.fillStyle=dk(.4);g.fillRect(x+2.6,y+2.6,1,1)}}
+    mottle(5,.3);for(let i=0;i<3;i++){const x=r(2,w-2);g.fillStyle=dk(r(.06,.14));g.fillRect(x,r(0,h*.3),r(1,2.4),r(h*.2,h*.7))}
+    if(acc&&o.vein){const y=r(h*.25,h*.7);g.fillStyle=A(acc,.18);g.fillRect(0,y-1.6,w,4.2);g.fillStyle=A(acc,.6);g.fillRect(0,y,w,1.1)}}
+  else if(k==='circuit'){mottle(4,.35);g.strokeStyle=dk(.4);g.lineWidth=.8;for(let x=0;x<=w;x+=8){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke()}for(let y=0;y<=h;y+=8){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke()}
+    if(acc)for(let i=0;i<3;i++){let x=Math.round(r(0,w)/8)*8,y=Math.round(r(0,h)/8)*8;const p=[[x,y]];for(let j=0;j<4;j++){if(j%2)y+=Math.round(r(-2,2))*8;else x+=Math.round(r(-3,3))*8;p.push([x,y])}
+      g.lineJoin='miter';g.strokeStyle=A(acc,.12);g.lineWidth=3;g.beginPath();p.forEach((q,i)=>i?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]));g.stroke();g.strokeStyle=A(acc,.5);g.lineWidth=.9;g.stroke();g.fillStyle=A(acc,.8);const q=p[p.length-1];g.fillRect(q[0]-1.3,q[1]-1.3,2.6,2.6)}}
+  else{mottle(9,.5);const c=o.cell||8;g.strokeStyle=dk(.1);g.lineWidth=.7;for(let x=0;x<=w;x+=c){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke()}for(let y=0;y<=h;y+=c){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke()}
+    for(let i=0;i<4;i++){g.strokeStyle=dk(r(.06,.14));g.lineWidth=.8;const x=r(0,w),y=r(0,h);g.beginPath();g.moveTo(x,y);g.lineTo(x+r(-6,6),y+r(2,7));g.stroke()}
+    if(acc&&o.vein){const y=r(h*.2,h*.7);g.fillStyle=A(acc,.55);g.fillRect(0,y,w,2.4);g.fillStyle=dk(.25);for(let x=2;x<w;x+=4)g.fillRect(x,y,.8,2.4)}}}
+PAINT.slab=(E,pr,v)=>{const{TS,pal,P,mx}=E;const R=mulberry32(pr.seed+v),c=mk(68*TS,36*TS),g=c.getContext('2d');g.scale(TS,TS);g.translate(1,1);
+  g.beginPath();g.moveTo(33,-1);g.lineTo(67,17);g.lineTo(33,35);g.lineTo(-1,17);g.closePath();g.clip();
+  g.save();g.transform(1,.5,-1,.5,33,0);msurf(g,pal.kind,33,33,R,E,{base:mx(pal.lo,pal.mid,.55+.4*v/Math.max(1,pr.n-1)),vein:v%3===1,bw:11,bh:5.5,cw:16.5,ch:16.5});g.restore();
+  g.strokeStyle='rgba(255,250,235,.17)';g.lineWidth=1;g.beginPath();g.moveTo(1,17);g.lineTo(33,1);g.lineTo(65,17);g.stroke();g.strokeStyle='rgba(0,0,0,.42)';g.beginPath();g.moveTo(1,17);g.lineTo(33,33);g.lineTo(65,17);g.stroke();return c};
+/* block: a stepped prism of the mass, dark left face, mid right face, light top; AO at the foot */
+PAINT.block=(E,pr,i)=>{const{pal,sp,mx,P}=E;const R=mulberry32(pr.seed+i),r=(a,b)=>a+R()*(b-a),s0=r(pr.s[0],pr.s[1]),H0=pr.h[0]+i*pr.h[1];
+  const bx=Math.ceil(s0)+8,by=H0*1.55+s0+8,hw=Math.ceil(s0)*2+16;
+  return sp(hw,by+10,bx,by,g=>{
+    const shade=(A,B)=>mx(pal.lo,pal.hi,A)+'';g.fillStyle='rgba(0,0,0,.3)';g.beginPath();g.ellipse(bx+2,by-s0*.3,s0+6,s0*.55+3,0,0,6.283);g.fill();
+    const tier=(X,Y,s,H,k)=>{
+      const face=(tf,w,h,base,dim,o)=>{g.save();g.transform(...tf);g.beginPath();g.rect(0,0,w,h);g.clip();msurf(g,pal.kind,w,h,R,E,Object.assign({base},o));
+        g.fillStyle='rgba(0,0,0,'+dim+')';g.fillRect(0,0,w,h);const q=g.createLinearGradient(0,0,0,h);q.addColorStop(.55,'rgba(0,0,0,0)');q.addColorStop(1,'rgba(0,0,0,.4)');g.fillStyle=q;g.fillRect(0,0,w,h);g.restore()};
+      face([1,.5,0,1,X-s,Y-s/2-H],s,H,mx(pal.lo,pal.mid,.6),.38,{vein:false,bw:11,bh:5.5,cw:s/2,ch:H/Math.max(2,Math.round(H/16))});
+      face([1,-.5,0,1,X,Y-H],s,H,mx(pal.mid,pal.hi,.35),.0,{vein:k%2===0,bw:11,bh:5.5,cw:s/2,ch:H/Math.max(2,Math.round(H/16))});
+      g.save();g.transform(1,.5,-1,.5,X,Y-s-H);g.beginPath();g.rect(0,0,s,s);g.clip();msurf(g,pal.kind==='circuit'||pal.kind==='panel'?pal.kind:'plain',s,s,R,E,{base:mx(pal.mid,pal.hi,1),cell:6,cw:s/2,ch:s/2});g.restore();
+      const ol='rgba(0,0,0,.9)';g.strokeStyle=ol;g.lineWidth=1;g.lineJoin='round';
+      g.beginPath();g.moveTo(X-s,Y-s/2-H);g.lineTo(X-s,Y-s/2);g.lineTo(X,Y);g.lineTo(X+s,Y-s/2);g.lineTo(X+s,Y-s/2-H);g.lineTo(X,Y-s-H);g.closePath();g.stroke();
+      g.beginPath();g.moveTo(X-s,Y-s/2-H);g.lineTo(X,Y-H);g.lineTo(X+s,Y-s/2-H);g.moveTo(X,Y-H);g.lineTo(X,Y);g.stroke();
+      g.strokeStyle='rgba(255,250,235,.4)';g.beginPath();g.moveTo(X-s+.5,Y-s/2-H+.5);g.lineTo(X,Y-H+.5);g.lineTo(X+s-.5,Y-s/2-H+.5);g.stroke();g.beginPath();g.moveTo(X-.5,Y-H+1);g.lineTo(X-.5,Y-1);g.stroke()};
+    tier(bx,by,s0,H0,0);if(pr.tiers>1&&R()<.8){tier(bx+r(-2,2),by-H0,s0*r(.5,.7),H0*r(.3,.55),1)}})};
+/* column: round concrete/stone column (kind 'col') or a bundle of pipes (kind 'pipe') with flanges, rivets and a lamp/valve glow */
+PAINT.column=(E,pr,i)=>{const{pal,sp,mx,P}=E;const R=mulberry32(pr.seed+i),r=(a,b)=>a+R()*(b-a),H0=pr.h[0]+i*pr.h[1];
+  return sp(44,H0+28,22,H0+20,g=>{
+    g.fillStyle='rgba(0,0,0,.3)';g.beginPath();g.ellipse(23,H0+19,15,5,0,0,6.283);g.fill();
+    const cyl=(x,w,y0,y1,k)=>{const q=g.createLinearGradient(x-w/2,0,x+w/2,0);q.addColorStop(0,mx(pal.lo,'#000000',.35));q.addColorStop(.35,mx(pal.mid,pal.hi,.5));q.addColorStop(.6,mx(pal.mid,pal.hi,.1));q.addColorStop(1,mx(pal.lo,'#000000',.2));
+      g.fillStyle=q;g.fillRect(x-w/2,y0,w,y1-y0);g.strokeStyle='rgba(0,0,0,.7)';g.lineWidth=1;g.strokeRect(x-w/2,y0,w,y1-y0);
+      g.fillStyle='rgba(0,0,0,.4)';g.beginPath();g.ellipse(x,y1,w/2,w*.22,0,0,3.1416);g.fill();g.fillStyle=mx(pal.mid,pal.hi,.7);g.beginPath();g.ellipse(x,y0,w/2,w*.22,0,0,6.283);g.fill();g.stroke();
+      if(k==='pipe'){for(let y=y0+r(5,9);y<y1-4;y+=r(13,20)){g.fillStyle='rgba(0,0,0,.45)';g.fillRect(x-w/2-1.5,y,w+3,3.2);g.fillStyle='rgba(255,250,235,.2)';g.fillRect(x-w/2-1.5,y,w+3,1);g.fillStyle='rgba(255,250,235,.3)';g.fillRect(x-w/2,y+1,1.2,1.2);g.fillRect(x+w/2-1.5,y+1,1.2,1.2)}}
+      else{for(let f=-1;f<=1;f++){g.fillStyle='rgba(0,0,0,.28)';g.fillRect(x+f*w*.28-.4,y0+3,.9,y1-y0-6)}}};
+    const by=H0+18;
+    if(pr.kind==='pipe'){const n=2+(i%2),xs=[16,24,30];for(let k=0;k<n;k++)cyl(xs[k]-(n-2)*3,r(6,9),by-H0*r(.7,1),by,'pipe');
+      if(pal.acc){g.fillStyle=P(pal.acc,.25);g.beginPath();g.arc(23,by-H0*.55,6,0,6.283);g.fill();g.fillStyle=P(pal.acc,.9);g.fillRect(21.5,by-H0*.55-1.5,3,3)}}
+    else{g.fillStyle=mx(pal.lo,pal.mid,.7);g.fillRect(6,by-4,32,6);g.strokeStyle='rgba(0,0,0,.7)';g.strokeRect(6,by-4,32,6);cyl(22,18,by-H0,by-4,'col');g.fillStyle=mx(pal.mid,pal.hi,.5);g.fillRect(4,by-H0-5,36,6);g.strokeRect(4,by-H0-5,36,6);g.fillStyle='rgba(255,250,235,.2)';g.fillRect(4,by-H0-5,36,1.4)}})};
+const MBANDS=[{d:[0,2],pick:[[.16,'blk']]},{d:[2,4],pick:[[.3,'blk'],[.78,'tall'],[.86,'col']]},{d:[4,9],pick:[[.1,'col'],[.34,'blk'],[.5,'tall']]},{d:[9,1e9],pick:[[.08,'col'],[.2,'blk'],[.3,'tall']]}];
+const MPROPS=(o)=>({ground:{paint:'slab',n:5,seed:o.seed},blk:{paint:'block',n:6,seed:o.seed+100,s:[11,19],h:[10,5],tiers:1},tall:{paint:'block',n:5,seed:o.seed+200,s:[10,17],h:[34,9],tiers:2},col:{paint:'column',n:4,seed:o.seed+300,h:[44,16],kind:o.col}});
+const MASS=(seed,kind,lo,mid,hi,acc,col,x)=>Object.assign({mode:'mass',pal:{kind,lo,mid,hi,ol:'#050408',acc},props:MPROPS({seed,col}),bands:MBANDS,edge:2,ramp:{col:'3,3,6',near:[2,.3],far:[4,.05,.55]}},x||{});
+const PALE=(seed,kind,lo,mid,hi,acc,col,haze,x)=>MASS(seed,kind,lo,mid,hi,acc,col,Object.assign({ramp:{col:haze,near:[2,.12],far:[4,.03,.3]}},x||{}));
+const CLOUD={gap:[4,4]};   /* Act II: the Cloud sky stays visible beyond ~9 tiles of mass */
+Object.assign(DEAD,{
+ shaft:MASS(7100,'rock','#1c1411','#3c2b1e','#6c4830','#ff9a4a','pipe',CLOUD),
+ reactor:MASS(2400,'panel','#11181c','#2d3c46','#52686f','#8fe0ff','pipe',CLOUD),
+ chain:MASS(2800,'circuit','#150f08','#2c1e0e','#533714','#f7931a','pipe'),
+ blocks:MASS(3100,'brick','#17120a','#33281a','#5e4a2a','#e0bd6e','col'),
+ lake:MASS(900,'panel','#1a1650','#3a3278','#6a5cc0','#b48cff','pipe',CLOUD),
+ trib:MASS(400,'brick','#15140f','#2c2a21','#524b38','#c7a43a','col'),
+ mall:MASS(200,'plain','#150f1c','#2c2140','#4d3d6a','#ff8ac4','col'),
+ hq:MASS(500,'plain','#171320','#2e2842','#524a70','#e0bd6e','col'),
+ vest:MASS(1200,'panel','#17171b','#2f2f38','#55555f',null,'col'),
+ minutes:MASS(1300,'brick','#141a12','#2b3a28','#4b5e43','#9fe0b0','col'),
+ chairs:MASS(1400,'plain','#1c0a0f','#381519','#612329','#ff8a8a','col'),
+ mezz:PALE(1100,'plain','#8a889a','#aaa8bc','#cdcbe0',null,'col','225,224,242',CLOUD),
+ rack:PALE(1500,'panel','#b6b6c4','#cfcfdb','#e6e6ef','#c22d35','pipe','235,235,244'),
+ sofa:PALE(2300,'plain','#76585a','#9a7a78','#bf9c98',null,'col','200,170,166'),
+ kitchen:PALE(2600,'plain','#97866c','#b9a888','#dccfb2',null,'col','240,230,208'),
+ vault:PALE(3000,'panel','#74747f','#9696a4','#babac7',null,'col','210,210,222')});
 const MOTES=[];
 /* near particles are bigger, faster and fainter, and slide against the camera; that
    difference is the whole parallax effect. */
@@ -6955,7 +7037,7 @@ function render(){
   let pen=null;
   if(!(fkey&&FC&&FCK===fkey)){
     if(!FC||FC.width!==ctx.canvas.width||FC.height!==ctx.canvas.height){FC=document.createElement('canvas');FC.width=ctx.canvas.width;FC.height=ctx.canvas.height;FG=FC.getContext('2d')}
-    FG.setTransform(DPR*ZM,0,0,DPR*ZM,0,0);FG.clearRect(0,0,VW,VH);pen=FG;FCK=fkey;{const DS=DEAD[z.style];if(DS&&DS.mode==='scene')deadArt(FG,DS)}}
+    FG.setTransform(DPR*ZM,0,0,DPR*ZM,0,0);FG.clearRect(0,0,VW,VH);pen=FG;FCK=fkey;{const DS=DEAD[z.style];if(DS)deadArt(FG,DS);else if(DEADC)DEADC=null}}
   for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){
     const X=SX(x+.5,y+.5),Y=SY(x+.5,y+.5);if(X<-40||X>VW+40||Y<-70||Y>VH+70)continue;const t=W.map[y*N+x];if(!W.seen[y*N+x])continue;
     if(t!==0){if(pen){pen.drawImage(TX.floor[(x*7+y*13+((x*y)%3))%5],X-33,Y-17,66,34);const sn=W.seen;if(!z.town&&(!sn[y*N+x+1]||!sn[y*N+x-1]||!sn[(y+1)*N+x]||!sn[(y-1)*N+x])){pen.fillStyle='rgba(5,4,9,.6)';pen.beginPath();pen.moveTo(X-33,Y);pen.lineTo(X,Y-17);pen.lineTo(X+33,Y);pen.lineTo(X,Y+17);pen.fill()}}}
