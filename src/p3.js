@@ -334,7 +334,7 @@ function wallTex(s,st,H,v,st0,TS){const c=mk(66*TS,(34+H)*TS),g=c.getContext('2d
   g.beginPath();g.moveTo(33,0);g.lineTo(66,17);g.lineTo(33,34);g.lineTo(0,17);g.closePath();g.fillStyle=s.w[0];g.fill();g.strokeStyle='rgba(255,255,255,.2)';g.lineWidth=1;g.stroke();
   g.strokeStyle='rgba(0,0,0,.5)';g.beginPath();g.moveTo(33,34);g.lineTo(33,34+H);g.stroke();
   g.globalCompositeOperation='source-atop';noise(g,66,34+H,H>20?110:40,.07);return c}
-function buildTextures(st0){if(TX.style===st0&&TX.ts===tscale())return;const s=STY[st0],st=s.like||st0;const TS=tscale();TX={style:st0,s,ts:TS,floor:[],wall:[],low:null};
+function buildTextures(st0){if(TX.style===st0&&TX.ts===tscale())return;const s=STY[st0],st=s.like||st0;const TS=tscale();TX={style:st0,s,ts:TS,floor:[],wall:[],low:null,dead:null};
   for(let v=0;v<5;v++){const c=mk(66*TS,34*TS),g=c.getContext('2d');g.scale(TS,TS);g.beginPath();g.moveTo(33,0);g.lineTo(66,17);g.lineTo(33,34);g.lineTo(0,17);g.closePath();g.clip();
     g.fillStyle=s.f[v%3];g.fillRect(0,0,66,34);g.save();g.transform(1,.5,-1,.5,33,0);floorDetail(g,st,v,s,st0);material(g,st0,s,v);g.restore();noise(g,66,34,55,.07);TX.floor.push(c)}
   for(let v=0;v<2;v++)TX.wall.push(wallTex(s,st,46,v,st0,TS));TX.low=wallTex(s,st,12,0,st0,TS);
@@ -342,6 +342,122 @@ function buildTextures(st0){if(TX.style===st0&&TX.ts===tscale())return;const s=S
   {const L=hex2rgb(s.f[0]);TX.fill=clamp(.38-(L[0]+L[1]+L[2])/765*.85,.04,.28)}
   const wx=TX.wx=Object.assign({k:'mote',n:28,sp:.016},WX[st0]||WX[st]||{});wx.c=wx.c||s.mote;
   MOTES.length=0;for(let i=0;i<wx.n;i++)MOTES.push(newMote(i<wx.n*.22));}
+/* ===== Moors dead space (visual only) =====
+   Past the one-tile wall ring the Moors used to be a bare dark backdrop. This paints the rock, ground and
+   dead trees that stand behind it: a ground of peat and heather everywhere there is no floor, a thick
+   irregular crag line 2-3 tiles out, then boulders, standing dead trees and heather, with a few fog banks
+   on the edge. Everything is baked once into small sprites by a seeded rng, placed by an integer hash of
+   the tile, and drawn into the cached floor raster, so a still camera costs nothing and it never touches
+   W.map, W.wh, W.seen, spawns or the network. Only The Parcel Moors (zone 1) has it. */
+const dh=(x,y,s)=>{let h=Math.imul(x+1013,374761393)^Math.imul(y+2027,668265263)^Math.imul(s+7,2147483629);h=Math.imul(h^h>>>13,1274126177);return((h^h>>>16)>>>0)/4294967296};
+const DPAD=44;
+/* distance (in tiles, 8-way) from each tile of the map, padded by DPAD, to the nearest walkable tile */
+function deadDist(){if(W._dd)return W._dd;const N=W.N,M=N+DPAD*2,d=new Uint8Array(M*M).fill(255),q=new Int32Array(M*M);let a=0,b=0;
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(W.map[y*N+x]!==0){const i=(y+DPAD)*M+x+DPAD;d[i]=0;q[b++]=i}
+  while(a<b){const i=q[a++],x=i%M,y=(i/M)|0,v=d[i]+1;for(let j=-1;j<=1;j++)for(let k=-1;k<=1;k++){const X=x+k,Y=y+j;if(X<0||Y<0||X>=M||Y>=M)continue;const o=Y*M+X;if(d[o]===255){d[o]=v;q[b++]=o}}}
+  return W._dd=d}
+function deadBake(){
+  const TS=TX.ts,w=STY.moor.w,P=(c,o)=>'rgba('+hex2rgb(c).join(',')+','+o+')';
+  const mx=(a,b,t)=>{const A=hex2rgb(a),B=hex2rgb(b);return'#'+A.map((v,i)=>('0'+Math.round(v+(B[i]-v)*t).toString(16)).slice(-2)).join('')},
+    rock=[mx(w[1],'#7a7e84',.5),mx(w[2],'#4c5056',.5),mx(w[2],'#26282e',.62)],OLN='#08070c';
+  const sp=(W0,H0,bx,by,f)=>{const c=mk(Math.ceil(W0*TS),Math.ceil(H0*TS)),g=c.getContext('2d');g.scale(TS,TS);f(g);return{c,w:W0,h:H0,bx,by}};
+  const out={ground:[],crag:[],tall:[],boulder:[],tree:[],heath:[],fog:null};
+  const poly=(g,pts,fill,stroke)=>{g.beginPath();g.moveTo(pts[0],pts[1]);for(let i=2;i<pts.length;i+=2)g.lineTo(pts[i],pts[i+1]);g.closePath();if(fill){g.fillStyle=fill;g.fill()}if(stroke){g.strokeStyle=stroke;g.lineWidth=1;g.stroke()}};
+  /* ground: dark peat with moss patches, heather flecks, pebbles and cracks, drawn in tile space like the floors */
+  for(let v=0;v<5;v++){const R=mulberry32(900+v),r=(a,b)=>a+R()*(b-a),c=mk(68*TS,36*TS),g=c.getContext('2d');g.scale(TS,TS);g.translate(1,1);
+    g.beginPath();g.moveTo(33,-1);g.lineTo(67,17);g.lineTo(33,35);g.lineTo(-1,17);g.closePath();g.clip();
+    g.fillStyle=['#272c26','#2b3027','#242a25','#2d2e26','#262a2a'][v];g.fillRect(0,0,66,34);
+    g.save();g.transform(1,.5,-1,.5,33,0);
+    for(let i=0;i<7;i++){g.fillStyle=P(i%2?'#4a5a45':'#3a4a38',r(.18,.34));g.beginPath();g.ellipse(r(0,33),r(0,33),r(3,8),r(2,6),r(0,3),0,6.283);g.fill()}
+    for(let i=0;i<5;i++){g.fillStyle='rgba(8,6,10,'+r(.2,.4)+')';g.beginPath();g.ellipse(r(0,33),r(0,33),r(2,6),r(1.5,4),r(0,3),0,6.283);g.fill()}
+    for(let i=0;i<26;i++){const x=r(0,33),y=r(0,33),h=r(1.6,3.6);g.strokeStyle=['#5b4a63','#6e5a74','#4f5c46','#6a6a4c','#3d4a3a'][i%5];g.lineWidth=.9;g.beginPath();g.moveTo(x,y);g.lineTo(x+r(-.8,.8),y-h);g.stroke()}
+    for(let i=0;i<4;i++){const x=r(2,31),y=r(2,31);g.fillStyle='rgba(0,0,0,.35)';g.fillRect(x-.5,y+.7,3,1.3);g.fillStyle=P(rock[i%2],.8);g.fillRect(x,y,2.4,1.5)}
+    g.strokeStyle='rgba(6,5,9,.45)';g.lineWidth=.7;for(let i=0;i<2;i++){let x=r(2,30),y=r(2,30);g.beginPath();g.moveTo(x,y);for(let k=0;k<4;k++){x+=r(-3,3);y+=r(1,4);g.lineTo(x,y)}g.stroke()}
+    g.restore();out.ground.push(c)}
+  /* crags: faceted stone columns, left face dark, right face lit, strata, moss on the cap */
+  const crag=(H0,seed,s0,s1)=>{const R=mulberry32(seed),r=(a,b)=>a+R()*(b-a),W0=Math.ceil(s1*2+18),bx=W0/2,by=H0+12;
+    return sp(W0,H0+22,bx,by,g=>{const sx=r(s0,s1),k=r(.62,.96),n=4,lp=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t],
+      bl=[bx-sx,by-7],bf=[bx+r(-3,3),by+3],br=[bx+sx*r(.85,1),by-7],bk=[bx+r(-3,3),by-17];
+      const up=p=>[bx+(p[0]-bx)*k,p[1]-H0*r(.7,1.12)],Lb=[],Lt=[],Rb=[],Rt=[];
+      for(let i=0;i<=n;i++){Lb.push(lp(bl,bf,i/n));Rb.push(lp(bf,br,i/n))}
+      for(let i=0;i<=n;i++)Lt.push(up(Lb[i]));Rt.push(Lt[n]);for(let i=1;i<=n;i++)Rt.push(up(Rb[i]));
+      const tb=up(bk),flat=p=>[].concat(...p);
+      g.fillStyle='rgba(0,0,0,.3)';g.beginPath();g.ellipse(bx+3,by-4,sx+7,9,0,0,6.283);g.fill();
+      const face=(B,T,col)=>{poly(g,flat(B.concat(T.slice().reverse())),col);
+        for(let i=0;i<n;i++){g.fillStyle='rgba('+(i%2?'0,0,0':'255,246,220')+','+(i%2?r(.08,.2):r(.03,.09))+')';poly(g,flat([B[i],B[i+1],T[i+1],T[i]]),g.fillStyle)}
+        for(let i=0;i<9;i++){const t=r(.04,.96),a=lp(T[0],T[n],t),b2=lp(B[0],B[n],t),f=r(.25,.9);g.strokeStyle=i%3?'rgba(6,5,9,'+r(.25,.5)+')':'rgba(255,246,220,'+r(.06,.14)+')';g.lineWidth=i%3?r(.6,1.1):.8;g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(a[0]+(b2[0]-a[0])*f+r(-1,1),a[1]+(b2[1]-a[1])*f);g.stroke()}
+        for(let i=1;i<5;i++){const t=r(.12,.9),m=r(.2,.7);g.strokeStyle='rgba(6,5,9,'+r(.3,.5)+')';g.lineWidth=.8;const a=lp(B[0],T[0],t),b2=lp(B[n],T[n],t);g.beginPath();g.moveTo(a[0]+(b2[0]-a[0])*(1-m)*.5,a[1]+(b2[1]-a[1])*(1-m)*.5);g.lineTo(a[0]+(b2[0]-a[0])*(1+m)*.5,a[1]+(b2[1]-a[1])*(1+m)*.5);g.stroke()}};
+      face(Lb,Lt,rock[2]);face(Rb,Rt,rock[1]);
+      poly(g,flat(Lt.concat(Rt.slice(1),[tb])),rock[0]);
+      for(let i=0;i<14;i++){const p=lp(Lt[(R()*n)|0],Rt[1+((R()*n)|0)],R());g.fillStyle=i%2?'rgba(8,6,10,'+r(.1,.22)+')':'rgba(255,246,220,'+r(.05,.12)+')';g.fillRect(p[0]+r(-6,6),p[1]+r(-5,0),r(2,5),r(.8,1.6))}
+      g.strokeStyle='rgba(8,7,12,.85)';g.lineWidth=1;g.beginPath();g.moveTo(Lb[0][0],Lb[0][1]);for(const p of Lt)g.lineTo(p[0],p[1]);for(const p of Rt.slice(1))g.lineTo(p[0],p[1]);g.lineTo(Rb[n][0],Rb[n][1]);g.lineTo(Rb[0][0],Rb[0][1]);g.lineTo(Lb[0][0],Lb[0][1]);g.stroke();
+      g.strokeStyle='rgba(255,246,220,.22)';g.lineWidth=1;g.beginPath();g.moveTo(Lb[n][0],Lb[n][1]);g.lineTo(Lt[n][0],Lt[n][1]);g.stroke();
+      for(let i=0;i<7;i++){const p=lp(Lt[(R()*n)|0],Rt[1+((R()*n)|0)],R());g.fillStyle=P(['#4a5a45','#56604a','#3a4a38'][i%3],r(.55,.85));g.beginPath();g.ellipse(p[0],p[1]+r(-1,1.5),r(2.5,6),r(1.2,2.4),0,0,6.283);g.fill()}
+      for(let i=0;i<3;i++){const p=lp(Lt[(R()*n)|0],Lt[n],R());g.strokeStyle=P('#4a5a45',.55);g.lineWidth=r(1,2);g.beginPath();g.moveTo(p[0],p[1]);g.lineTo(p[0]+r(-1,1),p[1]+r(6,H0*.4));g.stroke()}
+    })};
+  for(let i=0;i<6;i++)out.crag.push(crag(18+i*5,3100+i,i<2?14:20,i<2?20:32));
+  for(let i=0;i<6;i++)out.tall.push(crag(40+i*9,3200+i,i%2?13:19,i%2?19:30));
+  /* boulders */
+  for(let i=0;i<4;i++){const R=mulberry32(4100+i),r=(a,b)=>a+R()*(b-a),s=r(9,15);
+    out.boulder.push(sp(44,34,22,27,g=>{g.fillStyle='rgba(0,0,0,.32)';g.beginPath();g.ellipse(24,26,s+5,s*.42,0,0,6.283);g.fill();
+      const pts=[];for(let k=0;k<8;k++){const a=k/8*6.283;pts.push(22+Math.cos(a)*s*r(.85,1.12),24-s*.6+Math.sin(a)*s*.62*r(.85,1.1))}
+      poly(g,pts,P(rock[1],1),OLN);
+      const lit=[];for(let k=5;k<=8;k++){lit.push(pts[(k%8)*2],pts[(k%8)*2+1])}lit.push(22,24-s*.6);poly(g,lit,P(rock[0],.9));
+      const dk=[];for(let k=1;k<=3;k++){dk.push(pts[k*2],pts[k*2+1])}dk.push(22,24-s*.3);poly(g,dk,P(rock[2],.9));
+      g.strokeStyle='rgba(6,5,9,.5)';g.lineWidth=.8;g.beginPath();g.moveTo(22+r(-4,4),24-s*.9);g.lineTo(22+r(-5,5),24-s*.1);g.stroke();
+      for(let k=0;k<3;k++){g.fillStyle=P('#4a5a45',.7);g.beginPath();g.ellipse(22+r(-s*.6,s*.6),24-s*.95+r(0,2),r(2,4.5),r(1,1.8),0,0,6.283);g.fill()}}))}
+  /* dead trees: a bent trunk that forks, bare limbs, a few twigs, roots at the foot */
+  for(let i=0;i<5;i++){const R=mulberry32(5100+i),r=(a,b)=>a+R()*(b-a),H0=r(54,86);
+    out.tree.push(sp(76,H0+26,38,H0+18,g=>{g.fillStyle='rgba(0,0,0,.28)';g.beginPath();g.ellipse(40,H0+16,16,5,0,0,6.283);g.fill();
+      const limb=(x,y,a,len,wd,dp)=>{const x2=x+Math.cos(a)*len,y2=y+Math.sin(a)*len;
+        g.lineCap='round';g.strokeStyle='#14100e';g.lineWidth=wd+1.6;g.beginPath();g.moveTo(x,y);g.lineTo(x2,y2);g.stroke();
+        g.strokeStyle=dp%2?'#2b231d':'#352b23';g.lineWidth=wd;g.beginPath();g.moveTo(x,y);g.lineTo(x2,y2);g.stroke();
+        g.strokeStyle='rgba(150,130,104,.28)';g.lineWidth=Math.max(.5,wd*.28);g.beginPath();g.moveTo(x-wd*.2,y);g.lineTo(x2-wd*.2,y2);g.stroke();
+        if(dp>0&&len>3){const n=dp>2?2:2+(R()<.4?1:0);for(let k=0;k<n;k++)limb(x2,y2,a+r(-.95,.95)*(k?1:-.6)+(k===1?.2:-.15),len*r(.6,.8),wd*.62,dp-1);}};
+      for(let k=0;k<4;k++){g.strokeStyle='#201a15';g.lineWidth=3.2;g.lineCap='round';g.beginPath();g.moveTo(38,H0+16);g.lineTo(38+(k-1.5)*8+r(-2,2),H0+19+r(-1,2));g.stroke()}
+      limb(38,H0+16,-1.57+r(-.15,.15),H0*r(.3,.4),7.5,4)}
+    ))}
+  /* heather: clumps of short stems, olive and bruised purple, with lilac flowers */
+  for(let i=0;i<4;i++){const R=mulberry32(6100+i),r=(a,b)=>a+R()*(b-a);
+    out.heath.push(sp(36,22,18,17,g=>{g.fillStyle='rgba(0,0,0,.25)';g.beginPath();g.ellipse(18,16,13,4,0,0,6.283);g.fill();
+      for(let k=0;k<22;k++){const x=18+r(-11,11),y=16+r(-3,1),h=r(5,12),a=r(-.5,.5);g.strokeStyle=['#4f5c46','#6a6a4c','#3d4a3a','#5b4a63'][k%4];g.lineWidth=r(.8,1.5);g.beginPath();g.moveTo(x,y);g.quadraticCurveTo(x+a*h*.4,y-h*.6,x+a*h,y-h);g.stroke();
+        if(k%3===0){g.fillStyle=['#8a6a9a','#a07fae','#7a5a8c'][k%3|0];g.fillRect(x+a*h-1,y-h-1,2.2,2.2)}}}))}
+  /* fog bank */
+  out.fog=sp(160,56,80,28,g=>{g.save();g.translate(80,28);g.scale(1,.34);const q=g.createRadialGradient(0,0,0,0,0,80);q.addColorStop(0,'rgba(150,170,180,.5)');q.addColorStop(.55,'rgba(130,150,162,.22)');q.addColorStop(1,'rgba(120,140,150,0)');g.fillStyle=q;g.fillRect(-80,-80,160,160);g.restore()});
+  return out}
+/* The world is cut into square pages of 512 world px. Each is painted once into its own canvas and kept, so a frame only blits
+   the 4-9 pages on screen (about one screen of pixels, no overdraw) and a new page costs a few ms once, every few steps of walking.
+   A page is a full back-to-front render of its own region (ground first, then the props sorted by depth, so a tall crag in front
+   is never cut by the ground behind it); a prop that straddles two pages is painted into both, so there is no seam. No part of it
+   reads W.seen, so exploring never rebuilds anything: floors and walls simply paint over it. */
+const DPG=512;
+function deadPage(D,dd,N,pi,pj,sc){
+  const M=N+DPAD*2,x0=pi*DPG,y0=pj*DPG,c=mk(Math.ceil(DPG*sc),Math.ceil(DPG*sc)),g=c.getContext('2d');g.scale(sc,sc);
+  const at=(x,y)=>{const X=x+DPAD,Y=y+DPAD;return X<0||Y<0||X>=M||Y>=M?60:dd[Y*M+X]};
+  const sA=Math.ceil((y0-24)/16),sB=Math.floor((y0+DPG+136)/16),tA=Math.floor((x0-100)/32),tB=Math.ceil((x0+DPG+100)/32);
+  for(let pass=0;pass<2;pass++)for(let s=sA;s<=sB;s++){const Y=s*16-y0;
+    for(let t=tA+(((s+tA)%2+2)%2);t<=tB;t+=2){const x=(s+t)/2,y=(s-t)/2;let d=at(x,y);if(d<2&&(x<0||y<0||x>=N||y>=N))d=2;const X=t*32-x0;
+      if(pass===0){if(Y<-20||Y>DPG+20)continue;g.drawImage(D.ground[(dh(x,y,1)*5)|0],X-34,Y-18,68,36);
+        if(d<2||d>3){g.fillStyle='rgba(4,4,8,'+(d<2?.55:Math.min(.5,(d-3)*.07))+')';g.beginPath();g.moveTo(X-33,Y);g.lineTo(X,Y-17);g.lineTo(X+33,Y);g.lineTo(X,Y+17);g.fill()}continue}
+      const r=dh(x,y,2),r2=dh(x,y,3),px=(dh(x,y,4)-.5)*26,py=(dh(x,y,5)-.5)*8;let S=null;
+      if(d<2)S=r<.18?D.heath[(r2*4)|0]:null;
+      else if(d===2)S=r<.8?D.crag[(r2*6)|0]:r<.9?D.boulder[(r2*4)|0]:D.heath[(r2*4)|0];
+      else if(d===3)S=r<.62?D.tall[(r2*6)|0]:r<.74?D.boulder[(r2*4)|0]:r<.88?D.heath[(r2*4)|0]:null;
+      else if(d<9)S=r<.2?D.tree[(r2*5)|0]:r<.34?D.tall[(r2*6)|0]:r<.46?D.boulder[(r2*4)|0]:r<.74?D.heath[(r2*4)|0]:null;
+      else S=r<.16?D.tree[(r2*5)|0]:r<.26?D.tall[(r2*6)|0]:r<.5?D.heath[(r2*4)|0]:null;
+      if(S)g.drawImage(S.c,X+px-S.bx,Y+py+4-S.by,S.w,S.h);
+      if(d<=5&&dh(x,y,6)<.22){g.globalAlpha=.55+dh(x,y,7)*.35;g.drawImage(D.fog.c,X-80+px*2,Y-30,160,56);g.globalAlpha=1}}}
+  return c}
+/* blits the pages that touch the screen into the floor raster g (world units, SX/SY space) */
+function deadArt(g){
+  if(!TX.dead)TX.dead=deadBake();const D=TX.dead,dd=deadDist(),N=W.N,sc=Math.min(1.25,DPR*ZM);
+  if(!W._dc||W._dc.sc!==sc||W._dc.D!==D)W._dc={m:new Map(),sc,D,n:0};const C=W._dc;C.n++;
+  const wx0=cx-VW/2,wy0=cy-VH*.44;
+  for(let pj=Math.floor(wy0/DPG);pj<=Math.floor((wy0+VH)/DPG);pj++)for(let pi=Math.floor(wx0/DPG);pi<=Math.floor((wx0+VW)/DPG);pi++){
+    const k=pi+','+pj;let p=C.m.get(k);if(!p){p={c:deadPage(D,dd,N,pi,pj,sc)};C.m.set(k,p)}p.u=C.n;
+    const X=Math.round((pi*DPG-wx0)*sc)/sc,Y=Math.round((pj*DPG-wy0)*sc)/sc,a=Math.max(0,-X),b=Math.max(0,-Y),w=Math.min(DPG,VW-X)-a,h=Math.min(DPG,VH-Y)-b;
+    if(w>0&&h>0)g.drawImage(p.c,a*p.c.width/DPG,b*p.c.height/DPG,w*p.c.width/DPG,h*p.c.height/DPG,X+a,Y+b,w,h)}
+  if(C.m.size>16)for(const[k,v]of C.m)if(v.u<C.n&&C.m.size>12)C.m.delete(k)}
 const MOTES=[];
 /* near particles are bigger, faster and fainter, and slide against the camera; that
    difference is the whole parallax effect. */
@@ -1554,7 +1670,7 @@ function render(){
   let pen=null;
   if(!(fkey&&FC&&FCK===fkey)){
     if(!FC||FC.width!==ctx.canvas.width||FC.height!==ctx.canvas.height){FC=document.createElement('canvas');FC.width=ctx.canvas.width;FC.height=ctx.canvas.height;FG=FC.getContext('2d')}
-    FG.setTransform(DPR*ZM,0,0,DPR*ZM,0,0);FG.clearRect(0,0,VW,VH);pen=FG;FCK=fkey}
+    FG.setTransform(DPR*ZM,0,0,DPR*ZM,0,0);FG.clearRect(0,0,VW,VH);pen=FG;FCK=fkey;if(W.zi===1&&z.style==='moor')deadArt(FG)}
   for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){
     const X=SX(x+.5,y+.5),Y=SY(x+.5,y+.5);if(X<-40||X>VW+40||Y<-70||Y>VH+70)continue;const t=W.map[y*N+x];if(!W.seen[y*N+x])continue;
     if(t!==0){if(pen){pen.drawImage(TX.floor[(x*7+y*13+((x*y)%3))%5],X-33,Y-17,66,34);const sn=W.seen;if(!z.town&&(!sn[y*N+x+1]||!sn[y*N+x-1]||!sn[(y+1)*N+x]||!sn[(y-1)*N+x])){pen.fillStyle='rgba(5,4,9,.6)';pen.beginPath();pen.moveTo(X-33,Y);pen.lineTo(X,Y-17);pen.lineTo(X+33,Y);pen.lineTo(X,Y+17);pen.fill()}}}
