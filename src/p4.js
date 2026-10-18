@@ -1506,12 +1506,12 @@ const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.ta
     if(webPanMoved)webPanMoved=0;
     else{const id=d.web;
       if(ev.shiftKey){toast(G.web[id]?'A single node does not come back. Refund all, in the bar, takes every point back for 5 sats.':uiSay('Shift-click does not place a point. Click a lit node.','A long press does not place a point. Tap a lit node.'));sel={web:id}}
-      else if(id!=='c'&&!G.web[id]&&webCan(id)){G.web[id]=1;sel={web:id};calc();sfx('learn')}
-      else{sel={web:id};if(id!=='c'&&!G.web[id])toast(webPts()>0?'Not connected yet. Follow a lit node out from the centre.':'No points left to place.')}}}
+      else if(sel&&sel.web===id&&ev.pointerType==='mouse'&&ev.detail>=2&&webPlace(id)){}
+      else{sel={web:id};if(id!=='c'&&!G.web[id]&&!webCan(id))toast(webPts()>0?'Not connected yet. Follow a lit node out from the centre.':'No points left to place.')}}}
   /* the + over an arm's first node: spend straight away on the far end of that arm */
   if(d.webadd!==undefined){const nx=webNext(+d.webadd);
-    if(nx&&webPts()>0){G.web[nx]=1;sel={web:nx};calc();sfx('learn')}}
-  if(d.weball){G.web[sel.web]=1;calc();sfx('learn')}
+    if(nx)sel={web:nx}}
+  if(d.weball){webPlace(sel&&sel.web)}
   if(d.webreset){if(spendSats(5,'A refund costs 5 sats')){G.web={};sel=null;calc();sfx('ui')}}
   if(d.sub){closeSheet();subStart(+d.sub);return}
   if(d.hc){G.hc=!G.hc;calc()}
