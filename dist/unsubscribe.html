@@ -185,7 +185,11 @@ p strong{color:var(--ink);font-weight:600}
 .webStage.panning{cursor:grabbing}
 .webStage svg{width:100%;height:100%;display:block;touch-action:none}
 .webStage [data-web],.webStage [data-webadd]{cursor:pointer}
-.webTip{position:absolute;left:8px;right:8px;bottom:8px;z-index:2;pointer-events:none;background:rgba(5,4,9,.92);border:1px solid var(--edge);padding:6px 8px;font-size:13px;line-height:1.35;color:var(--ink)}
+.webTip{flex:none;display:flex;gap:8px;align-items:center;background:rgba(5,4,9,.92);border:1px solid var(--edge);border-top:0;padding:6px 8px;font-size:13px;line-height:1.35;color:var(--ink)}
+.webTipTxt{flex:1;min-width:0}
+.webCost{color:var(--mute,#9a8fb0)}
+.webPlace{flex:none;min-width:104px;min-height:48px;font-size:15px;font-weight:700;border:2px solid var(--volt);background:#10313a;color:var(--volt);border-radius:6px}
+.webPlace[disabled]{opacity:.35}
 .webTip b{font:700 12px var(--display);letter-spacing:.04em;color:var(--gold);margin-right:6px}
 .webTip i{font-style:normal;color:var(--volt)}
 .webRule{flex:none;margin:0;font-size:13px;line-height:1.35}
@@ -3761,6 +3765,8 @@ function webAdj(id){if(id==='c')return WARMS.map((x,a)=>a+'_1');const[a,r]=id.sp
 const webPts=()=>G.lvl-1+(G.para||0)-Object.keys(G.web||{}).length;
 function webNext(a){for(let r=1;r<=10;r++)if(!G.web[a+'_'+r])return a+'_'+r;return null}
 const webCan=id=>!G.web[id]&&webPts()>0&&webAdj(id).some(n=>n==='c'||G.web[n]);
+/* the only place a web point is spent: the Place button, or a mouse double-click on the selected node */
+function webPlace(id){if(!id||id==='c'||!webCan(id))return false;G.web[id]=1;sel={web:id};calc();sfx('learn');return true}
 const modTxt=m=>Object.keys(m).map(k=>{const v=k==='cdr'?Math.round(m[k]*100):m[k];return (v>0?'+':'')+(WEBT[k]||AFK[k].t.replace(/^\+/,'')).replace('{v}',v)}).join(', ');
 let webVB=null,webFitVB=null,webArm=-1,webHelpOpen=false,webPanMoved=0,SB=null,SUBP=null;
 /* The world box is larger than the outermost node so the arm names sit inside the fit, with room for the word itself. */
@@ -3776,9 +3782,13 @@ function webZoomAt(factor,wx,wy){if(!webVB)webFit();if(!webVB)return;const cap=w
   if(wx==null){wx=webVB.x+webVB.w/2;wy=webVB.y+webVB.h/2}const rx=(wx-webVB.x)/webVB.w,ry=(wy-webVB.y)/webVB.h;webVB.w=nw;webVB.h=nh;webVB.x=wx-rx*nw;webVB.y=wy-ry*nh;webClamp();webApply()}
 function webTipHTML(id){const n=webNode(id);if(!n)return '';const half=n.a>=0&&!n.key&&webWeak(n.a);let mods=n.m;if(half){mods={};for(const k in n.m)mods[k]=n.m[k]/2}const body=n.id==='c'?'Where every path starts.':modTxt(mods);
   const note=half?' Halved: '+WARMS[(n.a+4)%8][0]+', across the web, has more of your points.':'';
-  const state=n.id==='c'||G.web[n.id]?'Placed.':webCan(n.id)?'Lit. Tap to place a point.':webPts()>0?'Not connected yet.':'No points left.';
-  return '<b>'+n.n+'</b> '+body+note+' <i>'+state+'</i>'}
-function webShowTip(id){const tip=$('webTip');if(!tip)return;if(!id){tip.hidden=true;tip.innerHTML='';return}tip.hidden=false;tip.innerHTML=webTipHTML(id)}
+  const placed=n.id==='c'||G.web[n.id],can=webCan(n.id);
+  const need=placed||can?'':' Needs: a placed neighbour ('+webAdj(n.id).map(o=>o==='c'?'the centre':webNode(o).n+' '+o.split('_')[1]).join(', ')+').';
+  const state=placed?'Placed.':can?'Lit. Press Place point to spend it.':webPts()>0?'Not connected yet.':'No points left.';
+  return '<b>'+n.n+'</b> '+body+note+' <i>'+state+'</i>'+need+(placed?'':' <span class="webCost">Cost: 1 point (you have '+Math.max(0,webPts())+').</span>')}
+function webTipCard(id){const n=id&&webNode(id);const can=!!n&&webCan(id);
+  return '<div class="webTipTxt">'+(n?webTipHTML(id):'Tap a node to read it. Nothing is spent until you press Place point.')+'</div><button class="webPlace" data-weball="1"'+(can?'':' disabled')+'>Place point</button>'}
+function webShowTip(id){const tip=$('webTip');if(!tip)return;tip.dataset.sel=id||'';tip.innerHTML=webTipCard(id)}
 function webBind(){if(!webVB)webFit();else webApply();const stage=$('webStage');if(!stage)return;const svg=stage.querySelector('svg');
   if(sel&&sel.web)webShowTip(sel.web);
   const help=$('webHelp');if(help)help.addEventListener('toggle',()=>{webHelpOpen=help.open;webFit()});
@@ -3792,10 +3802,9 @@ function webBind(){if(!webVB)webFit();else webApply();const stage=$('webStage');
     if(!pan||e.pointerId!==pan.id)return;const dx=e.clientX-pan.x,dy=e.clientY-pan.y;if(Math.hypot(dx,dy)<=6)return;pan.moved=true;stage.classList.add('panning');try{stage.setPointerCapture(e.pointerId)}catch(err){}webVB.x=pan.ox-dx/pan.s;webVB.y=pan.oy-dy/pan.s;webClamp();webApply()});
   const end=e=>{const moved=pan&&pan.id===e.pointerId&&pan.moved;pts.delete(e.pointerId);if(pan&&pan.id===e.pointerId)pan=null;if(pts.size<2)pinch=null;stage.classList.remove('panning');if(moved)webPanMoved=1};
   stage.addEventListener('pointerup',end);stage.addEventListener('pointercancel',end);
-  stage.addEventListener('pointerover',e=>{const n=e.target.closest&&e.target.closest('[data-web]');if(n)webShowTip(n.dataset.web)});
   stage.addEventListener('pointerleave',()=>webShowTip(sel&&sel.web));
   stage.addEventListener('contextmenu',e=>{const n=e.target.closest&&e.target.closest('[data-web]');if(!n)return;e.preventDefault();e.stopPropagation();const id=n.dataset.web;sel={web:id};webShowTip(id);
-    toast(G.web[id]?'A single node does not come back. Refund all, in the bar, takes every point back for 5 sats.':'Tap a lit node to place a point.')});
+    toast(G.web[id]?'A single node does not come back. Refund all, in the bar, takes every point back for 5 sats.':'Tap a lit node, then press Place point.')});
   const pane=stage.parentNode;pane.querySelectorAll('[data-webzoom],[data-webfit]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();sfx('ui');
     if(b.dataset.webfit){webFit();return}const r=svg.getBoundingClientRect(),p=webClientToWorld(svg,r.left+r.width/2,r.top+r.height/2);webZoomAt(b.dataset.webzoom==='in'?1.22:1/1.22,p&&p.x,p&&p.y)}))}
 function webKey(e){const stage=$('webStage');if(!stage||mode!=='sheet'||tab!=='web')return false;const svg=stage.querySelector('svg');
@@ -3806,6 +3815,12 @@ function webKey(e){const stage=$('webStage');if(!stage||mode!=='sheet'||tab!=='w
   const pan={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.code];
   if(pan&&webVB){webVB.x+=pan[0]*webVB.w*.08;webVB.y+=pan[1]*webVB.h*.08;webClamp();webApply();e.preventDefault();return true}
   return false}
+/* Hit rule for a finger: the node whose centre is nearest the tap, within about 22 screen pixels, wins.
+   The drawn circles are 4-6px apart at the default zoom, so per-circle hit areas cannot be told apart. */
+function webPos(id){if(id==='c')return[WEBC,WEBC];const[a,r]=id.split('_').map(Number),an=a*Math.PI/4-Math.PI/2;return[WEBC+Math.cos(an)*r*WEBR,WEBC+Math.sin(an)*r*WEBR]}
+function webPick(ev){const stage=$('webStage'),svg=stage&&stage.querySelector('svg');if(!svg)return null;const q=webClientToWorld(svg,ev.clientX,ev.clientY),m=svg.getScreenCTM();if(!q||!m||!m.a)return null;
+  const lim=22/m.a;let best=null,bd=lim;for(let a=-1;a<8;a++)for(let r=a<0?0:1;r<=(a<0?0:10);r++){const id=a<0?'c':a+'_'+r,p=webPos(id),d=Math.hypot(p[0]-q.x,p[1]-q.y);if(d<bd){bd=d;best=id}}
+  return best}
 function webSvg(){const C=WEBC,R=WEBR,pos=id=>{if(id==='c')return[C,C];const[a,r]=id.split('_').map(Number),an=a*Math.PI/4-Math.PI/2;return[C+Math.cos(an)*r*R,C+Math.sin(an)*r*R]};
   const armOf=id=>id==='c'?-1:+id.split('_')[0];
   let ln='',nd='';const ids=['c'];for(let a=0;a<8;a++)for(let r=1;r<=10;r++)ids.push(a+'_'+r);
@@ -3824,8 +3839,8 @@ function webSvg(){const C=WEBC,R=WEBR,pos=id=>{if(id==='c')return[C,C];const[a,r
   return `<svg viewBox="0 0 ${WEB} ${WEB}" preserveAspectRatio="xMidYMid meet">${ln}${nd}</svg>`}
 function webPane(){const n=webPts(),chips=[[-1,'All']].concat(WARMS.map((a,i)=>[i,a[0]]));
   const bar=`<div class="webBar"><b class="pts">${n} point${n===1?'':'s'}</b><div class="webChips">${chips.map(([i,name])=>`<button class="ghost${webArm===i?' on':''}" data-webarm="${i<0?'all':i}">${name}</button>`).join('')}</div><button class="ghost" data-webzoom="out" aria-label="Zoom out">−</button><button class="ghost" data-webfit="1">Fit</button><button class="ghost" data-webzoom="in" aria-label="Zoom in">+</button><button class="ghost" data-webreset="1" ${(G.sats<5||!Object.keys(G.web||{}).length)?'disabled':''}>Refund all · 5 sats</button></div>`;
-  const help=`<p class="webRule">Each level you gain adds one, and each Tenure adds one. You start with none.</p><details class="webHelp" id="webHelp"${webHelpOpen?' open':''}><summary>How the ledger works</summary><p>Each level you gain adds one, and each Tenure adds one. You start with none. Start at the centre and work outward along connected nodes; the arms join at rings 3, 6 and 9. Once an arm is started, a <b style="color:#59e0e6">+</b> appears beside its first node — tap that to put the next point straight onto the end of that arm without hunting for it. The orange node at the end of each arm is a keystone: a large gain with a real cost. <strong>Arms across from each other oppose:</strong> of each facing pair (Might and Current, Flesh and Stride, Plate and Fortune, Nerve and Thirst), the arm with fewer points pays out half. Drag the web to move it. The wheel, a pinch, or + and − zoom it, and Fit puts every arm back in view. Tap a lit node to place a point. A single node does not come back; Refund all takes every point back for 5 sats.</p></details>`;
-  return `<div class="webPane">${bar}<div id="webStage" class="webStage">${webSvg()}<div id="webTip" class="webTip" hidden></div></div>${help}</div>`}
+  const help=`<p class="webRule">Each level you gain adds one, and each Tenure adds one. You start with none.</p><details class="webHelp" id="webHelp"${webHelpOpen?' open':''}><summary>How the ledger works</summary><p>Each level you gain adds one, and each Tenure adds one. You start with none. Start at the centre and work outward along connected nodes; the arms join at rings 3, 6 and 9. Once an arm is started, a <b style="color:#59e0e6">+</b> appears beside its first node — tap that to select the next node on that arm without hunting for it, then press Place point. The orange node at the end of each arm is a keystone: a large gain with a real cost. <strong>Arms across from each other oppose:</strong> of each facing pair (Might and Current, Flesh and Stride, Plate and Fortune, Nerve and Thirst), the arm with fewer points pays out half. Drag the web to move it. The wheel, a pinch, or + and − zoom it, and Fit puts every arm back in view. Tap a node to select it and read what it does, then press Place point to spend it (a mouse can also double-click the selected node). A single node does not come back; Refund all takes every point back for 5 sats.</p></details>`;
+  return `<div class="webPane">${bar}<div id="webStage" class="webStage">${webSvg()}</div><div id="webTip" class="webTip" data-sel="${sel&&sel.web||''}">${webTipCard(sel&&sel.web)}</div>${help}</div>`}
 /* charms are items. The belt is what turns one on. */
 ICON.charm='M12 3a6 6 0 016 6c0 4-6 12-6 12S6 13 6 9a6 6 0 016-6zm0 3.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z';
 /* everything that adds to the hero outside gear and skills; returns extra life as a fraction */
@@ -8432,12 +8447,12 @@ const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.ta
     if(webPanMoved)webPanMoved=0;
     else{const id=d.web;
       if(ev.shiftKey){toast(G.web[id]?'A single node does not come back. Refund all, in the bar, takes every point back for 5 sats.':uiSay('Shift-click does not place a point. Click a lit node.','A long press does not place a point. Tap a lit node.'));sel={web:id}}
-      else if(id!=='c'&&!G.web[id]&&webCan(id)){G.web[id]=1;sel={web:id};calc();sfx('learn')}
-      else{sel={web:id};if(id!=='c'&&!G.web[id])toast(webPts()>0?'Not connected yet. Follow a lit node out from the centre.':'No points left to place.')}}}
+      else if(sel&&sel.web===id&&ev.pointerType==='mouse'&&ev.detail>=2&&webPlace(id)){}
+      else{sel={web:id};if(id!=='c'&&!G.web[id]&&!webCan(id))toast(webPts()>0?'Not connected yet. Follow a lit node out from the centre.':'No points left to place.')}}}
   /* the + over an arm's first node: spend straight away on the far end of that arm */
   if(d.webadd!==undefined){const nx=webNext(+d.webadd);
-    if(nx&&webPts()>0){G.web[nx]=1;sel={web:nx};calc();sfx('learn')}}
-  if(d.weball){G.web[sel.web]=1;calc();sfx('learn')}
+    if(nx)sel={web:nx}}
+  if(d.weball){webPlace(sel&&sel.web)}
   if(d.webreset){if(spendSats(5,'A refund costs 5 sats')){G.web={};sel=null;calc();sfx('ui')}}
   if(d.sub){closeSheet();subStart(+d.sub);return}
   if(d.hc){G.hc=!G.hc;calc()}
@@ -8486,7 +8501,9 @@ const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.ta
   if(d.tier){if(typeof mpIn==='function'&&mpIn()){toast('More is for your own game. Leave this one first.');sfx('err')}
     else{G.tier=clamp(G.tier+ +d.tier,0,G.maxTier);resetZones()}}
   drawSheet()};
-$('sheet').addEventListener('click',ev=>{if(webPanMoved){webPanMoved=0;if(ev.target.closest&&ev.target.closest('#webStage'))return}sheetClick(ev)});
+$('sheet').addEventListener('click',ev=>{if(webPanMoved){webPanMoved=0;if(ev.target.closest&&ev.target.closest('#webStage'))return}
+  if(ev.target.closest&&ev.target.closest('#webStage')&&!ev.target.closest('[data-webadd]')){const id=webPick(ev),c=id&&document.querySelector('#webStage [data-web="'+id+'"]');if(c){sheetClick({target:c,shiftKey:ev.shiftKey,detail:ev.detail,pointerType:ev.pointerType});return}}
+  sheetClick(ev)});
 
 $('sheet').addEventListener('contextmenu',e=>{
   const bag=e.target.closest&&e.target.closest('[data-bag]');
