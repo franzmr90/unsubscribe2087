@@ -67,7 +67,29 @@ for(const [name,vp] of [['p',{width:390,height:844}],['l',{width:844,height:390}
     check('art bakes identically under a different Math.random (seeded)',h1!=='none'&&h1===h2,h1+' vs '+h2);
     // other zones are untouched: the Bull Run (also style moor) and the town have no art
     const other=await p.evaluate(()=>{const Z=__g.ZONES;return Z.map((z,i)=>i+':'+z.style).filter(x=>/moor/.test(x)).join(',')});res.moorZones=other;
+    // table gate: only styles with a DEAD entry get art, by style and not by zone id (Moors 1 and Bull Run 20 are both 'moor')
+    const gate=await p.evaluate(()=>{const Z=__g.ZONES;return Z.map((z,i)=>(__g.DEAD[z.style]?i:-1)).filter(i=>i>=0).join(',')});
+    check('DEAD gate covers exactly the moor-style zones',gate===other.split(',').map(x=>x.split(':')[0]).join(','),gate+' vs '+other);
+    // cache: module level and capped, never on W, never saved
+    const cache=await p.evaluate(()=>{const g=__g,W=g.W;const out={};out.onW=('_dc' in W)||('_dd' in W);
+      // walk far across the zone so many pages are touched
+      const P=g.P;for(let i=0;i<500;i++){P.x=Math.min(W.N-2,Math.max(1,W.start.x+Math.sin(i/9)*W.N*.45));P.y=Math.min(W.N-2,Math.max(1,W.start.y+Math.cos(i/7)*W.N*.45));W.seenGen=(W.seenGen||0)+1;g.render()}
+      out.pages=g.DEADC.m.size;out.canv=0;
+      out.saved=JSON.stringify(g.encW(W)).length;const j=JSON.stringify(g.encW(W));out.leak=/"_dc"|"_dd"|"dead"|DEADC/.test(j);
+      out.saveKeys=Object.keys(g.encW(W)).join(',');return out});
+    res.cache=cache;check('no W._dc/W._dd on the world',!cache.onW);
+    check('page cache capped at 9 after a long walk (got '+cache.pages+')',cache.pages<=9);
+    check('encW does not serialize the dead-space cache',!cache.leak,cache.saveKeys);
+    // leaving the world drops its pages: the cache holds one world at a time, and visited worlds (ZS) hold no canvases
+    const keep=await p.evaluate(()=>{const g=__g;const w1=g.W;g.enter(2);g.render();const c2=g.DEADC;const held=Object.keys(g.ZS).filter(k=>g.ZS[k]&&('_dc' in g.ZS[k]||'_dd' in g.ZS[k]));return{sameWorld:c2&&c2.w===w1,held:held.join(',')}});
+    check('visited worlds hold no dead-space canvases',keep.held==='',keep.held);
   }
+  if(name==='p'){ // Bull Run (zone 20, style moor) uses the same table entry
+    await enter(p,20);const bz=await p.evaluate(()=>__g.W.z.n+'|'+__g.W.z.style);check('zone 20 is the Bull Run (moor)',bz==='The Bull Run|moor',bz);
+    const bm=await p.evaluate(measure);res.bull=bm;check('bull run flat near-black '+bm.flat.toFixed(1)+'% (max '+MAX_FLAT+')',bm.flat<=MAX_FLAT);
+    check('bull run texture '+bm.detail.toFixed(2)+' (min '+MIN_DETAIL+')',bm.detail>=MIN_DETAIL);
+    if(shots)await p.screenshot({path:path.join(shots,prefix+'-bull-'+name+'.png')});
+    await enter(p,1)}
   if(shots)await p.screenshot({path:path.join(shots,prefix+'-'+name+'.png')});
   check(lab+' errors',!p.errs.length,p.errs.join('|'));
 }
