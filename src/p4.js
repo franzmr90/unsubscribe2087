@@ -1560,7 +1560,9 @@ const sheetClick=ev=>{if(vendLockFired){vendLockFired=false;return}const b=ev.ta
   if(d.tier){if(typeof mpIn==='function'&&mpIn()){toast('More is for your own game. Leave this one first.');sfx('err')}
     else{G.tier=clamp(G.tier+ +d.tier,0,G.maxTier);resetZones()}}
   drawSheet()};
-$('sheet').addEventListener('click',ev=>{if(webPanMoved){webPanMoved=0;if(ev.target.closest&&ev.target.closest('#webStage'))return}sheetClick(ev)});
+$('sheet').addEventListener('click',ev=>{if(webPanMoved){webPanMoved=0;if(ev.target.closest&&ev.target.closest('#webStage'))return}
+  if(ev.target.closest&&ev.target.closest('#webStage')&&!ev.target.closest('[data-webadd]')){const id=webPick(ev),c=id&&document.querySelector('#webStage [data-web="'+id+'"]');if(c){sheetClick({target:c,shiftKey:ev.shiftKey,detail:ev.detail,pointerType:ev.pointerType});return}}
+  sheetClick(ev)});
 
 $('sheet').addEventListener('contextmenu',e=>{
   const bag=e.target.closest&&e.target.closest('[data-bag]');
