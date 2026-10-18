@@ -409,6 +409,10 @@ textarea{width:100%;height:70px;background:#050409;color:var(--ink);border:1px s
 #sheet .sheetBody.fit .optg .tog i{padding:1px 4px;font-size:9px}
 #sheet .sheetBody.fit .optg .tog span{font-size:10px;line-height:1.15;-webkit-line-clamp:1}
 #sheet .sheetBody.fit .row .big,#sheet .sheetBody.fit .row .ghost{white-space:nowrap;padding:5px 3px;font-size:10px}
+/* touch: fit mode keeps its tight layout but paper-doll and pack cells stay 44px tall */
+html[data-ui="touch"] #sheet .sheetBody.fit .doll{grid-template-columns:repeat(3,44px);grid-template-rows:repeat(4,44px)}
+html[data-ui="touch"] #sheet .sheetBody.fit .doll .cell{width:44px;height:44px}
+html[data-ui="touch"] #sheet .sheetBody.fit .grid .cell{height:44px}
 
 html:not([data-ui]) [data-ui-copy="touch"],
 html[data-ui="mouse"] [data-ui-copy="touch"],
@@ -428,6 +432,7 @@ html[data-ui="touch"] #bbs .tb,
 html[data-ui="touch"] #tbs .tb,
 html[data-ui="touch"] #dBtns button,
 html[data-ui="touch"] .cls{min-height:44px}
+html[data-ui="touch"] .shead .tab{min-height:44px}
 #top{top:calc(6px + env(safe-area-inset-top,0px));left:calc(8px + env(safe-area-inset-left,0px));right:calc(8px + env(safe-area-inset-right,0px))}
 #obj{left:calc(6px + env(safe-area-inset-left,0px));top:calc(96px + env(safe-area-inset-top,0px))}
 #boss{top:calc(106px + env(safe-area-inset-top,0px));left:calc(40px + env(safe-area-inset-left,0px));right:calc(40px + env(safe-area-inset-right,0px))}
@@ -444,6 +449,9 @@ html[data-ui="touch"] .cls{min-height:44px}
 #clsList,#slots{flex:0 0 auto}
 @media (orientation:portrait) and (max-width:700px){
   html[data-ui="touch"] #pad{transform:scale(.82);transform-origin:bottom right}
+  /* the .82 pad scale shrank Dodge to 38 and Stim to 43: grow them so they land at 44+ on screen (kept centred) */
+  html[data-ui="touch"] #bDodge{width:54px;height:54px;right:162px;bottom:66px}
+  html[data-ui="touch"] #bPot{width:54px;height:54px;right:153px;bottom:139px}
   html[data-ui="touch"] #log{bottom:calc(188px + env(safe-area-inset-bottom,0px))}
 }
 
