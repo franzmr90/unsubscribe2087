@@ -1,4 +1,4 @@
-/* Ledger web: fit on open, and a click spends a point.
+/* Ledger web: fit on open; a click SELECTS a node and the Place point button spends it.
    node tools/ledger-web.js */
 const {chromium}=require('playwright');
 const fs=require('fs');
@@ -108,8 +108,12 @@ if(fitted===zoomed)fail.push('fit button did not restore the view');
 const pts0=await p.evaluate(()=>__g.webPts());
 await p.click('[data-web="2_1"]');
 await p.waitForTimeout(40);
+const sel1=await p.evaluate(()=>({on:!!__g.G.web['2_1'],pts:__g.webPts()}));
+if(sel1.on||sel1.pts!==pts0)fail.push('a click spent a point instead of selecting '+JSON.stringify(sel1));
+await p.click('[data-weball="1"]');
+await p.waitForTimeout(40);
 const placed=await p.evaluate(()=>({on:!!__g.G.web['2_1'],pts:__g.webPts(),bar:document.querySelector('.webBar .pts').textContent}));
-if(!placed.on||placed.pts!==pts0-1)fail.push('click did not place 2_1 '+JSON.stringify(placed));
+if(!placed.on||placed.pts!==pts0-1)fail.push('Place point did not place 2_1 '+JSON.stringify(placed));
 if(!/10 points/.test(placed.bar))fail.push('points bar after place '+placed.bar);
 
 await p.click('[data-web="2_1"]',{modifiers:['Shift']});
@@ -124,8 +128,11 @@ if(far)fail.push('unconnected 0_5 was placed');
 
 await p.click('[data-webadd="0"]');
 await p.waitForTimeout(40);
+if(await p.evaluate(()=>!!__g.G.web['0_3']))fail.push('+ spent a point instead of selecting 0_3');
+await p.click('[data-weball="1"]');
+await p.waitForTimeout(40);
 const nxt=await p.evaluate(()=>({on:!!__g.G.web['0_3'],pts:__g.webPts()}));
-if(!nxt.on||nxt.pts!==pts0-2)fail.push('+ did not place 0_3 '+JSON.stringify(nxt));
+if(!nxt.on||nxt.pts!==pts0-2)fail.push('+ then Place did not place 0_3 '+JSON.stringify(nxt));
 
 await p.keyboard.press('Equal');
 await p.waitForTimeout(30);
