@@ -65,6 +65,12 @@ function webKey(e){const stage=$('webStage');if(!stage||mode!=='sheet'||tab!=='w
   const pan={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.code];
   if(pan&&webVB){webVB.x+=pan[0]*webVB.w*.08;webVB.y+=pan[1]*webVB.h*.08;webClamp();webApply();e.preventDefault();return true}
   return false}
+/* Hit rule for a finger: the node whose centre is nearest the tap, within about 22 screen pixels, wins.
+   The drawn circles are 4-6px apart at the default zoom, so per-circle hit areas cannot be told apart. */
+function webPos(id){if(id==='c')return[WEBC,WEBC];const[a,r]=id.split('_').map(Number),an=a*Math.PI/4-Math.PI/2;return[WEBC+Math.cos(an)*r*WEBR,WEBC+Math.sin(an)*r*WEBR]}
+function webPick(ev){const stage=$('webStage'),svg=stage&&stage.querySelector('svg');if(!svg)return null;const q=webClientToWorld(svg,ev.clientX,ev.clientY),m=svg.getScreenCTM();if(!q||!m||!m.a)return null;
+  const lim=22/m.a;let best=null,bd=lim;for(let a=-1;a<8;a++)for(let r=a<0?0:1;r<=(a<0?0:10);r++){const id=a<0?'c':a+'_'+r,p=webPos(id),d=Math.hypot(p[0]-q.x,p[1]-q.y);if(d<bd){bd=d;best=id}}
+  return best}
 function webSvg(){const C=WEBC,R=WEBR,pos=id=>{if(id==='c')return[C,C];const[a,r]=id.split('_').map(Number),an=a*Math.PI/4-Math.PI/2;return[C+Math.cos(an)*r*R,C+Math.sin(an)*r*R]};
   const armOf=id=>id==='c'?-1:+id.split('_')[0];
   let ln='',nd='';const ids=['c'];for(let a=0;a<8;a++)for(let r=1;r<=10;r++)ids.push(a+'_'+r);
