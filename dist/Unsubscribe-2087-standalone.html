@@ -5648,8 +5648,8 @@ const OL0='#0b0912';let OL=OL0;
 /* Lighting, in three numbers. They are a set: loosening one undoes another, so
    tune them together and look at a district with monsters in it, not an empty
    one. tools/light-check.js measures what they do. */
-const PCARRY_S=.72,   /* how bright the light the player carries is */
-      PCARRY_R=.78,   /* and how far it reaches */
+const PCARRY_S=.85,   /* how bright the light the player carries is */
+      PCARRY_R=1,   /* and how far it reaches */
       PFILL_K=.34,    /* what is left of the flat fill over the whole view */
       GLOW_K=.30;     /* how much a lamp gives back, additively */
 function shadow(X,Y,r){ctx.fillStyle='rgba(0,0,0,.26)';ctx.beginPath();ctx.ellipse(X,Y,r*1.18,r*.6,0,0,6.283);ctx.fill();
@@ -6897,7 +6897,15 @@ function render(){
     else{const a=Math.atan2((p.vx+p.vy)*.5,p.vx-p.vy);ctx.save();ctx.translate(X,Y);ctx.rotate(p.kind==='courier'?tNow*25:a);
       if(p.kind==='hacker'){const L=9+p.big*8;ctx.fillRect(-L,-2,L*2,4);ctx.restore();glow(X,Y,p.big?26:16,p.col,.7);light(X,Y,60,p.col)}else{ctx.strokeStyle=OL;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(8+p.big*3,0);ctx.lineTo(-4,-3.5-p.big*2);ctx.lineTo(-4,3.5+p.big*2);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()}}}
   // darkness and light radius
-  const lw=LC.width,lh=LC.height,k=lw/VW;lg.globalCompositeOperation='source-over';lg.clearRect(0,0,lw,lh);const AB=TX.amb||[4,3,10];lg.fillStyle='rgba('+AB[0]+','+AB[1]+','+AB[2]+','+Math.min(.9,z.amb+(EV&&EV.k==='outage'?.22:0))+')';lg.fillRect(0,0,lw,lh);lg.globalCompositeOperation='destination-out';
+  const lw=LC.width,lh=LC.height,k=lw/VW;lg.globalCompositeOperation='source-over';lg.clearRect(0,0,lw,lh);const AB=TX.amb||[4,3,10],va=Math.min(.9,z.amb+(EV&&EV.k==='outage'?.22:0));
+  /* Fog, three states (Diablo-style, visual only; W.seen and the sim are untouched): unseen = the
+     near-black haze below, remembered = the veil's ~40% dim tile, lit = the lights cut out of it.
+     The veil used to be one flat near-black colour, which crushed the void to luma ~6 and left
+     60-77% of a phone screen black. Its colour now rises toward the hero (a wide light radius, tinted by the
+     zone's AMBC) and falls back to the old near-black at the frame. Same one fill, no extra blit. */
+  {const fg=lg.createRadialGradient(lw/2,lh*.44,0,lw/2,lh*.44,Math.max(lw,lh)*.62);
+   fg.addColorStop(0,'rgba('+(AB[0]*3+20)+','+(AB[1]*3+18)+','+(AB[2]*3+28)+','+va+')');fg.addColorStop(1,'rgba('+AB[0]+','+AB[1]+','+AB[2]+','+va+')');lg.fillStyle=fg}
+  lg.fillRect(0,0,lw,lh);lg.globalCompositeOperation='destination-out';
   for(const L of LIGHTS){const S=L.s===undefined?1:L.s,g=lg.createRadialGradient(L.X*k,L.Y*k,0,L.X*k,L.Y*k,L.r*k);g.addColorStop(0,'rgba(0,0,0,'+(L.col?.8:1)*S+')');g.addColorStop(.42,'rgba(0,0,0,'+(L.col?.52:.88)*S+')');g.addColorStop(.72,'rgba(0,0,0,'+(L.col?.22:.42)*S+')');g.addColorStop(1,'rgba(0,0,0,0)');lg.fillStyle=g;lg.fillRect((L.X-L.r)*k,(L.Y-L.r)*k,L.r*2*k,L.r*2*k)}
   /* source-atop tints what is left of the veil without touching its alpha, so a lamp
      warms the shadow around its pool instead of just cutting a grey hole in it */
