@@ -5262,7 +5262,7 @@ const SUF={
   return false},
  /* The Orphan Maker forks. While its other branch stands it is only half real; the
     other branch's tip is on the floor, and stepping on it orphans that branch. */
- q21(e,dt,d){if(!e.fk||(e.hp/e.max<.5&&e.fk<2&&!e.tw)){e.fk=(e.fk||0)+1;const s=spawn('valid',e.x+rnd(-1,1),e.y+rnd(-1,1),{minion:1});if(s){s.aggro=true;s.sz=1.3;e.tw=s;e.tip=spotNear(e,3.5);sfx('summon');toast('Two blocks were found at once.')}}
+ q21(e,dt,d){if(!e.fk||(e.hp/e.max<.5&&e.fk<2&&!e.tw)){const s=spawn('valid',e.x+rnd(-1,1),e.y+rnd(-1,1),{minion:1});if(s){e.fk=(e.fk||0)+1;s.aggro=true;s.sz=1.3;e.tw=s;e.tip=spotNear(e,3.5);sfx('summon');toast('Two blocks were found at once.')}}
   const t=e.tw;if(t&&(t.hp<=0||W.ents.indexOf(t)<0))e.tw=null;e.dm=e.tw?.3:1;
   if(e.tw&&Math.hypot(e.tip.x-P.x,e.tip.y-P.y)<.8){sfx('boom');W.fx.push({k:'ring',x:t.x,y:t.y,r:2,t:0,life:.35,col:'#f7931a'});if(dist(t,P)<2)hurt(e.dmg*.8,false,e);kill(t);e.tw=null;toast('That branch is orphaned.')}
   return false},
@@ -5280,11 +5280,46 @@ const SUF={
   if(e.svT){e.svT=0;e.rs=10;e.dm=.25}
   if(e.rs&&(e.hits|0)-e.h0>=3){e.h0=e.hits|0;fan(e,P.x,P.y,1,0,3.2,'#f0ead8',.4);float(e.x,e.y,'PAID','#f0ead8')}
   if(d<2.4&&e.rs){if((e.rt=(e.rt||0)+dt)>1.2){e.rt=0;e.rs--;float(P.x,P.y,'redeemed','#e0bd6e');sfx('pick');if(!e.rs){e.dm=1;e.stun=6;e.svT=1;sfx('crit');toast('A run on the vault. The Eleventh Custodian has nothing behind the paper.')}}}else e.rt=0;
-  return false}};
+  return false},
+ /* ---- Acts I to III. Act I teaches the tells the later fights test: a red circle
+    is somewhere to leave, a row of them is a line to step off, a ring is a place
+    to stay inside. So its lieutenants are slow and loud about it. ---- */
+ /* HOA-9 writes you a citation: the ground under you, marked, then fined */
+ q1(e,dt,d){if((e.b1-=dt)<=0&&d<8){e.b1=5;sfx('warn');e.say=1.6;W.fx.push({k:'warn',x:P.x,y:P.y,r:1.3,t:0,life:1.6,boom:e.dmg*.6,dty:'impact'})}if(e.say>0)e.say-=dt;return false},
+ /* Marla greets anybody who comes close, all at once, and sends offers after anybody who does not */
+ q2(e,dt,d){if((e.b1-=dt)<=0){if(d<3){e.b1=4;sfx('bossfire');ringShot(e,8,3.2,'#ffe36b',.35)}else if(d<8){e.b1=3;fan(e,P.x,P.y,3,.2,3.6,'#ffe36b',.3,{slow:true})}}return false},
+ /* Defrag sorts: it sends the stacks out in order, three at a time */
+ q3(e,dt,d){if((e.b1-=dt)<=0&&d<9){e.b1=8;callIn(e,['tick'],3,3)}return false},
+ /* Auditor Prime fines you for every second you are in its sight and not paying it down. A blow pays; at five it collects */
+ q4(e,dt,d){if(e.h0===undefined){e.h0=e.hits|0;e.fine=0}const h=e.hits|0;if(h>e.h0){e.fine=Math.max(0,e.fine-(h-e.h0)*.7);e.h0=h}
+  if(d<8)e.fine+=dt*.6;if(e.fine>=5){e.fine=0;sfx('warn');float(P.x,P.y,'FINED','#ff5d4d');W.fx.push({k:'warn',x:P.x,y:P.y,r:1.4,t:0,life:1,boom:e.dmg*.8,dty:'noise'})}return false},
+ /* Ratchet works in shifts: three seconds flat out, then two winded, when it takes half again */
+ q6(e,dt,d){if(e.s0===undefined){e.s0=e.spd;e.sh=5;e.run=0}
+  if((e.sh-=dt)<=0){e.run=!e.run;e.sh=e.run?3:(e.hp/e.max<.5?2:3);sfx(e.run?'warn':'mend');e.spd=e.s0*(e.run?1.7:.4);e.dm=e.run?.8:1.5}return false},
+ /* Eden prunes: two cuts crossed over where you stand */
+ q7(e,dt,d){if((e.b1-=dt)<=0&&d<9){e.b1=e.hp/e.max<.5?4:5.5;sfx('warn');for(const[a,b]of[[1,1],[1,-1]])lane(P.x-a*2.6,P.y-b*2.6,P.x+a*2.6,P.y+b*2.6,6,e.dmg*.45,'rust')}return false},
+ /* Lethe's tide goes out from it in three rings */
+ q8(e,dt,d){if((e.b1-=dt)<=0&&d<8){e.b1=8;sfx('warn');for(let i=1;i<=3;i++)for(let j=0;j<i*5;j++){const a=j/(i*5)*6.283;W.fx.push({k:'warn',x:e.x+Math.cos(a)*i*1.5,y:e.y+Math.sin(a)*i*1.5,r:.8,t:0,life:.8+i*.45,boom:e.dmg*.4,dty:'noise'})}}return false},
+ /* Sterling ropes you in: a velvet rope around where you stand, and it comes through it */
+ q9(e,dt,d){if((e.b1-=dt)<=0&&d<9){e.b1=7;sfx('warn');ringAround(P.x,P.y,12,3.2,.7,e.dmg*.5,'impact',1.5);e.cd=0}return false},
+ /* The Receptionist offers you a seat. Be in it when she calls the next name and she is open to you; be anywhere else and you are dealt with */
+ q11(e,dt,d){if(e.ss>0){e.ss-=dt;if(e.ss<=0)e.dm=.35}else if(e.dm===undefined)e.dm=.35;
+  if((e.b1-=dt)<=0&&d<10){e.b1=8;const p=spotNear(P,2.2);e.seat=p;e.call=2.2;W.fx.push({k:'patch',x:p.x,y:p.y,r:.8,t:0,life:2.2,col:'#7be495',tel:1});toast('The Receptionist: “Please take a seat.”')}
+  if(e.call>0&&(e.call-=dt)<=0){if(Math.hypot(e.seat.x-P.x,e.seat.y-P.y)<.9){e.dm=1;e.ss=4;sfx('buff');toast('“Next!” You are seen.')}else{sfx('boom');W.fx.push({k:'warn',x:P.x,y:P.y,r:1.2,t:0,life:.3,boom:e.dmg*.9,dty:'noise'})}}return false},
+ /* The Secretary minutes where you were: a line of blasts that follows you, a beat behind */
+ q12(e,dt,d){if((e.b1-=dt)<=0&&d<9){e.b1=7;e.wr=3}if(e.wr>0){e.wr-=dt;if((e.wt=(e.wt||0)-dt)<=0){e.wt=.4;W.fx.push({k:'warn',x:P.x,y:P.y,r:.9,t:0,life:1.4,boom:e.dmg*.45,dty:'noise'})}}return false},
+ /* The Chair: while the board is quorate it cannot be touched much, and it calls order with the gavel */
+ q13(e,dt,d){e.dm=W.ents.some(o=>o!==e&&o.k==='director'&&o.hp>0&&dist(o,e)<9)?.5:1;
+  if((e.b1-=dt)<=0&&d<4){e.b1=6;sfx('warn');W.fx.push({k:'warn',x:e.x,y:e.y,r:2.6,t:0,life:1.2,boom:e.dmg*.8,dty:'impact'});toast('The Chair: “Order.”')}return false},
+ /* Defrag Prime knows where you are standing: a red line drawn through you, across the room */
+ q14(e,dt,d){if((e.b1-=dt)<=0&&d<10){e.b1=e.hp/e.max<.5?3.5:5;sfx('warn');const a=Math.atan2(P.y-e.y,P.x-e.x)+1.5708,ux=Math.cos(a)*4,uy=Math.sin(a)*4;lane(P.x-ux,P.y-uy,P.x+ux,P.y+uy,9,e.dmg*.5,'surge')}return false}};
 function taroCharge(e,n,w){const a=Math.atan2(P.y-e.y,P.x-e.x),L=Math.min(8,dist(e,P)+2);let x=e.x+Math.cos(a)*L,y=e.y+Math.sin(a)*L;
   if(segD(e.dock,e.x,e.y,x,y)<1.2){x=e.dock.x;y=e.dock.y}
   e.chg={x,y,w,n};e.b1=e.hp/e.max<.5?3.4:4.6;sfx('warn');lane(e.x,e.y,x,y,Math.max(3,Math.round(Math.hypot(x-e.x,y-e.y)/.9)),0)}
 const SUD={
+ q1(e,X,Y,s){if(e.say>0){ctx.fillStyle='#ff5d4d';ctx.font='900 '+8*s+'px Cinzel,serif';ctx.textAlign='center';ctx.fillText('CITATION',X,Y-64*s)}},
+ q4(e,X,Y,s){if(e.fine>.5){ctx.fillStyle=e.fine>3.5?'#ff5d4d':'#e0bd6e';ctx.font='900 '+8*s+'px Cinzel,serif';ctx.textAlign='center';ctx.fillText('FINE '+e.fine.toFixed(1),X,Y-64*s)}},
+ q6(e,X,Y,s){if(e.run!==undefined){ctx.fillStyle=e.run?'#ff9a3c':'#7be495';ctx.font='900 '+8*s+'px Cinzel,serif';ctx.textAlign='center';ctx.fillText(e.run?'SHIFT':'BREAK',X,Y-96*s)}},
  q16(e,X,Y,s){for(let i=0;i<e.pg;i++){const a=tNow*1.4+i*1.571,x=X+Math.cos(a)*18*s,y=Y-34*s+Math.sin(a)*8*s;box(x-3*s,y-4*s,6*s,8*s,1,'#f0ead8')}
   for(const g of e.fl||[]){const x=SX(g.x,g.y),y=SY(g.x,g.y);box(x-5,y-4,10,7,1,'#f0ead8');glow(x,y,16,'#f0ead8',.5)}},
  q17(e,X,Y,s){for(const u of e.cu||[]){const x=SX(u.x,u.y),y=SY(u.x,u.y),R=1+.12*e.yr;ctx.fillStyle='rgba(255,217,160,.18)';ctx.strokeStyle='#ffd9a0';ctx.beginPath();ctx.ellipse(x,y,R*45,R*22.5,0,0,6.283);ctx.fill();ctx.stroke()}
