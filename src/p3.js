@@ -1921,7 +1921,8 @@ function drawEnemy(e,X,Y){
        nothing on it to hurt you, and the attending lights she cannot help sending. */
     const u=1.9,f2=e.hp/e.max,b=Math.sin(e.ph*2)*1.6;shadow(X,Y,22*u);
     for(let i=0;i<6;i++){const a=tNow*.6+i*1.047,rx=Math.cos(a)*30*u,ry=Math.sin(a)*12*u-34*u;
-      ctx.fillStyle='rgba(123,228,149,'+(.25+.3*Math.sin(tNow*2+i))+')';ctx.beginPath();ctx.arc(X+rx,Y+ry+b,2.6*u,0,6.283);ctx.fill()}
+      /* the attending lights are the feed: cards she is holding up for you */
+      ctx.fillStyle='rgba(123,228,149,'+(.25+.3*Math.sin(tNow*2+i))+')';ctx.fillRect(X+rx-3.4*u,Y+ry+b-2.4*u,6.8*u,4.8*u);ctx.fillStyle='rgba(244,240,230,.5)';ctx.fillRect(X+rx-2.4*u,Y+ry+b-1.2*u,4.8*u,.9*u)}
     ctx.strokeStyle=OL;ctx.lineWidth=1.4;
     box(X-10*u,Y-15*u,7*u,15*u,3,'#cfc8b8');box(X+3*u,Y-15*u,7*u,15*u,3,'#cfc8b8');
     box(X-13*u,Y-42*u+b,26*u,29*u,7*u,fl?'#fff':c1);
@@ -1940,7 +1941,7 @@ function drawEnemy(e,X,Y){
   else if(e.k==='boss5'){/* Made to win, and it has modelled this. The fans are the forty-one
        ways it has already seen the conversation go; they go out as you take them away. */
     const p2=e.hp/e.max,H=158,wob=Math.sin(tNow*1.3)*1.5;shadow(X,Y,40);
-    const left=Math.max(1,Math.round(41*p2));
+    const left=Math.max(1,Math.min(Math.round(41*p2),41-(e.used|0)));
     ctx.save();ctx.lineCap='round';
     for(let i=0;i<41;i++){const on=i<left,a=-1.5708+(i/40-.5)*1.32,L=38+((i*37)%26);
       ctx.strokeStyle=on?'rgba(247,147,26,'+(.14+.14*Math.sin(tNow*1.6+i))+')':'rgba(60,46,30,.12)';ctx.lineWidth=on?1.5:1;
@@ -1951,7 +1952,10 @@ function drawEnemy(e,X,Y){
     ctx.fillStyle='rgba(247,147,26,.5)';ctx.fillRect(X-1.4,Y-H+10+wob,2.8,H-40);
     ctx.fillStyle=p2<.5?'#ff6a2a':'#f7931a';ctx.fillRect(X-22,Y-H*.62,44*p2,3);
     ctx.fillStyle='#f7931a';ctx.fillRect(X-3,Y-H+16,6,6);
-    glow(X,Y-H*.7,96,p2<.5?'#ff6a2a':'#f7931a',.3);light(X,Y-H*.55,240,'#f7931a')}
+    glow(X,Y-H*.7,96,p2<.5?'#ff6a2a':'#f7931a',.3);light(X,Y-H*.55,240,'#f7931a');
+    /* where it thinks you will be, and the one fan that is pointing there */
+    if(e.aim&&e.aggro){const ax=SX(e.aim.x,e.aim.y),ay=SY(e.aim.x,e.aim.y);ctx.save();ctx.strokeStyle='#f7931a';ctx.globalAlpha=.3;ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(X,Y-H+6);ctx.lineTo(ax,ay);ctx.stroke();
+      ctx.globalAlpha=.75;ctx.lineWidth=1.6;ctx.beginPath();ctx.ellipse(ax,ay,15,7.5,0,0,6.283);ctx.moveTo(ax-20,ay);ctx.lineTo(ax+20,ay);ctx.moveTo(ax,ay-10);ctx.lineTo(ax,ay+10);ctx.stroke();ctx.restore();light(ax,ay,50,'#f7931a')}}
   else if(k==='tick'){shadow(X,Y,8*s);const y=Y-6*s;ctx.lineWidth=1.6;ctx.strokeStyle='#2a2630';for(let i=0;i<4;i++){const a=(i<2?-1:1)*(8+(i%2)*3)*s,w=Math.sin(e.ph*18+i)*2;ctx.beginPath();ctx.moveTo(X,y);ctx.lineTo(X+a,y-4*s+w);ctx.lineTo(X+a*1.3,Y);ctx.stroke()}
     ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.beginPath();ctx.ellipse(X,y,6*s,5*s,0,0,6.283);ctx.fillStyle=c2;ctx.fill();ctx.stroke();eye(X,y-1,2.2*s,Math.sin(e.ph*14)>0?'#ffb84a':'#ff5d4d')}
   else if(k==='drone'){shadow(X,Y,10*s);const y=Y-28*s+bob;ctx.fillStyle='rgba(200,200,220,.35)';ctx.beginPath();ctx.ellipse(X-12*s,y-7*s,8*s,2,0,0,6.283);ctx.ellipse(X+12*s,y-7*s,8*s,2,0,0,6.283);ctx.fill();

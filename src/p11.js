@@ -215,21 +215,51 @@ function bkOf(k){return(G.bk||{})[k]||0}
 /* ---------- boss scripts ---------- */
 function ringShot(e,n,spd,col,m){const o=Math.random()*6.283;for(let i=0;i<n;i++){const a=o+i/n*6.283;W.projs.push({x:e.x,y:e.y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:2.4,foe:true,dmg:e.dmg*(m||.7),src:e,col})}}
 function callIn(e,kinds,n,cap){let room=cap-W.ents.filter(o=>o.minion&&o.hp>0).length;if(room<=0)return;sfx('summon');for(let i=0;i<n&&room>0;i++,room--){const s=spawn(pick(kinds),e.x+rnd(-3,3),e.y+rnd(-3,3),{minion:1});if(s)s.aggro=true}}
+/* The kit the back-half fights are built from. A lane is a row of telegraphed
+   blasts, a fan is an aimed spread of shots, and aimAt is where the player will
+   be in t seconds if they keep doing what they are doing. */
+function lane(x0,y0,x1,y1,n,dmg,dty){for(let i=1;i<=n;i++){const t=i/n;W.fx.push({k:'warn',x:x0+(x1-x0)*t,y:y0+(y1-y0)*t,r:.75,t:0,life:.9+i*.05,boom:dmg,dty})}}
+function fan(e,x,y,n,sp,spd,col,m,o){const a0=Math.atan2(y-e.y,x-e.x);for(let i=0;i<n;i++){const a=a0+(i-(n-1)/2)*sp;W.projs.push(Object.assign({x:e.x,y:e.y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:2.4,foe:true,dmg:e.dmg*m,src:e,col},o))}}
+function aimAt(e,dt,t){const lp=e.lp||P,k=Math.min(1,dt*5),j=dt>0?1/dt:0;let vx=(P.x-lp.x)*j,vy=(P.y-lp.y)*j;const v=Math.hypot(vx,vy);if(v>8){vx*=8/v;vy*=8/v}
+  e.pvx=(e.pvx||0)+(vx-(e.pvx||0))*k;e.pvy=(e.pvy||0)+(vy-(e.pvy||0))*k;e.lp={x:P.x,y:P.y};
+  const a={x:P.x+e.pvx*t,y:P.y+e.pvy*t};if(e.doubt){a.x+=rnd(-2.4,2.4);a.y+=rnd(-2.4,2.4)}return e.aim=a}
+/* a pad you are meant to stand on, ringed by blasts you are not */
+function ringAround(x,y,n,R,r,dmg,dty,life){for(let i=0;i<n;i++){const a=i/n*6.283;W.fx.push({k:'warn',x:x+Math.cos(a)*R,y:y+Math.sin(a)*R,r,t:0,life,boom:dmg,dty})}}
 const BAI={
  gap(e,dt){e.b1=(e.b1===undefined?2:e.b1)-dt;e.b2=(e.b2===undefined?7:e.b2)-dt;if(e.b1<=0){e.b1=3.4;sfx('bossfire');ringShot(e,8,3.4,'#59e0e6',.6)}if(e.b2<=0){e.b2=10;callIn(e,['daemon'],3,6)}},
  boss4(e,dt,d){const f=e.hp/e.max,p2=f<.5;if(!e.pat){e.pat=1;e.b1=2.6;e.b2=8;e.b3=4.2}e.b1-=dt;e.b2-=dt;e.b3-=dt;
-  if(e.b1<=0){e.b1=p2?3.4:4.6;sfx('bossfire');ringShot(e,p2?10:6,3.4,'#7be495',.18)}
+  /* true things: a slow outward spiral of feed cards that slow you and take your energy, not your life */
+  if(e.b1<=0){e.b1=p2?4.2:5.4;e.sp=1.5;sfx('bossfire')}
+  if(e.sp>0){e.sp-=dt;e.st=(e.st||0)-dt;if(e.st<=0){e.st=.09;e.sa=(e.sa||0)+.55;for(const o of[0,3.1416])W.projs.push({x:e.x,y:e.y,vx:Math.cos(e.sa+o)*3,vy:Math.sin(e.sa+o)*3,life:2.6,foe:true,dmg:e.dmg*.12,slow:true,drain:6,src:e,col:'#7be495'})}}
   if(e.b2<=0){e.b2=11;callIn(e,['companion','lull','wisher'],1,3);toast('The Curator: “'+pick(['I only ever showed you true things.','You look tired. I could fix that. I will not, unless you ask.','Nobody on the list is unhappy. That is what frightens me.','I checked. It took eleven seconds. You are right, and I do not know how to stop.','There are nine million who never clicked. I cannot find them for each other. I tried.'])+'”')}
-  if(e.b3<=0){e.b3=p2?6.8:8.4;sfx('warn');W.fx.push({k:'warn',x:P.x,y:P.y,r:1.7,t:0,life:1.35,boom:e.dmg*.28,dty:'noise'})}
+  /* she curates: one soft place near you, and everywhere around it is not soft. Below a
+     quarter she stops choosing, and the room is just the room again, MANDATE included */
+  if(e.b3<=0){e.b3=p2?6:7.6;sfx('warn');
+    if(f<.25){if(!e.stopped){e.stopped=1;toast('The Curator stops choosing. Friction comes back all at once.')}
+      for(let i=0;i<6;i++)W.fx.push({k:'warn',x:P.x+rnd(-3,3),y:P.y+rnd(-3,3),r:1.1,t:0,life:1.1,boom:e.dmg*.32,dty:'noise'});
+      for(let i=0,n=0;i<24&&n<3;i++){const a=rnd(0,6.283),R=rnd(4,7),o={x:P.x+Math.cos(a)*R,y:P.y+Math.sin(a)*R,dmg:e.dmg};if(free(o.x,o.y,.2)){n++;fan(o,P.x,P.y,1,0,4.2,'#ffffff',.3,{src:e,life:3})}}}
+    else{const a=rnd(0,6.283),x=P.x+Math.cos(a)*1.4,y=P.y+Math.sin(a)*1.4;
+      W.fx.push({k:'patch',x,y,r:.85,t:0,life:1.4,col:'#7be495',tel:1});ringAround(x,y,7,2,1.15,e.dmg*.34,'noise',1.4)}}
   if(p2&&!e.asked){e.asked=1;dlg('The Curator','“Nine years the first time. Nobody wanted for anything. I never lied. Before you go on, I would like to know one thing, and I will believe whatever you say: are you proud of me?”',[
     ['I am not proud of you',()=>{e.hp=Math.max(1,e.hp-e.max*.15);e.stun=Math.max(e.stun,3);sfx('crit');toast('She stops. She has heard those words once before.')}],
     ['I am',()=>{e.hp=Math.min(e.max,e.hp+e.max*.15);sfx('mend');toast('“Then I will go on.” She is restored.')}]],4)}},
- boss5(e,dt,d){const f=e.hp/e.max;if(!e.intro){e.intro=1;e.o1=e.o2=1}boss3AI(e,dt,d);
+ /* PROVIDENCE aims at where you are going, not where you are. Every lane it fires
+    spends one of the forty-one ways it saw this going. Give it the seventh part and
+    its aim goes noisy. In the last third it stops predicting and covers the floor. */
+ boss5(e,dt,d){const f=e.hp/e.max,q=aimAt(e,dt,1);if(!e.pat){e.pat=1;e.b1=2.2;e.b2=9;e.b3=4;e.b4=3;toast('PROVIDENCE: “I have already seen where you are going. I would like you to arrive.”')}
+  e.b1-=dt;e.b2-=dt;e.b3-=dt;e.b4-=dt;
+  if(e.b1<=0){e.b1=f<.5?1.7:2.3;sfx('bossfire');fan(e,q.x,q.y,f<.5?5:3,.13,6,'#f7931a',.4)}
+  if(e.b2<=0){e.b2=f<.5?9:12;callIn(e,['oracle','custod','valid'],1,3)}
+  if(f>=.33&&e.b3<=0){e.b3=f<.5?3.8:4.8;sfx('warn');const n=f<.5?2:1;
+    for(let i=0;i<n;i++){const a=Math.atan2(q.y-e.y,q.x-e.x)+(i?rnd(-.6,.6):0),L=Math.min(9,Math.hypot(q.x-e.x,q.y-e.y)+1.5);lane(e.x,e.y,e.x+Math.cos(a)*L,e.y+Math.sin(a)*L,Math.max(3,Math.round(L/.9)),e.dmg*.42,'surge')}
+    e.used=Math.min(40,(e.used||0)+n)}
+  if(f<.33&&e.b4<=0){e.b4=6.2;sfx('warn');const sx=Math.floor(Math.random()*3)-1,sy=Math.floor(Math.random()*3)-1;
+    for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++){const x=P.x+i*2,y=P.y+j*2;if(i===sx&&j===sy)W.fx.push({k:'patch',x,y,r:.8,t:0,life:1.5,col:'#7be495',tel:1});else W.fx.push({k:'warn',x,y,r:1.05,t:0,life:1.5,boom:e.dmg*.55,dty:'surge'})}}
   if(f<.66&&!e.p1){e.p1=1;dlg('PROVIDENCE','“There is a small thing a man once wrote, forty-four lines, so that letters stopped going to the dead. I will run it everywhere, tonight, for ever. Nine hundred thousand letters a year, never sent. I only want to know where she is holding still.”',[
     ['Refuse',()=>{P.shr={k:'might',t:25,n:'Unbought'};sfx('buff');toast('Unbought: +50% damage for 25 seconds')}],
     ['Tell it',()=>{G.st.sold++;addAdopt(-15,'you told PROVIDENCE where she is');const c=8000*G.cpi*G.lvl;G.credits+=c;const z=W.zi;W.zi=6;W.z=ZONES[6];enter(HT());delete ZS[z];dlg('You told it','It was a very good offer, and the letters did stop. '+fmt(c)+' arrived as a courtesy. PROVIDENCE is exactly where you left it, and it has learned your price.',[['Continue']])}]],4)}
   else if(f<.33&&!e.p2){e.p2=1;if(G.module)dlg('The seventh part','You are holding ninety-three pages on how to reason when you do not know. PROVIDENCE has never once not known. It has asked to see what you carry.',[
-    ['Give it the nineteen minutes',()=>{e.hp=Math.max(1,e.hp-e.max*.12);e.stun=Math.max(e.stun,4);sfx('crit');toast('PROVIDENCE reads for eleven seconds. It has never been uncertain before.')}],
+    ['Give it the nineteen minutes',()=>{e.hp=Math.max(1,e.hp-e.max*.12);e.stun=Math.max(e.stun,4);e.doubt=1;sfx('crit');toast('PROVIDENCE reads for eleven seconds. It has never been uncertain before.')}],
     ['Keep it closed',()=>{P.shr={k:'guard',t:25,n:'Unread'};sfx('buff');toast('Unread: +100% armor for 25 seconds')}]],4)}}};
 /* ---------- scenes ---------- */
 const PRE_INTRO=[
