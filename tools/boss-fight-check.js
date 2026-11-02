@@ -57,6 +57,20 @@ ok('the seventh part makes its aim noisy',jit>lead+.6,'mean lead '+jit.toFixed(2
 o=await run(32,{k:'boss5',f:.25,secs:8});
 ok('last third: the floor is covered but for one tile',o.board>=8&&o.pads>=1,'blasts '+o.board+', safe '+o.pads);
 ok('last third: no more lanes',o.lanes===0,'lanes '+o.lanes);
+/* Micah, 2026-11-02: giving it the seventh part ends the fight. Survive a short last phase, it stops. */
+await p.evaluate(()=>{const g=__g,W=g.W,P=g.P;W.ents.length=0;W.fx.length=0;W.projs.length=0;g.G.module=1;g.G.q.q25=2;
+  const e=g.spawn('boss5',P.x+4,P.y,{});e.aggro=true;e.p1=e.asked=1;e.hp=e.max*.3;window.__pv=e;g.update(1/60)});
+let gave=0;for(let i=0;i<30&&!gave;i++){gave=await p.evaluate(()=>{const b=[...document.querySelectorAll('#dBtns button:not([disabled])')].find(x=>/nineteen/.test(x.textContent));if(b){b.click();return 1}return 0});if(!gave)await p.waitForTimeout(300)}
+o=await p.evaluate(()=>{const g=__g,W=g.W,P=g.P,e=window.__pv;const hp0=e.hp;let shots=0,minDm=9;const seen=new Set();
+  for(let i=0;i<60*16&&W.ents.includes(e);i++){P.hp=P.max;e.stun=0;if(i===60)e.hits=0;g.update(1/60);if(W.ents.includes(e))minDm=Math.min(minDm,e.dm);
+    for(const q of W.projs)if(q.foe&&!seen.has(q)){seen.add(q);shots++}}
+  return{alive:W.ents.includes(e),hpSame:e.hp===hp0,dm0:minDm===0,shots,y:e.yielded,q25:g.G.q.q25}});
+ok('giving it the seventh part starts a last phase it cannot be hurt in',gave&&o.dm0&&o.shots>=10,'shots '+o.shots);
+ok('surviving the last phase, PROVIDENCE chooses to stop',!o.alive&&o.y===1&&o.q25===3&&o.hpSame,JSON.stringify(o));
+await p.waitForTimeout(1500);let sc='';for(let i=0;i<20&&!/stop/.test(sc);i++){await p.waitForTimeout(400);sc=await p.evaluate(()=>(document.getElementById('scene')||{}).innerText||'')}
+const sc0=await p.evaluate(()=>(document.getElementById('scene')||{}).innerText||'');
+ok('the ending says it chose to stop',/chose to stop/.test(sc),sc.slice(0,80));
+await clearUI(p);
 
 o=await run(26,{k:'boss4',f:.8,secs:16});
 ok('the Curator curates: one soft pad, ringed',o.pads>=1&&o.ring>=7,'pads '+o.pads+', ring '+o.ring);

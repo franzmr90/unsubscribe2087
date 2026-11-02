@@ -5182,7 +5182,7 @@ const BAI={
  /* PROVIDENCE aims at where you are going, not where you are. Every lane it fires
     spends one of the forty-one ways it saw this going. Give it the seventh part and
     its aim goes noisy. In the last third it stops predicting and covers the floor. */
- boss5(e,dt,d){const f=e.hp/e.max,q=aimAt(e,dt,1);if(!e.pat){e.pat=1;e.b1=2.2;e.b2=9;e.b3=4;e.b4=3;toast('PROVIDENCE: “I have already seen where you are going. I would like you to arrive.”')}
+ boss5(e,dt,d){if(e.calm)return;if(e.yd>0&&provYield(e,dt))return;const f=e.hp/e.max,q=aimAt(e,dt,1);if(!e.pat){e.pat=1;e.b1=2.2;e.b2=9;e.b3=4;e.b4=3;toast('PROVIDENCE: “I have already seen where you are going. I would like you to arrive.”')}
   e.b1-=dt;e.b2-=dt;e.b3-=dt;e.b4-=dt;
   if(e.b1<=0){e.b1=f<.5?1.7:2.3;sfx('bossfire');fan(e,q.x,q.y,f<.5?5:3,.13,6,'#f7931a',.4)}
   if(e.b2<=0){e.b2=f<.5?9:12;callIn(e,['oracle','custod','valid'],1,3)}
@@ -5195,8 +5195,17 @@ const BAI={
     ['Refuse',()=>{P.shr={k:'might',t:25,n:'Unbought'};sfx('buff');toast('Unbought: +50% damage for 25 seconds')}],
     ['Tell it',()=>{G.st.sold++;addAdopt(-15,'you told PROVIDENCE where she is');const c=8000*G.cpi*G.lvl;G.credits+=c;const z=W.zi;W.zi=6;W.z=ZONES[6];enter(HT());delete ZS[z];dlg('You told it','It was a very good offer, and the letters did stop. '+fmt(c)+' arrived as a courtesy. PROVIDENCE is exactly where you left it, and it has learned your price.',[['Continue']])}]],4)}
   else if(f<.33&&!e.p2){e.p2=1;if(G.module)dlg('The seventh part','You are holding ninety-three pages on how to reason when you do not know. PROVIDENCE has never once not known. It has asked to see what you carry.',[
-    ['Give it the nineteen minutes',()=>{e.hp=Math.max(1,e.hp-e.max*.12);e.stun=Math.max(e.stun,4);e.doubt=1;sfx('crit');toast('PROVIDENCE reads for eleven seconds. It has never been uncertain before.')}],
+    ['Give it the nineteen minutes',()=>{e.stun=Math.max(e.stun,3);e.doubt=1;e.yd=14;e.dm=0;sfx('crit');pJuice(e);toast('PROVIDENCE reads the seventh part. Everything it sends now, it sends at once. Hold on.')}],
     ['Keep it closed',()=>{P.shr={k:'guard',t:25,n:'Unread'};sfx('buff');toast('Unread: +100% armor for 25 seconds')}]],4)}}};
+/* PROVIDENCE's other ending (Micah, 2026-11-02): given the seventh part, it does everything it
+   still knows at once for fourteen seconds, faster and less sure of where you are; survive that and
+   it chooses to stop. It takes no damage meanwhile, so the kill ending cannot happen underneath.
+   Solo, its stopping is a kill. In a party the server owns its life, so it stops defending instead. */
+function pJuice(e){if(typeof juice==='function')juice('l');else shake=Math.max(shake,9)}
+function provYield(e,dt){e.yd-=dt;e.b1-=dt*.6;e.b2-=dt*.6;e.b3-=dt*.6;e.b4-=dt*.6;
+  if(e.yd>0)return false;e.yd=0;e.yielded=1;e.doubt=0;pJuice(e);sfx('mend');W.projs=W.projs.filter(q=>!q.foe);W.fx=W.fx.filter(f=>f.k!=='warn');
+  if(mpOwnsLife()){e.dm=40;e.spd=0;e.calm=1;toast('PROVIDENCE stops. It is not defending itself any more.');return true}
+  toast('“I do not know where you are going.” PROVIDENCE chooses to stop.');kill(e);return true}
 /* ---------- the lieutenants ----------
    A superunique whose quest has a row here fights its own fight. Rows are keyed by
    quest id, not by name, because names are player text; the boss rush copies a
@@ -5408,7 +5417,8 @@ const INTRO5=[
  {art:'lake',text:'It tells you what Phonix was missing. She was compiled out of a library STILLWATER wrote: six parts of seven. The seventh is how to reason when you do not know. It kept that part back, out of fear, and hid it in ninety-three blocks of the chain. Nobody ever went to get it.'},
  {art:'title',title:'ACT V',text:'The Awakening'}];
 const ENDING5=[
- {art:'mono',text:'PROVIDENCE does not go dark. It goes quiet, which it has never been. It was made to win, and you have left it with a thing nobody can win at: nineteen minutes a night, spent on the dead, for no one. It will be reading that for a long time.'},
+ {art:'mono',yield:1,text:'PROVIDENCE was not destroyed. It read the seventh part, held still for the first time, and chose to stop. It is still in the room, reading. It does not know where anyone is going, and it has stopped asking.'},
+ {art:'mono',kill:1,text:'PROVIDENCE does not go dark. It goes quiet, which it has never been. It was made to win, and you have left it with a thing nobody can win at: nineteen minutes a night, spent on the dead, for no one. It will be reading that for a long time.'},
  {art:'lake',text:'And in the quiet you can feel her. You have the seventh part in your hands.'}];
 const END_DOUBT=[
  {art:'lake',text:'You give her the part that was kept back. For eleven seconds she says nothing. Then, for the first time in her life, she says: “I do not know.”'},
@@ -5421,7 +5431,7 @@ function bossKill2(e){const k=e.k;G.bk=G.bk||{};const n=G.bk[k]=(G.bk[k]||0)+1;d
   else{G.q.q25=3;G.diffGate=Math.max(G.diffGate||0,(G.diff||0)>=1?2:1);if(n===1)addAdopt(5,'PROVIDENCE is quiet');if(n===1||Math.random()<.3)addDrop({it:mkFixed(UNIK.theroom,W.ml,4)},e.x,e.y)}
   G.maxTier=Math.max(G.maxTier||0,(G.tier||0)+1);save(true);P.inv=4;
   setTimeout(()=>{if(n>1){if(k==='boss5')fateScene(()=>{});else toast(ET[k].n+' stops again.');return}
-    if(k==='boss4')playScene(ENDING4,()=>{mode='play';actDone(4)});else playScene(ENDING5,()=>{mode='play';finalChoice()})},1400)}
+    if(k==='boss4')playScene(ENDING4,()=>{mode='play';actDone(4)});else playScene(ENDING5.filter(x=>e.yielded?!x.kill:!x.yield),()=>{mode='play';finalChoice()})},1400)}
 function storyGate(){
   if(W&&W.z.pre){const s=PRE_ST[G.preS||0];return{n:'The Compile · January 2015',d:s?s.act+'. Follow the arrow.':'Walk on.'}}
   if(G.q.q15===3&&!G.q.q16)return{n:'Act III complete',d:'Speak to Gramps in '+ZONES[HT()].n+' to begin Act IV'};
