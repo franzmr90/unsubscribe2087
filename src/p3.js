@@ -2011,7 +2011,7 @@ function drawEnemy(e,X,Y){
     if(B){box(X-6*u,Y-40*u+b,12*u,16*u,1,'#e6e2d6');poly([X-2.5*u,Y-40*u+b,X+2.5*u,Y-40*u+b,X+3.5*u,Y-23*u+b,X,Y-18*u+b,X-3.5*u,Y-23*u+b],'#b3261e');
       ctx.fillStyle=e.hp<e.max*.5?'#ff3b30':'#e0bd6e';ctx.font='900 '+8*u+'px Cinzel,serif';ctx.textAlign='center';ctx.fillText(e.slam?'!!':e.k==='boss4'?(e.hp<e.max*.5?':(':':)'):e.k==='boss2'?(e.hp<e.max*.5?'…':'SVP'):e.hp<e.max*.5?'>:(':'VP',X,Y-45*u+b);glow(X,Y-48*u+b,40,'#e0bd6e',.4);light(X,Y-40*u,150,'#e0bd6e')}
     else{ctx.fillStyle='#ff3b30';ctx.fillRect(X-6*u,Y-50*u+b,12*u,3*u);glow(X,Y-48*u+b,18*u,'#ff3b30',.5);eye(X-18*u,Y-40*u+b,1.6*u,'#ffe36b');eye(X+18*u,Y-40*u+b,1.6*u,'#ffe36b')}}
-  mobMark(e,X,Y,s);
+  mobMark(e,X,Y,s);if(e.su&&!e.ghost)suDraw(e,X,Y,s);
   if(lit){OL=OL0;ctx.strokeStyle=OL}
   const top=Y-(e.k==='boss5'?172:e.k==='boss4'?122:k==='mono'?160:k==='boss'?112:k==='mech'?76*s:k==='tick'?20:k==='hound'?36*s:56*s);
   if(e.stun>0){ctx.fillStyle='#59e0e6';ctx.font='700 10px Cinzel,serif';ctx.textAlign='center';ctx.fillText('STUNNED',X,top-4)}

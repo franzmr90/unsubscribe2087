@@ -577,7 +577,7 @@ function pdmg(m,e){
   if(P.bear>0)d*=1.28;if(!(e&&e.mp)&&(P.book>0||P.rBook>0)){let ok=P.rBook>0&&!(P.book>0);if(P.book>0){const who=P.allySwing?P.swingBody:P;ok=!!(who&&dist(who,P)<6)}if(ok)d*=1.08}
   return[d,c]}
 function dmgEnemy(e,d,crit){if(e.hp<=0)return;{let mk=e.mark>0?1.3:1;if(e.mkP>0)mk=Math.max(mk,1+e.mkP);if(mk>1)d*=mk}if(e.mp){mpHurt(e,d,crit);return}e.hits=(e.hits||0)+1;d/=partyH();if(e.onRecT>0&&e.onRecM)d*=e.onRecM;if(P&&P.partyHit&&S.named&&(e.tes||0)>0){const base=d,up=d*(1+S.named),shown=Math.round(base);d=Math.round(up)===shown?shown+.5:up}if(P&&P.allyNamed&&(e.partyTes||0)>0)d*=1+FORMULAS.aura.named.per*P.allyNamed
-  const snd=e.snd;e.snd=0;if(!snd){if(e.mods.shield)d*=.5;if(e.ward>0)d*=.6}e.flash=.12;wake(e);if(crit){sfx('crit');hitStop=.04}
+  const snd=e.snd;e.snd=0;if(!snd){if(e.mods.shield)d*=.5;if(e.ward>0)d*=.6}if(e.dm!==undefined)d*=e.dm;e.flash=.12;wake(e);if(crit){sfx('crit');hitStop=.04}
   float(e.x,e.y,Math.round(d)+(crit?'!':''),crit?'#ffe36b':'#ffffff',0);parts(e.x,e.y,crit?5:2,['#ffd27a','#fff','#ff9a3c'],2.2);
   if(e.mods.arc&&e.arcCd<=0){const soft=defragAct1(e);e.arcCd=soft?2.1:1.3;const n=soft?4:6,sp=soft?3.2:5,dm=soft?.38:.5;for(let i=0;i<n;i++){const a=i*(6.283/n)+e.ph;const pr={x:e.x,y:e.y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:1.3,foe:true,dmg:e.dmg*dm,col:'#59e0e6'};if(soft)pr.src={dty:'surge',name:e.name};W.projs.push(pr)}}
   if(typeof mpMobShared==='function'&&mpMobShared()&&e.mid){mpMobHit(e,d);return}
@@ -1742,7 +1742,7 @@ function update(dt){
     e.cd-=dt;const sp=e.spd*(e.slow>0?.5:1)*dt;e.fx=dx-dy>0?1:-1;
     e.hcd=(e.hcd||0)-dt;if(e.hcd<=0)aiDecide(e,t,dx,dy,d);
     if(t.flee){e.life=(e.life||14)-dt;e.fx=dx>0?-1:1;if(!mv(e,-dx/d*sp,-dy/d*sp))mv(e,dy/d*sp,-dx/d*sp);if(Math.random()<dt*1.5)W.drops.push({x:e.x,y:e.y,t:.2,cr:(3+W.ml*2)*Math.pow(G.cpi,.9)});if(e.life<=0){if(typeof mpMobGone==='function')mpMobGone(e);W.ents.splice(W.ents.indexOf(e),1);parts(e.x,e.y,10,['#e0bd6e','#fff'],3);toast('The Dividend Drone got away with the payout')}continue}
-    if(isBoss(e.k))bossAI(e,dt,d);
+    if(isBoss(e.k))bossAI(e,dt,d);else if(e.su&&suFight(e,dt,d))continue;
     if(e.k==='director'&&e.arc!=='hold'){e.sumT=(e.sumT||4)-dt;if(e.sumT<=0&&W.ents.length<45){e.sumT=7;sfx('summon');for(let i=0;i<2;i++){const c=spawn('tick',e.x+rnd(-1,1),e.y+rnd(-1,1),{minion:1});if(c)c.aggro=true}}}
     if(e.k==='proxy'&&T===P&&d>3&&d<9&&e.cd<=0){const a=rnd(0,6.283),x=P.x+Math.cos(a)*1.2,y=P.y+Math.sin(a)*1.2;if(free(x,y,e.r)){parts(e.x,e.y,8,['#d8d8e0','#fff'],2);e.x=x;e.y=y;parts(x,y,8,['#d8d8e0','#fff'],2);e.cd=3.2;e.wind=.45;sfx('dash');continue}}
     if(e.lunge){e.lunge.t-=dt;mv(e,e.lunge.x*12*dt,e.lunge.y*12*dt);if(!e.lunge.hit&&dist(e,P)<.8&&T===P){e.lunge.hit=1;hurt(e.dmg*1.3,false,e)}if(e.lunge.t<=0)e.lunge=null;continue}

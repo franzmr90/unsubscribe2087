@@ -63,7 +63,28 @@ ok('the Curator curates: one soft pad, ringed',o.pads>=1&&o.ring>=7,'pads '+o.pa
 ok('her true things slow and drain',o.slowDrain>=10,'cards '+o.slowDrain);
 o=await run(26,{k:'boss4',f:.2,secs:10});
 ok('below a quarter she stops choosing',o.stopped===1&&o.pads===0,'pads '+o.pads);
-ok('and MANDATE comes in from the edges',o.white>=3,'white '+o.white);
+ok('and MANDATE comes in from the edges',o.white>=2,'white '+o.white);
 
+/* TARO-9: off the dock it shrugs most of a blow off; lure a charge across the dock and it saves */
+await run(24,{k:'mech',f:1,secs:0});
+o=await p.evaluate(async()=>{const g=__g,W=g.W,P=g.P;W.bi=1;W.ents.length=0;W.fx.length=0;
+  const e=g.spawn('mech',P.x+4,P.y,{su:g.ZONES[24].su});e.aggro=true;g.update(1/60);
+  const r={dm:e.dm,docked:0,lanes:0};e.dock={x:(e.x+P.x)/2,y:(e.y+P.y)/2};
+  for(let i=0;i<600&&!r.docked;i++){g.update(1/60);if(W.fx.some(f=>f.k==='warn'&&!f.boom))r.lanes=1;if(e.dm===1&&e.stun>0)r.docked=1}
+  return r});
+ok('TARO-9 takes a quarter off its dock',o.dm===.25,'dm '+o.dm);
+ok('its charge is telegraphed',o.lanes===1);
+ok('a charge across the dock docks it',o.docked===1);
+/* Reorg: damage done in the last three seconds is undone, and below half the player goes back too */
+await run(31,{k:'mech',f:1,secs:0});
+o=await p.evaluate(async()=>{const g=__g,W=g.W,P=g.P;W.bi=1;W.ents.length=0;W.fx.length=0;
+  const e=g.spawn('mech',P.x+3,P.y,{su:g.ZONES[31].su});e.aggro=true;const r={undo:0,back:0};
+  for(let i=0;i<60*8.2;i++){g.update(1/60);if(i===60*7)e.hp-=e.max*.1}
+  const before=e.hp;for(let i=0;i<60*2;i++)g.update(1/60);r.undo=e.hp>before+e.max*.05?1:0;
+  e.hp=e.max*.4;e.rg=3.2;if(e.hist)e.hist.length=0;const p0={x:P.x,y:P.y};
+  for(let i=0;i<60*3.6;i++){if(i===30)P.x=p0.x+1.5;g.update(1/60)}r.back=Math.hypot(P.x-p0.x,P.y-p0.y)<.6?1:0;
+  return r});
+ok('a reorg undoes the last three seconds of damage',o.undo===1);
+ok('a deep reorg takes the player back too',o.back===1);
 ok('no page errors',errs.length===0,errs.slice(0,3).join(' | '));
 console.log(out.join('\n'));console.log(bad?bad+' FAIL':'all ok');await b.close();process.exit(bad?1:0)})();

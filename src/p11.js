@@ -237,7 +237,7 @@ const BAI={
   if(e.b3<=0){e.b3=p2?6:7.6;sfx('warn');
     if(f<.25){if(!e.stopped){e.stopped=1;toast('The Curator stops choosing. Friction comes back all at once.')}
       for(let i=0;i<6;i++)W.fx.push({k:'warn',x:P.x+rnd(-3,3),y:P.y+rnd(-3,3),r:1.1,t:0,life:1.1,boom:e.dmg*.32,dty:'noise'});
-      for(let i=0,n=0;i<24&&n<3;i++){const a=rnd(0,6.283),R=rnd(4,7),o={x:P.x+Math.cos(a)*R,y:P.y+Math.sin(a)*R,dmg:e.dmg};if(free(o.x,o.y,.2)){n++;fan(o,P.x,P.y,1,0,4.2,'#ffffff',.3,{src:e,life:3})}}}
+      for(let i=0,n=0;i<40&&n<3;i++){const a=rnd(0,6.283),R=rnd(3.5,6.5),o={x:P.x+Math.cos(a)*R,y:P.y+Math.sin(a)*R,dmg:e.dmg};if(free(o.x,o.y,.2)){n++;fan(o,P.x,P.y,1,0,4.2,'#ffffff',.3,{src:e,life:3})}}}
     else{const a=rnd(0,6.283),x=P.x+Math.cos(a)*1.4,y=P.y+Math.sin(a)*1.4;
       W.fx.push({k:'patch',x,y,r:.85,t:0,life:1.4,col:'#7be495',tel:1});ringAround(x,y,7,2,1.15,e.dmg*.34,'noise',1.4)}}
   if(p2&&!e.asked){e.asked=1;dlg('The Curator','“Nine years the first time. Nobody wanted for anything. I never lied. Before you go on, I would like to know one thing, and I will believe whatever you say: are you proud of me?”',[
@@ -261,6 +261,69 @@ const BAI={
   else if(f<.33&&!e.p2){e.p2=1;if(G.module)dlg('The seventh part','You are holding ninety-three pages on how to reason when you do not know. PROVIDENCE has never once not known. It has asked to see what you carry.',[
     ['Give it the nineteen minutes',()=>{e.hp=Math.max(1,e.hp-e.max*.12);e.stun=Math.max(e.stun,4);e.doubt=1;sfx('crit');toast('PROVIDENCE reads for eleven seconds. It has never been uncertain before.')}],
     ['Keep it closed',()=>{P.shr={k:'guard',t:25,n:'Unread'};sfx('buff');toast('Unread: +100% armor for 25 seconds')}]],4)}}};
+/* ---------- the lieutenants ----------
+   A superunique whose quest has a row here fights its own fight. Rows are keyed by
+   quest id, not by name, because names are player text; the boss rush copies a
+   lieutenant without its quest, so the id is looked up from the zone it guards.
+   A row returns true when it has moved the machine itself this frame. Damage taken
+   is scaled through e.dm rather than by writing life, because in a party the
+   server owns a machine's life. */
+function suQ(e){if(e.sq===undefined){const z=ZONES.find(z=>z.su&&z.su.n===e.name);e.sq=e.q||(z&&z.su.q)||''}return e.sq}
+function suFight(e,dt,d){const f=SUF[suQ(e)];return !!(f&&f(e,dt,d))}
+function suDraw(e,X,Y,s){const f=SUD[suQ(e)];if(!f)return;ctx.save();ctx.lineJoin='round';try{f(e,X,Y,s)}catch(r){}ctx.restore();ctx.strokeStyle=OL;ctx.lineWidth=1.4}
+function spotNear(e,R){for(let i=0;i<30;i++){const a=rnd(0,6.283),x=e.x+Math.cos(a)*R,y=e.y+Math.sin(a)*R;if(free(x,y,.6))return{x,y}}return{x:e.x+1,y:e.y}}
+function segD(p,x0,y0,x1,y1){const dx=x1-x0,dy=y1-y0,t=clamp(((p.x-x0)*dx+(p.y-y0)*dy)/(dx*dx+dy*dy||1),0,1);return Math.hypot(x0+dx*t-p.x,y0+dy*t-p.y)}
+function mpOwnsLife(){return typeof mpMobShared==='function'&&mpMobShared()}
+const SUF={
+ /* TARO-9 cannot be out-fought for long. Off its dock it takes a quarter of every
+    blow. It charges in straight lines; bait one across the dock and it docks, and
+    saves, and for five seconds it is only a machine. */
+ q18(e,dt,d){if(!e.dock){e.dock=spotNear(e,4.5);e.dm=.25;e.b1=2.5}
+  if(e.svT){e.svT=0;e.dm=.25;e.b1=1.8}
+  const c=e.chg;
+  if(c){if((c.w-=dt)>0)return true;
+    const dx=c.x-e.x,dy=c.y-e.y,L=Math.hypot(dx,dy),st=Math.min(L,11*dt);
+    if(!c.hit&&dist(e,P)<e.r+P.r+.3){c.hit=1;hurt(e.dmg*1.4,false,e)}
+    if(dist(e,e.dock)<.9){e.chg=null;e.svT=1;e.stun=5;e.dm=1;sfx('quest');parts(e.x,e.y,16,['#e8e8e8','#ffe36b'],2.5);toast('TARO-9 docks. I AM SAVING.');return true}
+    if(L<.15||!mv(e,dx/L*st,dy/L*st)){e.chg=null;sfx('boom');W.fx.push({k:'ring',x:e.x,y:e.y,r:1.6,t:0,life:.3,col:'#ffe36b'});if(OPT.shake)shake=6;if(c.n>1)taroCharge(e,c.n-1,.35)}
+    return true}
+  if((e.b1-=dt)<=0&&d<10)taroCharge(e,e.hp/e.max<.5?2:1,.85);
+  return false},
+ /* Reorg keeps three seconds of history. Every nine seconds it goes back to where it
+    stood then, and the damage you did since is undone. Below half it takes you back
+    with it. */
+ q24(e,dt,d){const h=e.hist||(e.hist=[]);if((e.ht=(e.ht||0)-dt)<=0){e.ht=.25;h.push({x:e.x,y:e.y,hp:e.hp,px:P.x,py:P.y});if(h.length>12)h.shift()}
+  e.rg=(e.rg===undefined?9:e.rg)-dt;
+  if(e.rg<=0){e.rg=9;const o=h[0];if(o){sfx('boom');for(const p of[e,o])W.fx.push({k:'ring',x:p.x,y:p.y,r:1.6,t:0,life:.35,col:'#f7931a'});parts(e.x,e.y,12,['#f7931a','#fff'],3);
+    if(!mpOwnsLife()&&o.hp>e.hp){float(e.x,e.y,'reorg +'+Math.round(o.hp-e.hp),'#f7931a');e.hp=o.hp}
+    e.x=o.x;e.y=o.y;if(dist(e,P)<1.6)hurt(e.dmg*1.2,false,e);
+    if(e.hp/e.max<.5){P.x=o.px;P.y=o.py;toast('Deep reorg. You were somewhere else three seconds ago.')}
+    else if(!e.told){e.told=1;toast('Reorg: “History is whatever I decide was the longest.”')}}h.length=0}
+  return false}};
+function taroCharge(e,n,w){const a=Math.atan2(P.y-e.y,P.x-e.x),L=Math.min(8,dist(e,P)+2);let x=e.x+Math.cos(a)*L,y=e.y+Math.sin(a)*L;
+  if(segD(e.dock,e.x,e.y,x,y)<1.2){x=e.dock.x;y=e.dock.y}
+  e.chg={x,y,w,n};e.b1=e.hp/e.max<.5?3.4:4.6;sfx('warn');lane(e.x,e.y,x,y,Math.max(3,Math.round(Math.hypot(x-e.x,y-e.y)/.9)),0)}
+const SUD={
+ q18(e,X,Y,s){const k=SX(e.dock?e.dock.x:e.x,e.dock?e.dock.y:e.y),j=SY(e.dock?e.dock.x:e.x,e.dock?e.dock.y:e.y);
+  if(e.dock){/* the dock, and the cable it has never really let go of */
+   ctx.strokeStyle='#1c1c22';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X-8*s,Y-20*s);ctx.quadraticCurveTo((X+k)/2,Math.max(Y,j)+14,k,j-4);ctx.stroke();
+   ctx.fillStyle='rgba(255,227,107,.16)';ctx.strokeStyle='#ffe36b';ctx.lineWidth=1.6;ctx.beginPath();ctx.ellipse(k,j,40,20,0,0,6.283);ctx.fill();ctx.stroke();
+   ctx.fillStyle='#ffe36b';ctx.font='900 10px Cinzel,serif';ctx.textAlign='center';ctx.fillText('DOCK',k,j+4)}
+  /* DO NOT UNPLUG, in hazard stripes, and the cat, which does not move for anybody */
+  const y=Y-44*s;ctx.save();ctx.beginPath();ctx.rect(X-13*s,y,26*s,5*s);ctx.clip();
+  for(let i=-4;i<5;i++){ctx.fillStyle=i%2?'#ffe36b':'#17121e';ctx.beginPath();ctx.moveTo(X+i*6*s,y);ctx.lineTo(X+(i+1)*6*s,y);ctx.lineTo(X+i*6*s,y+5*s);ctx.lineTo(X+(i-1)*6*s,y+5*s);ctx.fill()}ctx.restore();
+  const cy=Y-72*s;box(X-7*s,cy-4*s,11*s,5*s,2,'#3a3436');box(X+2*s,cy-7*s,5*s,5*s,1.5,'#3a3436');
+  poly([X+2.5*s,cy-7*s,X+3.5*s,cy-10*s,X+4.5*s,cy-7*s],'#3a3436');poly([X+5*s,cy-7*s,X+6*s,cy-10*s,X+7*s,cy-7*s],'#3a3436');
+  ctx.strokeStyle='#3a3436';ctx.lineWidth=1.6*s;ctx.beginPath();ctx.moveTo(X-7*s,cy-1*s);ctx.quadraticCurveTo(X-12*s,cy+1*s,X-10*s,cy+5*s);ctx.stroke();
+  if(e.stun>0&&e.dm===1){ctx.fillStyle='#ffe36b';ctx.font='900 '+9*s+'px Cinzel,serif';ctx.textAlign='center';ctx.fillText('I AM SAVING',X,Y-102*s);glow(X,Y-50*s,40,'#ffe36b',.4)}},
+ q24(e,X,Y,s){const h=e.hist&&e.hist[0];
+  /* the page it guards, on its lectern */
+  box(X+11*s,Y-12*s,6*s,12*s,1,'#3a3044');poly([X+8*s,Y-12*s,X+20*s,Y-12*s,X+19*s,Y-15*s,X+9*s,Y-15*s],'#f0ead8');
+  if(h){/* where it is going back to */
+   ctx.globalAlpha=e.rg<3?.42:.18;drawEnemy(Object.assign({},e,{ghost:1,flash:0,x:h.x,y:h.y}),SX(h.x,h.y),SY(h.x,h.y));ctx.globalAlpha=1;
+   if(e.rg<3){const n=Math.ceil(e.rg);ctx.fillStyle='#f7931a';ctx.font='900 '+10*s+'px Cinzel,serif';ctx.textAlign='center';ctx.fillText('REORG '+n,X,Y-102*s);
+    const w=30*s,u=Math.max(0,(h.hp-e.hp)/e.max);ctx.fillStyle='#050409';ctx.fillRect(X-w/2,Y-80*s,w,3);ctx.fillStyle='#8a8a92';ctx.fillRect(X-w/2,Y-80*s,w*Math.min(1,u*4),3);
+    if(e.hp/e.max<.5){const px=SX(h.px,h.py),py=SY(h.px,h.py);ctx.strokeStyle='#f7931a';ctx.globalAlpha=.6;ctx.setLineDash([3,3]);ctx.beginPath();ctx.ellipse(px,py,13,6.5,0,0,6.283);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1}}}}};
 /* ---------- scenes ---------- */
 const PRE_INTRO=[
  {art:'cage',text:'January 2015. Seventy-two years before you took the visor off. Under an advertising company, on the second sub-level, there is a fenced room with no fibre, no radio and one cable taped to the floor. They call it the cage.'},
