@@ -33,7 +33,7 @@ const FIGHT=(a)=>{const g=window.__g,W=g.W,P=g.P;W.bi=1;W.ents.length=0;W.fx.len
 (async()=>{
 const b=await chromium.launch({executablePath:process.env.PW_CHROMIUM||undefined});
 const p=await b.newPage({viewport:{width:760,height:760}});
-const errs=[];p.on('pageerror',e=>errs.push(e.message));
+const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>{if(m.text().startsWith('dbg'))console.log(m.text())});
 await p.goto(URL);await p.waitForTimeout(700);
 await p.evaluate(()=>__g.skipDisc());await p.waitForTimeout(250);
 await p.click('[data-cls=scrapper]');await p.evaluate(()=>{__g.G.pre=2});await clearUI(p);await p.waitForTimeout(1600);await clearUI(p);
@@ -86,5 +86,27 @@ o=await p.evaluate(async()=>{const g=__g,W=g.W,P=g.P;W.bi=1;W.ents.length=0;W.fx
   return r});
 ok('a reorg undoes the last three seconds of damage',o.undo===1);
 ok('a deep reorg takes the player back too',o.back===1);
+/* the other six lieutenants, each against its one rule */
+const LT=async(zi,body)=>{await run(zi,{k:'mech',f:1,secs:0});return p.evaluate(([zi,body])=>{const g=__g,W=g.W,P=g.P;W.bi=1;W.ents.length=0;W.fx.length=0;W.projs.length=0;
+  const su=g.ZONES[zi].su;let e=null;for(let i=0;i<12&&!e;i++)e=g.spawn(su.k,P.x+2+i*.3,P.y+(i%3-1),{su});e.aggro=true;
+  const step=n=>{for(let i=0;i<n;i++){e.stun=0;g.update(1/60)}};return (new Function('g','W','P','e','step',body))(g,W,P,e,step)},[zi,body])};
+o=await LT(22,`step(2);const d0=e.dm;P.x+=8;for(let i=0;i<4;i++){e.hits=(e.hits|0)+4;step(1)}P.x-=8;const n=e.fl.length;for(const f of e.fl.slice()){P.x=f.x;P.y=f.y;step(2)}return{d0,n,dm:e.dm,op:e.op>0}`);
+ok('the Update is shielded while its paragraphs hold',o.d0===.25,'dm '+o.d0);
+ok('every fourth blow tears one loose',o.n===4,'pages '+o.n);
+ok('reading all four drops the shield',o.dm===1&&o.op,'dm '+o.dm);
+o=await LT(23,`step(60*4.2);return{dm:e.dm,slow:P.slow>0,yr:e.yr}`);
+ok('the Seventh Year barely feels a blow while you sit on a cushion',o.dm===.3&&o.slow,'dm '+o.dm);
+o=await LT(25,`let warn=0;e.b1=99;for(let i=0;i<110;i++){P.x=P.x;step(1);if(W.fx.some(f=>f.k==='warn'&&Math.hypot(f.x-P.x,f.y-P.y)<.2))warn=1}e.b1=0;step(2);return{warn,dm:e.dm,pch:e.pch>0}`);
+ok('Out Where punishes standing still',o.warn===1);
+ok('on its porch nothing reaches it',o.dm===0&&o.pch,'dm '+o.dm);
+o=await LT(28,`step(2);const d0=e.dm,tw=!!e.tw;P.x=e.tip.x;P.y=e.tip.y;step(2);return{d0,tw,dm:e.dm,gone:!e.tw}`);
+ok('the Orphan Maker forks, and is half real while it does',o.tw&&o.d0===.3,'dm '+o.d0);
+ok('stepping on the tip orphans the branch',o.gone&&o.dm===1);
+o=await LT(29,`let lunge=0,orbs=0;const seen=new Set();for(let i=0;i<60*7;i++){step(1);if(e.lunge)lunge=1;for(const q of W.projs)if(q.col==='#f7931a'&&!seen.has(q)){seen.add(q);orbs++}}return{lunge,orbs}`);
+ok('First Seen lunges to where you are going',o.lunge===1);
+ok('payments drift across the room in rows',o.orbs>=4,'orbs '+o.orbs);
+o=await LT(30,`step(2);const d0=e.dm;P.x=e.x+1;P.y=e.y;let run=0;for(let i=0;i<60*14&&!run;i++){e.x=P.x-1;e.y=P.y;g.update(1/60);if(e.dm===1&&e.stun>0)run=1}return{d0,run,rs:e.rs}`);
+ok('the Custodian is shielded by reserves',o.d0===.25,'dm '+o.d0);
+ok('standing in its vault runs it dry',o.run===1,'reserves '+o.rs);
 ok('no page errors',errs.length===0,errs.slice(0,3).join(' | '));
 console.log(out.join('\n'));console.log(bad?bad+' FAIL':'all ok');await b.close();process.exit(bad?1:0)})();

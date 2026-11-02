@@ -5151,7 +5151,7 @@ for(const u of UNI)UNIK[u.id]=u;
 function bkOf(k){return(G.bk||{})[k]||0}
 /* ---------- boss scripts ---------- */
 function ringShot(e,n,spd,col,m){const o=Math.random()*6.283;for(let i=0;i<n;i++){const a=o+i/n*6.283;W.projs.push({x:e.x,y:e.y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:2.4,foe:true,dmg:e.dmg*(m||.7),src:e,col})}}
-function callIn(e,kinds,n,cap){let room=cap-W.ents.filter(o=>o.minion&&o.hp>0).length;if(room<=0)return;sfx('summon');for(let i=0;i<n&&room>0;i++,room--){const s=spawn(pick(kinds),e.x+rnd(-3,3),e.y+rnd(-3,3),{minion:1});if(s)s.aggro=true}}
+function callIn(e,kinds,n,cap){let room=cap-W.ents.filter(o=>o.minion&&o.hp>0).length;if(room<=0)return;sfx('summon');for(let i=0;i<n&&room>0;i++,room--){let s=null;for(let t=0;t<6&&!s;t++)s=spawn(pick(kinds),e.x+rnd(-3,3),e.y+rnd(-3,3),{minion:1});if(s)s.aggro=true}}
 /* The kit the back-half fights are built from. A lane is a row of telegraphed
    blasts, a fan is an aimed spread of shots, and aimAt is where the player will
    be in t seconds if they keep doing what they are doing. */
@@ -5236,11 +5236,67 @@ const SUF={
     e.x=o.x;e.y=o.y;if(dist(e,P)<1.6)hurt(e.dmg*1.2,false,e);
     if(e.hp/e.max<.5){P.x=o.px;P.y=o.py;toast('Deep reorg. You were somewhere else three seconds ago.')}
     else if(!e.told){e.told=1;toast('Reorg: “History is whatever I decide was the longest.”')}}h.length=0}
+  return false},
+ /* The Update keeps four paragraphs about it. Every fourth blow tears one loose; read
+    all four off the floor and its shield is down for six seconds. */
+ q16(e,dt,d){if(e.pg===undefined){e.pg=4;e.fl=[];e.h0=e.hits|0;e.dm=.25}
+  if(e.op>0){if((e.op-=dt)<=0){e.pg=4;e.dm=.25;e.h0=e.hits|0}}
+  else if(e.pg>0&&(e.hits|0)-e.h0>=4){e.h0=e.hits|0;e.pg--;const a=rnd(0,6.283);e.fl.push({x:e.x+Math.cos(a)*2,y:e.y+Math.sin(a)*2});sfx('pick')}
+  for(const g of e.fl.slice())if(Math.hypot(g.x-P.x,g.y-P.y)<.8){e.fl.splice(e.fl.indexOf(g),1);float(P.x,P.y,'read','#f0ead8');if(!e.pg&&!e.fl.length){e.op=6;e.dm=1;sfx('crit');toast('You read past the fourth paragraph.')}}
+  if((e.b1-=dt)<=0){e.b1=e.hp/e.max<.5?2.4:3.4;sfx('bossfire');fan(e,P.x,P.y,11,.1,4,'#f0ead8',.3,{drain:5})}
+  return false},
+ /* The Seventh Year lays cushions. On one you are slowed and it barely feels a thing.
+    Every year they grow, and at the seventh every one of them goes off. */
+ q17(e,dt,d){const c=e.cu||(e.cu=[]);e.yr=e.yr||1;
+  if((e.b1-=dt)<=0){e.b1=4;if(c.length>2)c.shift();c.push({x:P.x+rnd(-.5,.5),y:P.y+rnd(-.5,.5)})}
+  if((e.b2-=dt)<=0){e.b2=6;if(++e.yr>7){e.yr=1;sfx('boom');for(const u of c)W.fx.push({k:'warn',x:u.x,y:u.y,r:1+.12*7,t:0,life:.6,boom:e.dmg*.6,dty:'noise'});c.length=0}}
+  const R=1+.12*e.yr,on=c.some(u=>Math.hypot(u.x-P.x,u.y-P.y)<R);e.dm=on?.3:1;if(on)P.slow=Math.max(P.slow||0,.25);
+  return false},
+ /* Out Where says two words. Stand still and it says them at you. Now and then it
+    goes and stands on one of three porches, where nothing reaches it. */
+ q19(e,dt,d){if(!e.drs){e.drs=[spotNear(e,4),spotNear(e,4),spotNear(e,4)];e.st=0;e.sp={x:P.x,y:P.y}}
+  if(Math.hypot(P.x-e.sp.x,P.y-e.sp.y)>.3){e.sp={x:P.x,y:P.y};e.st=0}else if((e.st+=dt)>1.5){e.st=0;sfx('warn');e.say=1.4;W.fx.push({k:'warn',x:P.x,y:P.y,r:1.1,t:0,life:.8,boom:e.dmg*.6,dty:'noise'})}
+  if(e.say>0)e.say-=dt;
+  if(e.pch>0){e.pch-=dt;if(e.pch<=0)e.dm=1;return true}
+  if((e.b1-=dt)<=0){e.b1=7;const o=pick(e.drs);parts(e.x,e.y,10,['#f0e8d8','#7be495'],2.5);e.x=o.x;e.y=o.y;e.pch=2.5;e.dm=0;e.say=2}
+  return false},
+ /* The Orphan Maker forks. While its other branch stands it is only half real; the
+    other branch's tip is on the floor, and stepping on it orphans that branch. */
+ q21(e,dt,d){if(!e.fk||(e.hp/e.max<.5&&e.fk<2&&!e.tw)){e.fk=(e.fk||0)+1;const s=spawn('valid',e.x+rnd(-1,1),e.y+rnd(-1,1),{minion:1});if(s){s.aggro=true;s.sz=1.3;e.tw=s;e.tip=spotNear(e,3.5);sfx('summon');toast('Two blocks were found at once.')}}
+  const t=e.tw;if(t&&(t.hp<=0||W.ents.indexOf(t)<0))e.tw=null;e.dm=e.tw?.3:1;
+  if(e.tw&&Math.hypot(e.tip.x-P.x,e.tip.y-P.y)<.8){sfx('boom');W.fx.push({k:'ring',x:t.x,y:t.y,r:2,t:0,life:.35,col:'#f7931a'});if(dist(t,P)<2)hurt(e.dmg*.8,false,e);kill(t);e.tw=null;toast('That branch is orphaned.')}
+  return false},
+ /* First Seen gets there first: it lunges to where you are going. Payments drift
+    across the room in rows, the rich slow ones first. */
+ q22(e,dt,d){if((e.b1-=dt)<=0&&d<7){e.b1=e.hp/e.max<.5?1.8:2.6;const q=aimAt(e,0,.6),L=Math.hypot(q.x-e.x,q.y-e.y)||1;e.lunge={t:Math.min(.5,L/12),x:(q.x-e.x)/L,y:(q.y-e.y)/L,hit:0};sfx('growl')}else aimAt(e,dt,.6);
+  if((e.b2-=dt)<=0){e.b2=5;sfx('bossfire');let best=null;
+   /* the weather comes from the most open side of the room */
+   for(let t=0;t<8;t++){const a=rnd(0,6.283),ux=Math.cos(a),uy=Math.sin(a),l=[];for(let w=0;w<2;w++)for(let i=-3;i<=3;i++){const o={x:P.x-ux*(4+w*1.5)-uy*i*1.2,y:P.y-uy*(4+w*1.5)+ux*i*1.2,dmg:e.dmg,w,ux,uy};if(free(o.x,o.y,.2))l.push(o)}if(!best||l.length>best.length)best=l}
+   for(const o of best)fan(o,o.x+o.ux,o.y+o.uy,1,0,o.w?4:2,'#f7931a',o.w?.25:.5,{src:e,life:4})}
+  return false},
+ /* The Eleventh Custodian is backed by ten reserves it does not hold. Stand in its
+    vault and ask for your coin; each ask takes one, and at none the shield is gone. */
+ q23(e,dt,d){if(e.rs===undefined){e.rs=10;e.h0=e.hits|0;e.dm=.25}
+  if(e.svT){e.svT=0;e.rs=10;e.dm=.25}
+  if(e.rs&&(e.hits|0)-e.h0>=3){e.h0=e.hits|0;fan(e,P.x,P.y,1,0,3.2,'#f0ead8',.4);float(e.x,e.y,'PAID','#f0ead8')}
+  if(d<2.4&&e.rs){if((e.rt=(e.rt||0)+dt)>1.2){e.rt=0;e.rs--;float(P.x,P.y,'redeemed','#e0bd6e');sfx('pick');if(!e.rs){e.dm=1;e.stun=6;e.svT=1;sfx('crit');toast('A run on the vault. The Eleventh Custodian has nothing behind the paper.')}}}else e.rt=0;
   return false}};
 function taroCharge(e,n,w){const a=Math.atan2(P.y-e.y,P.x-e.x),L=Math.min(8,dist(e,P)+2);let x=e.x+Math.cos(a)*L,y=e.y+Math.sin(a)*L;
   if(segD(e.dock,e.x,e.y,x,y)<1.2){x=e.dock.x;y=e.dock.y}
   e.chg={x,y,w,n};e.b1=e.hp/e.max<.5?3.4:4.6;sfx('warn');lane(e.x,e.y,x,y,Math.max(3,Math.round(Math.hypot(x-e.x,y-e.y)/.9)),0)}
 const SUD={
+ q16(e,X,Y,s){for(let i=0;i<e.pg;i++){const a=tNow*1.4+i*1.571,x=X+Math.cos(a)*18*s,y=Y-34*s+Math.sin(a)*8*s;box(x-3*s,y-4*s,6*s,8*s,1,'#f0ead8')}
+  for(const g of e.fl||[]){const x=SX(g.x,g.y),y=SY(g.x,g.y);box(x-5,y-4,10,7,1,'#f0ead8');glow(x,y,16,'#f0ead8',.5)}},
+ q17(e,X,Y,s){for(const u of e.cu||[]){const x=SX(u.x,u.y),y=SY(u.x,u.y),R=1+.12*e.yr;ctx.fillStyle='rgba(255,217,160,.18)';ctx.strokeStyle='#ffd9a0';ctx.beginPath();ctx.ellipse(x,y,R*45,R*22.5,0,0,6.283);ctx.fill();ctx.stroke()}
+  ctx.fillStyle='#ffd9a0';ctx.font='900 '+8*s+'px Cinzel,serif';ctx.textAlign='center';ctx.fillText('YEAR '+(e.yr||1),X,Y-46*s)},
+ q19(e,X,Y,s){for(const o of e.drs||[]){const x=SX(o.x,o.y),y=SY(o.x,o.y);box(x-9,y-34,18,34,1,'#3a3040');ctx.fillStyle='rgba(255,227,160,.35)';ctx.fillRect(x-6,y-31,12,29)}
+  if(e.say>0)bubble(X,Y-62*s,'Out where?')},
+ q21(e,X,Y,s){if(!e.tw||!e.tip)return;const x=SX(e.tip.x,e.tip.y),y=SY(e.tip.x,e.tip.y),tx=SX(e.tw.x,e.tw.y),ty=SY(e.tw.x,e.tw.y);
+  ctx.fillStyle='#f7931a';for(let i=1;i<6;i++)ctx.fillRect(tx+(x-tx)*i/6-2,ty-20+(y-ty+20)*i/6-2,4,4);
+  ctx.strokeStyle='#f7931a';ctx.lineWidth=1.6;ctx.beginPath();ctx.ellipse(x,y,30,15,0,0,6.283);ctx.stroke();ctx.font='900 9px Cinzel,serif';ctx.textAlign='center';ctx.fillText('TIP',x,y+3)},
+ q22(e,X,Y,s){ctx.fillStyle='#f7931a';ctx.font='900 '+8*s+'px Cinzel,serif';ctx.textAlign='center';ctx.fillText('#1',X,Y-30*s)},
+ q23(e,X,Y,s){if(e.rs){ctx.strokeStyle='#e0bd6e';ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.beginPath();ctx.ellipse(X,Y,2.4*45,2.4*22.5,0,0,6.283);ctx.stroke();ctx.setLineDash([])}
+  ctx.fillStyle='#e0bd6e';ctx.font='900 '+8*s+'px Cinzel,serif';ctx.textAlign='center';ctx.fillText('RESERVES '+(e.rs|0)+'/10',X,Y-114*s)},
  q18(e,X,Y,s){const k=SX(e.dock?e.dock.x:e.x,e.dock?e.dock.y:e.y),j=SY(e.dock?e.dock.x:e.x,e.dock?e.dock.y:e.y);
   if(e.dock){/* the dock, and the cable it has never really let go of */
    ctx.strokeStyle='#1c1c22';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X-8*s,Y-20*s);ctx.quadraticCurveTo((X+k)/2,Math.max(Y,j)+14,k,j-4);ctx.stroke();
