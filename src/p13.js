@@ -216,7 +216,7 @@ let mpAnnounced = '';
 function mpHello() {
   if (!G) return;
   mpAnnounced = G.cls || '';
-  mpSend('hello', { lvl: G.lvl, cls: G.cls, zi: W ? W.zi : 0, hp: G.hp, hpm: S.maxHp, act: actOf ? actOf(W ? W.zi : 0) : 1, resume: 1 });
+  mpSend('hello', { lvl: G.lvl, cls: G.cls, sex: G.sex === 'f' ? 'f' : 'm', zi: W ? W.zi : 0, hp: G.hp, hpm: S.maxHp, act: actOf ? actOf(W ? W.zi : 0) : 1, resume: 1 });
 }
 
 function mpSay(text) {
@@ -479,7 +479,7 @@ function mpZone(m) {
     /* Hold the previous position and interpolate toward the new one, so ten updates a
        second do not look like ten updates a second. */
     o.px = o.x; o.py = o.y; o.tx = r.x; o.ty = r.y; o.lerp = 0;
-    o.name = r.name; o.lvl = r.lvl; o.cls = r.cls; o.dir = r.dir; o.hp = r.hp; o.hpm = r.hpm;
+    o.name = r.name; o.lvl = r.lvl; o.cls = r.cls; o.sex = r.sex === 'f' ? 'f' : 'm'; o.dir = r.dir; o.hp = r.hp; o.hpm = r.hpm;
     if ('sk' in r) o.sk = (typeof r.sk === 'number' && mpSkillOk(r.sk) && (r.sk | 0) === r.sk) ? r.sk : null;
     if ('au' in r) o.au = (r.au === 3 || r.au === 4 || r.au === 7) ? r.au : null;
     if ('aL' in r) o.aL = (o.au && r.aL >= 1 && r.aL <= 20) ? (r.aL | 0) : (o.au ? (o.aL || 1) : 0);
@@ -768,8 +768,11 @@ function mpDraw(o, X, Y) {
   const f = Math.cos(o.dir || 0) >= 0 ? 1 : -1, y = Y - 34;
   ctx.fillStyle = '#2a2436';
   ctx.fillRect(X - 4, y + 20, 3.5, 13); ctx.fillRect(X + 1, y + 20, 3.5, 13);
+  const hair = o.sex === 'f' ? heroHair({ sex: 'f', cls: o.cls }) : null;
+  if (hair) { ctx.fillStyle = hair; ctx.beginPath(); ctx.ellipse(X - f * 4, y + 9, 4.5, 8, 0, 0, 6.283); ctx.fill(); }
   box(X - 7, y + 7, 14, 15, 4, c.col);
   box(X - 5.5, y - 5, 11, 11, 4, '#d9c3a6');
+  if (hair) { box(X - 6, y - 6.5, 12, 5, 3, hair); box(X - f * 5 - 1.5, y - 3, 3.5, 9, 2, hair); }
   ctx.fillStyle = OL; ctx.fillRect(X - 3 + f * 1.5, y - 1, 1.6, 1.6); ctx.fillRect(X + 1 + f * 1.5, y - 1, 1.6, 1.6);
   /* health, then the name, then the mark if they have declared */
   const w = 30, hp = Math.max(0, Math.min(1, (o.hp || 0) / (o.hpm || 1)));

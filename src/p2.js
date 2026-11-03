@@ -241,8 +241,8 @@ function calc(){
   s.aspd+=s.wspd;if(typeof arcPace==='function')arcPace(s);if(G.st&&G.st.nextTier==='stim')s.cap=(s.cap||4)+1;s.mspd=Math.min(s.mspd,50);
   if(s.r_all)for(const k of RTK)s['r_'+k]=(s['r_'+k]||0)+s.r_all;
   s.blow=typeof swingBlow==='function'?swingBlow(s):0;S=s;G.hp=Math.min(G.hp,S.maxHp);G.en=Math.min(G.en,S.maxEn);G.stims=Math.min(G.stims,S.cap);scrubItemBinds()}
-function newGame(cls){
-  G={v:2,cls,lvl:1,xp:0,sp:0,ap:0,sk:[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],slots:[0,-1,-1],at:{mgt:0,ref:0,vit:0,bnd:0},hp:9999,en:9999,credits:120,cpi:1,stims:3,bag:[],
+function newGame(cls,sex){
+  G={v:2,cls,sex:sex==='f'?'f':'m',lvl:1,xp:0,sp:0,ap:0,sk:[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],slots:[0,-1,-1],at:{mgt:0,ref:0,vit:0,bnd:0},hp:9999,en:9999,credits:120,cpi:1,stims:3,bag:[],
     eq:{weapon:null,helm:null,armor:null,gloves:null,boots:null,belt:null,ring:null,amulet:null},unlocked:1,tier:0,maxTier:0,kills:0,deaths:0,ubiT:0,time:0,zone:0,
     sats:0,merc:null,sq:{},stash:[],q:{q1:0,q2:0,q3:0,q4:0,q5:0,q6:0,q7:0,q8:0,q9:0,q10:0},memos:[],marrow:false,disc:false,portal:null,chuteT:0,bossKills:0,seenIntro:false,god:false,statNote:1};ensureMouse();
   G.eq.weapon=makeItem(1,0,'weapon');ZS={};freshState();calc();G.hp=S.maxHp;G.en=S.maxEn;
@@ -286,7 +286,7 @@ function applySave(o){if(!o||!o.G||!CLS[o.G.cls])return false;G=o.G;
   if(typeof G.hp!=='number'||!isFinite(G.hp))G.hp=1;
   G.sats=G.sats||0;G.merc=G.merc||null;G.sq=(G.sq&&typeof G.sq==='object')?G.sq:{};
   if(G.q.q10===3&&(G.unlocked||0)<12)G.unlocked=12;for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;if(G.q.q5===3&&(G.unlocked||0)<7)G.unlocked=7;actBriefMigrate();if(G.hp<=0){if(!G.hc)G.hp=9999;o.cur=null}ZS={};for(const k in (o.zs||{})){let z=null;try{z=decW(o.zs[k])}catch(e){z=null}if(z)ZS[k]=z;else keepGround(o.zs[k])}if(o.opt){const raw=o.opt;OPT=Object.assign({},OPT_DEF,raw);lootMigrate(raw)}if(Array.isArray(o.buyback))G._buyback=o.buyback.filter(r=>r&&r.it&&!r.it.test);G._cur=o.cur||null;boonRefund();return true}
-function hcBegin(){const c=G&&CLS[G.cls]?G.cls:'scrapper';DY=null;const d=$('death');if(d)d.hidden=true;resetZones();newGame(c);G.hc=true;save(true)}
+function hcBegin(){const c=G&&CLS[G.cls]?G.cls:'scrapper';DY=null;const d=$('death');if(d)d.hidden=true;resetZones();newGame(c,G&&G.sex);G.hc=true;save(true)}
 function startPlay(){ensureG();if(G.hc&&G.hp<=0){hcBegin();return}G.inGame=1;mpConnect();mode='play';$('title').hidden=true;$('hud').hidden=false;calc();setSkillButtons();try{fxLoad(G.cls)}catch(e){}
   if(!G.statNote){G.statNote=1;const spent=(G.at.mgt||0)+(G.at.ref||0)+(G.at.vit||0)+(G.at.bnd||0);if(spent>0)setTimeout(()=>toast('Attribute damage has changed. Sister Null can return your points.'),400)}
   const c=G._cur;delete G._cur;const cz=c&&ZONES[c.zi];
