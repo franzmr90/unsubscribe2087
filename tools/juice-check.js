@@ -42,5 +42,21 @@ ok(r.sq,'a hit squashes the machine');
 ok(r.sqRest,'the squash returns to rest');}
 await p.waitForTimeout(400);
 const hs=await p.evaluate(()=>__g.hitStop);ok(!(hs>0),'hit-stop releases in real time ('+hs+')');
+/* Skill motion: a cast poses the body, a hit throws sparks of its damage type and nudges the machine. */
+const a=await p.evaluate(()=>{const g=__g,o={};if(typeof g.poseNow!=='function')return {none:1};
+  const G=g.G,P=g.P;G.sk[3]=1;G.en=999;P.cd[3]=0;g.castIndex(3);o.pose=!!P.pose&&P.pose.k;
+  g.update(.1);const n1=g.poseNow();o.wind=n1&&n1.sy<1;g.update(.12);const n2=g.poseNow();o.hop=n2&&n2.oy<0;
+  for(let i=0;i<40;i++)g.update(1/60);o.ends=!g.poseNow();
+  g.render();o.drew=true;
+  const e=g.spawn('bot',P.x+1.2,P.y,{});e.hp=1e6;e.max=1e6;const n0=g.W.parts.length;e.lt='surge';e.spT=0;g.hitSpark(e,false);
+  o.sparks=g.W.parts.length-n0;o.zap=g.W.fx.some(f=>f.k==='zap');o.kb=e.kb>0&&e.kdx>0;
+  const n3=g.W.parts.length;g.hitSpark(e,false);o.limited=g.W.parts.length===n3;
+  const fx0=g.OPT.fx;g.OPT.fx='thin';const n4=g.W.parts.length;e.spT=0;g.hitSpark(e,true);o.thin=g.W.parts.length===n4;g.OPT.fx=fx0;
+  g.render();return o});
+if(a.none)ok(false,'poseNow() exists');else{
+ok(a.pose==='ring','a ring skill starts a ring pose ('+a.pose+')');
+ok(a.wind,'the wind-up crouches');ok(a.hop,'the release leaves the ground');ok(a.ends,'the pose ends');
+ok(a.sparks>=5&&a.zap,'a surge hit throws sparks and a zap ('+a.sparks+')');ok(a.kb,'the machine is nudged away from the player');
+ok(a.limited,'a second hit inside 70 ms throws no more sparks');ok(a.thin,'thin effects throw none');}
 ok(!errs.length,'no page errors '+errs.join(' | '));
 await b.close();console.log(fail?fail+' failed':'all ok');process.exit(fail?1:0)})();

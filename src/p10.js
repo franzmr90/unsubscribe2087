@@ -436,6 +436,39 @@ const dx=(dir&&dir.x)||1,dy=(dir&&dir.y)||0;
   if(v.at==='back'){x2=x-dx*(v.r||3);y2=y-dy*(v.r||3)}
   if(v.at==='foe'&&!remote){const t=nearest(8);if(t){x2=t.x;y2=t.y;if(v.k==='mark'||v.k==='patch'||v.k==='ring'||v.k==='strike'){px=t.x;py=t.y}}}
   W.fx.push({k:v.k,x:px,y:py,x2:x2,y2:y2,dx:dx,dy:dy,r:v.r,w:v.w,n:v.n,col:v.col,t:0,life:v.life,tel:v.tel,reach:v.reach||0,remote:remote?1:0})}
+/* ================= skill motion: the body sells the cast =================
+   Each cast gets a pose from its fx kind: a wind-up (w), a release, a recovery.
+   Render-only. It never moves P, never delays a hit, and the server never sees it. */
+const POSE={arc:{d:.3,w:.08},ring:{d:.42,w:.14},bolt:{d:.26,w:.06},patch:{d:.36,w:.11},trail:{d:.32,w:.03},orbit:{d:.4,w:.12},mark:{d:.3,w:.07},beam:{d:.3,w:.06},strike:{d:.3,w:.08}};
+function poseStart(cls,i){const v=skvOf(cls,i);if(!v||!P)return;const p=POSE[v.k];if(!p)return;P.pose={k:v.k,t:0,d:p.d,w:p.w,col:v.col,gh:[],gc:0}}
+function poseTick(dt){const p=P&&P.pose;if(!p)return;p.t+=dt;
+  if(p.k==='trail'&&p.t<p.d){p.gc-=dt;if(p.gc<=0){p.gc=.035;p.gh.push({x:P.x,y:P.y,t:0});if(p.gh.length>6)p.gh.shift()}}
+  for(const g of p.gh)g.t+=dt;
+  if(p.k==='ring'&&!p.land&&p.t>=p.w+(p.d-p.w)*.45){p.land=1;if(OPT.fx!=='thin')for(let i=0;i<10;i++){const a=i*.628+rnd(-.2,.2),v=rnd(1.6,2.6);W.parts.push({x:P.x,y:P.y,z:2,vx:Math.cos(a)*v,vy:Math.sin(a)*v,vz:rnd(20,50),t:0,life:rnd(.3,.5),col:pick(['#8a8478','#b8b0a0',p.col]),s:rnd(3,5)})}}
+  if(p.t>=p.d+.25)P.pose=null}
+const eOut=x=>1-(1-x)*(1-x)*(1-x);
+/* {ox,oy} screen px, {sx,sy} scale about the feet, arm: radians (negative raises), reach: px, glow: hand charge 0..1 */
+function poseNow(){const p=P&&P.pose;if(!p||p.t>p.d)return null;const t=p.t,w=p.w,r=t<w?t/w:1,q=t>=w?Math.min(1,(t-w)/(p.d-w)):0,pre=t<w;
+  const o={lean:0,oy:0,sx:1,sy:1,arm:0,reach:0,glow:pre?r:Math.max(0,1-q*3),col:p.col};
+  switch(p.k){
+    case 'arc':o.arm=pre?-1.5*eOut(r):-1.5+3.2*eOut(Math.min(1,q*2.5));o.lean=pre?-3*r:5*(1-q);o.reach=pre?-3:6*(1-q);o.sx=pre?1:1+.08*(1-q);break;
+    case 'ring':if(pre){o.sy=1-.2*r;o.sx=1+.14*r}else{const h=q<.45?Math.sin(q/.45*3.14):0,land=q>=.45?Math.max(0,1-(q-.45)*3.5):0;o.oy=-h*13;o.sy=1+.14*h-.24*land;o.sx=1-.06*h+.2*land}o.arm=pre?-2.2*r:-2.2+2.8*eOut(q);break;
+    case 'bolt':o.reach=pre?-4*r:11*(1-eOut(q));o.lean=pre?-2*r:3*(1-q);o.sx=pre?1-.05*r:1+.06*(1-q);break;
+    case 'patch':o.arm=pre?-2.6*r:-2.6+2.6*eOut(q);o.oy=pre?0:-4*Math.sin(q*3.14);o.reach=pre?0:4*(1-q);break;
+    case 'trail':o.lean=8*(1-q);o.sx=1+.12*(1-q);o.sy=1-.1*(1-q);break;
+    case 'orbit':{const s=Math.sin(Math.min(1,t/p.d)*3.14);o.arm=-1.4*s;o.oy=-5*s;o.glow=s;break}
+    default:o.reach=pre?0:7*(1-q);o.arm=pre?-.5*r:0}
+  return o}
+/* Sparks by damage type, thrown away from the player. Rate-limited per machine so a bleed does not spray. */
+const SPK={impact:['#fff4dc','#e6e2d6'],surge:['#bff8ff','#59e0e6'],rust:['#e09a52','#7a4a22'],heat:['#ffd27a','#ff7a3c'],noise:['#efc6ff','#d98cff'],sound:['#ffd08a','#f7931a']};
+function hitSpark(e,crit){if(!W||!W.parts||!P)return;let dx=e.x-P.x,dy=e.y-P.y;const l=Math.hypot(dx,dy)||1;dx/=l;dy/=l;e.kb=.12;e.kdx=dx;e.kdy=dy;
+  if(OPT.fx==='thin'||(!crit&&(e.spT||0)>tNow-.07))return;e.spT=tNow;const ty=e.lt||'impact',c=SPK[ty]||SPK.impact,heat=ty==='heat',rust=ty==='rust';
+  const n=crit?10:5,sp=heat?1.4:rust?1.1:3.4,base=Math.atan2(dy,dx);
+  for(let i=0;i<n;i++){const a=base+rnd(-.95,.95),v=rnd(.5,1)*sp*(crit?1.4:1);
+    W.parts.push({x:e.x,y:e.y,z:rnd(14,26),vx:Math.cos(a)*v,vy:Math.sin(a)*v,vz:heat?rnd(25,60):rust?rnd(-10,25):rnd(20,90),g:heat?-.12:rust?.7:1,t:0,life:heat?rnd(.45,.75):rust?rnd(.4,.6):rnd(.14,.28),col:pick(c),s:rust?rnd(2,3.5):rnd(1.6,2.6),ln:heat||rust?0:1})}
+  if(ty==='surge')W.fx.push({k:'zap',x:e.x,y:e.y,t:0,life:.14,col:c[1],sd:Math.random()*999|0});
+  else if(ty==='noise')W.fx.push({k:'ripple',x:e.x,y:e.y,t:0,life:.3,col:c[1]});
+  if(crit)W.fx.push({k:'star',x:e.x,y:e.y,t:0,life:.18,col:c[0]})}
 const baseType=()=>G.cls==='maxi'?'sound':(G.eq.weapon&&G.eq.weapon.dt)||(G.cls==='hacker'?'surge':'impact');
 const RES={tick:{surge:1.5},drone:{surge:1.5,noise:.5},bot:{impact:.75,rust:1.5},hound:{noise:1.5,rust:.5},ad:{noise:0,impact:1.5},hr:{noise:.5,heat:1.5},mech:{impact:.5,rust:1.5,surge:1.25},seer:{surge:.5,impact:1.5},aegis:{surge:0,heat:1.5},lancer:{noise:1.5,heat:.5},splitter:{heat:1.5,impact:.5},
  director:{noise:.5,rust:1.5},proxy:{rust:.5,surge:1.5},censor:{noise:0,heat:1.5},shill:{noise:1.5},boss:{noise:.5,rust:1.5,heat:1.25},boss2:{noise:0,surge:1.5,impact:.75},boss3:{surge:.5,noise:.5,impact:1.5,heat:1.25}};
