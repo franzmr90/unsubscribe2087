@@ -436,6 +436,39 @@ const dx=(dir&&dir.x)||1,dy=(dir&&dir.y)||0;
   if(v.at==='back'){x2=x-dx*(v.r||3);y2=y-dy*(v.r||3)}
   if(v.at==='foe'&&!remote){const t=nearest(8);if(t){x2=t.x;y2=t.y;if(v.k==='mark'||v.k==='patch'||v.k==='ring'||v.k==='strike'){px=t.x;py=t.y}}}
   W.fx.push({k:v.k,x:px,y:py,x2:x2,y2:y2,dx:dx,dy:dy,r:v.r,w:v.w,n:v.n,col:v.col,t:0,life:v.life,tel:v.tel,reach:v.reach||0,remote:remote?1:0})}
+/* ================= skill motion: the body sells the cast =================
+   Each cast gets a pose from its fx kind: a wind-up (w), a release, a recovery.
+   Render-only. It never moves P, never delays a hit, and the server never sees it. */
+const POSE={arc:{d:.3,w:.08},ring:{d:.42,w:.14},bolt:{d:.26,w:.06},patch:{d:.36,w:.11},trail:{d:.32,w:.03},orbit:{d:.4,w:.12},mark:{d:.3,w:.07},beam:{d:.3,w:.06},strike:{d:.3,w:.08}};
+function poseStart(cls,i){const v=skvOf(cls,i);if(!v||!P)return;const p=POSE[v.k];if(!p)return;P.pose={k:v.k,t:0,d:p.d,w:p.w,col:v.col,gh:[],gc:0}}
+function poseTick(dt){const p=P&&P.pose;if(!p)return;p.t+=dt;
+  if(p.k==='trail'&&p.t<p.d){p.gc-=dt;if(p.gc<=0){p.gc=.035;p.gh.push({x:P.x,y:P.y,t:0});if(p.gh.length>6)p.gh.shift()}}
+  for(const g of p.gh)g.t+=dt;
+  if(p.k==='ring'&&!p.land&&p.t>=p.w+(p.d-p.w)*.45){p.land=1;if(OPT.fx!=='thin')for(let i=0;i<10;i++){const a=i*.628+rnd(-.2,.2),v=rnd(1.6,2.6);W.parts.push({x:P.x,y:P.y,z:2,vx:Math.cos(a)*v,vy:Math.sin(a)*v,vz:rnd(20,50),t:0,life:rnd(.3,.5),col:pick(['#8a8478','#b8b0a0',p.col]),s:rnd(3,5)})}}
+  if(p.t>=p.d+.25)P.pose=null}
+const eOut=x=>1-(1-x)*(1-x)*(1-x);
+/* {ox,oy} screen px, {sx,sy} scale about the feet, arm: radians (negative raises), reach: px, glow: hand charge 0..1 */
+function poseNow(){const p=P&&P.pose;if(!p||p.t>p.d)return null;const t=p.t,w=p.w,r=t<w?t/w:1,q=t>=w?Math.min(1,(t-w)/(p.d-w)):0,pre=t<w;
+  const o={lean:0,oy:0,sx:1,sy:1,arm:0,reach:0,glow:pre?r:Math.max(0,1-q*3),col:p.col};
+  switch(p.k){
+    case 'arc':o.arm=pre?-1.5*eOut(r):-1.5+3.2*eOut(Math.min(1,q*2.5));o.lean=pre?-3*r:5*(1-q);o.reach=pre?-3:6*(1-q);o.sx=pre?1:1+.08*(1-q);break;
+    case 'ring':if(pre){o.sy=1-.2*r;o.sx=1+.14*r}else{const h=q<.45?Math.sin(q/.45*3.14):0,land=q>=.45?Math.max(0,1-(q-.45)*3.5):0;o.oy=-h*13;o.sy=1+.14*h-.24*land;o.sx=1-.06*h+.2*land}o.arm=pre?-2.2*r:-2.2+2.8*eOut(q);break;
+    case 'bolt':o.reach=pre?-4*r:11*(1-eOut(q));o.lean=pre?-2*r:3*(1-q);o.sx=pre?1-.05*r:1+.06*(1-q);break;
+    case 'patch':o.arm=pre?-2.6*r:-2.6+2.6*eOut(q);o.oy=pre?0:-4*Math.sin(q*3.14);o.reach=pre?0:4*(1-q);break;
+    case 'trail':o.lean=8*(1-q);o.sx=1+.12*(1-q);o.sy=1-.1*(1-q);break;
+    case 'orbit':{const s=Math.sin(Math.min(1,t/p.d)*3.14);o.arm=-1.4*s;o.oy=-5*s;o.glow=s;break}
+    default:o.reach=pre?0:7*(1-q);o.arm=pre?-.5*r:0}
+  return o}
+/* Sparks by damage type, thrown away from the player. Rate-limited per machine so a bleed does not spray. */
+const SPK={impact:['#fff4dc','#e6e2d6'],surge:['#bff8ff','#59e0e6'],rust:['#e09a52','#7a4a22'],heat:['#ffd27a','#ff7a3c'],noise:['#efc6ff','#d98cff'],sound:['#ffd08a','#f7931a']};
+function hitSpark(e,crit){if(!W||!W.parts||!P)return;let dx=e.x-P.x,dy=e.y-P.y;const l=Math.hypot(dx,dy)||1;dx/=l;dy/=l;e.kb=.12;e.kdx=dx;e.kdy=dy;
+  if(OPT.fx==='thin'||(!crit&&(e.spT||0)>tNow-.07))return;e.spT=tNow;const ty=e.lt||'impact',c=SPK[ty]||SPK.impact,heat=ty==='heat',rust=ty==='rust';
+  const n=crit?10:5,sp=heat?1.4:rust?1.1:3.4,base=Math.atan2(dy,dx);
+  for(let i=0;i<n;i++){const a=base+rnd(-.95,.95),v=rnd(.5,1)*sp*(crit?1.4:1);
+    W.parts.push({x:e.x,y:e.y,z:rnd(14,26),vx:Math.cos(a)*v,vy:Math.sin(a)*v,vz:heat?rnd(25,60):rust?rnd(-10,25):rnd(20,90),g:heat?-.12:rust?.7:1,t:0,life:heat?rnd(.45,.75):rust?rnd(.4,.6):rnd(.14,.28),col:pick(c),s:rust?rnd(2,3.5):rnd(1.6,2.6),ln:heat||rust?0:1})}
+  if(ty==='surge')W.fx.push({k:'zap',x:e.x,y:e.y,t:0,life:.14,col:c[1],sd:Math.random()*999|0});
+  else if(ty==='noise')W.fx.push({k:'ripple',x:e.x,y:e.y,t:0,life:.3,col:c[1]});
+  if(crit)W.fx.push({k:'star',x:e.x,y:e.y,t:0,life:.18,col:c[0]})}
 const baseType=()=>G.cls==='maxi'?'sound':(G.eq.weapon&&G.eq.weapon.dt)||(G.cls==='hacker'?'surge':'impact');
 const RES={tick:{surge:1.5},drone:{surge:1.5,noise:.5},bot:{impact:.75,rust:1.5},hound:{noise:1.5,rust:.5},ad:{noise:0,impact:1.5},hr:{noise:.5,heat:1.5},mech:{impact:.5,rust:1.5,surge:1.25},seer:{surge:.5,impact:1.5},aegis:{surge:0,heat:1.5},lancer:{noise:1.5,heat:.5},splitter:{heat:1.5,impact:.5},
  director:{noise:.5,rust:1.5},proxy:{rust:.5,surge:1.5},censor:{noise:0,heat:1.5},shill:{noise:1.5},boss:{noise:.5,rust:1.5,heat:1.25},boss2:{noise:0,surge:1.5,impact:.75},boss3:{surge:.5,noise:.5,impact:1.5,heat:1.25}};
@@ -754,11 +787,11 @@ function ltIntro(e){const line=LTAUNT[e.q];if(!line||W.z.sim||mode!=='play')retu
   let el=$('bint');if(!el){el=document.createElement('div');el.id='bint';el.style.cssText='position:absolute;inset:0;z-index:40;display:flex;flex-direction:column;justify-content:space-between;pointer-events:auto';
     el.innerHTML='<div style="height:13%;background:#000"></div><div style="background:linear-gradient(transparent,#000c 30%,#000);padding:26px 20px 34px;text-align:center"><div id="biN" style="font:600 20px Cinzel,serif;letter-spacing:.14em;color:#d6a03c;text-transform:uppercase"></div><div id="biS" style="font:400 11px Cinzel,serif;letter-spacing:.3em;color:#8d8798;margin:4px 0 12px;text-transform:uppercase"></div><div id="biT" style="font:italic 400 16px Spectral,serif;color:#e6e2d6;line-height:1.4;max-width:420px;margin:0 auto"></div></div>';
     ($('game')||$('cv').parentNode).appendChild(el);el.addEventListener('click',()=>{if(BI&&performance.now()-BI.t0>500)ltEnd()})}
-  $('biN').textContent=e.name;$('biS').textContent=W.z.n;$('biT').textContent='“'+line+'”';el.hidden=false;el.style.display='flex';J.x=J.y=0;atkHeld=false;mode='intro';sfx('roar');if(OPT.shake)shake=6;
+  $('biN').textContent=e.name;$('biS').textContent=W.z.n;$('biT').textContent='“'+line+'”';el.hidden=false;el.style.display='flex';J.x=J.y=0;atkHeld=false;mode='intro';sfx('roar');juice('m',{hs:0});
   BI={t0:performance.now(),id:setTimeout(ltEnd,3600)};return true}
 function ltEnd(){if(!BI)return;clearTimeout(BI.id);BI=null;const el=$('bint');el.hidden=true;el.style.display='none';if(mode==='intro')mode='play'}
 function bossIntro(e){const B=BINTRO[e.k];if(!B||W.z.sim||mode!=='play'||W.bi)return false;W.bi=1;const n=B.own?bkOf(e.k):e.k==='boss3'?G.boss3Kills:e.k==='boss2'?G.boss2Kills:G.bossKills,c=CLS[G.cls].n.toLowerCase();
-  playScene((n?[{title:ET[e.k].n,text:pick(B.again)}]:B.first(c)).map(x=>(x.art=B.art,x)),()=>{mode='play';sfx('roar');music('boss');if(OPT.shake)shake=9});return true}
+  playScene((n?[{title:ET[e.k].n,text:pick(B.again)}]:B.first(c)).map(x=>(x.art=B.art,x)),()=>{mode='play';sfx('roar');music('boss');juice('l',{hs:0})});return true}
 /* the rig cannot change who you are until you hold the file that says who you are */
 function recOk(){return!!(G.rec||G.q.q8>=2||G.act3||(G.st&&G.st.shifts>0))}
 function recKill(e){if(!e.su||e.q!=='q8'||G.rec)return;G.rec=1;setTimeout(()=>{if(mode==='play')playScene([{art:'lake',title:'Your record',text:'Where the Archivist came apart, one file floats up through the violet: your name, your class, your allowance, every form you never filled in. This is who MANDATE has decided you are. It is a single page, and it is editable.'},{art:'feed',text:'The VR rig in town can only show you yourself. With this, it can lie about you to the whole system. Take the record to the rig, and it will be able to hack the simulation: you can become somebody else.'}],()=>{mode='play';toast('The VR rig can now change your class')});else toast('You recovered your citizen record. The VR rig can now change your class.')},1400)}
@@ -769,7 +802,7 @@ function tagG(n){if(n===SLOT)return null;const i=slotInfo(n);if(!i)return null;t
 function tagStats(og){const g0=G,keep=S;let r=null;try{G=JSON.parse(JSON.stringify(og));ensureG();calc();r={dmg:(S.dmin+S.dmax)/2*(1+(S.dmg||0)/100)*(1+((S.blow||0)/100)),max:S.maxHp,arm:S.armor||0}}catch(e){}G=g0;S=keep;calc();return r}
 function tagRender(n){const og=tagG(n);if(!og||!CLS[og.cls])return;const c=tagCost(og.lvl);if(satsFree()<c){toast(tradeReserved()?'Those sats are on the table.':'You need '+c+' sats');sfx('err');return}const st=tagStats(og);if(!st){toast('The rig could not read that character');sfx('err');return}
   if(!spendSats(c))return;const k=Math.min(1,(G.lvl+5)/og.lvl),sk=CLS[og.cls].sk,act=(og.slots||[]).filter(i=>i>=0&&sk[i]&&sk[i].a&&og.sk[i]);
-  G.tag={slot:n,cls:og.cls,lvl:og.lvl,name:'Level '+og.lvl+' '+CLS[og.cls].n,dmg:Math.max(st.dmg*k,(4+2.2*G.lvl)*.9),max:Math.round(Math.max(st.max*k,60+22*G.lvl)),red:100/(100+st.arm*k),sk:act.map(i=>[i,og.sk[i]]),down:k<1,eq:og.eq||{}};
+  G.tag={slot:n,cls:og.cls,sex:og.sex,lvl:og.lvl,name:'Level '+og.lvl+' '+CLS[og.cls].n,dmg:Math.max(st.dmg*k,(4+2.2*G.lvl)*.9),max:Math.round(Math.max(st.max*k,60+22*G.lvl)),red:100/(100+st.arm*k),sk:act.map(i=>[i,og.sk[i]]),down:k<1,eq:og.eq||{}};
   spawnMerc();sfx('unique');save(true);
   playScene([{art:'feed',title:'Rendered',text:'The rig hums, and a second outline fills in beside you, one scan line at a time: somebody you have been. '+G.tag.name+' looks at their hands, then at you, and nods.'+(k<1?' The rig has to down-sample them to fit this world; they fight a little above your level, not at their own.':'')+(G.merc&&!G.merc.dead?' '+G.merc.name+' steps back to wait with Kestrel until they are gone.':'')}],()=>{mode='play'})}
 function tagDismiss(q){if(!G.tag)return;const n=G.tag.name;G.tag=null;W.tag=null;spawnMerc();if(!q)toast(n+' fades out of this world');save(true)}
@@ -792,7 +825,7 @@ function updTag(dt){const m=W.tag,t=G.tag;if(!m||!t||m.hp<=0)return;const c=CLS[
     for(let j=0;j<t.sk.length;j++){m.sc[j]-=dt;if(m.sc[j]>0||d>7)continue;const[i,rk]=t.sk[j],s=c.sk[i],f=SKF[t.cls]&&SKF[t.cls][i];if(!f)continue;m.sc[j]=Math.max(4,(s.cd||5)*1.4)+j;m.say=s.n;m.sayT=1.4;m.swing=.18;sfx((SKS[t.cls]||{})[i]||'zap');tagDo(()=>{skvPlay(t.cls,i,P.x,P.y,m.dir);f(rk,R)});return}
     if(d<=rng+tg.r+.3&&m.atk<=0){m.atk=c.ivl*1.15/toxicSwing(m);m.swing=.18;tagDo(()=>{witWrap(m,()=>{if(c.melee||formed){sfx('swing');W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:1});for(const e of W.ents.slice()){const dd=dist(e,P);if(dd<1.75+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(dd||1)>.15)hit(e,c.mult*R)}}else{sfx(t.cls==='hacker'?'zap':'throw');shoot(P.dir,c.mult*R,0)}})})}}
   else m.hp=Math.min(m.max,m.hp+m.max*.04*dt);t.hp=m.hp;t.page=m.page||0}
-function tagProxy(){const t=G.tag,g=Object.create(G);g.cls=t.cls;g.eq=t.eq||{};g.form=W.tag.form||null;g.formDt=W.tag.formDt||null;g.formT=W.tag.formT||0;g.hp=W.tag.hp/W.tag.max*S.maxHp;return g}
+function tagProxy(){const t=G.tag,g=Object.create(G);g.cls=t.cls;g.sex=t.sex||'m';g.eq=t.eq||{};g.form=W.tag.form||null;g.formDt=W.tag.formDt||null;g.formT=W.tag.formT||0;g.hp=W.tag.hp/W.tag.max*S.maxHp;return g}
 function tagMenu(){const b=[];if(G.tag)b.push(['Send '+G.tag.name+' back',()=>tagDismiss()]);for(let n=0;n<NSLOT;n++){const og=tagG(n);if(og&&CLS[og.cls]&&!(G.tag&&G.tag.slot===n))b.push(['Render level '+og.lvl+' '+CLS[og.cls].n+' · '+tagCost(og.lvl)+' sats',()=>tagRender(n)])}
   b.push(['Not now']);dlg('Render a companion',b.length>1?'The rig can pull one of your other characters into this world to fight beside you. They act on their own and use the skills they had on their buttons when last saved. It costs sats every time one is rendered: if they fall, or you send them back, rendering again is paid again. A hired companion waits with Kestrel while a rendered one is here, and Kestrel will not hire to you until they leave. You hold '+G.sats+' sats.':'The rig can pull one of your other characters into this world to fight beside you, but you have no other characters saved yet. Start one from Options, under Characters.',b)}
 /* ================= party pressure: two of you is easier, so the machines push back while a companion is rendered ================= */

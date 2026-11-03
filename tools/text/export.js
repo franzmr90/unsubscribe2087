@@ -530,8 +530,13 @@ function walkCls(node) {
     emit(propv(o, 'tag'), {
       id: 'class.' + p.key + '.blurb', section: 'classes', groups, sub: sub + 1,
       limitNote: 'One or two lines under the class name when you pick a wanderer.',
-      context: 'The blurb under ' + name + ' on the character select screen. The name is the line above it.'
+      context: 'The blurb under ' + name + ' on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen.'
     });
+    [['good', 'Good at', 2], ['weak', 'Weak to', 3], ['bld', 'Builds', 4]].forEach(([key, label, n]) => emit(propv(o, key), {
+      id: 'class.' + p.key + '.' + key, section: 'classes', groups, sub: sub + n,
+      limitNote: 'Two or three short sentences.',
+      context: 'The \u201c' + label + ':\u201d line under ' + name + ' on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen.'
+    }));
     const sk = propv(o, 'sk');
     if (sk && sk.kind === 'arr') {
       sk.items.forEach((skill, i) => {

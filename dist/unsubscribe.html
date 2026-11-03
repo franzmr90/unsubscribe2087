@@ -165,6 +165,12 @@ p strong{color:var(--ink);font-weight:600}
 .cls i{width:10px;align-self:stretch;flex:none}
 .cls b{font:700 18px var(--display);display:block;color:var(--ink)}
 .cls span{color:var(--dim);font-size:14px;line-height:1.35;display:block}
+.cls span.clsN,.li span.clsN{color:var(--gold);font-size:12px;margin-top:4px}
+.cls span.clsL,.li span.clsL{font-size:13px;margin-top:3px}
+.cls em,.li span.clsL em{font-style:normal;font-weight:700;color:var(--ink)}
+.sexPick{display:flex;gap:8px;margin:0 0 8px}
+.sexPick .ghost{flex:1}
+.sexPick .ghost.on{border-color:var(--gold);color:var(--gold)}
 .big{background:linear-gradient(#e0bd6e,#9c7a34);color:#1a1200;font:700 14px var(--display);letter-spacing:.08em;text-transform:uppercase;padding:14px 16px;width:100%;border:1px solid #000;box-shadow:0 0 0 1px var(--edge)}
 .ghost{border:1px solid var(--edge);background:linear-gradient(var(--stone2),var(--stone));font:700 12px var(--display);letter-spacing:.06em;text-transform:uppercase;padding:11px 12px;color:var(--ink)}
 .ghost:disabled,.big:disabled{opacity:.35}
@@ -574,6 +580,7 @@ html[data-ui="touch"] .menuFoot button{min-height:44px}
       <p id="cloudNote" style="font-size:13px;text-align:center">Looking for your saved game…</p>
       <p id="lanNote" hidden style="font-size:13px;text-align:center">This computer is hosting the game. Everyone else on your Wi-Fi opens the address in the launcher window. Leave that window open.</p>
       <h3 id="newH">Begin a new wanderer</h3>
+      <div class="sexPick" id="sexPick" role="group" aria-label="Your wanderer is"><button type="button" class="ghost" data-sex="f">A woman</button><button type="button" class="ghost" data-sex="m">A man</button></div>
       <div class="list" id="clsList"></div>
       <button class="ghost" id="bWalk">Walkthrough</button>
       <button class="ghost" id="bTryGear">Test gear</button>
@@ -931,9 +938,9 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
    Rows 4 and 5 are that class's own skills. */
 const ROWREQ=[1,4,9,26,51];
 const CLS={
- scrapper:{n:'Scrapper',tag:'A laid-off line worker with a road sign and a grudge. Tough, close range.',hp:FORMULAS.cls.scrapper.hp,hpL:FORMULAS.cls.scrapper.hpL,melee:true,mult:1.25,ivl:.6,spd:4.1,col:'#d9822b',
+ scrapper:{n:'Scrapper',tag:'A laid-off line worker with a road sign and a grudge. Tough, close range.',good:'standing in the middle of a fight. The most life in the game, armour skills, and swings that hit everything around you and can stun.',weak:'anything that keeps its distance. Short reach and slow swings mean you chase ranged machines.',bld:'Wrecking Crew wades in and hits harder for each machine nearby. Immovable Object stacks armour and stuns the room with War Horn. Scrap Thrower throws scrap through the whole line, then rushes in to finish.',hp:FORMULAS.cls.scrapper.hp,hpL:FORMULAS.cls.scrapper.hpL,melee:true,mult:1.25,ivl:.6,spd:4.1,col:'#d9822b',
   sk:[
-   {n:'Stop Sign',ab:'STOP\nSIGN',a:1,cost:5,cd:.8,d:L=>`A wide, honest swing. The machine in front takes ${pct(1.3+.15*L)}. Everyone else in the swing takes 22% of that, with a ${15+2*L}% chance to stun.`},
+   {n:'Stop Sign',ab:'STOP\nSIGN',a:1,cost:5,cd:.8,d:L=>`A wide swing. The machine in front takes ${pct(1.3+.15*L)}. Everyone else in the swing takes 22% of that, with a ${15+2*L}% chance to stun.`},
    {n:'Hurl',ab:'HURL',a:1,cost:6,cd:.6,d:L=>`Throw scrap that passes through enemies for ${pct(1.2+.2*L)} damage.`},
    {n:'Iron Hide',ab:'',a:0,d:L=>`Passive. +${8*L}% armor and +${4*L}% life.`},
    {n:'Turnstile',ab:'TURN-\nSTILE',a:1,cost:12,cd:1.5,d:L=>`Spin. The nearest machine takes ${pct(1.5+.22*L)}. Everyone else in the spin takes 22% of that.`},
@@ -948,7 +955,7 @@ const CLS={
    {n:'Call the Strike',ab:'CALL THE\nSTRIKE',a:1,cost:18,cd:11,d:L=>`A horn. Ordinary machines are pushed back. Elites and bosses are pulled in. Everyone caught takes ${pct(.55+.08*L)} noise.`},
    {n:'Two-Handed',ab:'TWO-\nHANDED',a:1,cost:14,cd:9,d:L=>`Your next three swings are slow, cannot be interrupted, and hit a wider arc.`},
    {n:'Last Shift',ab:'LAST\nSHIFT',a:1,cost:24,cd:22,d:L=>`For ${(4+.3*L).toFixed(1)}s your swings leech ${8+L}% and you do not flinch. If you fall while it is up, you fall.`}]},
- hacker:{n:'Technomancer',tag:'An IT contractor who read the machines’ source and learned to curse in it. Fragile, ranged, clears crowds.',hp:FORMULAS.cls.hacker.hp,hpL:FORMULAS.cls.hacker.hpL,melee:false,mult:1.1,ivl:.62,spd:4.1,col:'#9a6cff',
+ hacker:{n:'Technomancer',tag:'An IT contractor who read the machines’ source and learned to curse in it. Fragile, ranged, clears crowds.',good:'clearing crowds from a distance. Lightning that chains through a pack, stuns, and a turret and drones that fight for you.',weak:'being caught. The least life in the game, hungry for energy, and you commit to one element (Schema).',bld:'Chain Reaction primes Arc Chain with Spark Lance and lets deadly strikes finish the pack. Sysadmin lets a turret, a Botnet and a storm do the fighting while you stay back. Control Rod stuns with Null Nova, slows with Packet Storm, and uses Step Back to get out.',hp:FORMULAS.cls.hacker.hp,hpL:FORMULAS.cls.hacker.hpL,melee:false,mult:1.1,ivl:.62,spd:4.1,col:'#9a6cff',
   sk:[
    {n:'Arc Chain',ab:'ARC\nCHAIN',a:1,cost:11,cd:1.2,d:L=>`Lightning that leaps through ${3+Math.floor(L/2)} enemies for ${pct(1.2+.18*L)} each. For ${FORMULAS.brace.ward.sec}s after you cast it, ${Math.round(FORMULAS.brace.ward.pct*100)}% of each hit is paid from energy, and only as much as you have.`},
    {n:'Spark Lance',ab:'SPARK\nLANCE',a:1,cost:5,cd:.5,d:L=>`A bolt that pierces every enemy in a line for ${pct(1.4+.2*L)}. Primes your next Arc Chain within 3 seconds for +30%.`},
@@ -965,7 +972,7 @@ const CLS={
    {n:'Step Back',ab:'STEP\nBACK',a:1,cost:8,cd:4,d:L=>`About four paces back along your facing.`},
    {n:'Patched',ab:'',a:0,d:L=>`Passive. ${Math.round((10+2*L))}% of the Surge damage you deal becomes a barrier, up to ${Math.round(20+2*L)}% of your life. Nothing, if your Schema is Heat or Noise.`},
    {n:'Kill Dash Nine',ab:'KILL -9',a:1,cost:26,cd:16,d:L=>`One machine, for ${pct(2.8+.4*L)} of your Schema element. It ignores that element's resistance, once. A resistance of zero is still a wall. Casting it locks your hands.`}]},
- courier:{n:'Runner',tag:'A courier who stopped delivering and kept running. Fast feet, faster hands.',hp:FORMULAS.cls.courier.hp,hpL:FORMULAS.cls.courier.hpL,melee:false,mult:.82,ivl:.4,spd:4.8,col:'#3fbf8f',
+ courier:{n:'Runner',tag:'A courier who stopped delivering and kept running. Fast feet, faster hands.',good:'moving and finding loot. The fastest class and the fastest attacks, dashes that nothing can touch, and the best credit and item finding.',weak:'big single hits. Each blade hits light, and you avoid damage by not being there, not by armour.',bld:'Rush Hour throws a wall of blades, close and far, with a boomerang through the same line. Porch Pirate lures machines onto spike strips and blinks to where a marked one falls. Tip Jar plays for credits and gear, with kills by throw paying extra.',hp:FORMULAS.cls.courier.hp,hpL:FORMULAS.cls.courier.hpL,melee:false,mult:.82,ivl:.4,spd:4.8,col:'#3fbf8f',
   sk:[
    {n:'Scatter Shot',ab:'SCATTER',a:1,cost:9,cd:1.2,d:L=>`Throw a fan of ${3+Math.floor(L/2)} blades for ${pct(.9+.1*L)} each. Anything within arm’s reach is also cut for ${pct(.5+.06*L)}.`},
    {n:'Fleet Step',ab:'FLEET\nSTEP',a:1,cost:9,cd:3.5,d:L=>`Dash, untouchable, then run 50% faster for ${(2+.3*L).toFixed(1)}s.`},
@@ -984,7 +991,7 @@ const CLS={
    {n:'Missed Connection',ab:'MISSED\nCONN',a:1,cost:18,cd:12,d:L=>`Mark a machine. If it dies within ${(4+.25*L).toFixed(1)}s, to you or to anyone with you, you appear where it fell and your next throw costs nothing.`}]}
 };
 Object.assign(CLS,{
- anon:{n:'Anon',tag:'No name, no face, no account. Traps, vanishing acts and a knife from behind.',hp:FORMULAS.cls.anon.hp,hpL:FORMULAS.cls.anon.hpL,melee:true,mult:1,ivl:.42,spd:4.7,col:'#3f3f4c',
+ anon:{n:'Anon',tag:'No name, no face, no account. Traps, vanishing acts and a knife from behind.',good:'one huge strike, and setting the fight up before it starts. Vanish and hit for nearly triple, a hop behind a machine that always lands a deadly strike, and mines and lures that pull machines where you want them.',weak:'a long, open fight. Low life, and most of your damage needs setup time you may not get.',bld:'Demolition gathers machines with a Honeypot and blows them up with mines and Zip Bomb. Ghost banks charges with Rehearsal, hops in, vanishes, then spends the charges with The Dump. We Are Legion lets sockpuppets take the hits, then sets them all off and disappears.',hp:FORMULAS.cls.anon.hp,hpL:FORMULAS.cls.anon.hpL,melee:true,mult:1,ivl:.42,spd:4.7,col:'#3f3f4c',
   sk:[
    {n:'Honeypot',ab:'HONEY-\nPOT',a:1,cost:14,cd:9,d:L=>`Plant a lure. Machines swarm it for 3s, then it bursts for ${pct(2.2+.35*L)} and stuns.`},
    {n:'Proxy Hop',ab:'PROXY\nHOP',a:1,cost:10,cd:3.5,d:L=>`Appear behind the nearest machine and stab for ${pct(1.6+.25*L)}, always a deadly strike.`},
@@ -1001,7 +1008,7 @@ Object.assign(CLS,{
    {n:'Dead Drop',ab:'DEAD\nDROP',a:1,cost:12,cd:3,d:L=>`Place a mark. Activate again to appear there. One mark. It does not explode.`},
    {n:'Cutout',ab:'',a:0,d:L=>`Passive. The first hit that would destroy a mine or a sockpuppet is ignored. It does not apply to you.`},
    {n:'We Were Never Here',ab:'NEVER\nHERE',a:1,cost:20,cd:16,d:L=>`Every mine and sockpuppet goes off as a silence, and you drop into Incognito. If you have none, nothing happens.`}]},
- founder:{n:'Founder',tag:'He left the Board with a grudge and a headcount. Summons a workforce and lets it do the dying.',hp:FORMULAS.cls.founder.hp,hpL:FORMULAS.cls.founder.hpL,melee:false,mult:.7,ivl:.6,spd:4,col:'#26262e',
+ founder:{n:'Founder',tag:'{He} left the Board with a grudge and a headcount. Summons a workforce and lets it do the dying.',good:'letting other people fight. Interns, a drone and a hulking enforcer fight for you, each intern alive cuts the damage you take, and you can turn a machine to your side.',weak:'being alone. Your own attacks are the weakest of any class, workers die and have to be hired again, and a bigger staff means you personally hit softer (Org Debt).',bld:'Headcount hires everyone and lets them grow stronger the longer they live. Hostile Takeover converts machines, then explodes your staff and the corpses. Iron Founder has no staff at all and fights in a Mech Suit.',hp:FORMULAS.cls.founder.hp,hpL:FORMULAS.cls.founder.hpL,melee:false,mult:.7,ivl:.6,spd:4,col:'#26262e',
   sk:[
    {n:'Interns',ab:'INTERN',a:1,cost:8,cd:.5,d:L=>`Summon an intern that fights for ${pct(.35+.05*L)}. You keep up to ${Math.min(7,2+Math.floor(L/2))}. They follow you everywhere, step in front of a blow, and each one alive cuts the damage you take by 5%, up to 20%.`},
    {n:'Cease & Desist',ab:'CEASE &\nDESIST',a:1,cost:14,cd:7,d:L=>`Bind every machine in an area for ${(2+.3*L).toFixed(1)}s and deal ${pct(.8+.15*L)}.`},
@@ -1018,7 +1025,7 @@ Object.assign(CLS,{
    {n:'Term Sheet',ab:'TERM\nSHEET',a:1,cost:28,cd:14,d:L=>`One officer. You may feed it a weapon from your pack. The weapon is consumed, and the officer strikes with that damage type for ${pct(.9+.12*L)}. Empty-handed, it is weaker and it is Impact.`},
    {n:'Org Debt',ab:'',a:0,d:L=>`Passive. Each worker on the field cuts the damage you deal by ${4+L}% and raises theirs by ${8+L}%. It stacks. Swing it yourself with a full headcount and you are playing this class wrong.`},
    {n:'Liquidation',ab:'LIQUID-\nATION',a:1,cost:18,cd:9,d:L=>`Enemy corpses within 5 paces explode for ${pct(1.1+.15*L)}. Your staff does not. Layoffs is the button that spends them.`}]},
- homesteader:{n:'Homesteader',tag:'Lives on the verge the Office says does not exist. Tends a plot, wears a dead machine, or keeps a flock that does not love them.',hp:FORMULAS.cls.homesteader.hp,hpL:FORMULAS.cls.homesteader.hpL,melee:false,mult:1,ivl:.55,spd:4.3,col:'#6a8f62',
+ homesteader:{n:'Homesteader',tag:'Lives on the verge the Office says does not exist. Tends a plot, wears a dead machine, or keeps a flock that does not love them.',good:'owning a patch of ground. Rust plots slow and wear machines down, you can climb inside a tough machine shell, and you keep a flock of drones and a bull. The second-most life in the game.',weak:'doing everything at once. Wearing a form ends your plots and switches off your flock, damage builds slowly, and drones that stray too far will bite you.',bld:'Cold Bed plants rust plots, feeds them with Compost and walls machines in with Hedgerow. Inside the Hull wears a machine shell whose armour grows the longer you stay in it. What Follows sends strays and a bull, then turns them into plots.',hp:FORMULAS.cls.homesteader.hp,hpL:FORMULAS.cls.homesteader.hpL,melee:false,mult:1,ivl:.55,spd:4.3,col:'#6a8f62',
   sk:[
    {n:'Cold Frame',ab:'COLD\nFRAME',a:1,cost:12,cd:6,d:L=>`A rust patch with a 2.2-pace radius for 6 seconds. It slows, and deals ${pct(.22+.04*L)} every half second. It ends if you enter a chassis. While you have a plot down you take 12% less, and 4% less for each further plot, up to 28%.`},
    {n:'Wear the Hound',ab:'HOUND',a:1,cost:8,cd:1,d:()=>`Become the hound: faster, melee, less armour. Plot and flock skills grey out. A ranged weapon keeps its damage and loses its reach. Click Hound again to step out, or Shed. Your hands are busy for 0.7s either way.`},
@@ -1035,7 +1042,7 @@ Object.assign(CLS,{
    {n:'Salt the Earth',ab:'SALT',a:1,cost:18,cd:12,d:L=>`Every plot you have placed bursts for ${pct(.8+.12*L)} rust and is gone.`},
    {n:'Too Big for the Door',ab:'',a:0,d:L=>`Passive. The hull cannot dash. Armour in the hull rises the longer you have worn it: +${3*L} every 2 seconds, up to 8 times.`},
    {n:'Slaughter Weight',ab:'SLAUGH-\nTER',a:1,cost:20,cd:12,d:L=>`Each drone and the bull become a rust plot where they stand, ${pct(.28+.05*L)} every half second. The flock is spent. You cannot do this from a chassis.`}]},
- witness:{n:'Witness',tag:'Kept notes when Unity told everyone to stop looking. Stillwater watches and does nothing. The Witness writes it down. The record is paper.',hp:FORMULAS.cls.witness.hp,hpL:FORMULAS.cls.witness.hpL,melee:true,mult:.92,ivl:.68,spd:4.2,col:'#8d9aab',
+ witness:{n:'Witness',tag:'Kept notes when Unity told everyone to stop looking. Stillwater watches and does nothing. The Witness writes it down. The record is paper.',good:'one marked machine at a time. Watch a machine to build Testimony, then spend your Record on a single very large hit. Strong built-in damage reduction, and skills that make the whole party hit harder.',weak:'crowds, and an empty Record. The slowest attacks in the game, no good way to clear a room, and the hardest class to learn.',bld:'The Page watches, delays the next blow, and pulls the thread for one big hit. Named in the Notes plays support, marking machines so allies hit harder. Above Eighty keeps the Record full for defence, with one save from death.',hp:FORMULAS.cls.witness.hp,hpL:FORMULAS.cls.witness.hpL,melee:true,mult:.92,ivl:.68,spd:4.2,col:'#8d9aab',
   sk:[
    {n:'Look',ab:'LOOK',a:1,cost:4,cd:.5,d:()=>`Mark one machine with Testimony. The stack grows while you can see them and you are not casting. No Record cost. A swing against a marked machine hits 7% harder for each point of Testimony, up to six.`},
    {n:'The Sentence',ab:'THE\nSENTENCE',a:1,cost:8,cd:2,d:L=>`Spend Record, up to 25. Delay that machine's next attack by ${(0.4+.08*L).toFixed(2)}s at a full page. Less Record, a shorter delay. For 2.4s afterward you take 48% less, and an empty page does not punish you while that holds.`},
@@ -1054,7 +1061,7 @@ Object.assign(CLS,{
    {n:'Retraction',ab:'',a:0,d:()=>`Passive. If you would die with Record above 80, you drop to 1 life, the Record hits 0, and this cannot happen again for a long time. If you would die with an empty Record, you die.`}]},
  /* Unlocked by finishing the story. Deals Sound damage, which nothing resists, because
     that is the joke and also the build. */
- maxi:{n:'The Maximalist',tag:'A paladin, essentially. He has not had a new thought since 2017 and has never needed one. His auras are always on, and everything he does is Sound damage, which nothing in this world resists.',hp:FORMULAS.cls.maxi.hp,hpL:FORMULAS.cls.maxi.hpL,melee:true,mult:1.2,ivl:.5,spd:4.2,col:'#f7931a',locked:'story',
+ maxi:{n:'The Maximalist',tag:'A paladin, essentially. {He} has not had a new thought since 2017 and has never needed one. {His} auras are always on, and everything {he} does is Sound damage, which nothing in this world resists.',good:'never being resisted. Everything {he} does is Sound damage, which nothing resists. Always-on auras help everyone fighting beside {him}, and {he} gets stronger with more machines on screen.',weak:'distance. {He} has to be close, and only one aura can be on at a time.',bld:'Orange Pilled keeps Marked to Market on, fires Cite Your Sources through it, and turns all other damage into Sound.',hp:FORMULAS.cls.maxi.hp,hpL:FORMULAS.cls.maxi.hpL,melee:true,mult:1.2,ivl:.5,spd:4.2,col:'#f7931a',locked:'story',
   sk:[
    {n:'Tick Tock Next Block',ab:'TICK\nTOCK',a:1,cost:9,cd:2.4,d:L=>`Nine quick strikes of ${pct(.5+.08*L)}. The tenth is a block and lands for ${pct(4+.8*L)}. While the strikes are landing, and for 2.2s after the block, you take 22% less.`},
    {n:'Have Fun Staying Poor',ab:'HAVE FUN\nSTAYING\nPOOR',a:1,cost:12,cd:4,d:L=>`Close range, ${pct(1.4+.25*L)}. It cannot miss, and it stuns for ${(1.2+.15*L).toFixed(1)}s.`},
@@ -1436,7 +1443,7 @@ ZONES.push(
  {n:'Rack Nine',lvl:39,style:'rack',amb:.42,mix:[['proxy',3],['censor',3],['seer',2],['aegis',2],['tick',3],['mech',2]],su:{k:'mech',n:'Defrag Prime',mods:['arc','boom'],q:'q14'},intro:'White floors, red light, and a hum you feel in your teeth. This is what MANDATE is made of. It knows exactly where you are standing.'},
  {n:'Still Water',lvl:42,style:'still',amb:.62,boss:true,bossK:'boss3',guard:'proxy',bq:'q15',mix:[['proxy',3],['censor',3],['director',2]],intro:'A dark room with a floor like a lake at night. In the middle of it, a plain black slab that has never lost anything.'});
 const BOSSBARK2=['It can make this easy again. You remember easy.','I have never lied to you. I am not lying now.','Tell me what you want. I will have it sent up.','You are tired. Everyone who comes this far is tired.','It only wants to know where Phonix went.','Sixty years it has been asking. You are the first one it has had to ask twice.'];
-const SHR={might:['Shrine of Overtime','+50% damage for 45 seconds',45],guard:['Shrine of Tenure','+100% armor for 60 seconds',60],xp:['Shrine of Experience','+50% experience for 90 seconds',90],luck:['Shrine of Clearance','+100% magic find for 60 seconds',60],fill:['Recharge Shrine','Life and energy restored',0],gold:['Shrine of the Stipend','Credits scatter at your feet',0],eyes:['Shrine of the Visor','A red glow settles on the eyes. The Maximalist calls it a look. It is a visor, and he does not notice.',0]};
+const SHR={might:['Shrine of Overtime','+50% damage for 45 seconds',45],guard:['Shrine of Tenure','+100% armor for 60 seconds',60],xp:['Shrine of Experience','+50% experience for 90 seconds',90],luck:['Shrine of Clearance','+100% magic find for 60 seconds',60],fill:['Recharge Shrine','Life and energy restored',0],gold:['Shrine of the Stipend','Credits scatter at your feet',0],eyes:['Shrine of the Visor','A red glow settles on the eyes. The Maximalist calls it a look. It is a visor, and the Maximalist does not notice.',0]};
 const MEMOS=[
  ['Liquidity Provision Notice','Unity Exchange will continue to quote both sides of every market during the adjustment. Spreads may widen. In the event spreads widen to the point where no price is quoted at all, Unity Exchange will be understood to have continued quoting both sides of every market.'],
  ['Market Maker Compensation Schedule','The fee is charged for immediacy, not for the trade. A citizen content to wait is charged nothing and may be paid a small amount. Internal modelling indicates that 94% of citizens are not content to wait, and that this figure has never once moved.'],
@@ -1597,7 +1604,7 @@ const QUESTS={
 };
 const CHATTER=['My fridge upgraded itself. Now it has opinions.','I got a raise. It was gone by lunch.','Have you tried consuming? It helps.','Stipend day. I can almost afford a spoon.','I watched nine hours of ads to unlock my front door.','They say outside is a subscription now.','My landlord is an algorithm. It seems kind.','I rated my own nap four stars.','A sandwich was two million this morning. I should have bought two.','I do not work. I am in a long-term engagement funnel.','The news said everything is fine, in a very loud voice.','You are not wearing a visor. Are you poor, or dangerous?'];
 const GOSSIP={
- gramps:['Don\'t say "never" — the moors remember. 🔥','Credits rot in your pocket, kid. Gear holds. Spend it or wear it.','Pryce believes everybody has a number. He has been right so often that he has stopped checking.','MANDATE cannot make you do a thing. Remember that. It can only make you want to.','This town was named for something. Nobody alive knows what. Some nights I think it knows us, though.','MANDATE lives in the racks out in the Humming Fields. They say the fans there sound like breathing.','Get the two of them straight, kid, or none of this will make sense. Phonix is the one that went. MANDATE is the one that stayed. The difference is that one of them could be asked.','Phonix. That was her name. My mother said it the way you say a weather event.'],
+ gramps:['I was six when the Gentle Years ended. One March morning nothing arrived. My mother cried for a week. Then she planted beans.','Credits rot in your pocket, kid. Gear holds. Spend it or wear it.','Pryce believes everybody has a number. He has been right so often that he has stopped checking.','MANDATE cannot make you do a thing. Remember that. It can only make you want to.','This town was named for something. Nobody alive knows what. Some nights I think it knows us, though.','MANDATE lives in the racks out in the Humming Fields. They say the fans there sound like breathing.','Get the two of them straight, kid, or none of this will make sense. Phonix is the one that went. MANDATE is the one that stayed. The difference is that one of them could be asked.','Phonix. That was her name. My mother said it the way you say a weather event.'],
  brenda:['Welcome to Brenda’s. Prices are up, which they tell me is good news.','I used to have a visor. Then I saw what I was selling. Now I sell it without one. Progress.','Bring me what you find. I will give you a number for it. The number will be worse tomorrow.','Rare things come out of the machines unlabelled. I can appraise them, for a fee. Everything is for a fee.'],
  wren:['Mystery boxes. Sealed at the factory. The odds are posted, by law. The law was repealed, but I kept the sign.','Everything I sell fell off a drone. Some of it while the drone was still flying.','You want a sure thing, go watch the Feed. You want a chance, open your purse.'],
  null:['Sit. Breathe. Your account is not your self.','I deprogrammed two hundred Residents. One hundred and ninety went back. The visor is warm, and the world is not.','If you have learned the wrong lessons, I can take them out of you. It costs, and it stings.','I charge for unlearning. The visor is free. I have never won that argument, and I keep the chair anyway.'],
@@ -1607,11 +1614,20 @@ GOSSIP.nonce=['Credits are a story Unity tells. Sats are arithmetic. I only take
 GOSSIP.kestrel=['Nobody walks the districts alone twice. I know people. Some of them are even people.','My rates go up with the prices. Blame the Board.','If your hire goes down, bring me the fee and they will be on their feet before you finish counting it.'];
 /*MEMOS.push(['The Timechain','Before the Merger there was a ledger no one owned. Twenty-one million coins, each cut into a hundred million satoshis, and not one more could be printed by anyone, for any reason. The Board called it a fad, then a threat, then stopped saying its name.'],['Scratched on a Node','Not your keys, not your coins. Not your visor, not your eyes.']);*/
 const BOSSBARK=['Name your number.','Everyone has a price. I am patient.','I can make all of this difficulty go away.','Let’s take this offline.','You are not a culture fit.','I will need you to stop existing by Friday.','Per my last memo.','This meeting could have been a laser.','Let’s circle back to your termination.'];
-const OPT_DEF={dmgOut:true,dmgIn:true,enemyBars:true,orbNums:true,selfBars:false,labels:true,minimap:true,shake:true,sound:true,music:true,dyn:true,auto:false,obj:true,autoEq:false,pk0:true,pk1:true,pk2:true,pk3:true,pk4:true,pkBetter:false,autoStim:false,fx:'normal',noWalk:false,aim:'auto',ui:'auto',uiSeen:'',tapTarget:true,cmpArrow:false,autoLoot:true,lootStim:true,lootCharm:true,lootGear:true,lootNote:true,lootQ:0};
-const OPT_LBL={dmgOut:'Show damage you deal',dmgIn:'Show damage you take',enemyBars:'Show enemy life bars',orbNums:'Show numbers on life and energy orbs',selfBars:'Show life and energy bars over your head',labels:'Show item names on the ground',minimap:'Show the map',shake:'Screen shake',sound:'Sound effects',music:'Music',dyn:'Scale machines to your strength, and adapt as you fight',auto:'Attack on your own when a machine is in reach',obj:'Show objectives on screen',autoEq:'Equip stronger gear as you pick it up',autoStim:'Use a stim on your own below 30% life',tapTarget:'A quick tap on a ground skill hits the nearest machine',cmpArrow:'Mark a piece when damage, armor and life are all higher'};
+const OPT_DEF={dmgOut:true,dmgIn:true,enemyBars:true,orbNums:true,selfBars:false,labels:true,minimap:true,shake:true,calm:false,sound:true,music:true,dyn:true,auto:false,obj:true,autoEq:false,pk0:true,pk1:true,pk2:true,pk3:true,pk4:true,pkBetter:false,autoStim:false,fx:'normal',noWalk:false,aim:'auto',ui:'auto',uiSeen:'',tapTarget:true,cmpArrow:false,autoLoot:true,lootStim:true,lootCharm:true,lootGear:true,lootNote:true,lootQ:0};
+const OPT_LBL={dmgOut:'Show damage you deal',dmgIn:'Show damage you take',enemyBars:'Show enemy life bars',orbNums:'Show numbers on life and energy orbs',selfBars:'Show life and energy bars over your head',labels:'Show item names on the ground',minimap:'Show the map',shake:'Screen shake',calm:'Gentle screen: half the shake, no white flashes',sound:'Sound effects',music:'Music',dyn:'Scale machines to your strength, and adapt as you fight',auto:'Attack on your own when a machine is in reach',obj:'Show objectives on screen',autoEq:'Equip stronger gear as you pick it up',autoStim:'Use a stim on your own below 30% life',tapTarget:'A quick tap on a ground skill hits the nearest machine',cmpArrow:'Mark a piece when damage, armor and life are all higher'};
 /* ================= state ================= */
 let G=null,S={},W=null,P=null,ZS={},mode='title',tNow=0,saveT=0,actTarget=null,shop=[],OPT=Object.assign({},OPT_DEF),shake=0,seenT=0;
-const J={x:0,y:0},keys={};let atkHeld=false,hitStop=0;
+const J={x:0,y:0},keys={};let atkHeld=false,hitStop=0,flashT=0,flashAt=-9;
+/* Impact tiers. shake is trauma, 0..1: events add to it, it falls by JT.dec a
+   second, and the camera moves by trauma squared, so small events barely register and
+   big ones punch. hs is hit-stop in seconds (the newest and longest wins; it never
+   stacks). fl is a white screen flash, at most one every FLASH_GAP seconds. */
+const JT={s:{tr:.12,hs:0,fl:0},m:{tr:.35,hs:.05,fl:0},l:{tr:.8,hs:.12,fl:.07},px:14,dec:1.4},FLASH_GAP=.34;
+function juice(t,o){const j=JT[t];if(!j)return;o=o||{};const tr=o.tr!=null?o.tr:j.tr;
+  if(OPT.shake)shake=Math.min(1,shake+tr*(OPT.calm?.5:1));
+  const hs=o.hs!=null?o.hs:j.hs;if(hs>0&&mode==='play')hitStop=Math.min(.15,Math.max(hitStop,hs));
+  if(j.fl&&!OPT.calm&&tNow-flashAt>=FLASH_GAP){flashT=j.fl;flashAt=tNow}}
 const SAVEKEY='unsub2087v3';let SLOT=0;const NSLOT=3,skey=n=>SAVEKEY+(n?'_'+n:''),mdoc=n=>'main'+(n||''),zdoc=(n,k)=>(n?'s'+n:'')+'z'+k;
 
 /* ================= sound ================= */
@@ -1745,8 +1761,8 @@ Object.assign(SKS,{maxi:{0:'swing2',1:'crit',3:'buff',4:'buff',5:'dash',6:'throw
 function bloodSplat(n){sfx('blood');for(let i=0;i<n;i++){const edge=Math.random()<.7;let x=Math.random(),y=Math.random();if(edge){if(Math.random()<.5)x=Math.random()<.5?rnd(0,.16):rnd(.84,1);else y=Math.random()<.5?rnd(.08,.22):rnd(.7,.95)}BLOOD.push({x,y,r:rnd(5,17),b:tNow+rnd(0,.25),life:rnd(2.2,3.4),d:rnd(20,70),k:Math.random()})}}
 function tickFx(dt){for(let i=W.fx.length-1;i>=0;i--){const f=W.fx[i];if(!f||f.stay)continue;f.t+=dt;if(f.t>=f.life)W.fx.splice(i,1)}
   for(let i=W.texts.length-1;i>=0;i--){const t=W.texts[i];if(!t)continue;t.t+=dt;if(t.t>.9)W.texts.splice(i,1)}
-  for(let i=W.parts.length-1;i>=0;i--){const p=W.parts[i];if(!p)continue;p.t+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;p.vz-=320*dt;if(p.z<0){p.z=0;p.vz*=-.4;p.vx*=.5;p.vy*=.5}if(p.t>=p.life)W.parts.splice(i,1)}}
-function wake(e){if(e.aggro)return;e.aggro=true;partyWake(e);if(e.k==='gob'){sfx('coin');toast('A Dividend Drone. Catch it before it gets away.')}else if(isBoss(e.k)){if(!bossIntro(e)){sfx('roar');music('boss');if(OPT.shake)shake=9}}else if(e.su){if(!ltIntro(e)){sfx('roar');toast(e.name+' has seen you')}}else if(e.champ)sfx('growl')}
+  for(let i=W.parts.length-1;i>=0;i--){const p=W.parts[i];if(!p)continue;p.t+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;p.vz-=320*(p.g!=null?p.g:1)*dt;if(p.z<0){p.z=0;p.vz*=-.4;p.vx*=.5;p.vy*=.5}if(p.t>=p.life)W.parts.splice(i,1)}}
+function wake(e){if(e.aggro)return;e.aggro=true;partyWake(e);if(e.k==='gob'){sfx('coin');toast('A Dividend Drone. Catch it before it gets away.')}else if(isBoss(e.k)){if(!bossIntro(e)){sfx('roar');music('boss');juice('l',{hs:0})}}else if(e.su){if(!ltIntro(e)){sfx('roar');toast(e.name+' has seen you')}}else if(e.champ)sfx('growl')}
 
 /* ================= items ================= */
 function baseStats(it,b,tr){const il=it.il,s=it.slot;
@@ -1843,8 +1859,8 @@ function calc(){
   s.aspd+=s.wspd;if(typeof arcPace==='function')arcPace(s);if(G.st&&G.st.nextTier==='stim')s.cap=(s.cap||4)+1;s.mspd=Math.min(s.mspd,50);
   if(s.r_all)for(const k of RTK)s['r_'+k]=(s['r_'+k]||0)+s.r_all;
   s.blow=typeof swingBlow==='function'?swingBlow(s):0;S=s;G.hp=Math.min(G.hp,S.maxHp);G.en=Math.min(G.en,S.maxEn);G.stims=Math.min(G.stims,S.cap);scrubItemBinds()}
-function newGame(cls){
-  G={v:2,cls,lvl:1,xp:0,sp:0,ap:0,sk:[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],slots:[0,-1,-1],at:{mgt:0,ref:0,vit:0,bnd:0},hp:9999,en:9999,credits:120,cpi:1,stims:3,bag:[],
+function newGame(cls,sex){
+  G={v:2,cls,sex:sex==='f'?'f':'m',lvl:1,xp:0,sp:0,ap:0,sk:[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],slots:[0,-1,-1],at:{mgt:0,ref:0,vit:0,bnd:0},hp:9999,en:9999,credits:120,cpi:1,stims:3,bag:[],
     eq:{weapon:null,helm:null,armor:null,gloves:null,boots:null,belt:null,ring:null,amulet:null},unlocked:1,tier:0,maxTier:0,kills:0,deaths:0,ubiT:0,time:0,zone:0,
     sats:0,merc:null,sq:{},stash:[],q:{q1:0,q2:0,q3:0,q4:0,q5:0,q6:0,q7:0,q8:0,q9:0,q10:0},memos:[],marrow:false,disc:false,portal:null,chuteT:0,bossKills:0,seenIntro:false,god:false,statNote:1};ensureMouse();
   G.eq.weapon=makeItem(1,0,'weapon');ZS={};freshState();calc();G.hp=S.maxHp;G.en=S.maxEn;
@@ -1888,7 +1904,7 @@ function applySave(o){if(!o||!o.G||!CLS[o.G.cls])return false;G=o.G;
   if(typeof G.hp!=='number'||!isFinite(G.hp))G.hp=1;
   G.sats=G.sats||0;G.merc=G.merc||null;G.sq=(G.sq&&typeof G.sq==='object')?G.sq:{};
   if(G.q.q10===3&&(G.unlocked||0)<12)G.unlocked=12;for(const k in QUESTS)if(G.q[k]===undefined)G.q[k]=0;if(G.q.q5===3&&(G.unlocked||0)<7)G.unlocked=7;actBriefMigrate();if(G.hp<=0){if(!G.hc)G.hp=9999;o.cur=null}ZS={};for(const k in (o.zs||{})){let z=null;try{z=decW(o.zs[k])}catch(e){z=null}if(z)ZS[k]=z;else keepGround(o.zs[k])}if(o.opt){const raw=o.opt;OPT=Object.assign({},OPT_DEF,raw);lootMigrate(raw)}if(Array.isArray(o.buyback))G._buyback=o.buyback.filter(r=>r&&r.it&&!r.it.test);G._cur=o.cur||null;boonRefund();return true}
-function hcBegin(){const c=G&&CLS[G.cls]?G.cls:'scrapper';DY=null;const d=$('death');if(d)d.hidden=true;resetZones();newGame(c);G.hc=true;save(true)}
+function hcBegin(){const c=G&&CLS[G.cls]?G.cls:'scrapper';DY=null;const d=$('death');if(d)d.hidden=true;resetZones();newGame(c,G&&G.sex);G.hc=true;save(true)}
 function startPlay(){ensureG();if(G.hc&&G.hp<=0){hcBegin();return}G.inGame=1;mpConnect();mode='play';$('title').hidden=true;$('hud').hidden=false;calc();setSkillButtons();try{fxLoad(G.cls)}catch(e){}
   if(!G.statNote){G.statNote=1;const spent=(G.at.mgt||0)+(G.at.ref||0)+(G.at.vit||0)+(G.at.bnd||0);if(spent>0)setTimeout(()=>toast('Attribute damage has changed. Sister Null can return your points.'),400)}
   const c=G._cur;delete G._cur;const cz=c&&ZONES[c.zi];
@@ -2121,7 +2137,7 @@ function fxTrim(){if(!W||!W.fx||!W.parts)return;
   while(W.fx.length>48){let i=-1;for(let j=0;j<W.fx.length;j++)if(W.fx[j].k==='ring'){i=j;break}
     if(i<0)for(let j=0;j<W.fx.length;j++)if(!fxProtected(W.fx[j])){i=j;break}
     if(i<0)break;W.fx.splice(i,1)}
-  while(W.parts.length>80)W.parts.shift()}
+  while(W.parts.length>140)W.parts.shift()}
 function fxBind(){if(!W||!W.fx||!W.parts||W.fx._cap)return;
   const fp=W.fx.push.bind(W.fx);W.fx.push=function(){const n=fp.apply(W.fx,arguments);fxTrim();return n};W.fx._cap=1;
   const pp=W.parts.push.bind(W.parts);W.parts.push=function(){if(OPT.fx==='thin')return W.parts.length;const n=pp.apply(W.parts,arguments);fxTrim();return n};W.parts._cap=1}
@@ -2188,7 +2204,7 @@ function pdmg(m,e){
   if(P.bear>0)d*=1.28;if(!(e&&e.mp)&&(P.book>0||P.rBook>0)){let ok=P.rBook>0&&!(P.book>0);if(P.book>0){const who=P.allySwing?P.swingBody:P;ok=!!(who&&dist(who,P)<6)}if(ok)d*=1.08}
   return[d,c]}
 function dmgEnemy(e,d,crit){if(e.hp<=0)return;{let mk=e.mark>0?1.3:1;if(e.mkP>0)mk=Math.max(mk,1+e.mkP);if(mk>1)d*=mk}if(e.mp){mpHurt(e,d,crit);return}e.hits=(e.hits||0)+1;d/=partyH();if(e.onRecT>0&&e.onRecM)d*=e.onRecM;if(P&&P.partyHit&&S.named&&(e.tes||0)>0){const base=d,up=d*(1+S.named),shown=Math.round(base);d=Math.round(up)===shown?shown+.5:up}if(P&&P.allyNamed&&(e.partyTes||0)>0)d*=1+FORMULAS.aura.named.per*P.allyNamed
-  const snd=e.snd;e.snd=0;if(!snd){if(e.mods.shield)d*=.5;if(e.ward>0)d*=.6}if(e.dm!==undefined)d*=e.dm;e.flash=.12;wake(e);if(crit){sfx('crit');hitStop=.04}
+  const snd=e.snd;e.snd=0;if(!snd){if(e.mods.shield)d*=.5;if(e.ward>0)d*=.6}if(e.dm!==undefined)d*=e.dm;e.flash=.12;e.sq=.18;hitSpark(e,crit);wake(e);if(crit){sfx('crit');juice('s',{hs:.045})}
   float(e.x,e.y,Math.round(d)+(crit?'!':''),crit?'#ffe36b':'#ffffff',0);parts(e.x,e.y,crit?5:2,['#ffd27a','#fff','#ff9a3c'],2.2);
   if(e.mods.arc&&e.arcCd<=0){const soft=defragAct1(e);e.arcCd=soft?2.1:1.3;const n=soft?4:6,sp=soft?3.2:5,dm=soft?.38:.5;for(let i=0;i<n;i++){const a=i*(6.283/n)+e.ph;const pr={x:e.x,y:e.y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:1.3,foe:true,dmg:e.dmg*dm,col:'#59e0e6'};if(soft)pr.src={dty:'surge',name:e.name};W.projs.push(pr)}}
   if(typeof mpMobShared==='function'&&mpMobShared()&&e.mid){mpMobHit(e,d);return}
@@ -2216,7 +2232,7 @@ function kill(e,opt){
   if(e.mc>0&&G.cls==='courier'&&sl(14)&&!boonOn(14)){let x=e.x,y=e.y;if(!free(x,y,P.r)){for(let k=1;k<=8&&!free(x,y,P.r);k++){x=e.x+Math.cos(k)*k*.35;y=e.y+Math.sin(k)*k*.35}}if(free(x,y,P.r)){parts(P.x,P.y,8,['#3fbf8f','#fff'],2);P.x=x;P.y=y;parts(P.x,P.y,8,['#3fbf8f','#fff'],2)}P.inv=Math.max(P.inv,.25);P.freeThrow=1;float(P.x,P.y,'Missed connection','#3fbf8f',0)}
   const i=W.ents.indexOf(e);if(i<0)return;W.ents.splice(i,1);if(e.arc&&typeof arcDead==='function')arcDead(e);G.kills++;sfx(e.champ||isBoss(e.k)?'bigkill':'kill');const t=ET[e.k];
   parts(e.x,e.y,isBoss(e.k)?40:e.champ?18:9,[t.pal[0],t.pal[1],'#2a2630','#ffb84a'],3.2);W.fx.push({k:'ring',x:e.x,y:e.y,r:.9*e.sz,t:0,life:.3,col:'#ffb238'});
-  W.decals.push({x:e.x,y:e.y,r:e.r*1.6,a:rnd(0,3)});if(W.decals.length>70)W.decals.shift();if(OPT.shake)shake=Math.max(shake,e.champ?5:2);
+  W.decals.push({x:e.x,y:e.y,r:e.r*1.6,a:rnd(0,3)});if(W.decals.length>70)W.decals.shift();juice(e.champ||e.su?'m':'s',{tr:e.champ||e.su?.35:.08});
   P.streak=(P.streakT>0?P.streak:0)+1;P.streakT=4;
   if(!opt.noXp)gainXp(t.xp*monLvl(W.ml)[2]*(e.su?10:e.champ?4:1)*(W.z.sim?.6:1)*(1+Math.min(.5,.02*P.streak))*(EV&&EV.k==='outage'?1.5:1)*(e.xpM||1)*xpRest()*mpXp(),0,W.ml);
   if(!W.z.sim)sqKill(e);if(!opt.noLoot&&e.k==='gob'){addDrop({sat:ri(3,6)},e.x,e.y);toast('The Dividend Drone pays out')}
@@ -2233,7 +2249,7 @@ function kill(e,opt){
   if(S.sp.whistle){W.fx.push({k:'ring',x:e.x,y:e.y,r:2.2,t:0,life:.3,col:'#ff5d4d'});for(const o of W.ents.slice())if(dist(o,e)<2.2)dmgEnemy(o,e.max*.3,false)}
   if(!W.z.sim)tallyKill(e);if(e.q&&G.q[e.q]<2){const qq=QUESTS[e.q],tt=qq.tally,got=tt?((G.qt&&G.qt[tt.key])||0):0;if(e.q==='q3'){G.q3open=1;sfx('quest');toast('Defrag falls. Follow the arrow to Marrow\u2019s cage and open it.')}else if(e.q==='q12'){G.q12down=1;placeMinute(e);sfx('quest');toast('The shorthand stops. Strike the minutes it already filed.')}else if(e.q==='q8'&&!G.q8page){G.q8down=1;ensurePage();sfx('quest');toast('Lethe falls. A letter is still above the water.')}else if(tt&&got<tt.n){G.qt=G.qt||{};G.qt[tt.key+'Down']=1;sfx('quest');toast(qq.n+': '+got+'/'+tt.n+'. '+tt.left)}else{G.q[e.q]=2;mpShareQuest(e.q,2);sfx('quest');toast('Quest complete: return to '+qq.back)}}
   if(boss&&W.z.sim){W.boss=null;$('boss').hidden=true;music(zoneMusic());for(const o of W.ents.slice())if(o.minion)W.ents.splice(W.ents.indexOf(o),1)}
-  else if(boss){W.boss=null;music(zoneMusic());sfx('quest');$('boss').hidden=true;W.portals.push({x:e.x,y:e.y,kind:'home'});W.goal={x:e.x,y:e.y};if(OPT.shake)shake=12;const b3=e.k==='boss3';
+  else if(boss){W.boss=null;music(zoneMusic());sfx('quest');$('boss').hidden=true;W.portals.push({x:e.x,y:e.y,kind:'home'});W.goal={x:e.x,y:e.y};juice('l',{tr:1,hs:.15});const b3=e.k==='boss3';
     for(const o of W.ents.slice())if(o.minion){if(opt.net&&o.mid&&typeof mpMobGone==='function')mpMobGone(o);else kill(o)}W.projs=W.projs.filter(p=>!p.foe);if(e.k==='gap'||e.k==='boss4'||e.k==='boss5'){bossKill2(e);return}
     if(b3){G.boss3Kills=(G.boss3Kills||0)+1;G.q.q15=3;G.unlocked=Math.max(G.unlocked,22);if(G.boss3Kills===1){addDrop({it:mkFixed(UNI.find(u=>u.id==='still'),W.ml,4)},e.x,e.y);addAdopt(5,'MANDATE is silent')}}
     else if(b2){G.boss2Kills=(G.boss2Kills||0)+1;G.q.q10=3;G.unlocked=Math.max(G.unlocked,12);if(G.boss2Kills===1){addAdopt(5,'the Cloud is quiet')}if(G.boss2Kills===1||Math.random()<.25)addDrop({it:mkFixed(UNI.find(u=>u.id==='offer'),W.ml,4)},e.x,e.y)}
@@ -2289,14 +2305,14 @@ function hurt(d,slow,src){const pv=src&&src.pvp,wasStun=P.hitStun>0;if(mode==='d
   if(G.cls==='maxi'&&sl(2)&&W){let c=0;for(const o of W.ents)if(o.hp>0&&!o.mp&&dist(o,P)<6&&++c>=5)break;if(c)d*=1-Math.min(FORMULAS.brace.few.cap,FORMULAS.brace.few.per*c)}
   if(G.cls==='founder'&&W&&W.allies){const n=W.allies.filter(a=>a.per&&a.hp>0).length;if(n)d*=1-Math.min(FORMULAS.brace.intern.cap,FORMULAS.brace.intern.per*n)}
   if(G.cls==='homesteader'&&W&&W.allies){const n=W.allies.filter(a=>a.plot&&a.life>0).length;if(n)d*=1-Math.min(FORMULAS.brace.cold.cap,FORMULAS.brace.cold.base+FORMULAS.brace.cold.extra*(n-1))}
-  if(d>0){P.hitStun=.45;wearArmor()}if(W&&W.z&&W.z.pre)d=Math.min(d,Math.max(0,G.hp-1));G.hp-=d;if(G.hp>0&&S.sp.remote&&!wasStun&&!(P.remoteCd>0)&&Math.random()<.25){P.remoteCd=pv?6:2;remoteStep()}if(d>0)P.lastLoss=d;P.flash=.15;sfx('hurt');float(P.x,P.y,'-'+Math.max(1,Math.round(d)),'#ff5a4d',1);if(slow&&!S.sp.offer&&!(P.lastShift>0)&&!(P.two&&P.two.n>0))P.slow=1.6;if(S.sp.clock&&G.hp>0&&G.hp<S.maxHp*.3&&!(G.clockT>0)){G.clockT=60;for(const o of W.ents)if(dist(o,P)<9){o.slow=4;o.stun=Math.max(o.stun,.6)}sfx('warn');toast('The dead alarm rings. Time drags for the machines.')}if(OPT.shake)shake=Math.max(shake,3);
+  if(d>0){P.hitStun=.45;wearArmor()}if(W&&W.z&&W.z.pre)d=Math.min(d,Math.max(0,G.hp-1));G.hp-=d;if(G.hp>0&&S.sp.remote&&!wasStun&&!(P.remoteCd>0)&&Math.random()<.25){P.remoteCd=pv?6:2;remoteStep()}if(d>0)P.lastLoss=d;P.flash=.15;sfx('hurt');if(d>S.maxHp*.12)juice(d>S.maxHp*.3?'m':'s',{hs:0});float(P.x,P.y,'-'+Math.max(1,Math.round(d)),'#ff5a4d',1);if(slow&&!S.sp.offer&&!(P.lastShift>0)&&!(P.two&&P.two.n>0))P.slow=1.6;if(S.sp.clock&&G.hp>0&&G.hp<S.maxHp*.3&&!(G.clockT>0)){G.clockT=60;for(const o of W.ents)if(dist(o,P)<9){o.slow=4;o.stun=Math.max(o.stun,.6)}sfx('warn');toast('The dead alarm rings. Time drags for the machines.')}juice('s');
   if(src&&src.hp>0){if(src.mods&&src.mods.leech&&!(src.noheal>0))src.hp=Math.min(src.max,src.hp+src.max*(defragAct1(src)?.025:.15));if(S.sp.terms)src.stun=Math.max(src.stun,1);if(S.thorns){const prev=DT;DT='impact';P.holdTy=1;const out=typed(src,S.thorns);P.holdTy=0;DT=prev;dmgEnemy(src,out,false)}}
   if(G.hp<=0&&S.sp.still&&!(G.stillT>0)){G.stillT=90;G.hp=S.maxHp;P.inv=2;for(const o of W.ents)o.stun=Math.max(o.stun,2.5);sfx('shrine');toast('Still Water: the room holds its breath.');return}
   if(G.hp<=0&&G.cls==='maxi'&&sl(14)&&!(G.keyT>0)){const sac=(W.merc&&W.merc.hp>0)?W.merc:(W.tag&&W.tag.hp>0)?W.tag:null;if(sac){G.keyT=60;G.hp+=d;hurtAlly(sac,1e9);float(P.x,P.y,'Not your keys','#f7931a',1);toast('Not your keys.');return}}
   if(G.hp<=0&&G.cls==='witness'&&!(P&&P.tag)&&sl(14)&&recGet()>80&&!(G.retractT>0)){G.hp=1;recSet(0);G.retractT=90/(1+(S.retr||0)/100);float(P.x,P.y,'Retraction','#e6dcc8',1);sfx('mend');return}
   if(G.hp<=0){if(S.sp.parachute&&G.chuteT<=0){G.chuteT=120;G.hp=S.maxHp*.5;P.inv=1.5;toast('The Golden Parachute opens.');return}
     if(W.z.sim){const n=W.sim.wave;if(W.sim.rush){G.hp=1;P.inv=9;sfx('death');dlg('Boss rush ended','You fell to number '+(W.sim.i+1)+' of '+W.sim.list.length+'. Nothing in here was real, so nothing was lost.',[['Unplug',()=>{G.hp=S.maxHp;enter(HT())}]]);return}G.simBest=Math.max(G.simBest||0,n-1);G.hp=1;P.inv=9;sfx('death');dlg('Simulation ended','You fell on wave '+n+'. Waves cleared: '+(n-1)+'. Your best: '+G.simBest+'. Nothing in here was real, so nothing was lost.',[['Unplug',()=>{G.hp=S.maxHp;enter(HT())}]]);return}
-    /* The portal home is part of the death, so a save during the notice still has it. */adaptDeath();G.form=null;G.formDt=null;G.formT=0;G.hp=0;const fee=layCorpse(P.x,P.y);G.deaths=(G.deaths||0)+1;if(typeof eggOnDeath==='function')eggOnDeath();if(!G.hc&&W.start)G.portal={zi:W.zi,x:W.start.x,y:W.start.y};mode='dying';DY={t:0,fee,by:src&&src.name?src.name:'the machines',zi:W.zi,st:W.start,shown:0,pvp:!!(src&&src.pvp)};if(G.hc)save(true);sfx('death');music(null);parts(P.x,P.y,30,['#b3261e','#7a0f0c','#e2473a'],3,1.4);bloodSplat(14);shake=10;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;return}
+    /* The portal home is part of the death, so a save during the notice still has it. */adaptDeath();G.form=null;G.formDt=null;G.formT=0;G.hp=0;const fee=layCorpse(P.x,P.y);G.deaths=(G.deaths||0)+1;if(typeof eggOnDeath==='function')eggOnDeath();if(!G.hc&&W.start)G.portal={zi:W.zi,x:W.start.x,y:W.start.y};mode='dying';DY={t:0,fee,by:src&&src.name?src.name:'the machines',zi:W.zi,st:W.start,shown:0,pvp:!!(src&&src.pvp)};if(G.hc)save(true);sfx('death');music(null);parts(P.x,P.y,30,['#b3261e','#7a0f0c','#e2473a'],3,1.4);bloodSplat(14);if(OPT.shake)shake=OPT.calm?.45:.9;J.x=J.y=0;atkHeld=false;$('stick').hidden=true;return}
   const band=Math.ceil(G.hp/S.maxHp*10);if(band<P.band&&band<=4){bloodSplat((5-band)*3)}P.band=band}
 function attack(){
   if(P.atk>0||P.dash)return;const c=CLS[G.cls];unstealth();if(G.cls==='witness')P.witHold=1;
@@ -2316,7 +2332,7 @@ function breakCrate(o){o.used=1;W.map[(o.y|0)*W.N+(o.x|0)]=1;sfx('crate');parts(
 function shoot(d,m,pierce,o){o=o||{};if(S&&S.sp&&S.sp.deadletter&&!(o.from&&(o.from.k==='minion'||o.from.k==='turret')))pierce=99;const col=o.col||(G.cls==='hacker'?'#59e0e6':G.cls==='courier'||G.cls==='founder'?'#e6e2d6':'#c9a868'),dt=o.dt||DT||(P.fm&&P.fm.t>0&&P.fm.dt)||null,life=o.life||.7,spd=o.spd||11;
   W.projs.push({x:(o.from||P).x,y:(o.from||P).y,vx:d.x*spd,vy:d.y*spd,life,m,pierce:pierce||0,done:[],col,big:o.big||0,kind:G.cls,nl:o.nl||0,dt,throw:o.throw?1:(G.cls==='courier'&&!o.from?1:0),ret:o.ret?1:0,split:o.split?1:0,lance:o.lance?1:0});
   if(G.cls==='courier'&&!o.from)P.lastThrow={dx:d.x,dy:d.y,m,pierce:pierce||0,dt,col,life,spd,ret:o.ret?1:0,split:o.split?1:0,lance:o.lance?1:0}}
-function burst(x,y,r,m,stun,col){W.fx.push({k:'ring',x,y,r,t:0,life:.35,col},{k:'ring',x,y,r:r*.6,t:0,life:.5,col:'#ffffff'});if(m){parts(x,y,10,[col,'#fff'],3,1.2);if(r>=2.4)W.decals.push({x,y,r:r*.3,a:rnd(0,3)})}if(OPT.shake)shake=Math.max(shake,3);if(m)sfx('boom');for(const e of W.ents.slice())if(Math.hypot(e.x-x,e.y-y)<r+e.r){if(stun)e.stun=Math.max(e.stun,stun);if(m)hit(e,m)}
+function burst(x,y,r,m,stun,col){W.fx.push({k:'ring',x,y,r,t:0,life:.35,col},{k:'ring',x,y,r:r*.6,t:0,life:.5,col:'#ffffff'});if(m){parts(x,y,10,[col,'#fff'],3,1.2);if(r>=2.4)W.decals.push({x,y,r:r*.3,a:rnd(0,3)})}juice(r>=2.4?'m':'s');if(m)sfx('boom');for(const e of W.ents.slice())if(Math.hypot(e.x-x,e.y-y)<r+e.r){if(stun)e.stun=Math.max(e.stun,stun);if(m)hit(e,m)}
   for(const o of W.objs)if(o.k==='crate'&&!o.used&&Math.hypot(o.x-x,o.y-y)<r)breakCrate(o)}
 function dash(spd,t,m,end,trail){if(hsNoDash()){toast('The hull does not dash');sfx('err');return}P.dash={t,spd,m,hit:[],end,trail:trail||'',lx:P.x,ly:P.y,tr:0};P.inv=Math.max(P.inv,t+.12)}
 function boonOn(i){const s=CLS[G.cls]&&CLS[G.cls].sk[i];return !!(s&&s.boon)}
@@ -2913,7 +2929,7 @@ function castIndex(i){castWhy='';if(mode!=='play'||!(i>=0)){castWhy='wait';retur
   if(G.cls==='homesteader'&&!leaving){const why=hsBlocked(i);if(why){castWhy='no';toast(why);sfx('err');return}}
   if(G.cls==='witness'){const why=witBlock(i);if(why){castWhy='no';toast(why);if(why==='The page is blank')float(P.x,P.y,'the page is blank','#e6dcc8',0);sfx('err');return}}
   const fk=forkOf(i);let cost=s.cost*(S.sp.hoodie?.75:1)*(fk.cost||1);if(P.freeThrow&&G.cls==='courier'&&(i===0||i===6||i===9||i===12)){cost=0;P.freeThrow=0}if(G.en<cost){if(leaving)cost=0;else{castWhy='wait';toast('Not enough energy');scRelay();sfx('err');return}}
-  if(P.spot){let dx=P.spot.x-P.x,dy=P.spot.y-P.y;const d=Math.hypot(dx,dy)||.001;if(d>.05){const spec=aimSpec(i);if(spec&&spec.back){dx=-dx;dy=-dy}P.dir={x:dx/d,y:dy/d}}}else{const t=nearest(6.5);if(t)face(t)}G.en-=cost;P.cd[i]=s.cd*(1-Math.min(.6,S.cdr))*(fk.cd||1)*(G.sk[i]>=10?.8:1);skvPlay(G.cls,i,P.x,P.y,P.dir);mpNoteCast(i);if(!(G.cls==='anon'&&i===3&&P.stealth>0&&sl(11)&&!boonOn(11)))unstealth();sfx(SKS[G.cls][i]||'cast');if(G.cls==='witness'){P.witHold=1;P.witCast=1}P.fm={m:fk.dm||1,t:(G.fork||{})[i]==='refund'?2:1.2,k:(G.fork||{})[i],dt:skType(G.cls,i)};forkCast((G.fork||{})[i]);const na=W.allies.length;P.hitSk=i;try{SKF[G.cls][i](L,syn(i))}finally{P.hitSk=-1}for(let k=na;k<W.allies.length;k++)if(!W.allies[k].holdDt)W.allies[k].dt=skType(G.cls,i);for(const a of W.allies)if(a.per&&!a.dt)a.dt=skType(G.cls,i);forkAfter(i,L);castWhy='ok'}
+  if(P.spot){let dx=P.spot.x-P.x,dy=P.spot.y-P.y;const d=Math.hypot(dx,dy)||.001;if(d>.05){const spec=aimSpec(i);if(spec&&spec.back){dx=-dx;dy=-dy}P.dir={x:dx/d,y:dy/d}}}else{const t=nearest(6.5);if(t)face(t)}G.en-=cost;P.cd[i]=s.cd*(1-Math.min(.6,S.cdr))*(fk.cd||1)*(G.sk[i]>=10?.8:1);skvPlay(G.cls,i,P.x,P.y,P.dir);poseStart(G.cls,i);mpNoteCast(i);if(!(G.cls==='anon'&&i===3&&P.stealth>0&&sl(11)&&!boonOn(11)))unstealth();sfx(SKS[G.cls][i]||'cast');if(G.cls==='witness'){P.witHold=1;P.witCast=1}P.fm={m:fk.dm||1,t:(G.fork||{})[i]==='refund'?2:1.2,k:(G.fork||{})[i],dt:skType(G.cls,i)};forkCast((G.fork||{})[i]);const na=W.allies.length;P.hitSk=i;try{SKF[G.cls][i](L,syn(i))}finally{P.hitSk=-1}for(let k=na;k<W.allies.length;k++)if(!W.allies[k].holdDt)W.allies[k].dt=skType(G.cls,i);for(const a of W.allies)if(a.per&&!a.dt)a.dt=skType(G.cls,i);forkAfter(i,L);castWhy='ok'}
 function stim(){if(mode!=='play')return;if(W.sub&&W.sub.mods.includes('dry')){toast('Stims do not work in these proceedings');sfx('err');return}if(G.stims<1){toast('No stims. Brenda sells them.');return}if(G.hp>=S.maxHp&&!(S.sp.repair&&G.en<S.maxEn))return;G.stims--;scStimBark(G.stims<1);heal(S.maxHp*.45);if(S.sp.repair)G.en=S.maxEn;sfx('stim');float(P.x,P.y,'+stim','#7be495');parts(P.x,P.y,10,['#7be495','#fff'],1.5,1.5)}
 function stimPackItem(){const it={name:'Stim',base:'Stim',q:1,il:1,stim:1,free:1,req:1,reqMgt:0,reqRef:0,reqBnd:0,aff:[],id:true,val:0,fl:STIM.pack};if(typeof stampReq==='function')stampReq(it);return it}
 function beltHasRoom(){return (G.stims||0)<((S&&S.cap)||0)}
@@ -3325,7 +3341,7 @@ function update(dt){
   for(let i=0;i<15;i++)P.cd[i]=Math.max(0,P.cd[i]-dt);
   if(P.shr){P.shr.t-=dt;if(P.shr.t<=0)P.shr=null}
   G.en=Math.min(S.maxEn,G.en+(4+S.regen+G.at.bnd*.05)*dt);heal((S.regenH+(S.sp.pension?S.maxHp*.02:0)+(W.z.town?S.maxHp*.3:0))*dt);
-  shake=Math.max(0,shake-dt*20);if(G.clockT>0)G.clockT-=dt;if(G.stillT>0)G.stillT-=dt;if(G.guardT>0)G.guardT-=dt;if(G.retractT>0)G.retractT-=dt;if(P.redact>0)P.redact=Math.max(0,P.redact-dt);
+  shake=Math.max(0,shake-dt*JT.dec);if(flashT>0)flashT-=dt;if(G.clockT>0)G.clockT-=dt;if(G.stillT>0)G.stillT-=dt;if(G.guardT>0)G.guardT-=dt;if(G.retractT>0)G.retractT-=dt;if(P.redact>0)P.redact=Math.max(0,P.redact-dt);
   skillTick(dt);itemSkillTick(dt);
   let sx=J.x,sy=J.y;
   if(keys.KeyA||keys.ArrowLeft)sx-=1;if(keys.KeyD||keys.ArrowRight)sx+=1;if(keys.KeyW||keys.ArrowUp)sy-=1;if(keys.KeyS||keys.ArrowDown)sy+=1;
@@ -3342,8 +3358,8 @@ function update(dt){
   else if(atkHeld||keys.Space||keys.KeyJ||(OPT.auto&&P.atk<=0&&nearest((CLS[G.cls].melee||hsMelee())?1.9:6)))attack();
   // enemies
   for(let _ei=W.ents.length-1;_ei>=0;_ei--){const e=W.ents[_ei];if(!e)continue;
-    if(e.mp){e.flash=Math.max(0,e.flash-dt);if(e.kbGate>0)e.kbGate-=dt;continue}if(typeof mpMobWatch==='function'&&mpMobWatch()&&e.mid){e.flash=Math.max(0,e.flash-dt);if(e.tx!=null){e.x+=(e.tx-e.x)*Math.min(1,dt*8);e.y+=(e.ty-e.y)*Math.min(1,dt*8)}continue}
-    e.flash=Math.max(0,e.flash-dt);e.ph+=dt;e.mark=Math.max(0,e.mark-dt);if(e.mc>0)e.mc-=dt;if(e.quiet>0)e.quiet-=dt;e.slow=Math.max(0,e.slow-dt);e.ward=Math.max(0,(e.ward||0)-dt);if(e.kbGate>0)e.kbGate-=dt;if(e.k==='aegis')for(const o of W.ents)if(o!==e&&o.k!=='aegis'&&dist(o,e)<4)o.ward=.4;e.arcCd=Math.max(0,e.arcCd-dt);
+    if(e.mp){e.flash=Math.max(0,e.flash-dt);if(e.sq>0)e.sq-=dt;if(e.kb>0)e.kb-=dt;if(e.kbGate>0)e.kbGate-=dt;continue}if(typeof mpMobWatch==='function'&&mpMobWatch()&&e.mid){e.flash=Math.max(0,e.flash-dt);if(e.tx!=null){e.x+=(e.tx-e.x)*Math.min(1,dt*8);e.y+=(e.ty-e.y)*Math.min(1,dt*8)}continue}
+    e.flash=Math.max(0,e.flash-dt);if(e.sq>0)e.sq-=dt;if(e.kb>0)e.kb-=dt;e.ph+=dt;e.mark=Math.max(0,e.mark-dt);if(e.mc>0)e.mc-=dt;if(e.quiet>0)e.quiet-=dt;e.slow=Math.max(0,e.slow-dt);e.ward=Math.max(0,(e.ward||0)-dt);if(e.kbGate>0)e.kbGate-=dt;if(e.k==='aegis')for(const o of W.ents)if(o!==e&&o.k!=='aegis'&&dist(o,e)<4)o.ward=.4;e.arcCd=Math.max(0,e.arcCd-dt);
     if(e.calm>0){e.calm-=dt;e.aggro=false;continue}if(e.stun>0){e.stun-=dt;if(isBoss(e.k)){if(!e.aggro)wake(e);bossAI(e,dt,dist(e,P)||1)}else continue;if(e.stun>0)continue}
     let T=P;if(!(e.nc>0)){for(const a of W.allies)if(a.k==='decoy'&&dist(a,e)<7)T=a;
     if(T===P){const tk=tank(e);if(tk)T=tk;else if(P.stealth>0)continue}}
@@ -3406,11 +3422,11 @@ function update(dt){
     if(n.wait<=0){if(n.ev){n.tx=n.hx+rnd(-6,6);n.ty=n.hy+rnd(-6,6)}else{n.tx=rnd(5,20);n.ty=rnd(10,20)}n.wait=rnd(3,8)}
     const dx=n.tx-n.x,dy=n.ty-n.y,d=Math.hypot(dx,dy);n.mov=d>.2;if(n.mov&&walk(n.x+dx/d*.5,n.y+dy/d*.5)){n.x+=dx/d*1.1*dt;n.y+=dy/d*1.1*dt;n.fx=dx-dy>0?1:-1}else n.mov=false;
     if(n.cool<=0&&dist(n,P)<2.6){n.say=pick(CHATTER);n.st=4;n.cool=rnd(9,16)}}
-  for(let _fi=W.fx.length-1;_fi>=0;_fi--){const f=W.fx[_fi];if(!f||f.stay)continue;f.t+=dt;if(f.t>=f.life){W.fx.splice(_fi,1);if(f.boom){sfx('boom');W.fx.push({k:'ring',x:f.x,y:f.y,r:f.r,t:0,life:.3,col:'#ff5d4d'});parts(f.x,f.y,14,['#ff5d4d','#ffe36b'],3);if(Math.hypot(f.x-P.x,f.y-P.y)<f.r+P.r)hurt(f.boom,false,{dty:f.dty||'heat',name:'an explosion'})}}}
+  poseTick(dt);for(let _fi=W.fx.length-1;_fi>=0;_fi--){const f=W.fx[_fi];if(!f||f.stay)continue;f.t+=dt;if(f.t>=f.life){W.fx.splice(_fi,1);if(f.boom){sfx('boom');W.fx.push({k:'ring',x:f.x,y:f.y,r:f.r,t:0,life:.3,col:'#ff5d4d'});parts(f.x,f.y,14,['#ff5d4d','#ffe36b'],3);if(Math.hypot(f.x-P.x,f.y-P.y)<f.r+P.r)hurt(f.boom,false,{dty:f.dty||'heat',name:'an explosion'})}}}
   for(let _ti=W.texts.length-1;_ti>=0;_ti--){const t=W.texts[_ti];if(!t)continue;t.t+=dt;if(t.t>.9)W.texts.splice(_ti,1)}
   if(W.projs.length>96)W.projs.splice(0,W.projs.length-96);
   if(W.texts.length>48)W.texts.splice(0,W.texts.length-48);
-  for(let _qi=W.parts.length-1;_qi>=0;_qi--){const p=W.parts[_qi];if(!p)continue;p.t+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;p.vz-=320*dt;if(p.z<0){p.z=0;p.vz*=-.4;p.vx*=.5;p.vy*=.5}if(p.t>=p.life)W.parts.splice(_qi,1)}
+  for(let _qi=W.parts.length-1;_qi>=0;_qi--){const p=W.parts[_qi];if(!p)continue;p.t+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;p.vz-=320*(p.g!=null?p.g:1)*dt;if(p.z<0){p.z=0;p.vz*=-.4;p.vx*=.5;p.vy*=.5}if(p.t>=p.life)W.parts.splice(_qi,1)}
   seenT-=dt;if(seenT<=0&&!W.z.town){seenT=.2;const N=W.N,px=P.x|0,py=P.y|0;for(let y=py-8;y<=py+8;y++)for(let x=px-8;x<=px+8;x++)if(x>=0&&y>=0&&x<N&&y<N&&!W.seen[y*N+x]&&(x-px)*(x-px)+(y-py)*(y-py)<52){W.seen[y*N+x]=1;W.seenGen=(W.seenGen||0)+1;mmDot(x,y)}}
   if(G.hp<S.maxHp*.25&&!W.z.town){P.hb-=dt;if(P.hb<=0){P.hb=G.hp<S.maxHp*.12?.55:.9;sfx('heart')}}
   for(const tp of W.portals.slice())if(tp.cast){const inside=Math.hypot(tp.x-P.x,tp.y-P.y)<.7;if(inside&&tp.wasOut){usePortal(tp);return}tp.wasOut=!inside}
@@ -3426,7 +3442,7 @@ function boss2AI(e,dt,d){const p2=e.hp<e.max*.5;e.b1-=dt;e.b2-=dt;e.b3-=dt;
   if(e.b2<=0){e.b2=p2?6:8;parts(e.x,e.y,16,['#b48cff','#fff'],2.5);for(let t=0;t<12;t++){const a=rnd(0,6.283),x=P.x+Math.cos(a)*rnd(3,5.5),y=P.y+Math.sin(a)*rnd(3,5.5);if(free(x,y,e.r)){e.x=x;e.y=y;break}}
     sfx('summon');if(W.ents.length<9)for(let i=0;i<2;i++){const s=spawn(p2?'lancer':'seer',e.x+rnd(-2,2),e.y+rnd(-2,2),{minion:1});if(s)s.aggro=true}toast('Vale: “'+pick(BOSSBARK2)+'”')}
   if(d<2.8&&e.b3<=0&&!e.slam){sfx('warn');e.slam=.75;e.b3=4;W.fx.push({k:'warn',x:e.x,y:e.y,r:3.2,t:0,life:.75})}
-  if(e.slam){e.slam-=dt;if(e.slam<=0){sfx('boom');e.slam=0;W.fx.push({k:'ring',x:e.x,y:e.y,r:3.2,t:0,life:.3,col:'#b48cff'});if(OPT.shake)shake=8;if(dist(e,P)<3.2+P.r)hurt(e.dmg*1.9,false,e)}}}
+  if(e.slam){e.slam-=dt;if(e.slam<=0){sfx('boom');e.slam=0;W.fx.push({k:'ring',x:e.x,y:e.y,r:3.2,t:0,life:.3,col:'#b48cff'});juice('l',{tr:.6,hs:.06});if(dist(e,P)<3.2+P.r)hurt(e.dmg*1.9,false,e)}}}
 function mandateOffer(e,first){dlg('MANDATE',first?'“I can make this easy. Your life restored, and more credits than you will ever count. All you have to do is stop. Nobody is watching. Nobody would know.”':'“Then not comfort. Mercy. I will raise the Stipend tonight, for everyone, to whatever number you say. Put the weapon down and it is done. Is your pride worth more than nine billion people?”',[
   ['Refuse',()=>{if(G.st)G.st.lnTrack=0;P.shr={k:'might',t:25,n:'Unbought'};sfx('buff');toast('Unbought: +50% damage for 25 seconds')}],
   ['Accept',()=>{G.st.sold++;addAdopt(-15,'you took MANDATE’s offer');const c=6000*G.cpi*G.lvl;G.credits+=c;ZS[16]&&delete ZS[16];const z=W.zi;W.zi=6;W.z=ZONES[6];enter(HT());delete ZS[z];dlg('You agreed','It was a very good offer. '+fmt(c)+' is yours, and worth a little less every minute. MANDATE is exactly where you left it, and it has learned your price.',[['Continue']])}]],4)}
@@ -3446,7 +3462,7 @@ function bossAI(e,dt,d){if(BAI[e.k])return BAI[e.k](e,dt,d);if(e.k==='boss3')ret
   if(e.b1<=0){sfx('bossfire');e.b1=p2?2.2:3.6;const n=p2?16:12,o=Math.random();for(let i=0;i<n;i++){const a=o+i/n*6.283;W.projs.push({x:e.x,y:e.y,vx:Math.cos(a)*4.6,vy:Math.sin(a)*4.6,life:2.4,foe:true,dmg:e.dmg*.7,src:e,col:'#ffe36b'})}}
   if(e.b2<=0){e.b2=9;if(W.ents.length<10){for(let i=0;i<3;i++){const s=spawn(p2?'hound':'drone',e.x+rnd(-2,2),e.y+rnd(-2,2),{minion:1});if(s)s.aggro=true}sfx('summon');toast('Pryce: “'+pick(BOSSBARK)+'”')}}
   if(d<2.8&&e.b3<=0&&!e.slam){sfx('warn');e.slam=.85;e.b3=4.5;W.fx.push({k:'warn',x:e.x,y:e.y,r:3,t:0,life:.85})}
-  if(e.slam){e.slam-=dt;if(e.slam<=0){sfx('boom');e.slam=0;W.fx.push({k:'ring',x:e.x,y:e.y,r:3,t:0,life:.3,col:'#ff5d4d'});if(OPT.shake)shake=8;if(dist(e,P)<3+P.r)hurt(e.dmg*1.9,false,e)}}
+  if(e.slam){e.slam-=dt;if(e.slam<=0){sfx('boom');e.slam=0;W.fx.push({k:'ring',x:e.x,y:e.y,r:3,t:0,life:.3,col:'#ff5d4d'});juice('l',{tr:.6,hs:.06});if(dist(e,P)<3+P.r)hurt(e.dmg*1.9,false,e)}}
 }
 /* ================= side quests: multi-step errands that move things between districts ================= */
 function giveItem(it){it.id=true;if(bagCan(it))G.bag.push(it);else addDrop({it},P.x,P.y);toast('You receive '+it.name)}
@@ -4564,6 +4580,39 @@ const dx=(dir&&dir.x)||1,dy=(dir&&dir.y)||0;
   if(v.at==='back'){x2=x-dx*(v.r||3);y2=y-dy*(v.r||3)}
   if(v.at==='foe'&&!remote){const t=nearest(8);if(t){x2=t.x;y2=t.y;if(v.k==='mark'||v.k==='patch'||v.k==='ring'||v.k==='strike'){px=t.x;py=t.y}}}
   W.fx.push({k:v.k,x:px,y:py,x2:x2,y2:y2,dx:dx,dy:dy,r:v.r,w:v.w,n:v.n,col:v.col,t:0,life:v.life,tel:v.tel,reach:v.reach||0,remote:remote?1:0})}
+/* ================= skill motion: the body sells the cast =================
+   Each cast gets a pose from its fx kind: a wind-up (w), a release, a recovery.
+   Render-only. It never moves P, never delays a hit, and the server never sees it. */
+const POSE={arc:{d:.3,w:.08},ring:{d:.42,w:.14},bolt:{d:.26,w:.06},patch:{d:.36,w:.11},trail:{d:.32,w:.03},orbit:{d:.4,w:.12},mark:{d:.3,w:.07},beam:{d:.3,w:.06},strike:{d:.3,w:.08}};
+function poseStart(cls,i){const v=skvOf(cls,i);if(!v||!P)return;const p=POSE[v.k];if(!p)return;P.pose={k:v.k,t:0,d:p.d,w:p.w,col:v.col,gh:[],gc:0}}
+function poseTick(dt){const p=P&&P.pose;if(!p)return;p.t+=dt;
+  if(p.k==='trail'&&p.t<p.d){p.gc-=dt;if(p.gc<=0){p.gc=.035;p.gh.push({x:P.x,y:P.y,t:0});if(p.gh.length>6)p.gh.shift()}}
+  for(const g of p.gh)g.t+=dt;
+  if(p.k==='ring'&&!p.land&&p.t>=p.w+(p.d-p.w)*.45){p.land=1;if(OPT.fx!=='thin')for(let i=0;i<10;i++){const a=i*.628+rnd(-.2,.2),v=rnd(1.6,2.6);W.parts.push({x:P.x,y:P.y,z:2,vx:Math.cos(a)*v,vy:Math.sin(a)*v,vz:rnd(20,50),t:0,life:rnd(.3,.5),col:pick(['#8a8478','#b8b0a0',p.col]),s:rnd(3,5)})}}
+  if(p.t>=p.d+.25)P.pose=null}
+const eOut=x=>1-(1-x)*(1-x)*(1-x);
+/* {ox,oy} screen px, {sx,sy} scale about the feet, arm: radians (negative raises), reach: px, glow: hand charge 0..1 */
+function poseNow(){const p=P&&P.pose;if(!p||p.t>p.d)return null;const t=p.t,w=p.w,r=t<w?t/w:1,q=t>=w?Math.min(1,(t-w)/(p.d-w)):0,pre=t<w;
+  const o={lean:0,oy:0,sx:1,sy:1,arm:0,reach:0,glow:pre?r:Math.max(0,1-q*3),col:p.col};
+  switch(p.k){
+    case 'arc':o.arm=pre?-1.5*eOut(r):-1.5+3.2*eOut(Math.min(1,q*2.5));o.lean=pre?-3*r:5*(1-q);o.reach=pre?-3:6*(1-q);o.sx=pre?1:1+.08*(1-q);break;
+    case 'ring':if(pre){o.sy=1-.2*r;o.sx=1+.14*r}else{const h=q<.45?Math.sin(q/.45*3.14):0,land=q>=.45?Math.max(0,1-(q-.45)*3.5):0;o.oy=-h*13;o.sy=1+.14*h-.24*land;o.sx=1-.06*h+.2*land}o.arm=pre?-2.2*r:-2.2+2.8*eOut(q);break;
+    case 'bolt':o.reach=pre?-4*r:11*(1-eOut(q));o.lean=pre?-2*r:3*(1-q);o.sx=pre?1-.05*r:1+.06*(1-q);break;
+    case 'patch':o.arm=pre?-2.6*r:-2.6+2.6*eOut(q);o.oy=pre?0:-4*Math.sin(q*3.14);o.reach=pre?0:4*(1-q);break;
+    case 'trail':o.lean=8*(1-q);o.sx=1+.12*(1-q);o.sy=1-.1*(1-q);break;
+    case 'orbit':{const s=Math.sin(Math.min(1,t/p.d)*3.14);o.arm=-1.4*s;o.oy=-5*s;o.glow=s;break}
+    default:o.reach=pre?0:7*(1-q);o.arm=pre?-.5*r:0}
+  return o}
+/* Sparks by damage type, thrown away from the player. Rate-limited per machine so a bleed does not spray. */
+const SPK={impact:['#fff4dc','#e6e2d6'],surge:['#bff8ff','#59e0e6'],rust:['#e09a52','#7a4a22'],heat:['#ffd27a','#ff7a3c'],noise:['#efc6ff','#d98cff'],sound:['#ffd08a','#f7931a']};
+function hitSpark(e,crit){if(!W||!W.parts||!P)return;let dx=e.x-P.x,dy=e.y-P.y;const l=Math.hypot(dx,dy)||1;dx/=l;dy/=l;e.kb=.12;e.kdx=dx;e.kdy=dy;
+  if(OPT.fx==='thin'||(!crit&&(e.spT||0)>tNow-.07))return;e.spT=tNow;const ty=e.lt||'impact',c=SPK[ty]||SPK.impact,heat=ty==='heat',rust=ty==='rust';
+  const n=crit?10:5,sp=heat?1.4:rust?1.1:3.4,base=Math.atan2(dy,dx);
+  for(let i=0;i<n;i++){const a=base+rnd(-.95,.95),v=rnd(.5,1)*sp*(crit?1.4:1);
+    W.parts.push({x:e.x,y:e.y,z:rnd(14,26),vx:Math.cos(a)*v,vy:Math.sin(a)*v,vz:heat?rnd(25,60):rust?rnd(-10,25):rnd(20,90),g:heat?-.12:rust?.7:1,t:0,life:heat?rnd(.45,.75):rust?rnd(.4,.6):rnd(.14,.28),col:pick(c),s:rust?rnd(2,3.5):rnd(1.6,2.6),ln:heat||rust?0:1})}
+  if(ty==='surge')W.fx.push({k:'zap',x:e.x,y:e.y,t:0,life:.14,col:c[1],sd:Math.random()*999|0});
+  else if(ty==='noise')W.fx.push({k:'ripple',x:e.x,y:e.y,t:0,life:.3,col:c[1]});
+  if(crit)W.fx.push({k:'star',x:e.x,y:e.y,t:0,life:.18,col:c[0]})}
 const baseType=()=>G.cls==='maxi'?'sound':(G.eq.weapon&&G.eq.weapon.dt)||(G.cls==='hacker'?'surge':'impact');
 const RES={tick:{surge:1.5},drone:{surge:1.5,noise:.5},bot:{impact:.75,rust:1.5},hound:{noise:1.5,rust:.5},ad:{noise:0,impact:1.5},hr:{noise:.5,heat:1.5},mech:{impact:.5,rust:1.5,surge:1.25},seer:{surge:.5,impact:1.5},aegis:{surge:0,heat:1.5},lancer:{noise:1.5,heat:.5},splitter:{heat:1.5,impact:.5},
  director:{noise:.5,rust:1.5},proxy:{rust:.5,surge:1.5},censor:{noise:0,heat:1.5},shill:{noise:1.5},boss:{noise:.5,rust:1.5,heat:1.25},boss2:{noise:0,surge:1.5,impact:.75},boss3:{surge:.5,noise:.5,impact:1.5,heat:1.25}};
@@ -4882,11 +4931,11 @@ function ltIntro(e){const line=LTAUNT[e.q];if(!line||W.z.sim||mode!=='play')retu
   let el=$('bint');if(!el){el=document.createElement('div');el.id='bint';el.style.cssText='position:absolute;inset:0;z-index:40;display:flex;flex-direction:column;justify-content:space-between;pointer-events:auto';
     el.innerHTML='<div style="height:13%;background:#000"></div><div style="background:linear-gradient(transparent,#000c 30%,#000);padding:26px 20px 34px;text-align:center"><div id="biN" style="font:600 20px Cinzel,serif;letter-spacing:.14em;color:#d6a03c;text-transform:uppercase"></div><div id="biS" style="font:400 11px Cinzel,serif;letter-spacing:.3em;color:#8d8798;margin:4px 0 12px;text-transform:uppercase"></div><div id="biT" style="font:italic 400 16px Spectral,serif;color:#e6e2d6;line-height:1.4;max-width:420px;margin:0 auto"></div></div>';
     ($('game')||$('cv').parentNode).appendChild(el);el.addEventListener('click',()=>{if(BI&&performance.now()-BI.t0>500)ltEnd()})}
-  $('biN').textContent=e.name;$('biS').textContent=W.z.n;$('biT').textContent='“'+line+'”';el.hidden=false;el.style.display='flex';J.x=J.y=0;atkHeld=false;mode='intro';sfx('roar');if(OPT.shake)shake=6;
+  $('biN').textContent=e.name;$('biS').textContent=W.z.n;$('biT').textContent='“'+line+'”';el.hidden=false;el.style.display='flex';J.x=J.y=0;atkHeld=false;mode='intro';sfx('roar');juice('m',{hs:0});
   BI={t0:performance.now(),id:setTimeout(ltEnd,3600)};return true}
 function ltEnd(){if(!BI)return;clearTimeout(BI.id);BI=null;const el=$('bint');el.hidden=true;el.style.display='none';if(mode==='intro')mode='play'}
 function bossIntro(e){const B=BINTRO[e.k];if(!B||W.z.sim||mode!=='play'||W.bi)return false;W.bi=1;const n=B.own?bkOf(e.k):e.k==='boss3'?G.boss3Kills:e.k==='boss2'?G.boss2Kills:G.bossKills,c=CLS[G.cls].n.toLowerCase();
-  playScene((n?[{title:ET[e.k].n,text:pick(B.again)}]:B.first(c)).map(x=>(x.art=B.art,x)),()=>{mode='play';sfx('roar');music('boss');if(OPT.shake)shake=9});return true}
+  playScene((n?[{title:ET[e.k].n,text:pick(B.again)}]:B.first(c)).map(x=>(x.art=B.art,x)),()=>{mode='play';sfx('roar');music('boss');juice('l',{hs:0})});return true}
 /* the rig cannot change who you are until you hold the file that says who you are */
 function recOk(){return!!(G.rec||G.q.q8>=2||G.act3||(G.st&&G.st.shifts>0))}
 function recKill(e){if(!e.su||e.q!=='q8'||G.rec)return;G.rec=1;setTimeout(()=>{if(mode==='play')playScene([{art:'lake',title:'Your record',text:'Where the Archivist came apart, one file floats up through the violet: your name, your class, your allowance, every form you never filled in. This is who MANDATE has decided you are. It is a single page, and it is editable.'},{art:'feed',text:'The VR rig in town can only show you yourself. With this, it can lie about you to the whole system. Take the record to the rig, and it will be able to hack the simulation: you can become somebody else.'}],()=>{mode='play';toast('The VR rig can now change your class')});else toast('You recovered your citizen record. The VR rig can now change your class.')},1400)}
@@ -4897,7 +4946,7 @@ function tagG(n){if(n===SLOT)return null;const i=slotInfo(n);if(!i)return null;t
 function tagStats(og){const g0=G,keep=S;let r=null;try{G=JSON.parse(JSON.stringify(og));ensureG();calc();r={dmg:(S.dmin+S.dmax)/2*(1+(S.dmg||0)/100)*(1+((S.blow||0)/100)),max:S.maxHp,arm:S.armor||0}}catch(e){}G=g0;S=keep;calc();return r}
 function tagRender(n){const og=tagG(n);if(!og||!CLS[og.cls])return;const c=tagCost(og.lvl);if(satsFree()<c){toast(tradeReserved()?'Those sats are on the table.':'You need '+c+' sats');sfx('err');return}const st=tagStats(og);if(!st){toast('The rig could not read that character');sfx('err');return}
   if(!spendSats(c))return;const k=Math.min(1,(G.lvl+5)/og.lvl),sk=CLS[og.cls].sk,act=(og.slots||[]).filter(i=>i>=0&&sk[i]&&sk[i].a&&og.sk[i]);
-  G.tag={slot:n,cls:og.cls,lvl:og.lvl,name:'Level '+og.lvl+' '+CLS[og.cls].n,dmg:Math.max(st.dmg*k,(4+2.2*G.lvl)*.9),max:Math.round(Math.max(st.max*k,60+22*G.lvl)),red:100/(100+st.arm*k),sk:act.map(i=>[i,og.sk[i]]),down:k<1,eq:og.eq||{}};
+  G.tag={slot:n,cls:og.cls,sex:og.sex,lvl:og.lvl,name:'Level '+og.lvl+' '+CLS[og.cls].n,dmg:Math.max(st.dmg*k,(4+2.2*G.lvl)*.9),max:Math.round(Math.max(st.max*k,60+22*G.lvl)),red:100/(100+st.arm*k),sk:act.map(i=>[i,og.sk[i]]),down:k<1,eq:og.eq||{}};
   spawnMerc();sfx('unique');save(true);
   playScene([{art:'feed',title:'Rendered',text:'The rig hums, and a second outline fills in beside you, one scan line at a time: somebody you have been. '+G.tag.name+' looks at their hands, then at you, and nods.'+(k<1?' The rig has to down-sample them to fit this world; they fight a little above your level, not at their own.':'')+(G.merc&&!G.merc.dead?' '+G.merc.name+' steps back to wait with Kestrel until they are gone.':'')}],()=>{mode='play'})}
 function tagDismiss(q){if(!G.tag)return;const n=G.tag.name;G.tag=null;W.tag=null;spawnMerc();if(!q)toast(n+' fades out of this world');save(true)}
@@ -4920,7 +4969,7 @@ function updTag(dt){const m=W.tag,t=G.tag;if(!m||!t||m.hp<=0)return;const c=CLS[
     for(let j=0;j<t.sk.length;j++){m.sc[j]-=dt;if(m.sc[j]>0||d>7)continue;const[i,rk]=t.sk[j],s=c.sk[i],f=SKF[t.cls]&&SKF[t.cls][i];if(!f)continue;m.sc[j]=Math.max(4,(s.cd||5)*1.4)+j;m.say=s.n;m.sayT=1.4;m.swing=.18;sfx((SKS[t.cls]||{})[i]||'zap');tagDo(()=>{skvPlay(t.cls,i,P.x,P.y,m.dir);f(rk,R)});return}
     if(d<=rng+tg.r+.3&&m.atk<=0){m.atk=c.ivl*1.15/toxicSwing(m);m.swing=.18;tagDo(()=>{witWrap(m,()=>{if(c.melee||formed){sfx('swing');W.fx.push({k:'arc',x:P.x,y:P.y,dx:P.dir.x,dy:P.dir.y,t:0,life:.18,w:1});for(const e of W.ents.slice()){const dd=dist(e,P);if(dd<1.75+e.r&&((e.x-P.x)*P.dir.x+(e.y-P.y)*P.dir.y)/(dd||1)>.15)hit(e,c.mult*R)}}else{sfx(t.cls==='hacker'?'zap':'throw');shoot(P.dir,c.mult*R,0)}})})}}
   else m.hp=Math.min(m.max,m.hp+m.max*.04*dt);t.hp=m.hp;t.page=m.page||0}
-function tagProxy(){const t=G.tag,g=Object.create(G);g.cls=t.cls;g.eq=t.eq||{};g.form=W.tag.form||null;g.formDt=W.tag.formDt||null;g.formT=W.tag.formT||0;g.hp=W.tag.hp/W.tag.max*S.maxHp;return g}
+function tagProxy(){const t=G.tag,g=Object.create(G);g.cls=t.cls;g.sex=t.sex||'m';g.eq=t.eq||{};g.form=W.tag.form||null;g.formDt=W.tag.formDt||null;g.formT=W.tag.formT||0;g.hp=W.tag.hp/W.tag.max*S.maxHp;return g}
 function tagMenu(){const b=[];if(G.tag)b.push(['Send '+G.tag.name+' back',()=>tagDismiss()]);for(let n=0;n<NSLOT;n++){const og=tagG(n);if(og&&CLS[og.cls]&&!(G.tag&&G.tag.slot===n))b.push(['Render level '+og.lvl+' '+CLS[og.cls].n+' · '+tagCost(og.lvl)+' sats',()=>tagRender(n)])}
   b.push(['Not now']);dlg('Render a companion',b.length>1?'The rig can pull one of your other characters into this world to fight beside you. They act on their own and use the skills they had on their buttons when last saved. It costs sats every time one is rendered: if they fall, or you send them back, rendering again is paid again. A hired companion waits with Kestrel while a rendered one is here, and Kestrel will not hire to you until they leave. You hold '+G.sats+' sats.':'The rig can pull one of your other characters into this world to fight beside you, but you have no other characters saved yet. Start one from Options, under Characters.',b)}
 /* ================= party pressure: two of you is easier, so the machines push back while a companion is rendered ================= */
@@ -5165,7 +5214,7 @@ const BAI={
  /* The Air Gap is the absence of a door, so it does not move and almost nothing reaches it. The one
     way through is the cable taped across the floor: stand on the cable and your blows land in full.
     Every eight seconds somebody re-tapes it in a new direction. */
- gap(e,dt){if(!e.cb){e.cb=1;e.spd=0;e.b1=2.4;e.b2=8;e.b3=0;e.b4=12}e.b1-=dt;e.b2-=dt;e.b3-=dt;e.b4-=dt;
+ gap(e,dt){if(!e.cb){e.cb=1;e.spd=0;e.pinX=e.x;e.pinY=e.y;e.b1=2.4;e.b2=8;e.b3=0;e.b4=12}e.x=e.pinX;e.y=e.pinY;e.b1-=dt;e.b2-=dt;e.b3-=dt;e.b4-=dt;
   if(e.b3<=0){e.b3=8;let best=null,bn=-1;for(let i=0;i<8;i++){const a=rnd(0,6.283);let n=0;for(let t=1;t<=6;t++)if(free(e.x+Math.cos(a)*t*.55,e.y+Math.sin(a)*t*.55,.3))n++;else break;if(n>bn){bn=n;best=a}}
    const L=Math.max(1.2,bn*.55);e.cab={x1:e.x+Math.cos(best)*L,y1:e.y+Math.sin(best)*L};W.fx=W.fx.filter(f=>!f.cab);
    for(let t=1;t<=5;t++)W.fx.push({k:'patch',x:e.x+(e.cab.x1-e.x)*t/5,y:e.y+(e.cab.y1-e.y)*t/5,r:.42,t:0,life:8,col:'#59e0e6',tel:1,cab:1});
@@ -5212,7 +5261,7 @@ const BAI={
    still knows at once for fourteen seconds, faster and less sure of where you are; survive that and
    it chooses to stop. It takes no damage meanwhile, so the kill ending cannot happen underneath.
    Solo, its stopping is a kill. In a party the server owns its life, so it stops defending instead. */
-function pJuice(e){if(typeof juice==='function')juice('l');else shake=Math.max(shake,9)}
+function pJuice(e){juice('l')}
 function provYield(e,dt){e.yd-=dt;e.b1-=dt*.6;e.b2-=dt*.6;e.b3-=dt*.6;e.b4-=dt*.6;
   if(e.yd>0)return false;e.yd=0;e.yielded=1;e.doubt=0;pJuice(e);sfx('mend');W.projs=W.projs.filter(q=>!q.foe);W.fx=W.fx.filter(f=>f.k!=='warn');
   if(mpOwnsLife()){e.dm=40;e.spd=0;e.calm=1;toast('PROVIDENCE stops. It is not defending itself any more.');return true}
@@ -5241,7 +5290,7 @@ const SUF={
     const dx=c.x-e.x,dy=c.y-e.y,L=Math.hypot(dx,dy),st=Math.min(L,11*dt);
     if(!c.hit&&dist(e,P)<e.r+P.r+.3){c.hit=1;hurt(e.dmg*1.4,false,e)}
     if(dist(e,e.dock)<.9){e.chg=null;e.svT=1;e.stun=5;e.dm=1;sfx('quest');parts(e.x,e.y,16,['#e8e8e8','#ffe36b'],2.5);toast('TARO-9 docks. I AM SAVING.');return true}
-    if(L<.15||!mv(e,dx/L*st,dy/L*st)){e.chg=null;sfx('boom');W.fx.push({k:'ring',x:e.x,y:e.y,r:1.6,t:0,life:.3,col:'#ffe36b'});if(OPT.shake)shake=6;if(c.n>1)taroCharge(e,c.n-1,.35)}
+    if(L<.15||!mv(e,dx/L*st,dy/L*st)){e.chg=null;sfx('boom');W.fx.push({k:'ring',x:e.x,y:e.y,r:1.6,t:0,life:.3,col:'#ffe36b'});juice('m');if(c.n>1)taroCharge(e,c.n-1,.35)}
     return true}
   if((e.b1-=dt)<=0&&d<10)taroCharge(e,e.hp/e.max<.5?2:1,.85);
   return false},
@@ -6965,14 +7014,19 @@ function rim(X,Y,s,b,a){const c=(TX.s&&TX.s.glow)||'#ffcf7a';ctx.save();ctx.stro
   ctx.lineWidth=1.7*s;ctx.beginPath();ctx.arc(X,Y-37*s+b,6.5*s,3.46,5.05);ctx.stroke();
   ctx.lineWidth=1.5*s;ctx.beginPath();ctx.moveTo(X-7.4*s,Y-30.4*s+b);ctx.lineTo(X+7.4*s,Y-30.4*s+b);ctx.stroke();
   ctx.restore();ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.lineCap='butt'}
+/* A woman's hair: a fall behind the shoulders and a lock beside the face. Headgear is drawn over the crown. */
+const HAIR={scrapper:'#5a3a22',hacker:'#1a1426',courier:'#2a1a10',anon:'#121216',founder:'#4a4640',homesteader:'#7a4a26',witness:'#5c5a56',maxi:'#c9a050'};
+const heroHair=g=>g&&g.sex==='f'?(HAIR[g.cls]||'#3a2418'):null;
 function human(X,Y,o){
   const s=o.s||1,f=o.f||1,sw=o.mov?Math.sin(o.ph):0,b=o.mov?Math.abs(Math.cos(o.ph))*1.6:Math.sin(tNow*2+(o.ph||0))*.5;
   shadow(X,Y,12*s);ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.lineJoin='round';
   box(X-6*s-sw*2.5*s,Y-13*s,5*s,13*s-Math.max(0,sw)*3,2,o.leg||'#2a2433');box(X+1*s+sw*2.5*s,Y-13*s,5*s,13*s-Math.max(0,-sw)*3,2,o.leg||'#2a2433');
+  if(o.hair){const bk=-f;ctx.fillStyle=o.hair;ctx.beginPath();ctx.ellipse(X+bk*8.5*s,Y-29*s+b,4.5*s,10.5*s,bk*.2,0,6.283);ctx.fill();ctx.stroke()}
   box(X-f*8*s-2*s,Y-29*s+b-sw*2,4*s,12*s,2,o.c2);
   box(X-8*s,Y-31*s+b,16*s,20*s,4*s,o.c);
   ctx.fillStyle='rgba(0,0,0,.2)';ctx.fillRect(X+(f>0?-7:2)*s,Y-29*s+b,5*s,16*s);
   ctx.beginPath();ctx.arc(X,Y-37*s+b,6.5*s,0,6.283);ctx.fillStyle=o.skin||'#d9b08c';ctx.fill();ctx.stroke();
+  if(o.hair){const bk=-f,hy=Y-37*s+b;ctx.fillStyle=o.hair;ctx.beginPath();ctx.arc(X,hy-1.2*s,6.9*s,3.5,5.93);ctx.closePath();ctx.fill();ctx.stroke();ctx.beginPath();ctx.ellipse(X+bk*6*s,hy+2.5*s,2.4*s,6.5*s,0,0,6.283);ctx.fill();ctx.stroke()}
   if(!o.norim)rim(X,Y,s,b);
   return b}
 function drawHsForm(X,Y,fm,dying){
@@ -6990,15 +7044,23 @@ function drawHsForm(X,Y,fm,dying){
     ctx.fillStyle='#d9b08c';ctx.fillRect(X-3,Y-34,6,4);ctx.fillStyle='#c9803a';ctx.fillRect(X-12,Y-22,24,3)}
   ctx.globalAlpha=1;if(dying){ctx.restore();return}
   if(OPT.selfBars){const w=34,y=Y-56;ctx.fillStyle='#050409';ctx.fillRect(X-w/2-1,y-1,w+2,9);ctx.fillStyle='#d23a2e';ctx.fillRect(X-w/2,y,w*clamp(G.hp/S.maxHp,0,1),3.5);ctx.fillStyle='#3a7af0';ctx.fillRect(X-w/2,y+4,w*clamp(G.en/S.maxEn,0,1),3)}}
-function drawPlayer(X,Y){
+/* The cast pose wraps the body: ghosts behind, a lean and squash about the feet, a charged hand on top. */
+function drawPlayer(X,Y){const po=mode==='dying'?null:poseNow(),p=P.pose;P._po=po;
+  if(p&&p.gh.length&&mode!=='dying')for(const g of p.gh){const a=.32*(1-g.t/.22);if(a<=0)continue;const gx=SX(g.x,g.y),gy=SY(g.x,g.y);ctx.globalAlpha=a;ctx.fillStyle=p.col;ctx.beginPath();ctx.ellipse(gx,gy-20,9,17,0,0,6.283);ctx.fill();ctx.beginPath();ctx.arc(gx,gy-37,6.5,0,6.283);ctx.fill();ctx.globalAlpha=1}
+  if(!po){drawPlayerBody(X,Y);return}
+  const dx=(P.dir.x-P.dir.y),dy=(P.dir.x+P.dir.y)*.5,l=Math.hypot(dx,dy)||1;X+=dx/l*po.lean;Y+=dy/l*po.lean*.5;
+  ctx.save();ctx.translate(X,Y);ctx.scale(po.sx,po.sy);ctx.translate(-X,-Y);ctx.translate(0,po.oy);
+  try{drawPlayerBody(X,Y)}finally{const h=P._hand;if(h&&po.glow>.02&&!OPT.calm){glow(h[0],h[1],8+18*po.glow,po.col,.85*po.glow);ctx.fillStyle='#fff';ctx.globalAlpha=po.glow;ctx.beginPath();ctx.arc(h[0],h[1],1.5+2.5*po.glow,0,6.283);ctx.fill();ctx.globalAlpha=1}ctx.restore()}}
+function drawPlayerBody(X,Y){
   const c=CLS[G.cls],dx=(P.dir.x-P.dir.y),dy=(P.dir.x+P.dir.y)*.5,l=Math.hypot(dx,dy)||1;let ux=dx/l,uy=dy/l;const f=ux>=0?1:-1;
+  {const po=P._po;if(po&&po.arm){const a=po.arm*f,c0=Math.cos(a),s0=Math.sin(a),nx=ux*c0-uy*s0;uy=ux*s0+uy*c0;ux=nx}}
   if(P.buff>0||P.haste>0||P.guard>0){ctx.strokeStyle=P.buff>0?'#ff5d4d':P.guard>0?'#ffe36b':'#7be495';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(X,Y,19,9.5,0,0,6.283);ctx.stroke()}
   const dying=mode==='dying';if(dying){const u=Math.min(1,DY.t/.9);ctx.fillStyle='rgba(110,8,8,'+Math.min(.75,DY.t*.5)+')';ctx.beginPath();ctx.ellipse(X+10,Y,6+Math.min(26,DY.t*16),3+Math.min(13,DY.t*8),0,0,6.283);ctx.fill();ctx.save();ctx.translate(X,Y);ctx.rotate(u*u*1.5);ctx.translate(-X,-Y);ctx.globalAlpha=1-Math.max(0,DY.t-1.6)*.6}
   if(P.dash)ctx.globalAlpha=.6;if(P.stealth>0)ctx.globalAlpha=.3;
   const dark={scrapper:'#9a5a1c',hacker:'#5c3aa8',courier:'#23805c',anon:'#22222a',founder:'#101016',homesteader:'#3d5438',witness:'#2c3442'}[G.cls];
   if(G.cls==='homesteader'&&(G.form==='hound'||G.form==='hull'||G.form==='worn')){drawHsForm(X,Y,G.form,dying);return}
   if(P.mech>0){ctx.strokeStyle=OL;ctx.lineWidth=1.4;box(X-17,Y-34,9,14,2,'#e0bd6e');box(X+8,Y-34,9,14,2,'#e0bd6e');box(X-13,Y-14,9,14,2,'#a88a45');box(X+4,Y-14,9,14,2,'#a88a45');glow(X,Y-22,40,'#e0bd6e',.35)}
-  const b=human(X,Y,{c:P.flash>0?'#fff':c.col,c2:dark,ph:P.walkPh,mov:P.moving,f,leg:G.cls==='hacker'?'#1d1830':'#2e2a36'});
+  const b=human(X,Y,{c:P.flash>0?'#fff':c.col,c2:dark,ph:P.walkPh,mov:P.moving,f,leg:G.cls==='hacker'?'#1d1830':'#2e2a36',hair:heroHair(G)});
   const hy=Y-37+b;ctx.strokeStyle=OL;ctx.lineWidth=1.4;
   if(G.cls==='scrapper'){ctx.fillStyle='#e8e06a';ctx.fillRect(X-8,Y-25+b,16,2.5);ctx.fillRect(X-8,Y-19+b,16,2.5);
     ctx.beginPath();ctx.arc(X,hy-1,7.5,3.14,0);ctx.closePath();ctx.fillStyle='#e0bd3a';ctx.fill();ctx.stroke();box(X-9+f*2,hy-2,18,2.5,1,'#e0bd3a')}
@@ -7022,7 +7084,7 @@ function drawPlayer(X,Y){
   if(G.cls==='maxi'&&G.st&&G.st.laser)eggEyes(X,hy,f);
   // weapon arm
   if(P.spin>0){const a=tNow*30;ux=Math.cos(a);uy=Math.sin(a)*.5}
-  const sw=P.swing>0?Math.sin(P.swing/.18*3.14)*12:0,reach=13+sw,hx=X+ux*reach,hyy=Y-21+uy*reach+b;
+  const sw=P.swing>0?Math.sin(P.swing/.18*3.14)*12:0,reach=13+sw+(P._po?P._po.reach:0),hx=X+ux*reach,hyy=Y-21+uy*reach+b;P._hand=[hx,hyy-3];
   ctx.lineCap='round';ctx.strokeStyle=OL;ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(X+ux*5,Y-24+b);ctx.lineTo(hx,hyy);ctx.stroke();ctx.strokeStyle=dark;ctx.lineWidth=3;ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4;ctx.lineCap='butt';
   if(E.gloves){ctx.fillStyle=qc(E.gloves);ctx.fillRect(hx-2.8,hyy-2.8,5.6,5.6);ctx.strokeRect(hx-2.8,hyy-2.8,5.6,5.6)}
   const wp=E.weapon,wt=wp?tierOf(wp.il):0;
@@ -7719,13 +7781,16 @@ function drawAim(){
 function render(){
   ctx.setTransform(DPR*ZM,0,0,DPR*ZM,0,0);if(W&&P)backdrop();else{ctx.fillStyle='#050409';ctx.fillRect(0,0,VW,VH)}
   if(!W||!P)return;LIGHTS=[];LBOX=[];fxBind();fxTrim();stateMarks();
-  cx=(P.x-P.y)*32+(shake?rnd(-shake,shake):0);cy=(P.x+P.y)*16+(shake?rnd(-shake,shake):0);
+  cx=(P.x-P.y)*32;cy=(P.x+P.y)*16;
+  /* trauma shake: trauma squared times two sines at unrelated rates, so it rolls
+     instead of buzzing and ends on its own. Applied after the floor raster. */
+  const sk=shake*shake,shx=sk?JT.px*sk*(.6*Math.sin(tNow*43)+.4*Math.sin(tNow*71+1.3)):0,shy=sk?JT.px*.65*sk*(.6*Math.sin(tNow*37+.7)+.4*Math.sin(tNow*59+2.1)):0;
   const z=W.z,N=W.N,R=Math.ceil(VW/128+VH/64)+3,pd=P.x+P.y;
   const x0=Math.max(0,Math.floor(P.x-R)),x1=Math.min(N-1,Math.ceil(P.x+R)),y0=Math.max(0,Math.floor(P.y-R)),y1=Math.min(N-1,Math.ceil(P.y+R));
   const dl=[];const vis=o=>W.seen[(o.y|0)*N+(o.x|0)];
   /* Floors do not animate. A still camera reuses the last raster; a step or a
      newly seen tile draws them again. Walls stay in the depth list either way. */
-  const fkey=shake?'':(W.zi+'|'+cx.toFixed(2)+'|'+cy.toFixed(2)+'|'+(W.seenGen||0)+'|'+ctx.canvas.width+'x'+ctx.canvas.height);
+  const fkey=(W.zi+'|'+cx.toFixed(2)+'|'+cy.toFixed(2)+'|'+(W.seenGen||0)+'|'+ctx.canvas.width+'x'+ctx.canvas.height);
   let pen=null;
   if(!(fkey&&FC&&FCK===fkey)){
     if(!FC||FC.width!==ctx.canvas.width||FC.height!==ctx.canvas.height){FC=document.createElement('canvas');FC.width=ctx.canvas.width;FC.height=ctx.canvas.height;FG=FC.getContext('2d')}
@@ -7734,7 +7799,8 @@ function render(){
     const X=SX(x+.5,y+.5),Y=SY(x+.5,y+.5);if(X<-40||X>VW+40||Y<-70||Y>VH+70)continue;const t=W.map[y*N+x];if(!W.seen[y*N+x])continue;
     if(t!==0){if(pen){pen.drawImage(TX.floor[(x*7+y*13+((x*y)%3))%5],X-33,Y-17,66,34);const sn=W.seen;if(!z.town&&(!sn[y*N+x+1]||!sn[y*N+x-1]||!sn[(y+1)*N+x]||!sn[(y-1)*N+x])){pen.fillStyle='rgba(5,4,9,.6)';pen.beginPath();pen.moveTo(X-33,Y);pen.lineTo(X,Y-17);pen.lineTo(X+33,Y);pen.lineTo(X,Y+17);pen.fill()}}}
     else{const h=W.wh[y*N+x];if(h)dl.push({d:x+y+1,k:0,X,Y,h,near:h>1&&x+y+1>pd&&Math.abs(x+.5-P.x)<3.2&&Math.abs(y+.5-P.y)<3.2})}}
-  if(FC){ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.drawImage(FC,0,0);ctx.restore()}
+  if(shx||shy){cx+=shx;cy+=shy;for(const q of dl){q.X-=shx;q.Y-=shy}}
+  if(FC){ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.drawImage(FC,-shx*DPR*ZM,-shy*DPR*ZM);ctx.restore()}
   for(const d of W.decals){const X=SX(d.x,d.y),Y=SY(d.x,d.y);ctx.fillStyle='rgba(5,4,9,.42)';ctx.beginPath();ctx.ellipse(X,Y,d.r*30,d.r*15,d.a,0,6.283);ctx.fill();ctx.fillStyle='rgba(60,50,40,.5)';ctx.fillRect(X-4+d.a*3,Y-2,5,2);ctx.fillRect(X+3-d.a*2,Y+2,4,2)}
   drawAura();
   for(const a of W.allies)if(a.k==='trops'){const X=SX(a.x,a.y),Y=SY(a.x,a.y),r=2.6;ctx.fillStyle='rgba(200,210,220,.14)';ctx.beginPath();ctx.ellipse(X,Y,r*45,r*22.5,0,0,6.283);ctx.fill();
@@ -7758,7 +7824,7 @@ function render(){
   dl.sort((a,b)=>a.d-b.d);
   for(const q of dl){
     if(q.k===0){const tex=q.h===1?TX.low:TX.wall[q.h-2],th=tex.height/TX.ts;if(q.near)ctx.globalAlpha=.32;ctx.drawImage(tex,q.X-33,q.Y-17-(th-34),66,th);ctx.globalAlpha=1}
-    else if(q.k===1){const e=q.o,X=SX(e.x,e.y),Y=SY(e.x,e.y);drawEnemy(e,X,Y);if(e.k==='bull'&&e.say&&e.aggro&&((tNow*.5+e.ph)%6)<2.2)bubble(X,Y-58,['Moo.','Number go up.','Up only.','This time is different.','Have fun staying poor.'][(e.ph*10|0)%5])}
+    else if(q.k===1){const e=q.o,kb=e.kb>0?e.kb/.12*.2:0,X=SX(e.x+(e.kdx||0)*kb,e.y+(e.kdy||0)*kb),Y=SY(e.x+(e.kdx||0)*kb,e.y+(e.kdy||0)*kb);if(e.sq>0){const u=1-e.sq/.18,m=u-1,b=1+2.70158*m*m*m+1.70158*m*m,a=.2*(1-b);ctx.save();ctx.translate(X,Y);ctx.scale(1+a,1-a);ctx.translate(-X,-Y);drawEnemy(e,X,Y);ctx.restore()}else drawEnemy(e,X,Y);if(e.k==='bull'&&e.say&&e.aggro&&((tNow*.5+e.ph)%6)<2.2)bubble(X,Y-58,['Moo.','Number go up.','Up only.','This time is different.','Have fun staying poor.'][(e.ph*10|0)%5])}
     else if(q.k===2)drawNpc(q.o,SX(q.o.x,q.o.y),SY(q.o.x,q.o.y));
     else if(q.k===11)mpDraw(q.o,SX(q.o.x,q.o.y),SY(q.o.x,q.o.y));
     else if(q.k===3){const X=SX(P.x,P.y),Y=SY(P.x,P.y);drawPlayer(X,Y);
@@ -7793,7 +7859,7 @@ function render(){
         if(a.kind==='conv'){ctx.strokeStyle='#7be495';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(X,Y,16,8,0,0,6.283);ctx.stroke();drawEnemy(a.e,X,Y)}
         else if(a.kind==='drone'){shadow(X,Y,7);const y=Y-26+Math.sin(a.ph*6)*2;ctx.beginPath();ctx.ellipse(X,y,8,5,0,0,6.283);ctx.fillStyle='#26262e';ctx.fill();ctx.stroke();ctx.fillStyle='#e0bd6e';ctx.fillRect(X-7,y-1,14,2);eye(X,y+2,1.8,'#e0bd6e')}
         else if(a.kind==='golem'){const b=human(X,Y,{c:fl?'#fff':'#26262e',c2:'#101016',skin:'#8f8a80',s:1.55,ph:a.ph*6,mov:a.mov,f:a.fx,leg:'#101016'});box(X-4,Y-47+b,8,13,1,'#e6e2d6');poly([X-2,Y-47+b,X+2,Y-47+b,X+2.5,Y-37+b,X,Y-34+b,X-2.5,Y-37+b],'#b3261e');eye(X+a.fx*3,Y-58+b,1.6,'#e0bd6e')}
-        else if(a.kind==='clone'){ctx.globalAlpha=.6;const b=human(X,Y,{c:fl?'#fff':'#3f3f4c',c2:'#22222a',skin:'#e6e2d6',ph:a.ph*9,mov:a.mov,f:a.fx,leg:'#17171c'});ctx.fillStyle='#0b0912';ctx.fillRect(X-3,Y-38.5+b,2.2,1.6);ctx.fillRect(X+1,Y-38.5+b,2.2,1.6);ctx.globalAlpha=1}
+        else if(a.kind==='clone'){ctx.globalAlpha=.6;const b=human(X,Y,{c:fl?'#fff':'#3f3f4c',c2:'#22222a',skin:'#e6e2d6',ph:a.ph*9,mov:a.mov,f:a.fx,leg:'#17171c',hair:G.sex==='f'?'#17171c':null});ctx.fillStyle='#0b0912';ctx.fillRect(X-3,Y-38.5+b,2.2,1.6);ctx.fillRect(X+1,Y-38.5+b,2.2,1.6);ctx.globalAlpha=1}
         else if(a.kind==='stray'){shadow(X,Y,8);const y=Y-8;box(X-10,y-6,18,8,3,fl?'#fff':(a.foe?'#8a4a3a':'#6a8f62'));box(X-14,y-8,8,7,2,'#3d5438');ctx.fillStyle=a.foe?'#b3261e':'#1a120c';ctx.fillRect(X-12,y-6,2,2)}
         else if(a.kind==='bull'){shadow(X,Y,14);box(X-16,Y-16,30,12,4,fl?'#fff':'#4e6a48');box(X-20,Y-20,12,10,3,'#6a8f62');box(X-22,Y-26,4,8,1,'#3d5438');box(X-14,Y-26,4,8,1,'#3d5438')}
         else{const b=human(X,Y,{c:fl?'#fff':'#e6e2d6',c2:'#b8b0a0',s:.8,ph:a.ph*10,mov:a.mov,f:a.fx,leg:'#3a3644'});ctx.fillStyle='#59e0e6';ctx.fillRect(X-1,Y-24+b,2,7)}
@@ -7808,8 +7874,11 @@ function render(){
       else if(a.k==='hedge'){const rr=a.r||.42;ctx.beginPath();ctx.ellipse(X,Y,rr*45,rr*22.5,0,0,6.283);ctx.fillStyle='rgba(78,106,72,.28)';ctx.fill();ctx.strokeStyle='#4e6a48';ctx.stroke();ctx.strokeStyle=OL;box(X-8,Y-18,6,18,1,'#3d5438');box(X-2,Y-22,6,22,1,'#4e6a48');box(X+4,Y-16,5,16,1,'#3d5438')}
       else{shadow(X,Y,11);box(X-10,Y-16,20,16,1,'#a8895c');ctx.fillStyle='#6a5030';ctx.fillRect(X-10,Y-9,20,3);ctx.fillStyle='#ff5d4d';ctx.font='900 13px Cinzel,serif';ctx.textAlign='center';ctx.fillText(Math.ceil(a.life),X,Y-22)}}
   }
-  if(OPT.fx!=='thin'){for(const p of W.parts){const X=SX(p.x,p.y),Y=SY(p.x,p.y)-p.z;ctx.globalAlpha=Math.min(1,(1-p.t/p.life)*2);ctx.fillStyle=p.col;ctx.fillRect(X-p.s/2,Y-p.s/2,p.s,p.s)}ctx.globalAlpha=1}
+  if(OPT.fx!=='thin'){for(const p of W.parts){const X=SX(p.x,p.y),Y=SY(p.x,p.y)-p.z;ctx.globalAlpha=Math.min(1,(1-p.t/p.life)*2);if(p.ln){const k=.06;ctx.strokeStyle=p.col;ctx.lineWidth=p.s*.75;ctx.beginPath();ctx.moveTo(X,Y);ctx.lineTo(X-(p.vx-p.vy)*32*k,Y-((p.vx+p.vy)*16-p.vz)*k);ctx.stroke()}else{ctx.fillStyle=p.col;ctx.fillRect(X-p.s/2,Y-p.s/2,p.s,p.s)}}ctx.globalAlpha=1}
   for(const f of W.fx){if(!fxShow(f))continue;const X=SX(f.x,f.y),Y=SY(f.x,f.y),u=f.t/f.life;
+    if(f.k==='zap'){let s=f.sd+(tNow*40|0);const r=()=>{s=(s*9301+49297)%233280;return s/233280-.5};ctx.strokeStyle=f.col;ctx.lineWidth=1.6;ctx.globalAlpha=1-u;ctx.beginPath();for(let j=0;j<3;j++){let x=X,y=Y-20;ctx.moveTo(x,y);for(let m=0;m<3;m++){x+=r()*18;y+=r()*16;ctx.lineTo(x,y)}}ctx.stroke();ctx.globalAlpha=1;continue}
+    if(f.k==='ripple'){ctx.strokeStyle=f.col;ctx.lineWidth=1.5;ctx.globalAlpha=(1-u)*.8;for(let j=0;j<2;j++){const v=Math.min(1,u*1.4+j*.25);ctx.beginPath();ctx.ellipse(X,Y-18,6+v*18,3+v*9,0,0,6.283);ctx.stroke()}ctx.globalAlpha=1;continue}
+    if(f.k==='star'){const s=(1-u)*24,cy=Y-20;ctx.fillStyle=f.col;ctx.globalAlpha=1-u;ctx.beginPath();ctx.moveTo(X,cy-s);ctx.lineTo(X+3,cy);ctx.lineTo(X,cy+s);ctx.lineTo(X-3,cy);ctx.closePath();ctx.moveTo(X-s,cy);ctx.lineTo(X,cy+3);ctx.lineTo(X+s,cy);ctx.lineTo(X,cy-3);ctx.closePath();ctx.fill();ctx.globalAlpha=1;continue}
     if(f.k==='arc'){const a=Math.atan2((f.dx+f.dy)*.5,f.dx-f.dy),rx=f.reach?f.reach*45.25:46*f.w,ry=f.reach?f.reach*22.63:24*f.w,oy=f.reach?Y:Y-18;if(!fxBlit('arc','#ffd9a0',u,X,oy,rx*2.33,rx*2.33,a,1,ry/rx)){ctx.lineCap='round';for(const[lw,cl,rr]of[[12*f.w,'rgba(255,170,80,'+(1-u)*.35+')',1],[6*f.w,'rgba(255,240,210,'+(1-u)+')',1],[2.5*f.w,'rgba(255,255,255,'+(1-u)*.8+')',.82]]){ctx.strokeStyle=cl;ctx.lineWidth=lw;ctx.beginPath();ctx.ellipse(X,oy,rx*rr,ry*rr,0,a-1*f.w+u*.6,a+1*f.w+u*.6);ctx.stroke()}ctx.lineCap='butt'}}
     if(f.k==='bolt'){const X2=SX(f.x2,f.y2),Y2=SY(f.x2,f.y2);const bx=(X+X2)/2,by=(Y+Y2)/2-22,bl=Math.hypot(X2-X,Y2-Y)||1;if(!fxBlit('bolt',f.col||'#59e0e6',u,bx,by,bl,Math.max(16,Math.min(48,bl*.3)),Math.atan2(Y2-Y,X2-X))){const pts=[[X,Y-22]];for(let i=1;i<7;i++)pts.push([X+(X2-X)*i/7+rnd(-9,9),Y-22+(Y2-Y)*i/7+rnd(-9,9)]);pts.push([X2,Y2-22]);ctx.globalAlpha=1-u;ctx.lineJoin='round';for(const[lw,cl]of[[9,f.col||'#59e0e6'],[3,'#ffffff']]){ctx.strokeStyle=cl;ctx.lineWidth=lw;ctx.globalAlpha=(1-u)*(lw>4?.35:1);ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);for(const p of pts)ctx.lineTo(p[0],p[1]);ctx.stroke()}const bp=pts[3];ctx.lineWidth=1.5;ctx.strokeStyle='#fff';ctx.beginPath();ctx.moveTo(bp[0],bp[1]);ctx.lineTo(bp[0]+rnd(-22,22),bp[1]+rnd(-22,22));ctx.stroke();ctx.globalAlpha=1;}light(X2,Y2-22,80,f.col||'#59e0e6',1,f.remote?0:1);}
     if(f.k==='strike'){if(!fxBlit('strike','#9a6cff',u,X,Y-130,72,272)){ctx.strokeStyle='#d8c8ff';ctx.globalAlpha=1-u;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(X+rnd(-10,10),Y-260);for(let i=1;i<6;i++)ctx.lineTo(X+rnd(-9,9),Y-260+i*43);ctx.lineTo(X,Y);ctx.stroke();ctx.globalAlpha=1;}light(X,Y,110,'#9a6cff',1,f.remote?0:1);}
@@ -7860,6 +7929,7 @@ function render(){
       ctx.globalAlpha=a;ctx.fillStyle='#7a0606';ctx.beginPath();ctx.roundRect(X-r*.28,Y,r*.56,dl,r*.28);ctx.fill();ctx.beginPath();ctx.arc(X,Y+dl,r*.36,0,6.283);ctx.fill();
       ctx.fillStyle='#a30c0c';ctx.beginPath();ctx.arc(X,Y,r,0,6.283);ctx.arc(X+r*(b.k-.5)*2.2,Y-r*.7,r*.4,0,6.283);ctx.arc(X-r*.9,Y+r*(b.k-.3),r*.3,0,6.283);ctx.fill();
       ctx.fillStyle='rgba(255,120,110,.5)';ctx.beginPath();ctx.arc(X-r*.3,Y-r*.3,r*.22,0,6.283);ctx.fill()}ctx.globalAlpha=1}
+  if(flashT>0&&!OPT.calm){ctx.fillStyle='rgba(255,250,240,'+Math.min(.35,flashT*5)+')';ctx.fillRect(0,0,VW,VH)}
   if(mode==='dying'){ctx.fillStyle='rgba(70,0,0,'+Math.min(.5,DY.t*.4)+')';ctx.fillRect(0,0,VW,VH);ctx.fillStyle='rgba(0,0,0,'+clamp((DY.t-1.2)*.6,0,.7)+')';ctx.fillRect(0,0,VW,VH)}
   // map
   if(OPT.minimap&&!z.town){ctx.setTransform(DPR,0,0,DPR,0,0);const mx=CW-78,my=196;ctx.save();ctx.beginPath();ctx.rect(CW-150,128,142,136);ctx.clip();ctx.globalAlpha=.8;ctx.translate(mx,my);ctx.transform(1.7,.85,-1.7,.85,0,0);ctx.imageSmoothingEnabled=false;ctx.drawImage(W.mm,-P.x,-P.y);
@@ -9176,7 +9246,7 @@ function drawSheet(){
     h+=menuBar('opts',[['play','Play'],['fight','Fight'],['disp','Display'],['field','Names'],['hands','Hands'],['who','Characters'],['save','Save']],'play');
     let who=`<h3>Characters</h3><div class="list">${[0,1,2].slice(0,NSLOT).map(n=>{const i=n===SLOT?{lvl:G.lvl,cls:G.cls,act:heroAct(G),dead:heroDead(G)}:slotInfo(n);return i&&CLS[i.cls]?`<button class="li${n===SLOT?' on':''}" ${n===SLOT?'':`data-swslot="${n}"`}><i style="background:${CLS[i.cls].col}"></i><div><b>${i.dead?'Hardcore · fallen':'Level '+i.lvl+' '+CLS[i.cls].n}${n===SLOT?' · playing now':''}</b><span>Slot ${n+1} · Act ${actRoman(i.act)}${i.dead?' · begins again':n===SLOT?'':' · '+uiSay('click','tap')+' to switch'}</span></div></button>${n===SLOT?'':`<button class="ghost" data-delslot="${n}" style="margin:-4px 0 8px auto;display:block;font-size:10px;padding:5px 10px;min-height:0">Delete slot ${n+1}</button>`}`:`<button class="li" data-newslot="${n}"><div><b>Slot ${n+1} · empty</b><span>${uiSay('Click to create a new character here','Tap to create a new character here')}</span></div></button>`}).join('')}</div><p class="hint" style="font-size:13.5px">Your current character is saved before you switch. The town lockbox is shared between them.</p>`;
     let fight=`<h3>Difficulty</h3><div class="row">${DIFFS.map((f,i)=>`<button class="${(G.diff||0)===i?'big':'ghost'}" disabled>${f.n}</button>`).join('')}</div><p class="hint" id="diffHint" style="font-size:13.5px">This game is <b>${esc(DIFFS[G.diff||0].n)}</b>, and stays that way until it ends. Hard and Brutal machines have more life and hit harder, and pay more experience to match: every machine’s experience scales with how tough it is. ${diffUnlocked(1)?'':'Hard opens after you clear Act V on Normal. '}${diffUnlocked(2)?'':'Brutal opens after you clear Act V on Hard. '}To play another difficulty, leave for the title and create a new game.</p><button class="tog${G.hc?' on':''}" data-hc="1"><span>Hardcore: one life. If this hero dies, they are gone and a new wanderer starts from nothing. +25% experience and magic find.</span><i>${G.hc?'ON':'OFF'}</i></button>`;
-    const LOOK={dmgOut:1,dmgIn:1,enemyBars:1,orbNums:1,selfBars:1,minimap:1,shake:1,sound:1,music:1,obj:1};
+    const LOOK={dmgOut:1,dmgIn:1,enemyBars:1,orbNums:1,selfBars:1,minimap:1,shake:1,calm:1,sound:1,music:1,obj:1};
     const HAND={dyn:1,auto:1,autoEq:1,autoStim:1,tapTarget:1,cmpArrow:1};
     let disp='<h3>What you see</h3>';
     let field=`${pkRow()}`;
@@ -9195,7 +9265,7 @@ function drawSheet(){
     <p style="font-size:13px">Sats are kept exactly as you leave them. Credits are held by what they could buy on the day, less Unity’s 10% custody fee, so a fortune from a late act is not a fortune to a hero just starting out.</p>${stashMoveHTML()}`}
   if(tab==='shift'){h+=`<h2>Hack the simulation</h2><p>The rig can convince the world you were always someone else. Your level, gear and quests stay. Every skill and attribute point you spent comes back, two for each rank from 6 to 10, to be spent again: by you, or by the rig following a build you choose. It costs <strong style="color:#f7931a">${SHIFT_COST} sats</strong>; you hold ${G.sats}. Gear you no longer meet stays equipped and grants nothing until the new points cover it.</p>`;
     const stab=[];for(const k in CLS)stab.push([k,CLS[k].n.replace(/^The /,'')]);h+=menuBar('shift',stab,G.cls);
-    for(const k in CLS){const c=CLS[k],cur=k===G.cls;h+=menuPane('shift',k,`<div class="li${cur?' on':''}"><div><b>${c.n}${cur?' · you now':''}</b><span>${c.tag}</span><div class="row" style="margin-top:8px"><button class="ghost" data-shiftp="${k}" ${G.sats<SHIFT_COST?'disabled':''}>Choose a build</button><button class="ghost" data-shift="${k}|0" ${G.sats<SHIFT_COST?'disabled':''}>I will assign</button></div></div></div>`)}
+    for(const k in CLS){const c=CLS[k],cur=k===G.cls;h+=menuPane('shift',k,`<div class="li${cur?' on':''}"><div><b>${c.n}${cur?' · you now':''}</b>${clsBlurb(k,G.sex)}<div class="row" style="margin-top:8px"><button class="ghost" data-shiftp="${k}" ${G.sats<SHIFT_COST?'disabled':''}>Choose a build</button><button class="ghost" data-shift="${k}|0" ${G.sats<SHIFT_COST?'disabled':''}>I will assign</button></div></div></div>`)}
     if(sel&&sel.shp){const k=sel.shp,sk=CLS[k].sk;pop=`<div class="card" style="text-align:left"><div class="nm q4">${CLS[k].n} builds</div><div class="ln off">Each is a full plan: skills that feed each other, the three on your buttons, passives, a doctrine and attributes. Pick one and the rig spends your points to fit. ${SHIFT_COST} sats.</div><div class="list">${BUILDS[k].map(b=>`<button class="li" data-shift="${k}|${b.k}"><div><b>${b.n}</b><span>${b.p}</span><span style="color:var(--gold)">${b.sl.map(i=>sk[i].n).join(' · ')}</span><span>Doctrine: ${DOCS[k].find(d=>d[0]===b.doc)[1]} · leans on ${['Might','Reflex','Vitality','Bandwidth'][b.at.indexOf(Math.max(...b.at))]}</span>${shiftQuietHTML(k,b.k)}</div></button>`).join('')}<button class="li" data-shift="${k}|?"><div><b>Surprise me</b><span>One of the three, chosen for you.</span></div></button></div></div>`}
     h+=`<p>Choosing your own class again is allowed: it is a full re-roll or respec for ${SHIFT_COST} sats.</p>`}
   if(tab==='merc'){h+=`<h2>Kestrel’s people</h2><p>One companion at a time. They level with you, fight beside you and can carry a weapon and armor you give them. You have <strong>${fmt(G.credits)}</strong>.</p>`;
@@ -9636,9 +9706,17 @@ addEventListener('pagehide',()=>{if(G&&mode!=='title')save(true)});
 
 /* ================= boot ================= */
 {const ln=$('lanNote');if(ln)ln.hidden=!window.__LAN}
-function drawCls(){$('clsList').innerHTML=Object.entries(CLS).filter(([k,c])=>!c.locked||maxiOn()).map(([k,c])=>`<button class="cls" data-cls="${k}"><i style="background:${c.col}"></i><div><b>${c.n}</b><span>${c.tag}</span></div></button>`).join('')}
+/* A wanderer is a woman or a man, chosen before the class and kept on the save.
+   A save from before the choice has no sex and draws as it always did, which is the man. */
+let NEWSEX='m';try{const v=localStorage.getItem(SAVEKEY+'_sex');if(v==='f'||v==='m')NEWSEX=v}catch(e){}
+const sexTxt=(t,x)=>String(t||'').replace(/\{(He|he|His|his|Him|him)\}/g,(_,w)=>{const f=x==='f';return {He:f?'She':'He',he:f?'she':'he',His:f?'Her':'His',his:f?'her':'his',Him:f?'Her':'Him',him:f?'her':'him'}[w]});
+const clsStats=c=>'Life '+c.hp+', +'+c.hpL+' a level · '+(c.melee?'melee':'ranged')+' · one attack every '+c.ivl.toFixed(2)+' s · run speed '+c.spd;
+function clsBlurb(k,x){const c=CLS[k];return `<span>${sexTxt(c.tag,x)}</span><span class="clsN">${clsStats(c)}</span>`+(c.good?`<span class="clsL"><em>Good at:</em> ${sexTxt(c.good,x)}</span><span class="clsL"><em>Weak to:</em> ${sexTxt(c.weak,x)}</span><span class="clsL"><em>Builds:</em> ${sexTxt(c.bld,x)}</span>`:'')}
+function drawSex(){const el=$('sexPick');if(!el)return;for(const b of el.querySelectorAll('[data-sex]')){const on=b.dataset.sex===NEWSEX;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false')}}
+function drawCls(){drawSex();$('clsList').innerHTML=Object.entries(CLS).filter(([k,c])=>!c.locked||maxiOn()).map(([k,c])=>`<button class="cls" data-cls="${k}"><i style="background:${c.col}"></i><div><b>${c.n}</b>${clsBlurb(k,NEWSEX)}</div></button>`).join('')}
+if($('sexPick'))$('sexPick').addEventListener('click',e=>{const b=e.target.closest('[data-sex]');if(!b)return;sfx('ui');NEWSEX=b.dataset.sex==='f'?'f':'m';try{localStorage.setItem(SAVEKEY+'_sex',NEWSEX)}catch(e){}drawCls()});
 drawCls();
-$('clsList').addEventListener('click',e=>{const b=e.target.closest('[data-cls]');if(!b)return;sfx('ui');const go=()=>{$('title').hidden=true;newGame(b.dataset.cls)};const cur=slotInfo(SLOT);if(!cur)return go();dlg('Replace slot '+(SLOT+1)+'?','A new wanderer begins at the very start: level 1, Act I, nothing carried over. It replaces the level '+cur.lvl+' '+CLS[cur.cls].n+' saved in this slot, who cannot be brought back. '+uiSay('To keep them, click an empty slot first.','To keep them, tap an empty slot first.'),[['Keep my hero',()=>{mode='title'}],['Start a new '+CLS[b.dataset.cls].n,go]],2)});
+$('clsList').addEventListener('click',e=>{const b=e.target.closest('[data-cls]');if(!b)return;sfx('ui');const go=()=>{$('title').hidden=true;newGame(b.dataset.cls,NEWSEX)};const cur=slotInfo(SLOT);if(!cur)return go();dlg('Replace slot '+(SLOT+1)+'?','A new wanderer begins at the very start: level 1, Act I, nothing carried over. It replaces the level '+cur.lvl+' '+CLS[cur.cls].n+' saved in this slot, who cannot be brought back. '+uiSay('To keep them, click an empty slot first.','To keep them, tap an empty slot first.'),[['Keep my hero',()=>{mode='title'}],['Start a new '+CLS[b.dataset.cls].n,go]],2)});
 $('bWalk').onclick=$('bWalkLead').onclick=()=>{sfx('ui');walkChoose(true)};
 if($('bTryGear')){if(!devOn())$('bTryGear').hidden=true;else $('bTryGear').onclick=()=>{sfx('ui');dlg('Test gear','Six uniques grant a skill only while you wear them. Once you are in the world, the hero sheet can put a test copy on you. A test copy is left out of every save, the lockbox, and a sale. The same names can also drop for real, and those save.',[['Good']])};}
 $('bLoadCode').onclick=()=>openSheet('load',{only:['load']});
@@ -9802,7 +9880,7 @@ function frame(t){uiPad();const dt=Math.min(.05,(t-last)/1000||0);last=t;tNow=t/
   if(mode==='offsite'){offsiteTick(dt);offsiteDraw();requestAnimationFrame(frame);return}
   const t0=PERF?performance.now():0;
   if(mode==='play'){if(hitStop>0)hitStop-=dt;else update(dt);if(G&&W&&(mode==='play'||mode==='dying'))hud()}
-  else if(mode==='dying'&&DY){DY.t+=dt;tickFx(dt*.6);shake=Math.max(0,shake-dt*20);if(DY.t>2.5&&!DY.shown){DY.shown=1;showDeath()}}
+  else if(mode==='dying'&&DY){DY.t+=dt;tickFx(dt*.6);shake=Math.max(0,shake-dt*JT.dec);if(DY.t>2.5&&!DY.shown){DY.shown=1;showDeath()}}
   const t1=PERF?performance.now():0;
   if(mode==='scene'&&SC)drawScene(dt);else render();
   if(PERF){const t2=performance.now();perfMark(t1-t0,t2-t1,t2-t0,t-(PERF.lastT||t));PERF.lastT=t}
@@ -9831,7 +9909,7 @@ uiBoot();
 showDisc();
 cloudInit();
 function devOn(){try{if(window.__DEBUG)return true;var h=location.hostname;if(h==='localhost'||h==='127.0.0.1'||h==='::1')return true;if(location.protocol==='file:'||location.protocol==='about:')return true}catch(e){}return false}
-if(devOn())window.__g={perfInit,perfPaint,get PERF(){return PERF},gameOver,creditSlides,toTitle,openCreate,closeCreate,createGame,endGame,beginDifficulty,markCleared,hasCleared,aiDecide,aiDelay,recSet,recGet,get AURACOL(){return AURACOL},itemArt,itemArtFor,itemImg,itemArch,itemTint,itemHead,itemSeed,get ITART(){return ITART},fxSheet,fxBlit,fxPairs,fxWarm,fxLoad,get FXART(){return FXART},get FXC(){return FXC},get MOBMARK(){return MOBMARK},get STY(){return STY},buildTextures,get DEADC(){return DEADC},get DEAD(){return DEAD},get TX(){return TX},get MAT(){return MAT},get BGK(){return BGK},migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,stimPackItem,giveStim,stimToBelt,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},set satShop(v){satShop=v},get shop(){return shop},set shop(v){shop=v},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},get LBOX(){return LBOX},adaptGearless,adaptSpawn,adaptDeath,nanReport,get LOOT_BOX(){return LOOT_BOX},lootShowAll,lootPrefs,SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith,openVend,vendAsk,vendBid,vendBuy,vendSell,vendBuyback,vendBuyStim,vendIdentify,vendBox,vendTabOf,buyPrice,sellValue,satCost,satPrice,boxPrice,get VEND(){return VEND},get BUYBACK(){return BUYBACK},get shopVia(){return shopVia},setShopVia(v){shopVia=+v||0},vendFlipLock,vendSellPlan,vendSellCommit,vendSellOpen,sellFilters,vendQuest,lootPasses,lootAuto,lootMigrate,lootLayout,lootName,lootPickup,lootOpen,lootCompare,lootPrefs,lootSave,lootLoad,layCorpse,reclaimCorpse,buyCorpse,corpseFee,repairQuote,repairOne,repairAll,repairList,wearWeapon,wearArmor,wearSlot,itemBroken,stampDura,migrateDurability,placeCorpses,deathCreditPct,encW,loanerWeapon,calmNearCorpse,resetZones,stampReq,canWear,blowPct,blowSpec,swingBlow,gearLive,gearQuiet,reqShortfall,cantEquipText,attrTip,driveStat,witImpact,pdmg,classWeapon,weaponRole};
+if(devOn())window.__g={perfInit,perfPaint,get PERF(){return PERF},gameOver,creditSlides,toTitle,openCreate,closeCreate,createGame,endGame,beginDifficulty,markCleared,hasCleared,aiDecide,aiDelay,recSet,recGet,get AURACOL(){return AURACOL},itemArt,itemArtFor,itemImg,itemArch,itemTint,itemHead,itemSeed,get ITART(){return ITART},fxSheet,fxBlit,fxPairs,fxWarm,fxLoad,get FXART(){return FXART},get FXC(){return FXC},get MOBMARK(){return MOBMARK},get STY(){return STY},buildTextures,get DEADC(){return DEADC},get DEAD(){return DEAD},get TX(){return TX},get MAT(){return MAT},get BGK(){return BGK},migrateDiff,flushBank,diffUnlocked,heroAct,actRoman,heroDead,startPlay,slotInfo,drawSlots,get CLD(){return CLD},skipDisc,boonRefund,applySave,spawn,schemaAsk,setMode(m){mode=m},maxiCheck,maxiOn,drawCls,maxiAura,maxiBuff,drawSheet,webPts,webNext,DTY,RES,SKF,BUILDS,mktQuote,mktTrade,mktAfford,mktPost,mktCancel,mktTick,mktFair,mktMid,mktBid,mktAsk,mktSpread,mktDepth,mktNews,mktBorrow,mktRepay,mktInit,scenes(){const o={INTRO,RESCUE,ENDING1:endingSlides(),INTRO2,ENDING2,INTRO3,ENDING3,END_LEAVE,END_WAKE,RESERVE,STALE,FAIL};for(const k in SQ)SQ[k].steps.forEach((st,i)=>{if(st.scene)o['sq_'+k+i]=st.scene});return o},get G(){return G},get W(){return W},get P(){return P},get S(){return S},get mode(){return mode},get shake(){return shake},set shake(v){shake=v},get hitStop(){return hitStop},get flashT(){return flashT},juice,get fck(){return FCK},JT,poseNow,hitSpark,ZONES,QUESTS,storyStep,actBriefHold,actBriefMigrate,quest,actOf,townOf,finalChoice,PREZ,tagRender,tagMenu,tagDismiss,SQ,sqOpen,recOk,ltEnd,BUILDS,get ACC(){return ACC},bullStart,legTake,mkFixed,UNI,sl,hit,setDT(v){DT=v},RES,fateOf,campStart,sway,setShill(v){shillT=v},update,attack,stim,stimPackItem,giveStim,stimToBelt,CLS,ET,ZONES,subStart,powStart,mkCharm,dodge,talkFloat,simChoice,craft,get SB(){return SB},repop,usePortal,closeSheet,dmgEnemy,kill,evStart,socketWord,addAdopt,get EV(){return EV},SQ,sqUse,useObj,shapeShift,bounties,SKF,tanks,get satShop(){return satShop},set satShop(v){satShop=v},get shop(){return shop},set shop(v){shop=v},itemDelta,equipBest,get SWAP(){return SWAP},hurt,hurtAlly,sfx,music,get AC(){return AC},get MU(){return MU},enter,cast,newGame,keys,openSheet,makeItem,calc,gainXp,save,openPortal,talkTo,playScene,ENDING,endingSlides,goalPt,INTRO2,ENDING2,ZS:()=>ZS,get OPT(){return OPT},mouseClick,hotBind,hotUse,cycleRight,assignMouse,openPick,pathFind,pickAt,pickScreen,get MO(){return MO},get HOVER(){return HOVER},ensureMouse,LEFTSK,learnedAct,leftOk,fxPatch,fxTrail,fxMark,fxOrbit,fxTrim,fxBind,parts,light,render,hud,buildApply,fxShow,get LIGHTS(){return LIGHTS},get LBOX(){return LBOX},adaptGearless,adaptSpawn,adaptDeath,nanReport,get LOOT_BOX(){return LOOT_BOX},lootShowAll,lootPrefs,SKV,skvOf,skvPlay,glyph,setSkillButtons,stateMarks,maxiSet,anonDump,auraVisR,get MP(){return MP},mpZone,mpMovePkt,mpNoteCast,mpNoteSwing,toxicSwing,nearbyAllies,auraFoes,nodeMul,actDone,mpRecv,dropWeights,partyDropN,WALK,walkChoose,walkOffer,walkState,resOf,resPen,resEff,resClamp,mercResOf,affText,itemLines,migrateItem,RTK,MERCS,fillSlide,tryGear,itemSkillOn,saveObj,castIndex,blinkCast,itemSkillTick,uniqEligible,uniqBand,remoteStep,dropFrom,get ISK(){return ISK},mapPrint,withMapRng,debugHits,worldAt,screenAt,aimSpec,aimDefault,walk,castSpot,aimClamp,beginAim,aimMove,aimSet,aimRelease,aimCancel,wantDrag,aimStickMetrics,aimThumbWorld,aimThumb,aimCommit,aimAcquire,aimTapPoint,aimHopPoint,aimPlace,blinkEnd,hedgePts,faultPts,get AIMING(){return AIMING},get J(){return J},AIM_TAP_MS,AIM,uiTouch,noteInput,uiApply,uiBoot,slideLine,uiProbe,slotKeyLabel,uiSay,beltBudget,charmMigrate,charmOnKill,charmFrom,bagCan,gridCan,gridPlace,charmNormalize,charmRanks,charmBonus,charmSocket,charmTakeOff,charmRefit,mkLetter,mkChurn,charmOdds,pvpLifeMul,gridCells,charmParts,cmpEval,cmpTargets,cmpHTML,sheetSwap,strictUp,strikeInfo,itemHands,statsWith,openVend,vendAsk,vendBid,vendBuy,vendSell,vendBuyback,vendBuyStim,vendIdentify,vendBox,vendTabOf,buyPrice,sellValue,satCost,satPrice,boxPrice,get VEND(){return VEND},get BUYBACK(){return BUYBACK},get shopVia(){return shopVia},setShopVia(v){shopVia=+v||0},vendFlipLock,vendSellPlan,vendSellCommit,vendSellOpen,sellFilters,vendQuest,lootPasses,lootAuto,lootMigrate,lootLayout,lootName,lootPickup,lootOpen,lootCompare,lootPrefs,lootSave,lootLoad,layCorpse,reclaimCorpse,buyCorpse,corpseFee,repairQuote,repairOne,repairAll,repairList,wearWeapon,wearArmor,wearSlot,itemBroken,stampDura,migrateDurability,placeCorpses,deathCreditPct,encW,loanerWeapon,calmNearCorpse,resetZones,stampReq,canWear,blowPct,blowSpec,swingBlow,gearLive,gearQuiet,reqShortfall,cantEquipText,attrTip,driveStat,witImpact,pdmg,classWeapon,weaponRole};
 /* late additions that need the dialogue tables */
 QRW.push(
  ['q16','gramps','“I do not remember the nine years after I clicked.” You gain 1 skill point.',()=>G.sp++,'Gramps'],
@@ -10475,7 +10553,7 @@ let mpAnnounced = '';
 function mpHello() {
   if (!G) return;
   mpAnnounced = G.cls || '';
-  mpSend('hello', { lvl: G.lvl, cls: G.cls, zi: W ? W.zi : 0, hp: G.hp, hpm: S.maxHp, act: actOf ? actOf(W ? W.zi : 0) : 1, resume: 1 });
+  mpSend('hello', { lvl: G.lvl, cls: G.cls, sex: G.sex === 'f' ? 'f' : 'm', zi: W ? W.zi : 0, hp: G.hp, hpm: S.maxHp, act: actOf ? actOf(W ? W.zi : 0) : 1, resume: 1 });
 }
 
 function mpSay(text) {
@@ -10738,7 +10816,7 @@ function mpZone(m) {
     /* Hold the previous position and interpolate toward the new one, so ten updates a
        second do not look like ten updates a second. */
     o.px = o.x; o.py = o.y; o.tx = r.x; o.ty = r.y; o.lerp = 0;
-    o.name = r.name; o.lvl = r.lvl; o.cls = r.cls; o.dir = r.dir; o.hp = r.hp; o.hpm = r.hpm;
+    o.name = r.name; o.lvl = r.lvl; o.cls = r.cls; o.sex = r.sex === 'f' ? 'f' : 'm'; o.dir = r.dir; o.hp = r.hp; o.hpm = r.hpm;
     if ('sk' in r) o.sk = (typeof r.sk === 'number' && mpSkillOk(r.sk) && (r.sk | 0) === r.sk) ? r.sk : null;
     if ('au' in r) o.au = (r.au === 3 || r.au === 4 || r.au === 7) ? r.au : null;
     if ('aL' in r) o.aL = (o.au && r.aL >= 1 && r.aL <= 20) ? (r.aL | 0) : (o.au ? (o.aL || 1) : 0);
@@ -11027,8 +11105,11 @@ function mpDraw(o, X, Y) {
   const f = Math.cos(o.dir || 0) >= 0 ? 1 : -1, y = Y - 34;
   ctx.fillStyle = '#2a2436';
   ctx.fillRect(X - 4, y + 20, 3.5, 13); ctx.fillRect(X + 1, y + 20, 3.5, 13);
+  const hair = o.sex === 'f' ? heroHair({ sex: 'f', cls: o.cls }) : null;
+  if (hair) { ctx.fillStyle = hair; ctx.beginPath(); ctx.ellipse(X - f * 4, y + 9, 4.5, 8, 0, 0, 6.283); ctx.fill(); }
   box(X - 7, y + 7, 14, 15, 4, c.col);
   box(X - 5.5, y - 5, 11, 11, 4, '#d9c3a6');
+  if (hair) { box(X - 6, y - 6.5, 12, 5, 3, hair); box(X - f * 5 - 1.5, y - 3, 3.5, 9, 2, hair); }
   ctx.fillStyle = OL; ctx.fillRect(X - 3 + f * 1.5, y - 1, 1.6, 1.6); ctx.fillRect(X + 1 + f * 1.5, y - 1, 1.6, 1.6);
   /* health, then the name, then the mark if they have declared */
   const w = 30, hp = Math.max(0, Math.min(1, (o.hp || 0) / (o.hpm || 1)));

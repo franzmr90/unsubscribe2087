@@ -178,7 +178,7 @@ function auraIx(v) { return v === 3 || v === 4 || v === 7 ? v : null; }
 function loc(p) {
   const bf = bfLiveMap(p);
   return {
-    uid: p.uid, name: p.name, lvl: p.lvl, cls: p.cls, x: p.x, y: p.y, hp: p.hp, hpm: p.hpm, dir: p.dir,
+    uid: p.uid, name: p.name, lvl: p.lvl, cls: p.cls, sex: p.sex === 'f' ? 'f' : 'm', x: p.x, y: p.y, hp: p.hp, hpm: p.hpm, dir: p.dir,
     sk: p.sk == null ? null : p.sk, au: p.au == null ? null : p.au, aL: p.au ? (p.aL || 1) : 0,
     node: p.au ? (p.node || 0) : 0, nm: p.nm || 0, bf: bf, tes: p.tes || null, sw: p.sw ? 1 : 0,
     pail: pailLoc(p)
@@ -859,6 +859,7 @@ const HANDLERS = {
   hello(p, m) {
     const prevTown = TOWNS.has(p.zi | 0);
     p.cls = clean(m.cls, 16);
+    p.sex = m.sex === 'f' ? 'f' : 'm';
     p.zi = +m.zi || 0;
     if (TOWNS.has(p.zi | 0)) { if (!prevTown || !p.townSince) p.townSince = Date.now(); }
     else p.townSince = 0;

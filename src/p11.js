@@ -229,7 +229,7 @@ const BAI={
  /* The Air Gap is the absence of a door, so it does not move and almost nothing reaches it. The one
     way through is the cable taped across the floor: stand on the cable and your blows land in full.
     Every eight seconds somebody re-tapes it in a new direction. */
- gap(e,dt){if(!e.cb){e.cb=1;e.spd=0;e.b1=2.4;e.b2=8;e.b3=0;e.b4=12}e.b1-=dt;e.b2-=dt;e.b3-=dt;e.b4-=dt;
+ gap(e,dt){if(!e.cb){e.cb=1;e.spd=0;e.pinX=e.x;e.pinY=e.y;e.b1=2.4;e.b2=8;e.b3=0;e.b4=12}e.x=e.pinX;e.y=e.pinY;e.b1-=dt;e.b2-=dt;e.b3-=dt;e.b4-=dt;
   if(e.b3<=0){e.b3=8;let best=null,bn=-1;for(let i=0;i<8;i++){const a=rnd(0,6.283);let n=0;for(let t=1;t<=6;t++)if(free(e.x+Math.cos(a)*t*.55,e.y+Math.sin(a)*t*.55,.3))n++;else break;if(n>bn){bn=n;best=a}}
    const L=Math.max(1.2,bn*.55);e.cab={x1:e.x+Math.cos(best)*L,y1:e.y+Math.sin(best)*L};W.fx=W.fx.filter(f=>!f.cab);
    for(let t=1;t<=5;t++)W.fx.push({k:'patch',x:e.x+(e.cab.x1-e.x)*t/5,y:e.y+(e.cab.y1-e.y)*t/5,r:.42,t:0,life:8,col:'#59e0e6',tel:1,cab:1});
@@ -276,7 +276,7 @@ const BAI={
    still knows at once for fourteen seconds, faster and less sure of where you are; survive that and
    it chooses to stop. It takes no damage meanwhile, so the kill ending cannot happen underneath.
    Solo, its stopping is a kill. In a party the server owns its life, so it stops defending instead. */
-function pJuice(e){if(typeof juice==='function')juice('l');else shake=Math.max(shake,9)}
+function pJuice(e){juice('l')}
 function provYield(e,dt){e.yd-=dt;e.b1-=dt*.6;e.b2-=dt*.6;e.b3-=dt*.6;e.b4-=dt*.6;
   if(e.yd>0)return false;e.yd=0;e.yielded=1;e.doubt=0;pJuice(e);sfx('mend');W.projs=W.projs.filter(q=>!q.foe);W.fx=W.fx.filter(f=>f.k!=='warn');
   if(mpOwnsLife()){e.dm=40;e.spd=0;e.calm=1;toast('PROVIDENCE stops. It is not defending itself any more.');return true}
@@ -305,7 +305,7 @@ const SUF={
     const dx=c.x-e.x,dy=c.y-e.y,L=Math.hypot(dx,dy),st=Math.min(L,11*dt);
     if(!c.hit&&dist(e,P)<e.r+P.r+.3){c.hit=1;hurt(e.dmg*1.4,false,e)}
     if(dist(e,e.dock)<.9){e.chg=null;e.svT=1;e.stun=5;e.dm=1;sfx('quest');parts(e.x,e.y,16,['#e8e8e8','#ffe36b'],2.5);toast('TARO-9 docks. I AM SAVING.');return true}
-    if(L<.15||!mv(e,dx/L*st,dy/L*st)){e.chg=null;sfx('boom');W.fx.push({k:'ring',x:e.x,y:e.y,r:1.6,t:0,life:.3,col:'#ffe36b'});if(OPT.shake)shake=6;if(c.n>1)taroCharge(e,c.n-1,.35)}
+    if(L<.15||!mv(e,dx/L*st,dy/L*st)){e.chg=null;sfx('boom');W.fx.push({k:'ring',x:e.x,y:e.y,r:1.6,t:0,life:.3,col:'#ffe36b'});juice('m');if(c.n>1)taroCharge(e,c.n-1,.35)}
     return true}
   if((e.b1-=dt)<=0&&d<10)taroCharge(e,e.hp/e.max<.5?2:1,.85);
   return false},
