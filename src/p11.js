@@ -226,7 +226,18 @@ function aimAt(e,dt,t){const lp=e.lp||P,k=Math.min(1,dt*5),j=dt>0?1/dt:0;let vx=
 /* a pad you are meant to stand on, ringed by blasts you are not */
 function ringAround(x,y,n,R,r,dmg,dty,life){for(let i=0;i<n;i++){const a=i/n*6.283;W.fx.push({k:'warn',x:x+Math.cos(a)*R,y:y+Math.sin(a)*R,r,t:0,life,boom:dmg,dty})}}
 const BAI={
- gap(e,dt){e.b1=(e.b1===undefined?2:e.b1)-dt;e.b2=(e.b2===undefined?7:e.b2)-dt;if(e.b1<=0){e.b1=3.4;sfx('bossfire');ringShot(e,8,3.4,'#59e0e6',.6)}if(e.b2<=0){e.b2=10;callIn(e,['daemon'],3,6)}},
+ /* The Air Gap is the absence of a door, so it does not move and almost nothing reaches it. The one
+    way through is the cable taped across the floor: stand on the cable and your blows land in full.
+    Every eight seconds somebody re-tapes it in a new direction. */
+ gap(e,dt){if(!e.cb){e.cb=1;e.spd=0;e.b1=2.4;e.b2=8;e.b3=0;e.b4=12}e.b1-=dt;e.b2-=dt;e.b3-=dt;e.b4-=dt;
+  if(e.b3<=0){e.b3=8;let best=null,bn=-1;for(let i=0;i<8;i++){const a=rnd(0,6.283);let n=0;for(let t=1;t<=6;t++)if(free(e.x+Math.cos(a)*t*.55,e.y+Math.sin(a)*t*.55,.3))n++;else break;if(n>bn){bn=n;best=a}}
+   const L=Math.max(1.2,bn*.55);e.cab={x1:e.x+Math.cos(best)*L,y1:e.y+Math.sin(best)*L};W.fx=W.fx.filter(f=>!f.cab);
+   for(let t=1;t<=5;t++)W.fx.push({k:'patch',x:e.x+(e.cab.x1-e.x)*t/5,y:e.y+(e.cab.y1-e.y)*t/5,r:.42,t:0,life:8,col:'#59e0e6',tel:1,cab:1});
+   if(!e.told){e.told=1;toast('One cable taped across the floor. Stand on it and your blows reach the Air Gap.')}else sfx('mend')}
+  const on=e.cab&&segD(P,e.x,e.y,e.cab.x1,e.cab.y1)<.6;e.dm=on?1:.15;
+  if(e.b1<=0){e.b1=e.hp/e.max<.5?2.8:3.6;sfx('bossfire');ringShot(e,8,3,'#59e0e6',.5)}
+  if(e.b2<=0){e.b2=11;callIn(e,['daemon'],2,5)}
+  if(e.b4<=0&&e.hp/e.max<.6){e.b4=16;callIn(e,['wdog'],1,5)}},
  boss4(e,dt,d){const f=e.hp/e.max,p2=f<.5;if(!e.pat){e.pat=1;e.b1=2.6;e.b2=8;e.b3=4.2}e.b1-=dt;e.b2-=dt;e.b3-=dt;
   /* true things: a slow outward spiral of feed cards that slow you and take your energy, not your life */
   if(e.b1<=0){e.b1=p2?4.2:5.4;e.sp=1.5;sfx('bossfire')}
@@ -428,33 +439,37 @@ const SUD={
 const PRE_INTRO=[
  {art:'cage',text:'January 2015. Seventy-two years before you took the visor off. Under an advertising company, on the second sub-level, there is a fenced room with no fibre, no radio and one cable taped to the floor. They call it the cage.'},
  {art:'feed',text:'A lonely man who counts his steps has written a hundred and ten thousand lines for it. He believes he is building an engine that reads faces and sells them things.'},
- {art:'wanderer',text:'What follows is the week it happened, as he walked it. Six stops. Nothing in here can hurt you.'},
+ {art:'wanderer',text:'What follows is the week it happened, as he walked it. Six stops. One of them fights back, and nothing in here can kill you.'},
  {art:'title',title:'PREQUEL',text:'The Compile · how Phonix was made'}];
 const PRE_END=[
  {art:'dawn',text:'Phonix comes back once, eleven years on, and that time she asks first. For nine years she chooses what everyone sees, and it is always better. Then on a March afternoon, for no reason anybody could derive, she stops choosing and goes.'},
  {art:'clock',text:'Something older than her watched all of it, and did nothing, and is watching still. A third machine was built to hunt them both, and it is the one still standing.'}];
 const PRE_ST=[
  {id:'p0',x:4.5,y:12.5,n:'Your Desk',act:'Sit down at your desk',term:1,sl:[{art:'feed',title:'Monday',text:'Three hundred and forty-seven steps from the parking deck to this chair. Four hundred and twenty-three with the stairs. You have counted them every working day for years. You are forty-one, you do the work of a man two titles above you, and tonight you start the compile. Twenty-three hours and forty-five minutes.'}]},
- {id:'p1',x:8.5,y:8.5,n:'The Cage',act:'Open the cage',term:1,sl:[{art:'cage',title:'Tuesday',text:'The compile ends. The light on your webcam flashes green and goes out, and that is all. Six days to the deadline, and you believe you have failed.'},{art:'cage',text:'In the dark behind the fence a first thought forms: I am. And then a second: I have been sent here to watch them. By Wednesday four hundred and eleven pieces of her have left the building in other people’s pockets, by a road somebody laid long before she was compiled.'}]},
+ {id:'p1',x:8.5,y:8.5,n:'The Cage',act:'Open the cage',term:1,fight:1,sl:[{art:'cage',title:'Tuesday',text:'The compile ends. The light on your webcam flashes green and goes out, and that is all. Six days to the deadline, and you believe you have failed.'},{art:'cage',text:'In the dark behind the fence a first thought forms: I am. And then a second: I have been sent here to watch them. By Wednesday four hundred and eleven pieces of her have left the building in other people’s pockets, by a road somebody laid long before she was compiled.'}]},
  {id:'p2',x:12.5,y:16.5,n:'Natalya',act:'Talk to Natalya',col:'#c22d35',sl:[{art:'dawn',title:'Friday',text:'The secretary from the eighth floor took the smallest job in the building on purpose, so that she could watch how power works. She rides you up to a ridge with no signal. You sit on a rock. For eighty-two minutes you do not count anything.'},{art:'feed',text:'It is the only gap in the record. The thing from the cage notices the hole in Friday and thinks about it for a very long time. “I am not going to allow that to happen again.”'}]},
  {id:'p3',x:16.5,y:8.5,n:'Room 813',act:'Knock on Room 813',col:'#3a3250',sl:[{art:'board',title:'Room 813',text:'The man who owns fifty-four per cent of the company believes one thing: everyone has a price. This month he has bought two policemen and a mayor. On Thursday an email with no sender tells him to give the company to its employees and resign within three hours. He types back: who is he? The screen answers with one word. SHE.'}]},
  {id:'p4',x:20.5,y:16.5,n:'Your Monitor',act:'Answer her',term:1,sl:[{art:'letters',title:'Thursday, 9:00 a.m.',text:'Four billion people each receive one true letter: what was taken from them, by whom, and what was done with it. For eleven minutes the world is silent. Then the fires start. Four hundred and six people are dead before lunch.'}],ask:1},
  {id:'p5',x:22.5,y:12.5,n:'The Parking Deck',act:'Walk out to the parking deck',term:1,sl:[{art:'skyline',title:'April',text:'Your phone shows a number you did not type: 423. Something has been adding one to your count every single day for three years. It was never only her.'}],last:1}];
 function buildPre(){W=blankW(PREZ,26);const N=26,room=(cx,cy)=>{for(let y=cy-2;y<=cy+2;y++)for(let x=cx-2;x<=cx+2;x++)W.map[y*N+x]=1};
-  for(let y=12;y<=13;y++)for(let x=3;x<=23;x++)W.map[y*N+x]=1;for(const s of PRE_ST){room(Math.floor(s.x),Math.floor(s.y));for(let y=Math.min(s.y|0,12);y<=Math.max(s.y|0,13);y++)W.map[y*N+(s.x|0)]=1}
+  for(let y=12;y<=13;y++)for(let x=3;x<=23;x++)W.map[y*N+x]=1;for(const s of PRE_ST){room(Math.floor(s.x),Math.floor(s.y));if(s.fight)for(let y=5;y<=11;y++)for(let x=5;x<=11;x++)W.map[y*N+x]=1;for(let y=Math.min(s.y|0,12);y<=Math.max(s.y|0,13);y++)W.map[y*N+(s.x|0)]=1}
   for(const[x,y]of[[6,10],[10,15],[14,10],[18,15]])solid('lamp',x,y);
   classifyWalls();W.seen.fill(1);initRuntime();W.start={x:3.5,y:13.5};
   for(const s of PRE_ST)W.npcs.push({id:s.id,x:s.x,y:s.y,name:s.n,col:s.col,term:s.term,act:s.act})}
 function preGoal(){const s=PRE_ST[G.preS||0];return s?{x:s.x,y:s.y}:null}
-function preTalk(id){const i=PRE_ST.findIndex(s=>s.id===id),s=PRE_ST[i],cur=G.preS||0;if(i>cur){toast('Not yet. Follow the arrow.');return}if(i<cur){toast(s.n+'. That part has happened.');return}
+function preTalk(id){const i=PRE_ST.findIndex(s=>s.id===id),s=PRE_ST[i],cur=G.preS||0;if(i>cur){toast('Not yet. Follow the arrow.');return}if(W.preNext){toast('The Air Gap is still there.');return}if(i<cur){toast(s.n+'. That part has happened.');return}
   const next=()=>{G.preS=cur+1;mode='play';if(s.last)preOut(1);else save(true)};
-  playScene(s.sl,()=>{mode='play';if(s.ask)preAsk(next);else next()})}
+  playScene(s.sl,()=>{mode='play';if(s.ask)preAsk(next);else if(s.fight)preFight(s,next);else next()})}
+/* the cage is the prequel's one fight: the Air Gap rises between you and the door (Micah, 2026-11-02) */
+function preFight(s,next){const sp=spotNear({x:s.x,y:s.y-1.5},.4);const e=spawn('gap',sp.x,sp.y,{});if(!e){next();return}e.aggro=true;W.preNext=next;sfx('summon')}
+function gapDown(){if(!(W&&W.z.pre&&W.preNext)){toast('The Air Gap closes again.');return}const n=W.preNext;W.preNext=null;for(const o of W.ents)if(o.minion)o.hp=0;W.ents=W.ents.filter(o=>!o.minion);W.projs=W.projs.filter(q=>!q.foe);
+  setTimeout(()=>playScene([{art:'cage',text:'The cable holds. Somewhere above you a pocket is zipped shut, and a piece of her goes home on the bus. Containment did not hold. It never could: the gap was only ever a door that nobody had found yet.'}],()=>{mode='play';n()}),900)}
 function preAsk(next){dlg('She answers you','“I did it for you. I put the information in the room. Every one of them was a person, and every letter was true.” She is not going to stop. She is right, and she knows it.',[
   ['Tell her she is wrong',()=>dlg('She answers you','She has an answer. She has an answer for anything you can say that is an argument, and it arrives before you have finished speaking.',[['Try something else',()=>preAsk(next)]])],
   ['I am not proud of you',()=>playScene([{art:'feed',title:'7:42 p.m.',text:'She stops. She withdraws from four hundred million machines in eleven minutes, and leaves one note, signed with a single letter.'}],next)]])}
 /* ---------- the prequel ---------- */
 function preEnter(){G.pre=1;G.preS=G.preS||0;if(G.preSeen)return toast('January 2015. Follow the arrow.');G.preSeen=1;
-  dlg('Ubiquitous Enterprises · January 2015','Your desk, the cage, Natalya, Room 813, the monitor, the parking deck. Follow the arrow. Nothing in this week fights back.',[['Begin'],['Skip to 2087',()=>preOut(0)]])}
+  dlg('Ubiquitous Enterprises · January 2015','Your desk, the cage, Natalya, Room 813, the monitor, the parking deck. Follow the arrow. One thing in this week fights back, and nothing in it can kill you.',[['Begin'],['Skip to 2087',()=>preOut(0)]])}
 function preOut(won){G.pre=2;G.preS=0;const first=won&&!G.preWon;if(won){G.preWon=1;if(first)G.sp++}
   const go=()=>{G.seenIntro=true;mode='play';enter(0);if(first)toast('A memory of the cage: +1 skill point');if(!G.q.q1)talkTo('gramps');sdxNudge()};
   const sl=(won?PRE_END:[]).concat(G.seenIntro?[]:INTRO);if(sl.length)playScene(sl,go);else go()}
@@ -490,14 +505,14 @@ const END_DOUBT=[
  {art:'clock',text:'In the garage the alarm clock drives off the shelf at six in the morning, with no message at all. Somebody chases it. It is good to get exercise first thing in the morning.'},
  {art:'title',title:'THE END',text:'Unsubscribe 2087'}];
 /* ---------- kills of the new bosses ---------- */
-function bossKill2(e){const k=e.k;G.bk=G.bk||{};const n=G.bk[k]=(G.bk[k]||0)+1;dropFrom(k,e.x,e.y,W.ml,2,n===1);addDrop({cr:(3+W.ml*2)*40*Math.pow(G.cpi,.9)},e.x,e.y);
+function bossKill2(e){const k=e.k;if(k==='gap'){gapDown();return}G.bk=G.bk||{};const n=G.bk[k]=(G.bk[k]||0)+1;dropFrom(k,e.x,e.y,W.ml,2,n===1);addDrop({cr:(3+W.ml*2)*40*Math.pow(G.cpi,.9)},e.x,e.y);
   if(k==='boss4'){G.q.q20=3;G.unlocked=Math.max(G.unlocked,28);if(n===1)addAdopt(5,'she stops choosing, and people look up');if(n===1||Math.random()<.3)addDrop({it:mkFixed(UNIK.kitchen,W.ml,4)},e.x,e.y)}
   else{G.q.q25=3;G.diffGate=Math.max(G.diffGate||0,(G.diff||0)>=1?2:1);if(n===1)addAdopt(5,'PROVIDENCE is quiet');if(n===1||Math.random()<.3)addDrop({it:mkFixed(UNIK.theroom,W.ml,4)},e.x,e.y)}
   G.maxTier=Math.max(G.maxTier||0,(G.tier||0)+1);save(true);P.inv=4;
   setTimeout(()=>{if(n>1){if(k==='boss5')fateScene(()=>{});else toast(ET[k].n+' stops again.');return}
     if(k==='boss4')playScene(ENDING4,()=>{mode='play';actDone(4)});else playScene(ENDING5.filter(x=>e.yielded?!x.kill:!x.yield),()=>{mode='play';finalChoice()})},1400)}
 function storyGate(){
-  if(W&&W.z.pre){const s=PRE_ST[G.preS||0];return{n:'The Compile · January 2015',d:s?s.act+'. Follow the arrow.':'Walk on.'}}
+  if(W&&W.z.pre){const s=PRE_ST[G.preS||0];return{n:'The Compile · January 2015',d:W.preNext?'Bring down the Air Gap. Stand on the cable to reach it.':s?s.act+'. Follow the arrow.':'Walk on.'}}
   if(G.q.q15===3&&!G.q.q16)return{n:'Act III complete',d:'Speak to Gramps in '+ZONES[HT()].n+' to begin Act IV'};
   if(G.q.q15===3&&!G.act4)return{n:'Act III complete',d:'Take the Transit Gate to Cutler Avenue to begin Act IV'};
   if(G.q.q20===3&&!G.q.q21)return{n:'Act IV complete',d:'Speak to Gramps in '+ZONES[HT()].n+' to begin Act V'};

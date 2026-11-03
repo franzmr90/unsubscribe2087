@@ -12,6 +12,7 @@ const st=()=>p.evaluate(()=>{const g=__g;return g.mode+' | zone '+(g.W?g.W.zi+' 
 console.log('zones',await p.evaluate(()=>__g.ZONES.length+' '+__g.ZONES[21].n+' / '+__g.ZONES[27].n+' / '+__g.ZONES[33].n));
 await sk(6);console.log(await st());await p.waitForTimeout(400);await p.screenshot({path:S+'/pre.png'});
 for(const id of ['p2','p0','p1','p2','p3','p4','p5']){await p.evaluate(id=>__g.talkTo(id),id);await p.waitForTimeout(200);
+  if(id==='p1'){await sk(8);await p.evaluate(()=>{const g=__g,e=g.W.ents.find(m=>m.k==='gap');if(e){g.hit(e,999);if(g.W.ents.includes(e))g.kill(e)}});await p.waitForTimeout(1500)}
   if(id==='p4'){await sk(4);await p.evaluate(()=>{const bs=[...document.querySelectorAll('#dBtns button')];bs[1]&&bs[1].click()});await p.waitForTimeout(200)}
   await sk(8);console.log(id,await st())}
 console.log('sp',await p.evaluate(()=>__g.G.sp+' pre '+__g.G.pre+' q1 '+__g.G.q.q1));
