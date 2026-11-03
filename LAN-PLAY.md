@@ -16,7 +16,7 @@ One computer runs the game. Everyone else just opens a link. You do not need a w
 5. On this computer, open a browser to the "On this computer" link, usually `http://localhost:8087`.
 6. On the other person's computer or phone, open the link that looks like `http://192.168.x.x:8087`. They must be on the same Wi-Fi or cable. Mobile data will not work.
 
-Each person makes their own account: a name and a password. An email is optional. You do not need an invite code.
+Each person makes their own account: a name and a password. An email is optional. You do not need an invite code. The game asks for it before anyone can play, and every account has its own three character slots and its own lockbox, even when two people take turns on the same computer or browser.
 
 One person opens the menu, chooses Party, and taps **Make the game**. The other opens Party and taps **Join** on that game.
 
@@ -48,10 +48,24 @@ macOS does this with files downloaded from the internet. Right-click `Play-Unsub
 
 - **Voice.** Browsers will not turn the microphone on for an address like `http://192.168.x.x`. Typing in the chat still works. So does playing together.
 - **The internet.** Someone who is not on your Wi-Fi cannot make an account, even if they guess the address.
-- **Sending bug reports onward.** If the game breaks, the report stays in the `saves` folder on the computer that is running the launcher. Nothing is sent to GitHub unless you set that up yourself, which this package does not do.
+- **Sending bug reports onward.** If the game breaks, the report stays in the saves folder on the computer that is running the launcher. Nothing is sent to GitHub unless you set that up yourself, which this package does not do.
 
 ## Stopping and starting again
 
-Close the launcher window, or press Ctrl+C in it. Next time, double-click the launcher again. Accounts and characters are in the `saves` folder next to the launcher. Do not delete that folder if you want to keep them.
+Close the launcher window, or press Ctrl+C in it. Next time, double-click the launcher again.
+
+## Where the saves are
+
+Accounts, passwords and characters are kept in a folder called **Unsubscribe 2087 saves** in your home folder, not inside the game folder:
+
+- Windows: `C:\Users\<you>\Unsubscribe 2087 saves`
+- Mac: `/Users/<you>/Unsubscribe 2087 saves`
+- Linux: `~/Unsubscribe 2087 saves`
+
+The launcher window prints the exact path and how many accounts it loaded each time it starts. Because the folder is outside the game folder, you can delete the game folder, unzip a newer copy anywhere, and everyone's accounts and characters are still there. Passwords are stored scrambled (hashed), never as typed.
+
+If you played with an older copy that kept a `saves` folder next to the launcher, put the new copy's files in that same folder, or copy that old `saves` folder next to the new launcher. The first time it starts, it copies the old saves into the home-folder one and leaves the old folder alone as a backup.
+
+To back everything up, copy the **Unsubscribe 2087 saves** folder. To start over with no accounts, delete it while the game is stopped. To keep the saves somewhere else, set `DATA_DIR` to that folder before starting.
 
 To play on a different port, set `PORT` before starting. The printed links use whatever port the game actually got.

@@ -12,7 +12,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const A = require('./lib/auth');
-const { docs } = require('./lib/store');
+const { docs, DATA } = require('./lib/store');
 const mail = require('./lib/mail');
 const live = require('./lib/live');
 const bugs = require('./lib/bugs');
@@ -103,6 +103,10 @@ function openSession(res, user) {
   return A.readSession(tok);
 }
 
+/* A home game has no anonymous play: three slots in a shared browser were everyone's
+   three slots, so on a home network each person signs in to their own. */
+const accountRequired = () => lan.on() || process.env.ACCOUNT_REQUIRED === '1';
+
 const pub = u => ({ name: u.name, id: u.id, email: u.email || '', verified: !!u.verified });
 
 /* ---------- routes ---------- */
@@ -164,7 +168,7 @@ route('POST', '/api/logout', async (req, res) => {
 
 route('GET', '/api/me', async (req, res) => {
   const ctx = auth(req);
-  const meta = { inviteRequired: invites.required(), build: buildId() };
+  const meta = { inviteRequired: invites.required(), accountRequired: accountRequired(), build: buildId() };
   if (!ctx) return send(res, 200, Object.assign({ user: null }, meta));
   ok(res, Object.assign({ user: pub(ctx.user), csrf: ctx.sess.csrf, bytes: docs.bytes(ctx.user.id), mail: mail.enabled() }, meta));
 });
@@ -499,7 +503,7 @@ const TYPES = { '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; char
 
 /* The page is assembled per request from the current build, so a rebuild shows up on
    reload without a restart and without build.sh having to know this server exists. */
-function gamePage() {
+function gamePage(user) {
   const frag = fs.readFileSync(path.join(ROOT, 'dist', 'unsubscribe.html'), 'utf8');
   const nl = frag.indexOf('\n');
   const title = frag.slice(0, nl);          /* the fragment's first line is a bare <title> */
@@ -507,6 +511,10 @@ function gamePage() {
   const id = buildId();
   const boot = '<script>window.__BUILD=' + JSON.stringify(id) + ';</script>\n' +
     (lan.on() ? '<script>window.__LAN=1;</script>\n' : '') +
+    /* Who is signed in, before the game reads its slots: the shim files this browser's
+       copy of the saves under that account, so a second person on the same browser
+       does not open the first person's characters. */
+    (user ? '<script>window.__u2087uid=' + JSON.stringify(user.id) + ';</script>\n' : '') +
     (process.env.DEBUG_HOOKS === '1' ? '<script>window.__DEBUG=1;</script>\n' : '');
   return '<!doctype html><html lang="en"><head><meta charset="utf-8">' +
     '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">' +
@@ -544,11 +552,13 @@ const handler = async (req, res) => {
     const fn = routes[req.method + ' ' + p];
     if (fn) return await fn(req, res);
     if (req.method === 'GET' && (p === '/' || p === '/index.html')) {
-      return send(res, 200, gamePage(), { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+      const ctx = auth(req);
+      return send(res, 200, gamePage(ctx && ctx.user), { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
     }
     /* The mailed links land here; the shim picks the token out of the query. */
     if (req.method === 'GET' && (p === '/reset' || p === '/verify')) {
-      return send(res, 200, gamePage(), { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+      const ctx = auth(req);
+      return send(res, 200, gamePage(ctx && ctx.user), { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
     }
     if (req.method === 'GET') return serveStatic(req, res, p);
     bad(res, 404, 'Not found.');
@@ -586,6 +596,8 @@ if (require.main === module) {
       if (TLS) console.log('TLS on. A self-signed certificate warns once per device; accept it and voice will work.');
       else if (!SECURE) console.log('No TLS: voice works on localhost, but not from another device over the network. See TESTING.md.');
     }
+    const n = Object.keys(A.users.all()).length;
+    console.log('Saves: ' + DATA + ' (' + n + (n === 1 ? ' account' : ' accounts') + ' loaded)');
     if (!mail.enabled()) console.log('No SMTP configured: mail goes to ' + mail.outboxDir() + ' and the console.');
     if (!process.env.GITHUB_TOKEN) console.log('[bug] no GitHub token: a report is saved on this computer and is not filed online.');
   };

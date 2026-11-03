@@ -21,6 +21,7 @@ node deploy/dry-run.js
 node server/test/mobs.js
 node server/test/coop.js
 node server/test/live.js
+node server/test/accounts.js
 node tools/soak.js --bots 20 --seconds 8 --check
 # Last on purpose: it needs a host with an RFC1918 address, so it cannot run in a cloud
 # container, and `set -e` used to let it abort everything after it -- which is how the

@@ -38,10 +38,12 @@ echo Leave this window open. Closing it stops the game for everyone.
 echo More detail is in LAN-PLAY.md.
 echo.
 
-if not exist "saves" mkdir saves
 set "LAN=1"
 if not defined PORT set "PORT=8087"
-set "DATA_DIR=%~dp0saves"
+rem Accounts and characters live outside this folder, so a newer copy of the kit
+rem unzipped somewhere else still finds them. An older kit's saves folder is copied once.
+if not defined DATA_DIR set "DATA_DIR=%USERPROFILE%\Unsubscribe 2087 saves"
+set "DATA_FROM=%~dp0saves"
 set "GITHUB_TOKEN="
 set "TLS_KEY="
 set "TLS_CERT="

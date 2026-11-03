@@ -71,6 +71,7 @@ function banner(port, code) {
   if (code) lines.push('Invite code (everyone types this when they make an account): ' + code);
   else lines.push('Accounts: anyone on this home network can make one. Someone outside the house cannot.');
   lines.push('Voice is off on these links. Browsers refuse the microphone on a plain http address that is not localhost. Play, chat, and parties still work.');
+  lines.push('Everyone signs in to their own account, with their own three characters.');
   lines.push('Bug reports stay in the saves folder on this computer. They are not sent to GitHub.');
   lines.push('If the computer asks whether to allow Node.js, allow it on private networks only.');
   lines.push('Leave this window open. Closing it stops the game for everyone.');
