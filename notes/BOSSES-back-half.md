@@ -1,6 +1,6 @@
 # Back-half bosses: one per stage
 
-A design, not a change. Nothing in `src/` has been touched. Written 2026-10-12
+The design was written 2026-10-12
 against `main` at `a143827`.
 
 The back half is ten fighting stages: Act IV zones 22-26 and Act V zones 28-32.
@@ -8,6 +8,36 @@ Each of the eight non-final stages already has a named superunique guarding its
 quest, and each act ends on a boss. This doc gives all ten a fight of their own:
 a pattern, a look and effects, built from one shared kit so the page grows by a
 few kilobytes rather than a few hundred.
+
+## As built, 2026-11-03
+
+The design below was approved and built, then widened by Micah on 2026-11-02:
+superunique fights for the whole game, a prequel fight, and size gains are fine
+if modern phones can handle them. Branch `claude/project-thread-32qdsr`.
+
+- **Act bosses.** PROVIDENCE (lanes at a predicted point, Act V summons, the
+  last-third board with one safe tile) and the Curator (feed-card spiral,
+  curate pads, the stop-choosing phase) in `BAI.boss4`/`boss5`, `src/p11.js`.
+- **PROVIDENCE has two endings** (Micah, 2026-11-02). *Keep it closed*: kill it.
+  *Give it the nineteen minutes*: fourteen untouchable seconds of everything at
+  once, then it chooses to stop (`provYield`). Solo that is a kill with its own
+  ending slide; in a party the server owns its life, so it stops defending.
+- **Every superunique fights its own fight**: `SUF[quest id]` rows run through
+  `suFight`, overlays in `SUD`. Twelve in Acts I-III (q1-q4, q6-q9, q11-q14),
+  eight in Acts IV-V (q16-q19, q21-q24). Damage taken goes through `e.dm` in
+  `dmgEnemy`, so nothing writes monster life on a guest.
+- **The prequel fights once**: opening the cage raises the Air Gap, which never
+  moves and only feels blows from someone standing on the taped cable.
+  Nothing in the prequel can kill you (life floors at 1 in zone 33). Step 5 of
+  the order below ("delete the prequel fight") was reversed by Micah.
+- **Not done**: porting Pryce, Vale and MANDATE onto the kit (Vale's body is the
+  plan thread's), and the front-half superuniques have overlays only for q1, q4
+  and q6.
+- **Checks**: `tools/boss-fight-check.js` (every fight's own tell, fails on
+  `main`), `tools/prequel-fight-check.js`; `smoke-acts.js` now kills the Air Gap
+  on its walk.
+- **Size**: `dist/unsubscribe.html` 1,252,917 bytes on `main`, 1,277,394 here
+  (+24 KB).
 
 ---
 

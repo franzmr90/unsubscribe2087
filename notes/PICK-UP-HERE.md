@@ -9,6 +9,10 @@ Last true as of **2026-10-13**. `main` is at `b0658cc`; twelve commits ahead of
 it on `claude/unsubscribe-2087-story-fb99ov`, all pushed, nothing uncommitted.
 That branch has not been merged -- merging is the author's call.
 
+**Bosses (2026-11-03):** every boss and superunique now has a fight of its own, PROVIDENCE has
+two endings and the prequel fights once at the cage. What was built and what is left:
+`notes/BOSSES-back-half.md`, section "As built". Branch `claude/project-thread-32qdsr`, not merged.
+
 ## Next, if you only do one thing
 
 **Run `node tools/balance-play.js` a second time and see whether run A
