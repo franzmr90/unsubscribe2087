@@ -2406,7 +2406,7 @@ function render(){
     glg.globalAlpha=1;
     if(lit){ctx.globalCompositeOperation='lighter';ctx.drawImage(GLW,0,0,VW,VH);
       ctx.globalCompositeOperation='source-over'}}
-  weather();
+  weather();postFx();
   // labels and floating text above the darkness
   ctx.drawImage(vigCanvas(),0,0,VW,VH);
   drawLootLabels();for(const a of W.allies)if(a.k==='storm')drawStormTop(a);drawAim();drawHover();

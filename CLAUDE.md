@@ -11,7 +11,7 @@ trust as current.
 
 ## Build
 `./build.sh` concatenates `src/p0.html` (CSS + markup, `<title>` first, no doctype/html/head/body) and the
-scripts, in this order, inside one IIFE: formulas p1 p2 p5 p6 p7 p8 p9 p10 p11 p3 p4 p12 p13 offsite. Output: `dist/unsubscribe.html`.
+scripts, in this order, inside one IIFE: formulas p1 p2 p5 p6 p7 p8 p9 p10 p11 p3 post p4 p12 p13 offsite. Output: `dist/unsubscribe.html`.
 All files share one scope, so load order decides what a top-level statement may reference.
 
 | File | Contents |
@@ -27,6 +27,7 @@ All files share one scope, so load order decides what a top-level statement may 
 | p10 | locals, shared lockbox `ACC`, adaptive difficulty, doctrines, damage types, weapon families, class uniques, Bull Run, builds, boss entrances, tag-along companion, party pressure |
 | p11 | the book: prequel (zone 33), Act IV (town 21, zones 22-26), Act V (town 27, zones 28-32), bosses `boss4`/`boss5` |
 | p3 | renderer |
+| post | the WebGL finishing pass over the finished world: bloom, ripples, grade (`OPT.post`); off without WebGL |
 | p4 | cinematics, dialogs, HUD, sheets/menus, input, `window.__g` test hook |
 | p12 | late additions that need p4 tables (quest turn-ins), the Maximalist's unlock and auras |
 | p13 | games, parties, hostility, chat, proximity voice, the bug reporter — inert without the account server |

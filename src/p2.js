@@ -9,6 +9,7 @@ const JT={s:{tr:.12,hs:0,fl:0},m:{tr:.35,hs:.05,fl:0},l:{tr:.8,hs:.12,fl:.07},px
 function juice(t,o){const j=JT[t];if(!j)return;o=o||{};const tr=o.tr!=null?o.tr:j.tr;
   if(OPT.shake)shake=Math.min(1,shake+tr*(OPT.calm?.5:1));
   const hs=o.hs!=null?o.hs:j.hs;if(hs>0&&mode==='play')hitStop=Math.min(.15,Math.max(hitStop,hs));
+  if(t!=='s'&&OPT.post&&P&&W&&typeof postWave==='function')postWave(SX(P.x,P.y),SY(P.x,P.y)-20,t==='l'?1.3:.6);
   if(j.fl&&!OPT.calm&&tNow-flashAt>=FLASH_GAP){flashT=j.fl;flashAt=tNow}}
 const SAVEKEY='unsub2087v3';let SLOT=0;const NSLOT=3,skey=n=>SAVEKEY+(n?'_'+n:''),mdoc=n=>'main'+(n||''),zdoc=(n,k)=>(n?'s'+n:'')+'z'+k;
 
