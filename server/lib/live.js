@@ -43,7 +43,8 @@ const PVP_SCALE = 0.25;            /* players are much tougher to each other tha
    naming the same person again, and the ten-second portal lock, stay. */
 const HOSTILE_ARM = 3000;
 /* The act hub towns, from data/levels.tsv (baked to src/levels.js). */
-const TOWNS = new Set(require('../../src/levels').HUB_TOWNS);
+const { HUB_TOWNS } = require('../../src/levels');
+const TOWNS = new Set(HUB_TOWNS);
 const SIM_ZONE = 6;
 /* Three difficulties, chosen when the game is made and fixed for its life, the way
    Diablo II's were. Harder monsters, and more experience for beating them. */

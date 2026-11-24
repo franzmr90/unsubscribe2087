@@ -138,7 +138,7 @@ const HTML_NOTE = {
 };
 
 const SKIP_BIND = new Set([
-  'ART', 'FORMULAS', 'OPT_DEF', 'ROWREQ', 'UNITS', 'REPT', 'ETY', 'RES', 'TC', 'UNIK', 'MKT_BASE', 'MKT_N',
+  'ART', 'FORMULAS', 'OPT_DEF', 'ROWREQ', 'UNITS', 'REPT', 'ETY', 'RES', 'UNIK', 'MKT_BASE', 'MKT_N',
   'ICON', 'MODS', 'SND', 'SNDGAP', 'TRK', 'SKS', 'BANDS', 'TOWN_A', 'TOWN_B', 'PAL', 'STY', 'TX'
 ]);
 
@@ -1891,8 +1891,10 @@ function selfCheck() {
 }
 
 function main() {
+  /* monstats, treasure and levels are baked from data/*.tsv; import.js writes edits to
+     their lines back into the sheet, not into the generated file. */
   const js = [
-    'src/formulas.js', 'src/p1.js', 'src/p2.js', 'src/p5.js', 'src/p6.js', 'src/p7.js', 'src/p8.js', 'src/p9.js',
+    'src/formulas.js', 'src/monstats.js', 'src/treasure.js', 'src/levels.js', 'src/p1.js', 'src/p2.js', 'src/p5.js', 'src/p6.js', 'src/p7.js', 'src/p8.js', 'src/p9.js',
     'src/p10.js', 'src/p11.js', 'src/p3.js', 'src/p4.js', 'src/p12.js', 'src/p13.js'
   ];
   for (const f of js) scanJs(f);
