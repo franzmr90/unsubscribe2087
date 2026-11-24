@@ -1,0 +1,4 @@
+set	set_name	bonus2	bonus3	id	name	slot	ilvl	base	bi	mods
+striker	The Striker’s Vigil	+20% Enhanced Damage (2 pieces)	+1 to All Skills, and kills restore 3% life (3 pieces)	st1	Striker’s Placard	weapon	2	Stop Sign	1	dmg=20/30 hp=10/18
+				st2	Striker’s Hard Hat	helm	2	Hard Hat		armorP=25/40 crit=3/5
+				st3	Striker’s Boots	boots	2	Worn Sneakers		mspd=10/15 hp=10/18

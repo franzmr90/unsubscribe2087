@@ -584,6 +584,14 @@ function walkItems(kind, node) {
         limitNote: 'Flavor under the unique’s stats. The tooltip wraps.',
         context: 'Flavor text for the unique ' + name + '. It sits under the numbers.'
       });
+      emit(propv(u, 'sp'), {
+        id: 'item.unique.' + E.slug(String(id)) + '.special', section: 'items', groups: ['Uniques', name], sub: 100 + i,
+        context: 'The special property of the unique ' + name + ', in blue in its tooltip.'
+      });
+      emit(propv(u, 'base'), {
+        id: 'item.unique.' + E.slug(String(id)) + '.base', section: 'items', groups: ['Uniques', name], sub: 100 + i,
+        context: 'The base item name shown under the unique ' + name + '.'
+      });
     });
     return;
   }
@@ -663,6 +671,13 @@ function walkItems(kind, node) {
       emit(propv(o, 'n'), { id: 'item.set.' + p.key + '.name', section: 'items', groups: ['Sets', name], sub: 350, context: 'Set name for ' + name + '.' });
       emit(propv(o, 'b2'), { id: 'item.set.' + p.key + '.two', section: 'items', groups: ['Sets', name], sub: 350, context: 'Bonus for wearing two pieces of ' + name + '.' });
       emit(propv(o, 'b3'), { id: 'item.set.' + p.key + '.three', section: 'items', groups: ['Sets', name], sub: 350, context: 'Bonus for wearing three pieces of ' + name + '.' });
+      const its = propv(o, 'items');
+      if (its && its.kind === 'arr') its.items.forEach((it, i) => {
+        if (!it || it.kind !== 'obj') return;
+        const iid = shown(propv(it, 'id')) || (p.key + i);
+        emit(propv(it, 'n'), { id: 'item.set.' + p.key + '.' + E.slug(String(iid)) + '.name', section: 'items', groups: ['Sets', name], sub: 351, context: 'A piece of the set ' + name + '.' });
+        emit(propv(it, 'base'), { id: 'item.set.' + p.key + '.' + E.slug(String(iid)) + '.base', section: 'items', groups: ['Sets', name], sub: 351, context: 'The base item name shown under this set piece.' });
+      });
     }
     return;
   }
@@ -1891,10 +1906,10 @@ function selfCheck() {
 }
 
 function main() {
-  /* monstats, treasure and levels are baked from data/*.tsv; import.js writes edits to
+  /* monstats, treasure, levels and items are baked from data/*.tsv; import.js writes edits to
      their lines back into the sheet, not into the generated file. */
   const js = [
-    'src/formulas.js', 'src/monstats.js', 'src/treasure.js', 'src/levels.js', 'src/p1.js', 'src/p2.js', 'src/p5.js', 'src/p6.js', 'src/p7.js', 'src/p8.js', 'src/p9.js',
+    'src/formulas.js', 'src/monstats.js', 'src/treasure.js', 'src/levels.js', 'src/items.js', 'src/p1.js', 'src/p2.js', 'src/p5.js', 'src/p6.js', 'src/p7.js', 'src/p8.js', 'src/p9.js',
     'src/p10.js', 'src/p11.js', 'src/p3.js', 'src/p4.js', 'src/p12.js', 'src/p13.js'
   ];
   for (const f of js) scanJs(f);

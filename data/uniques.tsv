@@ -1,0 +1,90 @@
+id	name	slot	ilvl	base	class	drops	ind	bi	patch	boss_only	isk	per_level	grant	mods	special	flavor
+parachute	The Golden Parachute	armor	6	Flak Coat			1							hp=40/60 armorP=40/60	When you would die, recover half your life instead (once every 2 minutes)	Pryce has four. He has never jumped.
+severance	Severance	weapon	5	Girder Maul				1						dmg=40/60 hp=15/25	15% chance to strike for triple damage	Two weeks’ notice, delivered all at once.
+terms	Terms & Conditions	amulet	8	Sigil Core										skills=1/2 thorns=20/35	Machines that strike you are stunned for 1 second	Nobody has read it. Everybody agreed.
+hoodie	The Founder’s Hoodie	armor	4	Padded Hoodie				1						en=25/40 regen=2/3	Skills cost 25% less energy	Still warm. That is the unsettling part.
+review	Last Honest Review	ring	3	Copper Band										crit=6/10 mf=30/45		One star. Removed for violating community standards.
+intern	Unpaid Intern	gloves	4	Work Gloves										aspd=15/22 hp=10/20	20% chance on hit to cast Arc Chain	Paid in exposure. To voltage.
+repair	Right to Repair	belt	3	Tool Belt					1					regenH=3/5 hp=20/30	Stims also refill your energy	Banned in forty territories. Works in all of them.
+hedge	Inflation Hedge	ring	6	Signet Chip										gold=60/90 armor=5/10	Credits you carry grow as fast as prices rise	The rich were never holding cash.
+deadline	Deadline	boots	5	Steel-Toes										mspd=20/25 armorP=30/50	+25% damage while moving	It was due yesterday. So were you.
+whistle	The Whistle	helm	7	Riot Helm										armorP=30/50 shock=4/8	Slain machines explode, wounding others nearby	She blew it once. The echo is still going.
+nda	Nondisclosure	helm	3	Hard Hat										armorP=40/60 en=10/20	15% chance to avoid any damage	You saw nothing. You were never here.
+blackout	Blackout	weapon	3	Box Cutter				2						shock=6/10 aspd=10/18	12% chance to stun on hit	The last thing the grid ever said.
+pension	The Pension	amulet	5	Dog Tag										hp=45/70	Replenish 2% of your life every second	A myth from the old world, worn as a charm.
+handshake	Golden Handshake	gloves	16	Servo Fists										aspd=18/26 dmg=30/45	Ordinary machines you destroy have a 13% chance to drop a satoshi	A firm grip, and something left in your palm.
+fineprint	Fine Print	amulet	18	Sigil Core										skills=1/2 en=30/45	Your skills recover 20% faster	It was all there. It was very small.
+cloud9	Cloud Nine	boots	17	Mag Greaves										mspd=22/25 hp=40/60	+10% chance to avoid any hit	One floor above the weather.
+clock	Dead Man’s Alarm	belt	19	Power Girdle										hp=50/80 regenH=4/6	Below 30% life, every machine near you is slowed for 4 seconds (once a minute)	The battery has been dead for fifty years. It rings anyway.
+offer	The Offer	ring	20	Null Ring						1				crit=10/14 mf=40/55 hp=30/50	You cannot be slowed, and your energy cannot be drained	It was a very good offer. That was never the point.
+seat	Board Seat	armor	30	Seraph Plate										hp=90/130 armorP=60/90 skills=1/1		Nine chairs. One was always empty.
+quorum	Quorum	ring	32	Halo Band										skills=1/2 crit=8/12 dmg=30/45	Each companion or summoned ally adds 5% to your damage, up to six	Nothing may be decided alone.
+still	Still Water	amulet	34	Cloud Core						1				hp=80/120 regenH=6/9 skills=1/1	Once every 90 seconds, a killing blow heals you fully instead	It watched. That was all. It was enough.
+lines	Forty-Four Lines	ring	4	Signet Chip						1				hp=44/44 regenH=4/4 mf=19/19	Mediators cannot mend machines while you wear this	Nobody asked for it. It cost nineteen minutes a night.
+exit	Exit Interview	weapon	9	Signal Baton				0		1				dmg=60/90 crit=8/12 leech=4/6	+50% damage to champions, lieutenants and executives	“Any feedback for management?”
+cipher	The Cipher Mantle	armor	66	Cloud Mantle		late					100	mgt=0.25 mf=0.4		skills=1/1 mspd=14/18 pdr=8/8 armorP=40/70	+1 to Teleport (item skill)	A short blink, not a map. The cipher is the point. The coat is where it sits.
+call	The Standing Call	amulet	44	Sigil Core		high					101			skills=1/1 hp=40/70 regenH=2/4	+1 to Standing Call (item skill)	Everyone in earshot stands up straighter. It wears off.
+book	The Open Book	weapon	52	Null Sceptre		high					102			skills=1/1 dmg=35/60 shock=6/14	+1 to Open Book (item skill)	The page is open. It does not close their eyes. It only helps you hit.
+ledger	The Quiet Ledger	belt	28	Power Girdle		mid					103			regen=2/4 en=18/30 mf=8/16	+1 to Quiet Ledger (item skill)	The books balance if you sit with them. Not for long.
+bear	The Bear Market	helm	40	Praetor Visor		high					104			armorP=50/80 hp=36/64 dmg=8/16	+1 to Bear Market (item skill)	You wear the downturn. It is not a shape the verge taught you.
+chair	The Spare Chair	weapon	34	Arc Sceptre		mid					105			skills=1/1 hp=18/36 thorns=4/9	+1 to Spare Chair (item skill)	Someone has to sit in. They do not get a vote.
+majeure	Force Majeure	weapon	70	Last-Mile Cannon		late								dmg=180/250 aspd=15/20 enleech=6/8 mgt=8/12 ref=4/8 sk_courier=1/1	Knocks ordinary machines back. Bosses, lieutenants, and players get one short shove, and a second within 1.5s does nothing.	An act of God, as defined by the party that can afford the lawyer.
+allhands	The All-Hands	helm	62	Halo Circuit		late								skills=2/2 hpL=1.5/1.5 enL=1.5/1.5 pdr=10/10 mf=40/50 mgt=2/2 ref=2/2 vit=2/2 bnd=2/2		Attendance was mandatory. The hat was not. Everyone wore it anyway.
+output	The Unspent Output	ring	29	Signet Chip		mid								skills=1/1 enPct=25/25 shock=4/10 en=15/25		An output nobody posted. Sats are still what things cost.
+remote	Remote Hands	weapon	42	Zero-Day Rig	hacker	mid								sk_hacker=3/3 enKill=5/5 r_all=15/20 cdr=25/25 vit=15/15 bnd=15/15 mf=40/50	When struck, 25% chance to dash about 3 paces along your facing. 2s between dashes, 6s against a player. Will not fire while you are stunned.	You were at your desk. The desk disagrees.
+rate	The Rate Card	armor	29	Aegis Shell		mid								skills=1/1 armorP=80/120 r_all=20/30 cdr=25/25 pdr=4/4		The rate is the rate. The coat just itemises it.
+audit	The Night Audit	helm	41	Riot Helm		high								armorP=80/100 leech=6/8 enleech=4/6 pdr=12/18 shock=6/16		They close the books at night. Something else opens them.
+indemnity	The Indemnity	armor	68	Seraph Plate		late								pdr=25/25 r_surge=20/20 mgt=20/30 thorns=8/14 armorP=80/120	Attacks against you cannot crit.	The policy pays. It does not pay all of it. Read the exclusion.
+coupon	The Coupon	weapon	4	Box Cutter		early								mf=80/100 en=-8/-8 dmg=0/10		Expires. Not accepted on the thing you actually wanted.
+unioncard	Union Card	amulet	8	Dog Tag	scrapper								8 3	hp=30/50 dmg=15/25	Scrapper only. Grants Solidarity at rank 3 without using a passive slot	Laminated. Dues paid through 2051.
+armband	Picket Captain’s Armband	gloves	18	Rivet Gauntlets	scrapper									armorP=40/60 hp=40/60	Scrapper only. Two strikers march with you and fight at your side	Nobody crosses.
+duck	Rubber Duck	amulet	6	Lanyard	hacker									en=20/30 t_surge=12/20	Technomancer only. A drone hovers at your shoulder and shoots what you shoot	Explain the problem to it. Out loud. Slowly.
+killswitch	Kill Switch	ring	20	Null Ring	hacker								8 3	crit=6/9 skills=1/1	Technomancer only. Grants Zero Day at rank 3 without using a passive slot	One button. No label.
+pod	Proof of Delivery	boots	10	Steel-Toes	courier									mspd=8/12 aspd=8/12	Runner only. Scatter Shot throws two more blades, and every kill quickens your step	Signed for by: [illegible]
+deadletter	Dead Letter	weapon	22	Phase Razor	courier									dmg=60/85 crit=5/8	Runner only. Everything you throw passes through every machine in its path	Return to sender. Address unknown.
+face	Borrowed Face	helm	14	Riot Helm	anon									crit=5/8 hp=30/45	Anon only. A sockpuppet walks with you, and draws their fire	It belonged to somebody. Not you.
+pkey	Private Key	ring	24	Null Ring	anon									dmg=25/40 skills=1/1	Anon only. +35% damage to machines that are weak to the type you hit them with	Tell no one. Not even this ring.
+check	Blank Check	belt	12	Tool Belt	founder									en=25/40 hp=30/45	Founder only. Two more Interns answer the call, and the whole workforce hits 25% harder	Signed. Undated. Dangerous.
+orgchart	Org Chart	amulet	26	Sigil Core	founder									skills=1/1 hp=50/70	Founder only. A Chief of Staff stands with you at all times, at no cost	Every line reports to you. Eventually.
+orangepill	Orange Pill	ring	9	Signet Chip										mf=15/25 gold=20/35	Champions drop a sat, and each one you break nudges adoption upward	You cannot untake it.
+coldwallet	Cold Wallet	belt	16	Tool Belt			1							hp=40/60 armorP=30/45	You pay no fee when you die, and sats you pick up count for a quarter more	Never been online. Never will be.
+hashrate	Hash Rate	gloves	28	Servo Fists										aspd=10/15 dmg=20/35	+1% damage for every kill in your streak, up to 40	More work, more weight.
+soaker	Soaker Hose	belt	12	Tool Belt	homesteader									hp=30/50	Homesteader only. Plots you place last half again as long	It weeps. That is the point.
+collar	One Collar	amulet	10	Dog Tag	homesteader									hp=20/35	Homesteader only. A single stray is already with you	You did not name it. It did not ask.
+carbon	Carbon Sheet	belt	12	Tool Belt	witness									hp=20/35	Witness only. The Record fills faster	A copy that does not smudge.
+press	Press Pass	amulet	14	Dog Tag	witness									hp=15/25	Witness only. Testimony stacks two higher, and the first Look lands twice	The name on it is not yours. It still opens the door.
+elevenpages	The Eleven Pages	amulet	47	Sigil Core										skills=2/2 en=45/65 regen=3/4		Review, or I Agree. She had been honest for once, and almost nobody chose Review.
+outwhere	Out Where	boots	50	Mag Greaves										mspd=22/25 hp=80/115 armorP=70/100		He has not stood up since spring. Ask him to go out and he asks you, kindly: out where?
+hours	Nurse’s Hours	gloves	53	Servo Fists										aspd=22/30 regenH=8/11 hp=70/100		Three years in a front room, and the only thing that ever noticed was a machine.
+fourthousand	Four Thousand Two Hundred and Eleven	helm	56	Praetor Visor										mf=55/75 armorP=100/140 crit=8/12		A list of everyone it went badly for. She kept it, and showed nobody, until somebody asked.
+e82	Eighty-Two Minutes	ring	58	Null Ring										crit=12/16 dmg=40/55 skills=1/1	For 3 seconds after you dodge, every blow you land is a deadly strike	The only gap in a perfect record of a man. She thought about it for twenty years.
+copy	The Courtesy Copy	helm	36	Riot Helm		high								mf=35/55 gold=25/40		A copy of a face that was useful once. It still opens the smaller doors.
+visor	The Closed Visor	helm	38	Praetor Visor		high								leech=6/8 pdr=8/12 hp=40/70		You can see out. The minutes do not say whose eyes those were.
+visitor	The Visitor Book	gloves	40	Servo Fists		high								mf=40/60 gold=30/50		Sign in. The book remembers the name longer than the room does.
+holding	The Holding Statement	armor	42	Aegis Shell		high								pdr=10/14 hp=80/120 armorP=70/100		We are not able to comment at this time. The coat comments anyway, by still being there.
+coldopen	The Cold Open	ring	44	Null Ring		high								crit=8/12 hp=40/70 thorns=4/8		The first line, before anyone has agreed to listen. It still lands.
+minority	The Minority Report	armor	45	Exo Plate		high								r_all=20/30 cdr=15/25 en=20/40		One chair voted no. The coat kept the notes.
+bell	The Service Bell	weapon	46	Wrecking Hammer		high								dmg=50/80 aspd=15/22		Ring it and someone comes. They do not come to help.
+drawer	The Night Drawer	belt	48	Power Girdle		high								leech=5/8 pdr=6/10 hp=50/80		What the audit left in the desk. It was never on the list.
+floor	The Open Floor	ring	50	Halo Band		high								leech=4/7 hp=50/80		The question is on the floor. Nobody has moved to close it.
+reading	The Second Reading	amulet	52	Sigil Core		high								skills=1/2 r_all=15/25		Read it again. The first time was the one they wanted you to keep.
+waitlist	The Waiting List	boots	54	Mag Greaves		high								mspd=15/22 dmg=15/30 mf=25/40		Your name has been on it since the room opened. The line has not moved.
+redline	The Red Line	weapon	56	Titan Maul		high								dmg=70/110 hp=40/70 leech=4/7		Below this, the chart is a story. Above it, the chart is a debt.
+kitchen	The Kitchen Table	armor	57	Seraph Plate						1				hp=140/190 armorP=120/170 skills=1/1		She had been waiting fifty-two years for the conversation, and she made coffee she could not drink.
+tenmin	Ten Minutes	weapon	62	Void Razor										dmg=90/130 aspd=20/28 crit=8/12	+60% damage to any machine you have not hit yet	Every ten minutes, somewhere past the fence, a block is found. They have been trying to stop that for forty years.
+notyourkeys	Not Your Keys	belt	65	Orbit Girdle										hp=110/150 armorP=90/130 r_x=40/55		Not your keys, not your coins. Not your visor, not your eyes.
+uncertain	Uncertain Knowledge	amulet	69	Cloud Core										skills=2/2 hp=90/130 crit=10/14		How to reason when you do not know. It was kept back out of fear, which is also a way of not knowing.
+twentyone	Twenty-One Million	ring	70	Halo Band										mf=70/95 gold=90/130 hp=70/100		Nobody can vote for twenty-two. Do you know how rare it is for a rule to mean it?
+theroom	The Room	weapon	72	Titan Maul						1				dmg=140/190 crit=12/16 leech=6/9		For a century people said there was no room — nobody deciding, only everybody acting sensibly. There is a room. It is very plain.
+firm	The Firm Handshake	gloves	61	Graviton Fists		late								dmg=40/70 mgt=8/15 armorP=40/70		A grip that does not let go of the point. Sats are still what it costs to be in the room.
+signin	The Sign-in Sheet	belt	63	Orbit Girdle		late								skills=1/2 cdr=15/25 en=25/40		Everyone who came is on it. The belt is what they signed with.
+lastquorum	The Last Quorum	helm	64	Halo Circuit		late								skills=1/2 r_all=20/30 pdr=6/10 armorP=60/90		Enough of them stayed to decide. The hat is how you can tell.
+docket	The Docket	belt	65	Orbit Girdle		late								hp=90/140 pdr=8/12 vit=10/18		The cases that were never called. They still have weight.
+unsent	The Unsent Letter	amulet	66	Cloud Core		late								r_all=25/35 skills=1/1 hp=60/90		Addressed, stamped, and left in a drawer. It still knows who it was for.
+after	The After Hours	boots	67	Skywalkers		late								mf=40/70 mspd=18/24 gold=40/70		The building is closed. The boots were not told.
+memo	The Long Memorandum	weapon	68	Titan Maul		late								dmg=90/140 leech=5/8 hp=50/80		Forty pages to say one thing. The thing at the end is the blow.
+suit	The Pressed Suit	armor	70	Seraph Plate		late								armorP=90/140 hp=80/120 pdr=8/12		Worn to a meeting that ran long enough to become the job.
+question	The Open Question	ring	71	Halo Band		late								skills=1/1 en=30/50 regen=2/3		A ring for a question that does not spend sats, and does not mint them.
+century	The Quiet Century	armor	72	Cloud Mantle		late								r_all=25/40 mspd=12/18 skills=1/1		Seventy-nine years of not doing a second thing. The coat learned how to wait.
+blankpage	The Blank Page	weapon	74	Null Sceptre		late								shock=10/18 en=40/60 r_all=15/25 cdr=10/20		Nothing written on it. That is why it still works.
+lamp	The Reading Lamp	helm	76	Halo Circuit		late								skills=1/2 dmg=20/35 shock=8/14		Left on over a desk nobody sits at. The page under it is still lit.

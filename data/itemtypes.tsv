@@ -1,0 +1,45 @@
+slot	tier	name	dmg	speed
+weapon	0	Bent Rebar	1	0
+weapon	0	Stop Sign	1.35	-20
+weapon	0	Box Cutter	0.75	25
+weapon	1	Signal Baton	1	0
+weapon	1	Girder Maul	1.35	-20
+weapon	1	Mono Blade	0.75	25
+weapon	2	Arc Sceptre	1	0
+weapon	2	Wrecking Hammer	1.35	-20
+weapon	2	Phase Razor	0.75	25
+weapon	3	Null Sceptre	1	0
+weapon	3	Titan Maul	1.35	-20
+weapon	3	Void Razor	0.75	25
+helm	0	Hard Hat		
+helm	1	Riot Helm		
+helm	2	Praetor Visor		
+helm	3	Halo Circuit		
+armor	0	Hi-Vis Vest		
+armor	0	Padded Hoodie		
+armor	1	Flak Coat		
+armor	1	Courier Mail		
+armor	2	Exo Plate		
+armor	2	Aegis Shell		
+armor	3	Seraph Plate		
+armor	3	Cloud Mantle		
+gloves	0	Work Gloves		
+gloves	1	Rivet Gauntlets		
+gloves	2	Servo Fists		
+gloves	3	Graviton Fists		
+boots	0	Worn Sneakers		
+boots	1	Steel-Toes		
+boots	2	Mag Greaves		
+boots	3	Skywalkers		
+belt	0	Zip-Tie Sash		
+belt	1	Tool Belt		
+belt	2	Power Girdle		
+belt	3	Orbit Girdle		
+ring	0	Copper Band		
+ring	1	Signet Chip		
+ring	2	Null Ring		
+ring	3	Halo Band		
+amulet	0	Lanyard		
+amulet	1	Dog Tag		
+amulet	2	Sigil Core		
+amulet	3	Cloud Core		

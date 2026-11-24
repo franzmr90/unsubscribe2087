@@ -675,24 +675,7 @@ const ATTR_TIP={
 function attrTip(k){const row=ATTR_TIP[G&&G.cls];return (row&&row[k])||ATTR[k][1]}
 
 /* ================= class uniques: items that only wake up in the right hands ================= */
-UNI.push(
- {id:'unioncard',cls:'scrapper',n:'Union Card',slot:'amulet',il:8,base:'Dog Tag',mods:{hp:[30,50],dmg:[15,25]},grant:[8,3],sp:'Scrapper only. Grants Solidarity at rank 3 without using a passive slot',fl:'Laminated. Dues paid through 2051.'},
- {id:'armband',cls:'scrapper',n:'Picket Captain’s Armband',slot:'gloves',il:18,base:'Rivet Gauntlets',mods:{armorP:[40,60],hp:[40,60]},sp:'Scrapper only. Two strikers march with you and fight at your side',fl:'Nobody crosses.'},
- {id:'duck',cls:'hacker',n:'Rubber Duck',slot:'amulet',il:6,base:'Lanyard',mods:{en:[20,30],t_surge:[12,20]},sp:'Technomancer only. A drone hovers at your shoulder and shoots what you shoot',fl:'Explain the problem to it. Out loud. Slowly.'},
- {id:'killswitch',cls:'hacker',n:'Kill Switch',slot:'ring',il:20,base:'Null Ring',mods:{crit:[6,9],skills:[1,1]},grant:[8,3],sp:'Technomancer only. Grants Zero Day at rank 3 without using a passive slot',fl:'One button. No label.'},
- {id:'pod',cls:'courier',n:'Proof of Delivery',slot:'boots',il:10,base:'Steel-Toes',mods:{mspd:[8,12],aspd:[8,12]},sp:'Runner only. Scatter Shot throws two more blades, and every kill quickens your step',fl:'Signed for by: [illegible]'},
- {id:'deadletter',cls:'courier',n:'Dead Letter',slot:'weapon',il:22,base:'Phase Razor',mods:{dmg:[60,85],crit:[5,8]},sp:'Runner only. Everything you throw passes through every machine in its path',fl:'Return to sender. Address unknown.'},
- {id:'face',cls:'anon',n:'Borrowed Face',slot:'helm',il:14,base:'Riot Helm',mods:{crit:[5,8],hp:[30,45]},sp:'Anon only. A sockpuppet walks with you, and draws their fire',fl:'It belonged to somebody. Not you.'},
- {id:'pkey',cls:'anon',n:'Private Key',slot:'ring',il:24,base:'Null Ring',mods:{dmg:[25,40],skills:[1,1]},sp:'Anon only. +35% damage to machines that are weak to the type you hit them with',fl:'Tell no one. Not even this ring.'},
- {id:'check',cls:'founder',n:'Blank Check',slot:'belt',il:12,base:'Tool Belt',mods:{en:[25,40],hp:[30,45]},sp:'Founder only. Two more Interns answer the call, and the whole workforce hits 25% harder',fl:'Signed. Undated. Dangerous.'},
- {id:'orgchart',cls:'founder',n:'Org Chart',slot:'amulet',il:26,base:'Sigil Core',mods:{skills:[1,1],hp:[50,70]},sp:'Founder only. A Chief of Staff stands with you at all times, at no cost',fl:'Every line reports to you. Eventually.'},
- {id:'orangepill',n:'Orange Pill',slot:'ring',il:9,base:'Signet Chip',mods:{mf:[15,25],gold:[20,35]},sp:'Champions drop a sat, and each one you break nudges adoption upward',fl:'You cannot untake it.'},
- {id:'coldwallet',n:'Cold Wallet',slot:'belt',il:16,base:'Tool Belt',ind:1,mods:{hp:[40,60],armorP:[30,45]},sp:'You pay no fee when you die, and sats you pick up count for a quarter more',fl:'Never been online. Never will be.'},
- {id:'hashrate',n:'Hash Rate',slot:'gloves',il:28,base:'Servo Fists',mods:{aspd:[10,15],dmg:[20,35]},sp:'+1% damage for every kill in your streak, up to 40',fl:'More work, more weight.'},
- {id:'soaker',cls:'homesteader',n:'Soaker Hose',slot:'belt',il:12,base:'Tool Belt',mods:{hp:[30,50]},sp:'Homesteader only. Plots you place last half again as long',fl:'It weeps. That is the point.'},
- {id:'collar',cls:'homesteader',n:'One Collar',slot:'amulet',il:10,base:'Dog Tag',mods:{hp:[20,35]},sp:'Homesteader only. A single stray is already with you',fl:'You did not name it. It did not ask.'},
- {id:'carbon',cls:'witness',n:'Carbon Sheet',slot:'belt',il:12,base:'Tool Belt',mods:{hp:[20,35]},sp:'Witness only. The Record fills faster',fl:'A copy that does not smudge.'},
- {id:'press',cls:'witness',n:'Press Pass',slot:'amulet',il:14,base:'Dog Tag',mods:{hp:[15,25]},sp:'Witness only. Testimony stacks two higher, and the first Look lands twice',fl:'The name on it is not yours. It still opens the door.'});
+/* Class uniques live in data/uniques.tsv, baked to src/items.js. */
 const UNIK={};for(const u of UNI)UNIK[u.id]=u;
 const uOk=it=>{const u=UNIK[it.uid];return!u||!u.cls||u.cls===G.cls};
 function uniTick(dt){if(W.z.town)return;const want=(flag,kind,n,o)=>{const have=W.allies.filter(a=>a.item===flag);if(S.sp[flag]){if(have.length<n){P['u_'+flag]=(P['u_'+flag]||0)-dt;if(P['u_'+flag]<=0){P['u_'+flag]=4;W.allies.push(Object.assign({k:'minion',kind,item:flag,per:1,x:P.x+rnd(-.8,.8),y:P.y+rnd(-.8,.8),cd:0,ph:rnd(0,6),off:rnd(0,1),life:1e9,fx:1},o(),{dt:null}))}}}else for(const a of have)W.allies.splice(W.allies.indexOf(a),1)};

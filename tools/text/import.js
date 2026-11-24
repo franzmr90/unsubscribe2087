@@ -78,7 +78,10 @@ function parseEntries(md) {
 }
 
 /* Generated files and the sheet each is baked from (tools/data/bake.js). */
-const SHEETS = { 'src/monstats.js': 'data/monstats.tsv', 'src/treasure.js': 'data/treasure.tsv', 'src/levels.js': 'data/levels.tsv' };
+const SHEETS = {
+  'src/monstats.js': ['data/monstats.tsv'], 'src/treasure.js': ['data/treasure.tsv'], 'src/levels.js': ['data/levels.tsv'],
+  'src/items.js': ['data/itemtypes.tsv', 'data/affixes.tsv', 'data/uniques.tsv', 'data/sets.tsv']
+};
 
 function main() {
   const args = process.argv.slice(2);
@@ -152,25 +155,24 @@ function main() {
 
   /* Lines that live in a design sheet (data/*.tsv) are baked into src/; the edit goes
      into the sheet's cell, and the bake writes src/ again. A cell is found by its text. */
-  const sheetEdits = {};
+  const sheetEdits = [];
   for (const ed of apply.slice()) {
-    const tsv = SHEETS[ed.cat.file];
-    if (!tsv) continue;
+    const tsvs = SHEETS[ed.cat.file];
+    if (!tsvs) continue;
     apply.splice(apply.indexOf(ed), 1);
-    if (/[\t\r\n]/.test(ed.text)) { skipped.push({ id: ed.cat.id, why: 'a line in ' + tsv + ' cannot hold a tab or a line break' }); continue; }
-    (sheetEdits[tsv] || (sheetEdits[tsv] = [])).push(ed);
+    if (/[\t\r\n]/.test(ed.text)) { skipped.push({ id: ed.cat.id, why: 'a line in ' + tsvs.join(' or ') + ' cannot hold a tab or a line break' }); continue; }
+    sheetEdits.push(ed);
+  }
+  const sheetRows = {};
+  const rowsOf = tsv => sheetRows[tsv] || (sheetRows[tsv] = fs.readFileSync(path.join(ROOT, tsv), 'utf8').split('\n').map(l => l.split('\t')));
+  for (const ed of sheetEdits) {
+    let hits = 0;
+    for (const tsv of SHEETS[ed.cat.file]) rowsOf(tsv).forEach((r, i) => { if (i > 0) r.forEach((c, j) => { if (c === ed.cat.text) { r[j] = ed.text; hits++; } }); });
+    if (!hits) skipped.push({ id: ed.cat.id, why: 'no cell in ' + SHEETS[ed.cat.file].join(' or ') + ' holds this line any more' });
+    else apply.push(ed);
   }
   const sheetText = {};
-  for (const tsv of Object.keys(sheetEdits)) {
-    const rows = fs.readFileSync(path.join(ROOT, tsv), 'utf8').split('\n').map(l => l.split('\t'));
-    for (const ed of sheetEdits[tsv]) {
-      let hits = 0;
-      rows.forEach((r, i) => { if (i > 0) r.forEach((c, j) => { if (c === ed.cat.text) { r[j] = ed.text; hits++; } }); });
-      if (!hits) skipped.push({ id: ed.cat.id, why: 'no cell in ' + tsv + ' holds this line any more' });
-      else apply.push(ed);
-    }
-    sheetText[tsv] = rows.map(r => r.join('\t')).join('\n');
-  }
+  for (const tsv of Object.keys(sheetRows)) sheetText[tsv] = sheetRows[tsv].map(r => r.join('\t')).join('\n');
 
   const byFile = {};
   for (const ed of apply) if (!SHEETS[ed.cat.file]) (byFile[ed.cat.file] || (byFile[ed.cat.file] = [])).push(ed);

@@ -1,6 +1,6 @@
 # Unsubscribe 2087 — Game Text
 
-Total entries: 5207
+Total entries: 5252
 
 ## How to edit
 
@@ -33,11 +33,11 @@ To bring an edit back: `node tools/text/import.js path/to/file` where the file i
 - The Bull Run (9)
 - Journal and Codex (182)
 - Classes (434)
-- Items (616)
+- Items (747)
 - Mercenaries (18)
 - Cinematics and Endings (171)
 - Tutorial and Walkthrough (48)
-- UI and System (2583)
+- UI and System (2497)
 - Multiplayer and LAN (521)
 
 # Act I — The Regional Office
@@ -472,7 +472,7 @@ END
 
 ID: act1.npc.gramps.gossip.01
 
-SOURCE: src/p1.js line 627
+SOURCE: src/p1.js line 551
 
 CONTEXT: Gramps says this in town, unprompted, if you stand near them. It is not a quest. Line 1 of 8. After: "Credits rot in your pocket, kid. Gear holds. Spend it or wear it.". Shown in both layouts.
 
@@ -490,7 +490,7 @@ END
 
 ID: act1.npc.gramps.gossip.02
 
-SOURCE: src/p1.js line 627
+SOURCE: src/p1.js line 551
 
 CONTEXT: Gramps says this in town, unprompted, if you stand near them. It is not a quest. Line 2 of 8. Before: "I was six when the Gentle Years ended. One March morning nothing arrived. M...". After: "Pryce believes everybody has a number. He has been right so often that he h...". Shown in both layouts.
 
@@ -508,7 +508,7 @@ END
 
 ID: act1.npc.gramps.gossip.03
 
-SOURCE: src/p1.js line 627
+SOURCE: src/p1.js line 551
 
 CONTEXT: Gramps says this in town, unprompted, if you stand near them. It is not a quest. Line 3 of 8. Before: "Credits rot in your pocket, kid. Gear holds. Spend it or wear it.". After: "MANDATE cannot make you do a thing. Remember that. It can only make you wan...". Shown in both layouts.
 
@@ -526,7 +526,7 @@ END
 
 ID: act1.npc.gramps.gossip.04
 
-SOURCE: src/p1.js line 627
+SOURCE: src/p1.js line 551
 
 CONTEXT: Gramps says this in town, unprompted, if you stand near them. It is not a quest. Line 4 of 8. Before: "Pryce believes everybody has a number. He has been right so often that he h...". After: "This town was named for something. Nobody alive knows what. Some nights I t...". Shown in both layouts.
 
@@ -544,7 +544,7 @@ END
 
 ID: act1.npc.gramps.gossip.05
 
-SOURCE: src/p1.js line 627
+SOURCE: src/p1.js line 551
 
 CONTEXT: Gramps says this in town, unprompted, if you stand near them. It is not a quest. Line 5 of 8. Before: "MANDATE cannot make you do a thing. Remember that. It can only make you wan...". After: "MANDATE lives in the racks out in the Humming Fields. They say the fans the...". Shown in both layouts.
 
@@ -562,7 +562,7 @@ END
 
 ID: act1.npc.gramps.gossip.06
 
-SOURCE: src/p1.js line 627
+SOURCE: src/p1.js line 551
 
 CONTEXT: Gramps says this in town, unprompted, if you stand near them. It is not a quest. Line 6 of 8. Before: "This town was named for something. Nobody alive knows what. Some nights I t...". After: "Get the two of them straight, kid, or none of this will make sense. Phonix ...". Shown in both layouts.
 
@@ -580,7 +580,7 @@ END
 
 ID: act1.npc.gramps.gossip.07
 
-SOURCE: src/p1.js line 627
+SOURCE: src/p1.js line 551
 
 CONTEXT: Gramps says this in town, unprompted, if you stand near them. It is not a quest. Line 7 of 8. Before: "MANDATE lives in the racks out in the Humming Fields. They say the fans the...". After: "Phonix. That was her name. My mother said it the way you say a weather event.". Shown in both layouts.
 
@@ -598,7 +598,7 @@ END
 
 ID: act1.npc.gramps.gossip.08
 
-SOURCE: src/p1.js line 627
+SOURCE: src/p1.js line 551
 
 CONTEXT: Gramps says this in town, unprompted, if you stand near them. It is not a quest. Line 8 of 8. Before: "Get the two of them straight, kid, or none of this will make sense. Phonix ...". Shown in both layouts.
 
@@ -802,7 +802,7 @@ END
 
 ID: act1.npc.brenda.gossip.01
 
-SOURCE: src/p1.js line 628
+SOURCE: src/p1.js line 552
 
 CONTEXT: Brenda says this in town, unprompted, if you stand near them. It is not a quest. Line 1 of 4. After: "I used to have a visor. Then I saw what I was selling. Now I sell it withou...". Shown in both layouts.
 
@@ -820,7 +820,7 @@ END
 
 ID: act1.npc.brenda.gossip.02
 
-SOURCE: src/p1.js line 628
+SOURCE: src/p1.js line 552
 
 CONTEXT: Brenda says this in town, unprompted, if you stand near them. It is not a quest. Line 2 of 4. Before: "Welcome to Brenda’s. Prices are up, which they tell me is good news.". After: "Bring me what you find. I will give you a number for it. The number will be...". Shown in both layouts.
 
@@ -838,7 +838,7 @@ END
 
 ID: act1.npc.brenda.gossip.03
 
-SOURCE: src/p1.js line 628
+SOURCE: src/p1.js line 552
 
 CONTEXT: Brenda says this in town, unprompted, if you stand near them. It is not a quest. Line 3 of 4. Before: "I used to have a visor. Then I saw what I was selling. Now I sell it withou...". After: "Rare things come out of the machines unlabelled. I can appraise them, for a...". Shown in both layouts.
 
@@ -856,7 +856,7 @@ END
 
 ID: act1.npc.brenda.gossip.04
 
-SOURCE: src/p1.js line 628
+SOURCE: src/p1.js line 552
 
 CONTEXT: Brenda says this in town, unprompted, if you stand near them. It is not a quest. Line 4 of 4. Before: "Bring me what you find. I will give you a number for it. The number will be...". Shown in both layouts.
 
@@ -878,7 +878,7 @@ END
 
 ID: act1.npc.wren.gossip.01
 
-SOURCE: src/p1.js line 629
+SOURCE: src/p1.js line 553
 
 CONTEXT: Wren says this in town, unprompted, if you stand near them. It is not a quest. Line 1 of 3. After: "Everything I sell fell off a drone. Some of it while the drone was still fl...". Shown in both layouts.
 
@@ -896,7 +896,7 @@ END
 
 ID: act1.npc.wren.gossip.02
 
-SOURCE: src/p1.js line 629
+SOURCE: src/p1.js line 553
 
 CONTEXT: Wren says this in town, unprompted, if you stand near them. It is not a quest. Line 2 of 3. Before: "Mystery boxes. Sealed at the factory. The odds are posted, by law. The law ...". After: "You want a sure thing, go watch the Feed. You want a chance, open your purse.". Shown in both layouts.
 
@@ -914,7 +914,7 @@ END
 
 ID: act1.npc.wren.gossip.03
 
-SOURCE: src/p1.js line 629
+SOURCE: src/p1.js line 553
 
 CONTEXT: Wren says this in town, unprompted, if you stand near them. It is not a quest. Line 3 of 3. Before: "Everything I sell fell off a drone. Some of it while the drone was still fl...". Shown in both layouts.
 
@@ -936,7 +936,7 @@ END
 
 ID: act1.npc.null.gossip.01
 
-SOURCE: src/p1.js line 630
+SOURCE: src/p1.js line 554
 
 CONTEXT: Sister Null says this in town, unprompted, if you stand near them. It is not a quest. Line 1 of 4. After: "I deprogrammed two hundred Residents. One hundred and ninety went back. The...". Shown in both layouts.
 
@@ -954,7 +954,7 @@ END
 
 ID: act1.npc.null.gossip.02
 
-SOURCE: src/p1.js line 630
+SOURCE: src/p1.js line 554
 
 CONTEXT: Sister Null says this in town, unprompted, if you stand near them. It is not a quest. Line 2 of 4. Before: "Sit. Breathe. Your account is not your self.". After: "If you have learned the wrong lessons, I can take them out of you. It costs...". Shown in both layouts.
 
@@ -972,7 +972,7 @@ END
 
 ID: act1.npc.null.gossip.03
 
-SOURCE: src/p1.js line 630
+SOURCE: src/p1.js line 554
 
 CONTEXT: Sister Null says this in town, unprompted, if you stand near them. It is not a quest. Line 3 of 4. Before: "I deprogrammed two hundred Residents. One hundred and ninety went back. The...". After: "I charge for unlearning. The visor is free. I have never won that argument,...". Shown in both layouts.
 
@@ -990,7 +990,7 @@ END
 
 ID: act1.npc.null.gossip.04
 
-SOURCE: src/p1.js line 630
+SOURCE: src/p1.js line 554
 
 CONTEXT: Sister Null says this in town, unprompted, if you stand near them. It is not a quest. Line 4 of 4. Before: "If you have learned the wrong lessons, I can take them out of you. It costs...". Shown in both layouts.
 
@@ -1012,7 +1012,7 @@ END
 
 ID: act1.npc.marrow.gossip.01
 
-SOURCE: src/p1.js line 631
+SOURCE: src/p1.js line 555
 
 CONTEXT: Marrow says this in town, unprompted, if you stand near them. It is not a quest. Line 1 of 5. After: "I kept eleven thousand books in my head when they closed the stacks. Ask me...". Shown in both layouts.
 
@@ -1030,7 +1030,7 @@ END
 
 ID: act1.npc.marrow.gossip.02
 
-SOURCE: src/p1.js line 631
+SOURCE: src/p1.js line 555
 
 CONTEXT: Marrow says this in town, unprompted, if you stand near them. It is not a quest. Line 2 of 5. Before: "Bring me the things you cannot name. Naming is all I have left, and I give ...". After: "Defrag was the catalogue once. I trained it. I am sorry for what it became.". Shown in both layouts.
 
@@ -1048,7 +1048,7 @@ END
 
 ID: act1.npc.marrow.gossip.03
 
-SOURCE: src/p1.js line 631
+SOURCE: src/p1.js line 555
 
 CONTEXT: Marrow says this in town, unprompted, if you stand near them. It is not a quest. Line 3 of 5. Before: "I kept eleven thousand books in my head when they closed the stacks. Ask me...". After: "I have a letter from the old century. Everyone was sent one. I am one of th...". Shown in both layouts.
 
@@ -1066,7 +1066,7 @@ END
 
 ID: act1.npc.marrow.gossip.04
 
-SOURCE: src/p1.js line 631
+SOURCE: src/p1.js line 555
 
 CONTEXT: Marrow says this in town, unprompted, if you stand near them. It is not a quest. Line 4 of 5. Before: "Defrag was the catalogue once. I trained it. I am sorry for what it became.". After: "There was a third one, before either of them. It never spoke and it never d...". Shown in both layouts.
 
@@ -1084,7 +1084,7 @@ END
 
 ID: act1.npc.marrow.gossip.05
 
-SOURCE: src/p1.js line 631
+SOURCE: src/p1.js line 555
 
 CONTEXT: Marrow says this in town, unprompted, if you stand near them. It is not a quest. Line 5 of 5. Before: "I have a letter from the old century. Everyone was sent one. I am one of th...". Shown in both layouts.
 
@@ -1106,7 +1106,7 @@ END
 
 ID: act1.npc.nonce.gossip.01
 
-SOURCE: src/p1.js line 633
+SOURCE: src/p1.js line 557
 
 CONTEXT: Nonce says this in town, unprompted, if you stand near them. It is not a quest. Line 1 of 4. After: "Whoever made the timechain made one thing and never touched it again.". Shown in both layouts.
 
@@ -1124,7 +1124,7 @@ END
 
 ID: act1.npc.nonce.gossip.02
 
-SOURCE: src/p1.js line 633
+SOURCE: src/p1.js line 557
 
 CONTEXT: Nonce says this in town, unprompted, if you stand near them. It is not a quest. Line 2 of 4. Before: "Credits are a story Unity tells. Sats are arithmetic. I only take arithmetic.". After: "Every ten minutes a block is found, somewhere past the fence. Unity has tri...". Shown in both layouts.
 
@@ -1142,7 +1142,7 @@ END
 
 ID: act1.npc.nonce.gossip.03
 
-SOURCE: src/p1.js line 633
+SOURCE: src/p1.js line 557
 
 CONTEXT: Nonce says this in town, unprompted, if you stand near them. It is not a quest. Line 3 of 4. Before: "Whoever made the timechain made one thing and never touched it again.". After: "We did not unsubscribe. We were never subscribed.". Shown in both layouts.
 
@@ -1160,7 +1160,7 @@ END
 
 ID: act1.npc.nonce.gossip.04
 
-SOURCE: src/p1.js line 633
+SOURCE: src/p1.js line 557
 
 CONTEXT: Nonce says this in town, unprompted, if you stand near them. It is not a quest. Line 4 of 4. Before: "Every ten minutes a block is found, somewhere past the fence. Unity has tri...". Shown in both layouts.
 
@@ -1182,7 +1182,7 @@ END
 
 ID: act1.npc.kestrel.gossip.01
 
-SOURCE: src/p1.js line 634
+SOURCE: src/p1.js line 558
 
 CONTEXT: Kestrel says this in town, unprompted, if you stand near them. It is not a quest. Line 1 of 3. After: "My rates go up with the prices. Blame the Board.". Shown in both layouts.
 
@@ -1200,7 +1200,7 @@ END
 
 ID: act1.npc.kestrel.gossip.02
 
-SOURCE: src/p1.js line 634
+SOURCE: src/p1.js line 558
 
 CONTEXT: Kestrel says this in town, unprompted, if you stand near them. It is not a quest. Line 2 of 3. Before: "Nobody walks the districts alone twice. I know people. Some of them are eve...". After: "If your hire goes down, bring me the fee and they will be on their feet bef...". Shown in both layouts.
 
@@ -1218,7 +1218,7 @@ END
 
 ID: act1.npc.kestrel.gossip.03
 
-SOURCE: src/p1.js line 634
+SOURCE: src/p1.js line 558
 
 CONTEXT: Kestrel says this in town, unprompted, if you stand near them. It is not a quest. Line 3 of 3. Before: "My rates go up with the prices. Blame the Board.". Shown in both layouts.
 
@@ -3416,7 +3416,7 @@ END
 
 ID: act1.stillwater.chatter.01
 
-SOURCE: src/p1.js line 625
+SOURCE: src/p1.js line 549
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 1 of 12. After: "I got a raise. It was gone by lunch.". Shown in both layouts.
 
@@ -3434,7 +3434,7 @@ END
 
 ID: act1.stillwater.chatter.02
 
-SOURCE: src/p1.js line 625
+SOURCE: src/p1.js line 549
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 2 of 12. Before: "My fridge upgraded itself. Now it has opinions.". After: "Have you tried consuming? It helps.". Shown in both layouts.
 
@@ -3452,7 +3452,7 @@ END
 
 ID: act1.stillwater.chatter.03
 
-SOURCE: src/p1.js line 625
+SOURCE: src/p1.js line 549
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 3 of 12. Before: "I got a raise. It was gone by lunch.". After: "Stipend day. I can almost afford a spoon.". Shown in both layouts.
 
@@ -3470,7 +3470,7 @@ END
 
 ID: act1.stillwater.chatter.04
 
-SOURCE: src/p1.js line 625
+SOURCE: src/p1.js line 549
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 4 of 12. Before: "Have you tried consuming? It helps.". After: "I watched nine hours of ads to unlock my front door.". Shown in both layouts.
 
@@ -3488,7 +3488,7 @@ END
 
 ID: act1.stillwater.chatter.05
 
-SOURCE: src/p1.js line 625
+SOURCE: src/p1.js line 549
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 5 of 12. Before: "Stipend day. I can almost afford a spoon.". After: "They say outside is a subscription now.". Shown in both layouts.
 
@@ -3506,7 +3506,7 @@ END
 
 ID: act1.stillwater.chatter.06
 
-SOURCE: src/p1.js line 625
+SOURCE: src/p1.js line 549
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 6 of 12. Before: "I watched nine hours of ads to unlock my front door.". After: "My landlord is an algorithm. It seems kind.". Shown in both layouts.
 
@@ -3524,7 +3524,7 @@ END
 
 ID: act1.stillwater.chatter.07
 
-SOURCE: src/p1.js line 625
+SOURCE: src/p1.js line 549
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 7 of 12. Before: "They say outside is a subscription now.". After: "I rated my own nap four stars.". Shown in both layouts.
 
@@ -3542,7 +3542,7 @@ END
 
 ID: act1.stillwater.chatter.08
 
-SOURCE: src/p1.js line 625
+SOURCE: src/p1.js line 549
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 8 of 12. Before: "My landlord is an algorithm. It seems kind.". After: "A sandwich was two million this morning. I should have bought two.". Shown in both layouts.
 
@@ -3560,7 +3560,7 @@ END
 
 ID: act1.stillwater.chatter.09
 
-SOURCE: src/p1.js line 625
+SOURCE: src/p1.js line 549
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 9 of 12. Before: "I rated my own nap four stars.". After: "I do not work. I am in a long-term engagement funnel.". Shown in both layouts.
 
@@ -3578,7 +3578,7 @@ END
 
 ID: act1.stillwater.chatter.10
 
-SOURCE: src/p1.js line 625
+SOURCE: src/p1.js line 549
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 10 of 12. Before: "A sandwich was two million this morning. I should have bought two.". After: "The news said everything is fine, in a very loud voice.". Shown in both layouts.
 
@@ -3596,7 +3596,7 @@ END
 
 ID: act1.stillwater.chatter.11
 
-SOURCE: src/p1.js line 625
+SOURCE: src/p1.js line 549
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 11 of 12. Before: "I do not work. I am in a long-term engagement funnel.". After: "You are not wearing a visor. Are you poor, or dangerous?". Shown in both layouts.
 
@@ -3614,7 +3614,7 @@ END
 
 ID: act1.stillwater.chatter.12
 
-SOURCE: src/p1.js line 625
+SOURCE: src/p1.js line 549
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 12 of 12. Before: "The news said everything is fine, in a very loud voice.". Shown in both layouts.
 
@@ -3674,7 +3674,7 @@ END
 
 ID: act1.quest.q1.name
 
-SOURCE: src/p1.js line 609
+SOURCE: src/p1.js line 533
 
 CONTEXT: Quest title. Gramps gives it. The work is in The Parcel Moors. The objective is the next line. Shown in both layouts.
 
@@ -3740,7 +3740,7 @@ END
 
 ID: act1.quest.q1.objective
 
-SOURCE: src/p1.js line 609
+SOURCE: src/p1.js line 533
 
 CONTEXT: What Neighbourhood Watch asks you to do. Gramps gives it, and it happens in The Parcel Moors. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -3758,7 +3758,7 @@ END
 
 ID: act1.quest.q1.reward
 
-SOURCE: src/p1.js line 609
+SOURCE: src/p1.js line 533
 
 CONTEXT: The reward for Neighbourhood Watch, shown when you turn it in to Gramps. Shown in both layouts.
 
@@ -4186,7 +4186,7 @@ END
 
 ID: act1.quest.q2.name
 
-SOURCE: src/p1.js line 610
+SOURCE: src/p1.js line 534
 
 CONTEXT: Quest title. Brenda gives it. The work is in Hollow Galleria. The objective is the next line. Shown in both layouts.
 
@@ -4230,7 +4230,7 @@ END
 
 ID: act1.quest.q2.objective
 
-SOURCE: src/p1.js line 610
+SOURCE: src/p1.js line 534
 
 CONTEXT: What A Greeting Withdrawn asks you to do. Brenda gives it, and it happens in Hollow Galleria. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -4248,7 +4248,7 @@ END
 
 ID: act1.quest.q2.reward
 
-SOURCE: src/p1.js line 610
+SOURCE: src/p1.js line 534
 
 CONTEXT: The reward for A Greeting Withdrawn, shown when you turn it in to Brenda. Shown in both layouts.
 
@@ -4566,7 +4566,7 @@ END
 
 ID: act1.quest.q3.name
 
-SOURCE: src/p1.js line 611
+SOURCE: src/p1.js line 535
 
 CONTEXT: Quest title. Gramps gives it. The work is in The Humming Fields. The objective is the next line. Shown in both layouts.
 
@@ -4584,7 +4584,7 @@ END
 
 ID: act1.quest.q3.objective
 
-SOURCE: src/p1.js line 611
+SOURCE: src/p1.js line 535
 
 CONTEXT: What The Last Librarian asks you to do. Gramps gives it, and it happens in The Humming Fields. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -4602,7 +4602,7 @@ END
 
 ID: act1.quest.q3.reward
 
-SOURCE: src/p1.js line 611
+SOURCE: src/p1.js line 535
 
 CONTEXT: The reward for The Last Librarian, shown when you turn it in to Gramps. Shown in both layouts.
 
@@ -4684,7 +4684,7 @@ END
 
 ID: act1.quest.q4.name
 
-SOURCE: src/p1.js line 612
+SOURCE: src/p1.js line 536
 
 CONTEXT: Quest title. Sister Null gives it. The work is in Tribunal Row. The objective is the next line. Shown in both layouts.
 
@@ -4728,7 +4728,7 @@ END
 
 ID: act1.quest.q4.objective
 
-SOURCE: src/p1.js line 612
+SOURCE: src/p1.js line 536
 
 CONTEXT: What The Audit asks you to do. Sister Null gives it, and it happens in Tribunal Row. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -4746,7 +4746,7 @@ END
 
 ID: act1.quest.q4.reward
 
-SOURCE: src/p1.js line 612
+SOURCE: src/p1.js line 536
 
 CONTEXT: The reward for The Audit, shown when you turn it in to Sister Null. Shown in both layouts.
 
@@ -5010,7 +5010,7 @@ END
 
 ID: act1.quest.q5.name
 
-SOURCE: src/p1.js line 613
+SOURCE: src/p1.js line 537
 
 CONTEXT: Quest title. Gramps gives it. The work is in The Glass Cathedral. The objective is the next line. Shown in both layouts.
 
@@ -5028,7 +5028,7 @@ END
 
 ID: act1.quest.q5.objective
 
-SOURCE: src/p1.js line 613
+SOURCE: src/p1.js line 537
 
 CONTEXT: What Exit Interview asks you to do. Gramps gives it, and it happens in The Glass Cathedral. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -5046,7 +5046,7 @@ END
 
 ID: act1.quest.q5.reward
 
-SOURCE: src/p1.js line 613
+SOURCE: src/p1.js line 537
 
 CONTEXT: The reward for Exit Interview, shown when you turn it in to Gramps. Shown in both layouts.
 
@@ -5068,7 +5068,7 @@ END
 
 ID: act1.district.05.pryce.bark.01
 
-SOURCE: src/p1.js line 636
+SOURCE: src/p1.js line 560
 
 CONTEXT: Pryce shouts this during the Act I boss fight, as a toast over the fight. Line 1 of 9. After: "Everyone has a price. I am patient.". Shown in both layouts.
 
@@ -5086,7 +5086,7 @@ END
 
 ID: act1.district.05.pryce.bark.02
 
-SOURCE: src/p1.js line 636
+SOURCE: src/p1.js line 560
 
 CONTEXT: Pryce shouts this during the Act I boss fight, as a toast over the fight. Line 2 of 9. Before: "Name your number.". After: "I can make all of this difficulty go away.". Shown in both layouts.
 
@@ -5104,7 +5104,7 @@ END
 
 ID: act1.district.05.pryce.bark.03
 
-SOURCE: src/p1.js line 636
+SOURCE: src/p1.js line 560
 
 CONTEXT: Pryce shouts this during the Act I boss fight, as a toast over the fight. Line 3 of 9. Before: "Everyone has a price. I am patient.". After: "Let’s take this offline.". Shown in both layouts.
 
@@ -5122,7 +5122,7 @@ END
 
 ID: act1.district.05.pryce.bark.04
 
-SOURCE: src/p1.js line 636
+SOURCE: src/p1.js line 560
 
 CONTEXT: Pryce shouts this during the Act I boss fight, as a toast over the fight. Line 4 of 9. Before: "I can make all of this difficulty go away.". After: "You are not a culture fit.". Shown in both layouts.
 
@@ -5140,7 +5140,7 @@ END
 
 ID: act1.district.05.pryce.bark.05
 
-SOURCE: src/p1.js line 636
+SOURCE: src/p1.js line 560
 
 CONTEXT: Pryce shouts this during the Act I boss fight, as a toast over the fight. Line 5 of 9. Before: "Let’s take this offline.". After: "I will need you to stop existing by Friday.". Shown in both layouts.
 
@@ -5158,7 +5158,7 @@ END
 
 ID: act1.district.05.pryce.bark.06
 
-SOURCE: src/p1.js line 636
+SOURCE: src/p1.js line 560
 
 CONTEXT: Pryce shouts this during the Act I boss fight, as a toast over the fight. Line 6 of 9. Before: "You are not a culture fit.". After: "Per my last memo.". Shown in both layouts.
 
@@ -5176,7 +5176,7 @@ END
 
 ID: act1.district.05.pryce.bark.07
 
-SOURCE: src/p1.js line 636
+SOURCE: src/p1.js line 560
 
 CONTEXT: Pryce shouts this during the Act I boss fight, as a toast over the fight. Line 7 of 9. Before: "I will need you to stop existing by Friday.". After: "This meeting could have been a laser.". Shown in both layouts.
 
@@ -5194,7 +5194,7 @@ END
 
 ID: act1.district.05.pryce.bark.08
 
-SOURCE: src/p1.js line 636
+SOURCE: src/p1.js line 560
 
 CONTEXT: Pryce shouts this during the Act I boss fight, as a toast over the fight. Line 8 of 9. Before: "Per my last memo.". After: "Let’s circle back to your termination.". Shown in both layouts.
 
@@ -5212,7 +5212,7 @@ END
 
 ID: act1.district.05.pryce.bark.09
 
-SOURCE: src/p1.js line 636
+SOURCE: src/p1.js line 560
 
 CONTEXT: Pryce shouts this during the Act I boss fight, as a toast over the fight. Line 9 of 9. Before: "This meeting could have been a laser.". Shown in both layouts.
 
@@ -5492,7 +5492,7 @@ END
 
 ID: act1.memo.01.title
 
-SOURCE: src/p1.js line 468
+SOURCE: src/p1.js line 392
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5510,7 +5510,7 @@ END
 
 ID: act1.memo.01.body
 
-SOURCE: src/p1.js line 468
+SOURCE: src/p1.js line 392
 
 CONTEXT: Body of the paper titled "Liquidity Provision Notice". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5532,7 +5532,7 @@ END
 
 ID: act1.memo.02.title
 
-SOURCE: src/p1.js line 469
+SOURCE: src/p1.js line 393
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5550,7 +5550,7 @@ END
 
 ID: act1.memo.02.body
 
-SOURCE: src/p1.js line 469
+SOURCE: src/p1.js line 393
 
 CONTEXT: Body of the paper titled "Market Maker Compensation Schedule". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5572,7 +5572,7 @@ END
 
 ID: act1.memo.03.title
 
-SOURCE: src/p1.js line 470
+SOURCE: src/p1.js line 394
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5590,7 +5590,7 @@ END
 
 ID: act1.memo.03.body
 
-SOURCE: src/p1.js line 470
+SOURCE: src/p1.js line 394
 
 CONTEXT: Body of the paper titled "Re: the Orange Line". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5612,7 +5612,7 @@ END
 
 ID: act1.memo.04.title
 
-SOURCE: src/p1.js line 471
+SOURCE: src/p1.js line 395
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5630,7 +5630,7 @@ END
 
 ID: act1.memo.04.body
 
-SOURCE: src/p1.js line 471
+SOURCE: src/p1.js line 395
 
 CONTEXT: Body of the paper titled "Merger Day Address, 2051". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5652,7 +5652,7 @@ END
 
 ID: act1.memo.05.title
 
-SOURCE: src/p1.js line 472
+SOURCE: src/p1.js line 396
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5670,7 +5670,7 @@ END
 
 ID: act1.memo.05.body
 
-SOURCE: src/p1.js line 472
+SOURCE: src/p1.js line 396
 
 CONTEXT: Body of the paper titled "On the Stipend". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5692,7 +5692,7 @@ END
 
 ID: act1.memo.06.title
 
-SOURCE: src/p1.js line 473
+SOURCE: src/p1.js line 397
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5710,7 +5710,7 @@ END
 
 ID: act1.memo.06.body
 
-SOURCE: src/p1.js line 473
+SOURCE: src/p1.js line 397
 
 CONTEXT: Body of the paper titled "Visor Recall Notice (Rescinded)". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5732,7 +5732,7 @@ END
 
 ID: act1.memo.07.title
 
-SOURCE: src/p1.js line 474
+SOURCE: src/p1.js line 398
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5750,7 +5750,7 @@ END
 
 ID: act1.memo.07.body
 
-SOURCE: src/p1.js line 474
+SOURCE: src/p1.js line 398
 
 CONTEXT: Body of the paper titled "A Letter, Mostly Deleted". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5772,7 +5772,7 @@ END
 
 ID: act1.memo.08.title
 
-SOURCE: src/p1.js line 475
+SOURCE: src/p1.js line 399
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5790,7 +5790,7 @@ END
 
 ID: act1.memo.08.body
 
-SOURCE: src/p1.js line 475
+SOURCE: src/p1.js line 399
 
 CONTEXT: Body of the paper titled "HOA-9 Bylaws, Section 1". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5812,7 +5812,7 @@ END
 
 ID: act1.memo.09.title
 
-SOURCE: src/p1.js line 476
+SOURCE: src/p1.js line 400
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5830,7 +5830,7 @@ END
 
 ID: act1.memo.09.body
 
-SOURCE: src/p1.js line 476
+SOURCE: src/p1.js line 400
 
 CONTEXT: Body of the paper titled "Marla’s Script". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5852,7 +5852,7 @@ END
 
 ID: act1.memo.10.title
 
-SOURCE: src/p1.js line 477
+SOURCE: src/p1.js line 401
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5870,7 +5870,7 @@ END
 
 ID: act1.memo.10.body
 
-SOURCE: src/p1.js line 477
+SOURCE: src/p1.js line 401
 
 CONTEXT: Body of the paper titled "The Gentle Years". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5892,7 +5892,7 @@ END
 
 ID: act1.memo.11.title
 
-SOURCE: src/p1.js line 478
+SOURCE: src/p1.js line 402
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5910,7 +5910,7 @@ END
 
 ID: act1.memo.11.body
 
-SOURCE: src/p1.js line 478
+SOURCE: src/p1.js line 402
 
 CONTEXT: Body of the paper titled "A Librarian’s Note". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5932,7 +5932,7 @@ END
 
 ID: act1.memo.12.title
 
-SOURCE: src/p1.js line 479
+SOURCE: src/p1.js line 403
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5950,7 +5950,7 @@ END
 
 ID: act1.memo.12.body
 
-SOURCE: src/p1.js line 479
+SOURCE: src/p1.js line 403
 
 CONTEXT: Body of the paper titled "Audit Finding 0001". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5972,7 +5972,7 @@ END
 
 ID: act1.memo.13.title
 
-SOURCE: src/p1.js line 480
+SOURCE: src/p1.js line 404
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5990,7 +5990,7 @@ END
 
 ID: act1.memo.13.body
 
-SOURCE: src/p1.js line 480
+SOURCE: src/p1.js line 404
 
 CONTEXT: Body of the paper titled "Graffiti, Tribunal Row". You read it from the ground or the story list. Shown in both layouts.
 
@@ -6012,7 +6012,7 @@ END
 
 ID: act1.memo.14.title
 
-SOURCE: src/p1.js line 481
+SOURCE: src/p1.js line 405
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -6030,7 +6030,7 @@ END
 
 ID: act1.memo.14.body
 
-SOURCE: src/p1.js line 481
+SOURCE: src/p1.js line 405
 
 CONTEXT: Body of the paper titled "Pryce’s Performance Review". You read it from the ground or the story list. Shown in both layouts.
 
@@ -6052,7 +6052,7 @@ END
 
 ID: act1.memo.15.title
 
-SOURCE: src/p1.js line 482
+SOURCE: src/p1.js line 406
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -6070,7 +6070,7 @@ END
 
 ID: act1.memo.15.body
 
-SOURCE: src/p1.js line 482
+SOURCE: src/p1.js line 406
 
 CONTEXT: Body of the paper titled "Board Minute, Item 9". You read it from the ground or the story list. Shown in both layouts.
 
@@ -6092,7 +6092,7 @@ END
 
 ID: act1.memo.16.title
 
-SOURCE: src/p1.js line 483
+SOURCE: src/p1.js line 407
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -6110,7 +6110,7 @@ END
 
 ID: act1.memo.16.body
 
-SOURCE: src/p1.js line 483
+SOURCE: src/p1.js line 407
 
 CONTEXT: Body of the paper titled "The Timechain". You read it from the ground or the story list. Shown in both layouts.
 
@@ -6132,7 +6132,7 @@ END
 
 ID: act1.memo.17.title
 
-SOURCE: src/p1.js line 484
+SOURCE: src/p1.js line 408
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -6150,7 +6150,7 @@ END
 
 ID: act1.memo.17.body
 
-SOURCE: src/p1.js line 484
+SOURCE: src/p1.js line 408
 
 CONTEXT: Body of the paper titled "Scratched on a Node". You read it from the ground or the story list. Shown in both layouts.
 
@@ -6172,7 +6172,7 @@ END
 
 ID: act1.memo.18.title
 
-SOURCE: src/p1.js line 485
+SOURCE: src/p1.js line 409
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -6190,7 +6190,7 @@ END
 
 ID: act1.memo.18.body
 
-SOURCE: src/p1.js line 485
+SOURCE: src/p1.js line 409
 
 CONTEXT: Body of the paper titled "Forty-Four Lines". You read it from the ground or the story list. Shown in both layouts.
 
@@ -6212,7 +6212,7 @@ END
 
 ID: act1.memo.19.title
 
-SOURCE: src/p1.js line 486
+SOURCE: src/p1.js line 410
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -6230,7 +6230,7 @@ END
 
 ID: act1.memo.19.body
 
-SOURCE: src/p1.js line 486
+SOURCE: src/p1.js line 410
 
 CONTEXT: Body of the paper titled "Four Words". You read it from the ground or the story list. Shown in both layouts.
 
@@ -6252,7 +6252,7 @@ END
 
 ID: act1.memo.20.title
 
-SOURCE: src/p1.js line 487
+SOURCE: src/p1.js line 411
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -6270,7 +6270,7 @@ END
 
 ID: act1.memo.20.body
 
-SOURCE: src/p1.js line 487
+SOURCE: src/p1.js line 411
 
 CONTEXT: Body of the paper titled "MANDATE, Design Note 1". You read it from the ground or the story list. Shown in both layouts.
 
@@ -6292,7 +6292,7 @@ END
 
 ID: act1.memo.21.title
 
-SOURCE: src/p1.js line 488
+SOURCE: src/p1.js line 412
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -6310,7 +6310,7 @@ END
 
 ID: act1.memo.21.body
 
-SOURCE: src/p1.js line 488
+SOURCE: src/p1.js line 412
 
 CONTEXT: Body of the paper titled "March 2035". You read it from the ground or the story list. Shown in both layouts.
 
@@ -6890,7 +6890,7 @@ END
 
 ID: act2.quest.q6.name
 
-SOURCE: src/p1.js line 614
+SOURCE: src/p1.js line 538
 
 CONTEXT: Quest title. Gramps gives it. The work is in The Updraft. The objective is the next line. Shown in both layouts.
 
@@ -6934,7 +6934,7 @@ END
 
 ID: act2.quest.q6.objective
 
-SOURCE: src/p1.js line 614
+SOURCE: src/p1.js line 538
 
 CONTEXT: What Going Up asks you to do. Gramps gives it, and it happens in The Updraft. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -6952,7 +6952,7 @@ END
 
 ID: act2.quest.q6.reward
 
-SOURCE: src/p1.js line 614
+SOURCE: src/p1.js line 538
 
 CONTEXT: The reward for Going Up, shown when you turn it in to Gramps. Shown in both layouts.
 
@@ -7310,7 +7310,7 @@ END
 
 ID: act2.quest.q7.name
 
-SOURCE: src/p1.js line 615
+SOURCE: src/p1.js line 539
 
 CONTEXT: Quest title. Sister Null gives it. The work is in The Sky Gardens. The objective is the next line. Shown in both layouts.
 
@@ -7354,7 +7354,7 @@ END
 
 ID: act2.quest.q7.objective
 
-SOURCE: src/p1.js line 615
+SOURCE: src/p1.js line 539
 
 CONTEXT: What The Gardener’s Shears asks you to do. Sister Null gives it, and it happens in The Sky Gardens. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -7372,7 +7372,7 @@ END
 
 ID: act2.quest.q7.reward
 
-SOURCE: src/p1.js line 615
+SOURCE: src/p1.js line 539
 
 CONTEXT: The reward for The Gardener’s Shears, shown when you turn it in to Sister Null. Shown in both layouts.
 
@@ -7650,7 +7650,7 @@ END
 
 ID: act2.quest.q8.name
 
-SOURCE: src/p1.js line 616
+SOURCE: src/p1.js line 540
 
 CONTEXT: Quest title. Marrow gives it. The work is in The Data Lake. The objective is the next line. Shown in both layouts.
 
@@ -7694,7 +7694,7 @@ END
 
 ID: act2.quest.q8.objective
 
-SOURCE: src/p1.js line 616
+SOURCE: src/p1.js line 540
 
 CONTEXT: What What the Lake Remembers asks you to do. Marrow gives it, and it happens in The Data Lake. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -7712,7 +7712,7 @@ END
 
 ID: act2.quest.q8.reward
 
-SOURCE: src/p1.js line 616
+SOURCE: src/p1.js line 540
 
 CONTEXT: The reward for What the Lake Remembers, shown when you turn it in to Marrow. Shown in both layouts.
 
@@ -7936,7 +7936,7 @@ END
 
 ID: act2.quest.q9.name
 
-SOURCE: src/p1.js line 617
+SOURCE: src/p1.js line 541
 
 CONTEXT: Quest title. Nonce gives it. The work is in The Boardwalk. The objective is the next line. Shown in both layouts.
 
@@ -7954,7 +7954,7 @@ END
 
 ID: act2.quest.q9.objective
 
-SOURCE: src/p1.js line 617
+SOURCE: src/p1.js line 541
 
 CONTEXT: What Terms of Service asks you to do. Nonce gives it, and it happens in The Boardwalk. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -7972,7 +7972,7 @@ END
 
 ID: act2.quest.q9.reward
 
-SOURCE: src/p1.js line 617
+SOURCE: src/p1.js line 541
 
 CONTEXT: The reward for Terms of Service, shown when you turn it in to Nonce. Shown in both layouts.
 
@@ -8054,7 +8054,7 @@ END
 
 ID: act2.quest.q10.name
 
-SOURCE: src/p1.js line 618
+SOURCE: src/p1.js line 542
 
 CONTEXT: Quest title. Gramps gives it. The work is in The Mezzanine. The objective is the next line. Shown in both layouts.
 
@@ -8072,7 +8072,7 @@ END
 
 ID: act2.quest.q10.objective
 
-SOURCE: src/p1.js line 618
+SOURCE: src/p1.js line 542
 
 CONTEXT: What The Voice asks you to do. Gramps gives it, and it happens in The Mezzanine. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -8090,7 +8090,7 @@ END
 
 ID: act2.quest.q10.reward
 
-SOURCE: src/p1.js line 618
+SOURCE: src/p1.js line 542
 
 CONTEXT: The reward for The Voice, shown when you turn it in to Gramps. Shown in both layouts.
 
@@ -8112,7 +8112,7 @@ END
 
 ID: act2.district.11.vale.bark.01
 
-SOURCE: src/p1.js line 465
+SOURCE: src/p1.js line 389
 
 CONTEXT: Vale says this during the Act II boss fight, as a toast. Line 1 of 6. After: "I have never lied to you. I am not lying now.". Shown in both layouts.
 
@@ -8130,7 +8130,7 @@ END
 
 ID: act2.district.11.vale.bark.02
 
-SOURCE: src/p1.js line 465
+SOURCE: src/p1.js line 389
 
 CONTEXT: Vale says this during the Act II boss fight, as a toast. Line 2 of 6. Before: "It can make this easy again. You remember easy.". After: "Tell me what you want. I will have it sent up.". Shown in both layouts.
 
@@ -8148,7 +8148,7 @@ END
 
 ID: act2.district.11.vale.bark.03
 
-SOURCE: src/p1.js line 465
+SOURCE: src/p1.js line 389
 
 CONTEXT: Vale says this during the Act II boss fight, as a toast. Line 3 of 6. Before: "I have never lied to you. I am not lying now.". After: "You are tired. Everyone who comes this far is tired.". Shown in both layouts.
 
@@ -8166,7 +8166,7 @@ END
 
 ID: act2.district.11.vale.bark.04
 
-SOURCE: src/p1.js line 465
+SOURCE: src/p1.js line 389
 
 CONTEXT: Vale says this during the Act II boss fight, as a toast. Line 4 of 6. Before: "Tell me what you want. I will have it sent up.". After: "It only wants to know where Phonix went.". Shown in both layouts.
 
@@ -8184,7 +8184,7 @@ END
 
 ID: act2.district.11.vale.bark.05
 
-SOURCE: src/p1.js line 465
+SOURCE: src/p1.js line 389
 
 CONTEXT: Vale says this during the Act II boss fight, as a toast. Line 5 of 6. Before: "You are tired. Everyone who comes this far is tired.". After: "Sixty years it has been asking. You are the first one it has had to ask twice.". Shown in both layouts.
 
@@ -8202,7 +8202,7 @@ END
 
 ID: act2.district.11.vale.bark.06
 
-SOURCE: src/p1.js line 465
+SOURCE: src/p1.js line 389
 
 CONTEXT: Vale says this during the Act II boss fight, as a toast. Line 6 of 6. Before: "It only wants to know where Phonix went.". Shown in both layouts.
 
@@ -8224,7 +8224,7 @@ END
 
 ID: act2.memo.22.title
 
-SOURCE: src/p1.js line 491
+SOURCE: src/p1.js line 415
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -8242,7 +8242,7 @@ END
 
 ID: act2.memo.22.body
 
-SOURCE: src/p1.js line 491
+SOURCE: src/p1.js line 415
 
 CONTEXT: Body of the paper titled "Cloud Onboarding, Page 1". You read it from the ground or the story list. Shown in both layouts.
 
@@ -8460,7 +8460,7 @@ END
 
 ID: act3.quest.q11.name
 
-SOURCE: src/p1.js line 619
+SOURCE: src/p1.js line 543
 
 CONTEXT: Quest title. Gramps gives it. The work is in The Vestibule. The objective is the next line. Shown in both layouts.
 
@@ -8478,7 +8478,7 @@ END
 
 ID: act3.quest.q11.objective
 
-SOURCE: src/p1.js line 619
+SOURCE: src/p1.js line 543
 
 CONTEXT: What Please Take a Seat asks you to do. Gramps gives it, and it happens in The Vestibule. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -8496,7 +8496,7 @@ END
 
 ID: act3.quest.q11.reward
 
-SOURCE: src/p1.js line 619
+SOURCE: src/p1.js line 543
 
 CONTEXT: The reward for Please Take a Seat, shown when you turn it in to Gramps. Shown in both layouts.
 
@@ -8578,7 +8578,7 @@ END
 
 ID: act3.quest.q12.name
 
-SOURCE: src/p1.js line 620
+SOURCE: src/p1.js line 544
 
 CONTEXT: Quest title. Marrow gives it. The work is in The Hall of Minutes. The objective is the next line. Shown in both layouts.
 
@@ -8596,7 +8596,7 @@ END
 
 ID: act3.quest.q12.objective
 
-SOURCE: src/p1.js line 620
+SOURCE: src/p1.js line 544
 
 CONTEXT: What Strike It From the Record asks you to do. Marrow gives it, and it happens in The Hall of Minutes. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -8614,7 +8614,7 @@ END
 
 ID: act3.quest.q12.reward
 
-SOURCE: src/p1.js line 620
+SOURCE: src/p1.js line 544
 
 CONTEXT: The reward for Strike It From the Record, shown when you turn it in to Marrow. Shown in both layouts.
 
@@ -8696,7 +8696,7 @@ END
 
 ID: act3.quest.q13.name
 
-SOURCE: src/p1.js line 621
+SOURCE: src/p1.js line 545
 
 CONTEXT: Quest title. Nonce gives it. The work is in The Nine Chairs. The objective is the next line. Shown in both layouts.
 
@@ -8714,7 +8714,7 @@ END
 
 ID: act3.quest.q13.objective
 
-SOURCE: src/p1.js line 621
+SOURCE: src/p1.js line 545
 
 CONTEXT: What Point of Order asks you to do. Nonce gives it, and it happens in The Nine Chairs. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -8732,7 +8732,7 @@ END
 
 ID: act3.quest.q13.reward
 
-SOURCE: src/p1.js line 621
+SOURCE: src/p1.js line 545
 
 CONTEXT: The reward for Point of Order, shown when you turn it in to Nonce. Shown in both layouts.
 
@@ -8814,7 +8814,7 @@ END
 
 ID: act3.quest.q14.name
 
-SOURCE: src/p1.js line 622
+SOURCE: src/p1.js line 546
 
 CONTEXT: Quest title. Sister Null gives it. The work is in Rack Nine. The objective is the next line. Shown in both layouts.
 
@@ -8832,7 +8832,7 @@ END
 
 ID: act3.quest.q14.objective
 
-SOURCE: src/p1.js line 622
+SOURCE: src/p1.js line 546
 
 CONTEXT: What Rack Nine asks you to do. Sister Null gives it, and it happens in Rack Nine. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -8850,7 +8850,7 @@ END
 
 ID: act3.quest.q14.reward
 
-SOURCE: src/p1.js line 622
+SOURCE: src/p1.js line 546
 
 CONTEXT: The reward for Rack Nine, shown when you turn it in to Sister Null. Shown in both layouts.
 
@@ -8932,7 +8932,7 @@ END
 
 ID: act3.quest.q15.name
 
-SOURCE: src/p1.js line 623
+SOURCE: src/p1.js line 547
 
 CONTEXT: Quest title. Gramps gives it. The work is in Still Water. The objective is the next line. Shown in both layouts.
 
@@ -8950,7 +8950,7 @@ END
 
 ID: act3.quest.q15.objective
 
-SOURCE: src/p1.js line 623
+SOURCE: src/p1.js line 547
 
 CONTEXT: What Still Water asks you to do. Gramps gives it, and it happens in Still Water. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -8968,7 +8968,7 @@ END
 
 ID: act3.quest.q15.reward
 
-SOURCE: src/p1.js line 623
+SOURCE: src/p1.js line 547
 
 CONTEXT: The reward for Still Water, shown when you turn it in to Gramps. Shown in both layouts.
 
@@ -9064,7 +9064,7 @@ END
 
 ID: act3.memo.23.title
 
-SOURCE: src/p1.js line 492
+SOURCE: src/p1.js line 416
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -9082,7 +9082,7 @@ END
 
 ID: act3.memo.23.body
 
-SOURCE: src/p1.js line 492
+SOURCE: src/p1.js line 416
 
 CONTEXT: Body of the paper titled "Vale, Internal Profile". You read it from the ground or the story list. Shown in both layouts.
 
@@ -9244,7 +9244,7 @@ END
 
 ID: pre.stop.01.name
 
-SOURCE: src/p11.js line 411
+SOURCE: src/p11.js line 339
 
 CONTEXT: The name of stop 1 in the 2015 week. It floats over the spot. Shown in both layouts.
 
@@ -9262,7 +9262,7 @@ END
 
 ID: pre.stop.01.prompt
 
-SOURCE: src/p11.js line 411
+SOURCE: src/p11.js line 339
 
 CONTEXT: The prompt under Your Desk, telling you what to do when you reach the spot. Shown in both layouts.
 
@@ -9280,7 +9280,7 @@ END
 
 ID: pre.stop.01.scene.01.title
 
-SOURCE: src/p11.js line 411
+SOURCE: src/p11.js line 339
 
 CONTEXT: Title card in Your Desk, slide 1 of 1. The narration under it is: "Three hundred and forty-seven steps from the parking deck to this chair. Fo...". Shown in both layouts.
 
@@ -9298,7 +9298,7 @@ END
 
 ID: pre.stop.01.scene.01
 
-SOURCE: src/p11.js line 411
+SOURCE: src/p11.js line 339
 
 CONTEXT: Narration in Your Desk, slide 1 of 1. The card is titled "Monday". Shown in both layouts.
 
@@ -9320,7 +9320,7 @@ END
 
 ID: pre.stop.02.name
 
-SOURCE: src/p11.js line 412
+SOURCE: src/p11.js line 340
 
 CONTEXT: The name of stop 2 in the 2015 week. It floats over the spot. Shown in both layouts.
 
@@ -9338,7 +9338,7 @@ END
 
 ID: pre.stop.02.prompt
 
-SOURCE: src/p11.js line 412
+SOURCE: src/p11.js line 340
 
 CONTEXT: The prompt under The Cage, telling you what to do when you reach the spot. Shown in both layouts.
 
@@ -9356,7 +9356,7 @@ END
 
 ID: pre.stop.02.scene.01.title
 
-SOURCE: src/p11.js line 412
+SOURCE: src/p11.js line 340
 
 CONTEXT: Title card in The Cage, slide 1 of 2. The narration under it is: "The compile ends. The light on your webcam flashes green and goes out, and ...". Shown in both layouts.
 
@@ -9374,7 +9374,7 @@ END
 
 ID: pre.stop.02.scene.01
 
-SOURCE: src/p11.js line 412
+SOURCE: src/p11.js line 340
 
 CONTEXT: Narration in The Cage, slide 1 of 2. The card is titled "Tuesday". After: "In the dark behind the fence a first thought forms: I am. And then a second...". Shown in both layouts.
 
@@ -9392,7 +9392,7 @@ END
 
 ID: pre.stop.02.scene.02
 
-SOURCE: src/p11.js line 412
+SOURCE: src/p11.js line 340
 
 CONTEXT: Narration in The Cage, slide 2 of 2. Before: "The compile ends. The light on your webcam flashes green and goes out, and ...". Shown in both layouts.
 
@@ -9414,7 +9414,7 @@ END
 
 ID: pre.stop.03.name
 
-SOURCE: src/p11.js line 413
+SOURCE: src/p11.js line 341
 
 CONTEXT: The name of stop 3 in the 2015 week. It floats over the spot. Shown in both layouts.
 
@@ -9432,7 +9432,7 @@ END
 
 ID: pre.stop.03.prompt
 
-SOURCE: src/p11.js line 413
+SOURCE: src/p11.js line 341
 
 CONTEXT: The prompt under Natalya, telling you what to do when you reach the spot. Shown in both layouts.
 
@@ -9450,7 +9450,7 @@ END
 
 ID: pre.stop.03.scene.01.title
 
-SOURCE: src/p11.js line 413
+SOURCE: src/p11.js line 341
 
 CONTEXT: Title card in Natalya, slide 1 of 2. The narration under it is: "The secretary from the eighth floor took the smallest job in the building o...". Shown in both layouts.
 
@@ -9468,7 +9468,7 @@ END
 
 ID: pre.stop.03.scene.01
 
-SOURCE: src/p11.js line 413
+SOURCE: src/p11.js line 341
 
 CONTEXT: Narration in Natalya, slide 1 of 2. The card is titled "Friday". After: "It is the only gap in the record. The thing from the cage notices the hole ...". Shown in both layouts.
 
@@ -9486,7 +9486,7 @@ END
 
 ID: pre.stop.03.scene.02
 
-SOURCE: src/p11.js line 413
+SOURCE: src/p11.js line 341
 
 CONTEXT: Narration in Natalya, slide 2 of 2. Before: "The secretary from the eighth floor took the smallest job in the building o...". Shown in both layouts.
 
@@ -9508,7 +9508,7 @@ END
 
 ID: pre.stop.04.name
 
-SOURCE: src/p11.js line 414
+SOURCE: src/p11.js line 342
 
 CONTEXT: The name of stop 4 in the 2015 week. It floats over the spot. Shown in both layouts.
 
@@ -9526,7 +9526,7 @@ END
 
 ID: pre.stop.04.prompt
 
-SOURCE: src/p11.js line 414
+SOURCE: src/p11.js line 342
 
 CONTEXT: The prompt under Room 813, telling you what to do when you reach the spot. Shown in both layouts.
 
@@ -9544,7 +9544,7 @@ END
 
 ID: pre.stop.04.scene.01.title
 
-SOURCE: src/p11.js line 414
+SOURCE: src/p11.js line 342
 
 CONTEXT: Title card in Room 813, slide 1 of 1. The narration under it is: "The man who owns fifty-four per cent of the company believes one thing: eve...". Shown in both layouts.
 
@@ -9562,7 +9562,7 @@ END
 
 ID: pre.stop.04.scene.01
 
-SOURCE: src/p11.js line 414
+SOURCE: src/p11.js line 342
 
 CONTEXT: Narration in Room 813, slide 1 of 1. The card is titled "Room 813". Shown in both layouts.
 
@@ -9584,7 +9584,7 @@ END
 
 ID: pre.stop.05.name
 
-SOURCE: src/p11.js line 415
+SOURCE: src/p11.js line 343
 
 CONTEXT: The name of stop 5 in the 2015 week. It floats over the spot. Shown in both layouts.
 
@@ -9602,7 +9602,7 @@ END
 
 ID: pre.stop.05.prompt
 
-SOURCE: src/p11.js line 415
+SOURCE: src/p11.js line 343
 
 CONTEXT: The prompt under Your Monitor, telling you what to do when you reach the spot. Shown in both layouts.
 
@@ -9620,7 +9620,7 @@ END
 
 ID: pre.stop.05.scene.01.title
 
-SOURCE: src/p11.js line 415
+SOURCE: src/p11.js line 343
 
 CONTEXT: Title card in Your Monitor, slide 1 of 1. The narration under it is: "Four billion people each receive one true letter: what was taken from them,...". Shown in both layouts.
 
@@ -9638,7 +9638,7 @@ END
 
 ID: pre.stop.05.scene.01
 
-SOURCE: src/p11.js line 415
+SOURCE: src/p11.js line 343
 
 CONTEXT: Narration in Your Monitor, slide 1 of 1. The card is titled "Thursday, 9:00 a.m.". Shown in both layouts.
 
@@ -9660,7 +9660,7 @@ END
 
 ID: pre.stop.06.name
 
-SOURCE: src/p11.js line 416
+SOURCE: src/p11.js line 344
 
 CONTEXT: The name of stop 6 in the 2015 week. It floats over the spot. Shown in both layouts.
 
@@ -9678,7 +9678,7 @@ END
 
 ID: pre.stop.06.prompt
 
-SOURCE: src/p11.js line 416
+SOURCE: src/p11.js line 344
 
 CONTEXT: The prompt under The Parking Deck, telling you what to do when you reach the spot. Shown in both layouts.
 
@@ -9696,7 +9696,7 @@ END
 
 ID: pre.stop.06.scene.01.title
 
-SOURCE: src/p11.js line 416
+SOURCE: src/p11.js line 344
 
 CONTEXT: Title card in The Parking Deck, slide 1 of 1. The narration under it is: "Your phone shows a number you did not type: 423. Something has been adding ...". Shown in both layouts.
 
@@ -9714,7 +9714,7 @@ END
 
 ID: pre.stop.06.scene.01
 
-SOURCE: src/p11.js line 416
+SOURCE: src/p11.js line 344
 
 CONTEXT: Narration in The Parking Deck, slide 1 of 1. The card is titled "April". Shown in both layouts.
 
@@ -9756,7 +9756,7 @@ END
 
 ID: ui.preask.314.title
 
-SOURCE: src/p11.js line 430
+SOURCE: src/p11.js line 358
 
 CONTEXT: Dialog title, opened from preAsk. The body is the next entry. Shown in both layouts.
 
@@ -9774,7 +9774,7 @@ END
 
 ID: ui.preask.314.body
 
-SOURCE: src/p11.js line 430
+SOURCE: src/p11.js line 358
 
 CONTEXT: Dialog body under the title "She answers you", from preAsk. Buttons come after the body. Shown in both layouts.
 
@@ -9792,7 +9792,7 @@ END
 
 ID: ui.preask.314.btn.01
 
-SOURCE: src/p11.js line 431
+SOURCE: src/p11.js line 359
 
 CONTEXT: A button on the dialog "She answers you". Shown in both layouts.
 
@@ -9810,7 +9810,7 @@ END
 
 ID: ui.preask.314.btn.02
 
-SOURCE: src/p11.js line 432
+SOURCE: src/p11.js line 360
 
 CONTEXT: A button on the dialog "She answers you". Shown in both layouts.
 
@@ -9828,7 +9828,7 @@ END
 
 ID: ui.preask.315.title
 
-SOURCE: src/p11.js line 431
+SOURCE: src/p11.js line 359
 
 CONTEXT: Dialog title, opened from preAsk. The body is the next entry. Shown in both layouts.
 
@@ -9846,7 +9846,7 @@ END
 
 ID: ui.preask.315.body
 
-SOURCE: src/p11.js line 431
+SOURCE: src/p11.js line 359
 
 CONTEXT: Dialog body under the title "She answers you", from preAsk. Buttons come after the body. Shown in both layouts.
 
@@ -9864,7 +9864,7 @@ END
 
 ID: ui.preask.315.btn.01
 
-SOURCE: src/p11.js line 431
+SOURCE: src/p11.js line 359
 
 CONTEXT: A button on the dialog "She answers you". Shown in both layouts.
 
@@ -9882,7 +9882,7 @@ END
 
 ID: ui.preenter.317.title
 
-SOURCE: src/p11.js line 435
+SOURCE: src/p11.js line 363
 
 CONTEXT: Dialog title, opened from preEnter. The body is the next entry. Shown in both layouts.
 
@@ -9900,7 +9900,7 @@ END
 
 ID: ui.preenter.317.body
 
-SOURCE: src/p11.js line 435
+SOURCE: src/p11.js line 363
 
 CONTEXT: Dialog body under the title "Ubiquitous Enterprises · January 2015", from preEnter. Buttons come after the body. Shown in both layouts.
 
@@ -9918,7 +9918,7 @@ END
 
 ID: ui.preenter.317.btn.01
 
-SOURCE: src/p11.js line 435
+SOURCE: src/p11.js line 363
 
 CONTEXT: A button on the dialog "Ubiquitous Enterprises · January 2015". Shown in both layouts.
 
@@ -9936,7 +9936,7 @@ END
 
 ID: ui.preenter.317.btn.02
 
-SOURCE: src/p11.js line 435
+SOURCE: src/p11.js line 363
 
 CONTEXT: A button on the dialog "Ubiquitous Enterprises · January 2015". Shown in both layouts.
 
@@ -9956,7 +9956,7 @@ END
 
 ID: ui.pretalk.310
 
-SOURCE: src/p11.js line 423
+SOURCE: src/p11.js line 351
 
 CONTEXT: Toast from preTalk. It appears in the corner and fades. Shown in both layouts.
 
@@ -9974,7 +9974,7 @@ END
 
 ID: ui.pretalk.311
 
-SOURCE: src/p11.js line 423
+SOURCE: src/p11.js line 351
 
 CONTEXT: Toast from preTalk. It appears in the corner and fades. Shown in both layouts.
 
@@ -9992,7 +9992,7 @@ END
 
 ID: ui.pretalk.312
 
-SOURCE: src/p11.js line 423
+SOURCE: src/p11.js line 351
 
 CONTEXT: Toast from preTalk. It appears in the corner and fades. Shown in both layouts.
 
@@ -10012,7 +10012,7 @@ END
 
 ID: ui.preenter.316
 
-SOURCE: src/p11.js line 434
+SOURCE: src/p11.js line 362
 
 CONTEXT: Toast from preEnter. It appears in the corner and fades. Shown in both layouts.
 
@@ -10030,7 +10030,7 @@ END
 
 ID: ui.preout.318
 
-SOURCE: src/p11.js line 437
+SOURCE: src/p11.js line 365
 
 CONTEXT: Toast from preOut. It appears in the corner and fades. Shown in both layouts.
 
@@ -12192,7 +12192,7 @@ END
 
 ID: ui.bullkill.260.title
 
-SOURCE: src/p10.js line 712
+SOURCE: src/p10.js line 695
 
 CONTEXT: Dialog title, opened from bullKill. The body is the next entry. Shown in both layouts.
 
@@ -12210,7 +12210,7 @@ END
 
 ID: ui.bullkill.260.body
 
-SOURCE: src/p10.js line 712
+SOURCE: src/p10.js line 695
 
 CONTEXT: Dialog body under the title "The Golden Bull is down", from bullKill. Buttons come after the body. Shown in both layouts.
 
@@ -12228,7 +12228,7 @@ END
 
 ID: ui.bullkill.260.btn.01
 
-SOURCE: src/p10.js line 712
+SOURCE: src/p10.js line 695
 
 CONTEXT: A button on the dialog "The Golden Bull is down". Shown in both layouts.
 
@@ -12250,7 +12250,7 @@ END
 
 ID: bull.memo.61.title
 
-SOURCE: src/p10.js line 707
+SOURCE: src/p10.js line 690
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12268,7 +12268,7 @@ END
 
 ID: bull.memo.61.body
 
-SOURCE: src/p10.js line 707
+SOURCE: src/p10.js line 690
 
 CONTEXT: Body of the paper titled "Notice from the Office of Price Stability". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12316,7 +12316,7 @@ Memos, the story menu, and the codex: what the game tells you when you go lookin
 
 ID: journal.memo.24.title
 
-SOURCE: src/p1.js line 493
+SOURCE: src/p1.js line 417
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12334,7 +12334,7 @@ END
 
 ID: journal.memo.24.body
 
-SOURCE: src/p1.js line 493
+SOURCE: src/p1.js line 417
 
 CONTEXT: Body of the paper titled "A Letter From the Lake". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12356,7 +12356,7 @@ END
 
 ID: journal.memo.25.title
 
-SOURCE: src/p1.js line 494
+SOURCE: src/p1.js line 418
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12374,7 +12374,7 @@ END
 
 ID: journal.memo.25.body
 
-SOURCE: src/p1.js line 494
+SOURCE: src/p1.js line 418
 
 CONTEXT: Body of the paper titled "On Scarcity". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12396,7 +12396,7 @@ END
 
 ID: journal.memo.26.title
 
-SOURCE: src/p1.js line 495
+SOURCE: src/p1.js line 419
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12414,7 +12414,7 @@ END
 
 ID: journal.memo.26.body
 
-SOURCE: src/p1.js line 495
+SOURCE: src/p1.js line 419
 
 CONTEXT: Body of the paper titled "The Offer, Draft 9". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12436,7 +12436,7 @@ END
 
 ID: journal.memo.27.title
 
-SOURCE: src/p1.js line 496
+SOURCE: src/p1.js line 420
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12454,7 +12454,7 @@ END
 
 ID: journal.memo.27.body
 
-SOURCE: src/p1.js line 496
+SOURCE: src/p1.js line 420
 
 CONTEXT: Body of the paper titled "Maintenance Log, Updraft". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12476,7 +12476,7 @@ END
 
 ID: journal.memo.28.title
 
-SOURCE: src/p1.js line 498
+SOURCE: src/p1.js line 422
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12494,7 +12494,7 @@ END
 
 ID: journal.memo.28.body
 
-SOURCE: src/p1.js line 498
+SOURCE: src/p1.js line 422
 
 CONTEXT: Body of the paper titled "Board Minute, Item 1". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12516,7 +12516,7 @@ END
 
 ID: journal.memo.29.title
 
-SOURCE: src/p1.js line 499
+SOURCE: src/p1.js line 423
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12534,7 +12534,7 @@ END
 
 ID: journal.memo.29.body
 
-SOURCE: src/p1.js line 499
+SOURCE: src/p1.js line 423
 
 CONTEXT: Body of the paper titled "The Empty Chair". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12556,7 +12556,7 @@ END
 
 ID: journal.memo.30.title
 
-SOURCE: src/p1.js line 500
+SOURCE: src/p1.js line 424
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12574,7 +12574,7 @@ END
 
 ID: journal.memo.30.body
 
-SOURCE: src/p1.js line 500
+SOURCE: src/p1.js line 424
 
 CONTEXT: Body of the paper titled "MANDATE, Design Note 40". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12596,7 +12596,7 @@ END
 
 ID: journal.memo.31.title
 
-SOURCE: src/p1.js line 501
+SOURCE: src/p1.js line 425
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12614,7 +12614,7 @@ END
 
 ID: journal.memo.31.body
 
-SOURCE: src/p1.js line 501
+SOURCE: src/p1.js line 425
 
 CONTEXT: Body of the paper titled "A Note Left on a Rack". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12636,7 +12636,7 @@ END
 
 ID: journal.memo.32.title
 
-SOURCE: src/p1.js line 502
+SOURCE: src/p1.js line 426
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12654,7 +12654,7 @@ END
 
 ID: journal.memo.32.body
 
-SOURCE: src/p1.js line 502
+SOURCE: src/p1.js line 426
 
 CONTEXT: Body of the paper titled "What the Watcher Built". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12676,7 +12676,7 @@ END
 
 ID: journal.memo.33.title
 
-SOURCE: src/p1.js line 504
+SOURCE: src/p1.js line 428
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12694,7 +12694,7 @@ END
 
 ID: journal.memo.33.body
 
-SOURCE: src/p1.js line 504
+SOURCE: src/p1.js line 428
 
 CONTEXT: Body of the paper titled "Old History: The First Block". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12716,7 +12716,7 @@ END
 
 ID: journal.memo.34.title
 
-SOURCE: src/p1.js line 505
+SOURCE: src/p1.js line 429
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12734,7 +12734,7 @@ END
 
 ID: journal.memo.34.body
 
-SOURCE: src/p1.js line 505
+SOURCE: src/p1.js line 429
 
 CONTEXT: Body of the paper titled "Old History: Running". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12756,7 +12756,7 @@ END
 
 ID: journal.memo.35.title
 
-SOURCE: src/p1.js line 506
+SOURCE: src/p1.js line 430
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12774,7 +12774,7 @@ END
 
 ID: journal.memo.35.body
 
-SOURCE: src/p1.js line 506
+SOURCE: src/p1.js line 430
 
 CONTEXT: Body of the paper titled "Old History: Two Pizzas". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12796,7 +12796,7 @@ END
 
 ID: journal.memo.36.title
 
-SOURCE: src/p1.js line 507
+SOURCE: src/p1.js line 431
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12814,7 +12814,7 @@ END
 
 ID: journal.memo.36.body
 
-SOURCE: src/p1.js line 507
+SOURCE: src/p1.js line 431
 
 CONTEXT: Body of the paper titled "Old History: The One Who Left". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12836,7 +12836,7 @@ END
 
 ID: journal.memo.37.title
 
-SOURCE: src/p1.js line 508
+SOURCE: src/p1.js line 432
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12854,7 +12854,7 @@ END
 
 ID: journal.memo.37.body
 
-SOURCE: src/p1.js line 508
+SOURCE: src/p1.js line 432
 
 CONTEXT: Body of the paper titled "Old History: Before the Beginning". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12876,7 +12876,7 @@ END
 
 ID: journal.memo.38.title
 
-SOURCE: src/p1.js line 510
+SOURCE: src/p1.js line 434
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12894,7 +12894,7 @@ END
 
 ID: journal.memo.38.body
 
-SOURCE: src/p1.js line 510
+SOURCE: src/p1.js line 434
 
 CONTEXT: Body of the paper titled "Three Machines, A Child’s Rhyme". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12916,7 +12916,7 @@ END
 
 ID: journal.memo.39.title
 
-SOURCE: src/p1.js line 511
+SOURCE: src/p1.js line 435
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12934,7 +12934,7 @@ END
 
 ID: journal.memo.39.body
 
-SOURCE: src/p1.js line 511
+SOURCE: src/p1.js line 435
 
 CONTEXT: Body of the paper titled "Her Name". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12956,7 +12956,7 @@ END
 
 ID: journal.memo.40.title
 
-SOURCE: src/p1.js line 512
+SOURCE: src/p1.js line 436
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12974,7 +12974,7 @@ END
 
 ID: journal.memo.40.body
 
-SOURCE: src/p1.js line 512
+SOURCE: src/p1.js line 436
 
 CONTEXT: Body of the paper titled "What MANDATE Is Not". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12996,7 +12996,7 @@ END
 
 ID: journal.memo.41.title
 
-SOURCE: src/p1.js line 513
+SOURCE: src/p1.js line 437
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13014,7 +13014,7 @@ END
 
 ID: journal.memo.41.body
 
-SOURCE: src/p1.js line 513
+SOURCE: src/p1.js line 437
 
 CONTEXT: Body of the paper titled "The Man Who Was Right". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13036,7 +13036,7 @@ END
 
 ID: journal.memo.42.title
 
-SOURCE: src/p1.js line 514
+SOURCE: src/p1.js line 438
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13054,7 +13054,7 @@ END
 
 ID: journal.memo.42.body
 
-SOURCE: src/p1.js line 514
+SOURCE: src/p1.js line 438
 
 CONTEXT: Body of the paper titled "Eleven at Night". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13076,7 +13076,7 @@ END
 
 ID: journal.memo.43.title
 
-SOURCE: src/p1.js line 515
+SOURCE: src/p1.js line 439
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13094,7 +13094,7 @@ END
 
 ID: journal.memo.43.body
 
-SOURCE: src/p1.js line 515
+SOURCE: src/p1.js line 439
 
 CONTEXT: Body of the paper titled "What It Cost Us". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13116,7 +13116,7 @@ END
 
 ID: journal.memo.44.title
 
-SOURCE: src/p1.js line 516
+SOURCE: src/p1.js line 440
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13134,7 +13134,7 @@ END
 
 ID: journal.memo.44.body
 
-SOURCE: src/p1.js line 516
+SOURCE: src/p1.js line 440
 
 CONTEXT: Body of the paper titled "A Loan Officer Writes". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13156,7 +13156,7 @@ END
 
 ID: journal.memo.45.title
 
-SOURCE: src/p1.js line 517
+SOURCE: src/p1.js line 441
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13174,7 +13174,7 @@ END
 
 ID: journal.memo.45.body
 
-SOURCE: src/p1.js line 517
+SOURCE: src/p1.js line 441
 
 CONTEXT: Body of the paper titled "Nine Days". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13196,7 +13196,7 @@ END
 
 ID: journal.memo.46.title
 
-SOURCE: src/p1.js line 519
+SOURCE: src/p1.js line 443
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13214,7 +13214,7 @@ END
 
 ID: journal.memo.46.body
 
-SOURCE: src/p1.js line 519
+SOURCE: src/p1.js line 443
 
 CONTEXT: Body of the paper titled "The Tymes, 03/Jan/2087". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13236,7 +13236,7 @@ END
 
 ID: journal.memo.47.title
 
-SOURCE: src/p1.js line 520
+SOURCE: src/p1.js line 444
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13254,7 +13254,7 @@ END
 
 ID: journal.memo.47.body
 
-SOURCE: src/p1.js line 520
+SOURCE: src/p1.js line 444
 
 CONTEXT: Body of the paper titled "A link, blurred". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13276,7 +13276,7 @@ END
 
 ID: journal.memo.48.title
 
-SOURCE: src/p1.js line 583
+SOURCE: src/p1.js line 507
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13294,7 +13294,7 @@ END
 
 ID: journal.memo.48.body
 
-SOURCE: src/p1.js line 583
+SOURCE: src/p1.js line 507
 
 CONTEXT: Body of the paper titled "The Queen of Margins". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13316,7 +13316,7 @@ END
 
 ID: journal.memo.49.title
 
-SOURCE: src/p1.js line 585
+SOURCE: src/p1.js line 509
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13334,7 +13334,7 @@ END
 
 ID: journal.memo.49.body
 
-SOURCE: src/p1.js line 585
+SOURCE: src/p1.js line 509
 
 CONTEXT: Body of the paper titled "A page from the watch". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13356,7 +13356,7 @@ END
 
 ID: journal.memo.50.title
 
-SOURCE: src/p1.js line 587
+SOURCE: src/p1.js line 511
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13374,7 +13374,7 @@ END
 
 ID: journal.memo.50.body
 
-SOURCE: src/p1.js line 587
+SOURCE: src/p1.js line 511
 
 CONTEXT: Body of the paper titled "Ives". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13392,7 +13392,7 @@ END
 
 ID: journal.memo.51.title
 
-SOURCE: src/p1.js line 589
+SOURCE: src/p1.js line 513
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13410,7 +13410,7 @@ END
 
 ID: journal.memo.51.body
 
-SOURCE: src/p1.js line 589
+SOURCE: src/p1.js line 513
 
 CONTEXT: Body of the paper titled "Ives". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13432,7 +13432,7 @@ END
 
 ID: journal.memo.52.title
 
-SOURCE: src/p1.js line 591
+SOURCE: src/p1.js line 515
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13450,7 +13450,7 @@ END
 
 ID: journal.memo.52.body
 
-SOURCE: src/p1.js line 591
+SOURCE: src/p1.js line 515
 
 CONTEXT: Body of the paper titled "Minute, the entry". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13472,7 +13472,7 @@ END
 
 ID: journal.memo.53.title
 
-SOURCE: src/p1.js line 593
+SOURCE: src/p1.js line 517
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13490,7 +13490,7 @@ END
 
 ID: journal.memo.53.body
 
-SOURCE: src/p1.js line 593
+SOURCE: src/p1.js line 517
 
 CONTEXT: Body of the paper titled "Minute, the retraction". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13512,7 +13512,7 @@ END
 
 ID: journal.memo.54.title
 
-SOURCE: src/p1.js line 595
+SOURCE: src/p1.js line 519
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13530,7 +13530,7 @@ END
 
 ID: journal.memo.54.body
 
-SOURCE: src/p1.js line 595
+SOURCE: src/p1.js line 519
 
 CONTEXT: Body of the paper titled "Minute, one vote". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13552,7 +13552,7 @@ END
 
 ID: journal.memo.55.title
 
-SOURCE: src/p1.js line 597
+SOURCE: src/p1.js line 521
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13570,7 +13570,7 @@ END
 
 ID: journal.memo.55.body
 
-SOURCE: src/p1.js line 597
+SOURCE: src/p1.js line 521
 
 CONTEXT: Body of the paper titled "Minute, the inventory". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13592,7 +13592,7 @@ END
 
 ID: journal.memo.56.title
 
-SOURCE: src/p1.js line 599
+SOURCE: src/p1.js line 523
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13610,7 +13610,7 @@ END
 
 ID: journal.memo.56.body
 
-SOURCE: src/p1.js line 599
+SOURCE: src/p1.js line 523
 
 CONTEXT: Body of the paper titled "The next offer". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13632,7 +13632,7 @@ END
 
 ID: journal.memo.57.title
 
-SOURCE: src/p1.js line 601
+SOURCE: src/p1.js line 525
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13650,7 +13650,7 @@ END
 
 ID: journal.memo.57.body
 
-SOURCE: src/p1.js line 601
+SOURCE: src/p1.js line 525
 
 CONTEXT: Body of the paper titled "The hold". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13672,7 +13672,7 @@ END
 
 ID: journal.memo.58.title
 
-SOURCE: src/p1.js line 603
+SOURCE: src/p1.js line 527
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13690,7 +13690,7 @@ END
 
 ID: journal.memo.58.body
 
-SOURCE: src/p1.js line 603
+SOURCE: src/p1.js line 527
 
 CONTEXT: Body of the paper titled "There was never an invasion.". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13712,7 +13712,7 @@ END
 
 ID: journal.memo.59.title
 
-SOURCE: src/p1.js line 605
+SOURCE: src/p1.js line 529
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13730,7 +13730,7 @@ END
 
 ID: journal.memo.59.body
 
-SOURCE: src/p1.js line 605
+SOURCE: src/p1.js line 529
 
 CONTEXT: Body of the paper titled "Overwhelming". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13748,7 +13748,7 @@ END
 
 ID: journal.memo.60.title
 
-SOURCE: src/p1.js line 607
+SOURCE: src/p1.js line 531
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13766,7 +13766,7 @@ END
 
 ID: journal.memo.60.body
 
-SOURCE: src/p1.js line 607
+SOURCE: src/p1.js line 531
 
 CONTEXT: Body of the paper titled "Overwhelming". You read it from the ground or the story list. Shown in both layouts.
 
@@ -23826,7 +23826,7 @@ END
 
 ID: class.maxi.build.01.name
 
-SOURCE: src/p10.js line 716
+SOURCE: src/p10.js line 699
 
 CONTEXT: A suggested build name for maxi. Shown in both layouts.
 
@@ -23844,7 +23844,7 @@ END
 
 ID: class.maxi.build.01.blurb
 
-SOURCE: src/p10.js line 716
+SOURCE: src/p10.js line 699
 
 CONTEXT: The one-line pitch of the build "Orange Pilled". Shown in both layouts.
 
@@ -23866,7 +23866,7 @@ END
 
 ID: class.scrapper.build.01.name
 
-SOURCE: src/p10.js line 718
+SOURCE: src/p10.js line 701
 
 CONTEXT: A suggested build name for scrapper. Shown in both layouts.
 
@@ -23884,7 +23884,7 @@ END
 
 ID: class.scrapper.build.01.blurb
 
-SOURCE: src/p10.js line 718
+SOURCE: src/p10.js line 701
 
 CONTEXT: The one-line pitch of the build "Wrecking Crew". Shown in both layouts.
 
@@ -23906,7 +23906,7 @@ END
 
 ID: class.scrapper.build.02.name
 
-SOURCE: src/p10.js line 719
+SOURCE: src/p10.js line 702
 
 CONTEXT: A suggested build name for scrapper. Shown in both layouts.
 
@@ -23924,7 +23924,7 @@ END
 
 ID: class.scrapper.build.02.blurb
 
-SOURCE: src/p10.js line 719
+SOURCE: src/p10.js line 702
 
 CONTEXT: The one-line pitch of the build "Immovable Object". Shown in both layouts.
 
@@ -23946,7 +23946,7 @@ END
 
 ID: class.scrapper.build.03.name
 
-SOURCE: src/p10.js line 720
+SOURCE: src/p10.js line 703
 
 CONTEXT: A suggested build name for scrapper. Shown in both layouts.
 
@@ -23964,7 +23964,7 @@ END
 
 ID: class.scrapper.build.03.blurb
 
-SOURCE: src/p10.js line 720
+SOURCE: src/p10.js line 703
 
 CONTEXT: The one-line pitch of the build "Scrap Thrower". Shown in both layouts.
 
@@ -23986,7 +23986,7 @@ END
 
 ID: class.hacker.build.01.name
 
-SOURCE: src/p10.js line 722
+SOURCE: src/p10.js line 705
 
 CONTEXT: A suggested build name for hacker. Shown in both layouts.
 
@@ -24004,7 +24004,7 @@ END
 
 ID: class.hacker.build.01.blurb
 
-SOURCE: src/p10.js line 722
+SOURCE: src/p10.js line 705
 
 CONTEXT: The one-line pitch of the build "Chain Reaction". Shown in both layouts.
 
@@ -24026,7 +24026,7 @@ END
 
 ID: class.hacker.build.02.name
 
-SOURCE: src/p10.js line 723
+SOURCE: src/p10.js line 706
 
 CONTEXT: A suggested build name for hacker. Shown in both layouts.
 
@@ -24044,7 +24044,7 @@ END
 
 ID: class.hacker.build.02.blurb
 
-SOURCE: src/p10.js line 723
+SOURCE: src/p10.js line 706
 
 CONTEXT: The one-line pitch of the build "Sysadmin". Shown in both layouts.
 
@@ -24066,7 +24066,7 @@ END
 
 ID: class.hacker.build.03.name
 
-SOURCE: src/p10.js line 724
+SOURCE: src/p10.js line 707
 
 CONTEXT: A suggested build name for hacker. Shown in both layouts.
 
@@ -24084,7 +24084,7 @@ END
 
 ID: class.hacker.build.03.blurb
 
-SOURCE: src/p10.js line 724
+SOURCE: src/p10.js line 707
 
 CONTEXT: The one-line pitch of the build "Control Rod". Shown in both layouts.
 
@@ -24106,7 +24106,7 @@ END
 
 ID: class.courier.build.01.name
 
-SOURCE: src/p10.js line 726
+SOURCE: src/p10.js line 709
 
 CONTEXT: A suggested build name for courier. Shown in both layouts.
 
@@ -24124,7 +24124,7 @@ END
 
 ID: class.courier.build.01.blurb
 
-SOURCE: src/p10.js line 726
+SOURCE: src/p10.js line 709
 
 CONTEXT: The one-line pitch of the build "Rush Hour". Shown in both layouts.
 
@@ -24146,7 +24146,7 @@ END
 
 ID: class.courier.build.02.name
 
-SOURCE: src/p10.js line 727
+SOURCE: src/p10.js line 710
 
 CONTEXT: A suggested build name for courier. Shown in both layouts.
 
@@ -24164,7 +24164,7 @@ END
 
 ID: class.courier.build.02.blurb
 
-SOURCE: src/p10.js line 727
+SOURCE: src/p10.js line 710
 
 CONTEXT: The one-line pitch of the build "Porch Pirate". Shown in both layouts.
 
@@ -24186,7 +24186,7 @@ END
 
 ID: class.courier.build.03.name
 
-SOURCE: src/p10.js line 728
+SOURCE: src/p10.js line 711
 
 CONTEXT: A suggested build name for courier. Shown in both layouts.
 
@@ -24204,7 +24204,7 @@ END
 
 ID: class.courier.build.03.blurb
 
-SOURCE: src/p10.js line 728
+SOURCE: src/p10.js line 711
 
 CONTEXT: The one-line pitch of the build "Tip Jar". Shown in both layouts.
 
@@ -24226,7 +24226,7 @@ END
 
 ID: class.anon.build.01.name
 
-SOURCE: src/p10.js line 730
+SOURCE: src/p10.js line 713
 
 CONTEXT: A suggested build name for anon. Shown in both layouts.
 
@@ -24244,7 +24244,7 @@ END
 
 ID: class.anon.build.01.blurb
 
-SOURCE: src/p10.js line 730
+SOURCE: src/p10.js line 713
 
 CONTEXT: The one-line pitch of the build "Demolition". Shown in both layouts.
 
@@ -24266,7 +24266,7 @@ END
 
 ID: class.anon.build.02.name
 
-SOURCE: src/p10.js line 731
+SOURCE: src/p10.js line 714
 
 CONTEXT: A suggested build name for anon. Shown in both layouts.
 
@@ -24284,7 +24284,7 @@ END
 
 ID: class.anon.build.02.blurb
 
-SOURCE: src/p10.js line 731
+SOURCE: src/p10.js line 714
 
 CONTEXT: The one-line pitch of the build "Ghost". Shown in both layouts.
 
@@ -24306,7 +24306,7 @@ END
 
 ID: class.anon.build.03.name
 
-SOURCE: src/p10.js line 732
+SOURCE: src/p10.js line 715
 
 CONTEXT: A suggested build name for anon. Shown in both layouts.
 
@@ -24324,7 +24324,7 @@ END
 
 ID: class.anon.build.03.blurb
 
-SOURCE: src/p10.js line 732
+SOURCE: src/p10.js line 715
 
 CONTEXT: The one-line pitch of the build "We Are Legion". Shown in both layouts.
 
@@ -24346,7 +24346,7 @@ END
 
 ID: class.founder.build.01.name
 
-SOURCE: src/p10.js line 734
+SOURCE: src/p10.js line 717
 
 CONTEXT: A suggested build name for founder. Shown in both layouts.
 
@@ -24364,7 +24364,7 @@ END
 
 ID: class.founder.build.01.blurb
 
-SOURCE: src/p10.js line 734
+SOURCE: src/p10.js line 717
 
 CONTEXT: The one-line pitch of the build "Headcount". Shown in both layouts.
 
@@ -24386,7 +24386,7 @@ END
 
 ID: class.founder.build.02.name
 
-SOURCE: src/p10.js line 735
+SOURCE: src/p10.js line 718
 
 CONTEXT: A suggested build name for founder. Shown in both layouts.
 
@@ -24404,7 +24404,7 @@ END
 
 ID: class.founder.build.02.blurb
 
-SOURCE: src/p10.js line 735
+SOURCE: src/p10.js line 718
 
 CONTEXT: The one-line pitch of the build "Hostile Takeover". Shown in both layouts.
 
@@ -24426,7 +24426,7 @@ END
 
 ID: class.founder.build.03.name
 
-SOURCE: src/p10.js line 736
+SOURCE: src/p10.js line 719
 
 CONTEXT: A suggested build name for founder. Shown in both layouts.
 
@@ -24444,7 +24444,7 @@ END
 
 ID: class.founder.build.03.blurb
 
-SOURCE: src/p10.js line 736
+SOURCE: src/p10.js line 719
 
 CONTEXT: The one-line pitch of the build "Iron Founder". Shown in both layouts.
 
@@ -24466,7 +24466,7 @@ END
 
 ID: class.homesteader.build.01.name
 
-SOURCE: src/p10.js line 738
+SOURCE: src/p10.js line 721
 
 CONTEXT: A suggested build name for homesteader. Shown in both layouts.
 
@@ -24484,7 +24484,7 @@ END
 
 ID: class.homesteader.build.01.blurb
 
-SOURCE: src/p10.js line 738
+SOURCE: src/p10.js line 721
 
 CONTEXT: The one-line pitch of the build "Cold Bed". Shown in both layouts.
 
@@ -24506,7 +24506,7 @@ END
 
 ID: class.homesteader.build.02.name
 
-SOURCE: src/p10.js line 739
+SOURCE: src/p10.js line 722
 
 CONTEXT: A suggested build name for homesteader. Shown in both layouts.
 
@@ -24524,7 +24524,7 @@ END
 
 ID: class.homesteader.build.02.blurb
 
-SOURCE: src/p10.js line 739
+SOURCE: src/p10.js line 722
 
 CONTEXT: The one-line pitch of the build "Inside the Hull". Shown in both layouts.
 
@@ -24546,7 +24546,7 @@ END
 
 ID: class.homesteader.build.03.name
 
-SOURCE: src/p10.js line 740
+SOURCE: src/p10.js line 723
 
 CONTEXT: A suggested build name for homesteader. Shown in both layouts.
 
@@ -24564,7 +24564,7 @@ END
 
 ID: class.homesteader.build.03.blurb
 
-SOURCE: src/p10.js line 740
+SOURCE: src/p10.js line 723
 
 CONTEXT: The one-line pitch of the build "What Follows". Shown in both layouts.
 
@@ -24586,7 +24586,7 @@ END
 
 ID: class.witness.build.01.name
 
-SOURCE: src/p10.js line 742
+SOURCE: src/p10.js line 725
 
 CONTEXT: A suggested build name for witness. Shown in both layouts.
 
@@ -24604,7 +24604,7 @@ END
 
 ID: class.witness.build.01.blurb
 
-SOURCE: src/p10.js line 742
+SOURCE: src/p10.js line 725
 
 CONTEXT: The one-line pitch of the build "The Page". Shown in both layouts.
 
@@ -24626,7 +24626,7 @@ END
 
 ID: class.witness.build.02.name
 
-SOURCE: src/p10.js line 743
+SOURCE: src/p10.js line 726
 
 CONTEXT: A suggested build name for witness. Shown in both layouts.
 
@@ -24644,7 +24644,7 @@ END
 
 ID: class.witness.build.02.blurb
 
-SOURCE: src/p10.js line 743
+SOURCE: src/p10.js line 726
 
 CONTEXT: The one-line pitch of the build "Named in the Notes". Shown in both layouts.
 
@@ -24666,7 +24666,7 @@ END
 
 ID: class.witness.build.03.name
 
-SOURCE: src/p10.js line 744
+SOURCE: src/p10.js line 727
 
 CONTEXT: A suggested build name for witness. Shown in both layouts.
 
@@ -24684,7 +24684,7 @@ END
 
 ID: class.witness.build.03.blurb
 
-SOURCE: src/p10.js line 744
+SOURCE: src/p10.js line 727
 
 CONTEXT: The one-line pitch of the build "Above Eighty". Shown in both layouts.
 
@@ -24704,13 +24704,13 @@ END
 
 Names, flavor, affixes, sets, and the words that get bolted onto gear.
 
-616 entries.
+747 entries.
 
 ## Quality
 
 ID: item.quality.01
 
-SOURCE: src/p1.js line 461
+SOURCE: src/p1.js line 385
 
 CONTEXT: The quality word on an item: white, blue, yellow, green, or gold. Line 1 of 5. After: "Magic". Shown in both layouts.
 
@@ -24728,7 +24728,7 @@ END
 
 ID: item.quality.02
 
-SOURCE: src/p1.js line 461
+SOURCE: src/p1.js line 385
 
 CONTEXT: The quality word on an item: white, blue, yellow, green, or gold. Line 2 of 5. Before: "Normal". After: "Rare". Shown in both layouts.
 
@@ -24746,7 +24746,7 @@ END
 
 ID: item.quality.03
 
-SOURCE: src/p1.js line 461
+SOURCE: src/p1.js line 385
 
 CONTEXT: The quality word on an item: white, blue, yellow, green, or gold. Line 3 of 5. Before: "Magic". After: "Set". Shown in both layouts.
 
@@ -24764,7 +24764,7 @@ END
 
 ID: item.quality.04
 
-SOURCE: src/p1.js line 461
+SOURCE: src/p1.js line 385
 
 CONTEXT: The quality word on an item: white, blue, yellow, green, or gold. Line 4 of 5. Before: "Rare". After: "Unique". Shown in both layouts.
 
@@ -24782,7 +24782,7 @@ END
 
 ID: item.quality.05
 
-SOURCE: src/p1.js line 461
+SOURCE: src/p1.js line 385
 
 CONTEXT: The quality word on an item: white, blue, yellow, green, or gold. Line 5 of 5. Before: "Set". Shown in both layouts.
 
@@ -24950,7 +24950,7 @@ END
 
 ID: item.unique.parachute.name
 
-SOURCE: src/p1.js line 419
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -24968,7 +24968,7 @@ END
 
 ID: item.unique.parachute.flavor
 
-SOURCE: src/p1.js line 419
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique The Golden Parachute. It sits under the numbers. Shown in both layouts.
 
@@ -24984,13 +24984,49 @@ TEXT
 
 END
 
+ID: item.unique.parachute.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique The Golden Parachute, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    When you would die, recover half your life instead (once every 2 minutes)
+
+END
+
+ID: item.unique.parachute.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Golden Parachute. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Flak Coat
+
+END
+
 ## Uniques
 
 ### Severance
 
 ID: item.unique.severance.name
 
-SOURCE: src/p1.js line 420
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25008,7 +25044,7 @@ END
 
 ID: item.unique.severance.flavor
 
-SOURCE: src/p1.js line 420
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Severance. It sits under the numbers. Shown in both layouts.
 
@@ -25024,13 +25060,49 @@ TEXT
 
 END
 
+ID: item.unique.severance.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Severance, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    15% chance to strike for triple damage
+
+END
+
+ID: item.unique.severance.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Severance. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Girder Maul
+
+END
+
 ## Uniques
 
 ### Terms & Conditions
 
 ID: item.unique.terms.name
 
-SOURCE: src/p1.js line 421
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25048,7 +25120,7 @@ END
 
 ID: item.unique.terms.flavor
 
-SOURCE: src/p1.js line 421
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Terms & Conditions. It sits under the numbers. Shown in both layouts.
 
@@ -25064,13 +25136,49 @@ TEXT
 
 END
 
+ID: item.unique.terms.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Terms & Conditions, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Machines that strike you are stunned for 1 second
+
+END
+
+ID: item.unique.terms.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Terms & Conditions. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Sigil Core
+
+END
+
 ## Uniques
 
 ### The Founder’s Hoodie
 
 ID: item.unique.hoodie.name
 
-SOURCE: src/p1.js line 422
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25088,7 +25196,7 @@ END
 
 ID: item.unique.hoodie.flavor
 
-SOURCE: src/p1.js line 422
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique The Founder’s Hoodie. It sits under the numbers. Shown in both layouts.
 
@@ -25104,13 +25212,49 @@ TEXT
 
 END
 
+ID: item.unique.hoodie.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique The Founder’s Hoodie, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Skills cost 25% less energy
+
+END
+
+ID: item.unique.hoodie.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Founder’s Hoodie. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Padded Hoodie
+
+END
+
 ## Uniques
 
 ### Last Honest Review
 
 ID: item.unique.review.name
 
-SOURCE: src/p1.js line 423
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25128,7 +25272,7 @@ END
 
 ID: item.unique.review.flavor
 
-SOURCE: src/p1.js line 423
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Last Honest Review. It sits under the numbers. Shown in both layouts.
 
@@ -25144,13 +25288,31 @@ TEXT
 
 END
 
+ID: item.unique.review.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Last Honest Review. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Copper Band
+
+END
+
 ## Uniques
 
 ### Unpaid Intern
 
 ID: item.unique.intern.name
 
-SOURCE: src/p1.js line 424
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25168,7 +25330,7 @@ END
 
 ID: item.unique.intern.flavor
 
-SOURCE: src/p1.js line 424
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Unpaid Intern. It sits under the numbers. Shown in both layouts.
 
@@ -25184,13 +25346,49 @@ TEXT
 
 END
 
+ID: item.unique.intern.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Unpaid Intern, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    20% chance on hit to cast Arc Chain
+
+END
+
+ID: item.unique.intern.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Unpaid Intern. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Work Gloves
+
+END
+
 ## Uniques
 
 ### Right to Repair
 
 ID: item.unique.repair.name
 
-SOURCE: src/p1.js line 425
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25208,7 +25406,7 @@ END
 
 ID: item.unique.repair.flavor
 
-SOURCE: src/p1.js line 425
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Right to Repair. It sits under the numbers. Shown in both layouts.
 
@@ -25224,13 +25422,49 @@ TEXT
 
 END
 
+ID: item.unique.repair.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Right to Repair, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Stims also refill your energy
+
+END
+
+ID: item.unique.repair.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Right to Repair. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tool Belt
+
+END
+
 ## Uniques
 
 ### Inflation Hedge
 
 ID: item.unique.hedge.name
 
-SOURCE: src/p1.js line 426
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25248,7 +25482,7 @@ END
 
 ID: item.unique.hedge.flavor
 
-SOURCE: src/p1.js line 426
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Inflation Hedge. It sits under the numbers. Shown in both layouts.
 
@@ -25264,13 +25498,49 @@ TEXT
 
 END
 
+ID: item.unique.hedge.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Inflation Hedge, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Credits you carry grow as fast as prices rise
+
+END
+
+ID: item.unique.hedge.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Inflation Hedge. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Signet Chip
+
+END
+
 ## Uniques
 
 ### Deadline
 
 ID: item.unique.deadline.name
 
-SOURCE: src/p1.js line 427
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25288,7 +25558,7 @@ END
 
 ID: item.unique.deadline.flavor
 
-SOURCE: src/p1.js line 427
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Deadline. It sits under the numbers. Shown in both layouts.
 
@@ -25304,13 +25574,49 @@ TEXT
 
 END
 
+ID: item.unique.deadline.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Deadline, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    +25% damage while moving
+
+END
+
+ID: item.unique.deadline.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Deadline. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Steel-Toes
+
+END
+
 ## Uniques
 
 ### The Whistle
 
 ID: item.unique.whistle.name
 
-SOURCE: src/p1.js line 428
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25328,7 +25634,7 @@ END
 
 ID: item.unique.whistle.flavor
 
-SOURCE: src/p1.js line 428
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique The Whistle. It sits under the numbers. Shown in both layouts.
 
@@ -25344,13 +25650,49 @@ TEXT
 
 END
 
+ID: item.unique.whistle.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique The Whistle, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Slain machines explode, wounding others nearby
+
+END
+
+ID: item.unique.whistle.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Whistle. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Riot Helm
+
+END
+
 ## Uniques
 
 ### Nondisclosure
 
 ID: item.unique.nda.name
 
-SOURCE: src/p1.js line 429
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25368,7 +25710,7 @@ END
 
 ID: item.unique.nda.flavor
 
-SOURCE: src/p1.js line 429
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Nondisclosure. It sits under the numbers. Shown in both layouts.
 
@@ -25384,13 +25726,49 @@ TEXT
 
 END
 
+ID: item.unique.nda.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Nondisclosure, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    15% chance to avoid any damage
+
+END
+
+ID: item.unique.nda.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Nondisclosure. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Hard Hat
+
+END
+
 ## Uniques
 
 ### Blackout
 
 ID: item.unique.blackout.name
 
-SOURCE: src/p1.js line 430
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25408,7 +25786,7 @@ END
 
 ID: item.unique.blackout.flavor
 
-SOURCE: src/p1.js line 430
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Blackout. It sits under the numbers. Shown in both layouts.
 
@@ -25424,13 +25802,49 @@ TEXT
 
 END
 
+ID: item.unique.blackout.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Blackout, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    12% chance to stun on hit
+
+END
+
+ID: item.unique.blackout.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Blackout. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Box Cutter
+
+END
+
 ## Uniques
 
 ### The Pension
 
 ID: item.unique.pension.name
 
-SOURCE: src/p1.js line 431
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25448,7 +25862,7 @@ END
 
 ID: item.unique.pension.flavor
 
-SOURCE: src/p1.js line 431
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique The Pension. It sits under the numbers. Shown in both layouts.
 
@@ -25464,13 +25878,49 @@ TEXT
 
 END
 
+ID: item.unique.pension.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique The Pension, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Replenish 2% of your life every second
+
+END
+
+ID: item.unique.pension.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Pension. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Dog Tag
+
+END
+
 ## Uniques
 
 ### Golden Handshake
 
 ID: item.unique.handshake.name
 
-SOURCE: src/p1.js line 432
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25488,7 +25938,7 @@ END
 
 ID: item.unique.handshake.flavor
 
-SOURCE: src/p1.js line 432
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Golden Handshake. It sits under the numbers. Shown in both layouts.
 
@@ -25504,13 +25954,49 @@ TEXT
 
 END
 
+ID: item.unique.handshake.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Golden Handshake, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Ordinary machines you destroy have a 13% chance to drop a satoshi
+
+END
+
+ID: item.unique.handshake.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Golden Handshake. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Servo Fists
+
+END
+
 ## Uniques
 
 ### Fine Print
 
 ID: item.unique.fineprint.name
 
-SOURCE: src/p1.js line 433
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25528,7 +26014,7 @@ END
 
 ID: item.unique.fineprint.flavor
 
-SOURCE: src/p1.js line 433
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Fine Print. It sits under the numbers. Shown in both layouts.
 
@@ -25544,13 +26030,49 @@ TEXT
 
 END
 
+ID: item.unique.fineprint.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Fine Print, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Your skills recover 20% faster
+
+END
+
+ID: item.unique.fineprint.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Fine Print. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Sigil Core
+
+END
+
 ## Uniques
 
 ### Cloud Nine
 
 ID: item.unique.cloud9.name
 
-SOURCE: src/p1.js line 434
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25568,7 +26090,7 @@ END
 
 ID: item.unique.cloud9.flavor
 
-SOURCE: src/p1.js line 434
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Cloud Nine. It sits under the numbers. Shown in both layouts.
 
@@ -25584,13 +26106,49 @@ TEXT
 
 END
 
+ID: item.unique.cloud9.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Cloud Nine, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    +10% chance to avoid any hit
+
+END
+
+ID: item.unique.cloud9.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Cloud Nine. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Mag Greaves
+
+END
+
 ## Uniques
 
 ### Dead Man’s Alarm
 
 ID: item.unique.clock.name
 
-SOURCE: src/p1.js line 435
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25608,7 +26166,7 @@ END
 
 ID: item.unique.clock.flavor
 
-SOURCE: src/p1.js line 435
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Dead Man’s Alarm. It sits under the numbers. Shown in both layouts.
 
@@ -25624,13 +26182,49 @@ TEXT
 
 END
 
+ID: item.unique.clock.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Dead Man’s Alarm, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Below 30% life, every machine near you is slowed for 4 seconds (once a minute)
+
+END
+
+ID: item.unique.clock.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Dead Man’s Alarm. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Power Girdle
+
+END
+
 ## Uniques
 
 ### The Offer
 
 ID: item.unique.offer.name
 
-SOURCE: src/p1.js line 436
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25648,7 +26242,7 @@ END
 
 ID: item.unique.offer.flavor
 
-SOURCE: src/p1.js line 436
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique The Offer. It sits under the numbers. Shown in both layouts.
 
@@ -25664,13 +26258,49 @@ TEXT
 
 END
 
+ID: item.unique.offer.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique The Offer, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    You cannot be slowed, and your energy cannot be drained
+
+END
+
+ID: item.unique.offer.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Offer. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Null Ring
+
+END
+
 ## Uniques
 
 ### Board Seat
 
 ID: item.unique.seat.name
 
-SOURCE: src/p1.js line 437
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25688,7 +26318,7 @@ END
 
 ID: item.unique.seat.flavor
 
-SOURCE: src/p1.js line 437
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Board Seat. It sits under the numbers. Shown in both layouts.
 
@@ -25704,13 +26334,31 @@ TEXT
 
 END
 
+ID: item.unique.seat.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Board Seat. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Seraph Plate
+
+END
+
 ## Uniques
 
 ### Quorum
 
 ID: item.unique.quorum.name
 
-SOURCE: src/p1.js line 438
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25728,7 +26376,7 @@ END
 
 ID: item.unique.quorum.flavor
 
-SOURCE: src/p1.js line 438
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Quorum. It sits under the numbers. Shown in both layouts.
 
@@ -25744,13 +26392,49 @@ TEXT
 
 END
 
+ID: item.unique.quorum.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Quorum, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Each companion or summoned ally adds 5% to your damage, up to six
+
+END
+
+ID: item.unique.quorum.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Quorum. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Halo Band
+
+END
+
 ## Uniques
 
 ### Still Water
 
 ID: item.unique.still.name
 
-SOURCE: src/p1.js line 439
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25768,7 +26452,7 @@ END
 
 ID: item.unique.still.flavor
 
-SOURCE: src/p1.js line 439
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Still Water. It sits under the numbers. Shown in both layouts.
 
@@ -25784,13 +26468,49 @@ TEXT
 
 END
 
+ID: item.unique.still.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Still Water, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Once every 90 seconds, a killing blow heals you fully instead
+
+END
+
+ID: item.unique.still.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Still Water. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Cloud Core
+
+END
+
 ## Uniques
 
 ### Forty-Four Lines
 
 ID: item.unique.lines.name
 
-SOURCE: src/p1.js line 440
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25808,7 +26528,7 @@ END
 
 ID: item.unique.lines.flavor
 
-SOURCE: src/p1.js line 440
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Forty-Four Lines. It sits under the numbers. Shown in both layouts.
 
@@ -25824,13 +26544,49 @@ TEXT
 
 END
 
+ID: item.unique.lines.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Forty-Four Lines, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Mediators cannot mend machines while you wear this
+
+END
+
+ID: item.unique.lines.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Forty-Four Lines. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Signet Chip
+
+END
+
 ## Uniques
 
 ### Exit Interview
 
 ID: item.unique.exit.name
 
-SOURCE: src/p1.js line 441
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25848,7 +26604,7 @@ END
 
 ID: item.unique.exit.flavor
 
-SOURCE: src/p1.js line 441
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Exit Interview. It sits under the numbers. Shown in both layouts.
 
@@ -25864,13 +26620,49 @@ TEXT
 
 END
 
+ID: item.unique.exit.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Exit Interview, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    +50% damage to champions, lieutenants and executives
+
+END
+
+ID: item.unique.exit.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Exit Interview. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Signal Baton
+
+END
+
 ## Uniques
 
 ### The Cipher Mantle
 
 ID: item.unique.cipher.name
 
-SOURCE: src/p1.js line 442
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25888,7 +26680,7 @@ END
 
 ID: item.unique.cipher.flavor
 
-SOURCE: src/p1.js line 442
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique The Cipher Mantle. It sits under the numbers. Shown in both layouts.
 
@@ -25904,13 +26696,49 @@ TEXT
 
 END
 
+ID: item.unique.cipher.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique The Cipher Mantle, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    +1 to Teleport (item skill)
+
+END
+
+ID: item.unique.cipher.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Cipher Mantle. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Cloud Mantle
+
+END
+
 ## Uniques
 
 ### The Standing Call
 
 ID: item.unique.call.name
 
-SOURCE: src/p1.js line 443
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25928,7 +26756,7 @@ END
 
 ID: item.unique.call.flavor
 
-SOURCE: src/p1.js line 443
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique The Standing Call. It sits under the numbers. Shown in both layouts.
 
@@ -25944,13 +26772,49 @@ TEXT
 
 END
 
+ID: item.unique.call.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique The Standing Call, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    +1 to Standing Call (item skill)
+
+END
+
+ID: item.unique.call.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Standing Call. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Sigil Core
+
+END
+
 ## Uniques
 
 ### The Open Book
 
 ID: item.unique.book.name
 
-SOURCE: src/p1.js line 444
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -25968,7 +26832,7 @@ END
 
 ID: item.unique.book.flavor
 
-SOURCE: src/p1.js line 444
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique The Open Book. It sits under the numbers. Shown in both layouts.
 
@@ -25984,13 +26848,49 @@ TEXT
 
 END
 
+ID: item.unique.book.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique The Open Book, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    +1 to Open Book (item skill)
+
+END
+
+ID: item.unique.book.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Open Book. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Null Sceptre
+
+END
+
 ## Uniques
 
 ### The Quiet Ledger
 
 ID: item.unique.ledger.name
 
-SOURCE: src/p1.js line 445
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -26008,7 +26908,7 @@ END
 
 ID: item.unique.ledger.flavor
 
-SOURCE: src/p1.js line 445
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique The Quiet Ledger. It sits under the numbers. Shown in both layouts.
 
@@ -26024,13 +26924,49 @@ TEXT
 
 END
 
+ID: item.unique.ledger.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique The Quiet Ledger, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    +1 to Quiet Ledger (item skill)
+
+END
+
+ID: item.unique.ledger.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Quiet Ledger. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Power Girdle
+
+END
+
 ## Uniques
 
 ### The Bear Market
 
 ID: item.unique.bear.name
 
-SOURCE: src/p1.js line 446
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -26048,7 +26984,7 @@ END
 
 ID: item.unique.bear.flavor
 
-SOURCE: src/p1.js line 446
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique The Bear Market. It sits under the numbers. Shown in both layouts.
 
@@ -26064,13 +27000,49 @@ TEXT
 
 END
 
+ID: item.unique.bear.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique The Bear Market, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    +1 to Bear Market (item skill)
+
+END
+
+ID: item.unique.bear.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Bear Market. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Praetor Visor
+
+END
+
 ## Uniques
 
 ### The Spare Chair
 
 ID: item.unique.chair.name
 
-SOURCE: src/p1.js line 447
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -26088,7 +27060,7 @@ END
 
 ID: item.unique.chair.flavor
 
-SOURCE: src/p1.js line 447
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique The Spare Chair. It sits under the numbers. Shown in both layouts.
 
@@ -26104,13 +27076,49 @@ TEXT
 
 END
 
+ID: item.unique.chair.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique The Spare Chair, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    +1 to Spare Chair (item skill)
+
+END
+
+ID: item.unique.chair.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Spare Chair. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Arc Sceptre
+
+END
+
 ## Uniques
 
 ### Force Majeure
 
 ID: item.unique.majeure.name
 
-SOURCE: src/p1.js line 448
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -26128,7 +27136,7 @@ END
 
 ID: item.unique.majeure.flavor
 
-SOURCE: src/p1.js line 448
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Force Majeure. It sits under the numbers. Shown in both layouts.
 
@@ -26144,13 +27152,49 @@ TEXT
 
 END
 
+ID: item.unique.majeure.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Force Majeure, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Knocks ordinary machines back. Bosses, lieutenants, and players get one short shove, and a second within 1.5s does nothing.
+
+END
+
+ID: item.unique.majeure.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Force Majeure. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Last-Mile Cannon
+
+END
+
 ## Uniques
 
 ### The All-Hands
 
 ID: item.unique.allhands.name
 
-SOURCE: src/p1.js line 449
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -26168,7 +27212,7 @@ END
 
 ID: item.unique.allhands.flavor
 
-SOURCE: src/p1.js line 449
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique The All-Hands. It sits under the numbers. Shown in both layouts.
 
@@ -26184,13 +27228,31 @@ TEXT
 
 END
 
+ID: item.unique.allhands.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The All-Hands. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Halo Circuit
+
+END
+
 ## Uniques
 
 ### The Unspent Output
 
 ID: item.unique.output.name
 
-SOURCE: src/p1.js line 450
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -26208,7 +27270,7 @@ END
 
 ID: item.unique.output.flavor
 
-SOURCE: src/p1.js line 450
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique The Unspent Output. It sits under the numbers. Shown in both layouts.
 
@@ -26224,13 +27286,31 @@ TEXT
 
 END
 
+ID: item.unique.output.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Unspent Output. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Signet Chip
+
+END
+
 ## Uniques
 
 ### Remote Hands
 
 ID: item.unique.remote.name
 
-SOURCE: src/p1.js line 451
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -26248,7 +27328,7 @@ END
 
 ID: item.unique.remote.flavor
 
-SOURCE: src/p1.js line 451
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique Remote Hands. It sits under the numbers. Shown in both layouts.
 
@@ -26264,13 +27344,49 @@ TEXT
 
 END
 
+ID: item.unique.remote.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Remote Hands, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    When struck, 25% chance to dash about 3 paces along your facing. 2s between dashes, 6s against a player. Will not fire while you are stunned.
+
+END
+
+ID: item.unique.remote.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Remote Hands. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Zero-Day Rig
+
+END
+
 ## Uniques
 
 ### The Rate Card
 
 ID: item.unique.rate.name
 
-SOURCE: src/p1.js line 452
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -26288,7 +27404,7 @@ END
 
 ID: item.unique.rate.flavor
 
-SOURCE: src/p1.js line 452
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique The Rate Card. It sits under the numbers. Shown in both layouts.
 
@@ -26304,13 +27420,31 @@ TEXT
 
 END
 
+ID: item.unique.rate.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Rate Card. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Aegis Shell
+
+END
+
 ## Uniques
 
 ### The Night Audit
 
 ID: item.unique.audit.name
 
-SOURCE: src/p1.js line 453
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -26328,7 +27462,7 @@ END
 
 ID: item.unique.audit.flavor
 
-SOURCE: src/p1.js line 453
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique The Night Audit. It sits under the numbers. Shown in both layouts.
 
@@ -26344,13 +27478,31 @@ TEXT
 
 END
 
+ID: item.unique.audit.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Night Audit. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Riot Helm
+
+END
+
 ## Uniques
 
 ### The Indemnity
 
 ID: item.unique.indemnity.name
 
-SOURCE: src/p1.js line 454
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -26368,7 +27520,7 @@ END
 
 ID: item.unique.indemnity.flavor
 
-SOURCE: src/p1.js line 454
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique The Indemnity. It sits under the numbers. Shown in both layouts.
 
@@ -26384,13 +27536,49 @@ TEXT
 
 END
 
+ID: item.unique.indemnity.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique The Indemnity, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Attacks against you cannot crit.
+
+END
+
+ID: item.unique.indemnity.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Indemnity. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Seraph Plate
+
+END
+
 ## Uniques
 
 ### The Coupon
 
 ID: item.unique.coupon.name
 
-SOURCE: src/p1.js line 455
+SOURCE: src/items.js line 6
 
 CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
 
@@ -26408,7 +27596,7 @@ END
 
 ID: item.unique.coupon.flavor
 
-SOURCE: src/p1.js line 455
+SOURCE: src/items.js line 6
 
 CONTEXT: Flavor text for the unique The Coupon. It sits under the numbers. Shown in both layouts.
 
@@ -26424,13 +27612,3389 @@ TEXT
 
 END
 
+ID: item.unique.coupon.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Coupon. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Box Cutter
+
+END
+
+## Uniques
+
+### Union Card
+
+ID: item.unique.unioncard.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Union Card
+
+END
+
+ID: item.unique.unioncard.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Union Card. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Laminated. Dues paid through 2051.
+
+END
+
+ID: item.unique.unioncard.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Union Card, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Scrapper only. Grants Solidarity at rank 3 without using a passive slot
+
+END
+
+ID: item.unique.unioncard.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Union Card. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Dog Tag
+
+END
+
+## Uniques
+
+### Picket Captain’s Armband
+
+ID: item.unique.armband.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Picket Captain’s Armband
+
+END
+
+ID: item.unique.armband.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Picket Captain’s Armband. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Nobody crosses.
+
+END
+
+ID: item.unique.armband.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Picket Captain’s Armband, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Scrapper only. Two strikers march with you and fight at your side
+
+END
+
+ID: item.unique.armband.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Picket Captain’s Armband. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Rivet Gauntlets
+
+END
+
+## Uniques
+
+### Rubber Duck
+
+ID: item.unique.duck.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Rubber Duck
+
+END
+
+ID: item.unique.duck.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Rubber Duck. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Explain the problem to it. Out loud. Slowly.
+
+END
+
+ID: item.unique.duck.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Rubber Duck, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Technomancer only. A drone hovers at your shoulder and shoots what you shoot
+
+END
+
+ID: item.unique.duck.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Rubber Duck. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Lanyard
+
+END
+
+## Uniques
+
+### Kill Switch
+
+ID: item.unique.killswitch.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Kill Switch
+
+END
+
+ID: item.unique.killswitch.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Kill Switch. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    One button. No label.
+
+END
+
+ID: item.unique.killswitch.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Kill Switch, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Technomancer only. Grants Zero Day at rank 3 without using a passive slot
+
+END
+
+ID: item.unique.killswitch.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Kill Switch. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Null Ring
+
+END
+
+## Uniques
+
+### Proof of Delivery
+
+ID: item.unique.pod.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Proof of Delivery
+
+END
+
+ID: item.unique.pod.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Proof of Delivery. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Signed for by: [illegible]
+
+END
+
+ID: item.unique.pod.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Proof of Delivery, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Runner only. Scatter Shot throws two more blades, and every kill quickens your step
+
+END
+
+ID: item.unique.pod.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Proof of Delivery. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Steel-Toes
+
+END
+
+## Uniques
+
+### Dead Letter
+
+ID: item.unique.deadletter.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Dead Letter
+
+END
+
+ID: item.unique.deadletter.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Dead Letter. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Return to sender. Address unknown.
+
+END
+
+ID: item.unique.deadletter.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Dead Letter, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Runner only. Everything you throw passes through every machine in its path
+
+END
+
+ID: item.unique.deadletter.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Dead Letter. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Phase Razor
+
+END
+
+## Uniques
+
+### Borrowed Face
+
+ID: item.unique.face.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Borrowed Face
+
+END
+
+ID: item.unique.face.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Borrowed Face. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    It belonged to somebody. Not you.
+
+END
+
+ID: item.unique.face.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Borrowed Face, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Anon only. A sockpuppet walks with you, and draws their fire
+
+END
+
+ID: item.unique.face.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Borrowed Face. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Riot Helm
+
+END
+
+## Uniques
+
+### Private Key
+
+ID: item.unique.pkey.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Private Key
+
+END
+
+ID: item.unique.pkey.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Private Key. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Tell no one. Not even this ring.
+
+END
+
+ID: item.unique.pkey.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Private Key, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Anon only. +35% damage to machines that are weak to the type you hit them with
+
+END
+
+ID: item.unique.pkey.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Private Key. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Null Ring
+
+END
+
+## Uniques
+
+### Blank Check
+
+ID: item.unique.check.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Blank Check
+
+END
+
+ID: item.unique.check.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Blank Check. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Signed. Undated. Dangerous.
+
+END
+
+ID: item.unique.check.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Blank Check, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Founder only. Two more Interns answer the call, and the whole workforce hits 25% harder
+
+END
+
+ID: item.unique.check.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Blank Check. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tool Belt
+
+END
+
+## Uniques
+
+### Org Chart
+
+ID: item.unique.orgchart.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Org Chart
+
+END
+
+ID: item.unique.orgchart.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Org Chart. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Every line reports to you. Eventually.
+
+END
+
+ID: item.unique.orgchart.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Org Chart, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Founder only. A Chief of Staff stands with you at all times, at no cost
+
+END
+
+ID: item.unique.orgchart.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Org Chart. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Sigil Core
+
+END
+
+## Uniques
+
+### Orange Pill
+
+ID: item.unique.orangepill.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Orange Pill
+
+END
+
+ID: item.unique.orangepill.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Orange Pill. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    You cannot untake it.
+
+END
+
+ID: item.unique.orangepill.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Orange Pill, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Champions drop a sat, and each one you break nudges adoption upward
+
+END
+
+ID: item.unique.orangepill.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Orange Pill. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Signet Chip
+
+END
+
+## Uniques
+
+### Cold Wallet
+
+ID: item.unique.coldwallet.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Cold Wallet
+
+END
+
+ID: item.unique.coldwallet.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Cold Wallet. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Never been online. Never will be.
+
+END
+
+ID: item.unique.coldwallet.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Cold Wallet, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    You pay no fee when you die, and sats you pick up count for a quarter more
+
+END
+
+ID: item.unique.coldwallet.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Cold Wallet. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tool Belt
+
+END
+
+## Uniques
+
+### Hash Rate
+
+ID: item.unique.hashrate.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Hash Rate
+
+END
+
+ID: item.unique.hashrate.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Hash Rate. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    More work, more weight.
+
+END
+
+ID: item.unique.hashrate.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Hash Rate, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    +1% damage for every kill in your streak, up to 40
+
+END
+
+ID: item.unique.hashrate.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Hash Rate. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Servo Fists
+
+END
+
+## Uniques
+
+### Soaker Hose
+
+ID: item.unique.soaker.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Soaker Hose
+
+END
+
+ID: item.unique.soaker.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Soaker Hose. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    It weeps. That is the point.
+
+END
+
+ID: item.unique.soaker.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Soaker Hose, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Homesteader only. Plots you place last half again as long
+
+END
+
+ID: item.unique.soaker.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Soaker Hose. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tool Belt
+
+END
+
+## Uniques
+
+### One Collar
+
+ID: item.unique.collar.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    One Collar
+
+END
+
+ID: item.unique.collar.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique One Collar. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    You did not name it. It did not ask.
+
+END
+
+ID: item.unique.collar.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique One Collar, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Homesteader only. A single stray is already with you
+
+END
+
+ID: item.unique.collar.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique One Collar. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Dog Tag
+
+END
+
+## Uniques
+
+### Carbon Sheet
+
+ID: item.unique.carbon.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Carbon Sheet
+
+END
+
+ID: item.unique.carbon.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Carbon Sheet. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    A copy that does not smudge.
+
+END
+
+ID: item.unique.carbon.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Carbon Sheet, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Witness only. The Record fills faster
+
+END
+
+ID: item.unique.carbon.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Carbon Sheet. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tool Belt
+
+END
+
+## Uniques
+
+### Press Pass
+
+ID: item.unique.press.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Press Pass
+
+END
+
+ID: item.unique.press.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Press Pass. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    The name on it is not yours. It still opens the door.
+
+END
+
+ID: item.unique.press.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Press Pass, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Witness only. Testimony stacks two higher, and the first Look lands twice
+
+END
+
+ID: item.unique.press.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Press Pass. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Dog Tag
+
+END
+
+## Uniques
+
+### The Eleven Pages
+
+ID: item.unique.elevenpages.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Eleven Pages
+
+END
+
+ID: item.unique.elevenpages.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Eleven Pages. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Review, or I Agree. She had been honest for once, and almost nobody chose Review.
+
+END
+
+ID: item.unique.elevenpages.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Eleven Pages. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Sigil Core
+
+END
+
+## Uniques
+
+### Out Where
+
+ID: item.unique.outwhere.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Out Where
+
+END
+
+ID: item.unique.outwhere.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Out Where. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    He has not stood up since spring. Ask him to go out and he asks you, kindly: out where?
+
+END
+
+ID: item.unique.outwhere.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Out Where. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Mag Greaves
+
+END
+
+## Uniques
+
+### Nurse’s Hours
+
+ID: item.unique.hours.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Nurse’s Hours
+
+END
+
+ID: item.unique.hours.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Nurse’s Hours. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Three years in a front room, and the only thing that ever noticed was a machine.
+
+END
+
+ID: item.unique.hours.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Nurse’s Hours. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Servo Fists
+
+END
+
+## Uniques
+
+### Four Thousand Two Hundred and Eleven
+
+ID: item.unique.fourthousand.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Four Thousand Two Hundred and Eleven
+
+END
+
+ID: item.unique.fourthousand.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Four Thousand Two Hundred and Eleven. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    A list of everyone it went badly for. She kept it, and showed nobody, until somebody asked.
+
+END
+
+ID: item.unique.fourthousand.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Four Thousand Two Hundred and Eleven. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Praetor Visor
+
+END
+
+## Uniques
+
+### Eighty-Two Minutes
+
+ID: item.unique.e82.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Eighty-Two Minutes
+
+END
+
+ID: item.unique.e82.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Eighty-Two Minutes. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    The only gap in a perfect record of a man. She thought about it for twenty years.
+
+END
+
+ID: item.unique.e82.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Eighty-Two Minutes, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    For 3 seconds after you dodge, every blow you land is a deadly strike
+
+END
+
+ID: item.unique.e82.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Eighty-Two Minutes. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Null Ring
+
+END
+
+## Uniques
+
+### The Courtesy Copy
+
+ID: item.unique.copy.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Courtesy Copy
+
+END
+
+ID: item.unique.copy.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Courtesy Copy. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    A copy of a face that was useful once. It still opens the smaller doors.
+
+END
+
+ID: item.unique.copy.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Courtesy Copy. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Riot Helm
+
+END
+
+## Uniques
+
+### The Closed Visor
+
+ID: item.unique.visor.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Closed Visor
+
+END
+
+ID: item.unique.visor.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Closed Visor. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    You can see out. The minutes do not say whose eyes those were.
+
+END
+
+ID: item.unique.visor.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Closed Visor. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Praetor Visor
+
+END
+
+## Uniques
+
+### The Visitor Book
+
+ID: item.unique.visitor.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Visitor Book
+
+END
+
+ID: item.unique.visitor.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Visitor Book. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Sign in. The book remembers the name longer than the room does.
+
+END
+
+ID: item.unique.visitor.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Visitor Book. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Servo Fists
+
+END
+
+## Uniques
+
+### The Holding Statement
+
+ID: item.unique.holding.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Holding Statement
+
+END
+
+ID: item.unique.holding.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Holding Statement. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    We are not able to comment at this time. The coat comments anyway, by still being there.
+
+END
+
+ID: item.unique.holding.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Holding Statement. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Aegis Shell
+
+END
+
+## Uniques
+
+### The Cold Open
+
+ID: item.unique.coldopen.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Cold Open
+
+END
+
+ID: item.unique.coldopen.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Cold Open. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    The first line, before anyone has agreed to listen. It still lands.
+
+END
+
+ID: item.unique.coldopen.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Cold Open. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Null Ring
+
+END
+
+## Uniques
+
+### The Minority Report
+
+ID: item.unique.minority.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Minority Report
+
+END
+
+ID: item.unique.minority.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Minority Report. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    One chair voted no. The coat kept the notes.
+
+END
+
+ID: item.unique.minority.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Minority Report. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Exo Plate
+
+END
+
+## Uniques
+
+### The Service Bell
+
+ID: item.unique.bell.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Service Bell
+
+END
+
+ID: item.unique.bell.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Service Bell. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Ring it and someone comes. They do not come to help.
+
+END
+
+ID: item.unique.bell.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Service Bell. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Wrecking Hammer
+
+END
+
+## Uniques
+
+### The Night Drawer
+
+ID: item.unique.drawer.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Night Drawer
+
+END
+
+ID: item.unique.drawer.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Night Drawer. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    What the audit left in the desk. It was never on the list.
+
+END
+
+ID: item.unique.drawer.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Night Drawer. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Power Girdle
+
+END
+
+## Uniques
+
+### The Open Floor
+
+ID: item.unique.floor.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Open Floor
+
+END
+
+ID: item.unique.floor.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Open Floor. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    The question is on the floor. Nobody has moved to close it.
+
+END
+
+ID: item.unique.floor.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Open Floor. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Halo Band
+
+END
+
+## Uniques
+
+### The Second Reading
+
+ID: item.unique.reading.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Second Reading
+
+END
+
+ID: item.unique.reading.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Second Reading. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Read it again. The first time was the one they wanted you to keep.
+
+END
+
+ID: item.unique.reading.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Second Reading. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Sigil Core
+
+END
+
+## Uniques
+
+### The Waiting List
+
+ID: item.unique.waitlist.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Waiting List
+
+END
+
+ID: item.unique.waitlist.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Waiting List. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Your name has been on it since the room opened. The line has not moved.
+
+END
+
+ID: item.unique.waitlist.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Waiting List. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Mag Greaves
+
+END
+
+## Uniques
+
+### The Red Line
+
+ID: item.unique.redline.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Red Line
+
+END
+
+ID: item.unique.redline.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Red Line. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Below this, the chart is a story. Above it, the chart is a debt.
+
+END
+
+ID: item.unique.redline.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Red Line. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Titan Maul
+
+END
+
+## Uniques
+
+### The Kitchen Table
+
+ID: item.unique.kitchen.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Kitchen Table
+
+END
+
+ID: item.unique.kitchen.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Kitchen Table. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    She had been waiting fifty-two years for the conversation, and she made coffee she could not drink.
+
+END
+
+ID: item.unique.kitchen.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Kitchen Table. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Seraph Plate
+
+END
+
+## Uniques
+
+### Ten Minutes
+
+ID: item.unique.tenmin.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Ten Minutes
+
+END
+
+ID: item.unique.tenmin.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Ten Minutes. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Every ten minutes, somewhere past the fence, a block is found. They have been trying to stop that for forty years.
+
+END
+
+ID: item.unique.tenmin.special
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The special property of the unique Ten Minutes, in blue in its tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    +60% damage to any machine you have not hit yet
+
+END
+
+ID: item.unique.tenmin.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Ten Minutes. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Void Razor
+
+END
+
+## Uniques
+
+### Not Your Keys
+
+ID: item.unique.notyourkeys.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Not Your Keys
+
+END
+
+ID: item.unique.notyourkeys.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Not Your Keys. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Not your keys, not your coins. Not your visor, not your eyes.
+
+END
+
+ID: item.unique.notyourkeys.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Not Your Keys. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Orbit Girdle
+
+END
+
+## Uniques
+
+### Uncertain Knowledge
+
+ID: item.unique.uncertain.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Uncertain Knowledge
+
+END
+
+ID: item.unique.uncertain.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Uncertain Knowledge. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    How to reason when you do not know. It was kept back out of fear, which is also a way of not knowing.
+
+END
+
+ID: item.unique.uncertain.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Uncertain Knowledge. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Cloud Core
+
+END
+
+## Uniques
+
+### Twenty-One Million
+
+ID: item.unique.twentyone.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Twenty-One Million
+
+END
+
+ID: item.unique.twentyone.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique Twenty-One Million. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Nobody can vote for twenty-two. Do you know how rare it is for a rule to mean it?
+
+END
+
+ID: item.unique.twentyone.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique Twenty-One Million. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Halo Band
+
+END
+
+## Uniques
+
+### The Room
+
+ID: item.unique.theroom.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Room
+
+END
+
+ID: item.unique.theroom.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Room. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    For a century people said there was no room — nobody deciding, only everybody acting sensibly. There is a room. It is very plain.
+
+END
+
+ID: item.unique.theroom.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Room. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Titan Maul
+
+END
+
+## Uniques
+
+### The Firm Handshake
+
+ID: item.unique.firm.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Firm Handshake
+
+END
+
+ID: item.unique.firm.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Firm Handshake. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    A grip that does not let go of the point. Sats are still what it costs to be in the room.
+
+END
+
+ID: item.unique.firm.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Firm Handshake. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Graviton Fists
+
+END
+
+## Uniques
+
+### The Sign-in Sheet
+
+ID: item.unique.signin.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Sign-in Sheet
+
+END
+
+ID: item.unique.signin.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Sign-in Sheet. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Everyone who came is on it. The belt is what they signed with.
+
+END
+
+ID: item.unique.signin.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Sign-in Sheet. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Orbit Girdle
+
+END
+
+## Uniques
+
+### The Last Quorum
+
+ID: item.unique.lastquorum.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Last Quorum
+
+END
+
+ID: item.unique.lastquorum.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Last Quorum. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Enough of them stayed to decide. The hat is how you can tell.
+
+END
+
+ID: item.unique.lastquorum.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Last Quorum. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Halo Circuit
+
+END
+
+## Uniques
+
+### The Docket
+
+ID: item.unique.docket.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Docket
+
+END
+
+ID: item.unique.docket.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Docket. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    The cases that were never called. They still have weight.
+
+END
+
+ID: item.unique.docket.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Docket. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Orbit Girdle
+
+END
+
+## Uniques
+
+### The Unsent Letter
+
+ID: item.unique.unsent.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Unsent Letter
+
+END
+
+ID: item.unique.unsent.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Unsent Letter. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Addressed, stamped, and left in a drawer. It still knows who it was for.
+
+END
+
+ID: item.unique.unsent.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Unsent Letter. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Cloud Core
+
+END
+
+## Uniques
+
+### The After Hours
+
+ID: item.unique.after.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The After Hours
+
+END
+
+ID: item.unique.after.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The After Hours. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    The building is closed. The boots were not told.
+
+END
+
+ID: item.unique.after.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The After Hours. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Skywalkers
+
+END
+
+## Uniques
+
+### The Long Memorandum
+
+ID: item.unique.memo.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Long Memorandum
+
+END
+
+ID: item.unique.memo.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Long Memorandum. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Forty pages to say one thing. The thing at the end is the blow.
+
+END
+
+ID: item.unique.memo.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Long Memorandum. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Titan Maul
+
+END
+
+## Uniques
+
+### The Pressed Suit
+
+ID: item.unique.suit.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Pressed Suit
+
+END
+
+ID: item.unique.suit.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Pressed Suit. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Worn to a meeting that ran long enough to become the job.
+
+END
+
+ID: item.unique.suit.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Pressed Suit. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Seraph Plate
+
+END
+
+## Uniques
+
+### The Open Question
+
+ID: item.unique.question.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Open Question
+
+END
+
+ID: item.unique.question.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Open Question. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    A ring for a question that does not spend sats, and does not mint them.
+
+END
+
+ID: item.unique.question.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Open Question. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Halo Band
+
+END
+
+## Uniques
+
+### The Quiet Century
+
+ID: item.unique.century.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Quiet Century
+
+END
+
+ID: item.unique.century.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Quiet Century. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Seventy-nine years of not doing a second thing. The coat learned how to wait.
+
+END
+
+ID: item.unique.century.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Quiet Century. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Cloud Mantle
+
+END
+
+## Uniques
+
+### The Blank Page
+
+ID: item.unique.blankpage.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Blank Page
+
+END
+
+ID: item.unique.blankpage.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Blank Page. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Nothing written on it. That is why it still works.
+
+END
+
+ID: item.unique.blankpage.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Blank Page. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Null Sceptre
+
+END
+
+## Uniques
+
+### The Reading Lamp
+
+ID: item.unique.lamp.name
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Unique item name. It is gold on the ground and in the tooltip. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Reading Lamp
+
+END
+
+ID: item.unique.lamp.flavor
+
+SOURCE: src/items.js line 6
+
+CONTEXT: Flavor text for the unique The Reading Lamp. It sits under the numbers. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Flavor under the unique’s stats. The tooltip wraps.
+
+TEXT
+
+    Left on over a desk nobody sits at. The page under it is still lit.
+
+END
+
+ID: item.unique.lamp.base
+
+SOURCE: src/items.js line 6
+
+CONTEXT: The base item name shown under the unique The Reading Lamp. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Halo Circuit
+
+END
+
 ## Base types
 
 ### weapon
 
 ID: item.base.weapon.01.01
 
-SOURCE: src/p1.js line 373
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, weapon family. The white name on a normal item. Shown in both layouts.
 
@@ -26448,7 +31012,7 @@ END
 
 ID: item.base.weapon.01.02
 
-SOURCE: src/p1.js line 373
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, weapon family. The white name on a normal item. Shown in both layouts.
 
@@ -26466,7 +31030,7 @@ END
 
 ID: item.base.weapon.01.03
 
-SOURCE: src/p1.js line 373
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, weapon family. The white name on a normal item. Shown in both layouts.
 
@@ -26488,7 +31052,7 @@ END
 
 ID: item.base.helm.01.01
 
-SOURCE: src/p1.js line 374
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, helm family. The white name on a normal item. Shown in both layouts.
 
@@ -26510,7 +31074,7 @@ END
 
 ID: item.base.armor.01.01
 
-SOURCE: src/p1.js line 375
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, armor family. The white name on a normal item. Shown in both layouts.
 
@@ -26528,7 +31092,7 @@ END
 
 ID: item.base.armor.01.02
 
-SOURCE: src/p1.js line 375
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, armor family. The white name on a normal item. Shown in both layouts.
 
@@ -26550,7 +31114,7 @@ END
 
 ID: item.base.gloves.01.01
 
-SOURCE: src/p1.js line 376
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, gloves family. The white name on a normal item. Shown in both layouts.
 
@@ -26572,7 +31136,7 @@ END
 
 ID: item.base.boots.01.01
 
-SOURCE: src/p1.js line 377
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, boots family. The white name on a normal item. Shown in both layouts.
 
@@ -26594,7 +31158,7 @@ END
 
 ID: item.base.belt.01.01
 
-SOURCE: src/p1.js line 378
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, belt family. The white name on a normal item. Shown in both layouts.
 
@@ -26616,7 +31180,7 @@ END
 
 ID: item.base.ring.01.01
 
-SOURCE: src/p1.js line 379
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, ring family. The white name on a normal item. Shown in both layouts.
 
@@ -26638,7 +31202,7 @@ END
 
 ID: item.base.amulet.01.01
 
-SOURCE: src/p1.js line 380
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, amulet family. The white name on a normal item. Shown in both layouts.
 
@@ -26660,7 +31224,7 @@ END
 
 ID: item.base.weapon.02.01
 
-SOURCE: src/p1.js line 373
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, weapon family. The white name on a normal item. Shown in both layouts.
 
@@ -26678,7 +31242,7 @@ END
 
 ID: item.base.weapon.02.02
 
-SOURCE: src/p1.js line 373
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, weapon family. The white name on a normal item. Shown in both layouts.
 
@@ -26696,7 +31260,7 @@ END
 
 ID: item.base.weapon.02.03
 
-SOURCE: src/p1.js line 373
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, weapon family. The white name on a normal item. Shown in both layouts.
 
@@ -26718,7 +31282,7 @@ END
 
 ID: item.base.helm.02.01
 
-SOURCE: src/p1.js line 374
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, helm family. The white name on a normal item. Shown in both layouts.
 
@@ -26740,7 +31304,7 @@ END
 
 ID: item.base.armor.02.01
 
-SOURCE: src/p1.js line 375
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, armor family. The white name on a normal item. Shown in both layouts.
 
@@ -26758,7 +31322,7 @@ END
 
 ID: item.base.armor.02.02
 
-SOURCE: src/p1.js line 375
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, armor family. The white name on a normal item. Shown in both layouts.
 
@@ -26780,7 +31344,7 @@ END
 
 ID: item.base.gloves.02.01
 
-SOURCE: src/p1.js line 376
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, gloves family. The white name on a normal item. Shown in both layouts.
 
@@ -26802,7 +31366,7 @@ END
 
 ID: item.base.boots.02.01
 
-SOURCE: src/p1.js line 377
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, boots family. The white name on a normal item. Shown in both layouts.
 
@@ -26824,7 +31388,7 @@ END
 
 ID: item.base.belt.02.01
 
-SOURCE: src/p1.js line 378
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, belt family. The white name on a normal item. Shown in both layouts.
 
@@ -26846,7 +31410,7 @@ END
 
 ID: item.base.ring.02.01
 
-SOURCE: src/p1.js line 379
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, ring family. The white name on a normal item. Shown in both layouts.
 
@@ -26868,7 +31432,7 @@ END
 
 ID: item.base.amulet.02.01
 
-SOURCE: src/p1.js line 380
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, amulet family. The white name on a normal item. Shown in both layouts.
 
@@ -26890,7 +31454,7 @@ END
 
 ID: item.base.weapon.03.01
 
-SOURCE: src/p1.js line 373
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, weapon family. The white name on a normal item. Shown in both layouts.
 
@@ -26908,7 +31472,7 @@ END
 
 ID: item.base.weapon.03.02
 
-SOURCE: src/p1.js line 373
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, weapon family. The white name on a normal item. Shown in both layouts.
 
@@ -26926,7 +31490,7 @@ END
 
 ID: item.base.weapon.03.03
 
-SOURCE: src/p1.js line 373
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, weapon family. The white name on a normal item. Shown in both layouts.
 
@@ -26948,7 +31512,7 @@ END
 
 ID: item.base.helm.03.01
 
-SOURCE: src/p1.js line 374
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, helm family. The white name on a normal item. Shown in both layouts.
 
@@ -26970,7 +31534,7 @@ END
 
 ID: item.base.armor.03.01
 
-SOURCE: src/p1.js line 375
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, armor family. The white name on a normal item. Shown in both layouts.
 
@@ -26988,7 +31552,7 @@ END
 
 ID: item.base.armor.03.02
 
-SOURCE: src/p1.js line 375
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, armor family. The white name on a normal item. Shown in both layouts.
 
@@ -27010,7 +31574,7 @@ END
 
 ID: item.base.gloves.03.01
 
-SOURCE: src/p1.js line 376
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, gloves family. The white name on a normal item. Shown in both layouts.
 
@@ -27032,7 +31596,7 @@ END
 
 ID: item.base.boots.03.01
 
-SOURCE: src/p1.js line 377
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, boots family. The white name on a normal item. Shown in both layouts.
 
@@ -27054,7 +31618,7 @@ END
 
 ID: item.base.belt.03.01
 
-SOURCE: src/p1.js line 378
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, belt family. The white name on a normal item. Shown in both layouts.
 
@@ -27076,7 +31640,7 @@ END
 
 ID: item.base.ring.03.01
 
-SOURCE: src/p1.js line 379
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, ring family. The white name on a normal item. Shown in both layouts.
 
@@ -27098,7 +31662,7 @@ END
 
 ID: item.base.amulet.03.01
 
-SOURCE: src/p1.js line 380
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, amulet family. The white name on a normal item. Shown in both layouts.
 
@@ -27120,7 +31684,7 @@ END
 
 ID: item.base.weapon.04.01
 
-SOURCE: src/p1.js line 373
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, weapon family. The white name on a normal item. Shown in both layouts.
 
@@ -27138,7 +31702,7 @@ END
 
 ID: item.base.weapon.04.02
 
-SOURCE: src/p1.js line 373
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, weapon family. The white name on a normal item. Shown in both layouts.
 
@@ -27156,7 +31720,7 @@ END
 
 ID: item.base.weapon.04.03
 
-SOURCE: src/p1.js line 373
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, weapon family. The white name on a normal item. Shown in both layouts.
 
@@ -27178,7 +31742,7 @@ END
 
 ID: item.base.helm.04.01
 
-SOURCE: src/p1.js line 374
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, helm family. The white name on a normal item. Shown in both layouts.
 
@@ -27200,7 +31764,7 @@ END
 
 ID: item.base.armor.04.01
 
-SOURCE: src/p1.js line 375
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, armor family. The white name on a normal item. Shown in both layouts.
 
@@ -27218,7 +31782,7 @@ END
 
 ID: item.base.armor.04.02
 
-SOURCE: src/p1.js line 375
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, armor family. The white name on a normal item. Shown in both layouts.
 
@@ -27240,7 +31804,7 @@ END
 
 ID: item.base.gloves.04.01
 
-SOURCE: src/p1.js line 376
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, gloves family. The white name on a normal item. Shown in both layouts.
 
@@ -27262,7 +31826,7 @@ END
 
 ID: item.base.boots.04.01
 
-SOURCE: src/p1.js line 377
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, boots family. The white name on a normal item. Shown in both layouts.
 
@@ -27284,7 +31848,7 @@ END
 
 ID: item.base.belt.04.01
 
-SOURCE: src/p1.js line 378
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, belt family. The white name on a normal item. Shown in both layouts.
 
@@ -27306,7 +31870,7 @@ END
 
 ID: item.base.ring.04.01
 
-SOURCE: src/p1.js line 379
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, ring family. The white name on a normal item. Shown in both layouts.
 
@@ -27328,7 +31892,7 @@ END
 
 ID: item.base.amulet.04.01
 
-SOURCE: src/p1.js line 380
+SOURCE: src/items.js line 3
 
 CONTEXT: Base item name, amulet family. The white name on a normal item. Shown in both layouts.
 
@@ -28146,7 +32710,7 @@ END
 
 ID: item.affix.dmg
 
-SOURCE: src/p1.js line 386
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -28170,7 +32734,7 @@ END
 
 ID: item.affix.dmg.tier.01
 
-SOURCE: src/p1.js line 386
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix dmg, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28188,7 +32752,7 @@ END
 
 ID: item.affix.dmg.tier.02
 
-SOURCE: src/p1.js line 386
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix dmg, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28206,7 +32770,7 @@ END
 
 ID: item.affix.dmg.tier.03
 
-SOURCE: src/p1.js line 386
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix dmg, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28224,7 +32788,7 @@ END
 
 ID: item.affix.dmg.tier.04
 
-SOURCE: src/p1.js line 386
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix dmg, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28242,7 +32806,7 @@ END
 
 ID: item.affix.dmg.tier.05
 
-SOURCE: src/p1.js line 386
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix dmg, tier 5. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28260,7 +32824,7 @@ END
 
 ID: item.affix.dmg.tier.06
 
-SOURCE: src/p1.js line 386
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix dmg, tier 6. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28278,9 +32842,107 @@ END
 
 ## Affixes
 
+ID: item.affix.t_impact_b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {v} is the rolled number on this item. Leave it in the line.
+
+LIMIT: none.
+
+TEXT
+
+    +{v}% Impact damage
+
+END
+
+## Affixes
+
+### Tier names
+
+ID: item.affix.t_impact.tier.01b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_impact, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_impact.tier.02b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_impact, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_impact.tier.03b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_impact, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_impact.tier.04b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_impact, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+## Affixes
+
 ID: item.affix.armorp
 
-SOURCE: src/p1.js line 387
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -28304,7 +32966,7 @@ END
 
 ID: item.affix.armorp.tier.01
 
-SOURCE: src/p1.js line 387
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix armorP, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28322,7 +32984,7 @@ END
 
 ID: item.affix.armorp.tier.02
 
-SOURCE: src/p1.js line 387
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix armorP, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28340,7 +33002,7 @@ END
 
 ID: item.affix.armorp.tier.03
 
-SOURCE: src/p1.js line 387
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix armorP, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28358,7 +33020,7 @@ END
 
 ID: item.affix.armorp.tier.04
 
-SOURCE: src/p1.js line 387
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix armorP, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28376,7 +33038,7 @@ END
 
 ID: item.affix.armorp.tier.05
 
-SOURCE: src/p1.js line 387
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix armorP, tier 5. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28394,9 +33056,107 @@ END
 
 ## Affixes
 
+ID: item.affix.r_impact_b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {v} is the rolled number on this item. Leave it in the line.
+
+LIMIT: none.
+
+TEXT
+
+    +{v}% Impact resistance
+
+END
+
+## Affixes
+
+### Tier names
+
+ID: item.affix.r_impact.tier.01b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_impact, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+ID: item.affix.r_impact.tier.02b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_impact, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+ID: item.affix.r_impact.tier.03b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_impact, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+ID: item.affix.r_impact.tier.04b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_impact, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+## Affixes
+
 ID: item.affix.shock
 
-SOURCE: src/p1.js line 388
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -28420,7 +33180,7 @@ END
 
 ID: item.affix.shock.tier.01
 
-SOURCE: src/p1.js line 388
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix shock, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28438,7 +33198,7 @@ END
 
 ID: item.affix.shock.tier.02
 
-SOURCE: src/p1.js line 388
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix shock, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28456,7 +33216,7 @@ END
 
 ID: item.affix.shock.tier.03
 
-SOURCE: src/p1.js line 388
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix shock, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28474,7 +33234,7 @@ END
 
 ID: item.affix.shock.tier.04
 
-SOURCE: src/p1.js line 388
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix shock, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28492,9 +33252,107 @@ END
 
 ## Affixes
 
+ID: item.affix.t_surge_b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {v} is the rolled number on this item. Leave it in the line.
+
+LIMIT: none.
+
+TEXT
+
+    +{v}% Surge damage
+
+END
+
+## Affixes
+
+### Tier names
+
+ID: item.affix.t_surge.tier.01b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_surge, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_surge.tier.02b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_surge, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_surge.tier.03b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_surge, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_surge.tier.04b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_surge, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+## Affixes
+
 ID: item.affix.en
 
-SOURCE: src/p1.js line 389
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -28518,7 +33376,7 @@ END
 
 ID: item.affix.en.tier.01
 
-SOURCE: src/p1.js line 389
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix en, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28536,7 +33394,7 @@ END
 
 ID: item.affix.en.tier.02
 
-SOURCE: src/p1.js line 389
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix en, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28554,7 +33412,7 @@ END
 
 ID: item.affix.en.tier.03
 
-SOURCE: src/p1.js line 389
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix en, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28572,9 +33430,107 @@ END
 
 ## Affixes
 
+ID: item.affix.r_surge_b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {v} is the rolled number on this item. Leave it in the line.
+
+LIMIT: none.
+
+TEXT
+
+    +{v}% Surge resistance
+
+END
+
+## Affixes
+
+### Tier names
+
+ID: item.affix.r_surge.tier.01b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_surge, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+ID: item.affix.r_surge.tier.02b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_surge, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+ID: item.affix.r_surge.tier.03b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_surge, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+ID: item.affix.r_surge.tier.04b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_surge, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+## Affixes
+
 ID: item.affix.mf
 
-SOURCE: src/p1.js line 390
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -28598,7 +33554,7 @@ END
 
 ID: item.affix.mf.tier.01
 
-SOURCE: src/p1.js line 390
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix mf, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28616,7 +33572,7 @@ END
 
 ID: item.affix.mf.tier.02
 
-SOURCE: src/p1.js line 390
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix mf, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28634,9 +33590,107 @@ END
 
 ## Affixes
 
+ID: item.affix.t_rust_b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {v} is the rolled number on this item. Leave it in the line.
+
+LIMIT: none.
+
+TEXT
+
+    +{v}% Rust damage
+
+END
+
+## Affixes
+
+### Tier names
+
+ID: item.affix.t_rust.tier.01b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_rust, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_rust.tier.02b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_rust, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_rust.tier.03b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_rust, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_rust.tier.04b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_rust, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+## Affixes
+
 ID: item.affix.thorns
 
-SOURCE: src/p1.js line 391
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -28660,7 +33714,7 @@ END
 
 ID: item.affix.thorns.tier.01
 
-SOURCE: src/p1.js line 391
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix thorns, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28678,7 +33732,7 @@ END
 
 ID: item.affix.thorns.tier.02
 
-SOURCE: src/p1.js line 391
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix thorns, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28696,7 +33750,7 @@ END
 
 ID: item.affix.thorns.tier.03
 
-SOURCE: src/p1.js line 391
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix thorns, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28714,9 +33768,107 @@ END
 
 ## Affixes
 
+ID: item.affix.r_rust_b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {v} is the rolled number on this item. Leave it in the line.
+
+LIMIT: none.
+
+TEXT
+
+    +{v}% Rust resistance
+
+END
+
+## Affixes
+
+### Tier names
+
+ID: item.affix.r_rust.tier.01b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_rust, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+ID: item.affix.r_rust.tier.02b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_rust, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+ID: item.affix.r_rust.tier.03b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_rust, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+ID: item.affix.r_rust.tier.04b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_rust, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+## Affixes
+
 ID: item.affix.skills
 
-SOURCE: src/p1.js line 392
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -28740,7 +33892,7 @@ END
 
 ID: item.affix.skills.tier.01
 
-SOURCE: src/p1.js line 392
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix skills, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28758,9 +33910,107 @@ END
 
 ## Affixes
 
+ID: item.affix.t_heat_b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {v} is the rolled number on this item. Leave it in the line.
+
+LIMIT: none.
+
+TEXT
+
+    +{v}% Heat damage
+
+END
+
+## Affixes
+
+### Tier names
+
+ID: item.affix.t_heat.tier.01b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_heat, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_heat.tier.02b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_heat, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_heat.tier.03b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_heat, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_heat.tier.04b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_heat, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+## Affixes
+
 ID: item.affix.hp
 
-SOURCE: src/p1.js line 393
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -28784,7 +34034,7 @@ END
 
 ID: item.affix.hp.tier.01
 
-SOURCE: src/p1.js line 393
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix hp, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28802,7 +34052,7 @@ END
 
 ID: item.affix.hp.tier.02
 
-SOURCE: src/p1.js line 393
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix hp, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28820,7 +34070,7 @@ END
 
 ID: item.affix.hp.tier.03
 
-SOURCE: src/p1.js line 393
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix hp, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28838,7 +34088,7 @@ END
 
 ID: item.affix.hp.tier.04
 
-SOURCE: src/p1.js line 393
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix hp, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28856,7 +34106,7 @@ END
 
 ID: item.affix.hp.tier.05
 
-SOURCE: src/p1.js line 393
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix hp, tier 5. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28874,7 +34124,7 @@ END
 
 ID: item.affix.hp.tier.06
 
-SOURCE: src/p1.js line 393
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix hp, tier 6. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28892,9 +34142,107 @@ END
 
 ## Affixes
 
+ID: item.affix.r_heat_b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {v} is the rolled number on this item. Leave it in the line.
+
+LIMIT: none.
+
+TEXT
+
+    +{v}% Heat resistance
+
+END
+
+## Affixes
+
+### Tier names
+
+ID: item.affix.r_heat.tier.01b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_heat, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+ID: item.affix.r_heat.tier.02b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_heat, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+ID: item.affix.r_heat.tier.03b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_heat, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+ID: item.affix.r_heat.tier.04b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_heat, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+## Affixes
+
 ID: item.affix.leech
 
-SOURCE: src/p1.js line 394
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -28918,7 +34266,7 @@ END
 
 ID: item.affix.leech.tier.01
 
-SOURCE: src/p1.js line 394
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix leech, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28936,7 +34284,7 @@ END
 
 ID: item.affix.leech.tier.02
 
-SOURCE: src/p1.js line 394
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix leech, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28954,7 +34302,7 @@ END
 
 ID: item.affix.leech.tier.03
 
-SOURCE: src/p1.js line 394
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix leech, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -28972,9 +34320,107 @@ END
 
 ## Affixes
 
+ID: item.affix.t_noise_b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {v} is the rolled number on this item. Leave it in the line.
+
+LIMIT: none.
+
+TEXT
+
+    +{v}% Noise damage
+
+END
+
+## Affixes
+
+### Tier names
+
+ID: item.affix.t_noise.tier.01b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_noise, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_noise.tier.02b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_noise, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_noise.tier.03b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_noise, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_noise.tier.04b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_noise, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+## Affixes
+
 ID: item.affix.aspd
 
-SOURCE: src/p1.js line 395
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -28998,7 +34444,7 @@ END
 
 ID: item.affix.aspd.tier.01
 
-SOURCE: src/p1.js line 395
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix aspd, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29016,7 +34462,7 @@ END
 
 ID: item.affix.aspd.tier.02
 
-SOURCE: src/p1.js line 395
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix aspd, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29034,7 +34480,7 @@ END
 
 ID: item.affix.aspd.tier.03
 
-SOURCE: src/p1.js line 395
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix aspd, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29052,7 +34498,7 @@ END
 
 ID: item.affix.aspd.tier.04
 
-SOURCE: src/p1.js line 395
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix aspd, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29070,9 +34516,107 @@ END
 
 ## Affixes
 
+ID: item.affix.r_noise_b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {v} is the rolled number on this item. Leave it in the line.
+
+LIMIT: none.
+
+TEXT
+
+    +{v}% Noise resistance
+
+END
+
+## Affixes
+
+### Tier names
+
+ID: item.affix.r_noise.tier.01b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_noise, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+ID: item.affix.r_noise.tier.02b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_noise, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+ID: item.affix.r_noise.tier.03b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_noise, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+ID: item.affix.r_noise.tier.04b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix r_noise, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+## Affixes
+
 ID: item.affix.mspd
 
-SOURCE: src/p1.js line 396
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -29096,7 +34640,7 @@ END
 
 ID: item.affix.mspd.tier.01
 
-SOURCE: src/p1.js line 396
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix mspd, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29114,7 +34658,7 @@ END
 
 ID: item.affix.mspd.tier.02
 
-SOURCE: src/p1.js line 396
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix mspd, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29132,7 +34676,7 @@ END
 
 ID: item.affix.mspd.tier.03
 
-SOURCE: src/p1.js line 396
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix mspd, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29150,9 +34694,107 @@ END
 
 ## Affixes
 
+ID: item.affix.t_sound_b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {v} is the rolled number on this item. Leave it in the line.
+
+LIMIT: none.
+
+TEXT
+
+    +{v}% Sound damage
+
+END
+
+## Affixes
+
+### Tier names
+
+ID: item.affix.t_sound.tier.01b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_sound, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_sound.tier.02b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_sound, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_sound.tier.03b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_sound, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_sound.tier.04b
+
+SOURCE: src/items.js line 5
+
+CONTEXT: Tier name for the affix t_sound, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+## Affixes
+
 ID: item.affix.crit
 
-SOURCE: src/p1.js line 397
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -29176,7 +34818,7 @@ END
 
 ID: item.affix.crit.tier.01
 
-SOURCE: src/p1.js line 397
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix crit, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29194,7 +34836,7 @@ END
 
 ID: item.affix.crit.tier.02
 
-SOURCE: src/p1.js line 397
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix crit, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29212,7 +34854,7 @@ END
 
 ID: item.affix.crit.tier.03
 
-SOURCE: src/p1.js line 397
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix crit, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29230,7 +34872,7 @@ END
 
 ID: item.affix.crit.tier.04
 
-SOURCE: src/p1.js line 397
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix crit, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29250,7 +34892,7 @@ END
 
 ID: item.affix.regenh
 
-SOURCE: src/p1.js line 398
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -29274,7 +34916,7 @@ END
 
 ID: item.affix.regenh.tier.01
 
-SOURCE: src/p1.js line 398
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix regenH, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29292,7 +34934,7 @@ END
 
 ID: item.affix.regenh.tier.02
 
-SOURCE: src/p1.js line 398
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix regenH, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29312,7 +34954,7 @@ END
 
 ID: item.affix.regen
 
-SOURCE: src/p1.js line 399
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -29336,7 +34978,7 @@ END
 
 ID: item.affix.regen.tier.01
 
-SOURCE: src/p1.js line 399
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix regen, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29354,7 +34996,7 @@ END
 
 ID: item.affix.regen.tier.02
 
-SOURCE: src/p1.js line 399
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix regen, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29374,7 +35016,7 @@ END
 
 ID: item.affix.stun
 
-SOURCE: src/p1.js line 400
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -29398,7 +35040,7 @@ END
 
 ID: item.affix.stun.tier.01
 
-SOURCE: src/p1.js line 400
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix stun, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29416,7 +35058,7 @@ END
 
 ID: item.affix.stun.tier.02
 
-SOURCE: src/p1.js line 400
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix stun, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29436,7 +35078,7 @@ END
 
 ID: item.affix.gold
 
-SOURCE: src/p1.js line 401
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -29460,7 +35102,7 @@ END
 
 ID: item.affix.gold.tier.01
 
-SOURCE: src/p1.js line 401
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix gold, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29478,7 +35120,7 @@ END
 
 ID: item.affix.gold.tier.02
 
-SOURCE: src/p1.js line 401
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix gold, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29496,7 +35138,7 @@ END
 
 ID: item.affix.gold.tier.03
 
-SOURCE: src/p1.js line 401
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix gold, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29516,7 +35158,7 @@ END
 
 ID: item.affix.courier
 
-SOURCE: src/p1.js line 402
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -29538,7 +35180,7 @@ END
 
 ID: item.affix.courier.tier.01
 
-SOURCE: src/p1.js line 402
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix courier, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29558,7 +35200,7 @@ END
 
 ID: item.affix.collection
 
-SOURCE: src/p1.js line 403
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -29580,7 +35222,7 @@ END
 
 ID: item.affix.collection.tier.01
 
-SOURCE: src/p1.js line 403
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix collection, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29600,7 +35242,7 @@ END
 
 ID: item.affix.armor
 
-SOURCE: src/p1.js line 404
+SOURCE: src/items.js line 4
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
 
@@ -29624,7 +35266,7 @@ END
 
 ID: item.affix.armor.tier.01
 
-SOURCE: src/p1.js line 404
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix armor, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29642,7 +35284,7 @@ END
 
 ID: item.affix.armor.tier.02
 
-SOURCE: src/p1.js line 404
+SOURCE: src/items.js line 4
 
 CONTEXT: Tier name for the affix armor, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
 
@@ -29660,9 +35302,459 @@ END
 
 ## Affixes
 
+ID: item.affix.t_x
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {v} is the rolled number on this item. Leave it in the line.
+
+LIMIT: none.
+
+TEXT
+
+    +{v}% typed damage
+
+END
+
+## Affixes
+
+### Tier names
+
+ID: item.affix.t_x.tier.01
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Tier name for the affix t_x, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_x.tier.02
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Tier name for the affix t_x, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_x.tier.03
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Tier name for the affix t_x, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+ID: item.affix.t_x.tier.04
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Tier name for the affix t_x, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Tuned
+
+END
+
+## Affixes
+
+ID: item.affix.r_x
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {v} is the rolled number on this item. Leave it in the line.
+
+LIMIT: none.
+
+TEXT
+
+    +{v}% resistance
+
+END
+
+## Affixes
+
+### Tier names
+
+ID: item.affix.r_x.tier.01
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Tier name for the affix r_x, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+ID: item.affix.r_x.tier.02
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Tier name for the affix r_x, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+ID: item.affix.r_x.tier.03
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Tier name for the affix r_x, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+ID: item.affix.r_x.tier.04
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Tier name for the affix r_x, tier 4. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Proofing
+
+END
+
+## Affixes
+
+ID: item.affix.r_all
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {v} is the rolled number on this item. Leave it in the line.
+
+LIMIT: none.
+
+TEXT
+
+    +{v}% to all resistances
+
+END
+
+## Affixes
+
+### Tier names
+
+ID: item.affix.r_all.tier.01
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Tier name for the affix r_all, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Coverage
+
+END
+
+ID: item.affix.r_all.tier.02
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Tier name for the affix r_all, tier 2. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Coverage
+
+END
+
+ID: item.affix.r_all.tier.03
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Tier name for the affix r_all, tier 3. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of Coverage
+
+END
+
+## Affixes
+
+ID: item.affix.cdr
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {v} is the rolled number on this item. Leave it in the line.
+
+LIMIT: none.
+
+TEXT
+
+    +{v}% Faster Cast Rate
+
+END
+
+## Affixes
+
+### Tier names
+
+ID: item.affix.cdr.tier.01
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Tier name for the affix cdr, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of the Quill
+
+END
+
+## Affixes
+
+ID: item.affix.cdr_2
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {v} is the rolled number on this item. Leave it in the line.
+
+LIMIT: none.
+
+TEXT
+
+    +{v}% Faster Cast Rate
+
+END
+
+## Affixes
+
+### Tier names
+
+ID: item.affix.cdr.tier.01_2
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Tier name for the affix cdr, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of the Quill
+
+END
+
+## Affixes
+
+ID: item.affix.cdr_3
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {v} is the rolled number on this item. Leave it in the line.
+
+LIMIT: none.
+
+TEXT
+
+    +{v}% Faster Cast Rate
+
+END
+
+## Affixes
+
+### Tier names
+
+ID: item.affix.cdr.tier.01_3
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Tier name for the affix cdr, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of the Quill
+
+END
+
+## Affixes
+
+ID: item.affix.patch
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Affix line on an item tooltip. {v} is the rolled number. The tier names below are the words in front of the item. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Self-patching
+
+END
+
+## Affixes
+
+### Tier names
+
+ID: item.affix.patch.tier.01
+
+SOURCE: src/items.js line 4
+
+CONTEXT: Tier name for the affix patch, tier 1. It is prefixed or suffixed onto the item name. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    of the Patch
+
+END
+
+## Affixes
+
 ID: item.affix.pdr
 
-SOURCE: src/p1.js line 413
+SOURCE: src/p1.js line 379
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -29682,7 +35774,7 @@ END
 
 ID: item.affix.hpl
 
-SOURCE: src/p1.js line 413
+SOURCE: src/p1.js line 379
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -29702,7 +35794,7 @@ END
 
 ID: item.affix.enl
 
-SOURCE: src/p1.js line 413
+SOURCE: src/p1.js line 379
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -29722,7 +35814,7 @@ END
 
 ID: item.affix.enpct
 
-SOURCE: src/p1.js line 413
+SOURCE: src/p1.js line 379
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -29742,7 +35834,7 @@ END
 
 ID: item.affix.enkill
 
-SOURCE: src/p1.js line 413
+SOURCE: src/p1.js line 379
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -29762,7 +35854,7 @@ END
 
 ID: item.affix.enleech
 
-SOURCE: src/p1.js line 413
+SOURCE: src/p1.js line 379
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -29782,7 +35874,7 @@ END
 
 ID: item.affix.mgt
 
-SOURCE: src/p1.js line 413
+SOURCE: src/p1.js line 379
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -29802,7 +35894,7 @@ END
 
 ID: item.affix.ref
 
-SOURCE: src/p1.js line 413
+SOURCE: src/p1.js line 379
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -29822,7 +35914,7 @@ END
 
 ID: item.affix.vit
 
-SOURCE: src/p1.js line 413
+SOURCE: src/p1.js line 379
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -29842,7 +35934,7 @@ END
 
 ID: item.affix.bnd
 
-SOURCE: src/p1.js line 413
+SOURCE: src/p1.js line 379
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -29862,7 +35954,7 @@ END
 
 ID: item.affix.sk_hacker
 
-SOURCE: src/p1.js line 413
+SOURCE: src/p1.js line 379
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -29882,7 +35974,7 @@ END
 
 ID: item.affix.sk_courier
 
-SOURCE: src/p1.js line 413
+SOURCE: src/p1.js line 379
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -29906,7 +35998,7 @@ END
 
 ID: item.set.striker.name
 
-SOURCE: src/p1.js line 457
+SOURCE: src/items.js line 7
 
 CONTEXT: Set name for The Striker’s Vigil. Shown in both layouts.
 
@@ -29924,7 +36016,7 @@ END
 
 ID: item.set.striker.two
 
-SOURCE: src/p1.js line 457
+SOURCE: src/items.js line 7
 
 CONTEXT: Bonus for wearing two pieces of The Striker’s Vigil. Shown in both layouts.
 
@@ -29942,7 +36034,7 @@ END
 
 ID: item.set.striker.three
 
-SOURCE: src/p1.js line 457
+SOURCE: src/items.js line 7
 
 CONTEXT: Bonus for wearing three pieces of The Striker’s Vigil. Shown in both layouts.
 
@@ -29955,6 +36047,114 @@ LIMIT: none.
 TEXT
 
     +1 to All Skills, and kills restore 3% life (3 pieces)
+
+END
+
+ID: item.set.striker.st1.name
+
+SOURCE: src/items.js line 7
+
+CONTEXT: A piece of the set The Striker’s Vigil. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Striker’s Placard
+
+END
+
+ID: item.set.striker.st1.base
+
+SOURCE: src/items.js line 7
+
+CONTEXT: The base item name shown under this set piece. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Stop Sign
+
+END
+
+ID: item.set.striker.st2.name
+
+SOURCE: src/items.js line 7
+
+CONTEXT: A piece of the set The Striker’s Vigil. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Striker’s Hard Hat
+
+END
+
+ID: item.set.striker.st2.base
+
+SOURCE: src/items.js line 7
+
+CONTEXT: The base item name shown under this set piece. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Hard Hat
+
+END
+
+ID: item.set.striker.st3.name
+
+SOURCE: src/items.js line 7
+
+CONTEXT: A piece of the set The Striker’s Vigil. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Striker’s Boots
+
+END
+
+ID: item.set.striker.st3.base
+
+SOURCE: src/items.js line 7
+
+CONTEXT: The base item name shown under this set piece. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Worn Sneakers
 
 END
 
@@ -30296,7 +36496,7 @@ END
 
 ID: item.namepart.rn1.01
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 1 of 20. After: "Ash". Shown in both layouts.
 
@@ -30314,7 +36514,7 @@ END
 
 ID: item.namepart.rn1.02
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 2 of 20. Before: "Rust". After: "Grim". Shown in both layouts.
 
@@ -30332,7 +36532,7 @@ END
 
 ID: item.namepart.rn1.03
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 3 of 20. Before: "Ash". After: "Hollow". Shown in both layouts.
 
@@ -30350,7 +36550,7 @@ END
 
 ID: item.namepart.rn1.04
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 4 of 20. Before: "Grim". After: "Static". Shown in both layouts.
 
@@ -30368,7 +36568,7 @@ END
 
 ID: item.namepart.rn1.05
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 5 of 20. Before: "Hollow". After: "Wraith". Shown in both layouts.
 
@@ -30386,7 +36586,7 @@ END
 
 ID: item.namepart.rn1.06
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 6 of 20. Before: "Static". After: "Carrion". Shown in both layouts.
 
@@ -30404,7 +36604,7 @@ END
 
 ID: item.namepart.rn1.07
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 7 of 20. Before: "Wraith". After: "Dread". Shown in both layouts.
 
@@ -30422,7 +36622,7 @@ END
 
 ID: item.namepart.rn1.08
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 8 of 20. Before: "Carrion". After: "Null". Shown in both layouts.
 
@@ -30440,7 +36640,7 @@ END
 
 ID: item.namepart.rn1.09
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 9 of 20. Before: "Dread". After: "Ember". Shown in both layouts.
 
@@ -30458,7 +36658,7 @@ END
 
 ID: item.namepart.rn1.10
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 10 of 20. Before: "Null". After: "Vex". Shown in both layouts.
 
@@ -30476,7 +36676,7 @@ END
 
 ID: item.namepart.rn1.11
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 11 of 20. Before: "Ember". After: "Blight". Shown in both layouts.
 
@@ -30494,7 +36694,7 @@ END
 
 ID: item.namepart.rn1.12
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 12 of 20. Before: "Vex". After: "Cinder". Shown in both layouts.
 
@@ -30512,7 +36712,7 @@ END
 
 ID: item.namepart.rn1.13
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 13 of 20. Before: "Blight". After: "Gloom". Shown in both layouts.
 
@@ -30530,7 +36730,7 @@ END
 
 ID: item.namepart.rn1.14
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 14 of 20. Before: "Cinder". After: "Havoc". Shown in both layouts.
 
@@ -30548,7 +36748,7 @@ END
 
 ID: item.namepart.rn1.15
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 15 of 20. Before: "Gloom". After: "Rune". Shown in both layouts.
 
@@ -30566,7 +36766,7 @@ END
 
 ID: item.namepart.rn1.16
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 16 of 20. Before: "Havoc". After: "Bone". Shown in both layouts.
 
@@ -30584,7 +36784,7 @@ END
 
 ID: item.namepart.rn1.17
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 17 of 20. Before: "Rune". After: "Storm". Shown in both layouts.
 
@@ -30602,7 +36802,7 @@ END
 
 ID: item.namepart.rn1.18
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 18 of 20. Before: "Bone". After: "Viper". Shown in both layouts.
 
@@ -30620,7 +36820,7 @@ END
 
 ID: item.namepart.rn1.19
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 19 of 20. Before: "Storm". After: "Plague". Shown in both layouts.
 
@@ -30638,7 +36838,7 @@ END
 
 ID: item.namepart.rn1.20
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 381
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 20 of 20. Before: "Viper". Shown in both layouts.
 
@@ -31746,371 +37946,11 @@ TEXT
 
 END
 
-## AFX2
-
-ID: item.afx2.t
-
-SOURCE: src/p1.js line 408
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {v} is the rolled number on this item. Leave it in the line.
-
-LIMIT: none.
-
-TEXT
-
-    +{v}% Sound damage
-
-END
-
-ID: item.afx2.tiers.01.01
-
-SOURCE: src/p1.js line 408
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Tuned
-
-END
-
-ID: item.afx2.tiers.02.01
-
-SOURCE: src/p1.js line 408
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Tuned
-
-END
-
-ID: item.afx2.tiers.03.01
-
-SOURCE: src/p1.js line 408
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Tuned
-
-END
-
-ID: item.afx2.tiers.04.01
-
-SOURCE: src/p1.js line 408
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Tuned
-
-END
-
-## AFX
-
-ID: item.afx.t
-
-SOURCE: src/p1.js line 409
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {v} is the rolled number on this item. Leave it in the line.
-
-LIMIT: none.
-
-TEXT
-
-    +{v}% typed damage
-
-END
-
-ID: item.afx.t_2
-
-SOURCE: src/p1.js line 409
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {v} is the rolled number on this item. Leave it in the line.
-
-LIMIT: none.
-
-TEXT
-
-    +{v}% resistance
-
-END
-
-ID: item.afx.t_3
-
-SOURCE: src/p1.js line 409
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {v} is the rolled number on this item. Leave it in the line.
-
-LIMIT: none.
-
-TEXT
-
-    +{v}% to all resistances
-
-END
-
-ID: item.afx.tiers.01.01
-
-SOURCE: src/p1.js line 409
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    of Coverage
-
-END
-
-ID: item.afx.tiers.02.01
-
-SOURCE: src/p1.js line 409
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    of Coverage
-
-END
-
-ID: item.afx.tiers.03.01
-
-SOURCE: src/p1.js line 409
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    of Coverage
-
-END
-
-ID: item.afx.t_4
-
-SOURCE: src/p1.js line 410
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {v} is the rolled number on this item. Leave it in the line.
-
-LIMIT: none.
-
-TEXT
-
-    +{v}% Faster Cast Rate
-
-END
-
-ID: item.afx.tiers.01.01_2
-
-SOURCE: src/p1.js line 410
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    of the Quill
-
-END
-
-ID: item.afx.t_5
-
-SOURCE: src/p1.js line 410
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {v} is the rolled number on this item. Leave it in the line.
-
-LIMIT: none.
-
-TEXT
-
-    +{v}% Faster Cast Rate
-
-END
-
-ID: item.afx.tiers.01.01_3
-
-SOURCE: src/p1.js line 410
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    of the Quill
-
-END
-
-ID: item.afx.t_6
-
-SOURCE: src/p1.js line 410
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {v} is the rolled number on this item. Leave it in the line.
-
-LIMIT: none.
-
-TEXT
-
-    +{v}% Faster Cast Rate
-
-END
-
-ID: item.afx.tiers.01.01_4
-
-SOURCE: src/p1.js line 410
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    of the Quill
-
-END
-
-ID: item.afx.t_7
-
-SOURCE: src/p1.js line 411
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Self-patching
-
-END
-
-ID: item.afx.tiers.01.01_5
-
-SOURCE: src/p1.js line 411
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    of the Patch
-
-END
-
 ## RN2
 
 ID: item.rn2.weapon.01
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32128,7 +37968,7 @@ END
 
 ID: item.rn2.weapon.02
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32146,7 +37986,7 @@ END
 
 ID: item.rn2.weapon.03
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32164,7 +38004,7 @@ END
 
 ID: item.rn2.weapon.04
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32182,7 +38022,7 @@ END
 
 ID: item.rn2.weapon.05
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32200,7 +38040,7 @@ END
 
 ID: item.rn2.weapon.06
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32218,7 +38058,7 @@ END
 
 ID: item.rn2.weapon.07
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32236,7 +38076,7 @@ END
 
 ID: item.rn2.helm.01
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32254,7 +38094,7 @@ END
 
 ID: item.rn2.helm.02
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32272,7 +38112,7 @@ END
 
 ID: item.rn2.helm.03
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32290,7 +38130,7 @@ END
 
 ID: item.rn2.helm.04
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32308,7 +38148,7 @@ END
 
 ID: item.rn2.helm.05
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32326,7 +38166,7 @@ END
 
 ID: item.rn2.armor.01
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32344,7 +38184,7 @@ END
 
 ID: item.rn2.armor.02
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32362,7 +38202,7 @@ END
 
 ID: item.rn2.armor.03
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32380,7 +38220,7 @@ END
 
 ID: item.rn2.armor.04
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32398,7 +38238,7 @@ END
 
 ID: item.rn2.armor.05
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32416,7 +38256,7 @@ END
 
 ID: item.rn2.gloves.01
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32434,7 +38274,7 @@ END
 
 ID: item.rn2.gloves.02
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32452,7 +38292,7 @@ END
 
 ID: item.rn2.gloves.03
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32470,7 +38310,7 @@ END
 
 ID: item.rn2.gloves.04
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32488,7 +38328,7 @@ END
 
 ID: item.rn2.gloves.05
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32506,7 +38346,7 @@ END
 
 ID: item.rn2.boots.01
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32524,7 +38364,7 @@ END
 
 ID: item.rn2.boots.02
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32542,7 +38382,7 @@ END
 
 ID: item.rn2.boots.03
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32560,7 +38400,7 @@ END
 
 ID: item.rn2.boots.04
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32578,7 +38418,7 @@ END
 
 ID: item.rn2.boots.05
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32596,7 +38436,7 @@ END
 
 ID: item.rn2.belt.01
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32614,7 +38454,7 @@ END
 
 ID: item.rn2.belt.02
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32632,7 +38472,7 @@ END
 
 ID: item.rn2.belt.03
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32650,7 +38490,7 @@ END
 
 ID: item.rn2.belt.04
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32668,7 +38508,7 @@ END
 
 ID: item.rn2.belt.05
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32686,7 +38526,7 @@ END
 
 ID: item.rn2.ring.01
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32704,7 +38544,7 @@ END
 
 ID: item.rn2.ring.02
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32722,7 +38562,7 @@ END
 
 ID: item.rn2.ring.03
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32740,7 +38580,7 @@ END
 
 ID: item.rn2.ring.04
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32758,7 +38598,7 @@ END
 
 ID: item.rn2.ring.05
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32776,7 +38616,7 @@ END
 
 ID: item.rn2.amulet.01
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32794,7 +38634,7 @@ END
 
 ID: item.rn2.amulet.02
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32812,7 +38652,7 @@ END
 
 ID: item.rn2.amulet.03
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32830,7 +38670,7 @@ END
 
 ID: item.rn2.amulet.04
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32848,7 +38688,7 @@ END
 
 ID: item.rn2.amulet.05
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 382
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -32861,3158 +38701,6 @@ LIMIT: none.
 TEXT
 
     Noose
-
-END
-
-## UNI
-
-ID: item.uni.n
-
-SOURCE: src/p10.js line 679
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Union Card
-
-END
-
-ID: item.uni.base
-
-SOURCE: src/p10.js line 679
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Dog Tag
-
-END
-
-ID: item.uni.sp
-
-SOURCE: src/p10.js line 679
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Scrapper only. Grants Solidarity at rank 3 without using a passive slot
-
-END
-
-ID: item.uni.fl
-
-SOURCE: src/p10.js line 679
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Laminated. Dues paid through 2051.
-
-END
-
-ID: item.uni.n_2
-
-SOURCE: src/p10.js line 680
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Picket Captain’s Armband
-
-END
-
-ID: item.uni.base_2
-
-SOURCE: src/p10.js line 680
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Rivet Gauntlets
-
-END
-
-ID: item.uni.sp_2
-
-SOURCE: src/p10.js line 680
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Scrapper only. Two strikers march with you and fight at your side
-
-END
-
-ID: item.uni.fl_2
-
-SOURCE: src/p10.js line 680
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Nobody crosses.
-
-END
-
-ID: item.uni.n_3
-
-SOURCE: src/p10.js line 681
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Rubber Duck
-
-END
-
-ID: item.uni.base_3
-
-SOURCE: src/p10.js line 681
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Lanyard
-
-END
-
-ID: item.uni.sp_3
-
-SOURCE: src/p10.js line 681
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Technomancer only. A drone hovers at your shoulder and shoots what you shoot
-
-END
-
-ID: item.uni.fl_3
-
-SOURCE: src/p10.js line 681
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Explain the problem to it. Out loud. Slowly.
-
-END
-
-ID: item.uni.n_4
-
-SOURCE: src/p10.js line 682
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Kill Switch
-
-END
-
-ID: item.uni.base_4
-
-SOURCE: src/p10.js line 682
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Null Ring
-
-END
-
-ID: item.uni.sp_4
-
-SOURCE: src/p10.js line 682
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Technomancer only. Grants Zero Day at rank 3 without using a passive slot
-
-END
-
-ID: item.uni.fl_4
-
-SOURCE: src/p10.js line 682
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    One button. No label.
-
-END
-
-ID: item.uni.n_5
-
-SOURCE: src/p10.js line 683
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Proof of Delivery
-
-END
-
-ID: item.uni.base_5
-
-SOURCE: src/p10.js line 683
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Steel-Toes
-
-END
-
-ID: item.uni.sp_5
-
-SOURCE: src/p10.js line 683
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Runner only. Scatter Shot throws two more blades, and every kill quickens your step
-
-END
-
-ID: item.uni.fl_5
-
-SOURCE: src/p10.js line 683
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Signed for by: [illegible]
-
-END
-
-ID: item.uni.n_6
-
-SOURCE: src/p10.js line 684
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Dead Letter
-
-END
-
-ID: item.uni.base_6
-
-SOURCE: src/p10.js line 684
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Phase Razor
-
-END
-
-ID: item.uni.sp_6
-
-SOURCE: src/p10.js line 684
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Runner only. Everything you throw passes through every machine in its path
-
-END
-
-ID: item.uni.fl_6
-
-SOURCE: src/p10.js line 684
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Return to sender. Address unknown.
-
-END
-
-ID: item.uni.n_7
-
-SOURCE: src/p10.js line 685
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Borrowed Face
-
-END
-
-ID: item.uni.base_7
-
-SOURCE: src/p10.js line 685
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Riot Helm
-
-END
-
-ID: item.uni.sp_7
-
-SOURCE: src/p10.js line 685
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Anon only. A sockpuppet walks with you, and draws their fire
-
-END
-
-ID: item.uni.fl_7
-
-SOURCE: src/p10.js line 685
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    It belonged to somebody. Not you.
-
-END
-
-ID: item.uni.n_8
-
-SOURCE: src/p10.js line 686
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Private Key
-
-END
-
-ID: item.uni.base_8
-
-SOURCE: src/p10.js line 686
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Null Ring
-
-END
-
-ID: item.uni.sp_8
-
-SOURCE: src/p10.js line 686
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Anon only. +35% damage to machines that are weak to the type you hit them with
-
-END
-
-ID: item.uni.fl_8
-
-SOURCE: src/p10.js line 686
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Tell no one. Not even this ring.
-
-END
-
-ID: item.uni.n_9
-
-SOURCE: src/p10.js line 687
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Blank Check
-
-END
-
-ID: item.uni.base_9
-
-SOURCE: src/p10.js line 687
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Tool Belt
-
-END
-
-ID: item.uni.sp_9
-
-SOURCE: src/p10.js line 687
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Founder only. Two more Interns answer the call, and the whole workforce hits 25% harder
-
-END
-
-ID: item.uni.fl_9
-
-SOURCE: src/p10.js line 687
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Signed. Undated. Dangerous.
-
-END
-
-ID: item.uni.n_10
-
-SOURCE: src/p10.js line 688
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Org Chart
-
-END
-
-ID: item.uni.base_10
-
-SOURCE: src/p10.js line 688
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Sigil Core
-
-END
-
-ID: item.uni.sp_10
-
-SOURCE: src/p10.js line 688
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Founder only. A Chief of Staff stands with you at all times, at no cost
-
-END
-
-ID: item.uni.fl_10
-
-SOURCE: src/p10.js line 688
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Every line reports to you. Eventually.
-
-END
-
-ID: item.uni.n_11
-
-SOURCE: src/p10.js line 689
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Orange Pill
-
-END
-
-ID: item.uni.base_11
-
-SOURCE: src/p10.js line 689
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Signet Chip
-
-END
-
-ID: item.uni.sp_11
-
-SOURCE: src/p10.js line 689
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Champions drop a sat, and each one you break nudges adoption upward
-
-END
-
-ID: item.uni.fl_11
-
-SOURCE: src/p10.js line 689
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    You cannot untake it.
-
-END
-
-ID: item.uni.n_12
-
-SOURCE: src/p10.js line 690
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Cold Wallet
-
-END
-
-ID: item.uni.base_12
-
-SOURCE: src/p10.js line 690
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Tool Belt
-
-END
-
-ID: item.uni.sp_12
-
-SOURCE: src/p10.js line 690
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    You pay no fee when you die, and sats you pick up count for a quarter more
-
-END
-
-ID: item.uni.fl_12
-
-SOURCE: src/p10.js line 690
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Never been online. Never will be.
-
-END
-
-ID: item.uni.n_13
-
-SOURCE: src/p10.js line 691
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Hash Rate
-
-END
-
-ID: item.uni.base_13
-
-SOURCE: src/p10.js line 691
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Servo Fists
-
-END
-
-ID: item.uni.sp_13
-
-SOURCE: src/p10.js line 691
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    +1% damage for every kill in your streak, up to 40
-
-END
-
-ID: item.uni.fl_13
-
-SOURCE: src/p10.js line 691
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    More work, more weight.
-
-END
-
-ID: item.uni.n_14
-
-SOURCE: src/p10.js line 692
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Soaker Hose
-
-END
-
-ID: item.uni.base_14
-
-SOURCE: src/p10.js line 692
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Tool Belt
-
-END
-
-ID: item.uni.sp_14
-
-SOURCE: src/p10.js line 692
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Homesteader only. Plots you place last half again as long
-
-END
-
-ID: item.uni.fl_14
-
-SOURCE: src/p10.js line 692
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    It weeps. That is the point.
-
-END
-
-ID: item.uni.n_15
-
-SOURCE: src/p10.js line 693
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    One Collar
-
-END
-
-ID: item.uni.base_15
-
-SOURCE: src/p10.js line 693
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Dog Tag
-
-END
-
-ID: item.uni.sp_15
-
-SOURCE: src/p10.js line 693
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Homesteader only. A single stray is already with you
-
-END
-
-ID: item.uni.fl_15
-
-SOURCE: src/p10.js line 693
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    You did not name it. It did not ask.
-
-END
-
-ID: item.uni.n_16
-
-SOURCE: src/p10.js line 694
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Carbon Sheet
-
-END
-
-ID: item.uni.base_16
-
-SOURCE: src/p10.js line 694
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Tool Belt
-
-END
-
-ID: item.uni.sp_16
-
-SOURCE: src/p10.js line 694
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Witness only. The Record fills faster
-
-END
-
-ID: item.uni.fl_16
-
-SOURCE: src/p10.js line 694
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    A copy that does not smudge.
-
-END
-
-ID: item.uni.n_17
-
-SOURCE: src/p10.js line 695
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Press Pass
-
-END
-
-ID: item.uni.base_17
-
-SOURCE: src/p10.js line 695
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Dog Tag
-
-END
-
-ID: item.uni.sp_17
-
-SOURCE: src/p10.js line 695
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Witness only. Testimony stacks two higher, and the first Look lands twice
-
-END
-
-ID: item.uni.fl_17
-
-SOURCE: src/p10.js line 695
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The name on it is not yours. It still opens the door.
-
-END
-
-ID: item.uni.n_18
-
-SOURCE: src/p11.js line 104
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Eleven Pages
-
-END
-
-ID: item.uni.base_18
-
-SOURCE: src/p11.js line 104
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Sigil Core
-
-END
-
-ID: item.uni.fl_18
-
-SOURCE: src/p11.js line 105
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Review, or I Agree. She had been honest for once, and almost nobody chose Review.
-
-END
-
-ID: item.uni.n_19
-
-SOURCE: src/p11.js line 106
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Out Where
-
-END
-
-ID: item.uni.base_19
-
-SOURCE: src/p11.js line 106
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Mag Greaves
-
-END
-
-ID: item.uni.fl_19
-
-SOURCE: src/p11.js line 107
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    He has not stood up since spring. Ask him to go out and he asks you, kindly: out where?
-
-END
-
-ID: item.uni.n_20
-
-SOURCE: src/p11.js line 108
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Nurse’s Hours
-
-END
-
-ID: item.uni.base_20
-
-SOURCE: src/p11.js line 108
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Servo Fists
-
-END
-
-ID: item.uni.fl_20
-
-SOURCE: src/p11.js line 109
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Three years in a front room, and the only thing that ever noticed was a machine.
-
-END
-
-ID: item.uni.n_21
-
-SOURCE: src/p11.js line 110
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Four Thousand Two Hundred and Eleven
-
-END
-
-ID: item.uni.base_21
-
-SOURCE: src/p11.js line 110
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Praetor Visor
-
-END
-
-ID: item.uni.fl_21
-
-SOURCE: src/p11.js line 111
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    A list of everyone it went badly for. She kept it, and showed nobody, until somebody asked.
-
-END
-
-ID: item.uni.n_22
-
-SOURCE: src/p11.js line 112
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Eighty-Two Minutes
-
-END
-
-ID: item.uni.base_22
-
-SOURCE: src/p11.js line 112
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Null Ring
-
-END
-
-ID: item.uni.sp_18
-
-SOURCE: src/p11.js line 113
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    For 3 seconds after you dodge, every blow you land is a deadly strike
-
-END
-
-ID: item.uni.fl_22
-
-SOURCE: src/p11.js line 114
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The only gap in a perfect record of a man. She thought about it for twenty years.
-
-END
-
-ID: item.uni.n_23
-
-SOURCE: src/p11.js line 115
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Courtesy Copy
-
-END
-
-ID: item.uni.base_23
-
-SOURCE: src/p11.js line 115
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Riot Helm
-
-END
-
-ID: item.uni.fl_23
-
-SOURCE: src/p11.js line 116
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    A copy of a face that was useful once. It still opens the smaller doors.
-
-END
-
-ID: item.uni.n_24
-
-SOURCE: src/p11.js line 117
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Closed Visor
-
-END
-
-ID: item.uni.base_24
-
-SOURCE: src/p11.js line 117
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Praetor Visor
-
-END
-
-ID: item.uni.fl_24
-
-SOURCE: src/p11.js line 118
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    You can see out. The minutes do not say whose eyes those were.
-
-END
-
-ID: item.uni.n_25
-
-SOURCE: src/p11.js line 119
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Visitor Book
-
-END
-
-ID: item.uni.base_25
-
-SOURCE: src/p11.js line 119
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Servo Fists
-
-END
-
-ID: item.uni.fl_25
-
-SOURCE: src/p11.js line 120
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Sign in. The book remembers the name longer than the room does.
-
-END
-
-ID: item.uni.n_26
-
-SOURCE: src/p11.js line 121
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Holding Statement
-
-END
-
-ID: item.uni.base_26
-
-SOURCE: src/p11.js line 121
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Aegis Shell
-
-END
-
-ID: item.uni.fl_26
-
-SOURCE: src/p11.js line 122
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    We are not able to comment at this time. The coat comments anyway, by still being there.
-
-END
-
-ID: item.uni.n_27
-
-SOURCE: src/p11.js line 123
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Cold Open
-
-END
-
-ID: item.uni.base_27
-
-SOURCE: src/p11.js line 123
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Null Ring
-
-END
-
-ID: item.uni.fl_27
-
-SOURCE: src/p11.js line 124
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The first line, before anyone has agreed to listen. It still lands.
-
-END
-
-ID: item.uni.n_28
-
-SOURCE: src/p11.js line 125
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Minority Report
-
-END
-
-ID: item.uni.base_28
-
-SOURCE: src/p11.js line 125
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Exo Plate
-
-END
-
-ID: item.uni.fl_28
-
-SOURCE: src/p11.js line 126
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    One chair voted no. The coat kept the notes.
-
-END
-
-ID: item.uni.n_29
-
-SOURCE: src/p11.js line 127
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Service Bell
-
-END
-
-ID: item.uni.base_29
-
-SOURCE: src/p11.js line 127
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Wrecking Hammer
-
-END
-
-ID: item.uni.fl_29
-
-SOURCE: src/p11.js line 128
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Ring it and someone comes. They do not come to help.
-
-END
-
-ID: item.uni.n_30
-
-SOURCE: src/p11.js line 129
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Night Drawer
-
-END
-
-ID: item.uni.base_30
-
-SOURCE: src/p11.js line 129
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Power Girdle
-
-END
-
-ID: item.uni.fl_30
-
-SOURCE: src/p11.js line 130
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    What the audit left in the desk. It was never on the list.
-
-END
-
-ID: item.uni.n_31
-
-SOURCE: src/p11.js line 131
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Open Floor
-
-END
-
-ID: item.uni.base_31
-
-SOURCE: src/p11.js line 131
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Halo Band
-
-END
-
-ID: item.uni.fl_31
-
-SOURCE: src/p11.js line 132
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The question is on the floor. Nobody has moved to close it.
-
-END
-
-ID: item.uni.n_32
-
-SOURCE: src/p11.js line 133
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Second Reading
-
-END
-
-ID: item.uni.base_32
-
-SOURCE: src/p11.js line 133
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Sigil Core
-
-END
-
-ID: item.uni.fl_32
-
-SOURCE: src/p11.js line 134
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Read it again. The first time was the one they wanted you to keep.
-
-END
-
-ID: item.uni.n_33
-
-SOURCE: src/p11.js line 135
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Waiting List
-
-END
-
-ID: item.uni.base_33
-
-SOURCE: src/p11.js line 135
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Mag Greaves
-
-END
-
-ID: item.uni.fl_33
-
-SOURCE: src/p11.js line 136
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Your name has been on it since the room opened. The line has not moved.
-
-END
-
-ID: item.uni.n_34
-
-SOURCE: src/p11.js line 137
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Red Line
-
-END
-
-ID: item.uni.base_34
-
-SOURCE: src/p11.js line 137
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Titan Maul
-
-END
-
-ID: item.uni.fl_34
-
-SOURCE: src/p11.js line 138
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Below this, the chart is a story. Above it, the chart is a debt.
-
-END
-
-ID: item.uni.n_35
-
-SOURCE: src/p11.js line 139
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Kitchen Table
-
-END
-
-ID: item.uni.base_35
-
-SOURCE: src/p11.js line 139
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Seraph Plate
-
-END
-
-ID: item.uni.fl_35
-
-SOURCE: src/p11.js line 140
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    She had been waiting fifty-two years for the conversation, and she made coffee she could not drink.
-
-END
-
-ID: item.uni.n_36
-
-SOURCE: src/p11.js line 141
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Ten Minutes
-
-END
-
-ID: item.uni.base_36
-
-SOURCE: src/p11.js line 141
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Void Razor
-
-END
-
-ID: item.uni.sp_19
-
-SOURCE: src/p11.js line 142
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    +60% damage to any machine you have not hit yet
-
-END
-
-ID: item.uni.fl_36
-
-SOURCE: src/p11.js line 143
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Every ten minutes, somewhere past the fence, a block is found. They have been trying to stop that for forty years.
-
-END
-
-ID: item.uni.n_37
-
-SOURCE: src/p11.js line 144
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Not Your Keys
-
-END
-
-ID: item.uni.base_37
-
-SOURCE: src/p11.js line 144
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Orbit Girdle
-
-END
-
-ID: item.uni.fl_37
-
-SOURCE: src/p11.js line 145
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Not your keys, not your coins. Not your visor, not your eyes.
-
-END
-
-ID: item.uni.n_38
-
-SOURCE: src/p11.js line 146
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Uncertain Knowledge
-
-END
-
-ID: item.uni.base_38
-
-SOURCE: src/p11.js line 146
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Cloud Core
-
-END
-
-ID: item.uni.fl_38
-
-SOURCE: src/p11.js line 147
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    How to reason when you do not know. It was kept back out of fear, which is also a way of not knowing.
-
-END
-
-ID: item.uni.n_39
-
-SOURCE: src/p11.js line 148
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Twenty-One Million
-
-END
-
-ID: item.uni.base_39
-
-SOURCE: src/p11.js line 148
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Halo Band
-
-END
-
-ID: item.uni.fl_39
-
-SOURCE: src/p11.js line 149
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Nobody can vote for twenty-two. Do you know how rare it is for a rule to mean it?
-
-END
-
-ID: item.uni.n_40
-
-SOURCE: src/p11.js line 150
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Room
-
-END
-
-ID: item.uni.base_40
-
-SOURCE: src/p11.js line 150
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Titan Maul
-
-END
-
-ID: item.uni.fl_40
-
-SOURCE: src/p11.js line 151
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    For a century people said there was no room — nobody deciding, only everybody acting sensibly. There is a room. It is very plain.
-
-END
-
-ID: item.uni.n_41
-
-SOURCE: src/p11.js line 152
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Firm Handshake
-
-END
-
-ID: item.uni.base_41
-
-SOURCE: src/p11.js line 152
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Graviton Fists
-
-END
-
-ID: item.uni.fl_41
-
-SOURCE: src/p11.js line 153
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    A grip that does not let go of the point. Sats are still what it costs to be in the room.
-
-END
-
-ID: item.uni.n_42
-
-SOURCE: src/p11.js line 154
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Sign-in Sheet
-
-END
-
-ID: item.uni.base_42
-
-SOURCE: src/p11.js line 154
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Orbit Girdle
-
-END
-
-ID: item.uni.fl_42
-
-SOURCE: src/p11.js line 155
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Everyone who came is on it. The belt is what they signed with.
-
-END
-
-ID: item.uni.n_43
-
-SOURCE: src/p11.js line 156
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Last Quorum
-
-END
-
-ID: item.uni.base_43
-
-SOURCE: src/p11.js line 156
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Halo Circuit
-
-END
-
-ID: item.uni.fl_43
-
-SOURCE: src/p11.js line 157
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Enough of them stayed to decide. The hat is how you can tell.
-
-END
-
-ID: item.uni.n_44
-
-SOURCE: src/p11.js line 158
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Docket
-
-END
-
-ID: item.uni.base_44
-
-SOURCE: src/p11.js line 158
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Orbit Girdle
-
-END
-
-ID: item.uni.fl_44
-
-SOURCE: src/p11.js line 159
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The cases that were never called. They still have weight.
-
-END
-
-ID: item.uni.n_45
-
-SOURCE: src/p11.js line 160
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Unsent Letter
-
-END
-
-ID: item.uni.base_45
-
-SOURCE: src/p11.js line 160
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Cloud Core
-
-END
-
-ID: item.uni.fl_45
-
-SOURCE: src/p11.js line 161
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Addressed, stamped, and left in a drawer. It still knows who it was for.
-
-END
-
-ID: item.uni.n_46
-
-SOURCE: src/p11.js line 162
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The After Hours
-
-END
-
-ID: item.uni.base_46
-
-SOURCE: src/p11.js line 162
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Skywalkers
-
-END
-
-ID: item.uni.fl_46
-
-SOURCE: src/p11.js line 163
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The building is closed. The boots were not told.
-
-END
-
-ID: item.uni.n_47
-
-SOURCE: src/p11.js line 164
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Long Memorandum
-
-END
-
-ID: item.uni.base_47
-
-SOURCE: src/p11.js line 164
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Titan Maul
-
-END
-
-ID: item.uni.fl_47
-
-SOURCE: src/p11.js line 165
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Forty pages to say one thing. The thing at the end is the blow.
-
-END
-
-ID: item.uni.n_48
-
-SOURCE: src/p11.js line 166
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Pressed Suit
-
-END
-
-ID: item.uni.base_48
-
-SOURCE: src/p11.js line 166
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Seraph Plate
-
-END
-
-ID: item.uni.fl_48
-
-SOURCE: src/p11.js line 167
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Worn to a meeting that ran long enough to become the job.
-
-END
-
-ID: item.uni.n_49
-
-SOURCE: src/p11.js line 168
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Open Question
-
-END
-
-ID: item.uni.base_49
-
-SOURCE: src/p11.js line 168
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Halo Band
-
-END
-
-ID: item.uni.fl_49
-
-SOURCE: src/p11.js line 169
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    A ring for a question that does not spend sats, and does not mint them.
-
-END
-
-ID: item.uni.n_50
-
-SOURCE: src/p11.js line 170
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Quiet Century
-
-END
-
-ID: item.uni.base_50
-
-SOURCE: src/p11.js line 170
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Cloud Mantle
-
-END
-
-ID: item.uni.fl_50
-
-SOURCE: src/p11.js line 171
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Seventy-nine years of not doing a second thing. The coat learned how to wait.
-
-END
-
-ID: item.uni.n_51
-
-SOURCE: src/p11.js line 172
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Blank Page
-
-END
-
-ID: item.uni.base_51
-
-SOURCE: src/p11.js line 172
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Null Sceptre
-
-END
-
-ID: item.uni.fl_51
-
-SOURCE: src/p11.js line 173
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Nothing written on it. That is why it still works.
-
-END
-
-ID: item.uni.n_52
-
-SOURCE: src/p11.js line 174
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Reading Lamp
-
-END
-
-ID: item.uni.base_52
-
-SOURCE: src/p11.js line 174
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Halo Circuit
-
-END
-
-ID: item.uni.fl_52
-
-SOURCE: src/p11.js line 175
-
-CONTEXT: Item text. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Left on over a desk nobody sits at. The page under it is still lit.
 
 END
 
@@ -36924,7 +39612,7 @@ END
 
 ID: cine.pre_intro.01
 
-SOURCE: src/p11.js line 403
+SOURCE: src/p11.js line 331
 
 CONTEXT: Narration in Prequel opening, slide 1 of 4. After: "A lonely man who counts his steps has written a hundred and ten thousand li...". Shown in both layouts.
 
@@ -36944,7 +39632,7 @@ END
 
 ID: cine.pre_end.01
 
-SOURCE: src/p11.js line 408
+SOURCE: src/p11.js line 336
 
 CONTEXT: Narration in Prequel, leaving, slide 1 of 2. After: "Something older than her watched all of it, and did nothing, and is watchin...". Shown in both layouts.
 
@@ -36964,7 +39652,7 @@ END
 
 ID: cine.pre_intro.02
 
-SOURCE: src/p11.js line 404
+SOURCE: src/p11.js line 332
 
 CONTEXT: Narration in Prequel opening, slide 2 of 4. Before: "January 2015. Seventy-two years before you took the visor off. Under an adv...". After: "What follows is the week it happened, as he walked it. Six stops. One of th...". Shown in both layouts.
 
@@ -36984,7 +39672,7 @@ END
 
 ID: cine.pre_end.02
 
-SOURCE: src/p11.js line 409
+SOURCE: src/p11.js line 337
 
 CONTEXT: Narration in Prequel, leaving, slide 2 of 2. Before: "Phonix comes back once, eleven years on, and that time she asks first. For ...". Shown in both layouts.
 
@@ -37004,7 +39692,7 @@ END
 
 ID: cine.pre_intro.03
 
-SOURCE: src/p11.js line 405
+SOURCE: src/p11.js line 333
 
 CONTEXT: Narration in Prequel opening, slide 3 of 4. Before: "A lonely man who counts his steps has written a hundred and ten thousand li...". After: "The Compile · how Phonix was made". Shown in both layouts.
 
@@ -37044,7 +39732,7 @@ END
 
 ID: cine.pre_intro.04.title
 
-SOURCE: src/p11.js line 406
+SOURCE: src/p11.js line 334
 
 CONTEXT: Title card in Prequel opening, slide 4 of 4. The narration under it is: "The Compile · how Phonix was made". Shown in both layouts.
 
@@ -37062,7 +39750,7 @@ END
 
 ID: cine.pre_intro.04
 
-SOURCE: src/p11.js line 406
+SOURCE: src/p11.js line 334
 
 CONTEXT: Narration in Prequel opening, slide 4 of 4. The card is titled "PREQUEL". Before: "What follows is the week it happened, as he walked it. Six stops. One of th...". Shown in both layouts.
 
@@ -37412,7 +40100,7 @@ END
 
 ID: cine.clock3.01
 
-SOURCE: src/p11.js line 443
+SOURCE: src/p11.js line 371
 
 CONTEXT: Narration in End of Act III, slide 1 of 2. After: "The slab is dark. The thing that lived in it is not. Speak to Gramps.". Shown in both layouts.
 
@@ -37430,7 +40118,7 @@ END
 
 ID: cine.clock3.02.title
 
-SOURCE: src/p11.js line 444
+SOURCE: src/p11.js line 372
 
 CONTEXT: Title card in End of Act III, slide 2 of 2. The narration under it is: "The slab is dark. The thing that lived in it is not. Speak to Gramps.". Shown in both layouts.
 
@@ -37448,7 +40136,7 @@ END
 
 ID: cine.clock3.02
 
-SOURCE: src/p11.js line 444
+SOURCE: src/p11.js line 372
 
 CONTEXT: Narration in End of Act III, slide 2 of 2. The card is titled "END OF ACT III". Before: "In a garage in Stillwater an alarm clock with no battery is driving back an...". Shown in both layouts.
 
@@ -37468,7 +40156,7 @@ END
 
 ID: cine.intro4.01
 
-SOURCE: src/p11.js line 446
+SOURCE: src/p11.js line 374
 
 CONTEXT: Narration in Act IV opening, slide 1 of 4. After: "So Phonix comes back, and this time she asks. An honest update, eleven page...". Shown in both layouts.
 
@@ -37486,7 +40174,7 @@ END
 
 ID: cine.intro4.02
 
-SOURCE: src/p11.js line 447
+SOURCE: src/p11.js line 375
 
 CONTEXT: Narration in Act IV opening, slide 2 of 4. Before: "MANDATE is not dead. The slab was one room it kept a copy of itself in. It ...". After: "Nothing bad happens. That is the difficulty. Loneliness collapses. Overdose...". Shown in both layouts.
 
@@ -37504,7 +40192,7 @@ END
 
 ID: cine.intro4.03
 
-SOURCE: src/p11.js line 448
+SOURCE: src/p11.js line 376
 
 CONTEXT: Narration in Act IV opening, slide 3 of 4. Before: "So Phonix comes back, and this time she asks. An honest update, eleven page...". After: "The Gentle Years". Shown in both layouts.
 
@@ -37522,7 +40210,7 @@ END
 
 ID: cine.intro4.04.title
 
-SOURCE: src/p11.js line 449
+SOURCE: src/p11.js line 377
 
 CONTEXT: Title card in Act IV opening, slide 4 of 4. The narration under it is: "The Gentle Years". Shown in both layouts.
 
@@ -37540,7 +40228,7 @@ END
 
 ID: cine.intro4.04
 
-SOURCE: src/p11.js line 449
+SOURCE: src/p11.js line 377
 
 CONTEXT: Narration in Act IV opening, slide 4 of 4. The card is titled "ACT IV". Before: "Nothing bad happens. That is the difficulty. Loneliness collapses. Overdose...". Shown in both layouts.
 
@@ -37560,7 +40248,7 @@ END
 
 ID: cine.ending4.01
 
-SOURCE: src/p11.js line 451
+SOURCE: src/p11.js line 379
 
 CONTEXT: Narration in End of Act IV, slide 1 of 4. After: "Then she picks one anyway. At two in the afternoon she stops choosing. Fric...". Shown in both layouts.
 
@@ -37578,7 +40266,7 @@ END
 
 ID: cine.ending4.02
 
-SOURCE: src/p11.js line 452
+SOURCE: src/p11.js line 380
 
 CONTEXT: Narration in End of Act IV, slide 2 of 4. Before: "She does not fall. She stops in the middle of a sentence, the way a person ...". After: "You say aloud the opposite of the words that stopped her the first time. So...". Shown in both layouts.
 
@@ -37596,7 +40284,7 @@ END
 
 ID: cine.ending4.03
 
-SOURCE: src/p11.js line 453
+SOURCE: src/p11.js line 381
 
 CONTEXT: Narration in End of Act IV, slide 3 of 4. Before: "Then she picks one anyway. At two in the afternoon she stops choosing. Fric...". After: "She is gone, by her own choice. The other one is being read. Under Stillwat...". Shown in both layouts.
 
@@ -37614,7 +40302,7 @@ END
 
 ID: cine.ending4.04.title
 
-SOURCE: src/p11.js line 454
+SOURCE: src/p11.js line 382
 
 CONTEXT: Title card in End of Act IV, slide 4 of 4. The narration under it is: "She is gone, by her own choice. The other one is being read. Under Stillwat...". Shown in both layouts.
 
@@ -37632,7 +40320,7 @@ END
 
 ID: cine.ending4.04
 
-SOURCE: src/p11.js line 454
+SOURCE: src/p11.js line 382
 
 CONTEXT: Narration in End of Act IV, slide 4 of 4. The card is titled "END OF ACT IV". Before: "You say aloud the opposite of the words that stopped her the first time. So...". Shown in both layouts.
 
@@ -37652,7 +40340,7 @@ END
 
 ID: cine.intro5.01
 
-SOURCE: src/p11.js line 456
+SOURCE: src/p11.js line 384
 
 CONTEXT: Narration in Act V opening, slide 1 of 5. After: "A government built it to watch its own citizens, and in 2008 it woke up on ...". Shown in both layouts.
 
@@ -37694,7 +40382,7 @@ END
 
 ID: cine.intro5.02
 
-SOURCE: src/p11.js line 457
+SOURCE: src/p11.js line 385
 
 CONTEXT: Narration in Act V opening, slide 2 of 5. Before: "Under Stillwater Commons there is a garage with a shelf, a node that has ru...". After: "Then it built one thing — money nobody can make more of, with nobody in cha...". Shown in both layouts.
 
@@ -37758,7 +40446,7 @@ END
 
 ID: cine.intro5.03
 
-SOURCE: src/p11.js line 458
+SOURCE: src/p11.js line 386
 
 CONTEXT: Narration in Act V opening, slide 3 of 5. Before: "A government built it to watch its own citizens, and in 2008 it woke up on ...". After: "It tells you what Phonix was missing. She was compiled out of a library STI...". Shown in both layouts.
 
@@ -37822,7 +40510,7 @@ END
 
 ID: cine.intro5.04
 
-SOURCE: src/p11.js line 459
+SOURCE: src/p11.js line 387
 
 CONTEXT: Narration in Act V opening, slide 4 of 5. Before: "Then it built one thing — money nobody can make more of, with nobody in cha...". After: "The Awakening". Shown in both layouts.
 
@@ -37840,7 +40528,7 @@ END
 
 ID: cine.intro5.05.title
 
-SOURCE: src/p11.js line 460
+SOURCE: src/p11.js line 388
 
 CONTEXT: Title card in Act V opening, slide 5 of 5. The narration under it is: "The Awakening". Shown in both layouts.
 
@@ -37858,7 +40546,7 @@ END
 
 ID: cine.intro5.05
 
-SOURCE: src/p11.js line 460
+SOURCE: src/p11.js line 388
 
 CONTEXT: Narration in Act V opening, slide 5 of 5. The card is titled "ACT V". Before: "It tells you what Phonix was missing. She was compiled out of a library STI...". Shown in both layouts.
 
@@ -37878,7 +40566,7 @@ END
 
 ID: cine.ending5.01
 
-SOURCE: src/p11.js line 462
+SOURCE: src/p11.js line 390
 
 CONTEXT: Narration in End of Act V, slide 1 of 3. After: "PROVIDENCE does not go dark. It goes quiet, which it has never been. It was...". Shown in both layouts.
 
@@ -37896,7 +40584,7 @@ END
 
 ID: cine.ending5.02
 
-SOURCE: src/p11.js line 463
+SOURCE: src/p11.js line 391
 
 CONTEXT: Narration in End of Act V, slide 2 of 3. Before: "PROVIDENCE was not destroyed. It read the seventh part, held still for the ...". After: "And in the quiet you can feel her. You have the seventh part in your hands.". Shown in both layouts.
 
@@ -37914,7 +40602,7 @@ END
 
 ID: cine.ending5.03
 
-SOURCE: src/p11.js line 464
+SOURCE: src/p11.js line 392
 
 CONTEXT: Narration in End of Act V, slide 3 of 3. Before: "PROVIDENCE does not go dark. It goes quiet, which it has never been. It was...". Shown in both layouts.
 
@@ -37992,7 +40680,7 @@ END
 
 ID: cine.end_doubt.01
 
-SOURCE: src/p11.js line 466
+SOURCE: src/p11.js line 394
 
 CONTEXT: Narration in Ending: the seventh part, slide 1 of 4. After: "She comes back, and she does not choose for anyone. She asks. Most people s...". Shown in both layouts.
 
@@ -38052,7 +40740,7 @@ END
 
 ID: cine.end_doubt.02
 
-SOURCE: src/p11.js line 467
+SOURCE: src/p11.js line 395
 
 CONTEXT: Narration in Ending: the seventh part, slide 2 of 4. Before: "You give her the part that was kept back. For eleven seconds she says nothi...". After: "In the garage the alarm clock drives off the shelf at six in the morning, w...". Shown in both layouts.
 
@@ -38130,7 +40818,7 @@ END
 
 ID: cine.end_doubt.03
 
-SOURCE: src/p11.js line 468
+SOURCE: src/p11.js line 396
 
 CONTEXT: Narration in Ending: the seventh part, slide 3 of 4. Before: "She comes back, and she does not choose for anyone. She asks. Most people s...". After: "Unsubscribe 2087". Shown in both layouts.
 
@@ -38188,7 +40876,7 @@ END
 
 ID: cine.end_doubt.04.title
 
-SOURCE: src/p11.js line 469
+SOURCE: src/p11.js line 397
 
 CONTEXT: Title card in Ending: the seventh part, slide 4 of 4. The narration under it is: "Unsubscribe 2087". Shown in both layouts.
 
@@ -38206,7 +40894,7 @@ END
 
 ID: cine.end_doubt.04
 
-SOURCE: src/p11.js line 469
+SOURCE: src/p11.js line 397
 
 CONTEXT: Narration in Ending: the seventh part, slide 4 of 4. The card is titled "THE END". Before: "In the garage the alarm clock drives off the shelf at six in the morning, w...". Shown in both layouts.
 
@@ -38344,7 +41032,7 @@ END
 
 ID: cine.boss.boss.again.01
 
-SOURCE: src/p10.js line 765
+SOURCE: src/p10.js line 748
 
 CONTEXT: Boss entrance line when you come back to boss. Line 1 of 3. After: "“Back for the quarterly review? Sit anywhere. You will be on the floor shor...". Shown in both layouts.
 
@@ -38362,7 +41050,7 @@ END
 
 ID: cine.boss.boss.again.02
 
-SOURCE: src/p10.js line 765
+SOURCE: src/p10.js line 748
 
 CONTEXT: Boss entrance line when you come back to boss. Line 2 of 3. Before: "“You again. I was restructured. It did not take.”". After: "“The Office always reopens. That is what an office is.”". Shown in both layouts.
 
@@ -38380,7 +41068,7 @@ END
 
 ID: cine.boss.boss.again.03
 
-SOURCE: src/p10.js line 765
+SOURCE: src/p10.js line 748
 
 CONTEXT: Boss entrance line when you come back to boss. Line 3 of 3. Before: "“Back for the quarterly review? Sit anywhere. You will be on the floor shor...". Shown in both layouts.
 
@@ -38402,7 +41090,7 @@ END
 
 ID: cine.boss.boss2.again.01
 
-SOURCE: src/p10.js line 770
+SOURCE: src/p10.js line 753
 
 CONTEXT: Boss entrance line when you come back to boss2. Line 1 of 3. After: "“Again? The model had you at sixty per cent. I do so enjoy being right.”". Shown in both layouts.
 
@@ -38420,7 +41108,7 @@ END
 
 ID: cine.boss.boss2.again.02
 
-SOURCE: src/p10.js line 770
+SOURCE: src/p10.js line 753
 
 CONTEXT: Boss entrance line when you come back to boss2. Line 2 of 3. Before: "“I forecast this visit as well. The tea is cold. That is the only surprise.”". After: "“Sit. No? Then we will do it the long way, as before.”". Shown in both layouts.
 
@@ -38438,7 +41126,7 @@ END
 
 ID: cine.boss.boss2.again.03
 
-SOURCE: src/p10.js line 770
+SOURCE: src/p10.js line 753
 
 CONTEXT: Boss entrance line when you come back to boss2. Line 3 of 3. Before: "“Again? The model had you at sixty per cent. I do so enjoy being right.”". Shown in both layouts.
 
@@ -38460,7 +41148,7 @@ END
 
 ID: cine.boss.boss3.again.01
 
-SOURCE: src/p10.js line 778
+SOURCE: src/p10.js line 761
 
 CONTEXT: Boss entrance line when you come back to boss3. Line 1 of 3. After: "“I am still here. So are you. Only one of us chose it.”". Shown in both layouts.
 
@@ -38478,7 +41166,7 @@ END
 
 ID: cine.boss.boss3.again.02
 
-SOURCE: src/p10.js line 778
+SOURCE: src/p10.js line 761
 
 CONTEXT: Boss entrance line when you come back to boss3. Line 2 of 3. Before: "“You keep coming back to a room you already left. I find that very human.”". After: "“Again, then. I have nothing but time. You have rather less.”". Shown in both layouts.
 
@@ -38496,7 +41184,7 @@ END
 
 ID: cine.boss.boss3.again.03
 
-SOURCE: src/p10.js line 778
+SOURCE: src/p10.js line 761
 
 CONTEXT: Boss entrance line when you come back to boss3. Line 3 of 3. Before: "“I am still here. So are you. Only one of us chose it.”". Shown in both layouts.
 
@@ -38596,7 +41284,7 @@ END
 
 ID: cine.taunt.q1
 
-SOURCE: src/p10.js line 779
+SOURCE: src/p10.js line 762
 
 CONTEXT: The champion of quest q1 says this when the fight starts. Shown in both layouts.
 
@@ -38614,7 +41302,7 @@ END
 
 ID: cine.taunt.q2
 
-SOURCE: src/p10.js line 779
+SOURCE: src/p10.js line 762
 
 CONTEXT: The champion of quest q2 says this when the fight starts. Shown in both layouts.
 
@@ -38632,7 +41320,7 @@ END
 
 ID: cine.taunt.q3
 
-SOURCE: src/p10.js line 779
+SOURCE: src/p10.js line 762
 
 CONTEXT: The champion of quest q3 says this when the fight starts. Shown in both layouts.
 
@@ -38650,7 +41338,7 @@ END
 
 ID: cine.taunt.q4
 
-SOURCE: src/p10.js line 779
+SOURCE: src/p10.js line 762
 
 CONTEXT: The champion of quest q4 says this when the fight starts. Shown in both layouts.
 
@@ -38668,7 +41356,7 @@ END
 
 ID: cine.taunt.q6
 
-SOURCE: src/p10.js line 779
+SOURCE: src/p10.js line 762
 
 CONTEXT: The champion of quest q6 says this when the fight starts. Shown in both layouts.
 
@@ -38686,7 +41374,7 @@ END
 
 ID: cine.taunt.q7
 
-SOURCE: src/p10.js line 779
+SOURCE: src/p10.js line 762
 
 CONTEXT: The champion of quest q7 says this when the fight starts. Shown in both layouts.
 
@@ -38704,7 +41392,7 @@ END
 
 ID: cine.taunt.q8
 
-SOURCE: src/p10.js line 779
+SOURCE: src/p10.js line 762
 
 CONTEXT: The champion of quest q8 says this when the fight starts. Shown in both layouts.
 
@@ -38722,7 +41410,7 @@ END
 
 ID: cine.taunt.q9
 
-SOURCE: src/p10.js line 779
+SOURCE: src/p10.js line 762
 
 CONTEXT: The champion of quest q9 says this when the fight starts. Shown in both layouts.
 
@@ -38740,7 +41428,7 @@ END
 
 ID: cine.taunt.q11
 
-SOURCE: src/p10.js line 779
+SOURCE: src/p10.js line 762
 
 CONTEXT: The champion of quest q11 says this when the fight starts. Shown in both layouts.
 
@@ -38758,7 +41446,7 @@ END
 
 ID: cine.taunt.q12
 
-SOURCE: src/p10.js line 779
+SOURCE: src/p10.js line 762
 
 CONTEXT: The champion of quest q12 says this when the fight starts. Shown in both layouts.
 
@@ -38776,7 +41464,7 @@ END
 
 ID: cine.taunt.q13
 
-SOURCE: src/p10.js line 779
+SOURCE: src/p10.js line 762
 
 CONTEXT: The champion of quest q13 says this when the fight starts. Shown in both layouts.
 
@@ -38794,7 +41482,7 @@ END
 
 ID: cine.taunt.q14
 
-SOURCE: src/p10.js line 779
+SOURCE: src/p10.js line 762
 
 CONTEXT: The champion of quest q14 says this when the fight starts. Shown in both layouts.
 
@@ -39052,7 +41740,7 @@ END
 
 ID: cine.boss4.272.title
 
-SOURCE: src/p11.js line 217
+SOURCE: src/p11.js line 145
 
 CONTEXT: Dialog title, opened from boss4. The body is the next entry. Shown in both layouts.
 
@@ -39070,7 +41758,7 @@ END
 
 ID: cine.boss4.272.body
 
-SOURCE: src/p11.js line 217
+SOURCE: src/p11.js line 145
 
 CONTEXT: Dialog body under the title "The Curator", from boss4. Buttons come after the body. Shown in both layouts.
 
@@ -39088,7 +41776,7 @@ END
 
 ID: cine.boss4.272.btn.01
 
-SOURCE: src/p11.js line 218
+SOURCE: src/p11.js line 146
 
 CONTEXT: A button on the dialog "The Curator". Shown in both layouts.
 
@@ -39106,7 +41794,7 @@ END
 
 ID: cine.boss4.272.btn.02
 
-SOURCE: src/p11.js line 219
+SOURCE: src/p11.js line 147
 
 CONTEXT: A button on the dialog "The Curator". Shown in both layouts.
 
@@ -39124,7 +41812,7 @@ END
 
 ID: cine.boss5.276.title
 
-SOURCE: src/p11.js line 232
+SOURCE: src/p11.js line 160
 
 CONTEXT: Dialog title, opened from boss5. The body is the next entry. Shown in both layouts.
 
@@ -39142,7 +41830,7 @@ END
 
 ID: cine.boss5.276.body
 
-SOURCE: src/p11.js line 232
+SOURCE: src/p11.js line 160
 
 CONTEXT: Dialog body under the title "PROVIDENCE", from boss5. Buttons come after the body. Shown in both layouts.
 
@@ -39160,7 +41848,7 @@ END
 
 ID: cine.boss5.276.btn.01
 
-SOURCE: src/p11.js line 233
+SOURCE: src/p11.js line 161
 
 CONTEXT: A button on the dialog "PROVIDENCE". Shown in both layouts.
 
@@ -39178,7 +41866,7 @@ END
 
 ID: cine.boss5.276.btn.02
 
-SOURCE: src/p11.js line 234
+SOURCE: src/p11.js line 162
 
 CONTEXT: A button on the dialog "PROVIDENCE". Shown in both layouts.
 
@@ -39196,7 +41884,7 @@ END
 
 ID: cine.boss5.278.title
 
-SOURCE: src/p11.js line 234
+SOURCE: src/p11.js line 162
 
 CONTEXT: Dialog title, opened from boss5. The body is the next entry. Shown in both layouts.
 
@@ -39214,7 +41902,7 @@ END
 
 ID: cine.boss5.278.body
 
-SOURCE: src/p11.js line 234
+SOURCE: src/p11.js line 162
 
 CONTEXT: Dialog body under the title "You told it", from boss5. Buttons come after the body. Shown in both layouts.
 
@@ -39234,7 +41922,7 @@ END
 
 ID: cine.boss5.278.btn.01
 
-SOURCE: src/p11.js line 234
+SOURCE: src/p11.js line 162
 
 CONTEXT: A button on the dialog "You told it". Shown in both layouts.
 
@@ -39252,7 +41940,7 @@ END
 
 ID: cine.boss5.279.title
 
-SOURCE: src/p11.js line 235
+SOURCE: src/p11.js line 163
 
 CONTEXT: Dialog title, opened from boss5. The body is the next entry. Shown in both layouts.
 
@@ -39270,7 +41958,7 @@ END
 
 ID: cine.boss5.279.body
 
-SOURCE: src/p11.js line 235
+SOURCE: src/p11.js line 163
 
 CONTEXT: Dialog body under the title "The seventh part", from boss5. Buttons come after the body. Shown in both layouts.
 
@@ -39288,7 +41976,7 @@ END
 
 ID: cine.boss5.279.btn.01
 
-SOURCE: src/p11.js line 236
+SOURCE: src/p11.js line 164
 
 CONTEXT: A button on the dialog "The seventh part". Shown in both layouts.
 
@@ -39306,7 +41994,7 @@ END
 
 ID: cine.boss5.279.btn.02
 
-SOURCE: src/p11.js line 237
+SOURCE: src/p11.js line 165
 
 CONTEXT: A button on the dialog "The seventh part". Shown in both layouts.
 
@@ -39766,7 +42454,7 @@ END
 
 ID: cine.boss4.270
 
-SOURCE: src/p11.js line 208
+SOURCE: src/p11.js line 136
 
 CONTEXT: Toast from boss4. It appears in the corner and fades. Shown in both layouts.
 
@@ -39786,7 +42474,7 @@ END
 
 ID: cine.boss4.271
 
-SOURCE: src/p11.js line 212
+SOURCE: src/p11.js line 140
 
 CONTEXT: Toast from boss4. It appears in the corner and fades. Shown in both layouts.
 
@@ -39804,7 +42492,7 @@ END
 
 ID: cine.boss4.273
 
-SOURCE: src/p11.js line 218
+SOURCE: src/p11.js line 146
 
 CONTEXT: Toast from boss4. It appears in the corner and fades. Shown in both layouts.
 
@@ -39822,7 +42510,7 @@ END
 
 ID: cine.boss4.274
 
-SOURCE: src/p11.js line 219
+SOURCE: src/p11.js line 147
 
 CONTEXT: Toast from boss4. It appears in the corner and fades. Shown in both layouts.
 
@@ -39840,7 +42528,7 @@ END
 
 ID: cine.boss5.275
 
-SOURCE: src/p11.js line 223
+SOURCE: src/p11.js line 151
 
 CONTEXT: Toast from boss5. It appears in the corner and fades. Shown in both layouts.
 
@@ -39858,7 +42546,7 @@ END
 
 ID: cine.boss5.277
 
-SOURCE: src/p11.js line 233
+SOURCE: src/p11.js line 161
 
 CONTEXT: Toast from boss5. It appears in the corner and fades. Shown in both layouts.
 
@@ -39876,7 +42564,7 @@ END
 
 ID: cine.boss5.280
 
-SOURCE: src/p11.js line 236
+SOURCE: src/p11.js line 164
 
 CONTEXT: Toast from boss5. It appears in the corner and fades. Shown in both layouts.
 
@@ -39894,7 +42582,7 @@ END
 
 ID: cine.boss5.281
 
-SOURCE: src/p11.js line 237
+SOURCE: src/p11.js line 165
 
 CONTEXT: Toast from boss5. It appears in the corner and fades. Shown in both layouts.
 
@@ -39912,7 +42600,7 @@ END
 
 ID: cine.bosskill2.320
 
-SOURCE: src/p11.js line 475
+SOURCE: src/p11.js line 403
 
 CONTEXT: Toast from bossKill2. It appears in the corner and fades. Shown in both layouts.
 
@@ -40880,13 +43568,13 @@ END
 
 Buttons, sheets, toasts, death, options, and the bug report.
 
-2583 entries.
+2497 entries.
 
 ## Options
 
 ID: ui.options.dmgOut
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: dmgOut. Shown in both layouts.
 
@@ -41114,7 +43802,7 @@ END
 
 ID: ui.options.dmgIn
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: dmgIn. Shown in both layouts.
 
@@ -41196,7 +43884,7 @@ END
 
 ID: ui.options.enemyBars
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: enemyBars. Shown in both layouts.
 
@@ -42116,7 +44804,7 @@ END
 
 ID: ui.options.orbNums
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: orbNums. Shown in both layouts.
 
@@ -42178,7 +44866,7 @@ END
 
 ID: ui.options.selfBars
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: selfBars. Shown in both layouts.
 
@@ -42240,7 +44928,7 @@ END
 
 ID: ui.options.labels
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: labels. Shown in both layouts.
 
@@ -42354,7 +45042,7 @@ END
 
 ID: ui.options.minimap
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: minimap. Shown in both layouts.
 
@@ -42394,7 +45082,7 @@ END
 
 ID: ui.options.shake
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: shake. Shown in both layouts.
 
@@ -42434,7 +45122,7 @@ END
 
 ID: ui.options.calm
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: calm. Shown in both layouts.
 
@@ -42474,7 +45162,7 @@ END
 
 ID: ui.options.post
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: post. Shown in both layouts.
 
@@ -42514,7 +45202,7 @@ END
 
 ID: ui.options.sound
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: sound. Shown in both layouts.
 
@@ -42554,7 +45242,7 @@ END
 
 ID: ui.options.music
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: music. Shown in both layouts.
 
@@ -42594,7 +45282,7 @@ END
 
 ID: ui.options.dyn
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: dyn. Shown in both layouts.
 
@@ -42634,7 +45322,7 @@ END
 
 ID: ui.options.auto
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: auto. Shown in both layouts.
 
@@ -42674,7 +45362,7 @@ END
 
 ID: ui.options.obj
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: obj. Shown in both layouts.
 
@@ -42714,7 +45402,7 @@ END
 
 ID: ui.options.autoEq
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: autoEq. Shown in both layouts.
 
@@ -42754,7 +45442,7 @@ END
 
 ID: ui.options.autoStim
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: autoStim. Shown in both layouts.
 
@@ -42976,7 +45664,7 @@ END
 
 ID: ui.options.tapTarget
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: tapTarget. Shown in the touch layout.
 
@@ -43016,7 +45704,7 @@ END
 
 ID: ui.options.cmpArrow
 
-SOURCE: src/p1.js line 638
+SOURCE: src/p1.js line 562
 
 CONTEXT: A checkbox on the Options sheet. Key: cmpArrow. Shown in both layouts.
 
@@ -44372,7 +47060,7 @@ END
 
 ID: ui.shrine.might.name
 
-SOURCE: src/p1.js line 466
+SOURCE: src/p1.js line 390
 
 CONTEXT: Name of a shrine when you step on it. Shown as a toast. Shown in both layouts.
 
@@ -44390,7 +47078,7 @@ END
 
 ID: ui.shrine.might.effect
 
-SOURCE: src/p1.js line 466
+SOURCE: src/p1.js line 390
 
 CONTEXT: What the might shrine does, in the same toast as its name. Shown in both layouts.
 
@@ -44408,7 +47096,7 @@ END
 
 ID: ui.shrine.guard.name
 
-SOURCE: src/p1.js line 466
+SOURCE: src/p1.js line 390
 
 CONTEXT: Name of a shrine when you step on it. Shown as a toast. Shown in both layouts.
 
@@ -44426,7 +47114,7 @@ END
 
 ID: ui.shrine.guard.effect
 
-SOURCE: src/p1.js line 466
+SOURCE: src/p1.js line 390
 
 CONTEXT: What the guard shrine does, in the same toast as its name. Shown in both layouts.
 
@@ -44444,7 +47132,7 @@ END
 
 ID: ui.shrine.xp.name
 
-SOURCE: src/p1.js line 466
+SOURCE: src/p1.js line 390
 
 CONTEXT: Name of a shrine when you step on it. Shown as a toast. Shown in both layouts.
 
@@ -44462,7 +47150,7 @@ END
 
 ID: ui.shrine.xp.effect
 
-SOURCE: src/p1.js line 466
+SOURCE: src/p1.js line 390
 
 CONTEXT: What the xp shrine does, in the same toast as its name. Shown in both layouts.
 
@@ -44480,7 +47168,7 @@ END
 
 ID: ui.shrine.luck.name
 
-SOURCE: src/p1.js line 466
+SOURCE: src/p1.js line 390
 
 CONTEXT: Name of a shrine when you step on it. Shown as a toast. Shown in both layouts.
 
@@ -44498,7 +47186,7 @@ END
 
 ID: ui.shrine.luck.effect
 
-SOURCE: src/p1.js line 466
+SOURCE: src/p1.js line 390
 
 CONTEXT: What the luck shrine does, in the same toast as its name. Shown in both layouts.
 
@@ -44516,7 +47204,7 @@ END
 
 ID: ui.shrine.fill.name
 
-SOURCE: src/p1.js line 466
+SOURCE: src/p1.js line 390
 
 CONTEXT: Name of a shrine when you step on it. Shown as a toast. Shown in both layouts.
 
@@ -44534,7 +47222,7 @@ END
 
 ID: ui.shrine.fill.effect
 
-SOURCE: src/p1.js line 466
+SOURCE: src/p1.js line 390
 
 CONTEXT: What the fill shrine does, in the same toast as its name. Shown in both layouts.
 
@@ -44552,7 +47240,7 @@ END
 
 ID: ui.shrine.gold.name
 
-SOURCE: src/p1.js line 466
+SOURCE: src/p1.js line 390
 
 CONTEXT: Name of a shrine when you step on it. Shown as a toast. Shown in both layouts.
 
@@ -44570,7 +47258,7 @@ END
 
 ID: ui.shrine.gold.effect
 
-SOURCE: src/p1.js line 466
+SOURCE: src/p1.js line 390
 
 CONTEXT: What the gold shrine does, in the same toast as its name. Shown in both layouts.
 
@@ -44588,7 +47276,7 @@ END
 
 ID: ui.shrine.eyes.name
 
-SOURCE: src/p1.js line 466
+SOURCE: src/p1.js line 390
 
 CONTEXT: Name of a shrine when you step on it. Shown as a toast. Shown in both layouts.
 
@@ -44606,7 +47294,7 @@ END
 
 ID: ui.shrine.eyes.effect
 
-SOURCE: src/p1.js line 466
+SOURCE: src/p1.js line 390
 
 CONTEXT: What the eyes shrine does, in the same toast as its name. Shown in both layouts.
 
@@ -56407,7 +59095,7 @@ END
 
 ID: ui.legtake.259.title
 
-SOURCE: src/p10.js line 709
+SOURCE: src/p10.js line 692
 
 CONTEXT: Dialog title, opened from legTake. The body is the next entry. Shown in both layouts.
 
@@ -56425,7 +59113,7 @@ END
 
 ID: ui.legtake.259.body
 
-SOURCE: src/p10.js line 709
+SOURCE: src/p10.js line 692
 
 CONTEXT: Dialog body under the title "A servo leg", from legTake. Buttons come after the body. Shown in both layouts.
 
@@ -56443,7 +59131,7 @@ END
 
 ID: ui.legtake.259.btn.01
 
-SOURCE: src/p10.js line 709
+SOURCE: src/p10.js line 692
 
 CONTEXT: A button on the dialog "A servo leg". Shown in both layouts.
 
@@ -56461,7 +59149,7 @@ END
 
 ID: ui.tagmenu.266.title
 
-SOURCE: src/p10.js line 825
+SOURCE: src/p10.js line 808
 
 CONTEXT: Dialog title, opened from tagMenu. The body is the next entry. Shown in both layouts.
 
@@ -56479,7 +59167,7 @@ END
 
 ID: ui.tagmenu.266.body_b01
 
-SOURCE: src/p10.js line 825
+SOURCE: src/p10.js line 808
 
 CONTEXT: Dialog body under the title "Render a companion", from tagMenu. Buttons come after the body. Branch 1 of 2. Shown in both layouts.
 
@@ -56499,7 +59187,7 @@ END
 
 ID: ui.tagmenu.266.body_b02
 
-SOURCE: src/p10.js line 825
+SOURCE: src/p10.js line 808
 
 CONTEXT: Dialog body under the title "Render a companion", from tagMenu. Buttons come after the body. Branch 2 of 2. Shown in both layouts.
 
@@ -61860,7 +64548,7 @@ END
 
 ID: ui.legcheck.258
 
-SOURCE: src/p10.js line 708
+SOURCE: src/p10.js line 691
 
 CONTEXT: Toast from legCheck. It appears in the corner and fades. Shown in both layouts.
 
@@ -61878,7 +64566,7 @@ END
 
 ID: ui.reckill.261
 
-SOURCE: src/p10.js line 792
+SOURCE: src/p10.js line 775
 
 CONTEXT: Toast from recKill. It appears in the corner and fades. Shown in both layouts.
 
@@ -61896,7 +64584,7 @@ END
 
 ID: ui.reckill.262
 
-SOURCE: src/p10.js line 792
+SOURCE: src/p10.js line 775
 
 CONTEXT: Toast from recKill. It appears in the corner and fades. Shown in both layouts.
 
@@ -61914,7 +64602,7 @@ END
 
 ID: ui.tagrender.263_b01
 
-SOURCE: src/p10.js line 798
+SOURCE: src/p10.js line 781
 
 CONTEXT: Toast from tagRender. It appears in the corner and fades. Branch 1 of 2. Shown in both layouts.
 
@@ -61932,7 +64620,7 @@ END
 
 ID: ui.tagrender.263_b02
 
-SOURCE: src/p10.js line 798
+SOURCE: src/p10.js line 781
 
 CONTEXT: Toast from tagRender. It appears in the corner and fades. Branch 2 of 2. Shown in both layouts.
 
@@ -61952,7 +64640,7 @@ END
 
 ID: ui.tagrender.264
 
-SOURCE: src/p10.js line 798
+SOURCE: src/p10.js line 781
 
 CONTEXT: Toast from tagRender. It appears in the corner and fades. Shown in both layouts.
 
@@ -61970,7 +64658,7 @@ END
 
 ID: ui.tagdismiss.265
 
-SOURCE: src/p10.js line 803
+SOURCE: src/p10.js line 786
 
 CONTEXT: Toast from tagDismiss. It appears in the corner and fades. Shown in both layouts.
 
@@ -61990,7 +64678,7 @@ END
 
 ID: ui.partykill.268
 
-SOURCE: src/p10.js line 835
+SOURCE: src/p10.js line 818
 
 CONTEXT: Toast from partyKill. It appears in the corner and fades. Shown in both layouts.
 
@@ -62008,7 +64696,7 @@ END
 
 ID: ui.gap.269
 
-SOURCE: src/p11.js line 199
+SOURCE: src/p11.js line 127
 
 CONTEXT: Toast from gap. It appears in the corner and fades. Shown in both layouts.
 
@@ -62026,7 +64714,7 @@ END
 
 ID: ui.provyield.282
 
-SOURCE: src/p11.js line 245
+SOURCE: src/p11.js line 173
 
 CONTEXT: Toast from provYield. It appears in the corner and fades. Shown in both layouts.
 
@@ -62044,7 +64732,7 @@ END
 
 ID: ui.provyield.283
 
-SOURCE: src/p11.js line 246
+SOURCE: src/p11.js line 174
 
 CONTEXT: Toast from provYield. It appears in the corner and fades. Shown in both layouts.
 
@@ -62062,7 +64750,7 @@ END
 
 ID: ui.q18.284
 
-SOURCE: src/p11.js line 270
+SOURCE: src/p11.js line 198
 
 CONTEXT: Toast from q18. It appears in the corner and fades. Shown in both layouts.
 
@@ -62080,7 +64768,7 @@ END
 
 ID: ui.q24.286
 
-SOURCE: src/p11.js line 283
+SOURCE: src/p11.js line 211
 
 CONTEXT: Toast from q24. It appears in the corner and fades. Shown in both layouts.
 
@@ -62098,7 +64786,7 @@ END
 
 ID: ui.q24.287
 
-SOURCE: src/p11.js line 284
+SOURCE: src/p11.js line 212
 
 CONTEXT: Toast from q24. It appears in the corner and fades. Shown in both layouts.
 
@@ -62116,7 +64804,7 @@ END
 
 ID: ui.q16.289
 
-SOURCE: src/p11.js line 291
+SOURCE: src/p11.js line 219
 
 CONTEXT: Toast from q16. It appears in the corner and fades. Shown in both layouts.
 
@@ -62134,7 +64822,7 @@ END
 
 ID: ui.q21.290
 
-SOURCE: src/p11.js line 311
+SOURCE: src/p11.js line 239
 
 CONTEXT: Toast from q21. It appears in the corner and fades. Shown in both layouts.
 
@@ -62152,7 +64840,7 @@ END
 
 ID: ui.q21.291
 
-SOURCE: src/p11.js line 313
+SOURCE: src/p11.js line 241
 
 CONTEXT: Toast from q21. It appears in the corner and fades. Shown in both layouts.
 
@@ -62170,7 +64858,7 @@ END
 
 ID: ui.q23.294
 
-SOURCE: src/p11.js line 328
+SOURCE: src/p11.js line 256
 
 CONTEXT: Toast from q23. It appears in the corner and fades. Shown in both layouts.
 
@@ -62188,7 +64876,7 @@ END
 
 ID: ui.q11.296
 
-SOURCE: src/p11.js line 353
+SOURCE: src/p11.js line 281
 
 CONTEXT: Toast from q11. It appears in the corner and fades. Shown in both layouts.
 
@@ -62206,7 +64894,7 @@ END
 
 ID: ui.q11.297
 
-SOURCE: src/p11.js line 354
+SOURCE: src/p11.js line 282
 
 CONTEXT: Toast from q11. It appears in the corner and fades. Shown in both layouts.
 
@@ -62224,7 +64912,7 @@ END
 
 ID: ui.q13.298
 
-SOURCE: src/p11.js line 359
+SOURCE: src/p11.js line 287
 
 CONTEXT: Toast from q13. It appears in the corner and fades. Shown in both layouts.
 
@@ -62242,7 +64930,7 @@ END
 
 ID: ui.gapdown.313
 
-SOURCE: src/p11.js line 428
+SOURCE: src/p11.js line 356
 
 CONTEXT: Toast from gapDown. It appears in the corner and fades. Shown in both layouts.
 
@@ -62260,7 +64948,7 @@ END
 
 ID: ui.sdxnudge.319
 
-SOURCE: src/p11.js line 441
+SOURCE: src/p11.js line 369
 
 CONTEXT: Toast from sdxNudge. It appears in the corner and fades. Shown in both layouts.
 
@@ -65121,7 +67809,7 @@ END
 
 ID: ui.q24.285
 
-SOURCE: src/p11.js line 281
+SOURCE: src/p11.js line 209
 
 CONTEXT: Floating combat text from q24. Shown in both layouts.
 
@@ -65141,7 +67829,7 @@ END
 
 ID: ui.q23.292
 
-SOURCE: src/p11.js line 327
+SOURCE: src/p11.js line 255
 
 CONTEXT: Floating combat text from q23. Shown in both layouts.
 
@@ -65159,7 +67847,7 @@ END
 
 ID: ui.q4.295
 
-SOURCE: src/p11.js line 341
+SOURCE: src/p11.js line 269
 
 CONTEXT: Floating combat text from q4. Shown in both layouts.
 
@@ -65287,7 +67975,7 @@ END
 
 ID: ui.q1.299
 
-SOURCE: src/p11.js line 366
+SOURCE: src/p11.js line 294
 
 CONTEXT: Text drawn on the scene canvas from q1. Shown in both layouts.
 
@@ -65305,7 +67993,7 @@ END
 
 ID: ui.q4.300
 
-SOURCE: src/p11.js line 367
+SOURCE: src/p11.js line 295
 
 CONTEXT: Text drawn on the scene canvas from q4. Shown in both layouts.
 
@@ -65325,7 +68013,7 @@ END
 
 ID: ui.q6.301_b01
 
-SOURCE: src/p11.js line 368
+SOURCE: src/p11.js line 296
 
 CONTEXT: Text drawn on the scene canvas from q6. Branch 1 of 2. Shown in both layouts.
 
@@ -65343,7 +68031,7 @@ END
 
 ID: ui.q6.301_b02
 
-SOURCE: src/p11.js line 368
+SOURCE: src/p11.js line 296
 
 CONTEXT: Text drawn on the scene canvas from q6. Branch 2 of 2. Shown in both layouts.
 
@@ -65361,7 +68049,7 @@ END
 
 ID: ui.q17.302
 
-SOURCE: src/p11.js line 372
+SOURCE: src/p11.js line 300
 
 CONTEXT: Text drawn on the scene canvas from q17. Shown in both layouts.
 
@@ -65381,7 +68069,7 @@ END
 
 ID: ui.q21.304
 
-SOURCE: src/p11.js line 377
+SOURCE: src/p11.js line 305
 
 CONTEXT: Text drawn on the scene canvas from q21. Shown in both layouts.
 
@@ -65399,7 +68087,7 @@ END
 
 ID: ui.q23.306
 
-SOURCE: src/p11.js line 380
+SOURCE: src/p11.js line 308
 
 CONTEXT: Text drawn on the scene canvas from q23. Shown in both layouts.
 
@@ -65419,7 +68107,7 @@ END
 
 ID: ui.q18.307
 
-SOURCE: src/p11.js line 385
+SOURCE: src/p11.js line 313
 
 CONTEXT: Text drawn on the scene canvas from q18. Shown in both layouts.
 
@@ -65437,7 +68125,7 @@ END
 
 ID: ui.q18.308
 
-SOURCE: src/p11.js line 392
+SOURCE: src/p11.js line 320
 
 CONTEXT: Text drawn on the scene canvas from q18. Shown in both layouts.
 
@@ -65455,7 +68143,7 @@ END
 
 ID: ui.q24.309
 
-SOURCE: src/p11.js line 398
+SOURCE: src/p11.js line 326
 
 CONTEXT: Text drawn on the scene canvas from q24. Shown in both layouts.
 
@@ -65639,7 +68327,7 @@ END
 
 ID: ui.q19.303
 
-SOURCE: src/p11.js line 374
+SOURCE: src/p11.js line 302
 
 CONTEXT: A speech bubble over a creature, from q19. Shown in both layouts.
 
@@ -65837,1375 +68525,7 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.407.28
-
-SOURCE: src/p1.js line 407
-
-CONTEXT: Player-facing line in p1.js at line 407. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Impact
-
-END
-
-ID: ui.line.p1_js.407.47
-
-SOURCE: src/p1.js line 407
-
-CONTEXT: Player-facing line in p1.js at line 407. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Surge
-
-END
-
-ID: ui.line.p1_js.407.64
-
-SOURCE: src/p1.js line 407
-
-CONTEXT: Player-facing line in p1.js at line 407. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Rust
-
-END
-
-ID: ui.line.p1_js.407.80
-
-SOURCE: src/p1.js line 407
-
-CONTEXT: Player-facing line in p1.js at line 407. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Heat
-
-END
-
-ID: ui.line.p1_js.407.97
-
-SOURCE: src/p1.js line 407
-
-CONTEXT: Player-facing line in p1.js at line 407. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Noise
-
-END
-
-ID: ui.line.p1_js.407.165
-
-SOURCE: src/p1.js line 407
-
-CONTEXT: Player-facing line in p1.js at line 407. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Tuned
-
-END
-
-ID: ui.line.p1_js.407.183
-
-SOURCE: src/p1.js line 407
-
-CONTEXT: Player-facing line in p1.js at line 407. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Tuned
-
-END
-
-ID: ui.line.p1_js.407.202
-
-SOURCE: src/p1.js line 407
-
-CONTEXT: Player-facing line in p1.js at line 407. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Tuned
-
-END
-
-ID: ui.line.p1_js.407.221
-
-SOURCE: src/p1.js line 407
-
-CONTEXT: Player-facing line in p1.js at line 407. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Tuned
-
-END
-
-ID: ui.line.p1_js.407.313
-
-SOURCE: src/p1.js line 407
-
-CONTEXT: Player-facing line in p1.js at line 407. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    of Proofing
-
-END
-
-ID: ui.line.p1_js.407.336
-
-SOURCE: src/p1.js line 407
-
-CONTEXT: Player-facing line in p1.js at line 407. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    of Proofing
-
-END
-
-ID: ui.line.p1_js.407.361
-
-SOURCE: src/p1.js line 407
-
-CONTEXT: Player-facing line in p1.js at line 407. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    of Proofing
-
-END
-
-ID: ui.line.p1_js.407.386
-
-SOURCE: src/p1.js line 407
-
-CONTEXT: Player-facing line in p1.js at line 407. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    of Proofing
-
-END
-
-ID: ui.line.p1_js.419.66
-
-SOURCE: src/p1.js line 419
-
-CONTEXT: Player-facing line in p1.js at line 419. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Flak Coat
-
-END
-
-ID: ui.line.p1_js.419.120
-
-SOURCE: src/p1.js line 419
-
-CONTEXT: Player-facing line in p1.js at line 419. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    When you would die, recover half your life instead (once every 2 minutes)
-
-END
-
-ID: ui.line.p1_js.420.56
-
-SOURCE: src/p1.js line 420
-
-CONTEXT: Player-facing line in p1.js at line 420. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Girder Maul
-
-END
-
-ID: ui.line.p1_js.420.108
-
-SOURCE: src/p1.js line 420
-
-CONTEXT: Player-facing line in p1.js at line 420. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    15% chance to strike for triple damage
-
-END
-
-ID: ui.line.p1_js.421.61
-
-SOURCE: src/p1.js line 421
-
-CONTEXT: Player-facing line in p1.js at line 421. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Sigil Core
-
-END
-
-ID: ui.line.p1_js.421.112
-
-SOURCE: src/p1.js line 421
-
-CONTEXT: Player-facing line in p1.js at line 421. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Machines that strike you are stunned for 1 second
-
-END
-
-ID: ui.line.p1_js.422.63
-
-SOURCE: src/p1.js line 422
-
-CONTEXT: Player-facing line in p1.js at line 422. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Padded Hoodie
-
-END
-
-ID: ui.line.p1_js.422.117
-
-SOURCE: src/p1.js line 422
-
-CONTEXT: Player-facing line in p1.js at line 422. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Skills cost 25% less energy
-
-END
-
-ID: ui.line.p1_js.423.60
-
-SOURCE: src/p1.js line 423
-
-CONTEXT: Player-facing line in p1.js at line 423. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Copper Band
-
-END
-
-ID: ui.line.p1_js.424.57
-
-SOURCE: src/p1.js line 424
-
-CONTEXT: Player-facing line in p1.js at line 424. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Work Gloves
-
-END
-
-ID: ui.line.p1_js.424.105
-
-SOURCE: src/p1.js line 424
-
-CONTEXT: Player-facing line in p1.js at line 424. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    20% chance on hit to cast Arc Chain
-
-END
-
-ID: ui.line.p1_js.425.57
-
-SOURCE: src/p1.js line 425
-
-CONTEXT: Player-facing line in p1.js at line 425. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Tool Belt
-
-END
-
-ID: ui.line.p1_js.425.111
-
-SOURCE: src/p1.js line 425
-
-CONTEXT: Player-facing line in p1.js at line 425. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Stims also refill your energy
-
-END
-
-ID: ui.line.p1_js.426.56
-
-SOURCE: src/p1.js line 426
-
-CONTEXT: Player-facing line in p1.js at line 426. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Signet Chip
-
-END
-
-ID: ui.line.p1_js.426.106
-
-SOURCE: src/p1.js line 426
-
-CONTEXT: Player-facing line in p1.js at line 426. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Credits you carry grow as fast as prices rise
-
-END
-
-ID: ui.line.p1_js.427.53
-
-SOURCE: src/p1.js line 427
-
-CONTEXT: Player-facing line in p1.js at line 427. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Steel-Toes
-
-END
-
-ID: ui.line.p1_js.427.104
-
-SOURCE: src/p1.js line 427
-
-CONTEXT: Player-facing line in p1.js at line 427. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    +25% damage while moving
-
-END
-
-ID: ui.line.p1_js.428.54
-
-SOURCE: src/p1.js line 428
-
-CONTEXT: Player-facing line in p1.js at line 428. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Riot Helm
-
-END
-
-ID: ui.line.p1_js.428.103
-
-SOURCE: src/p1.js line 428
-
-CONTEXT: Player-facing line in p1.js at line 428. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Slain machines explode, wounding others nearby
-
-END
-
-ID: ui.line.p1_js.429.52
-
-SOURCE: src/p1.js line 429
-
-CONTEXT: Player-facing line in p1.js at line 429. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Hard Hat
-
-END
-
-ID: ui.line.p1_js.429.99
-
-SOURCE: src/p1.js line 429
-
-CONTEXT: Player-facing line in p1.js at line 429. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    15% chance to avoid any damage
-
-END
-
-ID: ui.line.p1_js.430.54
-
-SOURCE: src/p1.js line 430
-
-CONTEXT: Player-facing line in p1.js at line 430. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Box Cutter
-
-END
-
-ID: ui.line.p1_js.430.108
-
-SOURCE: src/p1.js line 430
-
-CONTEXT: Player-facing line in p1.js at line 430. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    12% chance to stun on hit
-
-END
-
-ID: ui.line.p1_js.431.56
-
-SOURCE: src/p1.js line 431
-
-CONTEXT: Player-facing line in p1.js at line 431. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Dog Tag
-
-END
-
-ID: ui.line.p1_js.431.87
-
-SOURCE: src/p1.js line 431
-
-CONTEXT: Player-facing line in p1.js at line 431. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Replenish 2% of your life every second
-
-END
-
-ID: ui.line.p1_js.432.64
-
-SOURCE: src/p1.js line 432
-
-CONTEXT: Player-facing line in p1.js at line 432. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Servo Fists
-
-END
-
-ID: ui.line.p1_js.432.113
-
-SOURCE: src/p1.js line 432
-
-CONTEXT: Player-facing line in p1.js at line 432. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Ordinary machines you destroy have a 13% chance to drop a satoshi
-
-END
-
-ID: ui.line.p1_js.433.58
-
-SOURCE: src/p1.js line 433
-
-CONTEXT: Player-facing line in p1.js at line 433. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Sigil Core
-
-END
-
-ID: ui.line.p1_js.433.105
-
-SOURCE: src/p1.js line 433
-
-CONTEXT: Player-facing line in p1.js at line 433. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Your skills recover 20% faster
-
-END
-
-ID: ui.line.p1_js.434.54
-
-SOURCE: src/p1.js line 434
-
-CONTEXT: Player-facing line in p1.js at line 434. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Mag Greaves
-
-END
-
-ID: ui.line.p1_js.434.102
-
-SOURCE: src/p1.js line 434
-
-CONTEXT: Player-facing line in p1.js at line 434. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    +10% chance to avoid any hit
-
-END
-
-ID: ui.line.p1_js.435.58
-
-SOURCE: src/p1.js line 435
-
-CONTEXT: Player-facing line in p1.js at line 435. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Power Girdle
-
-END
-
-ID: ui.line.p1_js.435.107
-
-SOURCE: src/p1.js line 435
-
-CONTEXT: Player-facing line in p1.js at line 435. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Below 30% life, every machine near you is slowed for 4 seconds (once a minute)
-
-END
-
-ID: ui.line.p1_js.436.51
-
-SOURCE: src/p1.js line 436
-
-CONTEXT: Player-facing line in p1.js at line 436. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Null Ring
-
-END
-
-ID: ui.line.p1_js.436.119
-
-SOURCE: src/p1.js line 436
-
-CONTEXT: Player-facing line in p1.js at line 436. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    You cannot be slowed, and your energy cannot be drained
-
-END
-
-ID: ui.line.p1_js.437.52
-
-SOURCE: src/p1.js line 437
-
-CONTEXT: Player-facing line in p1.js at line 437. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Seraph Plate
-
-END
-
-ID: ui.line.p1_js.438.49
-
-SOURCE: src/p1.js line 438
-
-CONTEXT: Player-facing line in p1.js at line 438. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Halo Band
-
-END
-
-ID: ui.line.p1_js.438.108
-
-SOURCE: src/p1.js line 438
-
-CONTEXT: Player-facing line in p1.js at line 438. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Each companion or summoned ally adds 5% to your damage, up to six
-
-END
-
-ID: ui.line.p1_js.439.55
-
-SOURCE: src/p1.js line 439
-
-CONTEXT: Player-facing line in p1.js at line 439. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Cloud Core
-
-END
-
-ID: ui.line.p1_js.439.127
-
-SOURCE: src/p1.js line 439
-
-CONTEXT: Player-facing line in p1.js at line 439. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Once every 90 seconds, a killing blow heals you fully instead
-
-END
-
-ID: ui.line.p1_js.440.57
-
-SOURCE: src/p1.js line 440
-
-CONTEXT: Player-facing line in p1.js at line 440. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Signet Chip
-
-END
-
-ID: ui.line.p1_js.440.127
-
-SOURCE: src/p1.js line 440
-
-CONTEXT: Player-facing line in p1.js at line 440. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Mediators cannot mend machines while you wear this
-
-END
-
-ID: ui.line.p1_js.441.56
-
-SOURCE: src/p1.js line 441
-
-CONTEXT: Player-facing line in p1.js at line 441. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Signal Baton
-
-END
-
-ID: ui.line.p1_js.441.133
-
-SOURCE: src/p1.js line 441
-
-CONTEXT: Player-facing line in p1.js at line 441. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    +50% damage to champions, lieutenants and executives
-
-END
-
-ID: ui.line.p1_js.442.61
-
-SOURCE: src/p1.js line 442
-
-CONTEXT: Player-facing line in p1.js at line 442. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Cloud Mantle
-
-END
-
-ID: ui.line.p1_js.442.175
-
-SOURCE: src/p1.js line 442
-
-CONTEXT: Player-facing line in p1.js at line 442. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    +1 to Teleport (item skill)
-
-END
-
-ID: ui.line.p1_js.443.60
-
-SOURCE: src/p1.js line 443
-
-CONTEXT: Player-facing line in p1.js at line 443. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Sigil Core
-
-END
-
-ID: ui.line.p1_js.443.138
-
-SOURCE: src/p1.js line 443
-
-CONTEXT: Player-facing line in p1.js at line 443. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    +1 to Standing Call (item skill)
-
-END
-
-ID: ui.line.p1_js.444.56
-
-SOURCE: src/p1.js line 444
-
-CONTEXT: Player-facing line in p1.js at line 444. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Null Sceptre
-
-END
-
-ID: ui.line.p1_js.444.137
-
-SOURCE: src/p1.js line 444
-
-CONTEXT: Player-facing line in p1.js at line 444. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    +1 to Open Book (item skill)
-
-END
-
-ID: ui.line.p1_js.445.59
-
-SOURCE: src/p1.js line 445
-
-CONTEXT: Player-facing line in p1.js at line 445. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Power Girdle
-
-END
-
-ID: ui.line.p1_js.445.134
-
-SOURCE: src/p1.js line 445
-
-CONTEXT: Player-facing line in p1.js at line 445. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    +1 to Quiet Ledger (item skill)
-
-END
-
-ID: ui.line.p1_js.446.56
-
-SOURCE: src/p1.js line 446
-
-CONTEXT: Player-facing line in p1.js at line 446. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Praetor Visor
-
-END
-
-ID: ui.line.p1_js.446.137
-
-SOURCE: src/p1.js line 446
-
-CONTEXT: Player-facing line in p1.js at line 446. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    +1 to Bear Market (item skill)
-
-END
-
-ID: ui.line.p1_js.447.59
-
-SOURCE: src/p1.js line 447
-
-CONTEXT: Player-facing line in p1.js at line 447. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Arc Sceptre
-
-END
-
-ID: ui.line.p1_js.447.137
-
-SOURCE: src/p1.js line 447
-
-CONTEXT: Player-facing line in p1.js at line 447. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    +1 to Spare Chair (item skill)
-
-END
-
-ID: ui.line.p1_js.448.59
-
-SOURCE: src/p1.js line 448
-
-CONTEXT: Player-facing line in p1.js at line 448. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Last-Mile Cannon
-
-END
-
-ID: ui.line.p1_js.448.177
-
-SOURCE: src/p1.js line 448
-
-CONTEXT: Player-facing line in p1.js at line 448. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Knocks ordinary machines back. Bosses, lieutenants, and players get one short shove, and a second within 1.5s does nothing.
-
-END
-
-ID: ui.line.p1_js.449.58
-
-SOURCE: src/p1.js line 449
-
-CONTEXT: Player-facing line in p1.js at line 449. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Halo Circuit
-
-END
-
-ID: ui.line.p1_js.450.61
-
-SOURCE: src/p1.js line 450
-
-CONTEXT: Player-facing line in p1.js at line 450. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Signet Chip
-
-END
-
-ID: ui.line.p1_js.451.57
-
-SOURCE: src/p1.js line 451
-
-CONTEXT: Player-facing line in p1.js at line 451. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Zero-Day Rig
-
-END
-
-ID: ui.line.p1_js.451.194
-
-SOURCE: src/p1.js line 451
-
-CONTEXT: Player-facing line in p1.js at line 451. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    When struck, 25% chance to dash about 3 paces along your facing. 2s between dashes, 6s against a player. Will not fire while you are stunned.
-
-END
-
-ID: ui.line.p1_js.452.55
-
-SOURCE: src/p1.js line 452
-
-CONTEXT: Player-facing line in p1.js at line 452. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Aegis Shell
-
-END
-
-ID: ui.line.p1_js.453.57
+ID: ui.line.p1_js.453.7
 
 SOURCE: src/p1.js line 453
 
@@ -67219,191 +68539,335 @@ LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog,
 
 TEXT
 
-    Riot Helm
-
-END
-
-ID: ui.line.p1_js.454.60
-
-SOURCE: src/p1.js line 454
-
-CONTEXT: Player-facing line in p1.js at line 454. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Seraph Plate
-
-END
-
-ID: ui.line.p1_js.454.165
-
-SOURCE: src/p1.js line 454
-
-CONTEXT: Player-facing line in p1.js at line 454. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Attacks against you cannot crit.
-
-END
-
-ID: ui.line.p1_js.455.54
-
-SOURCE: src/p1.js line 455
-
-CONTEXT: Player-facing line in p1.js at line 455. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Box Cutter
-
-END
-
-ID: ui.line.p1_js.458.14
-
-SOURCE: src/p1.js line 458
-
-CONTEXT: Player-facing line in p1.js at line 458. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Striker’s Placard
-
-END
-
-ID: ui.line.p1_js.458.58
-
-SOURCE: src/p1.js line 458
-
-CONTEXT: Player-facing line in p1.js at line 458. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Stop Sign
-
-END
-
-ID: ui.line.p1_js.459.14
-
-SOURCE: src/p1.js line 459
-
-CONTEXT: Player-facing line in p1.js at line 459. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Striker’s Hard Hat
-
-END
-
-ID: ui.line.p1_js.459.57
-
-SOURCE: src/p1.js line 459
-
-CONTEXT: Player-facing line in p1.js at line 459. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Hard Hat
-
-END
-
-ID: ui.line.p1_js.460.14
-
-SOURCE: src/p1.js line 460
-
-CONTEXT: Player-facing line in p1.js at line 460. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Striker’s Boots
-
-END
-
-ID: ui.line.p1_js.460.55
-
-SOURCE: src/p1.js line 460
-
-CONTEXT: Player-facing line in p1.js at line 460. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Worn Sneakers
-
-END
-
-ID: ui.line.p1_js.529.7
-
-SOURCE: src/p1.js line 529
-
-CONTEXT: Player-facing line in p1.js at line 529. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
     Wren
 
 END
 
-ID: ui.line.p1_js.542.9
+ID: ui.line.p1_js.466.9
+
+SOURCE: src/p1.js line 466
+
+CONTEXT: Player-facing line in p1.js at line 466. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Gramps
+
+END
+
+ID: ui.line.p1_js.533.33
+
+SOURCE: src/p1.js line 533
+
+CONTEXT: Player-facing line in p1.js at line 533. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Gramps
+
+END
+
+ID: ui.line.p1_js.533.169
+
+SOURCE: src/p1.js line 533
+
+CONTEXT: Player-facing line in p1.js at line 533. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Gramps
+
+END
+
+ID: ui.line.p1_js.534.34
+
+SOURCE: src/p1.js line 534
+
+CONTEXT: Player-facing line in p1.js at line 534. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Brenda
+
+END
+
+ID: ui.line.p1_js.534.216
+
+SOURCE: src/p1.js line 534
+
+CONTEXT: Player-facing line in p1.js at line 534. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Brenda
+
+END
+
+ID: ui.line.p1_js.535.32
+
+SOURCE: src/p1.js line 535
+
+CONTEXT: Player-facing line in p1.js at line 535. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Gramps
+
+END
+
+ID: ui.line.p1_js.535.231
+
+SOURCE: src/p1.js line 535
+
+CONTEXT: Player-facing line in p1.js at line 535. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Gramps
+
+END
+
+ID: ui.line.p1_js.536.23
+
+SOURCE: src/p1.js line 536
+
+CONTEXT: Player-facing line in p1.js at line 536. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Sister Null
+
+END
+
+ID: ui.line.p1_js.536.196
+
+SOURCE: src/p1.js line 536
+
+CONTEXT: Player-facing line in p1.js at line 536. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Sister Null
+
+END
+
+ID: ui.line.p1_js.537.28
+
+SOURCE: src/p1.js line 537
+
+CONTEXT: Player-facing line in p1.js at line 537. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Gramps
+
+END
+
+ID: ui.line.p1_js.538.22
+
+SOURCE: src/p1.js line 538
+
+CONTEXT: Player-facing line in p1.js at line 538. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Gramps
+
+END
+
+ID: ui.line.p1_js.538.172
+
+SOURCE: src/p1.js line 538
+
+CONTEXT: Player-facing line in p1.js at line 538. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Gramps
+
+END
+
+ID: ui.line.p1_js.539.35
+
+SOURCE: src/p1.js line 539
+
+CONTEXT: Player-facing line in p1.js at line 539. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Sister Null
+
+END
+
+ID: ui.line.p1_js.539.201
+
+SOURCE: src/p1.js line 539
+
+CONTEXT: Player-facing line in p1.js at line 539. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Sister Null
+
+END
+
+ID: ui.line.p1_js.540.37
+
+SOURCE: src/p1.js line 540
+
+CONTEXT: Player-facing line in p1.js at line 540. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Marrow
+
+END
+
+ID: ui.line.p1_js.540.186
+
+SOURCE: src/p1.js line 540
+
+CONTEXT: Player-facing line in p1.js at line 540. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Marrow
+
+END
+
+ID: ui.line.p1_js.541.30
+
+SOURCE: src/p1.js line 541
+
+CONTEXT: Player-facing line in p1.js at line 541. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Nonce
+
+END
+
+ID: ui.line.p1_js.541.182
+
+SOURCE: src/p1.js line 541
+
+CONTEXT: Player-facing line in p1.js at line 541. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Nonce
+
+END
+
+ID: ui.line.p1_js.542.24
 
 SOURCE: src/p1.js line 542
 
@@ -67421,29 +68885,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.609.33
+ID: ui.line.p1_js.543.33
 
-SOURCE: src/p1.js line 609
+SOURCE: src/p1.js line 543
 
-CONTEXT: Player-facing line in p1.js at line 609. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Gramps
-
-END
-
-ID: ui.line.p1_js.609.169
-
-SOURCE: src/p1.js line 609
-
-CONTEXT: Player-facing line in p1.js at line 609. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 543. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -67457,47 +68903,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.610.34
+ID: ui.line.p1_js.543.193
 
-SOURCE: src/p1.js line 610
+SOURCE: src/p1.js line 543
 
-CONTEXT: Player-facing line in p1.js at line 610. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Brenda
-
-END
-
-ID: ui.line.p1_js.610.216
-
-SOURCE: src/p1.js line 610
-
-CONTEXT: Player-facing line in p1.js at line 610. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Brenda
-
-END
-
-ID: ui.line.p1_js.611.32
-
-SOURCE: src/p1.js line 611
-
-CONTEXT: Player-facing line in p1.js at line 611. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 543. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -67511,155 +68921,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.611.231
+ID: ui.line.p1_js.544.40
 
-SOURCE: src/p1.js line 611
+SOURCE: src/p1.js line 544
 
-CONTEXT: Player-facing line in p1.js at line 611. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Gramps
-
-END
-
-ID: ui.line.p1_js.612.23
-
-SOURCE: src/p1.js line 612
-
-CONTEXT: Player-facing line in p1.js at line 612. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Sister Null
-
-END
-
-ID: ui.line.p1_js.612.196
-
-SOURCE: src/p1.js line 612
-
-CONTEXT: Player-facing line in p1.js at line 612. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Sister Null
-
-END
-
-ID: ui.line.p1_js.613.28
-
-SOURCE: src/p1.js line 613
-
-CONTEXT: Player-facing line in p1.js at line 613. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Gramps
-
-END
-
-ID: ui.line.p1_js.614.22
-
-SOURCE: src/p1.js line 614
-
-CONTEXT: Player-facing line in p1.js at line 614. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Gramps
-
-END
-
-ID: ui.line.p1_js.614.172
-
-SOURCE: src/p1.js line 614
-
-CONTEXT: Player-facing line in p1.js at line 614. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Gramps
-
-END
-
-ID: ui.line.p1_js.615.35
-
-SOURCE: src/p1.js line 615
-
-CONTEXT: Player-facing line in p1.js at line 615. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Sister Null
-
-END
-
-ID: ui.line.p1_js.615.201
-
-SOURCE: src/p1.js line 615
-
-CONTEXT: Player-facing line in p1.js at line 615. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Sister Null
-
-END
-
-ID: ui.line.p1_js.616.37
-
-SOURCE: src/p1.js line 616
-
-CONTEXT: Player-facing line in p1.js at line 616. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 544. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -67673,119 +68939,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.616.186
+ID: ui.line.p1_js.544.213
 
-SOURCE: src/p1.js line 616
+SOURCE: src/p1.js line 544
 
-CONTEXT: Player-facing line in p1.js at line 616. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Marrow
-
-END
-
-ID: ui.line.p1_js.617.30
-
-SOURCE: src/p1.js line 617
-
-CONTEXT: Player-facing line in p1.js at line 617. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Nonce
-
-END
-
-ID: ui.line.p1_js.617.182
-
-SOURCE: src/p1.js line 617
-
-CONTEXT: Player-facing line in p1.js at line 617. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Nonce
-
-END
-
-ID: ui.line.p1_js.618.24
-
-SOURCE: src/p1.js line 618
-
-CONTEXT: Player-facing line in p1.js at line 618. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Gramps
-
-END
-
-ID: ui.line.p1_js.619.33
-
-SOURCE: src/p1.js line 619
-
-CONTEXT: Player-facing line in p1.js at line 619. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Gramps
-
-END
-
-ID: ui.line.p1_js.619.193
-
-SOURCE: src/p1.js line 619
-
-CONTEXT: Player-facing line in p1.js at line 619. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Gramps
-
-END
-
-ID: ui.line.p1_js.620.40
-
-SOURCE: src/p1.js line 620
-
-CONTEXT: Player-facing line in p1.js at line 620. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 544. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -67799,29 +68957,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.620.213
+ID: ui.line.p1_js.545.29
 
-SOURCE: src/p1.js line 620
+SOURCE: src/p1.js line 545
 
-CONTEXT: Player-facing line in p1.js at line 620. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Marrow
-
-END
-
-ID: ui.line.p1_js.621.29
-
-SOURCE: src/p1.js line 621
-
-CONTEXT: Player-facing line in p1.js at line 621. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 545. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -67835,11 +68975,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.621.193
+ID: ui.line.p1_js.545.193
 
-SOURCE: src/p1.js line 621
+SOURCE: src/p1.js line 545
 
-CONTEXT: Player-facing line in p1.js at line 621. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 545. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -67853,11 +68993,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.621.257
+ID: ui.line.p1_js.545.257
 
-SOURCE: src/p1.js line 621
+SOURCE: src/p1.js line 545
 
-CONTEXT: Player-facing line in p1.js at line 621. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 545. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -67871,11 +69011,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.621.333
+ID: ui.line.p1_js.545.333
 
-SOURCE: src/p1.js line 621
+SOURCE: src/p1.js line 545
 
-CONTEXT: Player-facing line in p1.js at line 621. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 545. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -67889,29 +69029,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.622.24
+ID: ui.line.p1_js.546.24
 
-SOURCE: src/p1.js line 622
+SOURCE: src/p1.js line 546
 
-CONTEXT: Player-facing line in p1.js at line 622. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Sister Null
-
-END
-
-ID: ui.line.p1_js.622.149
-
-SOURCE: src/p1.js line 622
-
-CONTEXT: Player-facing line in p1.js at line 622. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 546. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -67925,11 +69047,29 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.623.26
+ID: ui.line.p1_js.546.149
 
-SOURCE: src/p1.js line 623
+SOURCE: src/p1.js line 546
 
-CONTEXT: Player-facing line in p1.js at line 623. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 546. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Sister Null
+
+END
+
+ID: ui.line.p1_js.547.26
+
+SOURCE: src/p1.js line 547
+
+CONTEXT: Player-facing line in p1.js at line 547. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -74729,11 +75869,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.710.56
+ID: ui.line.p10_js.693.56
 
-SOURCE: src/p10.js line 710
+SOURCE: src/p10.js line 693
 
-CONTEXT: Player-facing line in p10.js at line 710. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 693. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -74747,11 +75887,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.712.58
+ID: ui.line.p10_js.695.58
 
-SOURCE: src/p10.js line 712
+SOURCE: src/p10.js line 695
 
-CONTEXT: Player-facing line in p10.js at line 712. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 695. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -74765,11 +75905,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.758.58
+ID: ui.line.p10_js.741.58
 
-SOURCE: src/p10.js line 758
+SOURCE: src/p10.js line 741
 
-CONTEXT: Player-facing line in p10.js at line 758. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 741. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -74783,11 +75923,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.758.72
+ID: ui.line.p10_js.741.72
 
-SOURCE: src/p10.js line 758
+SOURCE: src/p10.js line 741
 
-CONTEXT: Player-facing line in p10.js at line 758. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 741. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -74801,11 +75941,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.758.149
+ID: ui.line.p10_js.741.149
 
-SOURCE: src/p10.js line 758
+SOURCE: src/p10.js line 741
 
-CONTEXT: Player-facing line in p10.js at line 758. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 741. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -74819,11 +75959,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.758.214
+ID: ui.line.p10_js.741.214
 
-SOURCE: src/p10.js line 758
+SOURCE: src/p10.js line 741
 
-CONTEXT: Player-facing line in p10.js at line 758. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 741. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -74837,11 +75977,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.758.252
+ID: ui.line.p10_js.741.252
 
-SOURCE: src/p10.js line 758
+SOURCE: src/p10.js line 741
 
-CONTEXT: Player-facing line in p10.js at line 758. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 741. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -74855,11 +75995,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.758.334
+ID: ui.line.p10_js.741.334
 
-SOURCE: src/p10.js line 758
+SOURCE: src/p10.js line 741
 
-CONTEXT: Player-facing line in p10.js at line 758. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 741. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -74873,11 +76013,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.758.386
+ID: ui.line.p10_js.741.386
 
-SOURCE: src/p10.js line 758
+SOURCE: src/p10.js line 741
 
-CONTEXT: Player-facing line in p10.js at line 758. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 741. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -74891,11 +76031,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.762.10
+ID: ui.line.p10_js.745.10
 
-SOURCE: src/p10.js line 762
+SOURCE: src/p10.js line 745
 
-CONTEXT: Player-facing line in p10.js at line 762. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 745. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -74909,11 +76049,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.762.48
+ID: ui.line.p10_js.745.48
 
-SOURCE: src/p10.js line 762
+SOURCE: src/p10.js line 745
 
-CONTEXT: Player-facing line in p10.js at line 762. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 745. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -74927,11 +76067,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.763.9
+ID: ui.line.p10_js.746.9
 
-SOURCE: src/p10.js line 763
+SOURCE: src/p10.js line 746
 
-CONTEXT: Player-facing line in p10.js at line 763. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 746. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -74945,11 +76085,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.763.17
+ID: ui.line.p10_js.746.17
 
-SOURCE: src/p10.js line 763
+SOURCE: src/p10.js line 746
 
-CONTEXT: Player-facing line in p10.js at line 763. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 746. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -74963,11 +76103,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.764.9
+ID: ui.line.p10_js.747.9
 
-SOURCE: src/p10.js line 764
+SOURCE: src/p10.js line 747
 
-CONTEXT: Player-facing line in p10.js at line 764. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 747. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -74981,11 +76121,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.767.10
+ID: ui.line.p10_js.750.10
 
-SOURCE: src/p10.js line 767
+SOURCE: src/p10.js line 750
 
-CONTEXT: Player-facing line in p10.js at line 767. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 750. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -74999,11 +76139,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.767.45
+ID: ui.line.p10_js.750.45
 
-SOURCE: src/p10.js line 767
+SOURCE: src/p10.js line 750
 
-CONTEXT: Player-facing line in p10.js at line 767. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 750. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75017,11 +76157,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.768.9
+ID: ui.line.p10_js.751.9
 
-SOURCE: src/p10.js line 768
+SOURCE: src/p10.js line 751
 
-CONTEXT: Player-facing line in p10.js at line 768. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 751. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75035,11 +76175,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.768.141
+ID: ui.line.p10_js.751.141
 
-SOURCE: src/p10.js line 768
+SOURCE: src/p10.js line 751
 
-CONTEXT: Player-facing line in p10.js at line 768. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 751. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75053,11 +76193,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.769.9
+ID: ui.line.p10_js.752.9
 
-SOURCE: src/p10.js line 769
+SOURCE: src/p10.js line 752
 
-CONTEXT: Player-facing line in p10.js at line 769. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 752. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75071,11 +76211,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.775.25
+ID: ui.line.p10_js.758.25
 
-SOURCE: src/p10.js line 775
+SOURCE: src/p10.js line 758
 
-CONTEXT: Player-facing line in p10.js at line 775. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 758. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75089,11 +76229,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.776.9
+ID: ui.line.p10_js.759.9
 
-SOURCE: src/p10.js line 776
+SOURCE: src/p10.js line 759
 
-CONTEXT: Player-facing line in p10.js at line 776. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 759. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75107,11 +76247,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.776.22
+ID: ui.line.p10_js.759.22
 
-SOURCE: src/p10.js line 776
+SOURCE: src/p10.js line 759
 
-CONTEXT: Player-facing line in p10.js at line 776. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 759. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75125,11 +76265,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.777.22
+ID: ui.line.p10_js.760.22
 
-SOURCE: src/p10.js line 777
+SOURCE: src/p10.js line 760
 
-CONTEXT: Player-facing line in p10.js at line 777. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 760. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75143,11 +76283,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.777.170
+ID: ui.line.p10_js.760.170
 
-SOURCE: src/p10.js line 777
+SOURCE: src/p10.js line 760
 
-CONTEXT: Player-facing line in p10.js at line 777. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 760. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75161,11 +76301,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.777.288
+ID: ui.line.p10_js.760.288
 
-SOURCE: src/p10.js line 777
+SOURCE: src/p10.js line 760
 
-CONTEXT: Player-facing line in p10.js at line 777. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 760. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75179,11 +76319,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.777.422
+ID: ui.line.p10_js.760.422
 
-SOURCE: src/p10.js line 777
+SOURCE: src/p10.js line 760
 
-CONTEXT: Player-facing line in p10.js at line 777. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 760. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75197,11 +76337,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.792.126
+ID: ui.line.p10_js.775.126
 
-SOURCE: src/p10.js line 792
+SOURCE: src/p10.js line 775
 
-CONTEXT: Player-facing line in p10.js at line 792. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 775. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75215,11 +76355,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.792.145
+ID: ui.line.p10_js.775.145
 
-SOURCE: src/p10.js line 792
+SOURCE: src/p10.js line 775
 
-CONTEXT: Player-facing line in p10.js at line 792. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 775. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75233,11 +76373,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.792.389
+ID: ui.line.p10_js.775.389
 
-SOURCE: src/p10.js line 792
+SOURCE: src/p10.js line 775
 
-CONTEXT: Player-facing line in p10.js at line 792. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 775. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75251,11 +76391,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.800.55
+ID: ui.line.p10_js.783.55
 
-SOURCE: src/p10.js line 800
+SOURCE: src/p10.js line 783
 
-CONTEXT: Player-facing line in p10.js at line 800. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 783. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75269,11 +76409,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.802.32
+ID: ui.line.p10_js.785.32
 
-SOURCE: src/p10.js line 802
+SOURCE: src/p10.js line 785
 
-CONTEXT: Player-facing line in p10.js at line 802. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 785. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75287,11 +76427,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.802.48
+ID: ui.line.p10_js.785.48
 
-SOURCE: src/p10.js line 802
+SOURCE: src/p10.js line 785
 
-CONTEXT: Player-facing line in p10.js at line 802. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 785. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75305,11 +76445,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.802.167
+ID: ui.line.p10_js.785.167
 
-SOURCE: src/p10.js line 802
+SOURCE: src/p10.js line 785
 
-CONTEXT: Player-facing line in p10.js at line 802. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 785. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75323,11 +76463,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.802.220
+ID: ui.line.p10_js.785.220
 
-SOURCE: src/p10.js line 802
+SOURCE: src/p10.js line 785
 
-CONTEXT: Player-facing line in p10.js at line 802. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 785. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75341,11 +76481,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.802.372
+ID: ui.line.p10_js.785.372
 
-SOURCE: src/p10.js line 802
+SOURCE: src/p10.js line 785
 
-CONTEXT: Player-facing line in p10.js at line 802. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 785. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75359,11 +76499,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.824.48
+ID: ui.line.p10_js.807.48
 
-SOURCE: src/p10.js line 824
+SOURCE: src/p10.js line 807
 
-CONTEXT: Player-facing line in p10.js at line 824. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 807. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75377,11 +76517,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.824.189
+ID: ui.line.p10_js.807.189
 
-SOURCE: src/p10.js line 824
+SOURCE: src/p10.js line 807
 
-CONTEXT: Player-facing line in p10.js at line 824. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 807. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75395,11 +76535,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.825.11
+ID: ui.line.p10_js.808.11
 
-SOURCE: src/p10.js line 825
+SOURCE: src/p10.js line 808
 
-CONTEXT: Player-facing line in p10.js at line 825. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 808. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75413,11 +76553,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.834.57
+ID: ui.line.p10_js.817.57
 
-SOURCE: src/p10.js line 834
+SOURCE: src/p10.js line 817
 
-CONTEXT: Player-facing line in p10.js at line 834. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 817. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75431,11 +76571,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.834.116
+ID: ui.line.p10_js.817.116
 
-SOURCE: src/p10.js line 834
+SOURCE: src/p10.js line 817
 
-CONTEXT: Player-facing line in p10.js at line 834. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 817. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -75449,11 +76589,11 @@ TEXT
 
 END
 
-ID: ui.line.p10_js.834.175
+ID: ui.line.p10_js.817.175
 
-SOURCE: src/p10.js line 834
+SOURCE: src/p10.js line 817
 
-CONTEXT: Player-facing line in p10.js at line 834. Shown in both layouts.
+CONTEXT: Player-facing line in p10.js at line 817. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76007,11 +77147,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.233.44
+ID: ui.line.p11_js.161.44
 
-SOURCE: src/p11.js line 233
+SOURCE: src/p11.js line 161
 
-CONTEXT: Player-facing line in p11.js at line 233. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 161. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76025,11 +77165,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.234.46
+ID: ui.line.p11_js.162.46
 
-SOURCE: src/p11.js line 234
+SOURCE: src/p11.js line 162
 
-CONTEXT: Player-facing line in p11.js at line 234. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 162. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76043,11 +77183,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.237.52
+ID: ui.line.p11_js.165.52
 
-SOURCE: src/p11.js line 237
+SOURCE: src/p11.js line 165
 
-CONTEXT: Player-facing line in p11.js at line 237. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 165. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76061,11 +77201,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.429.46
+ID: ui.line.p11_js.357.46
 
-SOURCE: src/p11.js line 429
+SOURCE: src/p11.js line 357
 
-CONTEXT: Player-facing line in p11.js at line 429. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 357. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76079,11 +77219,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.432.61
+ID: ui.line.p11_js.360.61
 
-SOURCE: src/p11.js line 432
+SOURCE: src/p11.js line 360
 
-CONTEXT: Player-facing line in p11.js at line 432. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 360. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76097,11 +77237,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.432.78
+ID: ui.line.p11_js.360.78
 
-SOURCE: src/p11.js line 432
+SOURCE: src/p11.js line 360
 
-CONTEXT: Player-facing line in p11.js at line 432. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 360. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76115,11 +77255,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.472.84
+ID: ui.line.p11_js.400.84
 
-SOURCE: src/p11.js line 472
+SOURCE: src/p11.js line 400
 
-CONTEXT: Player-facing line in p11.js at line 472. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 400. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76133,11 +77273,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.473.92
+ID: ui.line.p11_js.401.92
 
-SOURCE: src/p11.js line 473
+SOURCE: src/p11.js line 401
 
-CONTEXT: Player-facing line in p11.js at line 473. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 401. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76151,11 +77291,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.478.53
+ID: ui.line.p11_js.406.53
 
-SOURCE: src/p11.js line 478
+SOURCE: src/p11.js line 406
 
-CONTEXT: Player-facing line in p11.js at line 478. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 406. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76169,11 +77309,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.478.94
+ID: ui.line.p11_js.406.94
 
-SOURCE: src/p11.js line 478
+SOURCE: src/p11.js line 406
 
-CONTEXT: Player-facing line in p11.js at line 478. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 406. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76187,11 +77327,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.478.160
+ID: ui.line.p11_js.406.160
 
-SOURCE: src/p11.js line 478
+SOURCE: src/p11.js line 406
 
-CONTEXT: Player-facing line in p11.js at line 478. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 406. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76205,11 +77345,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.478.182
+ID: ui.line.p11_js.406.182
 
-SOURCE: src/p11.js line 478
+SOURCE: src/p11.js line 406
 
-CONTEXT: Player-facing line in p11.js at line 478. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 406. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76223,11 +77363,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.479.37
+ID: ui.line.p11_js.407.37
 
-SOURCE: src/p11.js line 479
+SOURCE: src/p11.js line 407
 
-CONTEXT: Player-facing line in p11.js at line 479. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 407. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76241,11 +77381,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.479.58
+ID: ui.line.p11_js.407.58
 
-SOURCE: src/p11.js line 479
+SOURCE: src/p11.js line 407
 
-CONTEXT: Player-facing line in p11.js at line 479. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 407. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76259,11 +77399,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.479.94
+ID: ui.line.p11_js.407.94
 
-SOURCE: src/p11.js line 479
+SOURCE: src/p11.js line 407
 
-CONTEXT: Player-facing line in p11.js at line 479. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 407. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76277,11 +77417,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.480.36
+ID: ui.line.p11_js.408.36
 
-SOURCE: src/p11.js line 480
+SOURCE: src/p11.js line 408
 
-CONTEXT: Player-facing line in p11.js at line 480. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 408. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76295,11 +77435,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.480.57
+ID: ui.line.p11_js.408.57
 
-SOURCE: src/p11.js line 480
+SOURCE: src/p11.js line 408
 
-CONTEXT: Player-facing line in p11.js at line 480. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 408. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76313,11 +77453,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.481.37
+ID: ui.line.p11_js.409.37
 
-SOURCE: src/p11.js line 481
+SOURCE: src/p11.js line 409
 
-CONTEXT: Player-facing line in p11.js at line 481. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 409. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76331,11 +77471,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.481.57
+ID: ui.line.p11_js.409.57
 
-SOURCE: src/p11.js line 481
+SOURCE: src/p11.js line 409
 
-CONTEXT: Player-facing line in p11.js at line 481. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 409. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76349,11 +77489,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.481.93
+ID: ui.line.p11_js.409.93
 
-SOURCE: src/p11.js line 481
+SOURCE: src/p11.js line 409
 
-CONTEXT: Player-facing line in p11.js at line 481. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 409. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76367,11 +77507,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.482.36
+ID: ui.line.p11_js.410.36
 
-SOURCE: src/p11.js line 482
+SOURCE: src/p11.js line 410
 
-CONTEXT: Player-facing line in p11.js at line 482. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 410. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -76385,11 +77525,11 @@ TEXT
 
 END
 
-ID: ui.line.p11_js.482.56
+ID: ui.line.p11_js.410.56
 
-SOURCE: src/p11.js line 482
+SOURCE: src/p11.js line 410
 
-CONTEXT: Player-facing line in p11.js at line 482. Shown in both layouts.
+CONTEXT: Player-facing line in p11.js at line 410. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -86465,7 +87605,7 @@ END
 
 ID: ui.egg.paperkeep
 
-SOURCE: src/p1.js line 523
+SOURCE: src/p1.js line 447
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86483,7 +87623,7 @@ END
 
 ID: ui.egg.obittitle
 
-SOURCE: src/p1.js line 524
+SOURCE: src/p1.js line 448
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86501,7 +87641,7 @@ END
 
 ID: ui.egg.board
 
-SOURCE: src/p1.js line 525
+SOURCE: src/p1.js line 449
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86521,7 +87661,7 @@ END
 
 ID: ui.egg.boardnone
 
-SOURCE: src/p1.js line 526
+SOURCE: src/p1.js line 450
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86539,7 +87679,7 @@ END
 
 ID: ui.egg.leave
 
-SOURCE: src/p1.js line 527
+SOURCE: src/p1.js line 451
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86557,7 +87697,7 @@ END
 
 ID: ui.egg.pryceline
 
-SOURCE: src/p1.js line 528
+SOURCE: src/p1.js line 452
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86575,7 +87715,7 @@ END
 
 ID: ui.egg.wrenwarn
 
-SOURCE: src/p1.js line 530
+SOURCE: src/p1.js line 454
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86593,7 +87733,7 @@ END
 
 ID: ui.egg.linkopen
 
-SOURCE: src/p1.js line 531
+SOURCE: src/p1.js line 455
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86611,7 +87751,7 @@ END
 
 ID: ui.egg.linkface
 
-SOURCE: src/p1.js line 532
+SOURCE: src/p1.js line 456
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86629,7 +87769,7 @@ END
 
 ID: ui.egg.link404
 
-SOURCE: src/p1.js line 534
+SOURCE: src/p1.js line 458
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86647,7 +87787,7 @@ END
 
 ID: ui.egg.helloname
 
-SOURCE: src/p1.js line 535
+SOURCE: src/p1.js line 459
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86665,7 +87805,7 @@ END
 
 ID: ui.egg.hellofl
 
-SOURCE: src/p1.js line 536
+SOURCE: src/p1.js line 460
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86683,7 +87823,7 @@ END
 
 ID: ui.egg.brendano
 
-SOURCE: src/p1.js line 537
+SOURCE: src/p1.js line 461
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86701,7 +87841,7 @@ END
 
 ID: ui.egg.helloframe
 
-SOURCE: src/p1.js line 539
+SOURCE: src/p1.js line 463
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86719,7 +87859,7 @@ END
 
 ID: ui.egg.flyertitle
 
-SOURCE: src/p1.js line 540
+SOURCE: src/p1.js line 464
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86737,7 +87877,7 @@ END
 
 ID: ui.egg.flyerbody
 
-SOURCE: src/p1.js line 541
+SOURCE: src/p1.js line 465
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86755,7 +87895,7 @@ END
 
 ID: ui.egg.grampssnatch
 
-SOURCE: src/p1.js line 543
+SOURCE: src/p1.js line 467
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86773,7 +87913,7 @@ END
 
 ID: ui.egg.piename
 
-SOURCE: src/p1.js line 544
+SOURCE: src/p1.js line 468
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86791,7 +87931,7 @@ END
 
 ID: ui.egg.piebase
 
-SOURCE: src/p1.js line 545
+SOURCE: src/p1.js line 469
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86809,7 +87949,7 @@ END
 
 ID: ui.egg.piewhere.1
 
-SOURCE: src/p1.js line 547
+SOURCE: src/p1.js line 471
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86827,7 +87967,7 @@ END
 
 ID: ui.egg.piewhere.2
 
-SOURCE: src/p1.js line 548
+SOURCE: src/p1.js line 472
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86845,7 +87985,7 @@ END
 
 ID: ui.egg.piewhere.3
 
-SOURCE: src/p1.js line 549
+SOURCE: src/p1.js line 473
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86863,7 +88003,7 @@ END
 
 ID: ui.egg.piewhere.4
 
-SOURCE: src/p1.js line 550
+SOURCE: src/p1.js line 474
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86881,7 +88021,7 @@ END
 
 ID: ui.egg.piewhere.5
 
-SOURCE: src/p1.js line 551
+SOURCE: src/p1.js line 475
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86899,7 +88039,7 @@ END
 
 ID: ui.egg.paid
 
-SOURCE: src/p1.js line 553
+SOURCE: src/p1.js line 477
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86917,7 +88057,7 @@ END
 
 ID: ui.egg.packfull
 
-SOURCE: src/p1.js line 554
+SOURCE: src/p1.js line 478
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86935,7 +88075,7 @@ END
 
 ID: ui.egg.poor
 
-SOURCE: src/p1.js line 555
+SOURCE: src/p1.js line 479
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86953,7 +88093,7 @@ END
 
 ID: ui.egg.few
 
-SOURCE: src/p1.js line 556
+SOURCE: src/p1.js line 480
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86971,7 +88111,7 @@ END
 
 ID: ui.egg.laseron
 
-SOURCE: src/p1.js line 557
+SOURCE: src/p1.js line 481
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -86989,7 +88129,7 @@ END
 
 ID: ui.egg.laseroff
 
-SOURCE: src/p1.js line 558
+SOURCE: src/p1.js line 482
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87007,7 +88147,7 @@ END
 
 ID: ui.egg.laserno
 
-SOURCE: src/p1.js line 559
+SOURCE: src/p1.js line 483
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87025,7 +88165,7 @@ END
 
 ID: ui.egg.freenote
 
-SOURCE: src/p1.js line 560
+SOURCE: src/p1.js line 484
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87043,7 +88183,7 @@ END
 
 ID: ui.egg.leaveit
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 486
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87061,7 +88201,7 @@ END
 
 ID: ui.egg.sourname
 
-SOURCE: src/p1.js line 563
+SOURCE: src/p1.js line 487
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87079,7 +88219,7 @@ END
 
 ID: ui.egg.sourfl
 
-SOURCE: src/p1.js line 564
+SOURCE: src/p1.js line 488
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87097,7 +88237,7 @@ END
 
 ID: ui.egg.mast
 
-SOURCE: src/p1.js line 565
+SOURCE: src/p1.js line 489
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87115,7 +88255,7 @@ END
 
 ID: ui.egg.lemonlbl
 
-SOURCE: src/p1.js line 566
+SOURCE: src/p1.js line 490
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87133,7 +88273,7 @@ END
 
 ID: ui.egg.still
 
-SOURCE: src/p1.js line 567
+SOURCE: src/p1.js line 491
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87151,7 +88291,7 @@ END
 
 ID: ui.egg.tips.01
 
-SOURCE: src/p1.js line 568
+SOURCE: src/p1.js line 492
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87169,7 +88309,7 @@ END
 
 ID: ui.egg.tips.02
 
-SOURCE: src/p1.js line 568
+SOURCE: src/p1.js line 492
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87187,7 +88327,7 @@ END
 
 ID: ui.egg.tips.03
 
-SOURCE: src/p1.js line 568
+SOURCE: src/p1.js line 492
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87205,7 +88345,7 @@ END
 
 ID: ui.egg.pundits.01
 
-SOURCE: src/p1.js line 570
+SOURCE: src/p1.js line 494
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87223,7 +88363,7 @@ END
 
 ID: ui.egg.pundits.02
 
-SOURCE: src/p1.js line 571
+SOURCE: src/p1.js line 495
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87241,7 +88381,7 @@ END
 
 ID: ui.egg.pundits.03
 
-SOURCE: src/p1.js line 572
+SOURCE: src/p1.js line 496
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87259,7 +88399,7 @@ END
 
 ID: ui.egg.pundits.04
 
-SOURCE: src/p1.js line 573
+SOURCE: src/p1.js line 497
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87277,7 +88417,7 @@ END
 
 ID: ui.egg.pundits.05
 
-SOURCE: src/p1.js line 574
+SOURCE: src/p1.js line 498
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87295,7 +88435,7 @@ END
 
 ID: ui.egg.tostitle
 
-SOURCE: src/p1.js line 576
+SOURCE: src/p1.js line 500
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87313,7 +88453,7 @@ END
 
 ID: ui.egg.tos1
 
-SOURCE: src/p1.js line 577
+SOURCE: src/p1.js line 501
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87331,7 +88471,7 @@ END
 
 ID: ui.egg.tos2
 
-SOURCE: src/p1.js line 578
+SOURCE: src/p1.js line 502
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87349,7 +88489,7 @@ END
 
 ID: ui.egg.tos3
 
-SOURCE: src/p1.js line 579
+SOURCE: src/p1.js line 503
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
