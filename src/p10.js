@@ -703,8 +703,7 @@ function uniTick(dt){if(W.z.town)return;const want=(flag,kind,n,o)=>{const have=
   want('collar','stray',1,()=>({per:0,flock:1,m:.35,ivl:.7,rng:1.15,bite:8,r:.28,spd:4.2,dt:'rust'}))}
 
 /* ================= The Bull Run: there is no bull market ================= */
-ZONES.push({n:'The Bull Run',secret:true,lvl:1,style:'moor',out:1,amb:.3,mix:[['bull',1]],su:{k:'bull',n:'The Golden Bull',mods:['strong','fast'],q:null},intro:'A green field under a sky that only goes up. Hundreds of them, golden, snorting, and every one of them certain. The Office of Price Stability has always said this place does not exist.'});
-const BULLZ=ZONES.length-1;
+const BULLZ=ZONES.findIndex(z=>z.secret); /* the Bull Run, a row of data/levels.tsv */
 MEMOS.push(['Notice from the Office of Price Stability','There is no bull market. There has never been a bull market. Reports of a “bull run” beyond the Transit Gate are false, and Residents are reminded not to bring machine parts to the gate, in particular legs.']);
 function legCheck(){if(W.zi!==1||G.leg||G.q.q15!==3)return;const p=nearFree({x:W.start.x+1.6,y:W.start.y+1.2},.3);let o=W.objs.find(o=>o.k==='leg');if(!o){o={k:'leg'};W.objs.push(o)}o.x=p.x;o.y=p.y;setTimeout(()=>toast('Something is twitching on the ground near the gate.'),1500)}
 function legTake(o){W.objs.splice(W.objs.indexOf(o),1);G.leg=1;sfx('unique');dlg('A servo leg','All that is left of Gatewarden HOA-9: one leg, still twitching, stamped PROPERTY OF UNITY HOLDINGS. It is no use to anyone. You take it anyway. Somebody once said the Transit Gate does odd things when you jam the wrong part into it.',[['Keep it']])}

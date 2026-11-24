@@ -5,8 +5,8 @@
    support. Honest play with about 150 ms of jitter stays inside the slack. */
 'use strict';
 
-/* Same towns as live.js. Inlined so this file does not require live.js. */
-const TOWNS = new Set([0, 17, 18, 21, 27]);
+/* Same towns as live.js: the act hub towns from data/levels.tsv. */
+const TOWNS = new Set(require('../../src/levels').HUB_TOWNS);
 
 const { FORMULAS, braceKeep, toxicSwingMul, auraRadius } = require('../../src/formulas');
 const CLS = FORMULAS.cls;

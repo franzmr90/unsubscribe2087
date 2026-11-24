@@ -153,8 +153,7 @@ Object.assign(SQ,{
 GOSSIP.tam=['Tomatoes. Beans next. Nobody has corrected me yet.','You cannot make a plant grow faster by paying it. I find that restful.','Take one. They are not perfect.'];
 
 /* ================= a town for each act, and open-air districts ================= */
-ZONES.push({n:'The Landing',town:true,act:2,style:'landing',amb:.3},{n:'The Antechamber',town:true,act:3,style:'wait',amb:.5});
-ZONES[0].act=1;for(const i of[1,3,8,10,16]){ZONES[i].out=1;ZONES[i].amb*=.8}
+/* The act towns live in data/levels.tsv, baked to src/levels.js. */
 const FIRST={0:33,1:1,2:7,3:12,4:22,5:28};
 const actOf=zi=>{const z=ZONES[zi];return z.act||(z.sim||z.sub||z.secret||z.pre?0:zi>=28?5:zi>=22?4:zi>=12?3:zi>=7?2:1)};
 function heroAct(g){if(!g)return 1;return g.act5?5:g.act4?4:g.act3?3:g.act2?2:1}

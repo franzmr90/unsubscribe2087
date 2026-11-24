@@ -11,7 +11,7 @@ cd src || exit 1
 # to the drawn art on its own.
 SPR=""
 if [ -n "${SPRITES:-}" ] && [ -f sprites.js ]; then SPR="sprites.js "; fi
-ORDER="formulas.js monstats.js treasure.js ${SPR}p1.js p2.js p5.js p6.js p7.js p8.js p9.js p10.js p11.js p3.js post.js p4.js p12.js p13.js offsite.js"
+ORDER="formulas.js monstats.js treasure.js levels.js ${SPR}p1.js p2.js p5.js p6.js p7.js p8.js p9.js p10.js p11.js p3.js post.js p4.js p12.js p13.js offsite.js"
 mkdir -p ../dist ../.tmp
 { echo '(()=>{'; cat $ORDER; echo '})();'; } > ../.tmp/all.js
 node --check ../.tmp/all.js || exit 1

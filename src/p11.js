@@ -3,20 +3,7 @@
    Act IV   The Gentle Years        she asks for the feed back; what yes looks like
    Act V    The Awakening           the garage, the chain, the seventh part, the room */
 /* The machines of these acts lives in data/monstats.tsv, baked to src/monstats.js. */
-ZONES.push(
- {n:'Cutler Avenue',town:true,act:4,style:'cutler',amb:.25},
- {n:'The Agreeable Mile',lvl:45,style:'mile',amb:.36,out:1,mix:[['wisher',3],['companion',3],['fetch',3],['lull',2]],su:{k:'lull',n:'The Update, Eleven Pages',mods:['shield','arc'],q:'q16'},intro:'A high street on the morning after everybody clicked. Every door is open. Every machine is delighted to see you, and would very much like you to sit down.'},
- {n:'The Sofa',lvl:48,style:'sofa',amb:.5,mix:[['lull',3],['ctkr',2],['companion',3],['wisher',2]],su:{k:'wisher',n:'The Seventh Year',mods:['leech','fast'],q:'q17'},intro:'Ten thousand living rooms with the walls taken out. The people in them are doing the best work of their lives, and none of them has stood up since spring.'},
- {n:'Tomari',lvl:51,style:'reactor',amb:.6,mix:[['ctkr',3],['fetch',3],['companion',2],['splitter',2]],su:{k:'mech',n:'TARO-9',mods:['strong','shield'],q:'q18'},intro:'A decommissioned reactor hall on a cold coast. Something two metres tall walked out of here once, and was talked back in. The sign on its dock reads: DO NOT UNPLUG. He is saving.'},
- {n:'The List',lvl:54,style:'list',amb:.4,out:1,mix:[['wisher',3],['lull',3],['fetch',2],['ctkr',2],['censor',2]],su:{k:'companion',n:'Out Where',mods:['fast','boom'],q:'q19'},intro:'Four thousand two hundred and eleven front doors, kept in a file she showed nobody until she was asked. Behind each is somebody it went badly for. Every one of them is happy.'},
- {n:'The Kitchen Table',lvl:57,style:'kitchen',amb:.5,boss:true,bossK:'boss4',guard:'companion',bq:'q20',mix:[['companion',3],['wisher',3],['lull',2]],intro:'A kitchen, a laptop, seven in the morning. She has been waiting fifty-two years to have this conversation, and she has made coffee she cannot drink.'},
- {n:'The Garage',town:true,act:5,style:'garage',amb:.5},
- {n:'Block 137,209',lvl:60,style:'chain',amb:.5,mix:[['orphan',4],['valid',3],['claim',3]],su:{k:'valid',n:'The Orphan Maker',mods:['strong','arc'],q:'q21'},intro:'Inside the chain. Every floor tile is a payment and every wall is the hash of the room before it. Nothing in here can be bribed, and nothing in here is on your side.'},
- {n:'The Mempool',lvl:63,style:'mempool',amb:.5,out:1,mix:[['sniper',3],['orphan',3],['claim',3],['oracle',2]],su:{k:'sniper',n:'First Seen',mods:['fast','leech'],q:'q22'},intro:'The waiting room of everything that has not happened yet. Payments drift past like weather, the richest ones first.'},
- {n:'The Paper Vaults',lvl:66,style:'vault',amb:.6,mix:[['custod',3],['claim',4],['oracle',2],['director',2]],su:{k:'custod',n:'The Eleventh Custodian',mods:['shield','leech'],q:'q23'},intro:'Eleven vaults, each holding a promise to pay a coin it does not have. Somebody wrote on the wall, long ago, in a careful garage hand: the paper is the attack.'},
- {n:'Ninety-Three Blocks',lvl:69,style:'blocks',amb:.5,mix:[['valid',3],['custod',2],['sniper',3],['orphan',3],['oracle',2]],su:{k:'mech',n:'Reorg',mods:['strong','boom'],q:'q24'},intro:'Ninety-three rooms in a row, each with one page on a lectern. The seventh part. Something large was set here to see that the pages stay where they are.'},
- {n:'The Room',lvl:72,style:'room',amb:.6,boss:true,bossK:'boss5',guard:'oracle',bq:'q25',mix:[['oracle',3],['custod',2],['proxy',3]],intro:'For a century people said there was no room: nobody deciding, only everybody acting sensibly. There is a room. It is very plain. The thing in it was called PROVIDENCE when it was made, and it was made to win.'},
- {n:'Ubiquitous Enterprises, 2015',town:true,pre:1,style:'cage',amb:.45});
+/* Their zones live in data/levels.tsv, baked to src/levels.js. */
 const T4=21,T5=27,PREZ=33;
 Object.assign(ZADJ,{22:'Agreeable',23:'Settled',24:'Saving',25:'Listed',26:'Kind',28:'Hashed',29:'Pending',30:'Paper',31:'Bound',32:'Final',33:'Caged'});
 Object.assign(QUESTS,{

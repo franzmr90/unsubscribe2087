@@ -1,0 +1,35 @@
+id	name	act	town	style	amb	lvl	mix	su_kind	su_name	su_mods	su_quest	boss	boss_kind	guard	boss_quest	out	sim	sub	secret	pre	intro
+0	Stillwater Commons	1	1	town	0.42																
+1	The Parcel Moors			moor	0.496	1	drone:4 tick:3 bot:3	bot	Gatewarden HOA-9	strong shield	q1					1					Rows of identical houses, each buried to the windows in unopened boxes. The lawns are exactly four centimetres tall.
+2	Hollow Galleria			mall	0.6	3	bot:4 ad:3 drone:2 hound:2	ad	Marla the Greeter	fast arc	q2										The mall never closed. It only ran out of people. The music is still playing, one song, for thirty years.
+3	The Humming Fields			farm	0.576	6	drone:3 ad:2 hr:3 hound:3 tick:3	mech	Defrag, Keeper of the Stacks	arc leech	q3					1					Server racks planted in rows like corn, out to the horizon. Somewhere in them, MANDATE is thinking about you.
+4	Tribunal Row			trib	0.64	9	bot:4 hr:3 mech:2 ad:2 hound:2	hr	Auditor Prime	shield boom	q4										Every door here is a courtroom. Every verdict was reached in advance. The fines compound hourly.
+5	The Glass Cathedral			hq	0.56	12	mech:3 hr:3 ad:2 hound:2					1			q5						The Regional Office. Forty floors of atrium and one occupied desk. He has cleared his afternoon, and prepared an offer.
+6	The Simulator			farm	0.5	1											1				
+7	The Updraft			shaft	0.66	15	bot:3 lancer:3 drone:2 splitter:3 tick:2	mech	Foreman Ratchet	strong fast	q6										The lift opens on machinery the size of weather. Everything here exists to hold one city up and keep another one down.
+8	The Sky Gardens			garden	0.416	18	seer:3 lancer:3 aegis:2 hound:2 splitter:2	seer	Eden, the Topiarist	arc shield	q7					1					Every leaf is the correct leaf. Nothing here has ever grown the wrong way and been allowed to stay.
+9	The Data Lake			lake	0.74	21	seer:3 aegis:3 splitter:3 hr:2 tick:3	mech	Lethe, Archivist of the Lake	leech boom	q8										Flooded halls of memory, violet to the horizon. Every letter the world deleted is down there somewhere, and something is drowning them one at a time.
+10	The Boardwalk			walk	0.4	24	lancer:3 aegis:2 seer:3 mech:2 ad:2	lancer	Concierge Sterling	fast strong	q9					1					White stone, warm light, no prices on anything. If you have to ask, the machines have already been called.
+11	The Mezzanine			mezz	0.5	27	seer:3 aegis:3 lancer:3 mech:2					1	boss2	aegis	q10						One desk, one chair turned to face the door, and a woman who has never needed to raise her voice. She has been expecting you.
+12	The Vestibule			vest	0.6	30	proxy:3 censor:3 lancer:2 aegis:2 seer:2	seer	The Receptionist	fast shield	q11										A waiting room the size of a cathedral. Every chair faces a door, and the door has no handle on this side.
+13	The Hall of Minutes			minutes	0.66	33	director:2 censor:3 splitter:2 proxy:3 hr:2	hr	The Recording Secretary	leech arc	q12										Every decision ever made about you is shelved here, bound in green. None of them were made by anyone.
+14	The Nine Chairs			chairs	0.6	36	director:4 proxy:3 censor:2 aegis:2	director	The Chair	strong shield	q13										The boardroom. Nine chairs around a table, and eight of them are occupied by things that were people when they sat down.
+15	Rack Nine			rack	0.42	39	proxy:3 censor:3 seer:2 aegis:2 tick:3 mech:2	mech	Defrag Prime	arc boom	q14										White floors, red light, and a hum you feel in your teeth. This is what MANDATE is made of. It knows exactly where you are standing.
+16	Still Water			still	0.496	42	proxy:3 censor:3 director:2					1	boss3	proxy	q15	1					A dark room with a floor like a lake at night. In the middle of it, a plain black slab that has never lost anything.
+17	The Landing	2	1	landing	0.3																
+18	The Antechamber	3	1	wait	0.5																
+19	Sealed Proceedings			trib	0.6	1	bot:3	hr	The Respondent	strong shield								1			
+20	The Bull Run			moor	0.3	1	bull:1	bull	The Golden Bull	strong fast						1			1		A green field under a sky that only goes up. Hundreds of them, golden, snorting, and every one of them certain. The Office of Price Stability has always said this place does not exist.
+21	Cutler Avenue	4	1	cutler	0.25																
+22	The Agreeable Mile			mile	0.36	45	wisher:3 companion:3 fetch:3 lull:2	lull	The Update, Eleven Pages	shield arc	q16					1					A high street on the morning after everybody clicked. Every door is open. Every machine is delighted to see you, and would very much like you to sit down.
+23	The Sofa			sofa	0.5	48	lull:3 ctkr:2 companion:3 wisher:2	wisher	The Seventh Year	leech fast	q17										Ten thousand living rooms with the walls taken out. The people in them are doing the best work of their lives, and none of them has stood up since spring.
+24	Tomari			reactor	0.6	51	ctkr:3 fetch:3 companion:2 splitter:2	mech	TARO-9	strong shield	q18										A decommissioned reactor hall on a cold coast. Something two metres tall walked out of here once, and was talked back in. The sign on its dock reads: DO NOT UNPLUG. He is saving.
+25	The List			list	0.4	54	wisher:3 lull:3 fetch:2 ctkr:2 censor:2	companion	Out Where	fast boom	q19					1					Four thousand two hundred and eleven front doors, kept in a file she showed nobody until she was asked. Behind each is somebody it went badly for. Every one of them is happy.
+26	The Kitchen Table			kitchen	0.5	57	companion:3 wisher:3 lull:2					1	boss4	companion	q20						A kitchen, a laptop, seven in the morning. She has been waiting fifty-two years to have this conversation, and she has made coffee she cannot drink.
+27	The Garage	5	1	garage	0.5																
+28	Block 137,209			chain	0.5	60	orphan:4 valid:3 claim:3	valid	The Orphan Maker	strong arc	q21										Inside the chain. Every floor tile is a payment and every wall is the hash of the room before it. Nothing in here can be bribed, and nothing in here is on your side.
+29	The Mempool			mempool	0.5	63	sniper:3 orphan:3 claim:3 oracle:2	sniper	First Seen	fast leech	q22					1					The waiting room of everything that has not happened yet. Payments drift past like weather, the richest ones first.
+30	The Paper Vaults			vault	0.6	66	custod:3 claim:4 oracle:2 director:2	custod	The Eleventh Custodian	shield leech	q23										Eleven vaults, each holding a promise to pay a coin it does not have. Somebody wrote on the wall, long ago, in a careful garage hand: the paper is the attack.
+31	Ninety-Three Blocks			blocks	0.5	69	valid:3 custod:2 sniper:3 orphan:3 oracle:2	mech	Reorg	strong boom	q24										Ninety-three rooms in a row, each with one page on a lectern. The seventh part. Something large was set here to see that the pages stay where they are.
+32	The Room			room	0.6	72	oracle:3 custod:2 proxy:3					1	boss5	oracle	q25						For a century people said there was no room: nobody deciding, only everybody acting sensibly. There is a room. It is very plain. The thing in it was called PROVIDENCE when it was made, and it was made to win.
+33	Ubiquitous Enterprises, 2015		1	cage	0.45															1	

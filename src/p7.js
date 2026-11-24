@@ -109,8 +109,7 @@ const paraNeed=()=>xpNext(G.lvl)*.5*(1+.07*(G.para||0));
 function paraXp(v){if((G.para||0)>=100){G.xp=0;return}if(!G.act3){const cap=xpNext(G.lvl)*FORMULAS.bank.levels;G.bankXp=Math.min(cap,(G.bankXp||0)+Math.max(0,v));G.xp=0;return}G.px=(G.px||0)+v;while(G.px>=paraNeed()&&(G.para||0)<100){G.px-=paraNeed();G.para=(G.para||0)+1;acctPara();calc();sfx('level');toast('Tenure '+G.para+': +1% damage and life, and a point for the web')}G.xp=G.px/paraNeed()*xpNext(G.lvl)}
 /* subpoenas: sealed districts with rules of their own */
 const SUBM={volatile:'Machines explode when they break',dry:'Stims do not work',bounty:'Machines drop extra sats',swift:'Machines move 30% faster',thick:'Machines have 50% more life'};
-ZONES.push({n:'Sealed Proceedings',sub:true,lvl:1,style:'trib',amb:.6,mix:[['bot',3]],su:{k:'hr',n:'The Respondent',mods:['strong','shield'],q:null}});
-const SUBZ=ZONES.length-1;
+const SUBZ=ZONES.findIndex(z=>z.sub); /* the subpoena zone, a row of data/levels.tsv */
 function subStart(l){if(!spendSats(3,'Serving a subpoena costs 3 sats'))return;const z=ZONES[SUBZ],src=ZONES[pick([2,4,5,7,9,11,12,13,14,15])],ks=Object.keys(SUBM).sort(()=>Math.random()-.5);
   SUBP={lvl:l,mods:ks.slice(0,l>=5?3:2)};z.n='Subpoena · Level '+l;z.lvl=G.lvl+2*l-G.tier*12;z.style=src.style;z.amb=src.amb;z.mix=src.mix;z.su.k=pick(['hr','mech','seer','lancer']);z.su.mods=['strong','shield','fast','arc','leech'].sort(()=>Math.random()-.5).slice(0,2);
   delete ZS[SUBZ];enter(SUBZ,{fresh:true,after(){W.sub=SUBP;W.portals=W.portals.filter(p=>p.kind!=='next');for(const p of W.portals)if(p.kind==='prev')p.kind='home';

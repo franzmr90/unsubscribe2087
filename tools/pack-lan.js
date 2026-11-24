@@ -30,6 +30,8 @@ copyFile(path.join(root, 'server', 'admin.js'), 'server/admin.js');
 copyFile(path.join(root, 'src', 'formulas.js'), 'src/formulas.js');
 /* The monster sheet, baked. server/lib/mobs.js reads it for life and experience. */
 copyFile(path.join(root, 'src', 'monstats.js'), 'src/monstats.js');
+/* The zone sheet, baked. live.js and plaus.js read the hub towns from it. */
+copyFile(path.join(root, 'src', 'levels.js'), 'src/levels.js');
 copyFile(path.join(root, 'dist', 'unsubscribe.html'), 'dist/unsubscribe.html');
 copyFile(path.join(root, 'dist', 'BUILD'), 'dist/BUILD');
 copyFile(path.join(root, 'LAN-PLAY.md'), 'LAN-PLAY.md');
