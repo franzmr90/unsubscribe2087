@@ -703,7 +703,6 @@ function uniTick(dt){if(W.z.town)return;const want=(flag,kind,n,o)=>{const have=
   want('collar','stray',1,()=>({per:0,flock:1,m:.35,ivl:.7,rng:1.15,bite:8,r:.28,spd:4.2,dt:'rust'}))}
 
 /* ================= The Bull Run: there is no bull market ================= */
-TC.bull={n:'Market Bull',picks:2,no:20,gold:50,item:22,stim:8,q:{u:110,s:90,r:14,m:3},note:'Often drops sats'};
 ZONES.push({n:'The Bull Run',secret:true,lvl:1,style:'moor',out:1,amb:.3,mix:[['bull',1]],su:{k:'bull',n:'The Golden Bull',mods:['strong','fast'],q:null},intro:'A green field under a sky that only goes up. Hundreds of them, golden, snorting, and every one of them certain. The Office of Price Stability has always said this place does not exist.'});
 const BULLZ=ZONES.length-1;
 MEMOS.push(['Notice from the Office of Price Stability','There is no bull market. There has never been a bull market. Reports of a “bull run” beyond the Transit Gate are false, and Residents are reminded not to bring machine parts to the gate, in particular legs.']);

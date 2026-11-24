@@ -1,0 +1,43 @@
+id	name	like	picks	none	credits	item	stim	unique_1in	set_1in	rare_1in	magic_1in	credit_mul	jewel_mul	note
+tick	Tick		1	76	17	4	3	500	400	80	7			
+drone	Carrion Drone		1	62	24	9	5	400	300	60	6			
+bot	Enforcer		1	50	28	16	6	300	220	45	5			
+hound	Repo Hound		1	52	22	18	8	300	220	45	5			
+ad	Siren		1	48	38	10	4	320	240	50	5	1.8		Double-size credit piles
+hr	Mediator		1	42	24	20	14	260	200	35	4		3	Rings and amulets three times as likely
+mech	Warden		2	32	30	30	8	150	120	20	3			
+seer	Persuader		1	44	22	22	12	240	190	32	4		2	Rings and amulets twice as likely
+aegis	Aegis Drone		1	50	30	14	6	280	210	40	5			
+lancer	Lancer		1	48	22	22	8	260	200	36	4			
+splitter	Subsidiary		1	55	30	10	5	320	240	50	5			
+boss2	Vale		8	0	20	70	10	6	8	2	1			First kill: one unique for certain
+director	Director		2	28	30	34	8	130	110	18	3			Summons Ticks
+proxy	Proxy		1	48	24	20	8	240	190	34	4			
+censor	Censor		1	46	26	20	8	240	190	34	4			
+boss3	MANDATE		9	0	20	70	10	5	7	2	1			First kill: one unique for certain
+gob	Dividend Drone		5	0	55	35	10	60	50	6	1.5			Flees, and escapes after 14 seconds
+champ	Champion (any kind)		2	12	30	48	10	52	60	10	1.5			At least one magic item
+su	Named lieutenant		4	0	30	60	10	15	25	3	1			At least one rare
+boss	Pryce		7	0	20	70	10	8	10	2.5	1			First kill: one unique for certain
+crate	Crate		1	45	38	9	8	600	450	90	7			
+chest	Lockbox		3	10	40	42	8	120	100	12	3			
+shill	Shitcoiner		2	30	50	14	6	200	160	30	4			Portfolio liquidates into sats
+bull	Market Bull		2	20	50	22	8	110	90	14	3			Often drops sats
+daemon	Daemon	tick												
+wdog	Watchdog Process	hound												
+fwall	Firewall	bot												
+cam	Camera	ad												
+gap	The Air Gap	su												
+wisher	Well-Wisher	ad												
+companion	Companion	bot												
+lull	Lullaby	hr												
+ctkr	Caretaker	mech												
+fetch	Fetch	hound												
+boss4	The Curator	boss3												
+orphan	Orphan Block	tick												
+valid	Validator	bot												
+claim	Paper Claim	drone												
+custod	Custodian	mech												
+sniper	Fee Sniper	hound												
+oracle	Oracle	ad												
+boss5	PROVIDENCE	boss3												

@@ -56,7 +56,6 @@ function scsAdj(n,why){const a=scs(),b=G.scs=clamp(a+n,0,1000);if(n)toast('Socia
 const loanFee=()=>scs()<500?1.35:1.1,loanRate=()=>scs()<500?1.002:1.001;
 const cause=()=>scs()<500;   /* bitcoiners help the unscored */
 /* ================= shitcoiners: wandering salesmen for coins that will not exist next week ================= */
-TC.shill={n:'Shitcoiner',picks:2,no:30,gold:50,item:14,stim:6,q:{u:200,s:160,r:30,m:4},note:'Portfolio liquidates into sats'};
 const COINS=['RugPull Inu','SafeMoonwalk','UnityCoin','Stablish','ElonDogeMars','PonziDAO','Fartchain','YieldBunny','MoonRocket Classic','TrustMeBro'];
 const SHILLQ=["It is like bitcoin, but faster, and the founders hold most of it, which is how you know they believe in it.","Bitcoin is old tech. This one has a roadmap. And a mascot.","You are still early. I only need ten sats and you will thank me by Thursday.","It is decentralised. There are three of us and we all agree.","The supply is unlimited, so there is plenty for everyone."];
 let shillT=70;

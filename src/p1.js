@@ -186,30 +186,7 @@ const CN1=['Rust','Gloom','Static','Grime','Null','Bolt','Ash','Wire','Slag','Dr
    Each kill makes `picks` rolls. A roll lands on nothing, credits, an item or a stim by weight.
    Each item then checks quality in order: unique, set, rare, magic. `q` holds the "1 in N" odds.
    Magic find raises those odds, with diminishing returns on unique, set and rare. */
-const TC={
- tick:{n:'Tick',picks:1,no:76,gold:17,item:4,stim:3,q:{u:500,s:400,r:80,m:7}},
- drone:{n:'Carrion Drone',picks:1,no:62,gold:24,item:9,stim:5,q:{u:400,s:300,r:60,m:6}},
- bot:{n:'Enforcer',picks:1,no:50,gold:28,item:16,stim:6,q:{u:300,s:220,r:45,m:5}},
- hound:{n:'Repo Hound',picks:1,no:52,gold:22,item:18,stim:8,q:{u:300,s:220,r:45,m:5}},
- ad:{n:'Siren',picks:1,no:48,gold:38,item:10,stim:4,q:{u:320,s:240,r:50,m:5},goldMul:1.8,note:'Double-size credit piles'},
- hr:{n:'Mediator',picks:1,no:42,gold:24,item:20,stim:14,q:{u:260,s:200,r:35,m:4},jewel:3,note:'Rings and amulets three times as likely'},
- mech:{n:'Warden',picks:2,no:32,gold:30,item:30,stim:8,q:{u:150,s:120,r:20,m:3}},
- seer:{n:'Persuader',picks:1,no:44,gold:22,item:22,stim:12,q:{u:240,s:190,r:32,m:4},jewel:2,note:'Rings and amulets twice as likely'},
- aegis:{n:'Aegis Drone',picks:1,no:50,gold:30,item:14,stim:6,q:{u:280,s:210,r:40,m:5}},
- lancer:{n:'Lancer',picks:1,no:48,gold:22,item:22,stim:8,q:{u:260,s:200,r:36,m:4}},
- splitter:{n:'Subsidiary',picks:1,no:55,gold:30,item:10,stim:5,q:{u:320,s:240,r:50,m:5}},
- boss2:{n:'Vale',picks:8,no:0,gold:20,item:70,stim:10,q:{u:6,s:8,r:2,m:1},note:'First kill: one unique for certain'},
- director:{n:'Director',picks:2,no:28,gold:30,item:34,stim:8,q:{u:130,s:110,r:18,m:3},note:'Summons Ticks'},
- proxy:{n:'Proxy',picks:1,no:48,gold:24,item:20,stim:8,q:{u:240,s:190,r:34,m:4}},
- censor:{n:'Censor',picks:1,no:46,gold:26,item:20,stim:8,q:{u:240,s:190,r:34,m:4}},
- boss3:{n:'MANDATE',picks:9,no:0,gold:20,item:70,stim:10,q:{u:5,s:7,r:2,m:1},note:'First kill: one unique for certain'},
- gob:{n:'Dividend Drone',picks:5,no:0,gold:55,item:35,stim:10,q:{u:60,s:50,r:6,m:1.5},note:'Flees, and escapes after 14 seconds'},
- champ:{n:'Champion (any kind)',picks:2,no:12,gold:30,item:48,stim:10,q:{u:52,s:60,r:10,m:1.5},note:'At least one magic item'},
- su:{n:'Named lieutenant',picks:4,no:0,gold:30,item:60,stim:10,q:{u:15,s:25,r:3,m:1},note:'At least one rare'},
- boss:{n:'Pryce',picks:7,no:0,gold:20,item:70,stim:10,q:{u:8,s:10,r:2.5,m:1},note:'First kill: one unique for certain'},
- crate:{n:'Crate',picks:1,no:45,gold:38,item:9,stim:8,q:{u:600,s:450,r:90,m:7}},
- chest:{n:'Lockbox',picks:3,no:10,gold:40,item:42,stim:8,q:{u:120,s:100,r:12,m:3}}
-};
+/* TC lives in data/treasure.tsv, baked to src/treasure.js. */
 const MFK={u:250,s:500,r:600};
 function qChance(tc,mf){const o={},q=TC[tc].q;for(const k of['u','s','r','m']){const eff=k==='m'?mf:mf*MFK[k]/(mf+MFK[k]);o[k]=Math.min(1,(1/q[k])*(1+eff/100))}return o}
 const SLOTW={weapon:18,helm:12,armor:12,gloves:12,boots:12,belt:12,ring:12,amulet:10};

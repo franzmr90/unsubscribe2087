@@ -3,9 +3,6 @@
    Act IV   The Gentle Years        she asks for the feed back; what yes looks like
    Act V    The Awakening           the garage, the chain, the seventh part, the room */
 /* The machines of these acts lives in data/monstats.tsv, baked to src/monstats.js. */
-{const c=(a,n)=>Object.assign({},TC[a]||TC.bot,{n});Object.assign(TC,{daemon:c('tick','Daemon'),wdog:c('hound','Watchdog Process'),fwall:c('bot','Firewall'),cam:c('ad','Camera'),gap:c('su','The Air Gap'),
-  wisher:c('ad','Well-Wisher'),companion:c('bot','Companion'),lull:c('hr','Lullaby'),ctkr:c('mech','Caretaker'),fetch:c('hound','Fetch'),boss4:c('boss3','The Curator'),
-  orphan:c('tick','Orphan Block'),valid:c('bot','Validator'),claim:c('drone','Paper Claim'),custod:c('mech','Custodian'),sniper:c('hound','Fee Sniper'),oracle:c('ad','Oracle'),boss5:c('boss3','PROVIDENCE')})}
 ZONES.push(
  {n:'Cutler Avenue',town:true,act:4,style:'cutler',amb:.25},
  {n:'The Agreeable Mile',lvl:45,style:'mile',amb:.36,out:1,mix:[['wisher',3],['companion',3],['fetch',3],['lull',2]],su:{k:'lull',n:'The Update, Eleven Pages',mods:['shield','arc'],q:'q16'},intro:'A high street on the morning after everybody clicked. Every door is open. Every machine is delighted to see you, and would very much like you to sit down.'},
