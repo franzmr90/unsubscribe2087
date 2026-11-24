@@ -10,6 +10,7 @@
    data/treasure.tsv -> src/treasure.js   (TC: what a kill or a box drops)
    data/levels.tsv   -> src/levels.js     (ZONES, HUB_TOWNS; D2's levels.txt)
    data/itemtypes.tsv, affixes.tsv, uniques.tsv, sets.tsv -> src/items.js (BASE, AFX, AFX2, UNI, SETS)
+   data/classes.tsv, skills.tsv -> src/skills.js (CLS: classes and their skill trees)
 
    One row per monster. Blank cells mean "not set". Columns:
      id        key used everywhere in code (max 16 characters, the server's limit)
@@ -298,7 +299,120 @@ if (typeof module !== 'undefined' && module.exports) module.exports = { BASE, AF
 `;
 }
 
-const out = { 'src/monstats.js': monstats(), 'src/treasure.js': treasure(), 'src/levels.js': levels(), 'src/items.js': items() };
+/* ---------- classes and skills (D2's charstats.txt, skills.txt, skilldesc.txt) ----------
+   data/classes.tsv, one row per class, in select-screen order:
+     id name tag good weak build   the text on the select screen
+     melee (1/0) mult interval speed colour locked
+     Life stays in src/formulas.js (FORMULAS.cls), because the server reads it there.
+   data/skills.tsv, one row per skill, in tree order. Saves keep skills by position, so a
+   class must have exactly 15 rows and moving a row moves a save's points.
+     class row name button (\n = line break) kind (active, passive, aura) cost cd
+     calc   named formulas in the rank L, "dmg=pct(1.3+.15*L); chance=15+2*L"
+     desc   the tooltip; {name} shows that formula's value at the current rank
+   A formula may use numbers, + - * / ( ), comparisons, a ? b : c, 'quoted text', L, the
+   names before it on the row, the functions below, and the game values below. Nothing else. */
+const SK_FN = { pct: 'pct', min: 'Math.min', max: 'Math.max', floor: 'Math.floor', round: 'Math.round' };
+const SK_FIX = { fixed1: 1, fixed2: 2 };
+const SK_GV = {
+  cpi: '(G&&G.cpi||1)',
+  schema: "(G&&G.schema?': '+DTY[G.schema].n:'')",
+  ward_sec: 'FORMULAS.brace.ward.sec', ward_pct: 'FORMULAS.brace.ward.pct',
+  cipher_cap: 'FORMULAS.brace.cipher.cap', cipher_per: 'FORMULAS.brace.cipher.per'
+};
+function skFormula(src, names, where) {
+  const toks = [];
+  const re = /\s*(?:(\d*\.?\d+)|([A-Za-z_]\w*)|('[^'\\]*')|(>=|<=|===|==|!=|[-+*/()?:<>,]))/y;
+  let m;
+  re.lastIndex = 0;
+  while (re.lastIndex < src.length) {
+    const at = re.lastIndex;
+    if (!(m = re.exec(src))) { if (/^\s*$/.test(src.slice(at))) break; throw new Error(`${where}: cannot read "${src.slice(at)}"`); }
+    toks.push(m[1] ? { n: m[1] } : m[2] ? { id: m[2] } : m[3] ? { s: m[3] } : { op: m[4] });
+  }
+  let k = 0;
+  function expr(stop) {
+    let o = '';
+    while (k < toks.length) {
+      const t = toks[k];
+      if (t.op && stop.includes(t.op)) return o;
+      k++;
+      if (t.n || t.s) o += t.n || t.s;
+      else if (t.op === '(') { o += '(' + expr([')']) + ')'; k++; }
+      else if (t.op === ',') o += ',';
+      else if (t.op) o += t.op === '==' ? '===' : t.op;
+      else if (t.id === 'L' || names.has(t.id)) o += t.id;
+      else if (SK_GV[t.id]) o += SK_GV[t.id];
+      else if (SK_FN[t.id] || SK_FIX[t.id]) {
+        if (!toks[k] || toks[k].op !== '(') throw new Error(`${where}: ${t.id} needs (...)`);
+        k++;
+        const inner = expr([')']); k++;
+        o += SK_FIX[t.id] ? '(' + inner + ').toFixed(' + SK_FIX[t.id] + ')' : SK_FN[t.id] + '(' + inner + ')';
+      } else throw new Error(`${where}: "${t.id}" is not L, a name before it on the row, a function or a game value`);
+    }
+    if (stop.length && stop[0] === ')') throw new Error(`${where}: a ( is not closed`);
+    return o;
+  }
+  const out = expr([]);
+  return out;
+}
+function skills() {
+  const unesc = s => s.replace(/\\n/g, '\n');
+  let file = 'data/classes.tsv';
+  const CLS = {};
+  for (const r of readTsv(path.join(root, file))) {
+    if (!/^[a-z]+$/.test(r.id)) throw new Error(`${file} row ${r._row}: id "${r.id}"`);
+    const o = { n: r.name, tag: r.tag, good: r.good, weak: r.weak, bld: r.build, melee: r.melee === '1' };
+    for (const [k, c] of [['mult', 'mult'], ['ivl', 'interval'], ['spd', 'speed']]) o[k] = num(r, c, file);
+    o.col = r.colour;
+    if (r.locked) o.locked = r.locked;
+    o.sk = [];
+    CLS[r.id] = o;
+  }
+  file = 'data/skills.tsv';
+  for (const r of readTsv(path.join(root, file))) {
+    const where = `${file} row ${r._row} (${r.name})`;
+    const c = CLS[r.class];
+    if (!c) throw new Error(`${where}: no class "${r.class}" in data/classes.tsv`);
+    if (Number(r.row) !== c.sk.length + 1) throw new Error(`${where}: row ${r.row}, expected ${c.sk.length + 1}`);
+    if (!['active', 'passive', 'aura'].includes(r.kind)) throw new Error(`${where}: kind "${r.kind}"`);
+    const s = { n: r.name, ab: unesc(r.button), a: r.kind === 'passive' ? 0 : 1 };
+    if (r.kind === 'aura') s.aura = 1;
+    for (const k of ['cost', 'cd']) { const v = num(r, k, file); if (v !== undefined) s[k] = v; }
+    s.dt = r.desc;
+    const names = new Set(), parts = [];
+    for (const piece of r.calc.split(';').map(x => x.trim()).filter(Boolean)) {
+      const eq = piece.indexOf('=');
+      const name = piece.slice(0, eq).trim();
+      if (eq < 1 || !/^[a-z_][a-z0-9_]*$/i.test(name) || name === 'L' || SK_GV[name] || SK_FN[name] || SK_FIX[name]) throw new Error(`${where}: "${piece}" should be name=formula`);
+      if (names.has(name)) throw new Error(`${where}: ${name} twice`);
+      parts.push(name + '=' + skFormula(piece.slice(eq + 1), names, where + ' ' + name));
+      names.add(name);
+    }
+    const used = new Set();
+    r.desc.replace(/\{(\w+)\}/g, (m, k) => { if (!names.has(k)) throw new Error(`${where}: the desc has {${k}} and the calc has no ${k}`); used.add(k); });
+    for (const k of names) if (!used.has(k)) throw new Error(`${where}: ${k} is worked out and never shown`);
+    s.dv = parts.length ? `L=>{const ${parts.join(',')};return{${[...names].join(',')}}}` : null;
+    c.sk.push(s);
+  }
+  const j = JSON.stringify;
+  const lines = Object.entries(CLS).map(([id, c]) => {
+    if (c.sk.length !== 15) throw new Error(`data/skills.tsv: ${id} has ${c.sk.length} skills, not 15`);
+    const head = Object.entries(c).filter(([k]) => k !== 'sk').map(([k, v]) => k + ':' + j(v));
+    head.splice(5, 0, `hp:FORMULAS.cls.${id}.hp`, `hpL:FORMULAS.cls.${id}.hpL`);
+    const sk = c.sk.map(s => ' {' + Object.entries(s).map(([k, v]) => k + ':' + (k === 'dv' ? v : j(v))).join(',') + '}');
+    return ` ${id}:{${head.join(',')},sk:[\n${sk.join(',\n')}]}`;
+  });
+  return `/* Generated by tools/data/bake.js from data/classes.tsv and data/skills.tsv -- edit the
+   sheets, not this file. dt is the tooltip with {holes}; dv works out the holes at a rank. */
+const CLS={
+${lines.join(',\n')}
+};
+for(const c in CLS)for(const s of CLS[c].sk){const t=s.dt,v=s.dv;s.d=L=>{const o=v?v(L):{};return t.replace(/\\{(\\w+)\\}/g,(m,k)=>k in o?o[k]:m)}}
+if (typeof module !== 'undefined' && module.exports) module.exports = { CLS };
+`;
+}
+
+const out = { 'src/monstats.js': monstats(), 'src/treasure.js': treasure(), 'src/levels.js': levels(), 'src/items.js': items(), 'src/skills.js': skills() };
 const check = process.argv.includes('--check');
 let stale = 0;
 for (const [rel, text] of Object.entries(out)) {

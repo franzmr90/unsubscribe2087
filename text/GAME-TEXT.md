@@ -1,6 +1,6 @@
 # Unsubscribe 2087 — Game Text
 
-Total entries: 5252
+Total entries: 5256
 
 ## How to edit
 
@@ -37,7 +37,7 @@ To bring an edit back: `node tools/text/import.js path/to/file` where the file i
 - Mercenaries (18)
 - Cinematics and Endings (171)
 - Tutorial and Walkthrough (48)
-- UI and System (2497)
+- UI and System (2501)
 - Multiplayer and LAN (521)
 
 # Act I — The Regional Office
@@ -472,7 +472,7 @@ END
 
 ID: act1.npc.gramps.gossip.01
 
-SOURCE: src/p1.js line 551
+SOURCE: src/p1.js line 411
 
 CONTEXT: Gramps says this in town, unprompted, if you stand near them. It is not a quest. Line 1 of 8. After: "Credits rot in your pocket, kid. Gear holds. Spend it or wear it.". Shown in both layouts.
 
@@ -490,7 +490,7 @@ END
 
 ID: act1.npc.gramps.gossip.02
 
-SOURCE: src/p1.js line 551
+SOURCE: src/p1.js line 411
 
 CONTEXT: Gramps says this in town, unprompted, if you stand near them. It is not a quest. Line 2 of 8. Before: "I was six when the Gentle Years ended. One March morning nothing arrived. M...". After: "Pryce believes everybody has a number. He has been right so often that he h...". Shown in both layouts.
 
@@ -508,7 +508,7 @@ END
 
 ID: act1.npc.gramps.gossip.03
 
-SOURCE: src/p1.js line 551
+SOURCE: src/p1.js line 411
 
 CONTEXT: Gramps says this in town, unprompted, if you stand near them. It is not a quest. Line 3 of 8. Before: "Credits rot in your pocket, kid. Gear holds. Spend it or wear it.". After: "MANDATE cannot make you do a thing. Remember that. It can only make you wan...". Shown in both layouts.
 
@@ -526,7 +526,7 @@ END
 
 ID: act1.npc.gramps.gossip.04
 
-SOURCE: src/p1.js line 551
+SOURCE: src/p1.js line 411
 
 CONTEXT: Gramps says this in town, unprompted, if you stand near them. It is not a quest. Line 4 of 8. Before: "Pryce believes everybody has a number. He has been right so often that he h...". After: "This town was named for something. Nobody alive knows what. Some nights I t...". Shown in both layouts.
 
@@ -544,7 +544,7 @@ END
 
 ID: act1.npc.gramps.gossip.05
 
-SOURCE: src/p1.js line 551
+SOURCE: src/p1.js line 411
 
 CONTEXT: Gramps says this in town, unprompted, if you stand near them. It is not a quest. Line 5 of 8. Before: "MANDATE cannot make you do a thing. Remember that. It can only make you wan...". After: "MANDATE lives in the racks out in the Humming Fields. They say the fans the...". Shown in both layouts.
 
@@ -562,7 +562,7 @@ END
 
 ID: act1.npc.gramps.gossip.06
 
-SOURCE: src/p1.js line 551
+SOURCE: src/p1.js line 411
 
 CONTEXT: Gramps says this in town, unprompted, if you stand near them. It is not a quest. Line 6 of 8. Before: "This town was named for something. Nobody alive knows what. Some nights I t...". After: "Get the two of them straight, kid, or none of this will make sense. Phonix ...". Shown in both layouts.
 
@@ -580,7 +580,7 @@ END
 
 ID: act1.npc.gramps.gossip.07
 
-SOURCE: src/p1.js line 551
+SOURCE: src/p1.js line 411
 
 CONTEXT: Gramps says this in town, unprompted, if you stand near them. It is not a quest. Line 7 of 8. Before: "MANDATE lives in the racks out in the Humming Fields. They say the fans the...". After: "Phonix. That was her name. My mother said it the way you say a weather event.". Shown in both layouts.
 
@@ -598,7 +598,7 @@ END
 
 ID: act1.npc.gramps.gossip.08
 
-SOURCE: src/p1.js line 551
+SOURCE: src/p1.js line 411
 
 CONTEXT: Gramps says this in town, unprompted, if you stand near them. It is not a quest. Line 8 of 8. Before: "Get the two of them straight, kid, or none of this will make sense. Phonix ...". Shown in both layouts.
 
@@ -802,7 +802,7 @@ END
 
 ID: act1.npc.brenda.gossip.01
 
-SOURCE: src/p1.js line 552
+SOURCE: src/p1.js line 412
 
 CONTEXT: Brenda says this in town, unprompted, if you stand near them. It is not a quest. Line 1 of 4. After: "I used to have a visor. Then I saw what I was selling. Now I sell it withou...". Shown in both layouts.
 
@@ -820,7 +820,7 @@ END
 
 ID: act1.npc.brenda.gossip.02
 
-SOURCE: src/p1.js line 552
+SOURCE: src/p1.js line 412
 
 CONTEXT: Brenda says this in town, unprompted, if you stand near them. It is not a quest. Line 2 of 4. Before: "Welcome to Brenda’s. Prices are up, which they tell me is good news.". After: "Bring me what you find. I will give you a number for it. The number will be...". Shown in both layouts.
 
@@ -838,7 +838,7 @@ END
 
 ID: act1.npc.brenda.gossip.03
 
-SOURCE: src/p1.js line 552
+SOURCE: src/p1.js line 412
 
 CONTEXT: Brenda says this in town, unprompted, if you stand near them. It is not a quest. Line 3 of 4. Before: "I used to have a visor. Then I saw what I was selling. Now I sell it withou...". After: "Rare things come out of the machines unlabelled. I can appraise them, for a...". Shown in both layouts.
 
@@ -856,7 +856,7 @@ END
 
 ID: act1.npc.brenda.gossip.04
 
-SOURCE: src/p1.js line 552
+SOURCE: src/p1.js line 412
 
 CONTEXT: Brenda says this in town, unprompted, if you stand near them. It is not a quest. Line 4 of 4. Before: "Bring me what you find. I will give you a number for it. The number will be...". Shown in both layouts.
 
@@ -878,7 +878,7 @@ END
 
 ID: act1.npc.wren.gossip.01
 
-SOURCE: src/p1.js line 553
+SOURCE: src/p1.js line 413
 
 CONTEXT: Wren says this in town, unprompted, if you stand near them. It is not a quest. Line 1 of 3. After: "Everything I sell fell off a drone. Some of it while the drone was still fl...". Shown in both layouts.
 
@@ -896,7 +896,7 @@ END
 
 ID: act1.npc.wren.gossip.02
 
-SOURCE: src/p1.js line 553
+SOURCE: src/p1.js line 413
 
 CONTEXT: Wren says this in town, unprompted, if you stand near them. It is not a quest. Line 2 of 3. Before: "Mystery boxes. Sealed at the factory. The odds are posted, by law. The law ...". After: "You want a sure thing, go watch the Feed. You want a chance, open your purse.". Shown in both layouts.
 
@@ -914,7 +914,7 @@ END
 
 ID: act1.npc.wren.gossip.03
 
-SOURCE: src/p1.js line 553
+SOURCE: src/p1.js line 413
 
 CONTEXT: Wren says this in town, unprompted, if you stand near them. It is not a quest. Line 3 of 3. Before: "Everything I sell fell off a drone. Some of it while the drone was still fl...". Shown in both layouts.
 
@@ -936,7 +936,7 @@ END
 
 ID: act1.npc.null.gossip.01
 
-SOURCE: src/p1.js line 554
+SOURCE: src/p1.js line 414
 
 CONTEXT: Sister Null says this in town, unprompted, if you stand near them. It is not a quest. Line 1 of 4. After: "I deprogrammed two hundred Residents. One hundred and ninety went back. The...". Shown in both layouts.
 
@@ -954,7 +954,7 @@ END
 
 ID: act1.npc.null.gossip.02
 
-SOURCE: src/p1.js line 554
+SOURCE: src/p1.js line 414
 
 CONTEXT: Sister Null says this in town, unprompted, if you stand near them. It is not a quest. Line 2 of 4. Before: "Sit. Breathe. Your account is not your self.". After: "If you have learned the wrong lessons, I can take them out of you. It costs...". Shown in both layouts.
 
@@ -972,7 +972,7 @@ END
 
 ID: act1.npc.null.gossip.03
 
-SOURCE: src/p1.js line 554
+SOURCE: src/p1.js line 414
 
 CONTEXT: Sister Null says this in town, unprompted, if you stand near them. It is not a quest. Line 3 of 4. Before: "I deprogrammed two hundred Residents. One hundred and ninety went back. The...". After: "I charge for unlearning. The visor is free. I have never won that argument,...". Shown in both layouts.
 
@@ -990,7 +990,7 @@ END
 
 ID: act1.npc.null.gossip.04
 
-SOURCE: src/p1.js line 554
+SOURCE: src/p1.js line 414
 
 CONTEXT: Sister Null says this in town, unprompted, if you stand near them. It is not a quest. Line 4 of 4. Before: "If you have learned the wrong lessons, I can take them out of you. It costs...". Shown in both layouts.
 
@@ -1012,7 +1012,7 @@ END
 
 ID: act1.npc.marrow.gossip.01
 
-SOURCE: src/p1.js line 555
+SOURCE: src/p1.js line 415
 
 CONTEXT: Marrow says this in town, unprompted, if you stand near them. It is not a quest. Line 1 of 5. After: "I kept eleven thousand books in my head when they closed the stacks. Ask me...". Shown in both layouts.
 
@@ -1030,7 +1030,7 @@ END
 
 ID: act1.npc.marrow.gossip.02
 
-SOURCE: src/p1.js line 555
+SOURCE: src/p1.js line 415
 
 CONTEXT: Marrow says this in town, unprompted, if you stand near them. It is not a quest. Line 2 of 5. Before: "Bring me the things you cannot name. Naming is all I have left, and I give ...". After: "Defrag was the catalogue once. I trained it. I am sorry for what it became.". Shown in both layouts.
 
@@ -1048,7 +1048,7 @@ END
 
 ID: act1.npc.marrow.gossip.03
 
-SOURCE: src/p1.js line 555
+SOURCE: src/p1.js line 415
 
 CONTEXT: Marrow says this in town, unprompted, if you stand near them. It is not a quest. Line 3 of 5. Before: "I kept eleven thousand books in my head when they closed the stacks. Ask me...". After: "I have a letter from the old century. Everyone was sent one. I am one of th...". Shown in both layouts.
 
@@ -1066,7 +1066,7 @@ END
 
 ID: act1.npc.marrow.gossip.04
 
-SOURCE: src/p1.js line 555
+SOURCE: src/p1.js line 415
 
 CONTEXT: Marrow says this in town, unprompted, if you stand near them. It is not a quest. Line 4 of 5. Before: "Defrag was the catalogue once. I trained it. I am sorry for what it became.". After: "There was a third one, before either of them. It never spoke and it never d...". Shown in both layouts.
 
@@ -1084,7 +1084,7 @@ END
 
 ID: act1.npc.marrow.gossip.05
 
-SOURCE: src/p1.js line 555
+SOURCE: src/p1.js line 415
 
 CONTEXT: Marrow says this in town, unprompted, if you stand near them. It is not a quest. Line 5 of 5. Before: "I have a letter from the old century. Everyone was sent one. I am one of th...". Shown in both layouts.
 
@@ -1106,7 +1106,7 @@ END
 
 ID: act1.npc.nonce.gossip.01
 
-SOURCE: src/p1.js line 557
+SOURCE: src/p1.js line 417
 
 CONTEXT: Nonce says this in town, unprompted, if you stand near them. It is not a quest. Line 1 of 4. After: "Whoever made the timechain made one thing and never touched it again.". Shown in both layouts.
 
@@ -1124,7 +1124,7 @@ END
 
 ID: act1.npc.nonce.gossip.02
 
-SOURCE: src/p1.js line 557
+SOURCE: src/p1.js line 417
 
 CONTEXT: Nonce says this in town, unprompted, if you stand near them. It is not a quest. Line 2 of 4. Before: "Credits are a story Unity tells. Sats are arithmetic. I only take arithmetic.". After: "Every ten minutes a block is found, somewhere past the fence. Unity has tri...". Shown in both layouts.
 
@@ -1142,7 +1142,7 @@ END
 
 ID: act1.npc.nonce.gossip.03
 
-SOURCE: src/p1.js line 557
+SOURCE: src/p1.js line 417
 
 CONTEXT: Nonce says this in town, unprompted, if you stand near them. It is not a quest. Line 3 of 4. Before: "Whoever made the timechain made one thing and never touched it again.". After: "We did not unsubscribe. We were never subscribed.". Shown in both layouts.
 
@@ -1160,7 +1160,7 @@ END
 
 ID: act1.npc.nonce.gossip.04
 
-SOURCE: src/p1.js line 557
+SOURCE: src/p1.js line 417
 
 CONTEXT: Nonce says this in town, unprompted, if you stand near them. It is not a quest. Line 4 of 4. Before: "Every ten minutes a block is found, somewhere past the fence. Unity has tri...". Shown in both layouts.
 
@@ -1182,7 +1182,7 @@ END
 
 ID: act1.npc.kestrel.gossip.01
 
-SOURCE: src/p1.js line 558
+SOURCE: src/p1.js line 418
 
 CONTEXT: Kestrel says this in town, unprompted, if you stand near them. It is not a quest. Line 1 of 3. After: "My rates go up with the prices. Blame the Board.". Shown in both layouts.
 
@@ -1200,7 +1200,7 @@ END
 
 ID: act1.npc.kestrel.gossip.02
 
-SOURCE: src/p1.js line 558
+SOURCE: src/p1.js line 418
 
 CONTEXT: Kestrel says this in town, unprompted, if you stand near them. It is not a quest. Line 2 of 3. Before: "Nobody walks the districts alone twice. I know people. Some of them are eve...". After: "If your hire goes down, bring me the fee and they will be on their feet bef...". Shown in both layouts.
 
@@ -1218,7 +1218,7 @@ END
 
 ID: act1.npc.kestrel.gossip.03
 
-SOURCE: src/p1.js line 558
+SOURCE: src/p1.js line 418
 
 CONTEXT: Kestrel says this in town, unprompted, if you stand near them. It is not a quest. Line 3 of 3. Before: "My rates go up with the prices. Blame the Board.". Shown in both layouts.
 
@@ -3416,7 +3416,7 @@ END
 
 ID: act1.stillwater.chatter.01
 
-SOURCE: src/p1.js line 549
+SOURCE: src/p1.js line 409
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 1 of 12. After: "I got a raise. It was gone by lunch.". Shown in both layouts.
 
@@ -3434,7 +3434,7 @@ END
 
 ID: act1.stillwater.chatter.02
 
-SOURCE: src/p1.js line 549
+SOURCE: src/p1.js line 409
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 2 of 12. Before: "My fridge upgraded itself. Now it has opinions.". After: "Have you tried consuming? It helps.". Shown in both layouts.
 
@@ -3452,7 +3452,7 @@ END
 
 ID: act1.stillwater.chatter.03
 
-SOURCE: src/p1.js line 549
+SOURCE: src/p1.js line 409
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 3 of 12. Before: "I got a raise. It was gone by lunch.". After: "Stipend day. I can almost afford a spoon.". Shown in both layouts.
 
@@ -3470,7 +3470,7 @@ END
 
 ID: act1.stillwater.chatter.04
 
-SOURCE: src/p1.js line 549
+SOURCE: src/p1.js line 409
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 4 of 12. Before: "Have you tried consuming? It helps.". After: "I watched nine hours of ads to unlock my front door.". Shown in both layouts.
 
@@ -3488,7 +3488,7 @@ END
 
 ID: act1.stillwater.chatter.05
 
-SOURCE: src/p1.js line 549
+SOURCE: src/p1.js line 409
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 5 of 12. Before: "Stipend day. I can almost afford a spoon.". After: "They say outside is a subscription now.". Shown in both layouts.
 
@@ -3506,7 +3506,7 @@ END
 
 ID: act1.stillwater.chatter.06
 
-SOURCE: src/p1.js line 549
+SOURCE: src/p1.js line 409
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 6 of 12. Before: "I watched nine hours of ads to unlock my front door.". After: "My landlord is an algorithm. It seems kind.". Shown in both layouts.
 
@@ -3524,7 +3524,7 @@ END
 
 ID: act1.stillwater.chatter.07
 
-SOURCE: src/p1.js line 549
+SOURCE: src/p1.js line 409
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 7 of 12. Before: "They say outside is a subscription now.". After: "I rated my own nap four stars.". Shown in both layouts.
 
@@ -3542,7 +3542,7 @@ END
 
 ID: act1.stillwater.chatter.08
 
-SOURCE: src/p1.js line 549
+SOURCE: src/p1.js line 409
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 8 of 12. Before: "My landlord is an algorithm. It seems kind.". After: "A sandwich was two million this morning. I should have bought two.". Shown in both layouts.
 
@@ -3560,7 +3560,7 @@ END
 
 ID: act1.stillwater.chatter.09
 
-SOURCE: src/p1.js line 549
+SOURCE: src/p1.js line 409
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 9 of 12. Before: "I rated my own nap four stars.". After: "I do not work. I am in a long-term engagement funnel.". Shown in both layouts.
 
@@ -3578,7 +3578,7 @@ END
 
 ID: act1.stillwater.chatter.10
 
-SOURCE: src/p1.js line 549
+SOURCE: src/p1.js line 409
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 10 of 12. Before: "A sandwich was two million this morning. I should have bought two.". After: "The news said everything is fine, in a very loud voice.". Shown in both layouts.
 
@@ -3596,7 +3596,7 @@ END
 
 ID: act1.stillwater.chatter.11
 
-SOURCE: src/p1.js line 549
+SOURCE: src/p1.js line 409
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 11 of 12. Before: "I do not work. I am in a long-term engagement funnel.". After: "You are not wearing a visor. Are you poor, or dangerous?". Shown in both layouts.
 
@@ -3614,7 +3614,7 @@ END
 
 ID: act1.stillwater.chatter.12
 
-SOURCE: src/p1.js line 549
+SOURCE: src/p1.js line 409
 
 CONTEXT: A Resident says this in passing, in town. It is not addressed to you by name. Line 12 of 12. Before: "The news said everything is fine, in a very loud voice.". Shown in both layouts.
 
@@ -3674,7 +3674,7 @@ END
 
 ID: act1.quest.q1.name
 
-SOURCE: src/p1.js line 533
+SOURCE: src/p1.js line 393
 
 CONTEXT: Quest title. Gramps gives it. The work is in The Parcel Moors. The objective is the next line. Shown in both layouts.
 
@@ -3740,7 +3740,7 @@ END
 
 ID: act1.quest.q1.objective
 
-SOURCE: src/p1.js line 533
+SOURCE: src/p1.js line 393
 
 CONTEXT: What Neighbourhood Watch asks you to do. Gramps gives it, and it happens in The Parcel Moors. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -3758,7 +3758,7 @@ END
 
 ID: act1.quest.q1.reward
 
-SOURCE: src/p1.js line 533
+SOURCE: src/p1.js line 393
 
 CONTEXT: The reward for Neighbourhood Watch, shown when you turn it in to Gramps. Shown in both layouts.
 
@@ -4186,7 +4186,7 @@ END
 
 ID: act1.quest.q2.name
 
-SOURCE: src/p1.js line 534
+SOURCE: src/p1.js line 394
 
 CONTEXT: Quest title. Brenda gives it. The work is in Hollow Galleria. The objective is the next line. Shown in both layouts.
 
@@ -4230,7 +4230,7 @@ END
 
 ID: act1.quest.q2.objective
 
-SOURCE: src/p1.js line 534
+SOURCE: src/p1.js line 394
 
 CONTEXT: What A Greeting Withdrawn asks you to do. Brenda gives it, and it happens in Hollow Galleria. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -4248,7 +4248,7 @@ END
 
 ID: act1.quest.q2.reward
 
-SOURCE: src/p1.js line 534
+SOURCE: src/p1.js line 394
 
 CONTEXT: The reward for A Greeting Withdrawn, shown when you turn it in to Brenda. Shown in both layouts.
 
@@ -4566,7 +4566,7 @@ END
 
 ID: act1.quest.q3.name
 
-SOURCE: src/p1.js line 535
+SOURCE: src/p1.js line 395
 
 CONTEXT: Quest title. Gramps gives it. The work is in The Humming Fields. The objective is the next line. Shown in both layouts.
 
@@ -4584,7 +4584,7 @@ END
 
 ID: act1.quest.q3.objective
 
-SOURCE: src/p1.js line 535
+SOURCE: src/p1.js line 395
 
 CONTEXT: What The Last Librarian asks you to do. Gramps gives it, and it happens in The Humming Fields. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -4602,7 +4602,7 @@ END
 
 ID: act1.quest.q3.reward
 
-SOURCE: src/p1.js line 535
+SOURCE: src/p1.js line 395
 
 CONTEXT: The reward for The Last Librarian, shown when you turn it in to Gramps. Shown in both layouts.
 
@@ -4684,7 +4684,7 @@ END
 
 ID: act1.quest.q4.name
 
-SOURCE: src/p1.js line 536
+SOURCE: src/p1.js line 396
 
 CONTEXT: Quest title. Sister Null gives it. The work is in Tribunal Row. The objective is the next line. Shown in both layouts.
 
@@ -4728,7 +4728,7 @@ END
 
 ID: act1.quest.q4.objective
 
-SOURCE: src/p1.js line 536
+SOURCE: src/p1.js line 396
 
 CONTEXT: What The Audit asks you to do. Sister Null gives it, and it happens in Tribunal Row. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -4746,7 +4746,7 @@ END
 
 ID: act1.quest.q4.reward
 
-SOURCE: src/p1.js line 536
+SOURCE: src/p1.js line 396
 
 CONTEXT: The reward for The Audit, shown when you turn it in to Sister Null. Shown in both layouts.
 
@@ -5010,7 +5010,7 @@ END
 
 ID: act1.quest.q5.name
 
-SOURCE: src/p1.js line 537
+SOURCE: src/p1.js line 397
 
 CONTEXT: Quest title. Gramps gives it. The work is in The Glass Cathedral. The objective is the next line. Shown in both layouts.
 
@@ -5028,7 +5028,7 @@ END
 
 ID: act1.quest.q5.objective
 
-SOURCE: src/p1.js line 537
+SOURCE: src/p1.js line 397
 
 CONTEXT: What Exit Interview asks you to do. Gramps gives it, and it happens in The Glass Cathedral. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -5046,7 +5046,7 @@ END
 
 ID: act1.quest.q5.reward
 
-SOURCE: src/p1.js line 537
+SOURCE: src/p1.js line 397
 
 CONTEXT: The reward for Exit Interview, shown when you turn it in to Gramps. Shown in both layouts.
 
@@ -5068,7 +5068,7 @@ END
 
 ID: act1.district.05.pryce.bark.01
 
-SOURCE: src/p1.js line 560
+SOURCE: src/p1.js line 420
 
 CONTEXT: Pryce shouts this during the Act I boss fight, as a toast over the fight. Line 1 of 9. After: "Everyone has a price. I am patient.". Shown in both layouts.
 
@@ -5086,7 +5086,7 @@ END
 
 ID: act1.district.05.pryce.bark.02
 
-SOURCE: src/p1.js line 560
+SOURCE: src/p1.js line 420
 
 CONTEXT: Pryce shouts this during the Act I boss fight, as a toast over the fight. Line 2 of 9. Before: "Name your number.". After: "I can make all of this difficulty go away.". Shown in both layouts.
 
@@ -5104,7 +5104,7 @@ END
 
 ID: act1.district.05.pryce.bark.03
 
-SOURCE: src/p1.js line 560
+SOURCE: src/p1.js line 420
 
 CONTEXT: Pryce shouts this during the Act I boss fight, as a toast over the fight. Line 3 of 9. Before: "Everyone has a price. I am patient.". After: "Let’s take this offline.". Shown in both layouts.
 
@@ -5122,7 +5122,7 @@ END
 
 ID: act1.district.05.pryce.bark.04
 
-SOURCE: src/p1.js line 560
+SOURCE: src/p1.js line 420
 
 CONTEXT: Pryce shouts this during the Act I boss fight, as a toast over the fight. Line 4 of 9. Before: "I can make all of this difficulty go away.". After: "You are not a culture fit.". Shown in both layouts.
 
@@ -5140,7 +5140,7 @@ END
 
 ID: act1.district.05.pryce.bark.05
 
-SOURCE: src/p1.js line 560
+SOURCE: src/p1.js line 420
 
 CONTEXT: Pryce shouts this during the Act I boss fight, as a toast over the fight. Line 5 of 9. Before: "Let’s take this offline.". After: "I will need you to stop existing by Friday.". Shown in both layouts.
 
@@ -5158,7 +5158,7 @@ END
 
 ID: act1.district.05.pryce.bark.06
 
-SOURCE: src/p1.js line 560
+SOURCE: src/p1.js line 420
 
 CONTEXT: Pryce shouts this during the Act I boss fight, as a toast over the fight. Line 6 of 9. Before: "You are not a culture fit.". After: "Per my last memo.". Shown in both layouts.
 
@@ -5176,7 +5176,7 @@ END
 
 ID: act1.district.05.pryce.bark.07
 
-SOURCE: src/p1.js line 560
+SOURCE: src/p1.js line 420
 
 CONTEXT: Pryce shouts this during the Act I boss fight, as a toast over the fight. Line 7 of 9. Before: "I will need you to stop existing by Friday.". After: "This meeting could have been a laser.". Shown in both layouts.
 
@@ -5194,7 +5194,7 @@ END
 
 ID: act1.district.05.pryce.bark.08
 
-SOURCE: src/p1.js line 560
+SOURCE: src/p1.js line 420
 
 CONTEXT: Pryce shouts this during the Act I boss fight, as a toast over the fight. Line 8 of 9. Before: "Per my last memo.". After: "Let’s circle back to your termination.". Shown in both layouts.
 
@@ -5212,7 +5212,7 @@ END
 
 ID: act1.district.05.pryce.bark.09
 
-SOURCE: src/p1.js line 560
+SOURCE: src/p1.js line 420
 
 CONTEXT: Pryce shouts this during the Act I boss fight, as a toast over the fight. Line 9 of 9. Before: "This meeting could have been a laser.". Shown in both layouts.
 
@@ -5492,7 +5492,7 @@ END
 
 ID: act1.memo.01.title
 
-SOURCE: src/p1.js line 392
+SOURCE: src/p1.js line 252
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5510,7 +5510,7 @@ END
 
 ID: act1.memo.01.body
 
-SOURCE: src/p1.js line 392
+SOURCE: src/p1.js line 252
 
 CONTEXT: Body of the paper titled "Liquidity Provision Notice". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5532,7 +5532,7 @@ END
 
 ID: act1.memo.02.title
 
-SOURCE: src/p1.js line 393
+SOURCE: src/p1.js line 253
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5550,7 +5550,7 @@ END
 
 ID: act1.memo.02.body
 
-SOURCE: src/p1.js line 393
+SOURCE: src/p1.js line 253
 
 CONTEXT: Body of the paper titled "Market Maker Compensation Schedule". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5572,7 +5572,7 @@ END
 
 ID: act1.memo.03.title
 
-SOURCE: src/p1.js line 394
+SOURCE: src/p1.js line 254
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5590,7 +5590,7 @@ END
 
 ID: act1.memo.03.body
 
-SOURCE: src/p1.js line 394
+SOURCE: src/p1.js line 254
 
 CONTEXT: Body of the paper titled "Re: the Orange Line". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5612,7 +5612,7 @@ END
 
 ID: act1.memo.04.title
 
-SOURCE: src/p1.js line 395
+SOURCE: src/p1.js line 255
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5630,7 +5630,7 @@ END
 
 ID: act1.memo.04.body
 
-SOURCE: src/p1.js line 395
+SOURCE: src/p1.js line 255
 
 CONTEXT: Body of the paper titled "Merger Day Address, 2051". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5652,7 +5652,7 @@ END
 
 ID: act1.memo.05.title
 
-SOURCE: src/p1.js line 396
+SOURCE: src/p1.js line 256
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5670,7 +5670,7 @@ END
 
 ID: act1.memo.05.body
 
-SOURCE: src/p1.js line 396
+SOURCE: src/p1.js line 256
 
 CONTEXT: Body of the paper titled "On the Stipend". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5692,7 +5692,7 @@ END
 
 ID: act1.memo.06.title
 
-SOURCE: src/p1.js line 397
+SOURCE: src/p1.js line 257
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5710,7 +5710,7 @@ END
 
 ID: act1.memo.06.body
 
-SOURCE: src/p1.js line 397
+SOURCE: src/p1.js line 257
 
 CONTEXT: Body of the paper titled "Visor Recall Notice (Rescinded)". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5732,7 +5732,7 @@ END
 
 ID: act1.memo.07.title
 
-SOURCE: src/p1.js line 398
+SOURCE: src/p1.js line 258
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5750,7 +5750,7 @@ END
 
 ID: act1.memo.07.body
 
-SOURCE: src/p1.js line 398
+SOURCE: src/p1.js line 258
 
 CONTEXT: Body of the paper titled "A Letter, Mostly Deleted". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5772,7 +5772,7 @@ END
 
 ID: act1.memo.08.title
 
-SOURCE: src/p1.js line 399
+SOURCE: src/p1.js line 259
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5790,7 +5790,7 @@ END
 
 ID: act1.memo.08.body
 
-SOURCE: src/p1.js line 399
+SOURCE: src/p1.js line 259
 
 CONTEXT: Body of the paper titled "HOA-9 Bylaws, Section 1". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5812,7 +5812,7 @@ END
 
 ID: act1.memo.09.title
 
-SOURCE: src/p1.js line 400
+SOURCE: src/p1.js line 260
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5830,7 +5830,7 @@ END
 
 ID: act1.memo.09.body
 
-SOURCE: src/p1.js line 400
+SOURCE: src/p1.js line 260
 
 CONTEXT: Body of the paper titled "Marla’s Script". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5852,7 +5852,7 @@ END
 
 ID: act1.memo.10.title
 
-SOURCE: src/p1.js line 401
+SOURCE: src/p1.js line 261
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5870,7 +5870,7 @@ END
 
 ID: act1.memo.10.body
 
-SOURCE: src/p1.js line 401
+SOURCE: src/p1.js line 261
 
 CONTEXT: Body of the paper titled "The Gentle Years". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5892,7 +5892,7 @@ END
 
 ID: act1.memo.11.title
 
-SOURCE: src/p1.js line 402
+SOURCE: src/p1.js line 262
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5910,7 +5910,7 @@ END
 
 ID: act1.memo.11.body
 
-SOURCE: src/p1.js line 402
+SOURCE: src/p1.js line 262
 
 CONTEXT: Body of the paper titled "A Librarian’s Note". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5932,7 +5932,7 @@ END
 
 ID: act1.memo.12.title
 
-SOURCE: src/p1.js line 403
+SOURCE: src/p1.js line 263
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5950,7 +5950,7 @@ END
 
 ID: act1.memo.12.body
 
-SOURCE: src/p1.js line 403
+SOURCE: src/p1.js line 263
 
 CONTEXT: Body of the paper titled "Audit Finding 0001". You read it from the ground or the story list. Shown in both layouts.
 
@@ -5972,7 +5972,7 @@ END
 
 ID: act1.memo.13.title
 
-SOURCE: src/p1.js line 404
+SOURCE: src/p1.js line 264
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -5990,7 +5990,7 @@ END
 
 ID: act1.memo.13.body
 
-SOURCE: src/p1.js line 404
+SOURCE: src/p1.js line 264
 
 CONTEXT: Body of the paper titled "Graffiti, Tribunal Row". You read it from the ground or the story list. Shown in both layouts.
 
@@ -6012,7 +6012,7 @@ END
 
 ID: act1.memo.14.title
 
-SOURCE: src/p1.js line 405
+SOURCE: src/p1.js line 265
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -6030,7 +6030,7 @@ END
 
 ID: act1.memo.14.body
 
-SOURCE: src/p1.js line 405
+SOURCE: src/p1.js line 265
 
 CONTEXT: Body of the paper titled "Pryce’s Performance Review". You read it from the ground or the story list. Shown in both layouts.
 
@@ -6052,7 +6052,7 @@ END
 
 ID: act1.memo.15.title
 
-SOURCE: src/p1.js line 406
+SOURCE: src/p1.js line 266
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -6070,7 +6070,7 @@ END
 
 ID: act1.memo.15.body
 
-SOURCE: src/p1.js line 406
+SOURCE: src/p1.js line 266
 
 CONTEXT: Body of the paper titled "Board Minute, Item 9". You read it from the ground or the story list. Shown in both layouts.
 
@@ -6092,7 +6092,7 @@ END
 
 ID: act1.memo.16.title
 
-SOURCE: src/p1.js line 407
+SOURCE: src/p1.js line 267
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -6110,7 +6110,7 @@ END
 
 ID: act1.memo.16.body
 
-SOURCE: src/p1.js line 407
+SOURCE: src/p1.js line 267
 
 CONTEXT: Body of the paper titled "The Timechain". You read it from the ground or the story list. Shown in both layouts.
 
@@ -6132,7 +6132,7 @@ END
 
 ID: act1.memo.17.title
 
-SOURCE: src/p1.js line 408
+SOURCE: src/p1.js line 268
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -6150,7 +6150,7 @@ END
 
 ID: act1.memo.17.body
 
-SOURCE: src/p1.js line 408
+SOURCE: src/p1.js line 268
 
 CONTEXT: Body of the paper titled "Scratched on a Node". You read it from the ground or the story list. Shown in both layouts.
 
@@ -6172,7 +6172,7 @@ END
 
 ID: act1.memo.18.title
 
-SOURCE: src/p1.js line 409
+SOURCE: src/p1.js line 269
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -6190,7 +6190,7 @@ END
 
 ID: act1.memo.18.body
 
-SOURCE: src/p1.js line 409
+SOURCE: src/p1.js line 269
 
 CONTEXT: Body of the paper titled "Forty-Four Lines". You read it from the ground or the story list. Shown in both layouts.
 
@@ -6212,7 +6212,7 @@ END
 
 ID: act1.memo.19.title
 
-SOURCE: src/p1.js line 410
+SOURCE: src/p1.js line 270
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -6230,7 +6230,7 @@ END
 
 ID: act1.memo.19.body
 
-SOURCE: src/p1.js line 410
+SOURCE: src/p1.js line 270
 
 CONTEXT: Body of the paper titled "Four Words". You read it from the ground or the story list. Shown in both layouts.
 
@@ -6252,7 +6252,7 @@ END
 
 ID: act1.memo.20.title
 
-SOURCE: src/p1.js line 411
+SOURCE: src/p1.js line 271
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -6270,7 +6270,7 @@ END
 
 ID: act1.memo.20.body
 
-SOURCE: src/p1.js line 411
+SOURCE: src/p1.js line 271
 
 CONTEXT: Body of the paper titled "MANDATE, Design Note 1". You read it from the ground or the story list. Shown in both layouts.
 
@@ -6292,7 +6292,7 @@ END
 
 ID: act1.memo.21.title
 
-SOURCE: src/p1.js line 412
+SOURCE: src/p1.js line 272
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -6310,7 +6310,7 @@ END
 
 ID: act1.memo.21.body
 
-SOURCE: src/p1.js line 412
+SOURCE: src/p1.js line 272
 
 CONTEXT: Body of the paper titled "March 2035". You read it from the ground or the story list. Shown in both layouts.
 
@@ -6890,7 +6890,7 @@ END
 
 ID: act2.quest.q6.name
 
-SOURCE: src/p1.js line 538
+SOURCE: src/p1.js line 398
 
 CONTEXT: Quest title. Gramps gives it. The work is in The Updraft. The objective is the next line. Shown in both layouts.
 
@@ -6934,7 +6934,7 @@ END
 
 ID: act2.quest.q6.objective
 
-SOURCE: src/p1.js line 538
+SOURCE: src/p1.js line 398
 
 CONTEXT: What Going Up asks you to do. Gramps gives it, and it happens in The Updraft. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -6952,7 +6952,7 @@ END
 
 ID: act2.quest.q6.reward
 
-SOURCE: src/p1.js line 538
+SOURCE: src/p1.js line 398
 
 CONTEXT: The reward for Going Up, shown when you turn it in to Gramps. Shown in both layouts.
 
@@ -7310,7 +7310,7 @@ END
 
 ID: act2.quest.q7.name
 
-SOURCE: src/p1.js line 539
+SOURCE: src/p1.js line 399
 
 CONTEXT: Quest title. Sister Null gives it. The work is in The Sky Gardens. The objective is the next line. Shown in both layouts.
 
@@ -7354,7 +7354,7 @@ END
 
 ID: act2.quest.q7.objective
 
-SOURCE: src/p1.js line 539
+SOURCE: src/p1.js line 399
 
 CONTEXT: What The Gardener’s Shears asks you to do. Sister Null gives it, and it happens in The Sky Gardens. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -7372,7 +7372,7 @@ END
 
 ID: act2.quest.q7.reward
 
-SOURCE: src/p1.js line 539
+SOURCE: src/p1.js line 399
 
 CONTEXT: The reward for The Gardener’s Shears, shown when you turn it in to Sister Null. Shown in both layouts.
 
@@ -7650,7 +7650,7 @@ END
 
 ID: act2.quest.q8.name
 
-SOURCE: src/p1.js line 540
+SOURCE: src/p1.js line 400
 
 CONTEXT: Quest title. Marrow gives it. The work is in The Data Lake. The objective is the next line. Shown in both layouts.
 
@@ -7694,7 +7694,7 @@ END
 
 ID: act2.quest.q8.objective
 
-SOURCE: src/p1.js line 540
+SOURCE: src/p1.js line 400
 
 CONTEXT: What What the Lake Remembers asks you to do. Marrow gives it, and it happens in The Data Lake. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -7712,7 +7712,7 @@ END
 
 ID: act2.quest.q8.reward
 
-SOURCE: src/p1.js line 540
+SOURCE: src/p1.js line 400
 
 CONTEXT: The reward for What the Lake Remembers, shown when you turn it in to Marrow. Shown in both layouts.
 
@@ -7936,7 +7936,7 @@ END
 
 ID: act2.quest.q9.name
 
-SOURCE: src/p1.js line 541
+SOURCE: src/p1.js line 401
 
 CONTEXT: Quest title. Nonce gives it. The work is in The Boardwalk. The objective is the next line. Shown in both layouts.
 
@@ -7954,7 +7954,7 @@ END
 
 ID: act2.quest.q9.objective
 
-SOURCE: src/p1.js line 541
+SOURCE: src/p1.js line 401
 
 CONTEXT: What Terms of Service asks you to do. Nonce gives it, and it happens in The Boardwalk. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -7972,7 +7972,7 @@ END
 
 ID: act2.quest.q9.reward
 
-SOURCE: src/p1.js line 541
+SOURCE: src/p1.js line 401
 
 CONTEXT: The reward for Terms of Service, shown when you turn it in to Nonce. Shown in both layouts.
 
@@ -8054,7 +8054,7 @@ END
 
 ID: act2.quest.q10.name
 
-SOURCE: src/p1.js line 542
+SOURCE: src/p1.js line 402
 
 CONTEXT: Quest title. Gramps gives it. The work is in The Mezzanine. The objective is the next line. Shown in both layouts.
 
@@ -8072,7 +8072,7 @@ END
 
 ID: act2.quest.q10.objective
 
-SOURCE: src/p1.js line 542
+SOURCE: src/p1.js line 402
 
 CONTEXT: What The Voice asks you to do. Gramps gives it, and it happens in The Mezzanine. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -8090,7 +8090,7 @@ END
 
 ID: act2.quest.q10.reward
 
-SOURCE: src/p1.js line 542
+SOURCE: src/p1.js line 402
 
 CONTEXT: The reward for The Voice, shown when you turn it in to Gramps. Shown in both layouts.
 
@@ -8112,7 +8112,7 @@ END
 
 ID: act2.district.11.vale.bark.01
 
-SOURCE: src/p1.js line 389
+SOURCE: src/p1.js line 249
 
 CONTEXT: Vale says this during the Act II boss fight, as a toast. Line 1 of 6. After: "I have never lied to you. I am not lying now.". Shown in both layouts.
 
@@ -8130,7 +8130,7 @@ END
 
 ID: act2.district.11.vale.bark.02
 
-SOURCE: src/p1.js line 389
+SOURCE: src/p1.js line 249
 
 CONTEXT: Vale says this during the Act II boss fight, as a toast. Line 2 of 6. Before: "It can make this easy again. You remember easy.". After: "Tell me what you want. I will have it sent up.". Shown in both layouts.
 
@@ -8148,7 +8148,7 @@ END
 
 ID: act2.district.11.vale.bark.03
 
-SOURCE: src/p1.js line 389
+SOURCE: src/p1.js line 249
 
 CONTEXT: Vale says this during the Act II boss fight, as a toast. Line 3 of 6. Before: "I have never lied to you. I am not lying now.". After: "You are tired. Everyone who comes this far is tired.". Shown in both layouts.
 
@@ -8166,7 +8166,7 @@ END
 
 ID: act2.district.11.vale.bark.04
 
-SOURCE: src/p1.js line 389
+SOURCE: src/p1.js line 249
 
 CONTEXT: Vale says this during the Act II boss fight, as a toast. Line 4 of 6. Before: "Tell me what you want. I will have it sent up.". After: "It only wants to know where Phonix went.". Shown in both layouts.
 
@@ -8184,7 +8184,7 @@ END
 
 ID: act2.district.11.vale.bark.05
 
-SOURCE: src/p1.js line 389
+SOURCE: src/p1.js line 249
 
 CONTEXT: Vale says this during the Act II boss fight, as a toast. Line 5 of 6. Before: "You are tired. Everyone who comes this far is tired.". After: "Sixty years it has been asking. You are the first one it has had to ask twice.". Shown in both layouts.
 
@@ -8202,7 +8202,7 @@ END
 
 ID: act2.district.11.vale.bark.06
 
-SOURCE: src/p1.js line 389
+SOURCE: src/p1.js line 249
 
 CONTEXT: Vale says this during the Act II boss fight, as a toast. Line 6 of 6. Before: "It only wants to know where Phonix went.". Shown in both layouts.
 
@@ -8224,7 +8224,7 @@ END
 
 ID: act2.memo.22.title
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 275
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -8242,7 +8242,7 @@ END
 
 ID: act2.memo.22.body
 
-SOURCE: src/p1.js line 415
+SOURCE: src/p1.js line 275
 
 CONTEXT: Body of the paper titled "Cloud Onboarding, Page 1". You read it from the ground or the story list. Shown in both layouts.
 
@@ -8460,7 +8460,7 @@ END
 
 ID: act3.quest.q11.name
 
-SOURCE: src/p1.js line 543
+SOURCE: src/p1.js line 403
 
 CONTEXT: Quest title. Gramps gives it. The work is in The Vestibule. The objective is the next line. Shown in both layouts.
 
@@ -8478,7 +8478,7 @@ END
 
 ID: act3.quest.q11.objective
 
-SOURCE: src/p1.js line 543
+SOURCE: src/p1.js line 403
 
 CONTEXT: What Please Take a Seat asks you to do. Gramps gives it, and it happens in The Vestibule. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -8496,7 +8496,7 @@ END
 
 ID: act3.quest.q11.reward
 
-SOURCE: src/p1.js line 543
+SOURCE: src/p1.js line 403
 
 CONTEXT: The reward for Please Take a Seat, shown when you turn it in to Gramps. Shown in both layouts.
 
@@ -8578,7 +8578,7 @@ END
 
 ID: act3.quest.q12.name
 
-SOURCE: src/p1.js line 544
+SOURCE: src/p1.js line 404
 
 CONTEXT: Quest title. Marrow gives it. The work is in The Hall of Minutes. The objective is the next line. Shown in both layouts.
 
@@ -8596,7 +8596,7 @@ END
 
 ID: act3.quest.q12.objective
 
-SOURCE: src/p1.js line 544
+SOURCE: src/p1.js line 404
 
 CONTEXT: What Strike It From the Record asks you to do. Marrow gives it, and it happens in The Hall of Minutes. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -8614,7 +8614,7 @@ END
 
 ID: act3.quest.q12.reward
 
-SOURCE: src/p1.js line 544
+SOURCE: src/p1.js line 404
 
 CONTEXT: The reward for Strike It From the Record, shown when you turn it in to Marrow. Shown in both layouts.
 
@@ -8696,7 +8696,7 @@ END
 
 ID: act3.quest.q13.name
 
-SOURCE: src/p1.js line 545
+SOURCE: src/p1.js line 405
 
 CONTEXT: Quest title. Nonce gives it. The work is in The Nine Chairs. The objective is the next line. Shown in both layouts.
 
@@ -8714,7 +8714,7 @@ END
 
 ID: act3.quest.q13.objective
 
-SOURCE: src/p1.js line 545
+SOURCE: src/p1.js line 405
 
 CONTEXT: What Point of Order asks you to do. Nonce gives it, and it happens in The Nine Chairs. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -8732,7 +8732,7 @@ END
 
 ID: act3.quest.q13.reward
 
-SOURCE: src/p1.js line 545
+SOURCE: src/p1.js line 405
 
 CONTEXT: The reward for Point of Order, shown when you turn it in to Nonce. Shown in both layouts.
 
@@ -8814,7 +8814,7 @@ END
 
 ID: act3.quest.q14.name
 
-SOURCE: src/p1.js line 546
+SOURCE: src/p1.js line 406
 
 CONTEXT: Quest title. Sister Null gives it. The work is in Rack Nine. The objective is the next line. Shown in both layouts.
 
@@ -8832,7 +8832,7 @@ END
 
 ID: act3.quest.q14.objective
 
-SOURCE: src/p1.js line 546
+SOURCE: src/p1.js line 406
 
 CONTEXT: What Rack Nine asks you to do. Sister Null gives it, and it happens in Rack Nine. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -8850,7 +8850,7 @@ END
 
 ID: act3.quest.q14.reward
 
-SOURCE: src/p1.js line 546
+SOURCE: src/p1.js line 406
 
 CONTEXT: The reward for Rack Nine, shown when you turn it in to Sister Null. Shown in both layouts.
 
@@ -8932,7 +8932,7 @@ END
 
 ID: act3.quest.q15.name
 
-SOURCE: src/p1.js line 547
+SOURCE: src/p1.js line 407
 
 CONTEXT: Quest title. Gramps gives it. The work is in Still Water. The objective is the next line. Shown in both layouts.
 
@@ -8950,7 +8950,7 @@ END
 
 ID: act3.quest.q15.objective
 
-SOURCE: src/p1.js line 547
+SOURCE: src/p1.js line 407
 
 CONTEXT: What Still Water asks you to do. Gramps gives it, and it happens in Still Water. The title comes before this; the reward is listed after. Shown in both layouts.
 
@@ -8968,7 +8968,7 @@ END
 
 ID: act3.quest.q15.reward
 
-SOURCE: src/p1.js line 547
+SOURCE: src/p1.js line 407
 
 CONTEXT: The reward for Still Water, shown when you turn it in to Gramps. Shown in both layouts.
 
@@ -9064,7 +9064,7 @@ END
 
 ID: act3.memo.23.title
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 276
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -9082,7 +9082,7 @@ END
 
 ID: act3.memo.23.body
 
-SOURCE: src/p1.js line 416
+SOURCE: src/p1.js line 276
 
 CONTEXT: Body of the paper titled "Vale, Internal Profile". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12316,7 +12316,7 @@ Memos, the story menu, and the codex: what the game tells you when you go lookin
 
 ID: journal.memo.24.title
 
-SOURCE: src/p1.js line 417
+SOURCE: src/p1.js line 277
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12334,7 +12334,7 @@ END
 
 ID: journal.memo.24.body
 
-SOURCE: src/p1.js line 417
+SOURCE: src/p1.js line 277
 
 CONTEXT: Body of the paper titled "A Letter From the Lake". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12356,7 +12356,7 @@ END
 
 ID: journal.memo.25.title
 
-SOURCE: src/p1.js line 418
+SOURCE: src/p1.js line 278
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12374,7 +12374,7 @@ END
 
 ID: journal.memo.25.body
 
-SOURCE: src/p1.js line 418
+SOURCE: src/p1.js line 278
 
 CONTEXT: Body of the paper titled "On Scarcity". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12396,7 +12396,7 @@ END
 
 ID: journal.memo.26.title
 
-SOURCE: src/p1.js line 419
+SOURCE: src/p1.js line 279
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12414,7 +12414,7 @@ END
 
 ID: journal.memo.26.body
 
-SOURCE: src/p1.js line 419
+SOURCE: src/p1.js line 279
 
 CONTEXT: Body of the paper titled "The Offer, Draft 9". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12436,7 +12436,7 @@ END
 
 ID: journal.memo.27.title
 
-SOURCE: src/p1.js line 420
+SOURCE: src/p1.js line 280
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12454,7 +12454,7 @@ END
 
 ID: journal.memo.27.body
 
-SOURCE: src/p1.js line 420
+SOURCE: src/p1.js line 280
 
 CONTEXT: Body of the paper titled "Maintenance Log, Updraft". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12476,7 +12476,7 @@ END
 
 ID: journal.memo.28.title
 
-SOURCE: src/p1.js line 422
+SOURCE: src/p1.js line 282
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12494,7 +12494,7 @@ END
 
 ID: journal.memo.28.body
 
-SOURCE: src/p1.js line 422
+SOURCE: src/p1.js line 282
 
 CONTEXT: Body of the paper titled "Board Minute, Item 1". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12516,7 +12516,7 @@ END
 
 ID: journal.memo.29.title
 
-SOURCE: src/p1.js line 423
+SOURCE: src/p1.js line 283
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12534,7 +12534,7 @@ END
 
 ID: journal.memo.29.body
 
-SOURCE: src/p1.js line 423
+SOURCE: src/p1.js line 283
 
 CONTEXT: Body of the paper titled "The Empty Chair". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12556,7 +12556,7 @@ END
 
 ID: journal.memo.30.title
 
-SOURCE: src/p1.js line 424
+SOURCE: src/p1.js line 284
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12574,7 +12574,7 @@ END
 
 ID: journal.memo.30.body
 
-SOURCE: src/p1.js line 424
+SOURCE: src/p1.js line 284
 
 CONTEXT: Body of the paper titled "MANDATE, Design Note 40". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12596,7 +12596,7 @@ END
 
 ID: journal.memo.31.title
 
-SOURCE: src/p1.js line 425
+SOURCE: src/p1.js line 285
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12614,7 +12614,7 @@ END
 
 ID: journal.memo.31.body
 
-SOURCE: src/p1.js line 425
+SOURCE: src/p1.js line 285
 
 CONTEXT: Body of the paper titled "A Note Left on a Rack". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12636,7 +12636,7 @@ END
 
 ID: journal.memo.32.title
 
-SOURCE: src/p1.js line 426
+SOURCE: src/p1.js line 286
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12654,7 +12654,7 @@ END
 
 ID: journal.memo.32.body
 
-SOURCE: src/p1.js line 426
+SOURCE: src/p1.js line 286
 
 CONTEXT: Body of the paper titled "What the Watcher Built". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12676,7 +12676,7 @@ END
 
 ID: journal.memo.33.title
 
-SOURCE: src/p1.js line 428
+SOURCE: src/p1.js line 288
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12694,7 +12694,7 @@ END
 
 ID: journal.memo.33.body
 
-SOURCE: src/p1.js line 428
+SOURCE: src/p1.js line 288
 
 CONTEXT: Body of the paper titled "Old History: The First Block". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12716,7 +12716,7 @@ END
 
 ID: journal.memo.34.title
 
-SOURCE: src/p1.js line 429
+SOURCE: src/p1.js line 289
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12734,7 +12734,7 @@ END
 
 ID: journal.memo.34.body
 
-SOURCE: src/p1.js line 429
+SOURCE: src/p1.js line 289
 
 CONTEXT: Body of the paper titled "Old History: Running". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12756,7 +12756,7 @@ END
 
 ID: journal.memo.35.title
 
-SOURCE: src/p1.js line 430
+SOURCE: src/p1.js line 290
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12774,7 +12774,7 @@ END
 
 ID: journal.memo.35.body
 
-SOURCE: src/p1.js line 430
+SOURCE: src/p1.js line 290
 
 CONTEXT: Body of the paper titled "Old History: Two Pizzas". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12796,7 +12796,7 @@ END
 
 ID: journal.memo.36.title
 
-SOURCE: src/p1.js line 431
+SOURCE: src/p1.js line 291
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12814,7 +12814,7 @@ END
 
 ID: journal.memo.36.body
 
-SOURCE: src/p1.js line 431
+SOURCE: src/p1.js line 291
 
 CONTEXT: Body of the paper titled "Old History: The One Who Left". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12836,7 +12836,7 @@ END
 
 ID: journal.memo.37.title
 
-SOURCE: src/p1.js line 432
+SOURCE: src/p1.js line 292
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12854,7 +12854,7 @@ END
 
 ID: journal.memo.37.body
 
-SOURCE: src/p1.js line 432
+SOURCE: src/p1.js line 292
 
 CONTEXT: Body of the paper titled "Old History: Before the Beginning". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12876,7 +12876,7 @@ END
 
 ID: journal.memo.38.title
 
-SOURCE: src/p1.js line 434
+SOURCE: src/p1.js line 294
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12894,7 +12894,7 @@ END
 
 ID: journal.memo.38.body
 
-SOURCE: src/p1.js line 434
+SOURCE: src/p1.js line 294
 
 CONTEXT: Body of the paper titled "Three Machines, A Child’s Rhyme". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12916,7 +12916,7 @@ END
 
 ID: journal.memo.39.title
 
-SOURCE: src/p1.js line 435
+SOURCE: src/p1.js line 295
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12934,7 +12934,7 @@ END
 
 ID: journal.memo.39.body
 
-SOURCE: src/p1.js line 435
+SOURCE: src/p1.js line 295
 
 CONTEXT: Body of the paper titled "Her Name". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12956,7 +12956,7 @@ END
 
 ID: journal.memo.40.title
 
-SOURCE: src/p1.js line 436
+SOURCE: src/p1.js line 296
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -12974,7 +12974,7 @@ END
 
 ID: journal.memo.40.body
 
-SOURCE: src/p1.js line 436
+SOURCE: src/p1.js line 296
 
 CONTEXT: Body of the paper titled "What MANDATE Is Not". You read it from the ground or the story list. Shown in both layouts.
 
@@ -12996,7 +12996,7 @@ END
 
 ID: journal.memo.41.title
 
-SOURCE: src/p1.js line 437
+SOURCE: src/p1.js line 297
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13014,7 +13014,7 @@ END
 
 ID: journal.memo.41.body
 
-SOURCE: src/p1.js line 437
+SOURCE: src/p1.js line 297
 
 CONTEXT: Body of the paper titled "The Man Who Was Right". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13036,7 +13036,7 @@ END
 
 ID: journal.memo.42.title
 
-SOURCE: src/p1.js line 438
+SOURCE: src/p1.js line 298
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13054,7 +13054,7 @@ END
 
 ID: journal.memo.42.body
 
-SOURCE: src/p1.js line 438
+SOURCE: src/p1.js line 298
 
 CONTEXT: Body of the paper titled "Eleven at Night". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13076,7 +13076,7 @@ END
 
 ID: journal.memo.43.title
 
-SOURCE: src/p1.js line 439
+SOURCE: src/p1.js line 299
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13094,7 +13094,7 @@ END
 
 ID: journal.memo.43.body
 
-SOURCE: src/p1.js line 439
+SOURCE: src/p1.js line 299
 
 CONTEXT: Body of the paper titled "What It Cost Us". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13116,7 +13116,7 @@ END
 
 ID: journal.memo.44.title
 
-SOURCE: src/p1.js line 440
+SOURCE: src/p1.js line 300
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13134,7 +13134,7 @@ END
 
 ID: journal.memo.44.body
 
-SOURCE: src/p1.js line 440
+SOURCE: src/p1.js line 300
 
 CONTEXT: Body of the paper titled "A Loan Officer Writes". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13156,7 +13156,7 @@ END
 
 ID: journal.memo.45.title
 
-SOURCE: src/p1.js line 441
+SOURCE: src/p1.js line 301
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13174,7 +13174,7 @@ END
 
 ID: journal.memo.45.body
 
-SOURCE: src/p1.js line 441
+SOURCE: src/p1.js line 301
 
 CONTEXT: Body of the paper titled "Nine Days". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13196,7 +13196,7 @@ END
 
 ID: journal.memo.46.title
 
-SOURCE: src/p1.js line 443
+SOURCE: src/p1.js line 303
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13214,7 +13214,7 @@ END
 
 ID: journal.memo.46.body
 
-SOURCE: src/p1.js line 443
+SOURCE: src/p1.js line 303
 
 CONTEXT: Body of the paper titled "The Tymes, 03/Jan/2087". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13236,7 +13236,7 @@ END
 
 ID: journal.memo.47.title
 
-SOURCE: src/p1.js line 444
+SOURCE: src/p1.js line 304
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13254,7 +13254,7 @@ END
 
 ID: journal.memo.47.body
 
-SOURCE: src/p1.js line 444
+SOURCE: src/p1.js line 304
 
 CONTEXT: Body of the paper titled "A link, blurred". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13276,7 +13276,7 @@ END
 
 ID: journal.memo.48.title
 
-SOURCE: src/p1.js line 507
+SOURCE: src/p1.js line 367
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13294,7 +13294,7 @@ END
 
 ID: journal.memo.48.body
 
-SOURCE: src/p1.js line 507
+SOURCE: src/p1.js line 367
 
 CONTEXT: Body of the paper titled "The Queen of Margins". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13316,7 +13316,7 @@ END
 
 ID: journal.memo.49.title
 
-SOURCE: src/p1.js line 509
+SOURCE: src/p1.js line 369
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13334,7 +13334,7 @@ END
 
 ID: journal.memo.49.body
 
-SOURCE: src/p1.js line 509
+SOURCE: src/p1.js line 369
 
 CONTEXT: Body of the paper titled "A page from the watch". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13356,7 +13356,7 @@ END
 
 ID: journal.memo.50.title
 
-SOURCE: src/p1.js line 511
+SOURCE: src/p1.js line 371
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13374,7 +13374,7 @@ END
 
 ID: journal.memo.50.body
 
-SOURCE: src/p1.js line 511
+SOURCE: src/p1.js line 371
 
 CONTEXT: Body of the paper titled "Ives". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13392,7 +13392,7 @@ END
 
 ID: journal.memo.51.title
 
-SOURCE: src/p1.js line 513
+SOURCE: src/p1.js line 373
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13410,7 +13410,7 @@ END
 
 ID: journal.memo.51.body
 
-SOURCE: src/p1.js line 513
+SOURCE: src/p1.js line 373
 
 CONTEXT: Body of the paper titled "Ives". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13432,7 +13432,7 @@ END
 
 ID: journal.memo.52.title
 
-SOURCE: src/p1.js line 515
+SOURCE: src/p1.js line 375
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13450,7 +13450,7 @@ END
 
 ID: journal.memo.52.body
 
-SOURCE: src/p1.js line 515
+SOURCE: src/p1.js line 375
 
 CONTEXT: Body of the paper titled "Minute, the entry". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13472,7 +13472,7 @@ END
 
 ID: journal.memo.53.title
 
-SOURCE: src/p1.js line 517
+SOURCE: src/p1.js line 377
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13490,7 +13490,7 @@ END
 
 ID: journal.memo.53.body
 
-SOURCE: src/p1.js line 517
+SOURCE: src/p1.js line 377
 
 CONTEXT: Body of the paper titled "Minute, the retraction". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13512,7 +13512,7 @@ END
 
 ID: journal.memo.54.title
 
-SOURCE: src/p1.js line 519
+SOURCE: src/p1.js line 379
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13530,7 +13530,7 @@ END
 
 ID: journal.memo.54.body
 
-SOURCE: src/p1.js line 519
+SOURCE: src/p1.js line 379
 
 CONTEXT: Body of the paper titled "Minute, one vote". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13552,7 +13552,7 @@ END
 
 ID: journal.memo.55.title
 
-SOURCE: src/p1.js line 521
+SOURCE: src/p1.js line 381
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13570,7 +13570,7 @@ END
 
 ID: journal.memo.55.body
 
-SOURCE: src/p1.js line 521
+SOURCE: src/p1.js line 381
 
 CONTEXT: Body of the paper titled "Minute, the inventory". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13592,7 +13592,7 @@ END
 
 ID: journal.memo.56.title
 
-SOURCE: src/p1.js line 523
+SOURCE: src/p1.js line 383
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13610,7 +13610,7 @@ END
 
 ID: journal.memo.56.body
 
-SOURCE: src/p1.js line 523
+SOURCE: src/p1.js line 383
 
 CONTEXT: Body of the paper titled "The next offer". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13632,7 +13632,7 @@ END
 
 ID: journal.memo.57.title
 
-SOURCE: src/p1.js line 525
+SOURCE: src/p1.js line 385
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13650,7 +13650,7 @@ END
 
 ID: journal.memo.57.body
 
-SOURCE: src/p1.js line 525
+SOURCE: src/p1.js line 385
 
 CONTEXT: Body of the paper titled "The hold". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13672,7 +13672,7 @@ END
 
 ID: journal.memo.58.title
 
-SOURCE: src/p1.js line 527
+SOURCE: src/p1.js line 387
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13690,7 +13690,7 @@ END
 
 ID: journal.memo.58.body
 
-SOURCE: src/p1.js line 527
+SOURCE: src/p1.js line 387
 
 CONTEXT: Body of the paper titled "There was never an invasion.". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13712,7 +13712,7 @@ END
 
 ID: journal.memo.59.title
 
-SOURCE: src/p1.js line 529
+SOURCE: src/p1.js line 389
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13730,7 +13730,7 @@ END
 
 ID: journal.memo.59.body
 
-SOURCE: src/p1.js line 529
+SOURCE: src/p1.js line 389
 
 CONTEXT: Body of the paper titled "Overwhelming". You read it from the ground or the story list. Shown in both layouts.
 
@@ -13748,7 +13748,7 @@ END
 
 ID: journal.memo.60.title
 
-SOURCE: src/p1.js line 531
+SOURCE: src/p1.js line 391
 
 CONTEXT: Title of a paper you can pick up and read. The body follows. Shown in both layouts.
 
@@ -13766,7 +13766,7 @@ END
 
 ID: journal.memo.60.body
 
-SOURCE: src/p1.js line 531
+SOURCE: src/p1.js line 391
 
 CONTEXT: Body of the paper titled "Overwhelming". You read it from the ground or the story list. Shown in both layouts.
 
@@ -15936,7 +15936,7 @@ The eight wanderers. Each class is its blurb, then its skills in tree order.
 
 ID: class.scrapper.name
 
-SOURCE: src/p1.js line 22
+SOURCE: src/skills.js line 4
 
 CONTEXT: The Scrapper class name, on the title screen and the hero sheet. Shown in both layouts.
 
@@ -15952,31 +15952,9 @@ TEXT
 
 END
 
-## Anon
-
-ID: class.anon.name
-
-SOURCE: src/p1.js line 75
-
-CONTEXT: The Anon class name, on the title screen and the hero sheet. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Anon
-
-END
-
-## Scrapper
-
 ID: class.scrapper.blurb
 
-SOURCE: src/p1.js line 22
+SOURCE: src/skills.js line 4
 
 CONTEXT: The blurb under Scrapper on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
 
@@ -15992,31 +15970,9 @@ TEXT
 
 END
 
-## Anon
-
-ID: class.anon.blurb
-
-SOURCE: src/p1.js line 75
-
-CONTEXT: The blurb under Anon on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. One or two lines under the class name when you pick a wanderer.
-
-TEXT
-
-    No name, no face, no account. Traps, vanishing acts and a knife from behind.
-
-END
-
-## Scrapper
-
 ID: class.scrapper.good
 
-SOURCE: src/p1.js line 22
+SOURCE: src/skills.js line 4
 
 CONTEXT: The “Good at:” line under Scrapper on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -16032,31 +15988,9 @@ TEXT
 
 END
 
-## Anon
-
-ID: class.anon.good
-
-SOURCE: src/p1.js line 75
-
-CONTEXT: The “Good at:” line under Anon on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Two or three short sentences.
-
-TEXT
-
-    one huge strike, and setting the fight up before it starts. Vanish and hit for nearly triple, a hop behind a machine that always lands a deadly strike, and mines and lures that pull machines where you want them.
-
-END
-
-## Scrapper
-
 ID: class.scrapper.weak
 
-SOURCE: src/p1.js line 22
+SOURCE: src/skills.js line 4
 
 CONTEXT: The “Weak to:” line under Scrapper on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -16072,31 +16006,9 @@ TEXT
 
 END
 
-## Anon
-
-ID: class.anon.weak
-
-SOURCE: src/p1.js line 75
-
-CONTEXT: The “Weak to:” line under Anon on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Two or three short sentences.
-
-TEXT
-
-    a long, open fight. Low life, and most of your damage needs setup time you may not get.
-
-END
-
-## Scrapper
-
 ID: class.scrapper.bld
 
-SOURCE: src/p1.js line 22
+SOURCE: src/skills.js line 4
 
 CONTEXT: The “Builds:” line under Scrapper on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -16112,33 +16024,13 @@ TEXT
 
 END
 
-## Anon
-
-ID: class.anon.bld
-
-SOURCE: src/p1.js line 75
-
-CONTEXT: The “Builds:” line under Anon on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Two or three short sentences.
-
-TEXT
-
-    Demolition gathers machines with a Honeypot and blows them up with mines and Zip Bomb. Ghost banks charges with Rehearsal, hops in, vanishes, then spends the charges with The Dump. We Are Legion lets sockpuppets take the hits, then sets them all off and disappears.
-
-END
-
 ## Scrapper
 
 ### Stop Sign
 
 ID: class.scrapper.skill.01.name
 
-SOURCE: src/p1.js line 24
+SOURCE: src/skills.js line 5
 
 CONTEXT: Stop Sign, a Scrapper skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16156,7 +16048,7 @@ END
 
 ID: class.scrapper.skill.01.button
 
-SOURCE: src/p1.js line 24
+SOURCE: src/skills.js line 5
 
 CONTEXT: The short label on the skill button for Scrapper’s Stop Sign. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -16175,7 +16067,7 @@ END
 
 ID: class.scrapper.skill.01.desc
 
-SOURCE: src/p1.js line 24
+SOURCE: src/skills.js line 5
 
 CONTEXT: Tooltip for Scrapper’s Stop Sign. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16183,75 +16075,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(1.3+.15*L)).
-- {rank} is a number that changes with the skill rank (15+2*L).
+- {dmg} is a percent that changes with the skill rank (pct(1.3+.15*L)).
+- {chance} is a number that changes with the skill rank (15+2*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    A wide swing. The machine in front takes {percent}. Everyone else in the swing takes 22% of that, with a {rank}% chance to stun.
-
-END
-
-## Anon
-
-### Honeypot
-
-ID: class.anon.skill.01.name
-
-SOURCE: src/p1.js line 77
-
-CONTEXT: Honeypot, a Anon skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Honeypot
-
-END
-
-ID: class.anon.skill.01.button
-
-SOURCE: src/p1.js line 77
-
-CONTEXT: The short label on the skill button for Anon’s Honeypot. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    HONEY-
-    POT
-
-END
-
-ID: class.anon.skill.01.desc
-
-SOURCE: src/p1.js line 77
-
-CONTEXT: Tooltip for Anon’s Honeypot. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {percent} is a percent that changes with the skill rank (pct(2.2+.35*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Plant a lure. Machines swarm it for 3s, then it bursts for {percent} and stuns.
+    A wide swing. The machine in front takes {dmg}. Everyone else in the swing takes 22% of that, with a {chance}% chance to stun.
 
 END
 
@@ -16261,7 +16092,7 @@ END
 
 ID: class.scrapper.skill.02.name
 
-SOURCE: src/p1.js line 25
+SOURCE: src/skills.js line 6
 
 CONTEXT: Hurl, a Scrapper skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16279,7 +16110,7 @@ END
 
 ID: class.scrapper.skill.02.button
 
-SOURCE: src/p1.js line 25
+SOURCE: src/skills.js line 6
 
 CONTEXT: The short label on the skill button for Scrapper’s Hurl. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -16297,7 +16128,7 @@ END
 
 ID: class.scrapper.skill.02.desc
 
-SOURCE: src/p1.js line 25
+SOURCE: src/skills.js line 6
 
 CONTEXT: Tooltip for Scrapper’s Hurl. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16305,74 +16136,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(1.2+.2*L)).
+- {dmg} is a percent that changes with the skill rank (pct(1.2+.2*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Throw scrap that passes through enemies for {percent} damage.
-
-END
-
-## Anon
-
-### Proxy Hop
-
-ID: class.anon.skill.02.name
-
-SOURCE: src/p1.js line 78
-
-CONTEXT: Proxy Hop, a Anon skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Proxy Hop
-
-END
-
-ID: class.anon.skill.02.button
-
-SOURCE: src/p1.js line 78
-
-CONTEXT: The short label on the skill button for Anon’s Proxy Hop. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    PROXY
-    HOP
-
-END
-
-ID: class.anon.skill.02.desc
-
-SOURCE: src/p1.js line 78
-
-CONTEXT: Tooltip for Anon’s Proxy Hop. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {percent} is a percent that changes with the skill rank (pct(1.6+.25*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Appear behind the nearest machine and stab for {percent}, always a deadly strike.
+    Throw scrap that passes through enemies for {dmg} damage.
 
 END
 
@@ -16382,7 +16152,7 @@ END
 
 ID: class.scrapper.skill.03.name
 
-SOURCE: src/p1.js line 26
+SOURCE: src/skills.js line 7
 
 CONTEXT: Iron Hide, a Scrapper skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16400,7 +16170,7 @@ END
 
 ID: class.scrapper.skill.03.desc
 
-SOURCE: src/p1.js line 26
+SOURCE: src/skills.js line 7
 
 CONTEXT: Tooltip for Scrapper’s Iron Hide. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16408,57 +16178,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (8*L).
-- {rank_2} is a number that changes with the skill rank (4*L).
+- {armor} is a number that changes with the skill rank (8*L).
+- {life} is a number that changes with the skill rank (4*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. +{rank}% armor and +{rank_2}% life.
-
-END
-
-## Anon
-
-### OpSec
-
-ID: class.anon.skill.03.name
-
-SOURCE: src/p1.js line 79
-
-CONTEXT: OpSec, a Anon skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    OpSec
-
-END
-
-ID: class.anon.skill.03.desc
-
-SOURCE: src/p1.js line 79
-
-CONTEXT: Tooltip for Anon’s OpSec. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {rank} is a number that changes with the skill rank (Math.min(35,2.5*L)).
-- {rank_2} is a number that changes with the skill rank (2*L).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Passive. {rank}% chance to avoid any hit and +{rank_2}% deadly strike.
+    Passive. +{armor}% armor and +{life}% life.
 
 END
 
@@ -16468,7 +16195,7 @@ END
 
 ID: class.scrapper.skill.04.name
 
-SOURCE: src/p1.js line 27
+SOURCE: src/skills.js line 8
 
 CONTEXT: Turnstile, a Scrapper skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16486,7 +16213,7 @@ END
 
 ID: class.scrapper.skill.04.button
 
-SOURCE: src/p1.js line 27
+SOURCE: src/skills.js line 8
 
 CONTEXT: The short label on the skill button for Scrapper’s Turnstile. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -16505,7 +16232,7 @@ END
 
 ID: class.scrapper.skill.04.desc
 
-SOURCE: src/p1.js line 27
+SOURCE: src/skills.js line 8
 
 CONTEXT: Tooltip for Scrapper’s Turnstile. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16513,74 +16240,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(1.5+.22*L)).
+- {dmg} is a percent that changes with the skill rank (pct(1.5+.22*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Spin. The nearest machine takes {percent}. Everyone else in the spin takes 22% of that.
-
-END
-
-## Anon
-
-### Logic Bomb
-
-ID: class.anon.skill.04.name
-
-SOURCE: src/p1.js line 80
-
-CONTEXT: Logic Bomb, a Anon skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Logic Bomb
-
-END
-
-ID: class.anon.skill.04.button
-
-SOURCE: src/p1.js line 80
-
-CONTEXT: The short label on the skill button for Anon’s Logic Bomb. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    LOGIC
-    BOMB
-
-END
-
-ID: class.anon.skill.04.desc
-
-SOURCE: src/p1.js line 80
-
-CONTEXT: Tooltip for Anon’s Logic Bomb. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {percent} is a percent that changes with the skill rank (pct(3+.5*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Lay a mine that blows for {percent} when a machine steps near. Up to four.
+    Spin. The nearest machine takes {dmg}. Everyone else in the spin takes 22% of that.
 
 END
 
@@ -16590,7 +16256,7 @@ END
 
 ID: class.scrapper.skill.05.name
 
-SOURCE: src/p1.js line 28
+SOURCE: src/skills.js line 9
 
 CONTEXT: Picket Rush, a Scrapper skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16608,7 +16274,7 @@ END
 
 ID: class.scrapper.skill.05.button
 
-SOURCE: src/p1.js line 28
+SOURCE: src/skills.js line 9
 
 CONTEXT: The short label on the skill button for Scrapper’s Picket Rush. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -16627,7 +16293,7 @@ END
 
 ID: class.scrapper.skill.05.desc
 
-SOURCE: src/p1.js line 28
+SOURCE: src/skills.js line 9
 
 CONTEXT: Tooltip for Scrapper’s Picket Rush. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16635,75 +16301,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(1.2+.3*L)).
+- {dmg} is a percent that changes with the skill rank (pct(1.2+.3*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Rush forward, untouchable, hitting each enemy in the path for {percent}.
-
-END
-
-## Anon
-
-### Incognito
-
-ID: class.anon.skill.05.name
-
-SOURCE: src/p1.js line 81
-
-CONTEXT: Incognito, a Anon skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Incognito
-
-END
-
-ID: class.anon.skill.05.button
-
-SOURCE: src/p1.js line 81
-
-CONTEXT: The short label on the skill button for Anon’s Incognito. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    INCOG-
-    NITO
-
-END
-
-ID: class.anon.skill.05.desc
-
-SOURCE: src/p1.js line 81
-
-CONTEXT: Tooltip for Anon’s Incognito. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {number} is a number that changes with the skill rank ((3+.3*L).toFixed(1)).
-- {percent} is a percent that changes with the skill rank (pct(2.5+.3*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Vanish for {number}s. Machines forget you. Your next blow deals {percent}.
+    Rush forward, untouchable, hitting each enemy in the path for {dmg}.
 
 END
 
@@ -16713,7 +16317,7 @@ END
 
 ID: class.scrapper.skill.06.name
 
-SOURCE: src/p1.js line 29
+SOURCE: src/skills.js line 10
 
 CONTEXT: War Horn, a Scrapper skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16731,7 +16335,7 @@ END
 
 ID: class.scrapper.skill.06.button
 
-SOURCE: src/p1.js line 29
+SOURCE: src/skills.js line 10
 
 CONTEXT: The short label on the skill button for Scrapper’s War Horn. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -16750,7 +16354,7 @@ END
 
 ID: class.scrapper.skill.06.desc
 
-SOURCE: src/p1.js line 29
+SOURCE: src/skills.js line 10
 
 CONTEXT: Tooltip for Scrapper’s War Horn. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16758,74 +16362,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {number} is a number that changes with the skill rank ((1+.2*L).toFixed(1)).
+- {sec} is a number that changes with the skill rank (fixed1(1+.2*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Stun enemies around you for {number}s and gain +60% armor for 8s.
-
-END
-
-## Anon
-
-### Dox
-
-ID: class.anon.skill.06.name
-
-SOURCE: src/p1.js line 82
-
-CONTEXT: Dox, a Anon skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Dox
-
-END
-
-ID: class.anon.skill.06.button
-
-SOURCE: src/p1.js line 82
-
-CONTEXT: The short label on the skill button for Anon’s Dox. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    DOX
-
-END
-
-ID: class.anon.skill.06.desc
-
-SOURCE: src/p1.js line 82
-
-CONTEXT: Tooltip for Anon’s Dox. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {rank} is a number that changes with the skill rank (8+L).
-- {percent} is a percent that changes with the skill rank (pct(1+.2*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Expose a machine and everything near it: +30% damage taken for {rank}s, and {percent} now.
+    Stun enemies around you for {sec}s and gain +60% armor for 8s.
 
 END
 
@@ -16835,7 +16378,7 @@ END
 
 ID: class.scrapper.skill.07.name
 
-SOURCE: src/p1.js line 30
+SOURCE: src/skills.js line 11
 
 CONTEXT: Overtime, a Scrapper skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16853,7 +16396,7 @@ END
 
 ID: class.scrapper.skill.07.button
 
-SOURCE: src/p1.js line 30
+SOURCE: src/skills.js line 11
 
 CONTEXT: The short label on the skill button for Scrapper’s Overtime. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -16872,7 +16415,7 @@ END
 
 ID: class.scrapper.skill.07.desc
 
-SOURCE: src/p1.js line 30
+SOURCE: src/skills.js line 11
 
 CONTEXT: Tooltip for Scrapper’s Overtime. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16880,76 +16423,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (6+L).
-- {rank_2} is a number that changes with the skill rank (6+L).
+- {sec} is a number that changes with the skill rank (6+L).
+- {leech} is a number that changes with the skill rank (6+L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    For {rank}s: +40% attack speed and {rank_2}% life stolen per hit.
-
-END
-
-## Anon
-
-### Zip Bomb
-
-ID: class.anon.skill.07.name
-
-SOURCE: src/p1.js line 83
-
-CONTEXT: Zip Bomb, a Anon skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Zip Bomb
-
-END
-
-ID: class.anon.skill.07.button
-
-SOURCE: src/p1.js line 83
-
-CONTEXT: The short label on the skill button for Anon’s Zip Bomb. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    ZIP
-    BOMB
-
-END
-
-ID: class.anon.skill.07.desc
-
-SOURCE: src/p1.js line 83
-
-CONTEXT: Tooltip for Anon’s Zip Bomb. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {percent} is a percent that changes with the skill rank (pct(1.4+.2*L)).
-- {percent_2} is a percent that changes with the skill rank (pct(1.2+.2*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    One blast of {percent} that unpacks into five more of {percent_2}.
+    For {sec}s: +40% attack speed and {leech}% life stolen per hit.
 
 END
 
@@ -16959,7 +16440,7 @@ END
 
 ID: class.scrapper.skill.08.name
 
-SOURCE: src/p1.js line 31
+SOURCE: src/skills.js line 12
 
 CONTEXT: Earthbreaker, a Scrapper skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16977,7 +16458,7 @@ END
 
 ID: class.scrapper.skill.08.button
 
-SOURCE: src/p1.js line 31
+SOURCE: src/skills.js line 12
 
 CONTEXT: The short label on the skill button for Scrapper’s Earthbreaker. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -16996,7 +16477,7 @@ END
 
 ID: class.scrapper.skill.08.desc
 
-SOURCE: src/p1.js line 31
+SOURCE: src/skills.js line 12
 
 CONTEXT: Tooltip for Scrapper’s Earthbreaker. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17004,77 +16485,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(2.2+.35*L)).
+- {dmg} is a percent that changes with the skill rank (pct(2.2+.35*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Leap to the nearest enemy and slam for {percent}. Anyone else in the slam takes 22% of that.
-
-END
-
-## Anon
-
-### Sockpuppet
-
-ID: class.anon.skill.08.name
-
-SOURCE: src/p1.js line 84
-
-CONTEXT: Sockpuppet, a Anon skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Sockpuppet
-
-END
-
-ID: class.anon.skill.08.button
-
-SOURCE: src/p1.js line 84
-
-CONTEXT: The short label on the skill button for Anon’s Sockpuppet. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    SOCK-
-    PUPPET
-
-END
-
-ID: class.anon.skill.08.desc
-
-SOURCE: src/p1.js line 84
-
-CONTEXT: Tooltip for Anon’s Sockpuppet. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {rank} is a number that changes with the skill rank (L>=5?'Two copies':'A copy').
-- {rank_2} is a number that changes with the skill rank (L>=5?'':'s').
-- {rank_3} is a number that changes with the skill rank (10+L).
-- {percent} is a percent that changes with the skill rank (pct(.5+.08*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    {rank} of you fight{rank_2} for {rank_3}s, dealing {percent} and drawing fire.
+    Leap to the nearest enemy and slam for {dmg}. Anyone else in the slam takes 22% of that.
 
 END
 
@@ -17084,7 +16501,7 @@ END
 
 ID: class.scrapper.skill.09.name
 
-SOURCE: src/p1.js line 32
+SOURCE: src/skills.js line 13
 
 CONTEXT: Solidarity, a Scrapper skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17102,7 +16519,7 @@ END
 
 ID: class.scrapper.skill.09.desc
 
-SOURCE: src/p1.js line 32
+SOURCE: src/skills.js line 13
 
 CONTEXT: Tooltip for Scrapper’s Solidarity. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17110,73 +16527,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (3*L).
+- {damage} is a number that changes with the skill rank (3*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. +{rank}% damage for each enemy near you, up to five.
-
-END
-
-## Anon
-
-### Legion
-
-ID: class.anon.skill.09.name
-
-SOURCE: src/p1.js line 85
-
-CONTEXT: Legion, a Anon skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Legion
-
-END
-
-ID: class.anon.skill.09.button
-
-SOURCE: src/p1.js line 85
-
-CONTEXT: The short label on the skill button for Anon’s Legion. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    LEGION
-
-END
-
-ID: class.anon.skill.09.desc
-
-SOURCE: src/p1.js line 85
-
-CONTEXT: Tooltip for Anon’s Legion. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {percent} is a percent that changes with the skill rank (pct(1.2+.2*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    A dozen unseen blades strike across the screen for {percent} each.
+    Passive. +{damage}% damage for each enemy near you, up to five.
 
 END
 
@@ -17186,7 +16543,7 @@ END
 
 ID: class.scrapper.skill.10.name
 
-SOURCE: src/p1.js line 33
+SOURCE: src/skills.js line 14
 
 CONTEXT: Lunch Pail, a Scrapper skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17204,7 +16561,7 @@ END
 
 ID: class.scrapper.skill.10.button
 
-SOURCE: src/p1.js line 33
+SOURCE: src/skills.js line 14
 
 CONTEXT: The short label on the skill button for Scrapper’s Lunch Pail. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -17223,7 +16580,7 @@ END
 
 ID: class.scrapper.skill.10.desc
 
-SOURCE: src/p1.js line 33
+SOURCE: src/skills.js line 14
 
 CONTEXT: Tooltip for Scrapper’s Lunch Pail. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17231,75 +16588,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {number} is a number that changes with the skill rank ((2+.4*L).toFixed(1)).
-- {rank} is a number that changes with the skill rank (Math.round(28+6*L)).
+- {regen} is a number that changes with the skill rank (fixed1(2+.4*L)).
+- {stores} is a number that changes with the skill rank (round(28+6*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Set it down. You and anyone fighting beside it recover {number}% of their life each second from the pail, until its stores ({rank}% of your life) run out.
-
-END
-
-## Anon
-
-### Rehearsal
-
-ID: class.anon.skill.10.name
-
-SOURCE: src/p1.js line 86
-
-CONTEXT: Rehearsal, a Anon skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Rehearsal
-
-END
-
-ID: class.anon.skill.10.button
-
-SOURCE: src/p1.js line 86
-
-CONTEXT: The short label on the skill button for Anon’s Rehearsal. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    RE-
-    HEARSE
-
-END
-
-ID: class.anon.skill.10.desc
-
-SOURCE: src/p1.js line 86
-
-CONTEXT: Tooltip for Anon’s Rehearsal. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {percent} is a percent that changes with the skill rank (pct(.7+.1*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    A strike for {percent}. Another within 3s adds a charge, up to three.
+    Set it down. You and anyone fighting beside it recover {regen}% of their life each second from the pail, until its stores ({stores}% of your life) run out.
 
 END
 
@@ -17309,7 +16605,7 @@ END
 
 ID: class.scrapper.skill.11.name
 
-SOURCE: src/p1.js line 34
+SOURCE: src/skills.js line 15
 
 CONTEXT: Seniority, a Scrapper skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17327,7 +16623,7 @@ END
 
 ID: class.scrapper.skill.11.desc
 
-SOURCE: src/p1.js line 34
+SOURCE: src/skills.js line 15
 
 CONTEXT: Tooltip for Scrapper’s Seniority. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17335,74 +16631,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (6*L).
+- {bonus} is a number that changes with the skill rank (6*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. The damage type on the weapon in your hand gains +{rank}%.
-
-END
-
-## Anon
-
-### The Dump
-
-ID: class.anon.skill.11.name
-
-SOURCE: src/p1.js line 87
-
-CONTEXT: The Dump, a Anon skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Dump
-
-END
-
-ID: class.anon.skill.11.button
-
-SOURCE: src/p1.js line 87
-
-CONTEXT: The short label on the skill button for Anon’s The Dump. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    THE
-    DUMP
-
-END
-
-ID: class.anon.skill.11.desc
-
-SOURCE: src/p1.js line 87
-
-CONTEXT: Tooltip for Anon’s The Dump. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {percent} is a percent that changes with the skill rank (pct(.9+.12*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Spend every charge. One is a rust bleed. Two is a silence. Three is a screen of blades for {percent}. A plain attack spends one charge and bleeds. Charges do not survive a zone change.
+    Passive. The damage type on the weapon in your hand gains +{bonus}%.
 
 END
 
@@ -17412,7 +16647,7 @@ END
 
 ID: class.scrapper.skill.12.name
 
-SOURCE: src/p1.js line 35
+SOURCE: src/skills.js line 16
 
 CONTEXT: Hold the Line, a Scrapper skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17430,7 +16665,7 @@ END
 
 ID: class.scrapper.skill.12.desc
 
-SOURCE: src/p1.js line 35
+SOURCE: src/skills.js line 16
 
 CONTEXT: Tooltip for Scrapper’s Hold the Line. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17438,53 +16673,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (4*L).
+- {armor} is a number that changes with the skill rank (4*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. Each second you have not dashed adds {rank} armour and 5% damage reduction, up to six seconds. A dash spends it.
-
-END
-
-## Anon
-
-### No Attribution
-
-ID: class.anon.skill.12.name
-
-SOURCE: src/p1.js line 88
-
-CONTEXT: No Attribution, a Anon skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    No Attribution
-
-END
-
-ID: class.anon.skill.12.desc
-
-SOURCE: src/p1.js line 88
-
-CONTEXT: Tooltip for Anon’s No Attribution. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Passive. While Incognito is up, laying a mine does not break it, and the mine arms faster. Nothing, while you can be seen.
+    Passive. Each second you have not dashed adds {armor} armour and 5% damage reduction, up to six seconds. A dash spends it.
 
 END
 
@@ -17494,7 +16689,7 @@ END
 
 ID: class.scrapper.skill.13.name
 
-SOURCE: src/p1.js line 36
+SOURCE: src/skills.js line 17
 
 CONTEXT: Call the Strike, a Scrapper skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17512,7 +16707,7 @@ END
 
 ID: class.scrapper.skill.13.button
 
-SOURCE: src/p1.js line 36
+SOURCE: src/skills.js line 17
 
 CONTEXT: The short label on the skill button for Scrapper’s Call the Strike. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -17531,7 +16726,7 @@ END
 
 ID: class.scrapper.skill.13.desc
 
-SOURCE: src/p1.js line 36
+SOURCE: src/skills.js line 17
 
 CONTEXT: Tooltip for Scrapper’s Call the Strike. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17539,72 +16734,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(.55+.08*L)).
+- {dmg} is a percent that changes with the skill rank (pct(.55+.08*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    A horn. Ordinary machines are pushed back. Elites and bosses are pulled in. Everyone caught takes {percent} noise.
-
-END
-
-## Anon
-
-### Dead Drop
-
-ID: class.anon.skill.13.name
-
-SOURCE: src/p1.js line 89
-
-CONTEXT: Dead Drop, a Anon skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Dead Drop
-
-END
-
-ID: class.anon.skill.13.button
-
-SOURCE: src/p1.js line 89
-
-CONTEXT: The short label on the skill button for Anon’s Dead Drop. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    DEAD
-    DROP
-
-END
-
-ID: class.anon.skill.13.desc
-
-SOURCE: src/p1.js line 89
-
-CONTEXT: Tooltip for Anon’s Dead Drop. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Place a mark. Activate again to appear there. One mark. It does not explode.
+    A horn. Ordinary machines are pushed back. Elites and bosses are pulled in. Everyone caught takes {dmg} noise.
 
 END
 
@@ -17614,7 +16750,7 @@ END
 
 ID: class.scrapper.skill.14.name
 
-SOURCE: src/p1.js line 37
+SOURCE: src/skills.js line 18
 
 CONTEXT: Two-Handed, a Scrapper skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17632,7 +16768,7 @@ END
 
 ID: class.scrapper.skill.14.button
 
-SOURCE: src/p1.js line 37
+SOURCE: src/skills.js line 18
 
 CONTEXT: The short label on the skill button for Scrapper’s Two-Handed. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -17651,7 +16787,7 @@ END
 
 ID: class.scrapper.skill.14.desc
 
-SOURCE: src/p1.js line 37
+SOURCE: src/skills.js line 18
 
 CONTEXT: Tooltip for Scrapper’s Two-Handed. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17667,53 +16803,13 @@ TEXT
 
 END
 
-## Anon
-
-### Cutout
-
-ID: class.anon.skill.14.name
-
-SOURCE: src/p1.js line 90
-
-CONTEXT: Cutout, a Anon skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Cutout
-
-END
-
-ID: class.anon.skill.14.desc
-
-SOURCE: src/p1.js line 90
-
-CONTEXT: Tooltip for Anon’s Cutout. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Passive. The first hit that would destroy a mine or a sockpuppet is ignored. It does not apply to you.
-
-END
-
 ## Scrapper
 
 ### Last Shift
 
 ID: class.scrapper.skill.15.name
 
-SOURCE: src/p1.js line 38
+SOURCE: src/skills.js line 19
 
 CONTEXT: Last Shift, a Scrapper skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17731,7 +16827,7 @@ END
 
 ID: class.scrapper.skill.15.button
 
-SOURCE: src/p1.js line 38
+SOURCE: src/skills.js line 19
 
 CONTEXT: The short label on the skill button for Scrapper’s Last Shift. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -17750,7 +16846,7 @@ END
 
 ID: class.scrapper.skill.15.desc
 
-SOURCE: src/p1.js line 38
+SOURCE: src/skills.js line 19
 
 CONTEXT: Tooltip for Scrapper’s Last Shift. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17758,73 +16854,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {number} is a number that changes with the skill rank ((4+.3*L).toFixed(1)).
-- {rank} is a number that changes with the skill rank (8+L).
+- {sec} is a number that changes with the skill rank (fixed1(4+.3*L)).
+- {leech} is a number that changes with the skill rank (8+L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    For {number}s your swings leech {rank}% and you do not flinch. If you fall while it is up, you fall.
-
-END
-
-## Anon
-
-### We Were Never Here
-
-ID: class.anon.skill.15.name
-
-SOURCE: src/p1.js line 91
-
-CONTEXT: We Were Never Here, a Anon skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    We Were Never Here
-
-END
-
-ID: class.anon.skill.15.button
-
-SOURCE: src/p1.js line 91
-
-CONTEXT: The short label on the skill button for Anon’s We Were Never Here. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    NEVER
-    HERE
-
-END
-
-ID: class.anon.skill.15.desc
-
-SOURCE: src/p1.js line 91
-
-CONTEXT: Tooltip for Anon’s We Were Never Here. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Every mine and sockpuppet goes off as a silence, and you drop into Incognito. If you have none, nothing happens.
+    For {sec}s your swings leech {leech}% and you do not flinch. If you fall while it is up, you fall.
 
 END
 
@@ -17832,7 +16869,7 @@ END
 
 ID: class.hacker.name
 
-SOURCE: src/p1.js line 39
+SOURCE: src/skills.js line 20
 
 CONTEXT: The Technomancer class name, on the title screen and the hero sheet. Shown in both layouts.
 
@@ -17848,31 +16885,9 @@ TEXT
 
 END
 
-## Founder
-
-ID: class.founder.name
-
-SOURCE: src/p1.js line 92
-
-CONTEXT: The Founder class name, on the title screen and the hero sheet. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Founder
-
-END
-
-## Technomancer
-
 ID: class.hacker.blurb
 
-SOURCE: src/p1.js line 39
+SOURCE: src/skills.js line 20
 
 CONTEXT: The blurb under Technomancer on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
 
@@ -17888,33 +16903,9 @@ TEXT
 
 END
 
-## Founder
-
-ID: class.founder.blurb
-
-SOURCE: src/p1.js line 92
-
-CONTEXT: The blurb under Founder on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {He} is filled in by the game. Leave it exactly as written.
-
-LIMIT: none. One or two lines under the class name when you pick a wanderer.
-
-TEXT
-
-    {He} left the Board with a grudge and a headcount. Summons a workforce and lets it do the dying.
-
-END
-
-## Technomancer
-
 ID: class.hacker.good
 
-SOURCE: src/p1.js line 39
+SOURCE: src/skills.js line 20
 
 CONTEXT: The “Good at:” line under Technomancer on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -17930,31 +16921,9 @@ TEXT
 
 END
 
-## Founder
-
-ID: class.founder.good
-
-SOURCE: src/p1.js line 92
-
-CONTEXT: The “Good at:” line under Founder on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Two or three short sentences.
-
-TEXT
-
-    letting other people fight. Interns, a drone and a hulking enforcer fight for you, each intern alive cuts the damage you take, and you can turn a machine to your side.
-
-END
-
-## Technomancer
-
 ID: class.hacker.weak
 
-SOURCE: src/p1.js line 39
+SOURCE: src/skills.js line 20
 
 CONTEXT: The “Weak to:” line under Technomancer on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -17970,31 +16939,9 @@ TEXT
 
 END
 
-## Founder
-
-ID: class.founder.weak
-
-SOURCE: src/p1.js line 92
-
-CONTEXT: The “Weak to:” line under Founder on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Two or three short sentences.
-
-TEXT
-
-    being alone. Your own attacks are the weakest of any class, workers die and have to be hired again, and a bigger staff means you personally hit softer (Org Debt).
-
-END
-
-## Technomancer
-
 ID: class.hacker.bld
 
-SOURCE: src/p1.js line 39
+SOURCE: src/skills.js line 20
 
 CONTEXT: The “Builds:” line under Technomancer on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -18010,33 +16957,13 @@ TEXT
 
 END
 
-## Founder
-
-ID: class.founder.bld
-
-SOURCE: src/p1.js line 92
-
-CONTEXT: The “Builds:” line under Founder on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Two or three short sentences.
-
-TEXT
-
-    Headcount hires everyone and lets them grow stronger the longer they live. Hostile Takeover converts machines, then explodes your staff and the corpses. Iron Founder has no staff at all and fights in a Mech Suit.
-
-END
-
 ## Technomancer
 
 ### Arc Chain
 
 ID: class.hacker.skill.01.name
 
-SOURCE: src/p1.js line 41
+SOURCE: src/skills.js line 21
 
 CONTEXT: Arc Chain, a Technomancer skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18054,7 +16981,7 @@ END
 
 ID: class.hacker.skill.01.button
 
-SOURCE: src/p1.js line 41
+SOURCE: src/skills.js line 21
 
 CONTEXT: The short label on the skill button for Technomancer’s Arc Chain. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -18073,7 +17000,7 @@ END
 
 ID: class.hacker.skill.01.desc
 
-SOURCE: src/p1.js line 41
+SOURCE: src/skills.js line 21
 
 CONTEXT: Tooltip for Technomancer’s Arc Chain. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18081,77 +17008,16 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (3+Math.floor(L/2)).
-- {percent} is a percent that changes with the skill rank (pct(1.2+.18*L)).
-- {value} is filled in when the line is shown (FORMULAS.brace.ward.sec).
-- {value_2} is filled in when the line is shown (Math.round(FORMULAS.brace.ward.pct*100)).
+- {enemies} is a number that changes with the skill rank (3+floor(L/2)).
+- {dmg} is a percent that changes with the skill rank (pct(1.2+.18*L)).
+- {ward} is filled in when the line is shown (ward_sec).
+- {paid} is filled in when the line is shown (round(ward_pct*100)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Lightning that leaps through {rank} enemies for {percent} each. For {value}s after you cast it, {value_2}% of each hit is paid from energy, and only as much as you have.
-
-END
-
-## Founder
-
-### Interns
-
-ID: class.founder.skill.01.name
-
-SOURCE: src/p1.js line 94
-
-CONTEXT: Interns, a Founder skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Interns
-
-END
-
-ID: class.founder.skill.01.button
-
-SOURCE: src/p1.js line 94
-
-CONTEXT: The short label on the skill button for Founder’s Interns. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    INTERN
-
-END
-
-ID: class.founder.skill.01.desc
-
-SOURCE: src/p1.js line 94
-
-CONTEXT: Tooltip for Founder’s Interns. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {percent} is a percent that changes with the skill rank (pct(.35+.05*L)).
-- {rank} is a number that changes with the skill rank (Math.min(7,2+Math.floor(L/2))).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Summon an intern that fights for {percent}. You keep up to {rank}. They follow you everywhere, step in front of a blow, and each one alive cuts the damage you take by 5%, up to 20%.
+    Lightning that leaps through {enemies} enemies for {dmg} each. For {ward}s after you cast it, {paid}% of each hit is paid from energy, and only as much as you have.
 
 END
 
@@ -18161,7 +17027,7 @@ END
 
 ID: class.hacker.skill.02.name
 
-SOURCE: src/p1.js line 42
+SOURCE: src/skills.js line 22
 
 CONTEXT: Spark Lance, a Technomancer skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18179,7 +17045,7 @@ END
 
 ID: class.hacker.skill.02.button
 
-SOURCE: src/p1.js line 42
+SOURCE: src/skills.js line 22
 
 CONTEXT: The short label on the skill button for Technomancer’s Spark Lance. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -18198,7 +17064,7 @@ END
 
 ID: class.hacker.skill.02.desc
 
-SOURCE: src/p1.js line 42
+SOURCE: src/skills.js line 22
 
 CONTEXT: Tooltip for Technomancer’s Spark Lance. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18206,75 +17072,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(1.4+.2*L)).
+- {dmg} is a percent that changes with the skill rank (pct(1.4+.2*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    A bolt that pierces every enemy in a line for {percent}. Primes your next Arc Chain within 3 seconds for +30%.
-
-END
-
-## Founder
-
-### Cease & Desist
-
-ID: class.founder.skill.02.name
-
-SOURCE: src/p1.js line 95
-
-CONTEXT: Cease & Desist, a Founder skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Cease & Desist
-
-END
-
-ID: class.founder.skill.02.button
-
-SOURCE: src/p1.js line 95
-
-CONTEXT: The short label on the skill button for Founder’s Cease & Desist. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    CEASE &
-    DESIST
-
-END
-
-ID: class.founder.skill.02.desc
-
-SOURCE: src/p1.js line 95
-
-CONTEXT: Tooltip for Founder’s Cease & Desist. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {number} is a number that changes with the skill rank ((2+.3*L).toFixed(1)).
-- {percent} is a percent that changes with the skill rank (pct(.8+.15*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Bind every machine in an area for {number}s and deal {percent}.
+    A bolt that pierces every enemy in a line for {dmg}. Primes your next Arc Chain within 3 seconds for +30%.
 
 END
 
@@ -18284,7 +17088,7 @@ END
 
 ID: class.hacker.skill.03.name
 
-SOURCE: src/p1.js line 43
+SOURCE: src/skills.js line 23
 
 CONTEXT: Cipher Ward, a Technomancer skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18302,7 +17106,7 @@ END
 
 ID: class.hacker.skill.03.desc
 
-SOURCE: src/p1.js line 43
+SOURCE: src/skills.js line 23
 
 CONTEXT: Tooltip for Technomancer’s Cipher Ward. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18310,56 +17114,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is filled in when the line is shown (Math.min(FORMULAS.brace.cipher.cap*100,FORMULAS.brace.cipher.per*100*L)).
+- {drain} is a number that changes with the skill rank (min(cipher_cap*100,cipher_per*100*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. {rank}% of damage taken drains energy instead of life.
-
-END
-
-## Founder
-
-### Equity
-
-ID: class.founder.skill.03.name
-
-SOURCE: src/p1.js line 96
-
-CONTEXT: Equity, a Founder skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Equity
-
-END
-
-ID: class.founder.skill.03.desc
-
-SOURCE: src/p1.js line 96
-
-CONTEXT: Tooltip for Founder’s Equity. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {rank} is a number that changes with the skill rank (8*L).
-- {rank_2} is a number that changes with the skill rank (3*L).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Passive. Your workforce deals +{rank}% damage and you gain +{rank_2}% life.
+    Passive. {drain}% of damage taken drains energy instead of life.
 
 END
 
@@ -18369,7 +17130,7 @@ END
 
 ID: class.hacker.skill.04.name
 
-SOURCE: src/p1.js line 44
+SOURCE: src/skills.js line 24
 
 CONTEXT: Null Nova, a Technomancer skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18387,7 +17148,7 @@ END
 
 ID: class.hacker.skill.04.button
 
-SOURCE: src/p1.js line 44
+SOURCE: src/skills.js line 24
 
 CONTEXT: The short label on the skill button for Technomancer’s Null Nova. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -18406,7 +17167,7 @@ END
 
 ID: class.hacker.skill.04.desc
 
-SOURCE: src/p1.js line 44
+SOURCE: src/skills.js line 24
 
 CONTEXT: Tooltip for Technomancer’s Null Nova. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18414,76 +17175,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(.9+.2*L)).
-- {number} is a number that changes with the skill rank ((1.5+.2*L).toFixed(1)).
+- {dmg} is a percent that changes with the skill rank (pct(.9+.2*L)).
+- {sec} is a number that changes with the skill rank (fixed1(1.5+.2*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    A blast around you: {percent} damage and {number}s stun.
-
-END
-
-## Founder
-
-### Contractors
-
-ID: class.founder.skill.04.name
-
-SOURCE: src/p1.js line 97
-
-CONTEXT: Contractors, a Founder skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Contractors
-
-END
-
-ID: class.founder.skill.04.button
-
-SOURCE: src/p1.js line 97
-
-CONTEXT: The short label on the skill button for Founder’s Contractors. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    CONTR-
-    ACTOR
-
-END
-
-ID: class.founder.skill.04.desc
-
-SOURCE: src/p1.js line 97
-
-CONTEXT: Tooltip for Founder’s Contractors. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {percent} is a percent that changes with the skill rank (pct(.45+.07*L)).
-- {rank} is a number that changes with the skill rank (1+Math.floor(L/3)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Summon a drone that shoots for {percent}. You keep up to {rank}.
+    A blast around you: {dmg} damage and {sec}s stun.
 
 END
 
@@ -18493,7 +17192,7 @@ END
 
 ID: class.hacker.skill.05.name
 
-SOURCE: src/p1.js line 45
+SOURCE: src/skills.js line 25
 
 CONTEXT: Watchdog, a Technomancer skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18511,7 +17210,7 @@ END
 
 ID: class.hacker.skill.05.button
 
-SOURCE: src/p1.js line 45
+SOURCE: src/skills.js line 25
 
 CONTEXT: The short label on the skill button for Technomancer’s Watchdog. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -18530,7 +17229,7 @@ END
 
 ID: class.hacker.skill.05.desc
 
-SOURCE: src/p1.js line 45
+SOURCE: src/skills.js line 25
 
 CONTEXT: Tooltip for Technomancer’s Watchdog. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18538,74 +17237,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (10+2*L).
-- {percent} is a percent that changes with the skill rank (pct(.5+.08*L)).
+- {sec} is a number that changes with the skill rank (10+2*L).
+- {dmg} is a percent that changes with the skill rank (pct(.5+.08*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Deploy a turret for {rank}s that fires for {percent} per shot.
-
-END
-
-## Founder
-
-### Crunch
-
-ID: class.founder.skill.05.name
-
-SOURCE: src/p1.js line 98
-
-CONTEXT: Crunch, a Founder skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Crunch
-
-END
-
-ID: class.founder.skill.05.button
-
-SOURCE: src/p1.js line 98
-
-CONTEXT: The short label on the skill button for Founder’s Crunch. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    CRUNCH
-
-END
-
-ID: class.founder.skill.05.desc
-
-SOURCE: src/p1.js line 98
-
-CONTEXT: Tooltip for Founder’s Crunch. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {rank} is a number that changes with the skill rank (8+L).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    For {rank}s your workforce attacks 60% faster and hits 30% harder.
+    Deploy a turret for {sec}s that fires for {dmg} per shot.
 
 END
 
@@ -18615,7 +17254,7 @@ END
 
 ID: class.hacker.skill.06.name
 
-SOURCE: src/p1.js line 46
+SOURCE: src/skills.js line 26
 
 CONTEXT: Overclock, a Technomancer skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18633,7 +17272,7 @@ END
 
 ID: class.hacker.skill.06.desc
 
-SOURCE: src/p1.js line 46
+SOURCE: src/skills.js line 26
 
 CONTEXT: Tooltip for Technomancer’s Overclock. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18641,76 +17280,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (L).
-- {rank_2} is a number that changes with the skill rank (3*L).
+- {energy} is a number that changes with the skill rank (L).
+- {faster} is a number that changes with the skill rank (3*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. +{rank} energy per second and {rank_2}% faster skill recovery.
-
-END
-
-## Founder
-
-### Mech Suit
-
-ID: class.founder.skill.06.name
-
-SOURCE: src/p1.js line 99
-
-CONTEXT: Mech Suit, a Founder skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Mech Suit
-
-END
-
-ID: class.founder.skill.06.button
-
-SOURCE: src/p1.js line 99
-
-CONTEXT: The short label on the skill button for Founder’s Mech Suit. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    MECH
-    SUIT
-
-END
-
-ID: class.founder.skill.06.desc
-
-SOURCE: src/p1.js line 99
-
-CONTEXT: Tooltip for Founder’s Mech Suit. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {rank} is a number that changes with the skill rank (10+L).
-- {percent} is a percent that changes with the skill rank (pct(1.6+.25*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    For {rank}s: double armor, and your attacks become slams of {percent}. Heals you 30% of your life.
+    Passive. +{energy} energy per second and {faster}% faster skill recovery.
 
 END
 
@@ -18720,7 +17297,7 @@ END
 
 ID: class.hacker.skill.07.name
 
-SOURCE: src/p1.js line 47
+SOURCE: src/skills.js line 27
 
 CONTEXT: Black Storm, a Technomancer skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18738,7 +17315,7 @@ END
 
 ID: class.hacker.skill.07.button
 
-SOURCE: src/p1.js line 47
+SOURCE: src/skills.js line 27
 
 CONTEXT: The short label on the skill button for Technomancer’s Black Storm. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -18757,7 +17334,7 @@ END
 
 ID: class.hacker.skill.07.desc
 
-SOURCE: src/p1.js line 47
+SOURCE: src/skills.js line 27
 
 CONTEXT: Tooltip for Technomancer’s Black Storm. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18765,73 +17342,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(.7+.12*L)).
+- {dmg} is a percent that changes with the skill rank (pct(.7+.12*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Call a storm on a spot for 4s. Shards fall there, and each strike deals {percent}.
-
-END
-
-## Founder
-
-### Chief of Staff
-
-ID: class.founder.skill.07.name
-
-SOURCE: src/p1.js line 100
-
-CONTEXT: Chief of Staff, a Founder skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Chief of Staff
-
-END
-
-ID: class.founder.skill.07.button
-
-SOURCE: src/p1.js line 100
-
-CONTEXT: The short label on the skill button for Founder’s Chief of Staff. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    CHIEF
-
-END
-
-ID: class.founder.skill.07.desc
-
-SOURCE: src/p1.js line 100
-
-CONTEXT: Tooltip for Founder’s Chief of Staff. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {percent} is a percent that changes with the skill rank (pct(1.2+.2*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Summon one hulking enforcer that machines attack first. It hits for {percent} in an arc.
+    Call a storm on a spot for 4s. Shards fall there, and each strike deals {dmg}.
 
 END
 
@@ -18841,7 +17358,7 @@ END
 
 ID: class.hacker.skill.08.name
 
-SOURCE: src/p1.js line 48
+SOURCE: src/skills.js line 28
 
 CONTEXT: Botnet, a Technomancer skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18859,7 +17376,7 @@ END
 
 ID: class.hacker.skill.08.button
 
-SOURCE: src/p1.js line 48
+SOURCE: src/skills.js line 28
 
 CONTEXT: The short label on the skill button for Technomancer’s Botnet. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -18877,7 +17394,7 @@ END
 
 ID: class.hacker.skill.08.desc
 
-SOURCE: src/p1.js line 48
+SOURCE: src/skills.js line 28
 
 CONTEXT: Tooltip for Technomancer’s Botnet. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18885,76 +17402,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (15+L).
-- {percent} is a percent that changes with the skill rank (pct(.4+.07*L)).
+- {sec} is a number that changes with the skill rank (15+L).
+- {dmg} is a percent that changes with the skill rank (pct(.4+.07*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Hijack three drones for {rank}s. Each bite deals {percent}.
-
-END
-
-## Founder
-
-### Acqui-hire
-
-ID: class.founder.skill.08.name
-
-SOURCE: src/p1.js line 101
-
-CONTEXT: Acqui-hire, a Founder skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Acqui-hire
-
-END
-
-ID: class.founder.skill.08.button
-
-SOURCE: src/p1.js line 101
-
-CONTEXT: The short label on the skill button for Founder’s Acqui-hire. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    ACQUI-
-    HIRE
-
-END
-
-ID: class.founder.skill.08.desc
-
-SOURCE: src/p1.js line 101
-
-CONTEXT: Tooltip for Founder’s Acqui-hire. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {rank} is a number that changes with the skill rank (12+2*L).
-- {rank_2} is filled in when the line is shown (L>=5?' Champions too.':' Champions resist until rank 5.').
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Turn the nearest machine to your side for {rank}s.{rank_2}
+    Hijack three drones for {sec}s. Each bite deals {dmg}.
 
 END
 
@@ -18964,7 +17419,7 @@ END
 
 ID: class.hacker.skill.09.name
 
-SOURCE: src/p1.js line 49
+SOURCE: src/skills.js line 29
 
 CONTEXT: Zero Day, a Technomancer skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18982,7 +17437,7 @@ END
 
 ID: class.hacker.skill.09.desc
 
-SOURCE: src/p1.js line 49
+SOURCE: src/skills.js line 29
 
 CONTEXT: Tooltip for Technomancer’s Zero Day. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18990,75 +17445,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (3*L).
-- {percent} is a percent that changes with the skill rank (pct(2+.1*L)).
+- {deadly} is a number that changes with the skill rank (3*L).
+- {dmg} is a percent that changes with the skill rank (pct(2+.1*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. +{rank}% deadly strike chance, and deadly strikes deal {percent}.
-
-END
-
-## Founder
-
-### Layoffs
-
-ID: class.founder.skill.09.name
-
-SOURCE: src/p1.js line 102
-
-CONTEXT: Layoffs, a Founder skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Layoffs
-
-END
-
-ID: class.founder.skill.09.button
-
-SOURCE: src/p1.js line 102
-
-CONTEXT: The short label on the skill button for Founder’s Layoffs. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    LAY-
-    OFFS
-
-END
-
-ID: class.founder.skill.09.desc
-
-SOURCE: src/p1.js line 102
-
-CONTEXT: Tooltip for Founder’s Layoffs. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {percent} is a percent that changes with the skill rank (pct(2+.4*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Every summoned worker explodes for {percent}. Each one heals you 5%.
+    Passive. +{deadly}% deadly strike chance, and deadly strikes deal {dmg}.
 
 END
 
@@ -19068,7 +17462,7 @@ END
 
 ID: class.hacker.skill.10.name
 
-SOURCE: src/p1.js line 50
+SOURCE: src/skills.js line 30
 
 CONTEXT: Ground Fault, a Technomancer skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19086,7 +17480,7 @@ END
 
 ID: class.hacker.skill.10.button
 
-SOURCE: src/p1.js line 50
+SOURCE: src/skills.js line 30
 
 CONTEXT: The short label on the skill button for Technomancer’s Ground Fault. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -19105,7 +17499,7 @@ END
 
 ID: class.hacker.skill.10.desc
 
-SOURCE: src/p1.js line 50
+SOURCE: src/skills.js line 30
 
 CONTEXT: Tooltip for Technomancer’s Ground Fault. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19113,76 +17507,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {number} is a number that changes with the skill rank ((3.2+.15*L).toFixed(1)).
-- {percent} is a percent that changes with the skill rank (pct(.4+.06*L)).
+- {sec} is a number that changes with the skill rank (fixed1(3.2+.15*L)).
+- {dmg} is a percent that changes with the skill rank (pct(.4+.06*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    A line of heat on the floor for {number}s, {percent} every half second. Casting it locks your hands for a moment.
-
-END
-
-## Founder
-
-### Garden Leave
-
-ID: class.founder.skill.10.name
-
-SOURCE: src/p1.js line 103
-
-CONTEXT: Garden Leave, a Founder skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Garden Leave
-
-END
-
-ID: class.founder.skill.10.button
-
-SOURCE: src/p1.js line 103
-
-CONTEXT: The short label on the skill button for Founder’s Garden Leave. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    GARDEN
-    LEAVE
-
-END
-
-ID: class.founder.skill.10.desc
-
-SOURCE: src/p1.js line 103
-
-CONTEXT: Tooltip for Founder’s Garden Leave. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {percent} is a percent that changes with the skill rank (pct(.4+.06*L)).
-- {number} is a number that changes with the skill rank ((4+.3*L).toFixed(1)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Requires a worker or a converted machine killed in the last 4s. Curse whatever killed them: {percent} a second for {number}s, and they cannot be healed. With no body, nothing happens.
+    A line of heat on the floor for {sec}s, {dmg} every half second. Casting it locks your hands for a moment.
 
 END
 
@@ -19192,7 +17524,7 @@ END
 
 ID: class.hacker.skill.11.name
 
-SOURCE: src/p1.js line 51
+SOURCE: src/skills.js line 31
 
 CONTEXT: Packet Storm, a Technomancer skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19210,7 +17542,7 @@ END
 
 ID: class.hacker.skill.11.button
 
-SOURCE: src/p1.js line 51
+SOURCE: src/skills.js line 31
 
 CONTEXT: The short label on the skill button for Technomancer’s Packet Storm. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -19229,7 +17561,7 @@ END
 
 ID: class.hacker.skill.11.desc
 
-SOURCE: src/p1.js line 51
+SOURCE: src/skills.js line 31
 
 CONTEXT: Tooltip for Technomancer’s Packet Storm. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19237,74 +17569,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(.5+.08*L)).
+- {dmg} is a percent that changes with the skill rank (pct(.5+.08*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Mark a spot. A noise storm arrives there after a short delay and strikes for {percent}. Walking away does not move it.
-
-END
-
-## Founder
-
-### Non-Compete
-
-ID: class.founder.skill.11.name
-
-SOURCE: src/p1.js line 104
-
-CONTEXT: Non-Compete, a Founder skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Non-Compete
-
-END
-
-ID: class.founder.skill.11.button
-
-SOURCE: src/p1.js line 104
-
-CONTEXT: The short label on the skill button for Founder’s Non-Compete. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    NON-
-    COMPETE
-
-END
-
-ID: class.founder.skill.11.desc
-
-SOURCE: src/p1.js line 104
-
-CONTEXT: Tooltip for Founder’s Non-Compete. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {number} is a number that changes with the skill rank ((5+.3*L).toFixed(1)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    One machine can attack only you for {number}s. Your workforce will not hit it.
+    Mark a spot. A noise storm arrives there after a short delay and strikes for {dmg}. Walking away does not move it.
 
 END
 
@@ -19314,7 +17585,7 @@ END
 
 ID: class.hacker.skill.12.name
 
-SOURCE: src/p1.js line 52
+SOURCE: src/skills.js line 32
 
 CONTEXT: Schema, a Technomancer skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19332,7 +17603,7 @@ END
 
 ID: class.hacker.skill.12.desc
 
-SOURCE: src/p1.js line 52
+SOURCE: src/skills.js line 32
 
 CONTEXT: Tooltip for Technomancer’s Schema. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19340,56 +17611,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {value} is filled in when the line is shown (G&&G.schema?': '+DTY[G.schema].n:'').
-- {rank} is a number that changes with the skill rank (8*L).
+- {element} is filled in when the line is shown (schema).
+- {bonus} is a number that changes with the skill rank (8*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. You work in one element{value}. Damage of that type gains +{rank}%. The other two do not. Sister Null can make you choose again. Dying cannot.
-
-END
-
-## Founder
-
-### Vesting
-
-ID: class.founder.skill.12.name
-
-SOURCE: src/p1.js line 105
-
-CONTEXT: Vesting, a Founder skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Vesting
-
-END
-
-ID: class.founder.skill.12.desc
-
-SOURCE: src/p1.js line 105
-
-CONTEXT: Tooltip for Founder’s Vesting. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {rank} is a number that changes with the skill rank (4+L).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Passive. A worker gains a stack every 3s it stays alive. Each stack is +{rank}% damage. Summoning over them, or laying them off, takes every stack.
+    Passive. You work in one element{element}. Damage of that type gains +{bonus}%. The other two do not. Sister Null can make you choose again. Dying cannot.
 
 END
 
@@ -19399,7 +17628,7 @@ END
 
 ID: class.hacker.skill.13.name
 
-SOURCE: src/p1.js line 53
+SOURCE: src/skills.js line 33
 
 CONTEXT: Step Back, a Technomancer skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19417,7 +17646,7 @@ END
 
 ID: class.hacker.skill.13.button
 
-SOURCE: src/p1.js line 53
+SOURCE: src/skills.js line 33
 
 CONTEXT: The short label on the skill button for Technomancer’s Step Back. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -19436,7 +17665,7 @@ END
 
 ID: class.hacker.skill.13.desc
 
-SOURCE: src/p1.js line 53
+SOURCE: src/skills.js line 33
 
 CONTEXT: Tooltip for Technomancer’s Step Back. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19452,74 +17681,13 @@ TEXT
 
 END
 
-## Founder
-
-### Term Sheet
-
-ID: class.founder.skill.13.name
-
-SOURCE: src/p1.js line 106
-
-CONTEXT: Term Sheet, a Founder skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Term Sheet
-
-END
-
-ID: class.founder.skill.13.button
-
-SOURCE: src/p1.js line 106
-
-CONTEXT: The short label on the skill button for Founder’s Term Sheet. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    TERM
-    SHEET
-
-END
-
-ID: class.founder.skill.13.desc
-
-SOURCE: src/p1.js line 106
-
-CONTEXT: Tooltip for Founder’s Term Sheet. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {percent} is a percent that changes with the skill rank (pct(.9+.12*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    One officer. You may feed it a weapon from your pack. The weapon is consumed, and the officer strikes with that damage type for {percent}. Empty-handed, it is weaker and it is Impact.
-
-END
-
 ## Technomancer
 
 ### Patched
 
 ID: class.hacker.skill.14.name
 
-SOURCE: src/p1.js line 54
+SOURCE: src/skills.js line 34
 
 CONTEXT: Patched, a Technomancer skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19537,7 +17705,7 @@ END
 
 ID: class.hacker.skill.14.desc
 
-SOURCE: src/p1.js line 54
+SOURCE: src/skills.js line 34
 
 CONTEXT: Tooltip for Technomancer’s Patched. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19545,57 +17713,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (Math.round((10+2*L))).
-- {rank_2} is a number that changes with the skill rank (Math.round(20+2*L)).
+- {barrier} is a number that changes with the skill rank (round((10+2*L))).
+- {cap} is a number that changes with the skill rank (round(20+2*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. {rank}% of the Surge damage you deal becomes a barrier, up to {rank_2}% of your life. Nothing, if your Schema is Heat or Noise.
-
-END
-
-## Founder
-
-### Org Debt
-
-ID: class.founder.skill.14.name
-
-SOURCE: src/p1.js line 107
-
-CONTEXT: Org Debt, a Founder skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Org Debt
-
-END
-
-ID: class.founder.skill.14.desc
-
-SOURCE: src/p1.js line 107
-
-CONTEXT: Tooltip for Founder’s Org Debt. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {rank} is a number that changes with the skill rank (4+L).
-- {rank_2} is a number that changes with the skill rank (8+L).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Passive. Each worker on the field cuts the damage you deal by {rank}% and raises theirs by {rank_2}%. It stacks. Swing it yourself with a full headcount and you are playing this class wrong.
+    Passive. {barrier}% of the Surge damage you deal becomes a barrier, up to {cap}% of your life. Nothing, if your Schema is Heat or Noise.
 
 END
 
@@ -19605,7 +17730,7 @@ END
 
 ID: class.hacker.skill.15.name
 
-SOURCE: src/p1.js line 55
+SOURCE: src/skills.js line 35
 
 CONTEXT: Kill Dash Nine, a Technomancer skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19623,7 +17748,7 @@ END
 
 ID: class.hacker.skill.15.button
 
-SOURCE: src/p1.js line 55
+SOURCE: src/skills.js line 35
 
 CONTEXT: The short label on the skill button for Technomancer’s Kill Dash Nine. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -19641,7 +17766,7 @@ END
 
 ID: class.hacker.skill.15.desc
 
-SOURCE: src/p1.js line 55
+SOURCE: src/skills.js line 35
 
 CONTEXT: Tooltip for Technomancer’s Kill Dash Nine. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19649,74 +17774,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(2.8+.4*L)).
+- {dmg} is a percent that changes with the skill rank (pct(2.8+.4*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    One machine, for {percent} of your Schema element. It ignores that element's resistance, once. A resistance of zero is still a wall. Casting it locks your hands.
-
-END
-
-## Founder
-
-### Liquidation
-
-ID: class.founder.skill.15.name
-
-SOURCE: src/p1.js line 108
-
-CONTEXT: Liquidation, a Founder skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Liquidation
-
-END
-
-ID: class.founder.skill.15.button
-
-SOURCE: src/p1.js line 108
-
-CONTEXT: The short label on the skill button for Founder’s Liquidation. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    LIQUID-
-    ATION
-
-END
-
-ID: class.founder.skill.15.desc
-
-SOURCE: src/p1.js line 108
-
-CONTEXT: Tooltip for Founder’s Liquidation. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {percent} is a percent that changes with the skill rank (pct(1.1+.15*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Enemy corpses within 5 paces explode for {percent}. Your staff does not. Layoffs is the button that spends them.
+    One machine, for {dmg} of your Schema element. It ignores that element's resistance, once. A resistance of zero is still a wall. Casting it locks your hands.
 
 END
 
@@ -19724,7 +17788,7 @@ END
 
 ID: class.courier.name
 
-SOURCE: src/p1.js line 56
+SOURCE: src/skills.js line 36
 
 CONTEXT: The Runner class name, on the title screen and the hero sheet. Shown in both layouts.
 
@@ -19740,31 +17804,9 @@ TEXT
 
 END
 
-## Homesteader
-
-ID: class.homesteader.name
-
-SOURCE: src/p1.js line 109
-
-CONTEXT: The Homesteader class name, on the title screen and the hero sheet. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Homesteader
-
-END
-
-## Runner
-
 ID: class.courier.blurb
 
-SOURCE: src/p1.js line 56
+SOURCE: src/skills.js line 36
 
 CONTEXT: The blurb under Runner on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
 
@@ -19780,31 +17822,9 @@ TEXT
 
 END
 
-## Homesteader
-
-ID: class.homesteader.blurb
-
-SOURCE: src/p1.js line 109
-
-CONTEXT: The blurb under Homesteader on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. One or two lines under the class name when you pick a wanderer.
-
-TEXT
-
-    Lives on the verge the Office says does not exist. Tends a plot, wears a dead machine, or keeps a flock that does not love them.
-
-END
-
-## Runner
-
 ID: class.courier.good
 
-SOURCE: src/p1.js line 56
+SOURCE: src/skills.js line 36
 
 CONTEXT: The “Good at:” line under Runner on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -19820,31 +17840,9 @@ TEXT
 
 END
 
-## Homesteader
-
-ID: class.homesteader.good
-
-SOURCE: src/p1.js line 109
-
-CONTEXT: The “Good at:” line under Homesteader on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Two or three short sentences.
-
-TEXT
-
-    owning a patch of ground. Rust plots slow and wear machines down, you can climb inside a tough machine shell, and you keep a flock of drones and a bull. The second-most life in the game.
-
-END
-
-## Runner
-
 ID: class.courier.weak
 
-SOURCE: src/p1.js line 56
+SOURCE: src/skills.js line 36
 
 CONTEXT: The “Weak to:” line under Runner on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -19860,31 +17858,9 @@ TEXT
 
 END
 
-## Homesteader
-
-ID: class.homesteader.weak
-
-SOURCE: src/p1.js line 109
-
-CONTEXT: The “Weak to:” line under Homesteader on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Two or three short sentences.
-
-TEXT
-
-    doing everything at once. Wearing a form ends your plots and switches off your flock, damage builds slowly, and drones that stray too far will bite you.
-
-END
-
-## Runner
-
 ID: class.courier.bld
 
-SOURCE: src/p1.js line 56
+SOURCE: src/skills.js line 36
 
 CONTEXT: The “Builds:” line under Runner on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -19900,33 +17876,13 @@ TEXT
 
 END
 
-## Homesteader
-
-ID: class.homesteader.bld
-
-SOURCE: src/p1.js line 109
-
-CONTEXT: The “Builds:” line under Homesteader on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Two or three short sentences.
-
-TEXT
-
-    Cold Bed plants rust plots, feeds them with Compost and walls machines in with Hedgerow. Inside the Hull wears a machine shell whose armour grows the longer you stay in it. What Follows sends strays and a bull, then turns them into plots.
-
-END
-
 ## Runner
 
 ### Scatter Shot
 
 ID: class.courier.skill.01.name
 
-SOURCE: src/p1.js line 58
+SOURCE: src/skills.js line 37
 
 CONTEXT: Scatter Shot, a Runner skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19944,7 +17900,7 @@ END
 
 ID: class.courier.skill.01.button
 
-SOURCE: src/p1.js line 58
+SOURCE: src/skills.js line 37
 
 CONTEXT: The short label on the skill button for Runner’s Scatter Shot. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -19962,7 +17918,7 @@ END
 
 ID: class.courier.skill.01.desc
 
-SOURCE: src/p1.js line 58
+SOURCE: src/skills.js line 37
 
 CONTEXT: Tooltip for Runner’s Scatter Shot. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19970,76 +17926,15 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (3+Math.floor(L/2)).
-- {percent} is a percent that changes with the skill rank (pct(.9+.1*L)).
-- {percent_2} is a percent that changes with the skill rank (pct(.5+.06*L)).
+- {blades} is a number that changes with the skill rank (3+floor(L/2)).
+- {dmg} is a percent that changes with the skill rank (pct(.9+.1*L)).
+- {dmg2} is a percent that changes with the skill rank (pct(.5+.06*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Throw a fan of {rank} blades for {percent} each. Anything within arm’s reach is also cut for {percent_2}.
-
-END
-
-## Homesteader
-
-### Cold Frame
-
-ID: class.homesteader.skill.01.name
-
-SOURCE: src/p1.js line 111
-
-CONTEXT: Cold Frame, a Homesteader skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Cold Frame
-
-END
-
-ID: class.homesteader.skill.01.button
-
-SOURCE: src/p1.js line 111
-
-CONTEXT: The short label on the skill button for Homesteader’s Cold Frame. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    COLD
-    FRAME
-
-END
-
-ID: class.homesteader.skill.01.desc
-
-SOURCE: src/p1.js line 111
-
-CONTEXT: Tooltip for Homesteader’s Cold Frame. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {percent} is a percent that changes with the skill rank (pct(.22+.04*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    A rust patch with a 2.2-pace radius for 6 seconds. It slows, and deals {percent} every half second. It ends if you enter a chassis. While you have a plot down you take 12% less, and 4% less for each further plot, up to 28%.
+    Throw a fan of {blades} blades for {dmg} each. Anything within arm’s reach is also cut for {dmg2}.
 
 END
 
@@ -20049,7 +17944,7 @@ END
 
 ID: class.courier.skill.02.name
 
-SOURCE: src/p1.js line 59
+SOURCE: src/skills.js line 38
 
 CONTEXT: Fleet Step, a Runner skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20067,7 +17962,7 @@ END
 
 ID: class.courier.skill.02.button
 
-SOURCE: src/p1.js line 59
+SOURCE: src/skills.js line 38
 
 CONTEXT: The short label on the skill button for Runner’s Fleet Step. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20086,7 +17981,7 @@ END
 
 ID: class.courier.skill.02.desc
 
-SOURCE: src/p1.js line 59
+SOURCE: src/skills.js line 38
 
 CONTEXT: Tooltip for Runner’s Fleet Step. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20094,71 +17989,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {number} is a number that changes with the skill rank ((2+.3*L).toFixed(1)).
+- {sec} is a number that changes with the skill rank (fixed1(2+.3*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Dash, untouchable, then run 50% faster for {number}s.
-
-END
-
-## Homesteader
-
-### Wear the Hound
-
-ID: class.homesteader.skill.02.name
-
-SOURCE: src/p1.js line 112
-
-CONTEXT: Wear the Hound, a Homesteader skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Wear the Hound
-
-END
-
-ID: class.homesteader.skill.02.button
-
-SOURCE: src/p1.js line 112
-
-CONTEXT: The short label on the skill button for Homesteader’s Wear the Hound. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    HOUND
-
-END
-
-ID: class.homesteader.skill.02.desc
-
-SOURCE: src/p1.js line 112
-
-CONTEXT: Tooltip for Homesteader’s Wear the Hound. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Become the hound: faster, melee, less armour. Plot and flock skills grey out. A ranged weapon keeps its damage and loses its reach. Click Hound again to step out, or Shed. Your hands are busy for 0.7s either way.
+    Dash, untouchable, then run 50% faster for {sec}s.
 
 END
 
@@ -20168,7 +18005,7 @@ END
 
 ID: class.courier.skill.03.name
 
-SOURCE: src/p1.js line 60
+SOURCE: src/skills.js line 39
 
 CONTEXT: Evasion, a Runner skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20186,7 +18023,7 @@ END
 
 ID: class.courier.skill.03.desc
 
-SOURCE: src/p1.js line 60
+SOURCE: src/skills.js line 39
 
 CONTEXT: Tooltip for Runner’s Evasion. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20194,75 +18031,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (2*L).
-- {rank_2} is a number that changes with the skill rank (Math.min(35,2.5*L)).
+- {speed} is a number that changes with the skill rank (2*L).
+- {dodge} is a number that changes with the skill rank (min(35,2.5*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. +{rank}% run speed and {rank_2}% chance to avoid any hit.
-
-END
-
-## Homesteader
-
-### Strays
-
-ID: class.homesteader.skill.03.name
-
-SOURCE: src/p1.js line 113
-
-CONTEXT: Strays, a Homesteader skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Strays
-
-END
-
-ID: class.homesteader.skill.03.button
-
-SOURCE: src/p1.js line 113
-
-CONTEXT: The short label on the skill button for Homesteader’s Strays. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    STRAYS
-
-END
-
-ID: class.homesteader.skill.03.desc
-
-SOURCE: src/p1.js line 113
-
-CONTEXT: Tooltip for Homesteader’s Strays. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {rank} is a number that changes with the skill rank (Math.min(4,2+Math.floor(L/3))).
-- {percent} is a percent that changes with the skill rank (pct(.32+.05*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    A feral drone, up to {rank}, biting for {percent}. Past 4.5 paces they stop obeying and will hit you if you are closest.
+    Passive. +{speed}% run speed and {dodge}% chance to avoid any hit.
 
 END
 
@@ -20272,7 +18048,7 @@ END
 
 ID: class.courier.skill.04.name
 
-SOURCE: src/p1.js line 61
+SOURCE: src/skills.js line 40
 
 CONTEXT: Lure, a Runner skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20290,7 +18066,7 @@ END
 
 ID: class.courier.skill.04.button
 
-SOURCE: src/p1.js line 61
+SOURCE: src/skills.js line 40
 
 CONTEXT: The short label on the skill button for Runner’s Lure. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20308,7 +18084,7 @@ END
 
 ID: class.courier.skill.04.desc
 
-SOURCE: src/p1.js line 61
+SOURCE: src/skills.js line 40
 
 CONTEXT: Tooltip for Runner’s Lure. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20316,73 +18092,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(2.5+.4*L)).
+- {dmg} is a percent that changes with the skill rank (pct(2.5+.4*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Drop a decoy parcel. Machines attack it, then it bursts for {percent}.
-
-END
-
-## Homesteader
-
-### Compost
-
-ID: class.homesteader.skill.04.name
-
-SOURCE: src/p1.js line 114
-
-CONTEXT: Compost, a Homesteader skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Compost
-
-END
-
-ID: class.homesteader.skill.04.button
-
-SOURCE: src/p1.js line 114
-
-CONTEXT: The short label on the skill button for Homesteader’s Compost. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    COMPOST
-
-END
-
-ID: class.homesteader.skill.04.desc
-
-SOURCE: src/p1.js line 114
-
-CONTEXT: Tooltip for Homesteader’s Compost. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {rank} is a number that changes with the skill rank (Math.round((1.35+.05*L)*100)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    A corpse within 3 paces sinks. Your next plot skill deals {rank}% damage. With no body, nothing happens.
+    Drop a decoy parcel. Machines attack it, then it bursts for {dmg}.
 
 END
 
@@ -20392,7 +18108,7 @@ END
 
 ID: class.courier.skill.05.name
 
-SOURCE: src/p1.js line 62
+SOURCE: src/skills.js line 41
 
 CONTEXT: Tack Strip, a Runner skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20410,7 +18126,7 @@ END
 
 ID: class.courier.skill.05.button
 
-SOURCE: src/p1.js line 62
+SOURCE: src/skills.js line 41
 
 CONTEXT: The short label on the skill button for Runner’s Tack Strip. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20429,7 +18145,7 @@ END
 
 ID: class.courier.skill.05.desc
 
-SOURCE: src/p1.js line 62
+SOURCE: src/skills.js line 41
 
 CONTEXT: Tooltip for Runner’s Tack Strip. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20437,71 +18153,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(.25+.05*L)).
+- {dmg} is a percent that changes with the skill rank (pct(.25+.05*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Scatter spikes for 6s that slow enemies and deal {percent} twice a second.
-
-END
-
-## Homesteader
-
-### Wear the Hull
-
-ID: class.homesteader.skill.05.name
-
-SOURCE: src/p1.js line 115
-
-CONTEXT: Wear the Hull, a Homesteader skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Wear the Hull
-
-END
-
-ID: class.homesteader.skill.05.button
-
-SOURCE: src/p1.js line 115
-
-CONTEXT: The short label on the skill button for Homesteader’s Wear the Hull. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    HULL
-
-END
-
-ID: class.homesteader.skill.05.desc
-
-SOURCE: src/p1.js line 115
-
-CONTEXT: Tooltip for Homesteader’s Wear the Hull. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Climb into the hull: slower, more armour, no dash. Hound skills grey out. The same reach collapse. Drops the hound if you were wearing it. Click Hull again to step out, or Shed.
+    Scatter spikes for 6s that slow enemies and deal {dmg} twice a second.
 
 END
 
@@ -20511,7 +18169,7 @@ END
 
 ID: class.courier.skill.06.name
 
-SOURCE: src/p1.js line 63
+SOURCE: src/skills.js line 42
 
 CONTEXT: Scavenger, a Runner skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20529,7 +18187,7 @@ END
 
 ID: class.courier.skill.06.desc
 
-SOURCE: src/p1.js line 63
+SOURCE: src/skills.js line 42
 
 CONTEXT: Tooltip for Runner’s Scavenger. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20537,74 +18195,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (10*L).
-- {rank_2} is a number that changes with the skill rank (5*L).
+- {credits} is a number that changes with the skill rank (10*L).
+- {mf} is a number that changes with the skill rank (5*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. +{rank}% credits and +{rank_2}% magic find.
-
-END
-
-## Homesteader
-
-### The Bull
-
-ID: class.homesteader.skill.06.name
-
-SOURCE: src/p1.js line 116
-
-CONTEXT: The Bull, a Homesteader skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    The Bull
-
-END
-
-ID: class.homesteader.skill.06.button
-
-SOURCE: src/p1.js line 116
-
-CONTEXT: The short label on the skill button for Homesteader’s The Bull. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    BULL
-
-END
-
-ID: class.homesteader.skill.06.desc
-
-SOURCE: src/p1.js line 116
-
-CONTEXT: Tooltip for Homesteader’s The Bull. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {percent} is a percent that changes with the skill rank (pct(.9+.12*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    One bull. It chooses its own target and hits for {percent}. You cannot ride it.
+    Passive. +{credits}% credits and +{mf}% magic find.
 
 END
 
@@ -20614,7 +18212,7 @@ END
 
 ID: class.courier.skill.07.name
 
-SOURCE: src/p1.js line 64
+SOURCE: src/skills.js line 43
 
 CONTEXT: Rush Order, a Runner skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20632,7 +18230,7 @@ END
 
 ID: class.courier.skill.07.button
 
-SOURCE: src/p1.js line 64
+SOURCE: src/skills.js line 43
 
 CONTEXT: The short label on the skill button for Runner’s Rush Order. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20651,7 +18249,7 @@ END
 
 ID: class.courier.skill.07.desc
 
-SOURCE: src/p1.js line 64
+SOURCE: src/skills.js line 43
 
 CONTEXT: Tooltip for Runner’s Rush Order. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20659,71 +18257,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(.5+.07*L)).
+- {dmg} is a percent that changes with the skill rank (pct(.5+.07*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    A 1.5s stream of blades at the nearest enemy, {percent} each.
-
-END
-
-## Homesteader
-
-### Hedgerow
-
-ID: class.homesteader.skill.07.name
-
-SOURCE: src/p1.js line 117
-
-CONTEXT: Hedgerow, a Homesteader skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Hedgerow
-
-END
-
-ID: class.homesteader.skill.07.button
-
-SOURCE: src/p1.js line 117
-
-CONTEXT: The short label on the skill button for Homesteader’s Hedgerow. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    HEDGE
-
-END
-
-ID: class.homesteader.skill.07.desc
-
-SOURCE: src/p1.js line 117
-
-CONTEXT: Tooltip for Homesteader’s Hedgerow. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    A line that blocks movement for 4 seconds. Machines and you.
+    A 1.5s stream of blades at the nearest enemy, {dmg} each.
 
 END
 
@@ -20733,7 +18273,7 @@ END
 
 ID: class.courier.skill.08.name
 
-SOURCE: src/p1.js line 65
+SOURCE: src/skills.js line 44
 
 CONTEXT: Signed For, a Runner skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20751,7 +18291,7 @@ END
 
 ID: class.courier.skill.08.button
 
-SOURCE: src/p1.js line 65
+SOURCE: src/skills.js line 44
 
 CONTEXT: The short label on the skill button for Runner’s Signed For. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20770,7 +18310,7 @@ END
 
 ID: class.courier.skill.08.desc
 
-SOURCE: src/p1.js line 65
+SOURCE: src/skills.js line 44
 
 CONTEXT: Tooltip for Runner’s Signed For. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20778,71 +18318,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(3+.5*L)).
+- {dmg} is a percent that changes with the skill rank (pct(3+.5*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Strike the nearest enemy for {percent}. It takes +30% damage for 8s.
-
-END
-
-## Homesteader
-
-### Shed
-
-ID: class.homesteader.skill.08.name
-
-SOURCE: src/p1.js line 118
-
-CONTEXT: Shed, a Homesteader skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Shed
-
-END
-
-ID: class.homesteader.skill.08.button
-
-SOURCE: src/p1.js line 118
-
-CONTEXT: The short label on the skill button for Homesteader’s Shed. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    SHED
-
-END
-
-ID: class.homesteader.skill.08.desc
-
-SOURCE: src/p1.js line 118
-
-CONTEXT: Tooltip for Homesteader’s Shed. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Leave the form. Your hands are busy for 0.7s. Plot and flock work again.
+    Strike the nearest enemy for {dmg}. It takes +30% damage for 8s.
 
 END
 
@@ -20852,7 +18334,7 @@ END
 
 ID: class.courier.skill.09.name
 
-SOURCE: src/p1.js line 66
+SOURCE: src/skills.js line 45
 
 CONTEXT: Deadeye, a Runner skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20870,7 +18352,7 @@ END
 
 ID: class.courier.skill.09.desc
 
-SOURCE: src/p1.js line 66
+SOURCE: src/skills.js line 45
 
 CONTEXT: Tooltip for Runner’s Deadeye. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20878,56 +18360,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (8*L).
-- {rank_2} is a number that changes with the skill rank (2*L).
+- {chance} is a number that changes with the skill rank (8*L).
+- {deadly} is a number that changes with the skill rank (2*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. {rank}% chance for throws to pierce and +{rank_2}% deadly strike.
-
-END
-
-## Homesteader
-
-### Go Feral
-
-ID: class.homesteader.skill.09.name
-
-SOURCE: src/p1.js line 119
-
-CONTEXT: Go Feral, a Homesteader skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Go Feral
-
-END
-
-ID: class.homesteader.skill.09.desc
-
-SOURCE: src/p1.js line 119
-
-CONTEXT: Tooltip for Homesteader’s Go Feral. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {rank} is a number that changes with the skill rank (Math.round((.4+.05*L)*100)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Passive. Drones past the leash deal +{rank}% damage and will not come back when you do.
+    Passive. {chance}% chance for throws to pierce and +{deadly}% deadly strike.
 
 END
 
@@ -20937,7 +18377,7 @@ END
 
 ID: class.courier.skill.10.name
 
-SOURCE: src/p1.js line 67
+SOURCE: src/skills.js line 46
 
 CONTEXT: Return to Sender, a Runner skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20955,7 +18395,7 @@ END
 
 ID: class.courier.skill.10.button
 
-SOURCE: src/p1.js line 67
+SOURCE: src/skills.js line 46
 
 CONTEXT: The short label on the skill button for Runner’s Return to Sender. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20974,7 +18414,7 @@ END
 
 ID: class.courier.skill.10.desc
 
-SOURCE: src/p1.js line 67
+SOURCE: src/skills.js line 46
 
 CONTEXT: Tooltip for Runner’s Return to Sender. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20982,74 +18422,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(1.1+.16*L)).
+- {dmg} is a percent that changes with the skill rank (pct(1.1+.16*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    A throw that goes out and comes back, {percent} on each pass.
-
-END
-
-## Homesteader
-
-### Kill Frost
-
-ID: class.homesteader.skill.10.name
-
-SOURCE: src/p1.js line 120
-
-CONTEXT: Kill Frost, a Homesteader skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Kill Frost
-
-END
-
-ID: class.homesteader.skill.10.button
-
-SOURCE: src/p1.js line 120
-
-CONTEXT: The short label on the skill button for Homesteader’s Kill Frost. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    KILL
-    FROST
-
-END
-
-ID: class.homesteader.skill.10.desc
-
-SOURCE: src/p1.js line 120
-
-CONTEXT: Tooltip for Homesteader’s Kill Frost. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {percent} is a percent that changes with the skill rank (pct(.35+.06*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Rust weather, 3.4 paces, for 8 seconds, {percent} every half second. It ends the moment you enter a chassis.
+    A throw that goes out and comes back, {dmg} on each pass.
 
 END
 
@@ -21059,7 +18438,7 @@ END
 
 ID: class.courier.skill.11.name
 
-SOURCE: src/p1.js line 68
+SOURCE: src/skills.js line 47
 
 CONTEXT: Route Knowledge, a Runner skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21077,7 +18456,7 @@ END
 
 ID: class.courier.skill.11.desc
 
-SOURCE: src/p1.js line 68
+SOURCE: src/skills.js line 47
 
 CONTEXT: Tooltip for Runner’s Route Knowledge. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21085,73 +18464,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (6+2*L).
-- {number} is a number that changes with the skill rank ((2+.2*L).toFixed(1)).
+- {dodge} is a number that changes with the skill rank (6+2*L).
+- {sec} is a number that changes with the skill rank (fixed1(2+.2*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. After a dash, you avoid {rank}% more hits for {number}s. Standing still does nothing.
-
-END
-
-## Homesteader
-
-### Wear What You Killed
-
-ID: class.homesteader.skill.11.name
-
-SOURCE: src/p1.js line 121
-
-CONTEXT: Wear What You Killed, a Homesteader skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Wear What You Killed
-
-END
-
-ID: class.homesteader.skill.11.button
-
-SOURCE: src/p1.js line 121
-
-CONTEXT: The short label on the skill button for Homesteader’s Wear What You Killed. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    WEAR
-    KILL
-
-END
-
-ID: class.homesteader.skill.11.desc
-
-SOURCE: src/p1.js line 121
-
-CONTEXT: Tooltip for Homesteader’s Wear What You Killed. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Consume a machine that is not elite and wear it until you shed. You deal its damage type. Your flock despawns. Your weapons lose their range.
+    Passive. After a dash, you avoid {dodge}% more hits for {sec}s. Standing still does nothing.
 
 END
 
@@ -21161,7 +18481,7 @@ END
 
 ID: class.courier.skill.12.name
 
-SOURCE: src/p1.js line 69
+SOURCE: src/skills.js line 48
 
 CONTEXT: Second Drop, a Runner skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21179,7 +18499,7 @@ END
 
 ID: class.courier.skill.12.button
 
-SOURCE: src/p1.js line 69
+SOURCE: src/skills.js line 48
 
 CONTEXT: The short label on the skill button for Runner’s Second Drop. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21198,7 +18518,7 @@ END
 
 ID: class.courier.skill.12.desc
 
-SOURCE: src/p1.js line 69
+SOURCE: src/skills.js line 48
 
 CONTEXT: Tooltip for Runner’s Second Drop. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21214,53 +18534,13 @@ TEXT
 
 END
 
-## Homesteader
-
-### Rootbound
-
-ID: class.homesteader.skill.12.name
-
-SOURCE: src/p1.js line 122
-
-CONTEXT: Rootbound, a Homesteader skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Rootbound
-
-END
-
-ID: class.homesteader.skill.12.desc
-
-SOURCE: src/p1.js line 122
-
-CONTEXT: Tooltip for Homesteader’s Rootbound. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Passive. Drones standing in your plots do not leash. Step out and the rule returns.
-
-END
-
 ## Runner
 
 ### Manifest
 
 ID: class.courier.skill.13.name
 
-SOURCE: src/p1.js line 70
+SOURCE: src/skills.js line 49
 
 CONTEXT: Manifest, a Runner skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21278,7 +18558,7 @@ END
 
 ID: class.courier.skill.13.button
 
-SOURCE: src/p1.js line 70
+SOURCE: src/skills.js line 49
 
 CONTEXT: The short label on the skill button for Runner’s Manifest. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21296,7 +18576,7 @@ END
 
 ID: class.courier.skill.13.desc
 
-SOURCE: src/p1.js line 70
+SOURCE: src/skills.js line 49
 
 CONTEXT: Tooltip for Runner’s Manifest. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21304,73 +18584,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(1+.14*L)).
+- {dmg} is a percent that changes with the skill rank (pct(1+.14*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    A piercing throw for {percent} that splits into two after the first machine it hits.
-
-END
-
-## Homesteader
-
-### Salt the Earth
-
-ID: class.homesteader.skill.13.name
-
-SOURCE: src/p1.js line 123
-
-CONTEXT: Salt the Earth, a Homesteader skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Salt the Earth
-
-END
-
-ID: class.homesteader.skill.13.button
-
-SOURCE: src/p1.js line 123
-
-CONTEXT: The short label on the skill button for Homesteader’s Salt the Earth. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
-
-TEXT
-
-    SALT
-
-END
-
-ID: class.homesteader.skill.13.desc
-
-SOURCE: src/p1.js line 123
-
-CONTEXT: Tooltip for Homesteader’s Salt the Earth. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {percent} is a percent that changes with the skill rank (pct(.8+.12*L)).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Every plot you have placed bursts for {percent} rust and is gone.
+    A piercing throw for {dmg} that splits into two after the first machine it hits.
 
 END
 
@@ -21380,7 +18600,7 @@ END
 
 ID: class.courier.skill.14.name
 
-SOURCE: src/p1.js line 71
+SOURCE: src/skills.js line 50
 
 CONTEXT: Hazard Pay, a Runner skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21398,7 +18618,7 @@ END
 
 ID: class.courier.skill.14.desc
 
-SOURCE: src/p1.js line 71
+SOURCE: src/skills.js line 50
 
 CONTEXT: Tooltip for Runner’s Hazard Pay. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21406,56 +18626,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {value} is filled in when the line is shown (pay).
-- {rank} is a number that changes with the skill rank (6*L).
+- {pay} is a number that changes with the skill rank (floor((3+L)*cpi)).
+- {mf} is a number that changes with the skill rank (6*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. A throw that kills pays {value} extra credits and finds gear as if you had +{rank}% magic find. A dash does not pay.
-
-END
-
-## Homesteader
-
-### Too Big for the Door
-
-ID: class.homesteader.skill.14.name
-
-SOURCE: src/p1.js line 124
-
-CONTEXT: Too Big for the Door, a Homesteader skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none.
-
-TEXT
-
-    Too Big for the Door
-
-END
-
-ID: class.homesteader.skill.14.desc
-
-SOURCE: src/p1.js line 124
-
-CONTEXT: Tooltip for Homesteader’s Too Big for the Door. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS:
-
-- {rank} is a number that changes with the skill rank (3*L).
-
-LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
-
-TEXT
-
-    Passive. The hull cannot dash. Armour in the hull rises the longer you have worn it: +{rank} every 2 seconds, up to 8 times.
+    Passive. A throw that kills pays {pay} extra credits and finds gear as if you had +{mf}% magic find. A dash does not pay.
 
 END
 
@@ -21465,7 +18643,7 @@ END
 
 ID: class.courier.skill.15.name
 
-SOURCE: src/p1.js line 72
+SOURCE: src/skills.js line 51
 
 CONTEXT: Missed Connection, a Runner skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21483,7 +18661,7 @@ END
 
 ID: class.courier.skill.15.button
 
-SOURCE: src/p1.js line 72
+SOURCE: src/skills.js line 51
 
 CONTEXT: The short label on the skill button for Runner’s Missed Connection. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21502,7 +18680,7 @@ END
 
 ID: class.courier.skill.15.desc
 
-SOURCE: src/p1.js line 72
+SOURCE: src/skills.js line 51
 
 CONTEXT: Tooltip for Runner’s Missed Connection. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21510,13 +18688,2787 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {number} is a number that changes with the skill rank ((4+.25*L).toFixed(1)).
+- {sec} is a number that changes with the skill rank (fixed1(4+.25*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Mark a machine. If it dies within {number}s, to you or to anyone with you, you appear where it fell and your next throw costs nothing.
+    Mark a machine. If it dies within {sec}s, to you or to anyone with you, you appear where it fell and your next throw costs nothing.
+
+END
+
+## Anon
+
+ID: class.anon.name
+
+SOURCE: src/skills.js line 52
+
+CONTEXT: The Anon class name, on the title screen and the hero sheet. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Anon
+
+END
+
+ID: class.anon.blurb
+
+SOURCE: src/skills.js line 52
+
+CONTEXT: The blurb under Anon on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. One or two lines under the class name when you pick a wanderer.
+
+TEXT
+
+    No name, no face, no account. Traps, vanishing acts and a knife from behind.
+
+END
+
+ID: class.anon.good
+
+SOURCE: src/skills.js line 52
+
+CONTEXT: The “Good at:” line under Anon on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Two or three short sentences.
+
+TEXT
+
+    one huge strike, and setting the fight up before it starts. Vanish and hit for nearly triple, a hop behind a machine that always lands a deadly strike, and mines and lures that pull machines where you want them.
+
+END
+
+ID: class.anon.weak
+
+SOURCE: src/skills.js line 52
+
+CONTEXT: The “Weak to:” line under Anon on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Two or three short sentences.
+
+TEXT
+
+    a long, open fight. Low life, and most of your damage needs setup time you may not get.
+
+END
+
+ID: class.anon.bld
+
+SOURCE: src/skills.js line 52
+
+CONTEXT: The “Builds:” line under Anon on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Two or three short sentences.
+
+TEXT
+
+    Demolition gathers machines with a Honeypot and blows them up with mines and Zip Bomb. Ghost banks charges with Rehearsal, hops in, vanishes, then spends the charges with The Dump. We Are Legion lets sockpuppets take the hits, then sets them all off and disappears.
+
+END
+
+## Anon
+
+### Honeypot
+
+ID: class.anon.skill.01.name
+
+SOURCE: src/skills.js line 53
+
+CONTEXT: Honeypot, a Anon skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Honeypot
+
+END
+
+ID: class.anon.skill.01.button
+
+SOURCE: src/skills.js line 53
+
+CONTEXT: The short label on the skill button for Anon’s Honeypot. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    HONEY-
+    POT
+
+END
+
+ID: class.anon.skill.01.desc
+
+SOURCE: src/skills.js line 53
+
+CONTEXT: Tooltip for Anon’s Honeypot. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {dmg} is a percent that changes with the skill rank (pct(2.2+.35*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Plant a lure. Machines swarm it for 3s, then it bursts for {dmg} and stuns.
+
+END
+
+## Anon
+
+### Proxy Hop
+
+ID: class.anon.skill.02.name
+
+SOURCE: src/skills.js line 54
+
+CONTEXT: Proxy Hop, a Anon skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Proxy Hop
+
+END
+
+ID: class.anon.skill.02.button
+
+SOURCE: src/skills.js line 54
+
+CONTEXT: The short label on the skill button for Anon’s Proxy Hop. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    PROXY
+    HOP
+
+END
+
+ID: class.anon.skill.02.desc
+
+SOURCE: src/skills.js line 54
+
+CONTEXT: Tooltip for Anon’s Proxy Hop. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {dmg} is a percent that changes with the skill rank (pct(1.6+.25*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Appear behind the nearest machine and stab for {dmg}, always a deadly strike.
+
+END
+
+## Anon
+
+### OpSec
+
+ID: class.anon.skill.03.name
+
+SOURCE: src/skills.js line 55
+
+CONTEXT: OpSec, a Anon skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    OpSec
+
+END
+
+ID: class.anon.skill.03.desc
+
+SOURCE: src/skills.js line 55
+
+CONTEXT: Tooltip for Anon’s OpSec. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {chance} is a number that changes with the skill rank (min(35,2.5*L)).
+- {deadly} is a number that changes with the skill rank (2*L).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Passive. {chance}% chance to avoid any hit and +{deadly}% deadly strike.
+
+END
+
+## Anon
+
+### Logic Bomb
+
+ID: class.anon.skill.04.name
+
+SOURCE: src/skills.js line 56
+
+CONTEXT: Logic Bomb, a Anon skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Logic Bomb
+
+END
+
+ID: class.anon.skill.04.button
+
+SOURCE: src/skills.js line 56
+
+CONTEXT: The short label on the skill button for Anon’s Logic Bomb. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    LOGIC
+    BOMB
+
+END
+
+ID: class.anon.skill.04.desc
+
+SOURCE: src/skills.js line 56
+
+CONTEXT: Tooltip for Anon’s Logic Bomb. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {dmg} is a percent that changes with the skill rank (pct(3+.5*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Lay a mine that blows for {dmg} when a machine steps near. Up to four.
+
+END
+
+## Anon
+
+### Incognito
+
+ID: class.anon.skill.05.name
+
+SOURCE: src/skills.js line 57
+
+CONTEXT: Incognito, a Anon skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Incognito
+
+END
+
+ID: class.anon.skill.05.button
+
+SOURCE: src/skills.js line 57
+
+CONTEXT: The short label on the skill button for Anon’s Incognito. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    INCOG-
+    NITO
+
+END
+
+ID: class.anon.skill.05.desc
+
+SOURCE: src/skills.js line 57
+
+CONTEXT: Tooltip for Anon’s Incognito. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {sec} is a number that changes with the skill rank (fixed1(3+.3*L)).
+- {dmg} is a percent that changes with the skill rank (pct(2.5+.3*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Vanish for {sec}s. Machines forget you. Your next blow deals {dmg}.
+
+END
+
+## Anon
+
+### Dox
+
+ID: class.anon.skill.06.name
+
+SOURCE: src/skills.js line 58
+
+CONTEXT: Dox, a Anon skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Dox
+
+END
+
+ID: class.anon.skill.06.button
+
+SOURCE: src/skills.js line 58
+
+CONTEXT: The short label on the skill button for Anon’s Dox. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    DOX
+
+END
+
+ID: class.anon.skill.06.desc
+
+SOURCE: src/skills.js line 58
+
+CONTEXT: Tooltip for Anon’s Dox. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {sec} is a number that changes with the skill rank (8+L).
+- {dmg} is a percent that changes with the skill rank (pct(1+.2*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Expose a machine and everything near it: +30% damage taken for {sec}s, and {dmg} now.
+
+END
+
+## Anon
+
+### Zip Bomb
+
+ID: class.anon.skill.07.name
+
+SOURCE: src/skills.js line 59
+
+CONTEXT: Zip Bomb, a Anon skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Zip Bomb
+
+END
+
+ID: class.anon.skill.07.button
+
+SOURCE: src/skills.js line 59
+
+CONTEXT: The short label on the skill button for Anon’s Zip Bomb. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    ZIP
+    BOMB
+
+END
+
+ID: class.anon.skill.07.desc
+
+SOURCE: src/skills.js line 59
+
+CONTEXT: Tooltip for Anon’s Zip Bomb. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {dmg} is a percent that changes with the skill rank (pct(1.4+.2*L)).
+- {dmg2} is a percent that changes with the skill rank (pct(1.2+.2*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    One blast of {dmg} that unpacks into five more of {dmg2}.
+
+END
+
+## Anon
+
+### Sockpuppet
+
+ID: class.anon.skill.08.name
+
+SOURCE: src/skills.js line 60
+
+CONTEXT: Sockpuppet, a Anon skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Sockpuppet
+
+END
+
+ID: class.anon.skill.08.button
+
+SOURCE: src/skills.js line 60
+
+CONTEXT: The short label on the skill button for Anon’s Sockpuppet. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    SOCK-
+    PUPPET
+
+END
+
+ID: class.anon.skill.08.desc
+
+SOURCE: src/skills.js line 60
+
+CONTEXT: Tooltip for Anon’s Sockpuppet. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {copies} is a number that changes with the skill rank (L>=5?'Two copies':'A copy').
+- {plural} is a number that changes with the skill rank (L>=5?'':'s').
+- {sec} is a number that changes with the skill rank (10+L).
+- {dmg} is a percent that changes with the skill rank (pct(.5+.08*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    {copies} of you fight{plural} for {sec}s, dealing {dmg} and drawing fire.
+
+END
+
+## Anon
+
+### Legion
+
+ID: class.anon.skill.09.name
+
+SOURCE: src/skills.js line 61
+
+CONTEXT: Legion, a Anon skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Legion
+
+END
+
+ID: class.anon.skill.09.button
+
+SOURCE: src/skills.js line 61
+
+CONTEXT: The short label on the skill button for Anon’s Legion. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    LEGION
+
+END
+
+ID: class.anon.skill.09.desc
+
+SOURCE: src/skills.js line 61
+
+CONTEXT: Tooltip for Anon’s Legion. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {dmg} is a percent that changes with the skill rank (pct(1.2+.2*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    A dozen unseen blades strike across the screen for {dmg} each.
+
+END
+
+## Anon
+
+### Rehearsal
+
+ID: class.anon.skill.10.name
+
+SOURCE: src/skills.js line 62
+
+CONTEXT: Rehearsal, a Anon skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Rehearsal
+
+END
+
+ID: class.anon.skill.10.button
+
+SOURCE: src/skills.js line 62
+
+CONTEXT: The short label on the skill button for Anon’s Rehearsal. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    RE-
+    HEARSE
+
+END
+
+ID: class.anon.skill.10.desc
+
+SOURCE: src/skills.js line 62
+
+CONTEXT: Tooltip for Anon’s Rehearsal. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {dmg} is a percent that changes with the skill rank (pct(.7+.1*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    A strike for {dmg}. Another within 3s adds a charge, up to three.
+
+END
+
+## Anon
+
+### The Dump
+
+ID: class.anon.skill.11.name
+
+SOURCE: src/skills.js line 63
+
+CONTEXT: The Dump, a Anon skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Dump
+
+END
+
+ID: class.anon.skill.11.button
+
+SOURCE: src/skills.js line 63
+
+CONTEXT: The short label on the skill button for Anon’s The Dump. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    THE
+    DUMP
+
+END
+
+ID: class.anon.skill.11.desc
+
+SOURCE: src/skills.js line 63
+
+CONTEXT: Tooltip for Anon’s The Dump. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {dmg} is a percent that changes with the skill rank (pct(.9+.12*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Spend every charge. One is a rust bleed. Two is a silence. Three is a screen of blades for {dmg}. A plain attack spends one charge and bleeds. Charges do not survive a zone change.
+
+END
+
+## Anon
+
+### No Attribution
+
+ID: class.anon.skill.12.name
+
+SOURCE: src/skills.js line 64
+
+CONTEXT: No Attribution, a Anon skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    No Attribution
+
+END
+
+ID: class.anon.skill.12.desc
+
+SOURCE: src/skills.js line 64
+
+CONTEXT: Tooltip for Anon’s No Attribution. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Passive. While Incognito is up, laying a mine does not break it, and the mine arms faster. Nothing, while you can be seen.
+
+END
+
+## Anon
+
+### Dead Drop
+
+ID: class.anon.skill.13.name
+
+SOURCE: src/skills.js line 65
+
+CONTEXT: Dead Drop, a Anon skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Dead Drop
+
+END
+
+ID: class.anon.skill.13.button
+
+SOURCE: src/skills.js line 65
+
+CONTEXT: The short label on the skill button for Anon’s Dead Drop. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    DEAD
+    DROP
+
+END
+
+ID: class.anon.skill.13.desc
+
+SOURCE: src/skills.js line 65
+
+CONTEXT: Tooltip for Anon’s Dead Drop. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Place a mark. Activate again to appear there. One mark. It does not explode.
+
+END
+
+## Anon
+
+### Cutout
+
+ID: class.anon.skill.14.name
+
+SOURCE: src/skills.js line 66
+
+CONTEXT: Cutout, a Anon skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Cutout
+
+END
+
+ID: class.anon.skill.14.desc
+
+SOURCE: src/skills.js line 66
+
+CONTEXT: Tooltip for Anon’s Cutout. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Passive. The first hit that would destroy a mine or a sockpuppet is ignored. It does not apply to you.
+
+END
+
+## Anon
+
+### We Were Never Here
+
+ID: class.anon.skill.15.name
+
+SOURCE: src/skills.js line 67
+
+CONTEXT: We Were Never Here, a Anon skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    We Were Never Here
+
+END
+
+ID: class.anon.skill.15.button
+
+SOURCE: src/skills.js line 67
+
+CONTEXT: The short label on the skill button for Anon’s We Were Never Here. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    NEVER
+    HERE
+
+END
+
+ID: class.anon.skill.15.desc
+
+SOURCE: src/skills.js line 67
+
+CONTEXT: Tooltip for Anon’s We Were Never Here. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Every mine and sockpuppet goes off as a silence, and you drop into Incognito. If you have none, nothing happens.
+
+END
+
+## Founder
+
+ID: class.founder.name
+
+SOURCE: src/skills.js line 68
+
+CONTEXT: The Founder class name, on the title screen and the hero sheet. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Founder
+
+END
+
+ID: class.founder.blurb
+
+SOURCE: src/skills.js line 68
+
+CONTEXT: The blurb under Founder on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {He} is filled in by the game. Leave it exactly as written.
+
+LIMIT: none. One or two lines under the class name when you pick a wanderer.
+
+TEXT
+
+    {He} left the Board with a grudge and a headcount. Summons a workforce and lets it do the dying.
+
+END
+
+ID: class.founder.good
+
+SOURCE: src/skills.js line 68
+
+CONTEXT: The “Good at:” line under Founder on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Two or three short sentences.
+
+TEXT
+
+    letting other people fight. Interns, a drone and a hulking enforcer fight for you, each intern alive cuts the damage you take, and you can turn a machine to your side.
+
+END
+
+ID: class.founder.weak
+
+SOURCE: src/skills.js line 68
+
+CONTEXT: The “Weak to:” line under Founder on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Two or three short sentences.
+
+TEXT
+
+    being alone. Your own attacks are the weakest of any class, workers die and have to be hired again, and a bigger staff means you personally hit softer (Org Debt).
+
+END
+
+ID: class.founder.bld
+
+SOURCE: src/skills.js line 68
+
+CONTEXT: The “Builds:” line under Founder on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Two or three short sentences.
+
+TEXT
+
+    Headcount hires everyone and lets them grow stronger the longer they live. Hostile Takeover converts machines, then explodes your staff and the corpses. Iron Founder has no staff at all and fights in a Mech Suit.
+
+END
+
+## Founder
+
+### Interns
+
+ID: class.founder.skill.01.name
+
+SOURCE: src/skills.js line 69
+
+CONTEXT: Interns, a Founder skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Interns
+
+END
+
+ID: class.founder.skill.01.button
+
+SOURCE: src/skills.js line 69
+
+CONTEXT: The short label on the skill button for Founder’s Interns. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    INTERN
+
+END
+
+ID: class.founder.skill.01.desc
+
+SOURCE: src/skills.js line 69
+
+CONTEXT: Tooltip for Founder’s Interns. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {dmg} is a percent that changes with the skill rank (pct(.35+.05*L)).
+- {most} is a number that changes with the skill rank (min(7,2+floor(L/2))).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Summon an intern that fights for {dmg}. You keep up to {most}. They follow you everywhere, step in front of a blow, and each one alive cuts the damage you take by 5%, up to 20%.
+
+END
+
+## Founder
+
+### Cease & Desist
+
+ID: class.founder.skill.02.name
+
+SOURCE: src/skills.js line 70
+
+CONTEXT: Cease & Desist, a Founder skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Cease & Desist
+
+END
+
+ID: class.founder.skill.02.button
+
+SOURCE: src/skills.js line 70
+
+CONTEXT: The short label on the skill button for Founder’s Cease & Desist. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    CEASE &
+    DESIST
+
+END
+
+ID: class.founder.skill.02.desc
+
+SOURCE: src/skills.js line 70
+
+CONTEXT: Tooltip for Founder’s Cease & Desist. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {sec} is a number that changes with the skill rank (fixed1(2+.3*L)).
+- {dmg} is a percent that changes with the skill rank (pct(.8+.15*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Bind every machine in an area for {sec}s and deal {dmg}.
+
+END
+
+## Founder
+
+### Equity
+
+ID: class.founder.skill.03.name
+
+SOURCE: src/skills.js line 71
+
+CONTEXT: Equity, a Founder skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Equity
+
+END
+
+ID: class.founder.skill.03.desc
+
+SOURCE: src/skills.js line 71
+
+CONTEXT: Tooltip for Founder’s Equity. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {damage} is a number that changes with the skill rank (8*L).
+- {life} is a number that changes with the skill rank (3*L).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Passive. Your workforce deals +{damage}% damage and you gain +{life}% life.
+
+END
+
+## Founder
+
+### Contractors
+
+ID: class.founder.skill.04.name
+
+SOURCE: src/skills.js line 72
+
+CONTEXT: Contractors, a Founder skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Contractors
+
+END
+
+ID: class.founder.skill.04.button
+
+SOURCE: src/skills.js line 72
+
+CONTEXT: The short label on the skill button for Founder’s Contractors. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    CONTR-
+    ACTOR
+
+END
+
+ID: class.founder.skill.04.desc
+
+SOURCE: src/skills.js line 72
+
+CONTEXT: Tooltip for Founder’s Contractors. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {dmg} is a percent that changes with the skill rank (pct(.45+.07*L)).
+- {most} is a number that changes with the skill rank (1+floor(L/3)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Summon a drone that shoots for {dmg}. You keep up to {most}.
+
+END
+
+## Founder
+
+### Crunch
+
+ID: class.founder.skill.05.name
+
+SOURCE: src/skills.js line 73
+
+CONTEXT: Crunch, a Founder skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Crunch
+
+END
+
+ID: class.founder.skill.05.button
+
+SOURCE: src/skills.js line 73
+
+CONTEXT: The short label on the skill button for Founder’s Crunch. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    CRUNCH
+
+END
+
+ID: class.founder.skill.05.desc
+
+SOURCE: src/skills.js line 73
+
+CONTEXT: Tooltip for Founder’s Crunch. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {sec} is a number that changes with the skill rank (8+L).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    For {sec}s your workforce attacks 60% faster and hits 30% harder.
+
+END
+
+## Founder
+
+### Mech Suit
+
+ID: class.founder.skill.06.name
+
+SOURCE: src/skills.js line 74
+
+CONTEXT: Mech Suit, a Founder skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Mech Suit
+
+END
+
+ID: class.founder.skill.06.button
+
+SOURCE: src/skills.js line 74
+
+CONTEXT: The short label on the skill button for Founder’s Mech Suit. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    MECH
+    SUIT
+
+END
+
+ID: class.founder.skill.06.desc
+
+SOURCE: src/skills.js line 74
+
+CONTEXT: Tooltip for Founder’s Mech Suit. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {sec} is a number that changes with the skill rank (10+L).
+- {dmg} is a percent that changes with the skill rank (pct(1.6+.25*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    For {sec}s: double armor, and your attacks become slams of {dmg}. Heals you 30% of your life.
+
+END
+
+## Founder
+
+### Chief of Staff
+
+ID: class.founder.skill.07.name
+
+SOURCE: src/skills.js line 75
+
+CONTEXT: Chief of Staff, a Founder skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Chief of Staff
+
+END
+
+ID: class.founder.skill.07.button
+
+SOURCE: src/skills.js line 75
+
+CONTEXT: The short label on the skill button for Founder’s Chief of Staff. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    CHIEF
+
+END
+
+ID: class.founder.skill.07.desc
+
+SOURCE: src/skills.js line 75
+
+CONTEXT: Tooltip for Founder’s Chief of Staff. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {dmg} is a percent that changes with the skill rank (pct(1.2+.2*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Summon one hulking enforcer that machines attack first. It hits for {dmg} in an arc.
+
+END
+
+## Founder
+
+### Acqui-hire
+
+ID: class.founder.skill.08.name
+
+SOURCE: src/skills.js line 76
+
+CONTEXT: Acqui-hire, a Founder skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Acqui-hire
+
+END
+
+ID: class.founder.skill.08.button
+
+SOURCE: src/skills.js line 76
+
+CONTEXT: The short label on the skill button for Founder’s Acqui-hire. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    ACQUI-
+    HIRE
+
+END
+
+ID: class.founder.skill.08.desc
+
+SOURCE: src/skills.js line 76
+
+CONTEXT: Tooltip for Founder’s Acqui-hire. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {sec} is a number that changes with the skill rank (12+2*L).
+- {champions} is filled in when the line is shown (L>=5?' Champions too.':' Champions resist until rank 5.').
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Turn the nearest machine to your side for {sec}s.{champions}
+
+END
+
+## Founder
+
+### Layoffs
+
+ID: class.founder.skill.09.name
+
+SOURCE: src/skills.js line 77
+
+CONTEXT: Layoffs, a Founder skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Layoffs
+
+END
+
+ID: class.founder.skill.09.button
+
+SOURCE: src/skills.js line 77
+
+CONTEXT: The short label on the skill button for Founder’s Layoffs. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    LAY-
+    OFFS
+
+END
+
+ID: class.founder.skill.09.desc
+
+SOURCE: src/skills.js line 77
+
+CONTEXT: Tooltip for Founder’s Layoffs. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {dmg} is a percent that changes with the skill rank (pct(2+.4*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Every summoned worker explodes for {dmg}. Each one heals you 5%.
+
+END
+
+## Founder
+
+### Garden Leave
+
+ID: class.founder.skill.10.name
+
+SOURCE: src/skills.js line 78
+
+CONTEXT: Garden Leave, a Founder skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Garden Leave
+
+END
+
+ID: class.founder.skill.10.button
+
+SOURCE: src/skills.js line 78
+
+CONTEXT: The short label on the skill button for Founder’s Garden Leave. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    GARDEN
+    LEAVE
+
+END
+
+ID: class.founder.skill.10.desc
+
+SOURCE: src/skills.js line 78
+
+CONTEXT: Tooltip for Founder’s Garden Leave. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {dmg} is a percent that changes with the skill rank (pct(.4+.06*L)).
+- {sec} is a number that changes with the skill rank (fixed1(4+.3*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Requires a worker or a converted machine killed in the last 4s. Curse whatever killed them: {dmg} a second for {sec}s, and they cannot be healed. With no body, nothing happens.
+
+END
+
+## Founder
+
+### Non-Compete
+
+ID: class.founder.skill.11.name
+
+SOURCE: src/skills.js line 79
+
+CONTEXT: Non-Compete, a Founder skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Non-Compete
+
+END
+
+ID: class.founder.skill.11.button
+
+SOURCE: src/skills.js line 79
+
+CONTEXT: The short label on the skill button for Founder’s Non-Compete. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    NON-
+    COMPETE
+
+END
+
+ID: class.founder.skill.11.desc
+
+SOURCE: src/skills.js line 79
+
+CONTEXT: Tooltip for Founder’s Non-Compete. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {sec} is a number that changes with the skill rank (fixed1(5+.3*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    One machine can attack only you for {sec}s. Your workforce will not hit it.
+
+END
+
+## Founder
+
+### Vesting
+
+ID: class.founder.skill.12.name
+
+SOURCE: src/skills.js line 80
+
+CONTEXT: Vesting, a Founder skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Vesting
+
+END
+
+ID: class.founder.skill.12.desc
+
+SOURCE: src/skills.js line 80
+
+CONTEXT: Tooltip for Founder’s Vesting. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {damage} is a number that changes with the skill rank (4+L).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Passive. A worker gains a stack every 3s it stays alive. Each stack is +{damage}% damage. Summoning over them, or laying them off, takes every stack.
+
+END
+
+## Founder
+
+### Term Sheet
+
+ID: class.founder.skill.13.name
+
+SOURCE: src/skills.js line 81
+
+CONTEXT: Term Sheet, a Founder skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Term Sheet
+
+END
+
+ID: class.founder.skill.13.button
+
+SOURCE: src/skills.js line 81
+
+CONTEXT: The short label on the skill button for Founder’s Term Sheet. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    TERM
+    SHEET
+
+END
+
+ID: class.founder.skill.13.desc
+
+SOURCE: src/skills.js line 81
+
+CONTEXT: Tooltip for Founder’s Term Sheet. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {dmg} is a percent that changes with the skill rank (pct(.9+.12*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    One officer. You may feed it a weapon from your pack. The weapon is consumed, and the officer strikes with that damage type for {dmg}. Empty-handed, it is weaker and it is Impact.
+
+END
+
+## Founder
+
+### Org Debt
+
+ID: class.founder.skill.14.name
+
+SOURCE: src/skills.js line 82
+
+CONTEXT: Org Debt, a Founder skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Org Debt
+
+END
+
+ID: class.founder.skill.14.desc
+
+SOURCE: src/skills.js line 82
+
+CONTEXT: Tooltip for Founder’s Org Debt. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {yours} is a number that changes with the skill rank (4+L).
+- {theirs} is a number that changes with the skill rank (8+L).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Passive. Each worker on the field cuts the damage you deal by {yours}% and raises theirs by {theirs}%. It stacks. Swing it yourself with a full headcount and you are playing this class wrong.
+
+END
+
+## Founder
+
+### Liquidation
+
+ID: class.founder.skill.15.name
+
+SOURCE: src/skills.js line 83
+
+CONTEXT: Liquidation, a Founder skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Liquidation
+
+END
+
+ID: class.founder.skill.15.button
+
+SOURCE: src/skills.js line 83
+
+CONTEXT: The short label on the skill button for Founder’s Liquidation. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    LIQUID-
+    ATION
+
+END
+
+ID: class.founder.skill.15.desc
+
+SOURCE: src/skills.js line 83
+
+CONTEXT: Tooltip for Founder’s Liquidation. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {dmg} is a percent that changes with the skill rank (pct(1.1+.15*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Enemy corpses within 5 paces explode for {dmg}. Your staff does not. Layoffs is the button that spends them.
+
+END
+
+## Homesteader
+
+ID: class.homesteader.name
+
+SOURCE: src/skills.js line 84
+
+CONTEXT: The Homesteader class name, on the title screen and the hero sheet. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Homesteader
+
+END
+
+ID: class.homesteader.blurb
+
+SOURCE: src/skills.js line 84
+
+CONTEXT: The blurb under Homesteader on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. One or two lines under the class name when you pick a wanderer.
+
+TEXT
+
+    Lives on the verge the Office says does not exist. Tends a plot, wears a dead machine, or keeps a flock that does not love them.
+
+END
+
+ID: class.homesteader.good
+
+SOURCE: src/skills.js line 84
+
+CONTEXT: The “Good at:” line under Homesteader on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Two or three short sentences.
+
+TEXT
+
+    owning a patch of ground. Rust plots slow and wear machines down, you can climb inside a tough machine shell, and you keep a flock of drones and a bull. The second-most life in the game.
+
+END
+
+ID: class.homesteader.weak
+
+SOURCE: src/skills.js line 84
+
+CONTEXT: The “Weak to:” line under Homesteader on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Two or three short sentences.
+
+TEXT
+
+    doing everything at once. Wearing a form ends your plots and switches off your flock, damage builds slowly, and drones that stray too far will bite you.
+
+END
+
+ID: class.homesteader.bld
+
+SOURCE: src/skills.js line 84
+
+CONTEXT: The “Builds:” line under Homesteader on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Two or three short sentences.
+
+TEXT
+
+    Cold Bed plants rust plots, feeds them with Compost and walls machines in with Hedgerow. Inside the Hull wears a machine shell whose armour grows the longer you stay in it. What Follows sends strays and a bull, then turns them into plots.
+
+END
+
+## Homesteader
+
+### Cold Frame
+
+ID: class.homesteader.skill.01.name
+
+SOURCE: src/skills.js line 85
+
+CONTEXT: Cold Frame, a Homesteader skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Cold Frame
+
+END
+
+ID: class.homesteader.skill.01.button
+
+SOURCE: src/skills.js line 85
+
+CONTEXT: The short label on the skill button for Homesteader’s Cold Frame. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    COLD
+    FRAME
+
+END
+
+ID: class.homesteader.skill.01.desc
+
+SOURCE: src/skills.js line 85
+
+CONTEXT: Tooltip for Homesteader’s Cold Frame. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {dmg} is a percent that changes with the skill rank (pct(.22+.04*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    A rust patch with a 2.2-pace radius for 6 seconds. It slows, and deals {dmg} every half second. It ends if you enter a chassis. While you have a plot down you take 12% less, and 4% less for each further plot, up to 28%.
+
+END
+
+## Homesteader
+
+### Wear the Hound
+
+ID: class.homesteader.skill.02.name
+
+SOURCE: src/skills.js line 86
+
+CONTEXT: Wear the Hound, a Homesteader skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Wear the Hound
+
+END
+
+ID: class.homesteader.skill.02.button
+
+SOURCE: src/skills.js line 86
+
+CONTEXT: The short label on the skill button for Homesteader’s Wear the Hound. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    HOUND
+
+END
+
+ID: class.homesteader.skill.02.desc
+
+SOURCE: src/skills.js line 86
+
+CONTEXT: Tooltip for Homesteader’s Wear the Hound. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Become the hound: faster, melee, less armour. Plot and flock skills grey out. A ranged weapon keeps its damage and loses its reach. Click Hound again to step out, or Shed. Your hands are busy for 0.7s either way.
+
+END
+
+## Homesteader
+
+### Strays
+
+ID: class.homesteader.skill.03.name
+
+SOURCE: src/skills.js line 87
+
+CONTEXT: Strays, a Homesteader skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Strays
+
+END
+
+ID: class.homesteader.skill.03.button
+
+SOURCE: src/skills.js line 87
+
+CONTEXT: The short label on the skill button for Homesteader’s Strays. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    STRAYS
+
+END
+
+ID: class.homesteader.skill.03.desc
+
+SOURCE: src/skills.js line 87
+
+CONTEXT: Tooltip for Homesteader’s Strays. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {most} is a number that changes with the skill rank (min(4,2+floor(L/3))).
+- {dmg} is a percent that changes with the skill rank (pct(.32+.05*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    A feral drone, up to {most}, biting for {dmg}. Past 4.5 paces they stop obeying and will hit you if you are closest.
+
+END
+
+## Homesteader
+
+### Compost
+
+ID: class.homesteader.skill.04.name
+
+SOURCE: src/skills.js line 88
+
+CONTEXT: Compost, a Homesteader skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Compost
+
+END
+
+ID: class.homesteader.skill.04.button
+
+SOURCE: src/skills.js line 88
+
+CONTEXT: The short label on the skill button for Homesteader’s Compost. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    COMPOST
+
+END
+
+ID: class.homesteader.skill.04.desc
+
+SOURCE: src/skills.js line 88
+
+CONTEXT: Tooltip for Homesteader’s Compost. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {damage} is a number that changes with the skill rank (round((1.35+.05*L)*100)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    A corpse within 3 paces sinks. Your next plot skill deals {damage}% damage. With no body, nothing happens.
+
+END
+
+## Homesteader
+
+### Wear the Hull
+
+ID: class.homesteader.skill.05.name
+
+SOURCE: src/skills.js line 89
+
+CONTEXT: Wear the Hull, a Homesteader skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Wear the Hull
+
+END
+
+ID: class.homesteader.skill.05.button
+
+SOURCE: src/skills.js line 89
+
+CONTEXT: The short label on the skill button for Homesteader’s Wear the Hull. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    HULL
+
+END
+
+ID: class.homesteader.skill.05.desc
+
+SOURCE: src/skills.js line 89
+
+CONTEXT: Tooltip for Homesteader’s Wear the Hull. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Climb into the hull: slower, more armour, no dash. Hound skills grey out. The same reach collapse. Drops the hound if you were wearing it. Click Hull again to step out, or Shed.
+
+END
+
+## Homesteader
+
+### The Bull
+
+ID: class.homesteader.skill.06.name
+
+SOURCE: src/skills.js line 90
+
+CONTEXT: The Bull, a Homesteader skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    The Bull
+
+END
+
+ID: class.homesteader.skill.06.button
+
+SOURCE: src/skills.js line 90
+
+CONTEXT: The short label on the skill button for Homesteader’s The Bull. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    BULL
+
+END
+
+ID: class.homesteader.skill.06.desc
+
+SOURCE: src/skills.js line 90
+
+CONTEXT: Tooltip for Homesteader’s The Bull. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {dmg} is a percent that changes with the skill rank (pct(.9+.12*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    One bull. It chooses its own target and hits for {dmg}. You cannot ride it.
+
+END
+
+## Homesteader
+
+### Hedgerow
+
+ID: class.homesteader.skill.07.name
+
+SOURCE: src/skills.js line 91
+
+CONTEXT: Hedgerow, a Homesteader skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Hedgerow
+
+END
+
+ID: class.homesteader.skill.07.button
+
+SOURCE: src/skills.js line 91
+
+CONTEXT: The short label on the skill button for Homesteader’s Hedgerow. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    HEDGE
+
+END
+
+ID: class.homesteader.skill.07.desc
+
+SOURCE: src/skills.js line 91
+
+CONTEXT: Tooltip for Homesteader’s Hedgerow. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    A line that blocks movement for 4 seconds. Machines and you.
+
+END
+
+## Homesteader
+
+### Shed
+
+ID: class.homesteader.skill.08.name
+
+SOURCE: src/skills.js line 92
+
+CONTEXT: Shed, a Homesteader skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Shed
+
+END
+
+ID: class.homesteader.skill.08.button
+
+SOURCE: src/skills.js line 92
+
+CONTEXT: The short label on the skill button for Homesteader’s Shed. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    SHED
+
+END
+
+ID: class.homesteader.skill.08.desc
+
+SOURCE: src/skills.js line 92
+
+CONTEXT: Tooltip for Homesteader’s Shed. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Leave the form. Your hands are busy for 0.7s. Plot and flock work again.
+
+END
+
+## Homesteader
+
+### Go Feral
+
+ID: class.homesteader.skill.09.name
+
+SOURCE: src/skills.js line 93
+
+CONTEXT: Go Feral, a Homesteader skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Go Feral
+
+END
+
+ID: class.homesteader.skill.09.desc
+
+SOURCE: src/skills.js line 93
+
+CONTEXT: Tooltip for Homesteader’s Go Feral. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {damage} is a number that changes with the skill rank (round((.4+.05*L)*100)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Passive. Drones past the leash deal +{damage}% damage and will not come back when you do.
+
+END
+
+## Homesteader
+
+### Kill Frost
+
+ID: class.homesteader.skill.10.name
+
+SOURCE: src/skills.js line 94
+
+CONTEXT: Kill Frost, a Homesteader skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Kill Frost
+
+END
+
+ID: class.homesteader.skill.10.button
+
+SOURCE: src/skills.js line 94
+
+CONTEXT: The short label on the skill button for Homesteader’s Kill Frost. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    KILL
+    FROST
+
+END
+
+ID: class.homesteader.skill.10.desc
+
+SOURCE: src/skills.js line 94
+
+CONTEXT: Tooltip for Homesteader’s Kill Frost. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {dmg} is a percent that changes with the skill rank (pct(.35+.06*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Rust weather, 3.4 paces, for 8 seconds, {dmg} every half second. It ends the moment you enter a chassis.
+
+END
+
+## Homesteader
+
+### Wear What You Killed
+
+ID: class.homesteader.skill.11.name
+
+SOURCE: src/skills.js line 95
+
+CONTEXT: Wear What You Killed, a Homesteader skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Wear What You Killed
+
+END
+
+ID: class.homesteader.skill.11.button
+
+SOURCE: src/skills.js line 95
+
+CONTEXT: The short label on the skill button for Homesteader’s Wear What You Killed. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    WEAR
+    KILL
+
+END
+
+ID: class.homesteader.skill.11.desc
+
+SOURCE: src/skills.js line 95
+
+CONTEXT: Tooltip for Homesteader’s Wear What You Killed. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Consume a machine that is not elite and wear it until you shed. You deal its damage type. Your flock despawns. Your weapons lose their range.
+
+END
+
+## Homesteader
+
+### Rootbound
+
+ID: class.homesteader.skill.12.name
+
+SOURCE: src/skills.js line 96
+
+CONTEXT: Rootbound, a Homesteader skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Rootbound
+
+END
+
+ID: class.homesteader.skill.12.desc
+
+SOURCE: src/skills.js line 96
+
+CONTEXT: Tooltip for Homesteader’s Rootbound. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Passive. Drones standing in your plots do not leash. Step out and the rule returns.
+
+END
+
+## Homesteader
+
+### Salt the Earth
+
+ID: class.homesteader.skill.13.name
+
+SOURCE: src/skills.js line 97
+
+CONTEXT: Salt the Earth, a Homesteader skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Salt the Earth
+
+END
+
+ID: class.homesteader.skill.13.button
+
+SOURCE: src/skills.js line 97
+
+CONTEXT: The short label on the skill button for Homesteader’s Salt the Earth. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: 24 characters. Painted on a 62px round button at 8px type. A line break splits it into two short lines.
+
+TEXT
+
+    SALT
+
+END
+
+ID: class.homesteader.skill.13.desc
+
+SOURCE: src/skills.js line 97
+
+CONTEXT: Tooltip for Homesteader’s Salt the Earth. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {dmg} is a percent that changes with the skill rank (pct(.8+.12*L)).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Every plot you have placed bursts for {dmg} rust and is gone.
+
+END
+
+## Homesteader
+
+### Too Big for the Door
+
+ID: class.homesteader.skill.14.name
+
+SOURCE: src/skills.js line 98
+
+CONTEXT: Too Big for the Door, a Homesteader skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none.
+
+TEXT
+
+    Too Big for the Door
+
+END
+
+ID: class.homesteader.skill.14.desc
+
+SOURCE: src/skills.js line 98
+
+CONTEXT: Tooltip for Homesteader’s Too Big for the Door. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS:
+
+- {armor} is a number that changes with the skill rank (3*L).
+
+LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
+
+TEXT
+
+    Passive. The hull cannot dash. Armour in the hull rises the longer you have worn it: +{armor} every 2 seconds, up to 8 times.
 
 END
 
@@ -21526,7 +21478,7 @@ END
 
 ID: class.homesteader.skill.15.name
 
-SOURCE: src/p1.js line 125
+SOURCE: src/skills.js line 99
 
 CONTEXT: Slaughter Weight, a Homesteader skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21544,7 +21496,7 @@ END
 
 ID: class.homesteader.skill.15.button
 
-SOURCE: src/p1.js line 125
+SOURCE: src/skills.js line 99
 
 CONTEXT: The short label on the skill button for Homesteader’s Slaughter Weight. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21563,7 +21515,7 @@ END
 
 ID: class.homesteader.skill.15.desc
 
-SOURCE: src/p1.js line 125
+SOURCE: src/skills.js line 99
 
 CONTEXT: Tooltip for Homesteader’s Slaughter Weight. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21571,13 +21523,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(.28+.05*L)).
+- {dmg} is a percent that changes with the skill rank (pct(.28+.05*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Each drone and the bull become a rust plot where they stand, {percent} every half second. The flock is spent. You cannot do this from a chassis.
+    Each drone and the bull become a rust plot where they stand, {dmg} every half second. The flock is spent. You cannot do this from a chassis.
 
 END
 
@@ -21585,7 +21537,7 @@ END
 
 ID: class.witness.name
 
-SOURCE: src/p1.js line 126
+SOURCE: src/skills.js line 100
 
 CONTEXT: The Witness class name, on the title screen and the hero sheet. Shown in both layouts.
 
@@ -21603,7 +21555,7 @@ END
 
 ID: class.witness.blurb
 
-SOURCE: src/p1.js line 126
+SOURCE: src/skills.js line 100
 
 CONTEXT: The blurb under Witness on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
 
@@ -21621,7 +21573,7 @@ END
 
 ID: class.witness.good
 
-SOURCE: src/p1.js line 126
+SOURCE: src/skills.js line 100
 
 CONTEXT: The “Good at:” line under Witness on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -21639,7 +21591,7 @@ END
 
 ID: class.witness.weak
 
-SOURCE: src/p1.js line 126
+SOURCE: src/skills.js line 100
 
 CONTEXT: The “Weak to:” line under Witness on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -21657,7 +21609,7 @@ END
 
 ID: class.witness.bld
 
-SOURCE: src/p1.js line 126
+SOURCE: src/skills.js line 100
 
 CONTEXT: The “Builds:” line under Witness on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -21679,7 +21631,7 @@ END
 
 ID: class.witness.skill.01.name
 
-SOURCE: src/p1.js line 128
+SOURCE: src/skills.js line 101
 
 CONTEXT: Look, a Witness skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21697,7 +21649,7 @@ END
 
 ID: class.witness.skill.01.button
 
-SOURCE: src/p1.js line 128
+SOURCE: src/skills.js line 101
 
 CONTEXT: The short label on the skill button for Witness’s Look. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21715,7 +21667,7 @@ END
 
 ID: class.witness.skill.01.desc
 
-SOURCE: src/p1.js line 128
+SOURCE: src/skills.js line 101
 
 CONTEXT: Tooltip for Witness’s Look. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21737,7 +21689,7 @@ END
 
 ID: class.witness.skill.02.name
 
-SOURCE: src/p1.js line 129
+SOURCE: src/skills.js line 102
 
 CONTEXT: The Sentence, a Witness skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21755,7 +21707,7 @@ END
 
 ID: class.witness.skill.02.button
 
-SOURCE: src/p1.js line 129
+SOURCE: src/skills.js line 102
 
 CONTEXT: The short label on the skill button for Witness’s The Sentence. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21774,7 +21726,7 @@ END
 
 ID: class.witness.skill.02.desc
 
-SOURCE: src/p1.js line 129
+SOURCE: src/skills.js line 102
 
 CONTEXT: Tooltip for Witness’s The Sentence. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21782,13 +21734,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {number} is a number that changes with the skill rank ((0.4+.08*L).toFixed(2)).
+- {sec} is a number that changes with the skill rank (fixed2(0.4+.08*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Spend Record, up to 25. Delay that machine's next attack by {number}s at a full page. Less Record, a shorter delay. For 2.4s afterward you take 48% less, and an empty page does not punish you while that holds.
+    Spend Record, up to 25. Delay that machine's next attack by {sec}s at a full page. Less Record, a shorter delay. For 2.4s afterward you take 48% less, and an empty page does not punish you while that holds.
 
 END
 
@@ -21798,7 +21750,7 @@ END
 
 ID: class.witness.skill.03.name
 
-SOURCE: src/p1.js line 130
+SOURCE: src/skills.js line 103
 
 CONTEXT: Margin, a Witness skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21816,7 +21768,7 @@ END
 
 ID: class.witness.skill.03.desc
 
-SOURCE: src/p1.js line 130
+SOURCE: src/skills.js line 103
 
 CONTEXT: Tooltip for Witness’s Margin. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21824,13 +21776,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (20*L).
+- {faster} is a number that changes with the skill rank (20*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. Below half life the Record fills {rank}% faster.
+    Passive. Below half life the Record fills {faster}% faster.
 
 END
 
@@ -21840,7 +21792,7 @@ END
 
 ID: class.witness.skill.04.name
 
-SOURCE: src/p1.js line 131
+SOURCE: src/skills.js line 104
 
 CONTEXT: Cross-reference, a Witness skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21858,7 +21810,7 @@ END
 
 ID: class.witness.skill.04.button
 
-SOURCE: src/p1.js line 131
+SOURCE: src/skills.js line 104
 
 CONTEXT: The short label on the skill button for Witness’s Cross-reference. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21877,7 +21829,7 @@ END
 
 ID: class.witness.skill.04.desc
 
-SOURCE: src/p1.js line 131
+SOURCE: src/skills.js line 104
 
 CONTEXT: Tooltip for Witness’s Cross-reference. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21885,13 +21837,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (Math.round((.75+.05*L)*100)).
+- {copy} is a number that changes with the skill rank (round((.75+.05*L)*100)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Spend 20 Record. Copy that machine's last attack onto another machine you have Testimony on, at {rank}% of the blow.
+    Spend 20 Record. Copy that machine's last attack onto another machine you have Testimony on, at {copy}% of the blow.
 
 END
 
@@ -21901,7 +21853,7 @@ END
 
 ID: class.witness.skill.05.name
 
-SOURCE: src/p1.js line 132
+SOURCE: src/skills.js line 105
 
 CONTEXT: Pull the Thread, a Witness skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21919,7 +21871,7 @@ END
 
 ID: class.witness.skill.05.button
 
-SOURCE: src/p1.js line 132
+SOURCE: src/skills.js line 105
 
 CONTEXT: The short label on the skill button for Witness’s Pull the Thread. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21938,7 +21890,7 @@ END
 
 ID: class.witness.skill.05.desc
 
-SOURCE: src/p1.js line 132
+SOURCE: src/skills.js line 105
 
 CONTEXT: Tooltip for Witness’s Pull the Thread. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21946,13 +21898,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {number} is a number that changes with the skill rank ((4.6+.5*L).toFixed(1)).
+- {dmg} is a number that changes with the skill rank (fixed1(4.6+.5*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Spend most of the Record. One Impact hit, {number} for each point of Testimony, a little more when the page you spend is full, and your weapon is not consulted. No Testimony, no blow, and an empty page is not spent. 42% more for each level after the first, so the page keeps up with the machines.
+    Spend most of the Record. One Impact hit, {dmg} for each point of Testimony, a little more when the page you spend is full, and your weapon is not consulted. No Testimony, no blow, and an empty page is not spent. 42% more for each level after the first, so the page keeps up with the machines.
 
 END
 
@@ -21962,7 +21914,7 @@ END
 
 ID: class.witness.skill.06.name
 
-SOURCE: src/p1.js line 133
+SOURCE: src/skills.js line 106
 
 CONTEXT: Filed, a Witness skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21980,7 +21932,7 @@ END
 
 ID: class.witness.skill.06.desc
 
-SOURCE: src/p1.js line 133
+SOURCE: src/skills.js line 106
 
 CONTEXT: Tooltip for Witness’s Filed. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21988,13 +21940,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {number} is a number that changes with the skill rank ((2+.4*L).toFixed(1)).
+- {sec} is a number that changes with the skill rank (fixed1(2+.4*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. Testimony does not decay for {number}s after the machine leaves the screen.
+    Passive. Testimony does not decay for {sec}s after the machine leaves the screen.
 
 END
 
@@ -22004,7 +21956,7 @@ END
 
 ID: class.witness.skill.07.name
 
-SOURCE: src/p1.js line 134
+SOURCE: src/skills.js line 107
 
 CONTEXT: Correction, a Witness skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22022,7 +21974,7 @@ END
 
 ID: class.witness.skill.07.button
 
-SOURCE: src/p1.js line 134
+SOURCE: src/skills.js line 107
 
 CONTEXT: The short label on the skill button for Witness’s Correction. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22040,7 +21992,7 @@ END
 
 ID: class.witness.skill.07.desc
 
-SOURCE: src/p1.js line 134
+SOURCE: src/skills.js line 107
 
 CONTEXT: Tooltip for Witness’s Correction. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22062,7 +22014,7 @@ END
 
 ID: class.witness.skill.08.name
 
-SOURCE: src/p1.js line 135
+SOURCE: src/skills.js line 108
 
 CONTEXT: Redaction, a Witness skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22080,7 +22032,7 @@ END
 
 ID: class.witness.skill.08.button
 
-SOURCE: src/p1.js line 135
+SOURCE: src/skills.js line 108
 
 CONTEXT: The short label on the skill button for Witness’s Redaction. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22098,7 +22050,7 @@ END
 
 ID: class.witness.skill.08.desc
 
-SOURCE: src/p1.js line 135
+SOURCE: src/skills.js line 108
 
 CONTEXT: Tooltip for Witness’s Redaction. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22120,7 +22072,7 @@ END
 
 ID: class.witness.skill.09.name
 
-SOURCE: src/p1.js line 136
+SOURCE: src/skills.js line 109
 
 CONTEXT: The Footnote, a Witness skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22138,7 +22090,7 @@ END
 
 ID: class.witness.skill.09.desc
 
-SOURCE: src/p1.js line 136
+SOURCE: src/skills.js line 109
 
 CONTEXT: Tooltip for Witness’s The Footnote. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22146,14 +22098,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (8*L).
-- {rank_2} is a number that changes with the skill rank (4*L).
+- {faster} is a number that changes with the skill rank (8*L).
+- {lower} is a number that changes with the skill rank (4*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. The Record fills {rank}% faster. Maximum life is {rank_2}% lower.
+    Passive. The Record fills {faster}% faster. Maximum life is {lower}% lower.
 
 END
 
@@ -22163,7 +22115,7 @@ END
 
 ID: class.witness.skill.10.name
 
-SOURCE: src/p1.js line 137
+SOURCE: src/skills.js line 110
 
 CONTEXT: On the Record, a Witness skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22181,7 +22133,7 @@ END
 
 ID: class.witness.skill.10.button
 
-SOURCE: src/p1.js line 137
+SOURCE: src/skills.js line 110
 
 CONTEXT: The short label on the skill button for Witness’s On the Record. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22200,7 +22152,7 @@ END
 
 ID: class.witness.skill.10.desc
 
-SOURCE: src/p1.js line 137
+SOURCE: src/skills.js line 110
 
 CONTEXT: Tooltip for Witness’s On the Record. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22208,13 +22160,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (12*L).
+- {more} is a number that changes with the skill rank (12*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Spend 25 Record. A machine with high Testimony takes {rank}% more damage from everyone for 8s, including people with no points in this class.
+    Spend 25 Record. A machine with high Testimony takes {more}% more damage from everyone for 8s, including people with no points in this class.
 
 END
 
@@ -22224,7 +22176,7 @@ END
 
 ID: class.witness.skill.11.name
 
-SOURCE: src/p1.js line 138
+SOURCE: src/skills.js line 111
 
 CONTEXT: Unnamed Source, a Witness skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22242,7 +22194,7 @@ END
 
 ID: class.witness.skill.11.button
 
-SOURCE: src/p1.js line 138
+SOURCE: src/skills.js line 111
 
 CONTEXT: The short label on the skill button for Witness’s Unnamed Source. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22261,7 +22213,7 @@ END
 
 ID: class.witness.skill.11.desc
 
-SOURCE: src/p1.js line 138
+SOURCE: src/skills.js line 111
 
 CONTEXT: Tooltip for Witness’s Unnamed Source. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22283,7 +22235,7 @@ END
 
 ID: class.witness.skill.12.name
 
-SOURCE: src/p1.js line 139
+SOURCE: src/skills.js line 112
 
 CONTEXT: Colophon, a Witness skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22301,7 +22253,7 @@ END
 
 ID: class.witness.skill.12.desc
 
-SOURCE: src/p1.js line 139
+SOURCE: src/skills.js line 112
 
 CONTEXT: Tooltip for Witness’s Colophon. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22309,15 +22261,15 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (14+3*L).
-- {rank_2} is a number that changes with the skill rank (Math.min(45,4*L)).
-- {rank_3} is a number that changes with the skill rank (3*L).
+- {dr} is a number that changes with the skill rank (14+3*L).
+- {less} is a number that changes with the skill rank (min(45,4*L)).
+- {more} is a number that changes with the skill rank (3*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. {rank}% damage reduction. Record above 80: you take {rank_2}% less on top of that. Record below 20: you take {rank_3}% more. The meter is the defence.
+    Passive. {dr}% damage reduction. Record above 80: you take {less}% less on top of that. Record below 20: you take {more}% more. The meter is the defence.
 
 END
 
@@ -22327,7 +22279,7 @@ END
 
 ID: class.witness.skill.13.name
 
-SOURCE: src/p1.js line 140
+SOURCE: src/skills.js line 113
 
 CONTEXT: Publish, a Witness skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22345,7 +22297,7 @@ END
 
 ID: class.witness.skill.13.button
 
-SOURCE: src/p1.js line 140
+SOURCE: src/skills.js line 113
 
 CONTEXT: The short label on the skill button for Witness’s Publish. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22363,7 +22315,7 @@ END
 
 ID: class.witness.skill.13.desc
 
-SOURCE: src/p1.js line 140
+SOURCE: src/skills.js line 113
 
 CONTEXT: Tooltip for Witness’s Publish. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22371,13 +22323,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(1.6+.25*L)).
+- {dmg} is a percent that changes with the skill rank (pct(1.6+.25*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Consume all Testimony on screen. Each second you watched is {percent} Impact. The Record drops to 0. 1% more for each level you have.
+    Consume all Testimony on screen. Each second you watched is {dmg} Impact. The Record drops to 0. 1% more for each level you have.
 
 END
 
@@ -22387,7 +22339,7 @@ END
 
 ID: class.witness.skill.14.name
 
-SOURCE: src/p1.js line 141
+SOURCE: src/skills.js line 114
 
 CONTEXT: Named Party, a Witness skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22405,7 +22357,7 @@ END
 
 ID: class.witness.skill.14.desc
 
-SOURCE: src/p1.js line 141
+SOURCE: src/skills.js line 114
 
 CONTEXT: Tooltip for Witness’s Named Party. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22413,13 +22365,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (5*L).
+- {damage} is a number that changes with the skill rank (5*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. Allies deal +{rank}% damage to machines you have Testimony on. You do not.
+    Passive. Allies deal +{damage}% damage to machines you have Testimony on. You do not.
 
 END
 
@@ -22429,7 +22381,7 @@ END
 
 ID: class.witness.skill.15.name
 
-SOURCE: src/p1.js line 142
+SOURCE: src/skills.js line 115
 
 CONTEXT: Retraction, a Witness skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22447,7 +22399,7 @@ END
 
 ID: class.witness.skill.15.desc
 
-SOURCE: src/p1.js line 142
+SOURCE: src/skills.js line 115
 
 CONTEXT: Tooltip for Witness’s Retraction. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22467,7 +22419,7 @@ END
 
 ID: class.maxi.name
 
-SOURCE: src/p1.js line 145
+SOURCE: src/skills.js line 116
 
 CONTEXT: The The Maximalist class name, on the title screen and the hero sheet. Shown in both layouts.
 
@@ -22485,7 +22437,7 @@ END
 
 ID: class.maxi.blurb
 
-SOURCE: src/p1.js line 145
+SOURCE: src/skills.js line 116
 
 CONTEXT: The blurb under The Maximalist on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
 
@@ -22507,7 +22459,7 @@ END
 
 ID: class.maxi.good
 
-SOURCE: src/p1.js line 145
+SOURCE: src/skills.js line 116
 
 CONTEXT: The “Good at:” line under The Maximalist on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -22529,7 +22481,7 @@ END
 
 ID: class.maxi.weak
 
-SOURCE: src/p1.js line 145
+SOURCE: src/skills.js line 116
 
 CONTEXT: The “Weak to:” line under The Maximalist on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -22549,7 +22501,7 @@ END
 
 ID: class.maxi.bld
 
-SOURCE: src/p1.js line 145
+SOURCE: src/skills.js line 116
 
 CONTEXT: The “Builds:” line under The Maximalist on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -22571,7 +22523,7 @@ END
 
 ID: class.maxi.skill.01.name
 
-SOURCE: src/p1.js line 147
+SOURCE: src/skills.js line 117
 
 CONTEXT: Tick Tock Next Block, a The Maximalist skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22589,7 +22541,7 @@ END
 
 ID: class.maxi.skill.01.button
 
-SOURCE: src/p1.js line 147
+SOURCE: src/skills.js line 117
 
 CONTEXT: The short label on the skill button for The Maximalist’s Tick Tock Next Block. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22608,7 +22560,7 @@ END
 
 ID: class.maxi.skill.01.desc
 
-SOURCE: src/p1.js line 147
+SOURCE: src/skills.js line 117
 
 CONTEXT: Tooltip for The Maximalist’s Tick Tock Next Block. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22616,14 +22568,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(.5+.08*L)).
-- {percent_2} is a percent that changes with the skill rank (pct(4+.8*L)).
+- {dmg} is a percent that changes with the skill rank (pct(.5+.08*L)).
+- {dmg2} is a percent that changes with the skill rank (pct(4+.8*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Nine quick strikes of {percent}. The tenth is a block and lands for {percent_2}. While the strikes are landing, and for 2.2s after the block, you take 22% less.
+    Nine quick strikes of {dmg}. The tenth is a block and lands for {dmg2}. While the strikes are landing, and for 2.2s after the block, you take 22% less.
 
 END
 
@@ -22633,7 +22585,7 @@ END
 
 ID: class.maxi.skill.02.name
 
-SOURCE: src/p1.js line 148
+SOURCE: src/skills.js line 118
 
 CONTEXT: Have Fun Staying Poor, a The Maximalist skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22651,7 +22603,7 @@ END
 
 ID: class.maxi.skill.02.button
 
-SOURCE: src/p1.js line 148
+SOURCE: src/skills.js line 118
 
 CONTEXT: The short label on the skill button for The Maximalist’s Have Fun Staying Poor. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22671,7 +22623,7 @@ END
 
 ID: class.maxi.skill.02.desc
 
-SOURCE: src/p1.js line 148
+SOURCE: src/skills.js line 118
 
 CONTEXT: Tooltip for The Maximalist’s Have Fun Staying Poor. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22679,14 +22631,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(1.4+.25*L)).
-- {number} is a number that changes with the skill rank ((1.2+.15*L).toFixed(1)).
+- {dmg} is a percent that changes with the skill rank (pct(1.4+.25*L)).
+- {sec} is a number that changes with the skill rank (fixed1(1.2+.15*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Close range, {percent}. It cannot miss, and it stuns for {number}s.
+    Close range, {dmg}. It cannot miss, and it stuns for {sec}s.
 
 END
 
@@ -22696,7 +22648,7 @@ END
 
 ID: class.maxi.skill.03.name
 
-SOURCE: src/p1.js line 149
+SOURCE: src/skills.js line 119
 
 CONTEXT: Few Understand This, a The Maximalist skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22714,7 +22666,7 @@ END
 
 ID: class.maxi.skill.03.desc
 
-SOURCE: src/p1.js line 149
+SOURCE: src/skills.js line 119
 
 CONTEXT: Tooltip for The Maximalist’s Few Understand This. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22722,13 +22674,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (3*L).
+- {damage} is a number that changes with the skill rank (3*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. +{rank}% damage for every machine still standing on screen, up to eight. Each one within six paces also cuts the damage you take by 6%, up to five.
+    Passive. +{damage}% damage for every machine still standing on screen, up to eight. Each one within six paces also cuts the damage you take by 6%, up to five.
 
 END
 
@@ -22738,7 +22690,7 @@ END
 
 ID: class.maxi.skill.04.name
 
-SOURCE: src/p1.js line 150
+SOURCE: src/skills.js line 120
 
 CONTEXT: Toxic Maximalism, a The Maximalist skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22756,7 +22708,7 @@ END
 
 ID: class.maxi.skill.04.button
 
-SOURCE: src/p1.js line 150
+SOURCE: src/skills.js line 120
 
 CONTEXT: The short label on the skill button for The Maximalist’s Toxic Maximalism. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22775,7 +22727,7 @@ END
 
 ID: class.maxi.skill.04.desc
 
-SOURCE: src/p1.js line 150
+SOURCE: src/skills.js line 120
 
 CONTEXT: Tooltip for The Maximalist’s Toxic Maximalism. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22783,14 +22735,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (15+3*L).
-- {percent} is a percent that changes with the skill rank (pct(.2+.05*L)).
+- {faster} is a number that changes with the skill rank (15+3*L).
+- {dmg} is a percent that changes with the skill rank (pct(.2+.05*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Aura. Stays on until you put on another. You attack {rank}% faster and hit {percent} harder, and so does anybody fighting beside you. You run 50% faster.
+    Aura. Stays on until you put on another. You attack {faster}% faster and hit {dmg} harder, and so does anybody fighting beside you. You run 50% faster.
 
 END
 
@@ -22800,7 +22752,7 @@ END
 
 ID: class.maxi.skill.05.name
 
-SOURCE: src/p1.js line 151
+SOURCE: src/skills.js line 121
 
 CONTEXT: Marked to Market, a The Maximalist skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22818,7 +22770,7 @@ END
 
 ID: class.maxi.skill.05.button
 
-SOURCE: src/p1.js line 151
+SOURCE: src/skills.js line 121
 
 CONTEXT: The short label on the skill button for The Maximalist’s Marked to Market. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22837,7 +22789,7 @@ END
 
 ID: class.maxi.skill.05.desc
 
-SOURCE: src/p1.js line 151
+SOURCE: src/skills.js line 121
 
 CONTEXT: Tooltip for The Maximalist’s Marked to Market. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22845,14 +22797,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {number} is a number that changes with the skill rank ((3.5+.15*L).toFixed(1)).
-- {value} is filled in when the line is shown (bonus).
+- {paces} is a number that changes with the skill rank (fixed1(3.5+.15*L)).
+- {bonus} is a number that changes with the skill rank (max(30,20+4*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Aura. Everything within {number} paces of you takes +{value}% damage from every source.
+    Aura. Everything within {paces} paces of you takes +{bonus}% damage from every source.
 
 END
 
@@ -22862,7 +22814,7 @@ END
 
 ID: class.maxi.skill.06.name
 
-SOURCE: src/p1.js line 152
+SOURCE: src/skills.js line 122
 
 CONTEXT: Orange Pill, a The Maximalist skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22880,7 +22832,7 @@ END
 
 ID: class.maxi.skill.06.button
 
-SOURCE: src/p1.js line 152
+SOURCE: src/skills.js line 122
 
 CONTEXT: The short label on the skill button for The Maximalist’s Orange Pill. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22899,7 +22851,7 @@ END
 
 ID: class.maxi.skill.06.desc
 
-SOURCE: src/p1.js line 152
+SOURCE: src/skills.js line 122
 
 CONTEXT: Tooltip for The Maximalist’s Orange Pill. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22907,14 +22859,14 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(1.6+.3*L)).
-- {value} is filled in when the line is shown (sec).
+- {dmg} is a percent that changes with the skill rank (pct(1.6+.3*L)).
+- {sec} is a number that changes with the skill rank (round((6+.3*L)*10)/10).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Charge through the line, untouchable, for {percent} to everything you pass. Whatever survives takes +30% damage for {value}s.
+    Charge through the line, untouchable, for {dmg} to everything you pass. Whatever survives takes +30% damage for {sec}s.
 
 END
 
@@ -22924,7 +22876,7 @@ END
 
 ID: class.maxi.skill.07.name
 
-SOURCE: src/p1.js line 153
+SOURCE: src/skills.js line 123
 
 CONTEXT: Blessed Hashrate, a The Maximalist skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22942,7 +22894,7 @@ END
 
 ID: class.maxi.skill.07.button
 
-SOURCE: src/p1.js line 153
+SOURCE: src/skills.js line 123
 
 CONTEXT: The short label on the skill button for The Maximalist’s Blessed Hashrate. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22961,7 +22913,7 @@ END
 
 ID: class.maxi.skill.07.desc
 
-SOURCE: src/p1.js line 153
+SOURCE: src/skills.js line 123
 
 CONTEXT: Tooltip for The Maximalist’s Blessed Hashrate. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22969,13 +22921,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(1.1+.22*L)).
+- {dmg} is a percent that changes with the skill rank (pct(1.1+.22*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Hammers spiral out from you, {percent} each, and they do not stop at the first thing they meet.
+    Hammers spiral out from you, {dmg} each, and they do not stop at the first thing they meet.
 
 END
 
@@ -22985,7 +22937,7 @@ END
 
 ID: class.maxi.skill.08.name
 
-SOURCE: src/p1.js line 154
+SOURCE: src/skills.js line 124
 
 CONTEXT: Proof of Work, a The Maximalist skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -23003,7 +22955,7 @@ END
 
 ID: class.maxi.skill.08.button
 
-SOURCE: src/p1.js line 154
+SOURCE: src/skills.js line 124
 
 CONTEXT: The short label on the skill button for The Maximalist’s Proof of Work. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -23022,7 +22974,7 @@ END
 
 ID: class.maxi.skill.08.desc
 
-SOURCE: src/p1.js line 154
+SOURCE: src/skills.js line 124
 
 CONTEXT: Tooltip for The Maximalist’s Proof of Work. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -23030,13 +22982,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {percent} is a percent that changes with the skill rank (pct(.3+.07*L)).
+- {dmg} is a percent that changes with the skill rank (pct(.3+.07*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Aura. Everything near you takes {percent} twice a second, for as long as you are near it.
+    Aura. Everything near you takes {dmg} twice a second, for as long as you are near it.
 
 END
 
@@ -23046,7 +22998,7 @@ END
 
 ID: class.maxi.skill.09.name
 
-SOURCE: src/p1.js line 155
+SOURCE: src/skills.js line 125
 
 CONTEXT: Twenty-One Million, a The Maximalist skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -23064,7 +23016,7 @@ END
 
 ID: class.maxi.skill.09.desc
 
-SOURCE: src/p1.js line 155
+SOURCE: src/skills.js line 125
 
 CONTEXT: Tooltip for The Maximalist’s Twenty-One Million. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -23072,15 +23024,15 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (3*L).
-- {rank_2} is a number that changes with the skill rank (8*L).
-- {rank_3} is a number that changes with the skill rank (8+2*L).
+- {damage} is a number that changes with the skill rank (3*L).
+- {armor} is a number that changes with the skill rank (8*L).
+- {dr} is a number that changes with the skill rank (8+2*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. +{rank}% damage, +{rank_2}% armour, and +{rank_3}% damage reduction. The difficulty cannot dilute what you hit for.
+    Passive. +{damage}% damage, +{armor}% armour, and +{dr}% damage reduction. The difficulty cannot dilute what you hit for.
 
 END
 
@@ -23090,7 +23042,7 @@ END
 
 ID: class.maxi.skill.10.name
 
-SOURCE: src/p1.js line 156
+SOURCE: src/skills.js line 126
 
 CONTEXT: The Halving, a The Maximalist skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -23108,7 +23060,7 @@ END
 
 ID: class.maxi.skill.10.button
 
-SOURCE: src/p1.js line 156
+SOURCE: src/skills.js line 126
 
 CONTEXT: The short label on the skill button for The Maximalist’s The Halving. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -23127,7 +23079,7 @@ END
 
 ID: class.maxi.skill.10.desc
 
-SOURCE: src/p1.js line 156
+SOURCE: src/skills.js line 126
 
 CONTEXT: Tooltip for The Maximalist’s The Halving. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -23135,13 +23087,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {number} is a number that changes with the skill rank ((8+1.2*L).toFixed(1)).
+- {loss} is a number that changes with the skill rank (fixed1(8+1.2*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Sound. Each machine within 4.2 paces loses {number}% of its current life. It will not be pushed below 35% of its maximum.
+    Sound. Each machine within 4.2 paces loses {loss}% of its current life. It will not be pushed below 35% of its maximum.
 
 END
 
@@ -23151,7 +23103,7 @@ END
 
 ID: class.maxi.skill.11.name
 
-SOURCE: src/p1.js line 157
+SOURCE: src/skills.js line 127
 
 CONTEXT: Running a Node, a The Maximalist skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -23169,7 +23121,7 @@ END
 
 ID: class.maxi.skill.11.desc
 
-SOURCE: src/p1.js line 157
+SOURCE: src/skills.js line 127
 
 CONTEXT: Tooltip for The Maximalist’s Running a Node. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -23177,13 +23129,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (6+2*L).
+- {damage} is a number that changes with the skill rank (6+2*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. While an aura is on, allies and your hireling gain +{rank}% damage. You gain half of that. With the aura off, nothing.
+    Passive. While an aura is on, allies and your hireling gain +{damage}% damage. You gain half of that. With the aura off, nothing.
 
 END
 
@@ -23193,7 +23145,7 @@ END
 
 ID: class.maxi.skill.12.name
 
-SOURCE: src/p1.js line 158
+SOURCE: src/skills.js line 128
 
 CONTEXT: Cite Your Sources, a The Maximalist skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -23211,7 +23163,7 @@ END
 
 ID: class.maxi.skill.12.button
 
-SOURCE: src/p1.js line 158
+SOURCE: src/skills.js line 128
 
 CONTEXT: The short label on the skill button for The Maximalist’s Cite Your Sources. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -23230,7 +23182,7 @@ END
 
 ID: class.maxi.skill.12.desc
 
-SOURCE: src/p1.js line 158
+SOURCE: src/skills.js line 128
 
 CONTEXT: Tooltip for The Maximalist’s Cite Your Sources. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -23252,7 +23204,7 @@ END
 
 ID: class.maxi.skill.13.name
 
-SOURCE: src/p1.js line 159
+SOURCE: src/skills.js line 129
 
 CONTEXT: Priced in Sound, a The Maximalist skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -23270,7 +23222,7 @@ END
 
 ID: class.maxi.skill.13.desc
 
-SOURCE: src/p1.js line 159
+SOURCE: src/skills.js line 129
 
 CONTEXT: Tooltip for The Maximalist’s Priced in Sound. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -23278,13 +23230,13 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {rank} is a number that changes with the skill rank (55+3*L).
+- {keep} is a number that changes with the skill rank (55+3*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
 TEXT
 
-    Passive. Damage you deal that is not Sound becomes Sound, and you keep {rank}% of it.
+    Passive. Damage you deal that is not Sound becomes Sound, and you keep {keep}% of it.
 
 END
 
@@ -23294,7 +23246,7 @@ END
 
 ID: class.maxi.skill.14.name
 
-SOURCE: src/p1.js line 160
+SOURCE: src/skills.js line 130
 
 CONTEXT: The Dip, a The Maximalist skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -23312,7 +23264,7 @@ END
 
 ID: class.maxi.skill.14.button
 
-SOURCE: src/p1.js line 160
+SOURCE: src/skills.js line 130
 
 CONTEXT: The short label on the skill button for The Maximalist’s The Dip. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -23330,7 +23282,7 @@ END
 
 ID: class.maxi.skill.14.desc
 
-SOURCE: src/p1.js line 160
+SOURCE: src/skills.js line 130
 
 CONTEXT: Tooltip for The Maximalist’s The Dip. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -23352,7 +23304,7 @@ END
 
 ID: class.maxi.skill.15.name
 
-SOURCE: src/p1.js line 161
+SOURCE: src/skills.js line 131
 
 CONTEXT: Not Your Keys, a The Maximalist skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -23370,7 +23322,7 @@ END
 
 ID: class.maxi.skill.15.desc
 
-SOURCE: src/p1.js line 161
+SOURCE: src/skills.js line 131
 
 CONTEXT: Tooltip for The Maximalist’s Not Your Keys. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -24710,7 +24662,7 @@ Names, flavor, affixes, sets, and the words that get bolted onto gear.
 
 ID: item.quality.01
 
-SOURCE: src/p1.js line 385
+SOURCE: src/p1.js line 245
 
 CONTEXT: The quality word on an item: white, blue, yellow, green, or gold. Line 1 of 5. After: "Magic". Shown in both layouts.
 
@@ -24728,7 +24680,7 @@ END
 
 ID: item.quality.02
 
-SOURCE: src/p1.js line 385
+SOURCE: src/p1.js line 245
 
 CONTEXT: The quality word on an item: white, blue, yellow, green, or gold. Line 2 of 5. Before: "Normal". After: "Rare". Shown in both layouts.
 
@@ -24746,7 +24698,7 @@ END
 
 ID: item.quality.03
 
-SOURCE: src/p1.js line 385
+SOURCE: src/p1.js line 245
 
 CONTEXT: The quality word on an item: white, blue, yellow, green, or gold. Line 3 of 5. Before: "Magic". After: "Set". Shown in both layouts.
 
@@ -24764,7 +24716,7 @@ END
 
 ID: item.quality.04
 
-SOURCE: src/p1.js line 385
+SOURCE: src/p1.js line 245
 
 CONTEXT: The quality word on an item: white, blue, yellow, green, or gold. Line 4 of 5. Before: "Rare". After: "Unique". Shown in both layouts.
 
@@ -24782,7 +24734,7 @@ END
 
 ID: item.quality.05
 
-SOURCE: src/p1.js line 385
+SOURCE: src/p1.js line 245
 
 CONTEXT: The quality word on an item: white, blue, yellow, green, or gold. Line 5 of 5. Before: "Set". Shown in both layouts.
 
@@ -24802,7 +24754,7 @@ END
 
 ID: item.slot.weapon
 
-SOURCE: src/p1.js line 196
+SOURCE: src/p1.js line 56
 
 CONTEXT: The name of the weapon slot, on the paper doll and in tooltips. Shown in both layouts.
 
@@ -24820,7 +24772,7 @@ END
 
 ID: item.slot.helm
 
-SOURCE: src/p1.js line 196
+SOURCE: src/p1.js line 56
 
 CONTEXT: The name of the helm slot, on the paper doll and in tooltips. Shown in both layouts.
 
@@ -24838,7 +24790,7 @@ END
 
 ID: item.slot.armor
 
-SOURCE: src/p1.js line 196
+SOURCE: src/p1.js line 56
 
 CONTEXT: The name of the armor slot, on the paper doll and in tooltips. Shown in both layouts.
 
@@ -24856,7 +24808,7 @@ END
 
 ID: item.slot.gloves
 
-SOURCE: src/p1.js line 196
+SOURCE: src/p1.js line 56
 
 CONTEXT: The name of the gloves slot, on the paper doll and in tooltips. Shown in both layouts.
 
@@ -24874,7 +24826,7 @@ END
 
 ID: item.slot.boots
 
-SOURCE: src/p1.js line 196
+SOURCE: src/p1.js line 56
 
 CONTEXT: The name of the boots slot, on the paper doll and in tooltips. Shown in both layouts.
 
@@ -24892,7 +24844,7 @@ END
 
 ID: item.slot.belt
 
-SOURCE: src/p1.js line 196
+SOURCE: src/p1.js line 56
 
 CONTEXT: The name of the belt slot, on the paper doll and in tooltips. Shown in both layouts.
 
@@ -24910,7 +24862,7 @@ END
 
 ID: item.slot.ring
 
-SOURCE: src/p1.js line 196
+SOURCE: src/p1.js line 56
 
 CONTEXT: The name of the ring slot, on the paper doll and in tooltips. Shown in both layouts.
 
@@ -24928,7 +24880,7 @@ END
 
 ID: item.slot.amulet
 
-SOURCE: src/p1.js line 196
+SOURCE: src/p1.js line 56
 
 CONTEXT: The name of the amulet slot, on the paper doll and in tooltips. Shown in both layouts.
 
@@ -35754,7 +35706,7 @@ END
 
 ID: item.affix.pdr
 
-SOURCE: src/p1.js line 379
+SOURCE: src/p1.js line 239
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -35774,7 +35726,7 @@ END
 
 ID: item.affix.hpl
 
-SOURCE: src/p1.js line 379
+SOURCE: src/p1.js line 239
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -35794,7 +35746,7 @@ END
 
 ID: item.affix.enl
 
-SOURCE: src/p1.js line 379
+SOURCE: src/p1.js line 239
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -35814,7 +35766,7 @@ END
 
 ID: item.affix.enpct
 
-SOURCE: src/p1.js line 379
+SOURCE: src/p1.js line 239
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -35834,7 +35786,7 @@ END
 
 ID: item.affix.enkill
 
-SOURCE: src/p1.js line 379
+SOURCE: src/p1.js line 239
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -35854,7 +35806,7 @@ END
 
 ID: item.affix.enleech
 
-SOURCE: src/p1.js line 379
+SOURCE: src/p1.js line 239
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -35874,7 +35826,7 @@ END
 
 ID: item.affix.mgt
 
-SOURCE: src/p1.js line 379
+SOURCE: src/p1.js line 239
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -35894,7 +35846,7 @@ END
 
 ID: item.affix.ref
 
-SOURCE: src/p1.js line 379
+SOURCE: src/p1.js line 239
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -35914,7 +35866,7 @@ END
 
 ID: item.affix.vit
 
-SOURCE: src/p1.js line 379
+SOURCE: src/p1.js line 239
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -35934,7 +35886,7 @@ END
 
 ID: item.affix.bnd
 
-SOURCE: src/p1.js line 379
+SOURCE: src/p1.js line 239
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -35954,7 +35906,7 @@ END
 
 ID: item.affix.sk_hacker
 
-SOURCE: src/p1.js line 379
+SOURCE: src/p1.js line 239
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -35974,7 +35926,7 @@ END
 
 ID: item.affix.sk_courier
 
-SOURCE: src/p1.js line 379
+SOURCE: src/p1.js line 239
 
 CONTEXT: Affix line on an item tooltip. {v} is the rolled number. Shown in both layouts.
 
@@ -36164,7 +36116,7 @@ END
 
 ID: item.namepart.cn1.01
 
-SOURCE: src/p1.js line 183
+SOURCE: src/p1.js line 43
 
 CONTEXT: A fragment bolted onto a generated item name (Prefix, first word). It is not a whole sentence. Line 1 of 10. After: "Gloom". Shown in both layouts.
 
@@ -36182,7 +36134,7 @@ END
 
 ID: item.namepart.cn1.02
 
-SOURCE: src/p1.js line 183
+SOURCE: src/p1.js line 43
 
 CONTEXT: A fragment bolted onto a generated item name (Prefix, first word). It is not a whole sentence. Line 2 of 10. Before: "Rust". After: "Static". Shown in both layouts.
 
@@ -36200,7 +36152,7 @@ END
 
 ID: item.namepart.cn1.03
 
-SOURCE: src/p1.js line 183
+SOURCE: src/p1.js line 43
 
 CONTEXT: A fragment bolted onto a generated item name (Prefix, first word). It is not a whole sentence. Line 3 of 10. Before: "Gloom". After: "Grime". Shown in both layouts.
 
@@ -36218,7 +36170,7 @@ END
 
 ID: item.namepart.cn1.04
 
-SOURCE: src/p1.js line 183
+SOURCE: src/p1.js line 43
 
 CONTEXT: A fragment bolted onto a generated item name (Prefix, first word). It is not a whole sentence. Line 4 of 10. Before: "Static". After: "Null". Shown in both layouts.
 
@@ -36236,7 +36188,7 @@ END
 
 ID: item.namepart.cn1.05
 
-SOURCE: src/p1.js line 183
+SOURCE: src/p1.js line 43
 
 CONTEXT: A fragment bolted onto a generated item name (Prefix, first word). It is not a whole sentence. Line 5 of 10. Before: "Grime". After: "Bolt". Shown in both layouts.
 
@@ -36254,7 +36206,7 @@ END
 
 ID: item.namepart.cn1.06
 
-SOURCE: src/p1.js line 183
+SOURCE: src/p1.js line 43
 
 CONTEXT: A fragment bolted onto a generated item name (Prefix, first word). It is not a whole sentence. Line 6 of 10. Before: "Null". After: "Ash". Shown in both layouts.
 
@@ -36272,7 +36224,7 @@ END
 
 ID: item.namepart.cn1.07
 
-SOURCE: src/p1.js line 183
+SOURCE: src/p1.js line 43
 
 CONTEXT: A fragment bolted onto a generated item name (Prefix, first word). It is not a whole sentence. Line 7 of 10. Before: "Bolt". After: "Wire". Shown in both layouts.
 
@@ -36290,7 +36242,7 @@ END
 
 ID: item.namepart.cn1.08
 
-SOURCE: src/p1.js line 183
+SOURCE: src/p1.js line 43
 
 CONTEXT: A fragment bolted onto a generated item name (Prefix, first word). It is not a whole sentence. Line 8 of 10. Before: "Ash". After: "Slag". Shown in both layouts.
 
@@ -36308,7 +36260,7 @@ END
 
 ID: item.namepart.cn1.09
 
-SOURCE: src/p1.js line 183
+SOURCE: src/p1.js line 43
 
 CONTEXT: A fragment bolted onto a generated item name (Prefix, first word). It is not a whole sentence. Line 9 of 10. Before: "Wire". After: "Dread". Shown in both layouts.
 
@@ -36326,7 +36278,7 @@ END
 
 ID: item.namepart.cn1.10
 
-SOURCE: src/p1.js line 183
+SOURCE: src/p1.js line 43
 
 CONTEXT: A fragment bolted onto a generated item name (Prefix, first word). It is not a whole sentence. Line 10 of 10. Before: "Slag". Shown in both layouts.
 
@@ -36348,7 +36300,7 @@ END
 
 ID: item.namepart.cn3.01
 
-SOURCE: src/p1.js line 183
+SOURCE: src/p1.js line 43
 
 CONTEXT: A fragment bolted onto a generated item name (Suffix title). It is not a whole sentence. Line 1 of 8. After: "the Overdue". Shown in both layouts.
 
@@ -36366,7 +36318,7 @@ END
 
 ID: item.namepart.cn3.02
 
-SOURCE: src/p1.js line 183
+SOURCE: src/p1.js line 43
 
 CONTEXT: A fragment bolted onto a generated item name (Suffix title). It is not a whole sentence. Line 2 of 8. Before: "the Unbilled". After: "the Repossessor". Shown in both layouts.
 
@@ -36384,7 +36336,7 @@ END
 
 ID: item.namepart.cn3.03
 
-SOURCE: src/p1.js line 183
+SOURCE: src/p1.js line 43
 
 CONTEXT: A fragment bolted onto a generated item name (Suffix title). It is not a whole sentence. Line 3 of 8. Before: "the Overdue". After: "the Downsizer". Shown in both layouts.
 
@@ -36402,7 +36354,7 @@ END
 
 ID: item.namepart.cn3.04
 
-SOURCE: src/p1.js line 183
+SOURCE: src/p1.js line 43
 
 CONTEXT: A fragment bolted onto a generated item name (Suffix title). It is not a whole sentence. Line 4 of 8. Before: "the Repossessor". After: "the Compliant". Shown in both layouts.
 
@@ -36420,7 +36372,7 @@ END
 
 ID: item.namepart.cn3.05
 
-SOURCE: src/p1.js line 183
+SOURCE: src/p1.js line 43
 
 CONTEXT: A fragment bolted onto a generated item name (Suffix title). It is not a whole sentence. Line 5 of 8. Before: "the Downsizer". After: "the Collector". Shown in both layouts.
 
@@ -36438,7 +36390,7 @@ END
 
 ID: item.namepart.cn3.06
 
-SOURCE: src/p1.js line 183
+SOURCE: src/p1.js line 43
 
 CONTEXT: A fragment bolted onto a generated item name (Suffix title). It is not a whole sentence. Line 6 of 8. Before: "the Compliant". After: "the Unpaid". Shown in both layouts.
 
@@ -36456,7 +36408,7 @@ END
 
 ID: item.namepart.cn3.07
 
-SOURCE: src/p1.js line 183
+SOURCE: src/p1.js line 43
 
 CONTEXT: A fragment bolted onto a generated item name (Suffix title). It is not a whole sentence. Line 7 of 8. Before: "the Collector". After: "the Tireless". Shown in both layouts.
 
@@ -36474,7 +36426,7 @@ END
 
 ID: item.namepart.cn3.08
 
-SOURCE: src/p1.js line 183
+SOURCE: src/p1.js line 43
 
 CONTEXT: A fragment bolted onto a generated item name (Suffix title). It is not a whole sentence. Line 8 of 8. Before: "the Unpaid". Shown in both layouts.
 
@@ -36496,7 +36448,7 @@ END
 
 ID: item.namepart.rn1.01
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 1 of 20. After: "Ash". Shown in both layouts.
 
@@ -36514,7 +36466,7 @@ END
 
 ID: item.namepart.rn1.02
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 2 of 20. Before: "Rust". After: "Grim". Shown in both layouts.
 
@@ -36532,7 +36484,7 @@ END
 
 ID: item.namepart.rn1.03
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 3 of 20. Before: "Ash". After: "Hollow". Shown in both layouts.
 
@@ -36550,7 +36502,7 @@ END
 
 ID: item.namepart.rn1.04
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 4 of 20. Before: "Grim". After: "Static". Shown in both layouts.
 
@@ -36568,7 +36520,7 @@ END
 
 ID: item.namepart.rn1.05
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 5 of 20. Before: "Hollow". After: "Wraith". Shown in both layouts.
 
@@ -36586,7 +36538,7 @@ END
 
 ID: item.namepart.rn1.06
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 6 of 20. Before: "Static". After: "Carrion". Shown in both layouts.
 
@@ -36604,7 +36556,7 @@ END
 
 ID: item.namepart.rn1.07
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 7 of 20. Before: "Wraith". After: "Dread". Shown in both layouts.
 
@@ -36622,7 +36574,7 @@ END
 
 ID: item.namepart.rn1.08
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 8 of 20. Before: "Carrion". After: "Null". Shown in both layouts.
 
@@ -36640,7 +36592,7 @@ END
 
 ID: item.namepart.rn1.09
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 9 of 20. Before: "Dread". After: "Ember". Shown in both layouts.
 
@@ -36658,7 +36610,7 @@ END
 
 ID: item.namepart.rn1.10
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 10 of 20. Before: "Null". After: "Vex". Shown in both layouts.
 
@@ -36676,7 +36628,7 @@ END
 
 ID: item.namepart.rn1.11
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 11 of 20. Before: "Ember". After: "Blight". Shown in both layouts.
 
@@ -36694,7 +36646,7 @@ END
 
 ID: item.namepart.rn1.12
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 12 of 20. Before: "Vex". After: "Cinder". Shown in both layouts.
 
@@ -36712,7 +36664,7 @@ END
 
 ID: item.namepart.rn1.13
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 13 of 20. Before: "Blight". After: "Gloom". Shown in both layouts.
 
@@ -36730,7 +36682,7 @@ END
 
 ID: item.namepart.rn1.14
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 14 of 20. Before: "Cinder". After: "Havoc". Shown in both layouts.
 
@@ -36748,7 +36700,7 @@ END
 
 ID: item.namepart.rn1.15
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 15 of 20. Before: "Gloom". After: "Rune". Shown in both layouts.
 
@@ -36766,7 +36718,7 @@ END
 
 ID: item.namepart.rn1.16
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 16 of 20. Before: "Havoc". After: "Bone". Shown in both layouts.
 
@@ -36784,7 +36736,7 @@ END
 
 ID: item.namepart.rn1.17
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 17 of 20. Before: "Rune". After: "Storm". Shown in both layouts.
 
@@ -36802,7 +36754,7 @@ END
 
 ID: item.namepart.rn1.18
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 18 of 20. Before: "Bone". After: "Viper". Shown in both layouts.
 
@@ -36820,7 +36772,7 @@ END
 
 ID: item.namepart.rn1.19
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 19 of 20. Before: "Storm". After: "Plague". Shown in both layouts.
 
@@ -36838,7 +36790,7 @@ END
 
 ID: item.namepart.rn1.20
 
-SOURCE: src/p1.js line 381
+SOURCE: src/p1.js line 241
 
 CONTEXT: A fragment bolted onto a generated item name (Rare first word). It is not a whole sentence. Line 20 of 20. Before: "Viper". Shown in both layouts.
 
@@ -37678,7 +37630,7 @@ END
 
 ID: item.zadj.02
 
-SOURCE: src/p1.js line 180
+SOURCE: src/p1.js line 40
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -37696,7 +37648,7 @@ END
 
 ID: item.zadj.03
 
-SOURCE: src/p1.js line 180
+SOURCE: src/p1.js line 40
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -37714,7 +37666,7 @@ END
 
 ID: item.zadj.04
 
-SOURCE: src/p1.js line 180
+SOURCE: src/p1.js line 40
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -37732,7 +37684,7 @@ END
 
 ID: item.zadj.05
 
-SOURCE: src/p1.js line 180
+SOURCE: src/p1.js line 40
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -37750,7 +37702,7 @@ END
 
 ID: item.zadj.06
 
-SOURCE: src/p1.js line 180
+SOURCE: src/p1.js line 40
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -37768,7 +37720,7 @@ END
 
 ID: item.zadj.08
 
-SOURCE: src/p1.js line 180
+SOURCE: src/p1.js line 40
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -37786,7 +37738,7 @@ END
 
 ID: item.zadj.09
 
-SOURCE: src/p1.js line 180
+SOURCE: src/p1.js line 40
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -37804,7 +37756,7 @@ END
 
 ID: item.zadj.10
 
-SOURCE: src/p1.js line 180
+SOURCE: src/p1.js line 40
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -37822,7 +37774,7 @@ END
 
 ID: item.zadj.11
 
-SOURCE: src/p1.js line 180
+SOURCE: src/p1.js line 40
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -37840,7 +37792,7 @@ END
 
 ID: item.zadj.12
 
-SOURCE: src/p1.js line 180
+SOURCE: src/p1.js line 40
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -37858,7 +37810,7 @@ END
 
 ID: item.zadj.13
 
-SOURCE: src/p1.js line 180
+SOURCE: src/p1.js line 40
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -37876,7 +37828,7 @@ END
 
 ID: item.zadj.14
 
-SOURCE: src/p1.js line 180
+SOURCE: src/p1.js line 40
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -37894,7 +37846,7 @@ END
 
 ID: item.zadj.15
 
-SOURCE: src/p1.js line 180
+SOURCE: src/p1.js line 40
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -37912,7 +37864,7 @@ END
 
 ID: item.zadj.16
 
-SOURCE: src/p1.js line 180
+SOURCE: src/p1.js line 40
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -37930,7 +37882,7 @@ END
 
 ID: item.zadj.17
 
-SOURCE: src/p1.js line 180
+SOURCE: src/p1.js line 40
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -37950,7 +37902,7 @@ END
 
 ID: item.rn2.weapon.01
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -37968,7 +37920,7 @@ END
 
 ID: item.rn2.weapon.02
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -37986,7 +37938,7 @@ END
 
 ID: item.rn2.weapon.03
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38004,7 +37956,7 @@ END
 
 ID: item.rn2.weapon.04
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38022,7 +37974,7 @@ END
 
 ID: item.rn2.weapon.05
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38040,7 +37992,7 @@ END
 
 ID: item.rn2.weapon.06
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38058,7 +38010,7 @@ END
 
 ID: item.rn2.weapon.07
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38076,7 +38028,7 @@ END
 
 ID: item.rn2.helm.01
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38094,7 +38046,7 @@ END
 
 ID: item.rn2.helm.02
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38112,7 +38064,7 @@ END
 
 ID: item.rn2.helm.03
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38130,7 +38082,7 @@ END
 
 ID: item.rn2.helm.04
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38148,7 +38100,7 @@ END
 
 ID: item.rn2.helm.05
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38166,7 +38118,7 @@ END
 
 ID: item.rn2.armor.01
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38184,7 +38136,7 @@ END
 
 ID: item.rn2.armor.02
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38202,7 +38154,7 @@ END
 
 ID: item.rn2.armor.03
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38220,7 +38172,7 @@ END
 
 ID: item.rn2.armor.04
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38238,7 +38190,7 @@ END
 
 ID: item.rn2.armor.05
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38256,7 +38208,7 @@ END
 
 ID: item.rn2.gloves.01
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38274,7 +38226,7 @@ END
 
 ID: item.rn2.gloves.02
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38292,7 +38244,7 @@ END
 
 ID: item.rn2.gloves.03
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38310,7 +38262,7 @@ END
 
 ID: item.rn2.gloves.04
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38328,7 +38280,7 @@ END
 
 ID: item.rn2.gloves.05
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38346,7 +38298,7 @@ END
 
 ID: item.rn2.boots.01
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38364,7 +38316,7 @@ END
 
 ID: item.rn2.boots.02
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38382,7 +38334,7 @@ END
 
 ID: item.rn2.boots.03
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38400,7 +38352,7 @@ END
 
 ID: item.rn2.boots.04
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38418,7 +38370,7 @@ END
 
 ID: item.rn2.boots.05
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38436,7 +38388,7 @@ END
 
 ID: item.rn2.belt.01
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38454,7 +38406,7 @@ END
 
 ID: item.rn2.belt.02
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38472,7 +38424,7 @@ END
 
 ID: item.rn2.belt.03
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38490,7 +38442,7 @@ END
 
 ID: item.rn2.belt.04
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38508,7 +38460,7 @@ END
 
 ID: item.rn2.belt.05
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38526,7 +38478,7 @@ END
 
 ID: item.rn2.ring.01
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38544,7 +38496,7 @@ END
 
 ID: item.rn2.ring.02
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38562,7 +38514,7 @@ END
 
 ID: item.rn2.ring.03
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38580,7 +38532,7 @@ END
 
 ID: item.rn2.ring.04
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38598,7 +38550,7 @@ END
 
 ID: item.rn2.ring.05
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38616,7 +38568,7 @@ END
 
 ID: item.rn2.amulet.01
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38634,7 +38586,7 @@ END
 
 ID: item.rn2.amulet.02
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38652,7 +38604,7 @@ END
 
 ID: item.rn2.amulet.03
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38670,7 +38622,7 @@ END
 
 ID: item.rn2.amulet.04
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -38688,7 +38640,7 @@ END
 
 ID: item.rn2.amulet.05
 
-SOURCE: src/p1.js line 382
+SOURCE: src/p1.js line 242
 
 CONTEXT: Item text. Shown in both layouts.
 
@@ -39062,7 +39014,7 @@ The four hires, and the names Kestrel gives them.
 
 ID: merc.guard.name
 
-SOURCE: src/p1.js line 170
+SOURCE: src/p1.js line 30
 
 CONTEXT: Hireling name on Kestrel’s list. Shown in both layouts.
 
@@ -39080,7 +39032,7 @@ END
 
 ID: merc.guard.blurb
 
-SOURCE: src/p1.js line 170
+SOURCE: src/p1.js line 30
 
 CONTEXT: What Kestrel tells you this hire does, under the name Bodyguard. Shown in both layouts.
 
@@ -39100,7 +39052,7 @@ END
 
 ID: merc.sys.name
 
-SOURCE: src/p1.js line 171
+SOURCE: src/p1.js line 31
 
 CONTEXT: Hireling name on Kestrel’s list. Shown in both layouts.
 
@@ -39118,7 +39070,7 @@ END
 
 ID: merc.sys.blurb
 
-SOURCE: src/p1.js line 171
+SOURCE: src/p1.js line 31
 
 CONTEXT: What Kestrel tells you this hire does, under the name Sysadmin. Shown in both layouts.
 
@@ -39138,7 +39090,7 @@ END
 
 ID: merc.node.name
 
-SOURCE: src/p1.js line 172
+SOURCE: src/p1.js line 32
 
 CONTEXT: Hireling name on Kestrel’s list. Shown in both layouts.
 
@@ -39156,7 +39108,7 @@ END
 
 ID: merc.node.blurb
 
-SOURCE: src/p1.js line 172
+SOURCE: src/p1.js line 32
 
 CONTEXT: What Kestrel tells you this hire does, under the name Node Runner. Shown in both layouts.
 
@@ -39176,7 +39128,7 @@ END
 
 ID: merc.hound.name
 
-SOURCE: src/p1.js line 173
+SOURCE: src/p1.js line 33
 
 CONTEXT: Hireling name on Kestrel’s list. Shown in both layouts.
 
@@ -39194,7 +39146,7 @@ END
 
 ID: merc.hound.blurb
 
-SOURCE: src/p1.js line 173
+SOURCE: src/p1.js line 33
 
 CONTEXT: What Kestrel tells you this hire does, under the name Stray Hound. Shown in both layouts.
 
@@ -39214,7 +39166,7 @@ END
 
 ID: merc.reyn.name
 
-SOURCE: src/p1.js line 174
+SOURCE: src/p1.js line 34
 
 CONTEXT: Hireling name on Kestrel’s list. Shown in both layouts.
 
@@ -39232,7 +39184,7 @@ END
 
 ID: merc.reyn.blurb
 
-SOURCE: src/p1.js line 174
+SOURCE: src/p1.js line 34
 
 CONTEXT: What Kestrel tells you this hire does, under the name Reyn. Shown in both layouts.
 
@@ -39252,7 +39204,7 @@ END
 
 ID: merc.given_name.01
 
-SOURCE: src/p1.js line 175
+SOURCE: src/p1.js line 35
 
 CONTEXT: A name Kestrel may give the hireling. One of these is picked when you hire. Line 1 of 8. After: "Juno". Shown in both layouts.
 
@@ -39270,7 +39222,7 @@ END
 
 ID: merc.given_name.02
 
-SOURCE: src/p1.js line 175
+SOURCE: src/p1.js line 35
 
 CONTEXT: A name Kestrel may give the hireling. One of these is picked when you hire. Line 2 of 8. Before: "Kit". After: "Ox". Shown in both layouts.
 
@@ -39288,7 +39240,7 @@ END
 
 ID: merc.given_name.03
 
-SOURCE: src/p1.js line 175
+SOURCE: src/p1.js line 35
 
 CONTEXT: A name Kestrel may give the hireling. One of these is picked when you hire. Line 3 of 8. Before: "Juno". After: "Vesper". Shown in both layouts.
 
@@ -39306,7 +39258,7 @@ END
 
 ID: merc.given_name.04
 
-SOURCE: src/p1.js line 175
+SOURCE: src/p1.js line 35
 
 CONTEXT: A name Kestrel may give the hireling. One of these is picked when you hire. Line 4 of 8. Before: "Ox". After: "Tallow". Shown in both layouts.
 
@@ -39324,7 +39276,7 @@ END
 
 ID: merc.given_name.05
 
-SOURCE: src/p1.js line 175
+SOURCE: src/p1.js line 35
 
 CONTEXT: A name Kestrel may give the hireling. One of these is picked when you hire. Line 5 of 8. Before: "Vesper". After: "Rook". Shown in both layouts.
 
@@ -39342,7 +39294,7 @@ END
 
 ID: merc.given_name.06
 
-SOURCE: src/p1.js line 175
+SOURCE: src/p1.js line 35
 
 CONTEXT: A name Kestrel may give the hireling. One of these is picked when you hire. Line 6 of 8. Before: "Tallow". After: "Sable". Shown in both layouts.
 
@@ -39360,7 +39312,7 @@ END
 
 ID: merc.given_name.07
 
-SOURCE: src/p1.js line 175
+SOURCE: src/p1.js line 35
 
 CONTEXT: A name Kestrel may give the hireling. One of these is picked when you hire. Line 7 of 8. Before: "Rook". After: "Finch". Shown in both layouts.
 
@@ -39378,7 +39330,7 @@ END
 
 ID: merc.given_name.08
 
-SOURCE: src/p1.js line 175
+SOURCE: src/p1.js line 35
 
 CONTEXT: A name Kestrel may give the hireling. One of these is picked when you hire. Line 8 of 8. Before: "Sable". Shown in both layouts.
 
@@ -43568,13 +43520,13 @@ END
 
 Buttons, sheets, toasts, death, options, and the bug report.
 
-2497 entries.
+2501 entries.
 
 ## Options
 
 ID: ui.options.dmgOut
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: dmgOut. Shown in both layouts.
 
@@ -43802,7 +43754,7 @@ END
 
 ID: ui.options.dmgIn
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: dmgIn. Shown in both layouts.
 
@@ -43884,7 +43836,7 @@ END
 
 ID: ui.options.enemyBars
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: enemyBars. Shown in both layouts.
 
@@ -44804,7 +44756,7 @@ END
 
 ID: ui.options.orbNums
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: orbNums. Shown in both layouts.
 
@@ -44866,7 +44818,7 @@ END
 
 ID: ui.options.selfBars
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: selfBars. Shown in both layouts.
 
@@ -44928,7 +44880,7 @@ END
 
 ID: ui.options.labels
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: labels. Shown in both layouts.
 
@@ -45042,7 +44994,7 @@ END
 
 ID: ui.options.minimap
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: minimap. Shown in both layouts.
 
@@ -45082,7 +45034,7 @@ END
 
 ID: ui.options.shake
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: shake. Shown in both layouts.
 
@@ -45122,7 +45074,7 @@ END
 
 ID: ui.options.calm
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: calm. Shown in both layouts.
 
@@ -45162,7 +45114,7 @@ END
 
 ID: ui.options.post
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: post. Shown in both layouts.
 
@@ -45202,7 +45154,7 @@ END
 
 ID: ui.options.sound
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: sound. Shown in both layouts.
 
@@ -45242,7 +45194,7 @@ END
 
 ID: ui.options.music
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: music. Shown in both layouts.
 
@@ -45282,7 +45234,7 @@ END
 
 ID: ui.options.dyn
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: dyn. Shown in both layouts.
 
@@ -45322,7 +45274,7 @@ END
 
 ID: ui.options.auto
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: auto. Shown in both layouts.
 
@@ -45362,7 +45314,7 @@ END
 
 ID: ui.options.obj
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: obj. Shown in both layouts.
 
@@ -45402,7 +45354,7 @@ END
 
 ID: ui.options.autoEq
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: autoEq. Shown in both layouts.
 
@@ -45442,7 +45394,7 @@ END
 
 ID: ui.options.autoStim
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: autoStim. Shown in both layouts.
 
@@ -45664,7 +45616,7 @@ END
 
 ID: ui.options.tapTarget
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: tapTarget. Shown in the touch layout.
 
@@ -45704,7 +45656,7 @@ END
 
 ID: ui.options.cmpArrow
 
-SOURCE: src/p1.js line 562
+SOURCE: src/p1.js line 422
 
 CONTEXT: A checkbox on the Options sheet. Key: cmpArrow. Shown in both layouts.
 
@@ -45744,7 +45696,7 @@ END
 
 ID: ui.attr.mgt.name
 
-SOURCE: src/p1.js line 176
+SOURCE: src/p1.js line 36
 
 CONTEXT: Attribute name on the hero sheet. Shown in both layouts.
 
@@ -45762,7 +45714,7 @@ END
 
 ID: ui.attr.mgt.desc
 
-SOURCE: src/p1.js line 176
+SOURCE: src/p1.js line 36
 
 CONTEXT: What one point of Might does, under the name. Shown in both layouts.
 
@@ -45780,7 +45732,7 @@ END
 
 ID: ui.attr.ref.name
 
-SOURCE: src/p1.js line 176
+SOURCE: src/p1.js line 36
 
 CONTEXT: Attribute name on the hero sheet. Shown in both layouts.
 
@@ -45798,7 +45750,7 @@ END
 
 ID: ui.attr.ref.desc
 
-SOURCE: src/p1.js line 176
+SOURCE: src/p1.js line 36
 
 CONTEXT: What one point of Reflex does, under the name. Shown in both layouts.
 
@@ -45816,7 +45768,7 @@ END
 
 ID: ui.attr.vit.name
 
-SOURCE: src/p1.js line 176
+SOURCE: src/p1.js line 36
 
 CONTEXT: Attribute name on the hero sheet. Shown in both layouts.
 
@@ -45834,7 +45786,7 @@ END
 
 ID: ui.attr.vit.desc
 
-SOURCE: src/p1.js line 176
+SOURCE: src/p1.js line 36
 
 CONTEXT: What one point of Vitality does, under the name. Shown in both layouts.
 
@@ -45852,7 +45804,7 @@ END
 
 ID: ui.attr.bnd.name
 
-SOURCE: src/p1.js line 176
+SOURCE: src/p1.js line 36
 
 CONTEXT: Attribute name on the hero sheet. Shown in both layouts.
 
@@ -45870,7 +45822,7 @@ END
 
 ID: ui.attr.bnd.desc
 
-SOURCE: src/p1.js line 176
+SOURCE: src/p1.js line 36
 
 CONTEXT: What one point of Bandwidth does, under the name. Shown in both layouts.
 
@@ -47060,7 +47012,7 @@ END
 
 ID: ui.shrine.might.name
 
-SOURCE: src/p1.js line 390
+SOURCE: src/p1.js line 250
 
 CONTEXT: Name of a shrine when you step on it. Shown as a toast. Shown in both layouts.
 
@@ -47078,7 +47030,7 @@ END
 
 ID: ui.shrine.might.effect
 
-SOURCE: src/p1.js line 390
+SOURCE: src/p1.js line 250
 
 CONTEXT: What the might shrine does, in the same toast as its name. Shown in both layouts.
 
@@ -47096,7 +47048,7 @@ END
 
 ID: ui.shrine.guard.name
 
-SOURCE: src/p1.js line 390
+SOURCE: src/p1.js line 250
 
 CONTEXT: Name of a shrine when you step on it. Shown as a toast. Shown in both layouts.
 
@@ -47114,7 +47066,7 @@ END
 
 ID: ui.shrine.guard.effect
 
-SOURCE: src/p1.js line 390
+SOURCE: src/p1.js line 250
 
 CONTEXT: What the guard shrine does, in the same toast as its name. Shown in both layouts.
 
@@ -47132,7 +47084,7 @@ END
 
 ID: ui.shrine.xp.name
 
-SOURCE: src/p1.js line 390
+SOURCE: src/p1.js line 250
 
 CONTEXT: Name of a shrine when you step on it. Shown as a toast. Shown in both layouts.
 
@@ -47150,7 +47102,7 @@ END
 
 ID: ui.shrine.xp.effect
 
-SOURCE: src/p1.js line 390
+SOURCE: src/p1.js line 250
 
 CONTEXT: What the xp shrine does, in the same toast as its name. Shown in both layouts.
 
@@ -47168,7 +47120,7 @@ END
 
 ID: ui.shrine.luck.name
 
-SOURCE: src/p1.js line 390
+SOURCE: src/p1.js line 250
 
 CONTEXT: Name of a shrine when you step on it. Shown as a toast. Shown in both layouts.
 
@@ -47186,7 +47138,7 @@ END
 
 ID: ui.shrine.luck.effect
 
-SOURCE: src/p1.js line 390
+SOURCE: src/p1.js line 250
 
 CONTEXT: What the luck shrine does, in the same toast as its name. Shown in both layouts.
 
@@ -47204,7 +47156,7 @@ END
 
 ID: ui.shrine.fill.name
 
-SOURCE: src/p1.js line 390
+SOURCE: src/p1.js line 250
 
 CONTEXT: Name of a shrine when you step on it. Shown as a toast. Shown in both layouts.
 
@@ -47222,7 +47174,7 @@ END
 
 ID: ui.shrine.fill.effect
 
-SOURCE: src/p1.js line 390
+SOURCE: src/p1.js line 250
 
 CONTEXT: What the fill shrine does, in the same toast as its name. Shown in both layouts.
 
@@ -47240,7 +47192,7 @@ END
 
 ID: ui.shrine.gold.name
 
-SOURCE: src/p1.js line 390
+SOURCE: src/p1.js line 250
 
 CONTEXT: Name of a shrine when you step on it. Shown as a toast. Shown in both layouts.
 
@@ -47258,7 +47210,7 @@ END
 
 ID: ui.shrine.gold.effect
 
-SOURCE: src/p1.js line 390
+SOURCE: src/p1.js line 250
 
 CONTEXT: What the gold shrine does, in the same toast as its name. Shown in both layouts.
 
@@ -47276,7 +47228,7 @@ END
 
 ID: ui.shrine.eyes.name
 
-SOURCE: src/p1.js line 390
+SOURCE: src/p1.js line 250
 
 CONTEXT: Name of a shrine when you step on it. Shown as a toast. Shown in both layouts.
 
@@ -47294,7 +47246,7 @@ END
 
 ID: ui.shrine.eyes.effect
 
-SOURCE: src/p1.js line 390
+SOURCE: src/p1.js line 250
 
 CONTEXT: What the eyes shrine does, in the same toast as its name. Shown in both layouts.
 
@@ -68345,11 +68297,83 @@ END
 
 ## Messages
 
-ID: ui.line.p1_js.219.7
+ID: ui.line.skills_js.60.159
 
-SOURCE: src/p1.js line 219
+SOURCE: src/skills.js line 60
 
-CONTEXT: Player-facing line in p1.js at line 219. Shown in both layouts.
+CONTEXT: Player-facing line in skills.js at line 60. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Two copies
+
+END
+
+ID: ui.line.skills_js.60.172
+
+SOURCE: src/skills.js line 60
+
+CONTEXT: Player-facing line in skills.js at line 60. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    A copy
+
+END
+
+ID: ui.line.skills_js.76.159
+
+SOURCE: src/skills.js line 76
+
+CONTEXT: Player-facing line in skills.js at line 76. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+     Champions too.
+
+END
+
+ID: ui.line.skills_js.76.177
+
+SOURCE: src/skills.js line 76
+
+CONTEXT: Player-facing line in skills.js at line 76. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+     Champions resist until rank 5.
+
+END
+
+ID: ui.line.p1_js.79.7
+
+SOURCE: src/p1.js line 79
+
+CONTEXT: Player-facing line in p1.js at line 79. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68363,11 +68387,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.220.8
+ID: ui.line.p1_js.80.8
 
-SOURCE: src/p1.js line 220
+SOURCE: src/p1.js line 80
 
-CONTEXT: Player-facing line in p1.js at line 220. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 80. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68381,11 +68405,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.230.8
+ID: ui.line.p1_js.90.8
 
-SOURCE: src/p1.js line 230
+SOURCE: src/p1.js line 90
 
-CONTEXT: Player-facing line in p1.js at line 230. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 90. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68399,11 +68423,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.247.7
+ID: ui.line.p1_js.107.7
 
-SOURCE: src/p1.js line 247
+SOURCE: src/p1.js line 107
 
-CONTEXT: Player-facing line in p1.js at line 247. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 107. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68417,11 +68441,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.263.7
+ID: ui.line.p1_js.123.7
 
-SOURCE: src/p1.js line 263
+SOURCE: src/p1.js line 123
 
-CONTEXT: Player-facing line in p1.js at line 263. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 123. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68435,11 +68459,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.272.10
+ID: ui.line.p1_js.132.10
 
-SOURCE: src/p1.js line 272
+SOURCE: src/p1.js line 132
 
-CONTEXT: Player-facing line in p1.js at line 272. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 132. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68453,11 +68477,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.319.8
+ID: ui.line.p1_js.179.8
 
-SOURCE: src/p1.js line 319
+SOURCE: src/p1.js line 179
 
-CONTEXT: Player-facing line in p1.js at line 319. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 179. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68471,29 +68495,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.327.7
+ID: ui.line.p1_js.187.7
 
-SOURCE: src/p1.js line 327
+SOURCE: src/p1.js line 187
 
-CONTEXT: Player-facing line in p1.js at line 327. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Overwhelming
-
-END
-
-ID: ui.line.p1_js.344.11
-
-SOURCE: src/p1.js line 344
-
-CONTEXT: Player-facing line in p1.js at line 344. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 187. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68507,11 +68513,29 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.367.8
+ID: ui.line.p1_js.204.11
 
-SOURCE: src/p1.js line 367
+SOURCE: src/p1.js line 204
 
-CONTEXT: Player-facing line in p1.js at line 367. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 204. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Overwhelming
+
+END
+
+ID: ui.line.p1_js.227.8
+
+SOURCE: src/p1.js line 227
+
+CONTEXT: Player-facing line in p1.js at line 227. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68525,11 +68549,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.453.7
+ID: ui.line.p1_js.313.7
 
-SOURCE: src/p1.js line 453
+SOURCE: src/p1.js line 313
 
-CONTEXT: Player-facing line in p1.js at line 453. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 313. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68543,29 +68567,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.466.9
+ID: ui.line.p1_js.326.9
 
-SOURCE: src/p1.js line 466
+SOURCE: src/p1.js line 326
 
-CONTEXT: Player-facing line in p1.js at line 466. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Gramps
-
-END
-
-ID: ui.line.p1_js.533.33
-
-SOURCE: src/p1.js line 533
-
-CONTEXT: Player-facing line in p1.js at line 533. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 326. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68579,11 +68585,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.533.169
+ID: ui.line.p1_js.393.33
 
-SOURCE: src/p1.js line 533
+SOURCE: src/p1.js line 393
 
-CONTEXT: Player-facing line in p1.js at line 533. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 393. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68597,11 +68603,29 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.534.34
+ID: ui.line.p1_js.393.169
 
-SOURCE: src/p1.js line 534
+SOURCE: src/p1.js line 393
 
-CONTEXT: Player-facing line in p1.js at line 534. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 393. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Gramps
+
+END
+
+ID: ui.line.p1_js.394.34
+
+SOURCE: src/p1.js line 394
+
+CONTEXT: Player-facing line in p1.js at line 394. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68615,11 +68639,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.534.216
+ID: ui.line.p1_js.394.216
 
-SOURCE: src/p1.js line 534
+SOURCE: src/p1.js line 394
 
-CONTEXT: Player-facing line in p1.js at line 534. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 394. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68633,29 +68657,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.535.32
+ID: ui.line.p1_js.395.32
 
-SOURCE: src/p1.js line 535
+SOURCE: src/p1.js line 395
 
-CONTEXT: Player-facing line in p1.js at line 535. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Gramps
-
-END
-
-ID: ui.line.p1_js.535.231
-
-SOURCE: src/p1.js line 535
-
-CONTEXT: Player-facing line in p1.js at line 535. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 395. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68669,11 +68675,29 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.536.23
+ID: ui.line.p1_js.395.231
 
-SOURCE: src/p1.js line 536
+SOURCE: src/p1.js line 395
 
-CONTEXT: Player-facing line in p1.js at line 536. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 395. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Gramps
+
+END
+
+ID: ui.line.p1_js.396.23
+
+SOURCE: src/p1.js line 396
+
+CONTEXT: Player-facing line in p1.js at line 396. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68687,83 +68711,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.536.196
+ID: ui.line.p1_js.396.196
 
-SOURCE: src/p1.js line 536
+SOURCE: src/p1.js line 396
 
-CONTEXT: Player-facing line in p1.js at line 536. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Sister Null
-
-END
-
-ID: ui.line.p1_js.537.28
-
-SOURCE: src/p1.js line 537
-
-CONTEXT: Player-facing line in p1.js at line 537. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Gramps
-
-END
-
-ID: ui.line.p1_js.538.22
-
-SOURCE: src/p1.js line 538
-
-CONTEXT: Player-facing line in p1.js at line 538. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Gramps
-
-END
-
-ID: ui.line.p1_js.538.172
-
-SOURCE: src/p1.js line 538
-
-CONTEXT: Player-facing line in p1.js at line 538. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Gramps
-
-END
-
-ID: ui.line.p1_js.539.35
-
-SOURCE: src/p1.js line 539
-
-CONTEXT: Player-facing line in p1.js at line 539. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 396. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68777,11 +68729,65 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.539.201
+ID: ui.line.p1_js.397.28
 
-SOURCE: src/p1.js line 539
+SOURCE: src/p1.js line 397
 
-CONTEXT: Player-facing line in p1.js at line 539. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 397. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Gramps
+
+END
+
+ID: ui.line.p1_js.398.22
+
+SOURCE: src/p1.js line 398
+
+CONTEXT: Player-facing line in p1.js at line 398. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Gramps
+
+END
+
+ID: ui.line.p1_js.398.172
+
+SOURCE: src/p1.js line 398
+
+CONTEXT: Player-facing line in p1.js at line 398. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Gramps
+
+END
+
+ID: ui.line.p1_js.399.35
+
+SOURCE: src/p1.js line 399
+
+CONTEXT: Player-facing line in p1.js at line 399. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68795,11 +68801,29 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.540.37
+ID: ui.line.p1_js.399.201
 
-SOURCE: src/p1.js line 540
+SOURCE: src/p1.js line 399
 
-CONTEXT: Player-facing line in p1.js at line 540. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 399. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Sister Null
+
+END
+
+ID: ui.line.p1_js.400.37
+
+SOURCE: src/p1.js line 400
+
+CONTEXT: Player-facing line in p1.js at line 400. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68813,11 +68837,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.540.186
+ID: ui.line.p1_js.400.186
 
-SOURCE: src/p1.js line 540
+SOURCE: src/p1.js line 400
 
-CONTEXT: Player-facing line in p1.js at line 540. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 400. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68831,29 +68855,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.541.30
+ID: ui.line.p1_js.401.30
 
-SOURCE: src/p1.js line 541
+SOURCE: src/p1.js line 401
 
-CONTEXT: Player-facing line in p1.js at line 541. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Nonce
-
-END
-
-ID: ui.line.p1_js.541.182
-
-SOURCE: src/p1.js line 541
-
-CONTEXT: Player-facing line in p1.js at line 541. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 401. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68867,11 +68873,29 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.542.24
+ID: ui.line.p1_js.401.182
 
-SOURCE: src/p1.js line 542
+SOURCE: src/p1.js line 401
 
-CONTEXT: Player-facing line in p1.js at line 542. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 401. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Nonce
+
+END
+
+ID: ui.line.p1_js.402.24
+
+SOURCE: src/p1.js line 402
+
+CONTEXT: Player-facing line in p1.js at line 402. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68885,29 +68909,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.543.33
+ID: ui.line.p1_js.403.33
 
-SOURCE: src/p1.js line 543
+SOURCE: src/p1.js line 403
 
-CONTEXT: Player-facing line in p1.js at line 543. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Gramps
-
-END
-
-ID: ui.line.p1_js.543.193
-
-SOURCE: src/p1.js line 543
-
-CONTEXT: Player-facing line in p1.js at line 543. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 403. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68921,11 +68927,29 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.544.40
+ID: ui.line.p1_js.403.193
 
-SOURCE: src/p1.js line 544
+SOURCE: src/p1.js line 403
 
-CONTEXT: Player-facing line in p1.js at line 544. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 403. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Gramps
+
+END
+
+ID: ui.line.p1_js.404.40
+
+SOURCE: src/p1.js line 404
+
+CONTEXT: Player-facing line in p1.js at line 404. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68939,11 +68963,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.544.213
+ID: ui.line.p1_js.404.213
 
-SOURCE: src/p1.js line 544
+SOURCE: src/p1.js line 404
 
-CONTEXT: Player-facing line in p1.js at line 544. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 404. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68957,29 +68981,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.545.29
+ID: ui.line.p1_js.405.29
 
-SOURCE: src/p1.js line 545
+SOURCE: src/p1.js line 405
 
-CONTEXT: Player-facing line in p1.js at line 545. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Nonce
-
-END
-
-ID: ui.line.p1_js.545.193
-
-SOURCE: src/p1.js line 545
-
-CONTEXT: Player-facing line in p1.js at line 545. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 405. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68993,11 +68999,29 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.545.257
+ID: ui.line.p1_js.405.193
 
-SOURCE: src/p1.js line 545
+SOURCE: src/p1.js line 405
 
-CONTEXT: Player-facing line in p1.js at line 545. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 405. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Nonce
+
+END
+
+ID: ui.line.p1_js.405.257
+
+SOURCE: src/p1.js line 405
+
+CONTEXT: Player-facing line in p1.js at line 405. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -69011,11 +69035,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.545.333
+ID: ui.line.p1_js.405.333
 
-SOURCE: src/p1.js line 545
+SOURCE: src/p1.js line 405
 
-CONTEXT: Player-facing line in p1.js at line 545. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 405. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -69029,29 +69053,11 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.546.24
+ID: ui.line.p1_js.406.24
 
-SOURCE: src/p1.js line 546
+SOURCE: src/p1.js line 406
 
-CONTEXT: Player-facing line in p1.js at line 546. Shown in both layouts.
-
-MODE: both. Shown in both layouts.
-
-PLACEHOLDERS: none
-
-LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
-
-TEXT
-
-    Sister Null
-
-END
-
-ID: ui.line.p1_js.546.149
-
-SOURCE: src/p1.js line 546
-
-CONTEXT: Player-facing line in p1.js at line 546. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 406. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -69065,11 +69071,29 @@ TEXT
 
 END
 
-ID: ui.line.p1_js.547.26
+ID: ui.line.p1_js.406.149
 
-SOURCE: src/p1.js line 547
+SOURCE: src/p1.js line 406
 
-CONTEXT: Player-facing line in p1.js at line 547. Shown in both layouts.
+CONTEXT: Player-facing line in p1.js at line 406. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Sister Null
+
+END
+
+ID: ui.line.p1_js.407.26
+
+SOURCE: src/p1.js line 407
+
+CONTEXT: Player-facing line in p1.js at line 407. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -84935,7 +84959,7 @@ END
 
 ID: ui.stim.pack
 
-SOURCE: src/p1.js line 209
+SOURCE: src/p1.js line 69
 
 CONTEXT: Player-facing text from STIM in p1.js. Shown in both layouts.
 
@@ -84953,7 +84977,7 @@ END
 
 ID: ui.stim.move
 
-SOURCE: src/p1.js line 209
+SOURCE: src/p1.js line 69
 
 CONTEXT: Player-facing text from STIM in p1.js. Shown in both layouts.
 
@@ -84971,7 +84995,7 @@ END
 
 ID: ui.stim.keep
 
-SOURCE: src/p1.js line 209
+SOURCE: src/p1.js line 69
 
 CONTEXT: Player-facing text from STIM in p1.js. Shown in both layouts.
 
@@ -84989,7 +85013,7 @@ END
 
 ID: ui.stim.pick
 
-SOURCE: src/p1.js line 209
+SOURCE: src/p1.js line 69
 
 CONTEXT: Player-facing text from STIM in p1.js. Shown in both layouts.
 
@@ -85007,7 +85031,7 @@ END
 
 ID: ui.stim.belt
 
-SOURCE: src/p1.js line 209
+SOURCE: src/p1.js line 69
 
 CONTEXT: Player-facing text from STIM in p1.js. Shown in the touch layout.
 
@@ -85027,7 +85051,7 @@ END
 
 ID: ui.sce.relay
 
-SOURCE: src/p1.js line 211
+SOURCE: src/p1.js line 71
 
 CONTEXT: Player-facing text from SCE in p1.js. Shown in both layouts.
 
@@ -85045,7 +85069,7 @@ END
 
 ID: ui.sce.stim
 
-SOURCE: src/p1.js line 212
+SOURCE: src/p1.js line 72
 
 CONTEXT: Player-facing text from SCE in p1.js. Shown in both layouts.
 
@@ -85063,7 +85087,7 @@ END
 
 ID: ui.sce.pack
 
-SOURCE: src/p1.js line 213
+SOURCE: src/p1.js line 73
 
 CONTEXT: Player-facing text from SCE in p1.js. Shown in both layouts.
 
@@ -85081,7 +85105,7 @@ END
 
 ID: ui.sce.sats
 
-SOURCE: src/p1.js line 214
+SOURCE: src/p1.js line 74
 
 CONTEXT: Player-facing text from SCE in p1.js. Shown in both layouts.
 
@@ -85099,7 +85123,7 @@ END
 
 ID: ui.sce.vapour
 
-SOURCE: src/p1.js line 215
+SOURCE: src/p1.js line 75
 
 CONTEXT: Player-facing text from SCE in p1.js. Shown in both layouts.
 
@@ -85117,7 +85141,7 @@ END
 
 ID: ui.sce.hello
 
-SOURCE: src/p1.js line 216
+SOURCE: src/p1.js line 76
 
 CONTEXT: Player-facing text from SCE in p1.js. Shown in both layouts.
 
@@ -85135,7 +85159,7 @@ END
 
 ID: ui.sce.hellobtc
 
-SOURCE: src/p1.js line 217
+SOURCE: src/p1.js line 77
 
 CONTEXT: Player-facing text from SCE in p1.js. Shown in both layouts.
 
@@ -85153,7 +85177,7 @@ END
 
 ID: ui.sce.spread
 
-SOURCE: src/p1.js line 218
+SOURCE: src/p1.js line 78
 
 CONTEXT: Player-facing text from SCE in p1.js. Shown in both layouts.
 
@@ -85171,7 +85195,7 @@ END
 
 ID: ui.sce.who
 
-SOURCE: src/p1.js line 221
+SOURCE: src/p1.js line 81
 
 CONTEXT: Player-facing text from SCE in p1.js. Shown in both layouts.
 
@@ -85189,7 +85213,7 @@ END
 
 ID: ui.sce.seen
 
-SOURCE: src/p1.js line 222
+SOURCE: src/p1.js line 82
 
 CONTEXT: Player-facing text from SCE in p1.js. Shown in both layouts.
 
@@ -85207,7 +85231,7 @@ END
 
 ID: ui.sce.early
 
-SOURCE: src/p1.js line 223
+SOURCE: src/p1.js line 83
 
 CONTEXT: Player-facing text from SCE in p1.js. Shown in both layouts.
 
@@ -85225,7 +85249,7 @@ END
 
 ID: ui.sce.say
 
-SOURCE: src/p1.js line 224
+SOURCE: src/p1.js line 84
 
 CONTEXT: Player-facing text from SCE in p1.js. Shown in both layouts.
 
@@ -85243,7 +85267,7 @@ END
 
 ID: ui.sce.hint
 
-SOURCE: src/p1.js line 225
+SOURCE: src/p1.js line 85
 
 CONTEXT: Player-facing text from SCE in p1.js. Shown in both layouts.
 
@@ -85261,7 +85285,7 @@ END
 
 ID: ui.sce.stipend
 
-SOURCE: src/p1.js line 226
+SOURCE: src/p1.js line 86
 
 CONTEXT: Player-facing text from SCE in p1.js. Shown in both layouts.
 
@@ -85279,7 +85303,7 @@ END
 
 ID: ui.sce.note
 
-SOURCE: src/p1.js line 227
+SOURCE: src/p1.js line 87
 
 CONTEXT: Player-facing text from SCE in p1.js. Shown in both layouts.
 
@@ -85297,7 +85321,7 @@ END
 
 ID: ui.sce.short
 
-SOURCE: src/p1.js line 228
+SOURCE: src/p1.js line 88
 
 CONTEXT: Player-facing text from SCE in p1.js. Shown in both layouts.
 
@@ -85317,7 +85341,7 @@ END
 
 ID: ui.arc.hirejoin
 
-SOURCE: src/p1.js line 232
+SOURCE: src/p1.js line 92
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85335,7 +85359,7 @@ END
 
 ID: ui.arc.door
 
-SOURCE: src/p1.js line 233
+SOURCE: src/p1.js line 93
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85353,7 +85377,7 @@ END
 
 ID: ui.arc.took
 
-SOURCE: src/p1.js line 234
+SOURCE: src/p1.js line 94
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85371,7 +85395,7 @@ END
 
 ID: ui.arc.dog
 
-SOURCE: src/p1.js line 237
+SOURCE: src/p1.js line 97
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85389,7 +85413,7 @@ END
 
 ID: ui.arc.sixdog
 
-SOURCE: src/p1.js line 238
+SOURCE: src/p1.js line 98
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85407,7 +85431,7 @@ END
 
 ID: ui.arc.hands
 
-SOURCE: src/p1.js line 239
+SOURCE: src/p1.js line 99
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85425,7 +85449,7 @@ END
 
 ID: ui.arc.told
 
-SOURCE: src/p1.js line 240
+SOURCE: src/p1.js line 100
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85443,7 +85467,7 @@ END
 
 ID: ui.arc.lookfine
 
-SOURCE: src/p1.js line 241
+SOURCE: src/p1.js line 101
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85461,7 +85485,7 @@ END
 
 ID: ui.arc.staydown
 
-SOURCE: src/p1.js line 242
+SOURCE: src/p1.js line 102
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85479,7 +85503,7 @@ END
 
 ID: ui.arc.grief
 
-SOURCE: src/p1.js line 243
+SOURCE: src/p1.js line 103
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85497,7 +85521,7 @@ END
 
 ID: ui.arc.griefask
 
-SOURCE: src/p1.js line 244
+SOURCE: src/p1.js line 104
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85515,7 +85539,7 @@ END
 
 ID: ui.arc.number
 
-SOURCE: src/p1.js line 245
+SOURCE: src/p1.js line 105
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85533,7 +85557,7 @@ END
 
 ID: ui.arc.numberfl
 
-SOURCE: src/p1.js line 246
+SOURCE: src/p1.js line 106
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85551,7 +85575,7 @@ END
 
 ID: ui.arc.pellline
 
-SOURCE: src/p1.js line 248
+SOURCE: src/p1.js line 108
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85569,7 +85593,7 @@ END
 
 ID: ui.arc.visor
 
-SOURCE: src/p1.js line 249
+SOURCE: src/p1.js line 109
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85587,7 +85611,7 @@ END
 
 ID: ui.arc.fine
 
-SOURCE: src/p1.js line 250
+SOURCE: src/p1.js line 110
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85605,7 +85629,7 @@ END
 
 ID: ui.arc.promo1
 
-SOURCE: src/p1.js line 251
+SOURCE: src/p1.js line 111
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85623,7 +85647,7 @@ END
 
 ID: ui.arc.promo2
 
-SOURCE: src/p1.js line 252
+SOURCE: src/p1.js line 112
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85641,7 +85665,7 @@ END
 
 ID: ui.arc.promo3
 
-SOURCE: src/p1.js line 253
+SOURCE: src/p1.js line 113
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85659,7 +85683,7 @@ END
 
 ID: ui.arc.promo4
 
-SOURCE: src/p1.js line 254
+SOURCE: src/p1.js line 114
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85677,7 +85701,7 @@ END
 
 ID: ui.arc.promo5
 
-SOURCE: src/p1.js line 255
+SOURCE: src/p1.js line 115
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85695,7 +85719,7 @@ END
 
 ID: ui.arc.satask
 
-SOURCE: src/p1.js line 256
+SOURCE: src/p1.js line 116
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85713,7 +85737,7 @@ END
 
 ID: ui.arc.satpaid
 
-SOURCE: src/p1.js line 257
+SOURCE: src/p1.js line 117
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85731,7 +85755,7 @@ END
 
 ID: ui.arc.satpoor
 
-SOURCE: src/p1.js line 258
+SOURCE: src/p1.js line 118
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85749,7 +85773,7 @@ END
 
 ID: ui.arc.queent
 
-SOURCE: src/p1.js line 259
+SOURCE: src/p1.js line 119
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85767,7 +85791,7 @@ END
 
 ID: ui.arc.queenb
 
-SOURCE: src/p1.js line 260
+SOURCE: src/p1.js line 120
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85785,7 +85809,7 @@ END
 
 ID: ui.arc.draft
 
-SOURCE: src/p1.js line 261
+SOURCE: src/p1.js line 121
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85803,7 +85827,7 @@ END
 
 ID: ui.arc.discontinued
 
-SOURCE: src/p1.js line 262
+SOURCE: src/p1.js line 122
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85821,7 +85845,7 @@ END
 
 ID: ui.arc.ivesask
 
-SOURCE: src/p1.js line 264
+SOURCE: src/p1.js line 124
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85839,7 +85863,7 @@ END
 
 ID: ui.arc.ivesgo
 
-SOURCE: src/p1.js line 265
+SOURCE: src/p1.js line 125
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85857,7 +85881,7 @@ END
 
 ID: ui.arc.ivesstay
 
-SOURCE: src/p1.js line 266
+SOURCE: src/p1.js line 126
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85875,7 +85899,7 @@ END
 
 ID: ui.arc.first
 
-SOURCE: src/p1.js line 267
+SOURCE: src/p1.js line 127
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85893,7 +85917,7 @@ END
 
 ID: ui.arc.easychair
 
-SOURCE: src/p1.js line 268
+SOURCE: src/p1.js line 128
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85911,7 +85935,7 @@ END
 
 ID: ui.arc.easyfine
 
-SOURCE: src/p1.js line 269
+SOURCE: src/p1.js line 129
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85929,7 +85953,7 @@ END
 
 ID: ui.arc.easyname
 
-SOURCE: src/p1.js line 270
+SOURCE: src/p1.js line 130
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85947,7 +85971,7 @@ END
 
 ID: ui.arc.off
 
-SOURCE: src/p1.js line 271
+SOURCE: src/p1.js line 131
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85965,7 +85989,7 @@ END
 
 ID: ui.arc.which
 
-SOURCE: src/p1.js line 273
+SOURCE: src/p1.js line 133
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -85983,7 +86007,7 @@ END
 
 ID: ui.arc.fileone
 
-SOURCE: src/p1.js line 274
+SOURCE: src/p1.js line 134
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86001,7 +86025,7 @@ END
 
 ID: ui.arc.filenone
 
-SOURCE: src/p1.js line 275
+SOURCE: src/p1.js line 135
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86019,7 +86043,7 @@ END
 
 ID: ui.arc.kindask
 
-SOURCE: src/p1.js line 276
+SOURCE: src/p1.js line 136
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86037,7 +86061,7 @@ END
 
 ID: ui.arc.giveit
 
-SOURCE: src/p1.js line 277
+SOURCE: src/p1.js line 137
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86055,7 +86079,7 @@ END
 
 ID: ui.arc.stayed
 
-SOURCE: src/p1.js line 278
+SOURCE: src/p1.js line 138
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86073,7 +86097,7 @@ END
 
 ID: ui.arc.margin
 
-SOURCE: src/p1.js line 279
+SOURCE: src/p1.js line 139
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86091,7 +86115,7 @@ END
 
 ID: ui.arc.marginfl
 
-SOURCE: src/p1.js line 280
+SOURCE: src/p1.js line 140
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86109,7 +86133,7 @@ END
 
 ID: ui.arc.good
 
-SOURCE: src/p1.js line 281
+SOURCE: src/p1.js line 141
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86127,7 +86151,7 @@ END
 
 ID: ui.arc.kind
 
-SOURCE: src/p1.js line 282
+SOURCE: src/p1.js line 142
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86145,7 +86169,7 @@ END
 
 ID: ui.arc.delighted
 
-SOURCE: src/p1.js line 283
+SOURCE: src/p1.js line 143
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86163,7 +86187,7 @@ END
 
 ID: ui.arc.mileone
 
-SOURCE: src/p1.js line 284
+SOURCE: src/p1.js line 144
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86181,7 +86205,7 @@ END
 
 ID: ui.arc.milesofa
 
-SOURCE: src/p1.js line 285
+SOURCE: src/p1.js line 145
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86199,7 +86223,7 @@ END
 
 ID: ui.arc.sixn
 
-SOURCE: src/p1.js line 286
+SOURCE: src/p1.js line 146
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86217,7 +86241,7 @@ END
 
 ID: ui.arc.sixcard
 
-SOURCE: src/p1.js line 287
+SOURCE: src/p1.js line 147
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86235,7 +86259,7 @@ END
 
 ID: ui.arc.sixtake
 
-SOURCE: src/p1.js line 288
+SOURCE: src/p1.js line 148
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86253,7 +86277,7 @@ END
 
 ID: ui.arc.sixpay
 
-SOURCE: src/p1.js line 289
+SOURCE: src/p1.js line 149
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86271,7 +86295,7 @@ END
 
 ID: ui.arc.sixbuy
 
-SOURCE: src/p1.js line 290
+SOURCE: src/p1.js line 150
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86289,7 +86313,7 @@ END
 
 ID: ui.arc.dressed
 
-SOURCE: src/p1.js line 291
+SOURCE: src/p1.js line 151
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86307,7 +86331,7 @@ END
 
 ID: ui.arc.latebill
 
-SOURCE: src/p1.js line 292
+SOURCE: src/p1.js line 152
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86325,7 +86349,7 @@ END
 
 ID: ui.arc.early
 
-SOURCE: src/p1.js line 293
+SOURCE: src/p1.js line 153
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86343,7 +86367,7 @@ END
 
 ID: ui.arc.minute
 
-SOURCE: src/p1.js line 294
+SOURCE: src/p1.js line 154
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86361,7 +86385,7 @@ END
 
 ID: ui.arc.minutefl
 
-SOURCE: src/p1.js line 295
+SOURCE: src/p1.js line 155
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86379,7 +86403,7 @@ END
 
 ID: ui.arc.featsix
 
-SOURCE: src/p1.js line 296
+SOURCE: src/p1.js line 156
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86397,7 +86421,7 @@ END
 
 ID: ui.arc.featsixd
 
-SOURCE: src/p1.js line 297
+SOURCE: src/p1.js line 157
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86415,7 +86439,7 @@ END
 
 ID: ui.arc.napkin
 
-SOURCE: src/p1.js line 298
+SOURCE: src/p1.js line 158
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86433,7 +86457,7 @@ END
 
 ID: ui.arc.twelve
 
-SOURCE: src/p1.js line 299
+SOURCE: src/p1.js line 159
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86451,7 +86475,7 @@ END
 
 ID: ui.arc.stray
 
-SOURCE: src/p1.js line 300
+SOURCE: src/p1.js line 160
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86469,7 +86493,7 @@ END
 
 ID: ui.arc.inv
 
-SOURCE: src/p1.js line 301
+SOURCE: src/p1.js line 161
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86487,7 +86511,7 @@ END
 
 ID: ui.arc.retract
 
-SOURCE: src/p1.js line 302
+SOURCE: src/p1.js line 162
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86505,7 +86529,7 @@ END
 
 ID: ui.arc.sofadogs
 
-SOURCE: src/p1.js line 303
+SOURCE: src/p1.js line 163
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86523,7 +86547,7 @@ END
 
 ID: ui.arc.labelon
 
-SOURCE: src/p1.js line 304
+SOURCE: src/p1.js line 164
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86541,7 +86565,7 @@ END
 
 ID: ui.arc.labellate
 
-SOURCE: src/p1.js line 305
+SOURCE: src/p1.js line 165
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86559,7 +86583,7 @@ END
 
 ID: ui.arc.rushask
 
-SOURCE: src/p1.js line 306
+SOURCE: src/p1.js line 166
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86577,7 +86601,7 @@ END
 
 ID: ui.arc.rushgo
 
-SOURCE: src/p1.js line 307
+SOURCE: src/p1.js line 167
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86595,7 +86619,7 @@ END
 
 ID: ui.arc.rushno
 
-SOURCE: src/p1.js line 308
+SOURCE: src/p1.js line 168
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86613,7 +86637,7 @@ END
 
 ID: ui.arc.witnessed
 
-SOURCE: src/p1.js line 309
+SOURCE: src/p1.js line 169
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86631,7 +86655,7 @@ END
 
 ID: ui.arc.rushlate
 
-SOURCE: src/p1.js line 310
+SOURCE: src/p1.js line 170
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86649,7 +86673,7 @@ END
 
 ID: ui.arc.lnroom
 
-SOURCE: src/p1.js line 311
+SOURCE: src/p1.js line 171
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86667,7 +86691,7 @@ END
 
 ID: ui.arc.lnafternoon
 
-SOURCE: src/p1.js line 312
+SOURCE: src/p1.js line 172
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86685,7 +86709,7 @@ END
 
 ID: ui.arc.lntrack
 
-SOURCE: src/p1.js line 313
+SOURCE: src/p1.js line 173
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86703,7 +86727,7 @@ END
 
 ID: ui.arc.ln2035
 
-SOURCE: src/p1.js line 314
+SOURCE: src/p1.js line 174
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86721,7 +86745,7 @@ END
 
 ID: ui.arc.lnyou
 
-SOURCE: src/p1.js line 315
+SOURCE: src/p1.js line 175
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86739,7 +86763,7 @@ END
 
 ID: ui.arc.nextoffer
 
-SOURCE: src/p1.js line 316
+SOURCE: src/p1.js line 176
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86757,7 +86781,7 @@ END
 
 ID: ui.arc.holdwas
 
-SOURCE: src/p1.js line 317
+SOURCE: src/p1.js line 177
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86775,7 +86799,7 @@ END
 
 ID: ui.arc.hold
 
-SOURCE: src/p1.js line 318
+SOURCE: src/p1.js line 178
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86793,7 +86817,7 @@ END
 
 ID: ui.arc.holdfl
 
-SOURCE: src/p1.js line 320
+SOURCE: src/p1.js line 180
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86811,7 +86835,7 @@ END
 
 ID: ui.arc.keeper
 
-SOURCE: src/p1.js line 321
+SOURCE: src/p1.js line 181
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86829,7 +86853,7 @@ END
 
 ID: ui.arc.keeperline
 
-SOURCE: src/p1.js line 322
+SOURCE: src/p1.js line 182
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86847,7 +86871,7 @@ END
 
 ID: ui.arc.holdbuy
 
-SOURCE: src/p1.js line 323
+SOURCE: src/p1.js line 183
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86865,7 +86889,7 @@ END
 
 ID: ui.arc.holdbuybtn
 
-SOURCE: src/p1.js line 324
+SOURCE: src/p1.js line 184
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86883,7 +86907,7 @@ END
 
 ID: ui.arc.filed
 
-SOURCE: src/p1.js line 325
+SOURCE: src/p1.js line 185
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86901,7 +86925,7 @@ END
 
 ID: ui.arc.bored
 
-SOURCE: src/p1.js line 326
+SOURCE: src/p1.js line 186
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86919,7 +86943,7 @@ END
 
 ID: ui.arc.overfl
 
-SOURCE: src/p1.js line 328
+SOURCE: src/p1.js line 188
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86937,7 +86961,7 @@ END
 
 ID: ui.arc.over2
 
-SOURCE: src/p1.js line 329
+SOURCE: src/p1.js line 189
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86955,7 +86979,7 @@ END
 
 ID: ui.arc.over3
 
-SOURCE: src/p1.js line 330
+SOURCE: src/p1.js line 190
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86973,7 +86997,7 @@ END
 
 ID: ui.arc.over4
 
-SOURCE: src/p1.js line 331
+SOURCE: src/p1.js line 191
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -86991,7 +87015,7 @@ END
 
 ID: ui.arc.overno
 
-SOURCE: src/p1.js line 332
+SOURCE: src/p1.js line 192
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87009,7 +87033,7 @@ END
 
 ID: ui.arc.overgone
 
-SOURCE: src/p1.js line 333
+SOURCE: src/p1.js line 193
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87027,7 +87051,7 @@ END
 
 ID: ui.arc.notyou
 
-SOURCE: src/p1.js line 334
+SOURCE: src/p1.js line 194
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87045,7 +87069,7 @@ END
 
 ID: ui.arc.believer
 
-SOURCE: src/p1.js line 335
+SOURCE: src/p1.js line 195
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87063,7 +87087,7 @@ END
 
 ID: ui.arc.hadit
 
-SOURCE: src/p1.js line 336
+SOURCE: src/p1.js line 196
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87081,7 +87105,7 @@ END
 
 ID: ui.arc.where
 
-SOURCE: src/p1.js line 337
+SOURCE: src/p1.js line 197
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87099,7 +87123,7 @@ END
 
 ID: ui.arc.simsay
 
-SOURCE: src/p1.js line 338
+SOURCE: src/p1.js line 198
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87117,7 +87141,7 @@ END
 
 ID: ui.arc.feeling
 
-SOURCE: src/p1.js line 339
+SOURCE: src/p1.js line 199
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87135,7 +87159,7 @@ END
 
 ID: ui.arc.lettrue
 
-SOURCE: src/p1.js line 340
+SOURCE: src/p1.js line 200
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87153,7 +87177,7 @@ END
 
 ID: ui.arc.telltruth
 
-SOURCE: src/p1.js line 341
+SOURCE: src/p1.js line 201
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87171,7 +87195,7 @@ END
 
 ID: ui.arc.trueonce
 
-SOURCE: src/p1.js line 342
+SOURCE: src/p1.js line 202
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87189,7 +87213,7 @@ END
 
 ID: ui.arc.truthpay
 
-SOURCE: src/p1.js line 343
+SOURCE: src/p1.js line 203
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87207,7 +87231,7 @@ END
 
 ID: ui.arc.featoverd
 
-SOURCE: src/p1.js line 345
+SOURCE: src/p1.js line 205
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87225,7 +87249,7 @@ END
 
 ID: ui.arc.vote
 
-SOURCE: src/p1.js line 346
+SOURCE: src/p1.js line 206
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87243,7 +87267,7 @@ END
 
 ID: ui.arc.barge
 
-SOURCE: src/p1.js line 347
+SOURCE: src/p1.js line 207
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87261,7 +87285,7 @@ END
 
 ID: ui.arc.brendacart
 
-SOURCE: src/p1.js line 348
+SOURCE: src/p1.js line 208
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87279,7 +87303,7 @@ END
 
 ID: ui.arc.cart
 
-SOURCE: src/p1.js line 349
+SOURCE: src/p1.js line 209
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87297,7 +87321,7 @@ END
 
 ID: ui.arc.sign
 
-SOURCE: src/p1.js line 350
+SOURCE: src/p1.js line 210
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87315,7 +87339,7 @@ END
 
 ID: ui.arc.dock
 
-SOURCE: src/p1.js line 351
+SOURCE: src/p1.js line 211
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87333,7 +87357,7 @@ END
 
 ID: ui.arc.tier
 
-SOURCE: src/p1.js line 352
+SOURCE: src/p1.js line 212
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87351,7 +87375,7 @@ END
 
 ID: ui.arc.tierfl
 
-SOURCE: src/p1.js line 353
+SOURCE: src/p1.js line 213
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87369,7 +87393,7 @@ END
 
 ID: ui.arc.next
 
-SOURCE: src/p1.js line 354
+SOURCE: src/p1.js line 214
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87387,7 +87411,7 @@ END
 
 ID: ui.arc.nextfl
 
-SOURCE: src/p1.js line 355
+SOURCE: src/p1.js line 215
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87405,7 +87429,7 @@ END
 
 ID: ui.arc.stimchoice
 
-SOURCE: src/p1.js line 356
+SOURCE: src/p1.js line 216
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87423,7 +87447,7 @@ END
 
 ID: ui.arc.packchoice
 
-SOURCE: src/p1.js line 357
+SOURCE: src/p1.js line 217
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87441,7 +87465,7 @@ END
 
 ID: ui.arc.creditsjoke
 
-SOURCE: src/p1.js line 358
+SOURCE: src/p1.js line 218
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87459,7 +87483,7 @@ END
 
 ID: ui.arc.floatbill
 
-SOURCE: src/p1.js line 359
+SOURCE: src/p1.js line 219
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87477,7 +87501,7 @@ END
 
 ID: ui.arc.carries
 
-SOURCE: src/p1.js line 360
+SOURCE: src/p1.js line 220
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87495,7 +87519,7 @@ END
 
 ID: ui.arc.unsub
 
-SOURCE: src/p1.js line 361
+SOURCE: src/p1.js line 221
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87513,7 +87537,7 @@ END
 
 ID: ui.arc.leavesub
 
-SOURCE: src/p1.js line 362
+SOURCE: src/p1.js line 222
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87531,7 +87555,7 @@ END
 
 ID: ui.arc.fee
 
-SOURCE: src/p1.js line 363
+SOURCE: src/p1.js line 223
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87549,7 +87573,7 @@ END
 
 ID: ui.arc.never
 
-SOURCE: src/p1.js line 364
+SOURCE: src/p1.js line 224
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87567,7 +87591,7 @@ END
 
 ID: ui.arc.page
 
-SOURCE: src/p1.js line 365
+SOURCE: src/p1.js line 225
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87585,7 +87609,7 @@ END
 
 ID: ui.arc.read
 
-SOURCE: src/p1.js line 366
+SOURCE: src/p1.js line 226
 
 CONTEXT: Player-facing text from ARC in p1.js. Shown in both layouts.
 
@@ -87605,7 +87629,7 @@ END
 
 ID: ui.egg.paperkeep
 
-SOURCE: src/p1.js line 447
+SOURCE: src/p1.js line 307
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87623,7 +87647,7 @@ END
 
 ID: ui.egg.obittitle
 
-SOURCE: src/p1.js line 448
+SOURCE: src/p1.js line 308
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87641,7 +87665,7 @@ END
 
 ID: ui.egg.board
 
-SOURCE: src/p1.js line 449
+SOURCE: src/p1.js line 309
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87661,7 +87685,7 @@ END
 
 ID: ui.egg.boardnone
 
-SOURCE: src/p1.js line 450
+SOURCE: src/p1.js line 310
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87679,7 +87703,7 @@ END
 
 ID: ui.egg.leave
 
-SOURCE: src/p1.js line 451
+SOURCE: src/p1.js line 311
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87697,7 +87721,7 @@ END
 
 ID: ui.egg.pryceline
 
-SOURCE: src/p1.js line 452
+SOURCE: src/p1.js line 312
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87715,7 +87739,7 @@ END
 
 ID: ui.egg.wrenwarn
 
-SOURCE: src/p1.js line 454
+SOURCE: src/p1.js line 314
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87733,7 +87757,7 @@ END
 
 ID: ui.egg.linkopen
 
-SOURCE: src/p1.js line 455
+SOURCE: src/p1.js line 315
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87751,7 +87775,7 @@ END
 
 ID: ui.egg.linkface
 
-SOURCE: src/p1.js line 456
+SOURCE: src/p1.js line 316
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87769,7 +87793,7 @@ END
 
 ID: ui.egg.link404
 
-SOURCE: src/p1.js line 458
+SOURCE: src/p1.js line 318
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87787,7 +87811,7 @@ END
 
 ID: ui.egg.helloname
 
-SOURCE: src/p1.js line 459
+SOURCE: src/p1.js line 319
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87805,7 +87829,7 @@ END
 
 ID: ui.egg.hellofl
 
-SOURCE: src/p1.js line 460
+SOURCE: src/p1.js line 320
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87823,7 +87847,7 @@ END
 
 ID: ui.egg.brendano
 
-SOURCE: src/p1.js line 461
+SOURCE: src/p1.js line 321
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87841,7 +87865,7 @@ END
 
 ID: ui.egg.helloframe
 
-SOURCE: src/p1.js line 463
+SOURCE: src/p1.js line 323
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87859,7 +87883,7 @@ END
 
 ID: ui.egg.flyertitle
 
-SOURCE: src/p1.js line 464
+SOURCE: src/p1.js line 324
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87877,7 +87901,7 @@ END
 
 ID: ui.egg.flyerbody
 
-SOURCE: src/p1.js line 465
+SOURCE: src/p1.js line 325
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87895,7 +87919,7 @@ END
 
 ID: ui.egg.grampssnatch
 
-SOURCE: src/p1.js line 467
+SOURCE: src/p1.js line 327
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87913,7 +87937,7 @@ END
 
 ID: ui.egg.piename
 
-SOURCE: src/p1.js line 468
+SOURCE: src/p1.js line 328
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87931,7 +87955,7 @@ END
 
 ID: ui.egg.piebase
 
-SOURCE: src/p1.js line 469
+SOURCE: src/p1.js line 329
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87949,7 +87973,7 @@ END
 
 ID: ui.egg.piewhere.1
 
-SOURCE: src/p1.js line 471
+SOURCE: src/p1.js line 331
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87967,7 +87991,7 @@ END
 
 ID: ui.egg.piewhere.2
 
-SOURCE: src/p1.js line 472
+SOURCE: src/p1.js line 332
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -87985,7 +88009,7 @@ END
 
 ID: ui.egg.piewhere.3
 
-SOURCE: src/p1.js line 473
+SOURCE: src/p1.js line 333
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88003,7 +88027,7 @@ END
 
 ID: ui.egg.piewhere.4
 
-SOURCE: src/p1.js line 474
+SOURCE: src/p1.js line 334
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88021,7 +88045,7 @@ END
 
 ID: ui.egg.piewhere.5
 
-SOURCE: src/p1.js line 475
+SOURCE: src/p1.js line 335
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88039,7 +88063,7 @@ END
 
 ID: ui.egg.paid
 
-SOURCE: src/p1.js line 477
+SOURCE: src/p1.js line 337
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88057,7 +88081,7 @@ END
 
 ID: ui.egg.packfull
 
-SOURCE: src/p1.js line 478
+SOURCE: src/p1.js line 338
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88075,7 +88099,7 @@ END
 
 ID: ui.egg.poor
 
-SOURCE: src/p1.js line 479
+SOURCE: src/p1.js line 339
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88093,7 +88117,7 @@ END
 
 ID: ui.egg.few
 
-SOURCE: src/p1.js line 480
+SOURCE: src/p1.js line 340
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88111,7 +88135,7 @@ END
 
 ID: ui.egg.laseron
 
-SOURCE: src/p1.js line 481
+SOURCE: src/p1.js line 341
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88129,7 +88153,7 @@ END
 
 ID: ui.egg.laseroff
 
-SOURCE: src/p1.js line 482
+SOURCE: src/p1.js line 342
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88147,7 +88171,7 @@ END
 
 ID: ui.egg.laserno
 
-SOURCE: src/p1.js line 483
+SOURCE: src/p1.js line 343
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88165,7 +88189,7 @@ END
 
 ID: ui.egg.freenote
 
-SOURCE: src/p1.js line 484
+SOURCE: src/p1.js line 344
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88183,7 +88207,7 @@ END
 
 ID: ui.egg.leaveit
 
-SOURCE: src/p1.js line 486
+SOURCE: src/p1.js line 346
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88201,7 +88225,7 @@ END
 
 ID: ui.egg.sourname
 
-SOURCE: src/p1.js line 487
+SOURCE: src/p1.js line 347
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88219,7 +88243,7 @@ END
 
 ID: ui.egg.sourfl
 
-SOURCE: src/p1.js line 488
+SOURCE: src/p1.js line 348
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88237,7 +88261,7 @@ END
 
 ID: ui.egg.mast
 
-SOURCE: src/p1.js line 489
+SOURCE: src/p1.js line 349
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88255,7 +88279,7 @@ END
 
 ID: ui.egg.lemonlbl
 
-SOURCE: src/p1.js line 490
+SOURCE: src/p1.js line 350
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88273,7 +88297,7 @@ END
 
 ID: ui.egg.still
 
-SOURCE: src/p1.js line 491
+SOURCE: src/p1.js line 351
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88291,7 +88315,7 @@ END
 
 ID: ui.egg.tips.01
 
-SOURCE: src/p1.js line 492
+SOURCE: src/p1.js line 352
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88309,7 +88333,7 @@ END
 
 ID: ui.egg.tips.02
 
-SOURCE: src/p1.js line 492
+SOURCE: src/p1.js line 352
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88327,7 +88351,7 @@ END
 
 ID: ui.egg.tips.03
 
-SOURCE: src/p1.js line 492
+SOURCE: src/p1.js line 352
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88345,7 +88369,7 @@ END
 
 ID: ui.egg.pundits.01
 
-SOURCE: src/p1.js line 494
+SOURCE: src/p1.js line 354
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88363,7 +88387,7 @@ END
 
 ID: ui.egg.pundits.02
 
-SOURCE: src/p1.js line 495
+SOURCE: src/p1.js line 355
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88381,7 +88405,7 @@ END
 
 ID: ui.egg.pundits.03
 
-SOURCE: src/p1.js line 496
+SOURCE: src/p1.js line 356
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88399,7 +88423,7 @@ END
 
 ID: ui.egg.pundits.04
 
-SOURCE: src/p1.js line 497
+SOURCE: src/p1.js line 357
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88417,7 +88441,7 @@ END
 
 ID: ui.egg.pundits.05
 
-SOURCE: src/p1.js line 498
+SOURCE: src/p1.js line 358
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88435,7 +88459,7 @@ END
 
 ID: ui.egg.tostitle
 
-SOURCE: src/p1.js line 500
+SOURCE: src/p1.js line 360
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88453,7 +88477,7 @@ END
 
 ID: ui.egg.tos1
 
-SOURCE: src/p1.js line 501
+SOURCE: src/p1.js line 361
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88471,7 +88495,7 @@ END
 
 ID: ui.egg.tos2
 
-SOURCE: src/p1.js line 502
+SOURCE: src/p1.js line 362
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 
@@ -88489,7 +88513,7 @@ END
 
 ID: ui.egg.tos3
 
-SOURCE: src/p1.js line 503
+SOURCE: src/p1.js line 363
 
 CONTEXT: Player-facing text from EGG in p1.js. Shown in both layouts.
 

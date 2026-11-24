@@ -190,6 +190,27 @@ function uniqueId(base) {
 }
 function zoneBy(i) { return state.zones[i] || null; }
 
+/* The formulas behind a skill tooltip's {holes}, from data/skills.tsv, so the writer sees
+   what each one stands for. */
+let SKILL_CALC = null;
+function skillHoles(cls, i) {
+  if (!SKILL_CALC) {
+    SKILL_CALC = {};
+    const f = path.join(ROOT, 'data', 'skills.tsv');
+    if (fs.existsSync(f)) {
+      const rows = fs.readFileSync(f, 'utf8').split('\n').filter(l => l.trim() && !l.startsWith('#')).map(l => l.split('\t'));
+      const head = rows.shift();
+      const ci = head.indexOf('class'), ri = head.indexOf('row'), ki = head.indexOf('calc');
+      for (const r of rows) {
+        const o = {};
+        for (const piece of (r[ki] || '').split(';')) { const eq = piece.indexOf('='); if (eq > 0) o[piece.slice(0, eq).trim()] = piece.slice(eq + 1).trim(); }
+        SKILL_CALC[r[ci] + ':' + (Number(r[ri]) - 1)] = o;
+      }
+    }
+  }
+  return SKILL_CALC[cls + ':' + i] || null;
+}
+
 /* Arrow functions with a block body (a skill that computes, then returns a line). */
 function emitInside(node, meta) {
   if (node.from == null || node.to == null || !state.src) return;
@@ -288,7 +309,7 @@ function emit(node, meta) {
     raw: state.src.slice(view.from, view.to),
     style: view.style,
     text: view.text,
-    placeholders: view.placeholders || [],
+    placeholders: (view.placeholders || []).map(h => h.literal && meta.holes && meta.holes[h.name] ? Object.assign({}, h, { formula: meta.holes[h.name] }) : h),
     hardMax: hardDesign == null ? null : Math.max(hardDesign, len),
     singleLine: !!meta.singleLine,
     limitNote: meta.limitNote || '',
@@ -556,7 +577,8 @@ function walkCls(node) {
           limitNote: 'Painted on a 62px round button at 8px type. A line break splits it into two short lines.',
           context: 'The short label on the skill button for ' + name + '’s ' + sn + '. The full name is on the sheet; this is what the thumb sees.'
         });
-        emit(propv(skill, 'd'), {
+        emit(propv(skill, 'dt') || propv(skill, 'd'), {
+          holes: skillHoles(p.key, i),
           id: 'class.' + p.key + '.skill.' + pad(i + 1) + '.desc',
           section: 'classes', groups: sg, sub: ss,
           allowBlock: true,
@@ -1849,7 +1871,7 @@ function writeDoc() {
     else {
       lines.push('PLACEHOLDERS:');
       lines.push('');
-      for (const h of e.placeholders) lines.push('- ' + E.explainHole(h.name, h.expr));
+      for (const h of e.placeholders) lines.push('- ' + E.explainHole(h.name, h.expr || h.formula));
     }
     lines.push('');
     if (e.hardMax != null) lines.push('LIMIT: ' + e.hardMax + ' characters. ' + (e.limitNote || ''));
@@ -1909,7 +1931,7 @@ function main() {
   /* monstats, treasure, levels and items are baked from data/*.tsv; import.js writes edits to
      their lines back into the sheet, not into the generated file. */
   const js = [
-    'src/formulas.js', 'src/monstats.js', 'src/treasure.js', 'src/levels.js', 'src/items.js', 'src/p1.js', 'src/p2.js', 'src/p5.js', 'src/p6.js', 'src/p7.js', 'src/p8.js', 'src/p9.js',
+    'src/formulas.js', 'src/monstats.js', 'src/treasure.js', 'src/levels.js', 'src/items.js', 'src/skills.js', 'src/p1.js', 'src/p2.js', 'src/p5.js', 'src/p6.js', 'src/p7.js', 'src/p8.js', 'src/p9.js',
     'src/p10.js', 'src/p11.js', 'src/p3.js', 'src/p4.js', 'src/p12.js', 'src/p13.js'
   ];
   for (const f of js) scanJs(f);

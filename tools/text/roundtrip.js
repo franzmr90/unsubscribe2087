@@ -104,16 +104,17 @@ function main() {
     const plain = cat.entries.find(e =>
       (e.style === 'single' || e.style === 'double') && !e.placeholders.length && e.hardMax == null && !e.singleLine &&
       e.text.length > 40 && e.section === 'act1' && !/[{}]/.test(e.text));
-    const skill = cat.entries.find(e => e.id === 'class.scrapper.skill.01.desc')
-      || cat.entries.find(e => e.placeholders.some(p => p.name === 'percent') && e.placeholders.some(p => p.name === 'rank'));
+    /* Skills live in data/skills.tsv; their holes are named in the sheet's calc column. */
+    const skill = cat.entries.find(e => e.id === 'class.scrapper.skill.01.desc');
+    const button = cat.entries.find(e => e.id === 'class.scrapper.skill.01.button');
     const limited = cat.entries.find(e => e.hardMax != null && e.hardMax < 80 && e.placeholders.length === 0);
     /* A line that lives in a design sheet: the edit has to land in data/levels.tsv. */
     const sheet = cat.entries.find(e => e.file === 'src/levels.js' && e.text.length > 40 && !e.placeholders.length);
-    if (!plain || !skill || !limited || !sheet) fail('could not find sample entries for the round trip');
+    if (!plain || !skill || !button || !limited || !sheet) fail('could not find sample entries for the round trip');
     process.stdout.write('edit ' + plain.id + '\nedit ' + skill.id + '\nlimit ' + limited.id + '\n');
 
     const md = fs.readFileSync(MD, 'utf8');
-    const removed = skill.text.replace(/\{percent\}/, '');
+    const removed = skill.text.replace(/\{dmg\}/, '');
     let bad = replaceBlock(md, skill.id, removed);
     const tmp = path.join(ROOT, '.tmp', 'game-text-bad.md');
     fs.mkdirSync(path.dirname(tmp), { recursive: true });
@@ -145,23 +146,29 @@ function main() {
     const quoted = 'Don\'t say "never" — the moors remember. 🔥';
     const skilled = skill.text.replace('A wide swing.', 'A wide, honest swing.');
     if (skilled === skill.text) fail('skill text had no anchor to edit');
-    if (!/\{percent\}/.test(skilled) || !/\{rank\}/.test(skilled)) fail('edit dropped a placeholder');
+    if (!/\{dmg\}/.test(skilled) || !/\{chance\}/.test(skilled)) fail('edit dropped a placeholder');
+    if (!/\n/.test(button.text)) fail('the Stop Sign button has no line break to keep');
+    const buttonLine = button.text + 'S';
     let next = replaceBlock(md, plain.id, quoted);
     next = replaceBlock(next, skill.id, skilled);
+    next = replaceBlock(next, button.id, buttonLine);
     const sheetLine = sheet.text + ' The sheet remembers.';
     next = replaceBlock(next, sheet.id, sheetLine);
     const edited = path.join(ROOT, '.tmp', 'game-text-edit.md');
     fs.writeFileSync(edited, next);
     const applied = run('node', ['tools/text/import.js', edited]);
     process.stdout.write(applied);
-    must(applied, /changed: 3/, 'expected three edits');
+    must(applied, /changed: 4/, 'expected four edits');
     if (!fs.readFileSync(path.join(ROOT, 'data', 'levels.tsv'), 'utf8').includes(sheetLine)) fail('the sheet edit did not land in data/levels.tsv');
     if (!fs.readFileSync(path.join(ROOT, 'src', 'levels.js'), 'utf8').includes(sheetLine)) fail('the sheet edit was not baked into src/levels.js');
     const now = fs.readFileSync(srcPath, 'utf8');
     if (!now.includes('🔥') || !/Don\\?'t say \\?"never\\?"/.test(now)) fail('quotes, apostrophe, or emoji did not land in ' + plain.file);
-    const skillSrc = fs.readFileSync(path.join(ROOT, skill.file), 'utf8');
-    if (!skillSrc.includes('A wide, honest swing.')) fail('skill edit did not land');
-    if (!skillSrc.includes(skill.placeholders.find(p => p.name === 'percent').expr)) fail('placeholder expression was dropped');
+    const skillTsv = fs.readFileSync(path.join(ROOT, 'data', 'skills.tsv'), 'utf8');
+    if (!skillTsv.includes('A wide, honest swing.')) fail('the skill edit did not land in data/skills.tsv');
+    if (!skillTsv.includes(buttonLine.replace(/\n/g, '\\n') + '\t')) fail('the button edit did not land in data/skills.tsv with its line break');
+    const skillSrc = fs.readFileSync(path.join(ROOT, 'src', 'skills.js'), 'utf8');
+    if (!skillSrc.includes('A wide, honest swing.')) fail('the skill edit was not baked into src/skills.js');
+    if (!skillSrc.includes('dmg=pct(1.3+.15*L)')) fail('the skill formula was dropped');
 
     run('sh', ['build.sh'], { stdio: 'inherit' });
     run('node', ['tools/smoke.js'], { stdio: 'inherit' });

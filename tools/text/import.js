@@ -80,8 +80,12 @@ function parseEntries(md) {
 /* Generated files and the sheet each is baked from (tools/data/bake.js). */
 const SHEETS = {
   'src/monstats.js': ['data/monstats.tsv'], 'src/treasure.js': ['data/treasure.tsv'], 'src/levels.js': ['data/levels.tsv'],
-  'src/items.js': ['data/itemtypes.tsv', 'data/affixes.tsv', 'data/uniques.tsv', 'data/sets.tsv']
+  'src/items.js': ['data/itemtypes.tsv', 'data/affixes.tsv', 'data/uniques.tsv', 'data/sets.tsv'],
+  'src/skills.js': ['data/skills.tsv', 'data/classes.tsv']
 };
+/* Sheets whose cells spell a line break as \n (the bake turns it back): skill button labels. */
+const SHEET_BREAKS = new Set(['src/skills.js']);
+const cellOf = (file, t) => SHEET_BREAKS.has(file) ? t.replace(/\n/g, '\\n') : t;
 
 function main() {
   const args = process.argv.slice(2);
@@ -160,14 +164,16 @@ function main() {
     const tsvs = SHEETS[ed.cat.file];
     if (!tsvs) continue;
     apply.splice(apply.indexOf(ed), 1);
-    if (/[\t\r\n]/.test(ed.text)) { skipped.push({ id: ed.cat.id, why: 'a line in ' + tsvs.join(' or ') + ' cannot hold a tab or a line break' }); continue; }
+    if ((SHEET_BREAKS.has(ed.cat.file) ? /[\t\r]/ : /[\t\r\n]/).test(ed.text)) { skipped.push({ id: ed.cat.id, why: 'a line in ' + tsvs.join(' or ') + ' cannot hold a tab or a line break' }); continue; }
     sheetEdits.push(ed);
   }
   const sheetRows = {};
   const rowsOf = tsv => sheetRows[tsv] || (sheetRows[tsv] = fs.readFileSync(path.join(ROOT, tsv), 'utf8').split('\n').map(l => l.split('\t')));
   for (const ed of sheetEdits) {
     let hits = 0;
-    for (const tsv of SHEETS[ed.cat.file]) rowsOf(tsv).forEach((r, i) => { if (i > 0) r.forEach((c, j) => { if (c === ed.cat.text) { r[j] = ed.text; hits++; } }); });
+    for (const tsv of SHEETS[ed.cat.file]) rowsOf(tsv).forEach((r, i) => { if (i > 0) r.forEach((c, j) => { if (c === cellOf(ed.cat.file, ed.cat.text)) { r[j] = cellOf(ed.cat.file, ed.text); hits++; }
+      /* Words inside a skill formula, such as 'Two copies' in L>=5?'Two copies':'A copy'. */
+      else if (SHEET_BREAKS.has(ed.cat.file) && !/'/.test(ed.text) && c.includes("'" + ed.cat.text + "'")) { r[j] = c.split("'" + ed.cat.text + "'").join("'" + ed.text + "'"); hits++; } }); });
     if (!hits) skipped.push({ id: ed.cat.id, why: 'no cell in ' + SHEETS[ed.cat.file].join(' or ') + ' holds this line any more' });
     else apply.push(ed);
   }

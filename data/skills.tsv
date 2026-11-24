@@ -1,0 +1,121 @@
+class	row	name	button	kind	cost	cd	calc	desc
+scrapper	1	Stop Sign	STOP\nSIGN	active	5	0.8	dmg=pct(1.3+.15*L); chance=15+2*L	A wide swing. The machine in front takes {dmg}. Everyone else in the swing takes 22% of that, with a {chance}% chance to stun.
+scrapper	2	Hurl	HURL	active	6	0.6	dmg=pct(1.2+.2*L)	Throw scrap that passes through enemies for {dmg} damage.
+scrapper	3	Iron Hide		passive			armor=8*L; life=4*L	Passive. +{armor}% armor and +{life}% life.
+scrapper	4	Turnstile	TURN-\nSTILE	active	12	1.5	dmg=pct(1.5+.22*L)	Spin. The nearest machine takes {dmg}. Everyone else in the spin takes 22% of that.
+scrapper	5	Picket Rush	PICKET\nRUSH	active	12	4	dmg=pct(1.2+.3*L)	Rush forward, untouchable, hitting each enemy in the path for {dmg}.
+scrapper	6	War Horn	WAR\nHORN	active	16	10	sec=fixed1(1+.2*L)	Stun enemies around you for {sec}s and gain +60% armor for 8s.
+scrapper	7	Overtime	OVER-\nTIME	active	25	18	sec=6+L; leech=6+L	For {sec}s: +40% attack speed and {leech}% life stolen per hit.
+scrapper	8	Earthbreaker	EARTH-\nBREAKER	active	20	7	dmg=pct(2.2+.35*L)	Leap to the nearest enemy and slam for {dmg}. Anyone else in the slam takes 22% of that.
+scrapper	9	Solidarity		passive			damage=3*L	Passive. +{damage}% damage for each enemy near you, up to five.
+scrapper	10	Lunch Pail	LUNCH\nPAIL	active	16	14	regen=fixed1(2+.4*L); stores=round(28+6*L)	Set it down. You and anyone fighting beside it recover {regen}% of their life each second from the pail, until its stores ({stores}% of your life) run out.
+scrapper	11	Seniority		passive			bonus=6*L	Passive. The damage type on the weapon in your hand gains +{bonus}%.
+scrapper	12	Hold the Line		passive			armor=4*L	Passive. Each second you have not dashed adds {armor} armour and 5% damage reduction, up to six seconds. A dash spends it.
+scrapper	13	Call the Strike	CALL THE\nSTRIKE	active	18	11	dmg=pct(.55+.08*L)	A horn. Ordinary machines are pushed back. Elites and bosses are pulled in. Everyone caught takes {dmg} noise.
+scrapper	14	Two-Handed	TWO-\nHANDED	active	14	9		Your next three swings are slow, cannot be interrupted, and hit a wider arc.
+scrapper	15	Last Shift	LAST\nSHIFT	active	24	22	sec=fixed1(4+.3*L); leech=8+L	For {sec}s your swings leech {leech}% and you do not flinch. If you fall while it is up, you fall.
+hacker	1	Arc Chain	ARC\nCHAIN	active	11	1.2	enemies=3+floor(L/2); dmg=pct(1.2+.18*L); ward=ward_sec; paid=round(ward_pct*100)	Lightning that leaps through {enemies} enemies for {dmg} each. For {ward}s after you cast it, {paid}% of each hit is paid from energy, and only as much as you have.
+hacker	2	Spark Lance	SPARK\nLANCE	active	5	0.5	dmg=pct(1.4+.2*L)	A bolt that pierces every enemy in a line for {dmg}. Primes your next Arc Chain within 3 seconds for +30%.
+hacker	3	Cipher Ward		passive			drain=min(cipher_cap*100,cipher_per*100*L)	Passive. {drain}% of damage taken drains energy instead of life.
+hacker	4	Null Nova	NULL\nNOVA	active	18	7	dmg=pct(.9+.2*L); sec=fixed1(1.5+.2*L)	A blast around you: {dmg} damage and {sec}s stun.
+hacker	5	Watchdog	WATCH-\nDOG	active	25	16	sec=10+2*L; dmg=pct(.5+.08*L)	Deploy a turret for {sec}s that fires for {dmg} per shot.
+hacker	6	Overclock		passive			energy=L; faster=3*L	Passive. +{energy} energy per second and {faster}% faster skill recovery.
+hacker	7	Black Storm	BLACK\nSTORM	active	30	12	dmg=pct(.7+.12*L)	Call a storm on a spot for 4s. Shards fall there, and each strike deals {dmg}.
+hacker	8	Botnet	BOTNET	active	30	20	sec=15+L; dmg=pct(.4+.07*L)	Hijack three drones for {sec}s. Each bite deals {dmg}.
+hacker	9	Zero Day		passive			deadly=3*L; dmg=pct(2+.1*L)	Passive. +{deadly}% deadly strike chance, and deadly strikes deal {dmg}.
+hacker	10	Ground Fault	GROUND\nFAULT	active	14	6	sec=fixed1(3.2+.15*L); dmg=pct(.4+.06*L)	A line of heat on the floor for {sec}s, {dmg} every half second. Casting it locks your hands for a moment.
+hacker	11	Packet Storm	PACKET\nSTORM	active	16	8	dmg=pct(.5+.08*L)	Mark a spot. A noise storm arrives there after a short delay and strikes for {dmg}. Walking away does not move it.
+hacker	12	Schema		passive			element=schema; bonus=8*L	Passive. You work in one element{element}. Damage of that type gains +{bonus}%. The other two do not. Sister Null can make you choose again. Dying cannot.
+hacker	13	Step Back	STEP\nBACK	active	8	4		About four paces back along your facing.
+hacker	14	Patched		passive			barrier=round((10+2*L)); cap=round(20+2*L)	Passive. {barrier}% of the Surge damage you deal becomes a barrier, up to {cap}% of your life. Nothing, if your Schema is Heat or Noise.
+hacker	15	Kill Dash Nine	KILL -9	active	26	16	dmg=pct(2.8+.4*L)	One machine, for {dmg} of your Schema element. It ignores that element's resistance, once. A resistance of zero is still a wall. Casting it locks your hands.
+courier	1	Scatter Shot	SCATTER	active	9	1.2	blades=3+floor(L/2); dmg=pct(.9+.1*L); dmg2=pct(.5+.06*L)	Throw a fan of {blades} blades for {dmg} each. Anything within arm’s reach is also cut for {dmg2}.
+courier	2	Fleet Step	FLEET\nSTEP	active	9	3.5	sec=fixed1(2+.3*L)	Dash, untouchable, then run 50% faster for {sec}s.
+courier	3	Evasion		passive			speed=2*L; dodge=min(35,2.5*L)	Passive. +{speed}% run speed and {dodge}% chance to avoid any hit.
+courier	4	Lure	LURE	active	20	12	dmg=pct(2.5+.4*L)	Drop a decoy parcel. Machines attack it, then it bursts for {dmg}.
+courier	5	Tack Strip	TACK\nSTRIP	active	14	8	dmg=pct(.25+.05*L)	Scatter spikes for 6s that slow enemies and deal {dmg} twice a second.
+courier	6	Scavenger		passive			credits=10*L; mf=5*L	Passive. +{credits}% credits and +{mf}% magic find.
+courier	7	Rush Order	RUSH\nORDER	active	22	8	dmg=pct(.5+.07*L)	A 1.5s stream of blades at the nearest enemy, {dmg} each.
+courier	8	Signed For	SIGNED\nFOR	active	16	6	dmg=pct(3+.5*L)	Strike the nearest enemy for {dmg}. It takes +30% damage for 8s.
+courier	9	Deadeye		passive			chance=8*L; deadly=2*L	Passive. {chance}% chance for throws to pierce and +{deadly}% deadly strike.
+courier	10	Return to Sender	RETURN\nSENDER	active	12	5	dmg=pct(1.1+.16*L)	A throw that goes out and comes back, {dmg} on each pass.
+courier	11	Route Knowledge		passive			dodge=6+2*L; sec=fixed1(2+.2*L)	Passive. After a dash, you avoid {dodge}% more hits for {sec}s. Standing still does nothing.
+courier	12	Second Drop	SECOND\nDROP	active	16	10		One decoy copies your last throw, then stays on a 4.5-pace leash for 6s. Leave it behind and it pops.
+courier	13	Manifest	MANIFEST	active	14	6	dmg=pct(1+.14*L)	A piercing throw for {dmg} that splits into two after the first machine it hits.
+courier	14	Hazard Pay		passive			pay=floor((3+L)*cpi); mf=6*L	Passive. A throw that kills pays {pay} extra credits and finds gear as if you had +{mf}% magic find. A dash does not pay.
+courier	15	Missed Connection	MISSED\nCONN	active	18	12	sec=fixed1(4+.25*L)	Mark a machine. If it dies within {sec}s, to you or to anyone with you, you appear where it fell and your next throw costs nothing.
+anon	1	Honeypot	HONEY-\nPOT	active	14	9	dmg=pct(2.2+.35*L)	Plant a lure. Machines swarm it for 3s, then it bursts for {dmg} and stuns.
+anon	2	Proxy Hop	PROXY\nHOP	active	10	3.5	dmg=pct(1.6+.25*L)	Appear behind the nearest machine and stab for {dmg}, always a deadly strike.
+anon	3	OpSec		passive			chance=min(35,2.5*L); deadly=2*L	Passive. {chance}% chance to avoid any hit and +{deadly}% deadly strike.
+anon	4	Logic Bomb	LOGIC\nBOMB	active	12	2.5	dmg=pct(3+.5*L)	Lay a mine that blows for {dmg} when a machine steps near. Up to four.
+anon	5	Incognito	INCOG-\nNITO	active	16	12	sec=fixed1(3+.3*L); dmg=pct(2.5+.3*L)	Vanish for {sec}s. Machines forget you. Your next blow deals {dmg}.
+anon	6	Dox	DOX	active	12	6	sec=8+L; dmg=pct(1+.2*L)	Expose a machine and everything near it: +30% damage taken for {sec}s, and {dmg} now.
+anon	7	Zip Bomb	ZIP\nBOMB	active	22	8	dmg=pct(1.4+.2*L); dmg2=pct(1.2+.2*L)	One blast of {dmg} that unpacks into five more of {dmg2}.
+anon	8	Sockpuppet	SOCK-\nPUPPET	active	24	18	copies=L>=5?'Two copies':'A copy'; plural=L>=5?'':'s'; sec=10+L; dmg=pct(.5+.08*L)	{copies} of you fight{plural} for {sec}s, dealing {dmg} and drawing fire.
+anon	9	Legion	LEGION	active	35	20	dmg=pct(1.2+.2*L)	A dozen unseen blades strike across the screen for {dmg} each.
+anon	10	Rehearsal	RE-\nHEARSE	active	10	1.4	dmg=pct(.7+.1*L)	A strike for {dmg}. Another within 3s adds a charge, up to three.
+anon	11	The Dump	THE\nDUMP	active	8	4	dmg=pct(.9+.12*L)	Spend every charge. One is a rust bleed. Two is a silence. Three is a screen of blades for {dmg}. A plain attack spends one charge and bleeds. Charges do not survive a zone change.
+anon	12	No Attribution		passive				Passive. While Incognito is up, laying a mine does not break it, and the mine arms faster. Nothing, while you can be seen.
+anon	13	Dead Drop	DEAD\nDROP	active	12	3		Place a mark. Activate again to appear there. One mark. It does not explode.
+anon	14	Cutout		passive				Passive. The first hit that would destroy a mine or a sockpuppet is ignored. It does not apply to you.
+anon	15	We Were Never Here	NEVER\nHERE	active	20	16		Every mine and sockpuppet goes off as a silence, and you drop into Incognito. If you have none, nothing happens.
+founder	1	Interns	INTERN	active	8	0.5	dmg=pct(.35+.05*L); most=min(7,2+floor(L/2))	Summon an intern that fights for {dmg}. You keep up to {most}. They follow you everywhere, step in front of a blow, and each one alive cuts the damage you take by 5%, up to 20%.
+founder	2	Cease & Desist	CEASE &\nDESIST	active	14	7	sec=fixed1(2+.3*L); dmg=pct(.8+.15*L)	Bind every machine in an area for {sec}s and deal {dmg}.
+founder	3	Equity		passive			damage=8*L; life=3*L	Passive. Your workforce deals +{damage}% damage and you gain +{life}% life.
+founder	4	Contractors	CONTR-\nACTOR	active	14	1	dmg=pct(.45+.07*L); most=1+floor(L/3)	Summon a drone that shoots for {dmg}. You keep up to {most}.
+founder	5	Crunch	CRUNCH	active	20	16	sec=8+L	For {sec}s your workforce attacks 60% faster and hits 30% harder.
+founder	6	Mech Suit	MECH\nSUIT	active	25	22	sec=10+L; dmg=pct(1.6+.25*L)	For {sec}s: double armor, and your attacks become slams of {dmg}. Heals you 30% of your life.
+founder	7	Chief of Staff	CHIEF	active	30	10	dmg=pct(1.2+.2*L)	Summon one hulking enforcer that machines attack first. It hits for {dmg} in an arc.
+founder	8	Acqui-hire	ACQUI-\nHIRE	active	28	18	sec=12+2*L; champions=L>=5?' Champions too.':' Champions resist until rank 5.'	Turn the nearest machine to your side for {sec}s.{champions}
+founder	9	Layoffs	LAY-\nOFFS	active	10	12	dmg=pct(2+.4*L)	Every summoned worker explodes for {dmg}. Each one heals you 5%.
+founder	10	Garden Leave	GARDEN\nLEAVE	active	16	10	dmg=pct(.4+.06*L); sec=fixed1(4+.3*L)	Requires a worker or a converted machine killed in the last 4s. Curse whatever killed them: {dmg} a second for {sec}s, and they cannot be healed. With no body, nothing happens.
+founder	11	Non-Compete	NON-\nCOMPETE	active	14	8	sec=fixed1(5+.3*L)	One machine can attack only you for {sec}s. Your workforce will not hit it.
+founder	12	Vesting		passive			damage=4+L	Passive. A worker gains a stack every 3s it stays alive. Each stack is +{damage}% damage. Summoning over them, or laying them off, takes every stack.
+founder	13	Term Sheet	TERM\nSHEET	active	28	14	dmg=pct(.9+.12*L)	One officer. You may feed it a weapon from your pack. The weapon is consumed, and the officer strikes with that damage type for {dmg}. Empty-handed, it is weaker and it is Impact.
+founder	14	Org Debt		passive			yours=4+L; theirs=8+L	Passive. Each worker on the field cuts the damage you deal by {yours}% and raises theirs by {theirs}%. It stacks. Swing it yourself with a full headcount and you are playing this class wrong.
+founder	15	Liquidation	LIQUID-\nATION	active	18	9	dmg=pct(1.1+.15*L)	Enemy corpses within 5 paces explode for {dmg}. Your staff does not. Layoffs is the button that spends them.
+homesteader	1	Cold Frame	COLD\nFRAME	active	12	6	dmg=pct(.22+.04*L)	A rust patch with a 2.2-pace radius for 6 seconds. It slows, and deals {dmg} every half second. It ends if you enter a chassis. While you have a plot down you take 12% less, and 4% less for each further plot, up to 28%.
+homesteader	2	Wear the Hound	HOUND	active	8	1		Become the hound: faster, melee, less armour. Plot and flock skills grey out. A ranged weapon keeps its damage and loses its reach. Click Hound again to step out, or Shed. Your hands are busy for 0.7s either way.
+homesteader	3	Strays	STRAYS	active	10	1	most=min(4,2+floor(L/3)); dmg=pct(.32+.05*L)	A feral drone, up to {most}, biting for {dmg}. Past 4.5 paces they stop obeying and will hit you if you are closest.
+homesteader	4	Compost	COMPOST	active	8	2	damage=round((1.35+.05*L)*100)	A corpse within 3 paces sinks. Your next plot skill deals {damage}% damage. With no body, nothing happens.
+homesteader	5	Wear the Hull	HULL	active	12	1		Climb into the hull: slower, more armour, no dash. Hound skills grey out. The same reach collapse. Drops the hound if you were wearing it. Click Hull again to step out, or Shed.
+homesteader	6	The Bull	BULL	active	18	8	dmg=pct(.9+.12*L)	One bull. It chooses its own target and hits for {dmg}. You cannot ride it.
+homesteader	7	Hedgerow	HEDGE	active	14	8		A line that blocks movement for 4 seconds. Machines and you.
+homesteader	8	Shed	SHED	active	4	1.2		Leave the form. Your hands are busy for 0.7s. Plot and flock work again.
+homesteader	9	Go Feral		passive			damage=round((.4+.05*L)*100)	Passive. Drones past the leash deal +{damage}% damage and will not come back when you do.
+homesteader	10	Kill Frost	KILL\nFROST	active	22	14	dmg=pct(.35+.06*L)	Rust weather, 3.4 paces, for 8 seconds, {dmg} every half second. It ends the moment you enter a chassis.
+homesteader	11	Wear What You Killed	WEAR\nKILL	active	16	8		Consume a machine that is not elite and wear it until you shed. You deal its damage type. Your flock despawns. Your weapons lose their range.
+homesteader	12	Rootbound		passive				Passive. Drones standing in your plots do not leash. Step out and the rule returns.
+homesteader	13	Salt the Earth	SALT	active	18	12	dmg=pct(.8+.12*L)	Every plot you have placed bursts for {dmg} rust and is gone.
+homesteader	14	Too Big for the Door		passive			armor=3*L	Passive. The hull cannot dash. Armour in the hull rises the longer you have worn it: +{armor} every 2 seconds, up to 8 times.
+homesteader	15	Slaughter Weight	SLAUGH-\nTER	active	20	12	dmg=pct(.28+.05*L)	Each drone and the bull become a rust plot where they stand, {dmg} every half second. The flock is spent. You cannot do this from a chassis.
+witness	1	Look	LOOK	active	4	0.5		Mark one machine with Testimony. The stack grows while you can see them and you are not casting. No Record cost. A swing against a marked machine hits 7% harder for each point of Testimony, up to six.
+witness	2	The Sentence	THE\nSENTENCE	active	8	2	sec=fixed2(0.4+.08*L)	Spend Record, up to 25. Delay that machine's next attack by {sec}s at a full page. Less Record, a shorter delay. For 2.4s afterward you take 48% less, and an empty page does not punish you while that holds.
+witness	3	Margin		passive			faster=20*L	Passive. Below half life the Record fills {faster}% faster.
+witness	4	Cross-reference	CROSS-\nREF	active	14	6	copy=round((.75+.05*L)*100)	Spend 20 Record. Copy that machine's last attack onto another machine you have Testimony on, at {copy}% of the blow.
+witness	5	Pull the Thread	PULL THE\nTHREAD	active	12	4	dmg=fixed1(4.6+.5*L)	Spend most of the Record. One Impact hit, {dmg} for each point of Testimony, a little more when the page you spend is full, and your weapon is not consulted. No Testimony, no blow, and an empty page is not spent. 42% more for each level after the first, so the page keeps up with the machines.
+witness	6	Filed		passive			sec=fixed1(2+.4*L)	Passive. Testimony does not decay for {sec}s after the machine leaves the screen.
+witness	7	Correction	CORRECT	active	10	8		Once per district. Spend the whole Record to restore the life you lost on the last hit, not a share of your maximum. An empty Record corrects nothing.
+witness	8	Redaction	REDACT	active	12	8		Spend 30 Record. For 2s machines can see you and cannot land a blow. They still path toward you. This is not stealth.
+witness	9	The Footnote		passive			faster=8*L; lower=4*L	Passive. The Record fills {faster}% faster. Maximum life is {lower}% lower.
+witness	10	On the Record	ON THE\nRECORD	active	16	10	more=12*L	Spend 25 Record. A machine with high Testimony takes {more}% more damage from everyone for 8s, including people with no points in this class.
+witness	11	Unnamed Source	UNNAMED\nSOURCE	active	14	12		Spend 20 Record. Grant one ally, or your hireling, a single swing that deals Sound. Then it is gone. You never deal Sound.
+witness	12	Colophon		passive			dr=14+3*L; less=min(45,4*L); more=3*L	Passive. {dr}% damage reduction. Record above 80: you take {less}% less on top of that. Record below 20: you take {more}% more. The meter is the defence.
+witness	13	Publish	PUBLISH	active	18	14	dmg=pct(1.6+.25*L)	Consume all Testimony on screen. Each second you watched is {dmg} Impact. The Record drops to 0. 1% more for each level you have.
+witness	14	Named Party		passive			damage=5*L	Passive. Allies deal +{damage}% damage to machines you have Testimony on. You do not.
+witness	15	Retraction		passive				Passive. If you would die with Record above 80, you drop to 1 life, the Record hits 0, and this cannot happen again for a long time. If you would die with an empty Record, you die.
+maxi	1	Tick Tock Next Block	TICK\nTOCK	active	9	2.4	dmg=pct(.5+.08*L); dmg2=pct(4+.8*L)	Nine quick strikes of {dmg}. The tenth is a block and lands for {dmg2}. While the strikes are landing, and for 2.2s after the block, you take 22% less.
+maxi	2	Have Fun Staying Poor	HAVE FUN\nSTAYING\nPOOR	active	12	4	dmg=pct(1.4+.25*L); sec=fixed1(1.2+.15*L)	Close range, {dmg}. It cannot miss, and it stuns for {sec}s.
+maxi	3	Few Understand This		passive			damage=3*L	Passive. +{damage}% damage for every machine still standing on screen, up to eight. Each one within six paces also cuts the damage you take by 6%, up to five.
+maxi	4	Toxic Maximalism	TOXIC\nMAXI	aura	0	1.5	faster=15+3*L; dmg=pct(.2+.05*L)	Aura. Stays on until you put on another. You attack {faster}% faster and hit {dmg} harder, and so does anybody fighting beside you. You run 50% faster.
+maxi	5	Marked to Market	MARKED\nMKT	aura	0	1.5	bonus=max(30,20+4*L); paces=fixed1(3.5+.15*L)	Aura. Everything within {paces} paces of you takes +{bonus}% damage from every source.
+maxi	6	Orange Pill	ORANGE\nPILL	active	11	5	sec=round((6+.3*L)*10)/10; dmg=pct(1.6+.3*L)	Charge through the line, untouchable, for {dmg} to everything you pass. Whatever survives takes +30% damage for {sec}s.
+maxi	7	Blessed Hashrate	BLESSED\nHASHRATE	active	16	1.1	dmg=pct(1.1+.22*L)	Hammers spiral out from you, {dmg} each, and they do not stop at the first thing they meet.
+maxi	8	Proof of Work	PROOF\nOF WORK	aura	0	1.5	dmg=pct(.3+.07*L)	Aura. Everything near you takes {dmg} twice a second, for as long as you are near it.
+maxi	9	Twenty-One Million		passive			damage=3*L; armor=8*L; dr=8+2*L	Passive. +{damage}% damage, +{armor}% armour, and +{dr}% damage reduction. The difficulty cannot dilute what you hit for.
+maxi	10	The Halving	THE\nHALVING	active	16	8	loss=fixed1(8+1.2*L)	Sound. Each machine within 4.2 paces loses {loss}% of its current life. It will not be pushed below 35% of its maximum.
+maxi	11	Running a Node		passive			damage=6+2*L	Passive. While an aura is on, allies and your hireling gain +{damage}% damage. You gain half of that. With the aura off, nothing.
+maxi	12	Cite Your Sources	CITE YOUR\nSOURCES	active	14	6		A volley of Sound, and only while an aura is on. Toxic Maximalism makes it fast and light. Marked to Market makes it slow and heavy. Proof of Work makes it tick. No aura, no volley.
+maxi	13	Priced in Sound		passive			keep=55+3*L	Passive. Damage you deal that is not Sound becomes Sound, and you keep {keep}% of it.
+maxi	14	The Dip	THE DIP	active	12	22		You ignore the next hit. You choose when. It does not fire itself when you fall.
+maxi	15	Not Your Keys		passive				Passive. If a hireling or a rendered companion is alive, the hit that would kill you kills them instead, once a minute. Alone, it does nothing.
