@@ -28,6 +28,8 @@ copyFile(path.join(root, 'server', 'server.js'), 'server/server.js');
 copyFile(path.join(root, 'server', 'admin.js'), 'server/admin.js');
 /* The life checks require this. The path is the same one server/lib/plaus.js uses. */
 copyFile(path.join(root, 'src', 'formulas.js'), 'src/formulas.js');
+/* The monster sheet, baked. server/lib/mobs.js reads it for life and experience. */
+copyFile(path.join(root, 'src', 'monstats.js'), 'src/monstats.js');
 copyFile(path.join(root, 'dist', 'unsubscribe.html'), 'dist/unsubscribe.html');
 copyFile(path.join(root, 'dist', 'BUILD'), 'dist/BUILD');
 copyFile(path.join(root, 'LAN-PLAY.md'), 'LAN-PLAY.md');

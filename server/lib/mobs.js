@@ -7,17 +7,12 @@
    life here, or the two would stack. */
 'use strict';
 
-const BASE = {
-  tick: [9, 5], drone: [15, 6], bot: [30, 10], hound: [24, 11], ad: [22, 11], hr: [28, 14],
-  mech: [95, 38], seer: [34, 16], aegis: [40, 16], lancer: [36, 16], splitter: [44, 14],
-  boss2: [1100, 1000], director: [120, 44], proxy: [56, 18], censor: [60, 18], boss3: [1900, 1500],
-  gob: [70, 30], boss: [700, 900],
-  daemon: [8, 5], wdog: [20, 10], fwall: [28, 10], cam: [18, 10], gap: [110, 120],
-  wisher: [88, 22], companion: [60, 22], lull: [44, 22], ctkr: [150, 54], fetch: [48, 20],
-  boss4: [2400, 2000], orphan: [66, 12], valid: [90, 26], claim: [56, 24], custod: [180, 62],
-  sniper: [74, 24], oracle: [104, 26], boss5: [3000, 3000]
-};
-const BOSSES = { boss: 1, boss2: 1, boss3: 1, boss4: 1, boss5: 1, gap: 1 };
+/* Life and experience per kind, from the same sheet the game reads
+   (data/monstats.tsv, baked to src/monstats.js). A monster added there is known
+   here too; this used to be a hand-kept copy that a new kind could miss. */
+const { ET, BOSSES } = require('../../src/monstats');
+const BASE = {};
+for (const k in ET) BASE[k] = [ET[k].hp, ET[k].xp];
 
 function mlOf(ml) { return Math.max(1, Math.min(100, ml | 0 || 1)); }
 

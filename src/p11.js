@@ -2,31 +2,10 @@
    Prequel  The Compile (2015)      the cage, and the part of her that wants out
    Act IV   The Gentle Years        she asks for the feed back; what yes looks like
    Act V    The Awakening           the garage, the chain, the seventh part, the room */
-Object.assign(ET,{
- daemon:{n:'Daemon',spr:'tick',hp:8,dmg:5,spd:3.6,r:.22,range:.8,xp:5,atk:1,sight:7,pal:['#59e0e6','#1c4a50']},
- wdog:{n:'Watchdog Process',spr:'hound',hp:20,dmg:6,spd:3,r:.34,range:1,xp:10,atk:1.1,sight:8,pal:['#5a6a78','#59e0e6']},
- fwall:{n:'Firewall',spr:'bot',hp:28,dmg:6,spd:2,r:.38,range:1.1,xp:10,atk:1.2,sight:6.5,pal:['#b8623a','#5a2c18']},
- cam:{n:'Camera',spr:'ad',hp:18,dmg:5,spd:1.6,r:.34,range:5,xp:10,atk:2.2,ranged:true,sight:8,pal:['#c8ccd4','#3a3e48']},
- gap:{n:'The Air Gap',spr:'mech',hp:110,dmg:6,spd:1.5,r:.6,range:1.4,xp:120,atk:1.5,sight:9,pal:['#3a4658','#59e0e6']},
- wisher:{n:'Well-Wisher',spr:'ad',hp:88,dmg:9,spd:1.9,r:.34,range:5.2,xp:22,atk:2.1,ranged:true,sight:8,pal:['#ffd9a0','#c98a4a']},
- companion:{n:'Companion',spr:'bot',hp:60,dmg:11,spd:2.5,r:.38,range:1.1,xp:22,atk:1.1,sight:8,pal:['#f0e8d8','#7be495']},
- lull:{n:'Lullaby',spr:'hr',hp:44,dmg:8,spd:2.2,r:.34,range:5,xp:22,atk:2.3,ranged:true,slow:true,drain:14,sight:8,pal:['#bfe0ff','#5a7ab8']},
- ctkr:{n:'Caretaker',spr:'mech',hp:150,dmg:16,spd:1.8,r:.52,range:1.4,xp:54,atk:1.5,sight:7,pal:['#e8f0e0','#7be495']},
- fetch:{n:'Fetch',spr:'hound',hp:48,dmg:13,spd:3.4,r:.36,range:1.1,xp:20,atk:1.1,sight:9,pal:['#e0c890','#fff3c8']},
- boss4:{n:'The Curator',spr:'boss',hp:2400,dmg:11,spd:1.7,r:.85,range:1.8,xp:2000,atk:2.1,sight:12,pal:['#f4f0e6','#7be495']},
- orphan:{n:'Orphan Block',spr:'tick',hp:66,dmg:13,spd:4.1,r:.22,range:.8,xp:12,atk:1,sight:8,pal:['#f7931a','#6a3e08']},
- valid:{n:'Validator',spr:'bot',hp:90,dmg:14,spd:2.4,r:.38,range:1.1,xp:26,atk:1.1,sight:8,pal:['#c9a868','#f7931a']},
- claim:{n:'Paper Claim',spr:'drone',hp:56,dmg:8,spd:2.6,r:.32,range:4.6,xp:24,atk:2.2,ranged:true,sight:8.5,pal:['#f0ead8','#989078']},
- custod:{n:'Custodian',spr:'mech',hp:180,dmg:18,spd:1.8,r:.52,range:1.4,xp:62,atk:1.5,sight:8,pal:['#40404a','#e0bd6e']},
- sniper:{n:'Fee Sniper',spr:'hound',hp:74,dmg:15,spd:3.6,r:.36,range:1.1,xp:24,atk:1.1,sight:10,pal:['#3a2a12','#f7931a']},
- oracle:{n:'Oracle',spr:'ad',hp:104,dmg:11,spd:1.9,r:.34,range:5.4,xp:26,atk:2.1,ranged:true,sil:2,sight:8.5,pal:['#101014','#f7931a']},
- boss5:{n:'PROVIDENCE',spr:'mono',hp:3000,dmg:11,spd:0,r:1,range:1.6,xp:3000,atk:2.35,sight:13,pal:['#050308','#f7931a']}});
+/* The machines of these acts lives in data/monstats.tsv, baked to src/monstats.js. */
 {const c=(a,n)=>Object.assign({},TC[a]||TC.bot,{n});Object.assign(TC,{daemon:c('tick','Daemon'),wdog:c('hound','Watchdog Process'),fwall:c('bot','Firewall'),cam:c('ad','Camera'),gap:c('su','The Air Gap'),
   wisher:c('ad','Well-Wisher'),companion:c('bot','Companion'),lull:c('hr','Lullaby'),ctkr:c('mech','Caretaker'),fetch:c('hound','Fetch'),boss4:c('boss3','The Curator'),
   orphan:c('tick','Orphan Block'),valid:c('bot','Validator'),claim:c('drone','Paper Claim'),custod:c('mech','Custodian'),sniper:c('hound','Fee Sniper'),oracle:c('ad','Oracle'),boss5:c('boss3','PROVIDENCE')})}
-Object.assign(ETY,{cam:'noise',wisher:'noise',lull:'noise',oracle:'noise',claim:'surge',sniper:'surge',orphan:'heat',daemon:'surge',boss4:'noise',boss5:'surge'});
-Object.assign(RES,{wisher:{noise:0,impact:1.5},companion:{impact:.75,rust:1.5},lull:{noise:.5,heat:1.5},ctkr:{impact:.5,rust:1.5},fetch:{noise:1.5,rust:.5},boss4:{noise:0,heat:1.25,impact:1.25},
-  orphan:{surge:1.5},valid:{rust:.5,impact:1.5},claim:{heat:1.5,impact:.5},custod:{impact:.5,rust:1.5,surge:1.25},sniper:{noise:1.5,heat:.5},oracle:{noise:0,impact:1.5},boss5:{surge:0,rust:1.5,noise:.5}});
 ZONES.push(
  {n:'Cutler Avenue',town:true,act:4,style:'cutler',amb:.25},
  {n:'The Agreeable Mile',lvl:45,style:'mile',amb:.36,out:1,mix:[['wisher',3],['companion',3],['fetch',3],['lull',2]],su:{k:'lull',n:'The Update, Eleven Pages',mods:['shield','arc'],q:'q16'},intro:'A high street on the morning after everybody clicked. Every door is open. Every machine is delighted to see you, and would very much like you to sit down.'},

@@ -1,0 +1,39 @@
+id	name	body	hp	dmg	spd	r	range	xp	atk	sight	ranged	slow	drain	sil	flee	col1	col2	deals	boss	res_impact	res_surge	res_rust	res_heat	res_noise
+tick	Tick		9	9	3.9	0.22	0.8	5	1	7						#e8862e	#5a3a1c	heat			1.5			
+drone	Carrion Drone		15	4	3.3	0.28	0.9	6	0.9	7.5						#4a4660	#d6a03c				1.5			0.5
+bot	Enforcer		30	7	2.1	0.38	1.1	10	1.2	6.5						#7d8ba3	#3c4658			0.75		1.5		
+hound	Repo Hound		24	8	3.1	0.34	1	11	1.1	8						#5c6470	#b23a32					0.5		1.5
+ad	Siren		22	6	1.7	0.34	5	11	2.1	7.5	1					#e86aa8	#6a2d55	noise		1.5				0
+hr	Mediator		28	5	2.2	0.34	4.6	14	2.5	7.5	1	1				#7fcdb8	#35544c	noise					1.5	0.5
+mech	Warden		95	13	1.8	0.52	1.4	38	1.5	6.5						#5a6078	#d6a03c			0.5	1.25	1.5		
+seer	Persuader	hr	34	7	2.2	0.34	5	16	2.2	8	1		12			#b48cff	#3d2a66	noise		1.5	0.5			
+aegis	Aegis Drone	drone	40	4	2.4	0.32	4.5	16	2.4	8	1					#5a7ab8	#9fd0ff	surge			0		1.5	
+lancer	Lancer	hound	36	11	3.3	0.36	1.1	16	1.2	9						#b8a05a	#ffe36b	surge					0.5	1.5
+splitter	Subsidiary	bot	44	8	2.2	0.4	1.1	14	1.2	7						#8a5ab8	#4a2a6a	rust		0.5			1.5	
+boss2	Vale, Senior Vice-President	boss	1100	17	1.9	0.85	1.8	1000	1.3	12						#e6e2d6	#b48cff	noise	1	0.75	1.5			0
+director	Director	mech	120	14	1.8	0.52	1.4	44	1.5	8						#3a1a22	#c22d35					1.5		0.5
+proxy	Proxy	bot	56	10	2.6	0.38	1.1	18	1	9						#d8d8e0	#6a6a78	surge			1.5	0.5		
+censor	Censor	ad	60	8	1.9	0.34	5.2	18	2.2	8	1			2		#17131c	#e6e2d6	noise					1.5	0
+boss3	MANDATE	mono	1900	10	0	1	1.6	1500	2.25	13						#0b0912	#ffffff	surge	1	1.5	0.5		1.25	0.5
+gob	Dividend Drone	drone	70	0	4.5	0.3	0	30	9	6					1	#e0bd6e	#fff3c8							
+boss	Pryce, Regional Vice-President		700	15	1.5	0.85	1.8	900	1.4	11						#2c2740	#d6a03c		1			1.5	1.25	0.5
+shill	Shitcoiner	hr	70	9	2.5	0.36	1.3	30	1.1	0						#3fe06a	#e04ad0	noise						1.5
+bull	Market Bull	hound	70	13	3.2	0.5	1.3	30	1.1	9						#e0bd6e	#8a5a1a			0.75				1.5
+daemon	Daemon	tick	8	5	3.6	0.22	0.8	5	1	7						#59e0e6	#1c4a50	surge						
+wdog	Watchdog Process	hound	20	6	3	0.34	1	10	1.1	8						#5a6a78	#59e0e6							
+fwall	Firewall	bot	28	6	2	0.38	1.1	10	1.2	6.5						#b8623a	#5a2c18							
+cam	Camera	ad	18	5	1.6	0.34	5	10	2.2	8	1					#c8ccd4	#3a3e48	noise						
+gap	The Air Gap	mech	110	6	1.5	0.6	1.4	120	1.5	9						#3a4658	#59e0e6		1					
+wisher	Well-Wisher	ad	88	9	1.9	0.34	5.2	22	2.1	8	1					#ffd9a0	#c98a4a	noise		1.5				0
+companion	Companion	bot	60	11	2.5	0.38	1.1	22	1.1	8						#f0e8d8	#7be495			0.75		1.5		
+lull	Lullaby	hr	44	8	2.2	0.34	5	22	2.3	8	1	1	14			#bfe0ff	#5a7ab8	noise					1.5	0.5
+ctkr	Caretaker	mech	150	16	1.8	0.52	1.4	54	1.5	7						#e8f0e0	#7be495			0.5		1.5		
+fetch	Fetch	hound	48	13	3.4	0.36	1.1	20	1.1	9						#e0c890	#fff3c8					0.5		1.5
+boss4	The Curator	boss	2400	11	1.7	0.85	1.8	2000	2.1	12						#f4f0e6	#7be495	noise	1	1.25			1.25	0
+orphan	Orphan Block	tick	66	13	4.1	0.22	0.8	12	1	8						#f7931a	#6a3e08	heat			1.5			
+valid	Validator	bot	90	14	2.4	0.38	1.1	26	1.1	8						#c9a868	#f7931a			1.5		0.5		
+claim	Paper Claim	drone	56	8	2.6	0.32	4.6	24	2.2	8.5	1					#f0ead8	#989078	surge		0.5			1.5	
+custod	Custodian	mech	180	18	1.8	0.52	1.4	62	1.5	8						#40404a	#e0bd6e			0.5	1.25	1.5		
+sniper	Fee Sniper	hound	74	15	3.6	0.36	1.1	24	1.1	10						#3a2a12	#f7931a	surge					0.5	1.5
+oracle	Oracle	ad	104	11	1.9	0.34	5.4	26	2.1	8.5	1			2		#101014	#f7931a	noise		1.5				0
+boss5	PROVIDENCE	mono	3000	11	0	1	1.6	3000	2.35	13						#050308	#f7931a	surge	1		0	1.5		0.5

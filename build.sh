@@ -4,13 +4,14 @@
 #   dist/unsubscribe.html                  - fragment for the claude.ai Artifact (no doctype/html/head/body)
 #   dist/Unsubscribe-2087-standalone.html  - the same page wrapped so it opens from the filesystem
 # The wrapper swaps the fragment's bare <title> (its first line) for a real <head>.
-cd "$(dirname "$0")/src" || exit 1
+cd "$(dirname "$0")" && node tools/data/bake.js || exit 1
+cd src || exit 1
 # Sprite atlases are opt-in: SPRITES=1 ./build.sh. They are hundreds of KB each and
 # the normal build must stay the size it was. Without them the renderer falls back
 # to the drawn art on its own.
 SPR=""
 if [ -n "${SPRITES:-}" ] && [ -f sprites.js ]; then SPR="sprites.js "; fi
-ORDER="formulas.js ${SPR}p1.js p2.js p5.js p6.js p7.js p8.js p9.js p10.js p11.js p3.js post.js p4.js p12.js p13.js offsite.js"
+ORDER="formulas.js monstats.js ${SPR}p1.js p2.js p5.js p6.js p7.js p8.js p9.js p10.js p11.js p3.js post.js p4.js p12.js p13.js offsite.js"
 mkdir -p ../dist ../.tmp
 { echo '(()=>{'; cat $ORDER; echo '})();'; } > ../.tmp/all.js
 node --check ../.tmp/all.js || exit 1

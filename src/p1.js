@@ -176,26 +176,7 @@ const MNAMES=['Kit','Juno','Ox','Vesper','Tallow','Rook','Sable','Finch'];
 const ATTR={mgt:['Might','+1.5% damage per point'],ref:['Reflex','+0.3% deadly strike and +1 armor per point'],vit:['Vitality','+4 life per point'],bnd:['Bandwidth','+3 energy per point']};
 
 /* ================= monsters ================= */
-const ET={
- tick:{n:'Tick',hp:9,dmg:9,spd:3.9,r:.22,range:.8,xp:5,atk:1,sight:7,pal:['#e8862e','#5a3a1c']},
- drone:{n:'Carrion Drone',hp:15,dmg:4,spd:3.3,r:.28,range:.9,xp:6,atk:.9,sight:7.5,pal:['#4a4660','#d6a03c']},
- bot:{n:'Enforcer',hp:30,dmg:7,spd:2.1,r:.38,range:1.1,xp:10,atk:1.2,sight:6.5,pal:['#7d8ba3','#3c4658']},
- hound:{n:'Repo Hound',hp:24,dmg:8,spd:3.1,r:.34,range:1,xp:11,atk:1.1,sight:8,pal:['#5c6470','#b23a32']},
- ad:{n:'Siren',hp:22,dmg:6,spd:1.7,r:.34,range:5,xp:11,atk:2.1,ranged:true,sight:7.5,pal:['#e86aa8','#6a2d55']},
- hr:{n:'Mediator',hp:28,dmg:5,spd:2.2,r:.34,range:4.6,xp:14,atk:2.5,ranged:true,slow:true,sight:7.5,pal:['#7fcdb8','#35544c']},
- mech:{n:'Warden',hp:95,dmg:13,spd:1.8,r:.52,range:1.4,xp:38,atk:1.5,sight:6.5,pal:['#5a6078','#d6a03c']},
- seer:{n:'Persuader',spr:'hr',hp:34,dmg:7,spd:2.2,r:.34,range:5,xp:16,atk:2.2,ranged:true,drain:12,sight:8,pal:['#b48cff','#3d2a66']},
- aegis:{n:'Aegis Drone',spr:'drone',hp:40,dmg:4,spd:2.4,r:.32,range:4.5,xp:16,atk:2.4,ranged:true,sight:8,pal:['#5a7ab8','#9fd0ff']},
- lancer:{n:'Lancer',spr:'hound',hp:36,dmg:11,spd:3.3,r:.36,range:1.1,xp:16,atk:1.2,sight:9,pal:['#b8a05a','#ffe36b']},
- splitter:{n:'Subsidiary',spr:'bot',hp:44,dmg:8,spd:2.2,r:.4,range:1.1,xp:14,atk:1.2,sight:7,pal:['#8a5ab8','#4a2a6a']},
- boss2:{n:'Vale, Senior Vice-President',spr:'boss',hp:1100,dmg:17,spd:1.9,r:.85,range:1.8,xp:1000,atk:1.3,sight:12,pal:['#e6e2d6','#b48cff']},
- director:{n:'Director',spr:'mech',hp:120,dmg:14,spd:1.8,r:.52,range:1.4,xp:44,atk:1.5,sight:8,pal:['#3a1a22','#c22d35']},
- proxy:{n:'Proxy',spr:'bot',hp:56,dmg:10,spd:2.6,r:.38,range:1.1,xp:18,atk:1,sight:9,pal:['#d8d8e0','#6a6a78']},
- censor:{n:'Censor',spr:'ad',hp:60,dmg:8,spd:1.9,r:.34,range:5.2,xp:18,atk:2.2,ranged:true,sil:2,sight:8,pal:['#17131c','#e6e2d6']},
- boss3:{n:'MANDATE',spr:'mono',hp:1900,dmg:10,spd:0,r:1,range:1.6,xp:1500,atk:2.25,sight:13,pal:['#0b0912','#ffffff']},
- gob:{n:'Dividend Drone',spr:'drone',hp:70,dmg:0,spd:4.5,r:.3,range:0,xp:30,atk:9,sight:6,flee:1,pal:['#e0bd6e','#fff3c8']},
- boss:{n:'Pryce, Regional Vice-President',hp:700,dmg:15,spd:1.5,r:.85,range:1.8,xp:900,atk:1.4,sight:11,pal:['#2c2740','#d6a03c']}
-};
+/* ET lives in data/monstats.tsv, baked to src/monstats.js. */
 var ZADJ=['','Rusted','Polished','Wired','Sanctioned','Gilded','','Greased','Pruned','Drowned','Liveried','Seraphic','Vested','Minuted','Seated','Ninth','Still'];
 const isBoss=k=>k==='boss'||k==='boss2'||k==='boss3'||k==='boss4'||k==='boss5'||k==='gap';
 const MODS={fast:'Extra Fast',strong:'Extra Strong',shield:'Shielded',arc:'Arc Enchanted',boom:'Volatile',leech:'Siphoning'};
