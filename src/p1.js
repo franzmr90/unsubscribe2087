@@ -369,95 +369,19 @@ const ARC={
  no:'No'};
 
 // three tiers per slot: ilvl 1-6, 7-14, 15+. Weapons carry a damage factor and a speed bonus.
-const BASE={
- weapon:[[{n:'Bent Rebar',d:1,s:0},{n:'Stop Sign',d:1.35,s:-20},{n:'Box Cutter',d:.75,s:25}],[{n:'Signal Baton',d:1,s:0},{n:'Girder Maul',d:1.35,s:-20},{n:'Mono Blade',d:.75,s:25}],[{n:'Arc Sceptre',d:1,s:0},{n:'Wrecking Hammer',d:1.35,s:-20},{n:'Phase Razor',d:.75,s:25}],[{n:'Null Sceptre',d:1,s:0},{n:'Titan Maul',d:1.35,s:-20},{n:'Void Razor',d:.75,s:25}]],
- helm:[[{n:'Hard Hat'}],[{n:'Riot Helm'}],[{n:'Praetor Visor'}],[{n:'Halo Circuit'}]],
- armor:[[{n:'Hi-Vis Vest'},{n:'Padded Hoodie'}],[{n:'Flak Coat'},{n:'Courier Mail'}],[{n:'Exo Plate'},{n:'Aegis Shell'}],[{n:'Seraph Plate'},{n:'Cloud Mantle'}]],
- gloves:[[{n:'Work Gloves'}],[{n:'Rivet Gauntlets'}],[{n:'Servo Fists'}],[{n:'Graviton Fists'}]],
- boots:[[{n:'Worn Sneakers'}],[{n:'Steel-Toes'}],[{n:'Mag Greaves'}],[{n:'Skywalkers'}]],
- belt:[[{n:'Zip-Tie Sash'}],[{n:'Tool Belt'}],[{n:'Power Girdle'}],[{n:'Orbit Girdle'}]],
- ring:[[{n:'Copper Band'}],[{n:'Signet Chip'}],[{n:'Null Ring'}],[{n:'Halo Band'}]],
- amulet:[[{n:'Lanyard'}],[{n:'Dog Tag'}],[{n:'Sigil Core'}],[{n:'Cloud Core'}]]};
+/* Item base types live in data/itemtypes.tsv, baked to src/items.js. */
 const ARMF={helm:[2,1],armor:[3,1.5],gloves:[1,.6],boots:[1,.6],belt:[1,.5]};
 const tierOf=il=>il<7?0:il<15?1:il<22?2:3;
 const ALLS=SLOTS, ARMS=['helm','armor','gloves','boots','belt'], JEW=['ring','amulet'];
 // affix tiers: [name, minimum item level, low, high]
-const AFX=[
- {k:'dmg',pre:1,t:'+{v}% Enhanced Damage',sl:['weapon','gloves','ring','amulet'],tiers:[['Jagged',1,8,15],['Vicious',5,16,28],['Brutal',10,29,45],['Merciless',16,46,70],['Ruinous',22,71,100],['Apocalyptic',34,101,140]]},
- {k:'armorP',pre:1,t:'+{v}% Enhanced Armor',sl:ARMS,tiers:[['Sturdy',1,15,30],['Hardened',6,31,55],['Ironclad',12,56,90],['Unbreakable',22,91,130],['Adamant',34,131,180]]},
- {k:'shock',pre:1,t:'Adds {v} Shock Damage',sl:['weapon','gloves','ring','amulet'],tiers:[['Static',1,2,4],['Arcing',6,5,10],['Thunderous',12,11,20],['Cataclysmic',22,21,34]]},
- {k:'en',pre:1,t:'+{v} to Energy',sl:['helm','armor','belt','ring','amulet'],tiers:[['Humming',1,6,12],['Charged',6,13,24],['Surging',12,25,40]]},
- {k:'mf',pre:1,t:'{v}% Better Chance of Finding Magic Items',sl:['helm','gloves','boots','ring','amulet'],tiers:[['Lucky',2,5,12],['Fortuitous',8,13,24]]},
- {k:'thorns',pre:1,t:'Attacker Takes Damage of {v}',sl:['armor','helm','belt'],tiers:[['Barbed',1,2,5],['Spiked',7,6,14],['Razorwire',13,15,30]]},
- {k:'skills',pre:1,w:.25,t:'+{v} to All Skills',sl:['amulet','helm','weapon'],tiers:[['Adept’s',8,1,1]]},
- {k:'hp',t:'+{v} to Life',sl:ALLS,tiers:[['of the Rat',1,5,12],['of the Hound',5,13,28],['of the Ox',10,29,50],['of the Mammoth',16,51,85],['of the Leviathan',22,86,130],['of the Titan',34,131,190]]},
- {k:'leech',t:'{v}% Life Stolen per Hit',sl:['weapon','gloves','ring','amulet'],tiers:[['of the Tick',3,2,3],['of the Leech',8,4,6],['of the Lamprey',14,7,9]]},
- {k:'aspd',t:'+{v}% Increased Attack Speed',sl:['weapon','gloves','ring'],tiers:[['of Readiness',1,6,10],['of Alacrity',6,11,18],['of Frenzy',12,19,28],['of Fury',22,29,38]]},
- {k:'mspd',t:'+{v}% Faster Run',sl:['boots','belt'],tiers:[['of Pacing',1,6,10],['of Stride',6,11,17],['of the Gale',12,18,25]]},
- {k:'crit',t:'+{v}% Chance of Deadly Strike',sl:['weapon','helm','gloves','ring','amulet'],tiers:[['of Aim',1,2,4],['of Precision',6,5,8],['of Execution',12,9,13],['of Annihilation',22,14,18]]},
- {k:'regenH',t:'Replenish Life +{v}',sl:['armor','belt','boots','ring','amulet'],tiers:[['of Mending',2,1,2],['of Regrowth',9,3,5]]},
- {k:'regen',t:'+{v} Energy per Second',sl:['helm','ring','amulet','belt'],tiers:[['of the Spark',1,1,1],['of the Current',7,2,3]]},
- {k:'stun',t:'{v}% Chance to Stun on Hit',sl:['weapon','gloves'],tiers:[['of the Jolt',4,4,8],['of Thunder',11,9,14]]},
- {k:'gold',t:'{v}% Extra Credits from Machines',sl:['helm','gloves','boots','belt','ring','amulet'],tiers:[['of Thrift',1,15,30],['of Greed',6,31,60],['of Avarice',12,61,100]]},
- {k:'courier',pre:0,grp:'lean',w:.8,t:'+4 stims and −1 charm slot',sl:['belt'],tiers:[['of the Courier',1,1,1]]},
- {k:'collection',pre:0,grp:'lean',w:.8,t:'+1 charm slot and −4 stims',sl:['belt'],tiers:[['of the Collection',1,1,1]]},
- {k:'armor',t:'+{v} Armor',sl:JEW,tiers:[['of Warding',1,3,8],['of the Bastion',8,9,20]]}
-];
-const AFX2=[];
-for(const[k,n]of[['impact','Impact'],['surge','Surge'],['rust','Rust'],['heat','Heat'],['noise','Noise']]){AFX2.push({k:'t_'+k,pre:1,t:'+{v}% '+n+' damage',tiers:[['Tuned',3,10,18],['Tuned',12,19,32],['Tuned',24,33,50],['Tuned',36,51,70]]});AFX2.push({k:'r_'+k,pre:0,grp:'res',t:'+{v}% '+n+' resistance',tiers:[['of Proofing',3,6,12],['of Proofing',12,13,20],['of Proofing',24,21,30],['of Proofing',36,31,45]]})}
-AFX2.push({k:'t_sound',pre:1,t:'+{v}% Sound damage',tiers:[['Tuned',3,10,18],['Tuned',12,19,32],['Tuned',24,33,50],['Tuned',36,51,70]]});
-AFX.push({k:'t_x',pre:1,t:'+{v}% typed damage',sl:['weapon','gloves','ring','amulet','helm'],tiers:AFX2[0].tiers},{k:'r_x',pre:0,grp:'res',t:'+{v}% resistance',sl:['armor','helm','boots','belt','ring','amulet'],tiers:AFX2[1].tiers},{k:'r_all',pre:0,w:.3,grp:'res',t:'+{v}% to all resistances',sl:['armor','helm','belt','ring','amulet'],tiers:[['of Coverage',12,5,8],['of Coverage',24,9,15],['of Coverage',36,16,20]]});
-AFX.push({k:'cdr',t:'+{v}% Faster Cast Rate',sl:['gloves'],tiers:[['of the Quill',8,8,12]]},{k:'cdr',t:'+{v}% Faster Cast Rate',sl:['armor','weapon'],tiers:[['of the Quill',8,15,20]]},{k:'cdr',t:'+{v}% Faster Cast Rate',sl:['amulet'],tiers:[['of the Quill',8,8,12]]});
-AFX.push({k:'patch',pre:0,w:.4,t:'Self-patching',sl:['weapon','helm','armor','gloves','boots','belt'],tiers:[['of the Patch',8,1,1]]});
+/* Affixes (AFX, AFX2) live in data/affixes.tsv, baked to src/items.js. */
 const AFK={};for(const a of AFX.concat(AFX2))AFK[a.k]=a;
 Object.assign(AFK,{pdr:{k:'pdr',t:'Damage reduced by {v}%'},hpL:{k:'hpL',t:'+{v} Life per Level'},enL:{k:'enL',t:'+{v} Energy per Level'},enPct:{k:'enPct',t:'+{v}% to Maximum Energy'},enKill:{k:'enKill',t:'+{v} Energy after each Kill'},enleech:{k:'enleech',t:'{v}% Energy Stolen per Hit'},mgt:{k:'mgt',t:'+{v} to Might'},ref:{k:'ref',t:'+{v} to Reflex'},vit:{k:'vit',t:'+{v} to Vitality'},bnd:{k:'bnd',t:'+{v} to Bandwidth'},sk_hacker:{k:'sk_hacker',t:'+{v} to Technomancer Skills'},sk_courier:{k:'sk_courier',t:'+{v} to Runner Skills'}});
 const STATK=AFX.concat(AFX2).map(a=>a.k);
 const RN1=['Rust','Ash','Grim','Hollow','Static','Wraith','Carrion','Dread','Null','Ember','Vex','Blight','Cinder','Gloom','Havoc','Rune','Bone','Storm','Viper','Plague'];
 const RN2={weapon:['Fang','Bite','Edge','Verdict','Ruin','Splitter','Thirst'],helm:['Crown','Cowl','Visage','Brow','Mask'],armor:['Shroud','Hide','Carapace','Mantle','Ward'],gloves:['Grasp','Clutch','Hand','Knuckle','Hold'],boots:['Tread','Stride','Spur','Track','Trample'],belt:['Cinch','Coil','Lash','Buckle','Clasp'],ring:['Loop','Circle','Band','Knot','Spiral'],amulet:['Token','Eye','Heart','Charm','Noose']};
 // uniques: fixed slot and base, rolled mods, one special property
-const UNI=[
- {id:'parachute',n:'The Golden Parachute',slot:'armor',il:6,base:'Flak Coat',ind:1,mods:{hp:[40,60],armorP:[40,60]},sp:'When you would die, recover half your life instead (once every 2 minutes)',fl:'Pryce has four. He has never jumped.'},
- {id:'severance',n:'Severance',slot:'weapon',il:5,base:'Girder Maul',bi:1,mods:{dmg:[40,60],hp:[15,25]},sp:'15% chance to strike for triple damage',fl:'Two weeks’ notice, delivered all at once.'},
- {id:'terms',n:'Terms & Conditions',slot:'amulet',il:8,base:'Sigil Core',mods:{skills:[1,2],thorns:[20,35]},sp:'Machines that strike you are stunned for 1 second',fl:'Nobody has read it. Everybody agreed.'},
- {id:'hoodie',n:'The Founder’s Hoodie',slot:'armor',il:4,base:'Padded Hoodie',bi:1,mods:{en:[25,40],regen:[2,3]},sp:'Skills cost 25% less energy',fl:'Still warm. That is the unsettling part.'},
- {id:'review',n:'Last Honest Review',slot:'ring',il:3,base:'Copper Band',mods:{crit:[6,10],mf:[30,45]},sp:null,fl:'One star. Removed for violating community standards.'},
- {id:'intern',n:'Unpaid Intern',slot:'gloves',il:4,base:'Work Gloves',mods:{aspd:[15,22],hp:[10,20]},sp:'20% chance on hit to cast Arc Chain',fl:'Paid in exposure. To voltage.'},
- {id:'repair',n:'Right to Repair',slot:'belt',il:3,base:'Tool Belt',patch:1,mods:{regenH:[3,5],hp:[20,30]},sp:'Stims also refill your energy',fl:'Banned in forty territories. Works in all of them.'},
- {id:'hedge',n:'Inflation Hedge',slot:'ring',il:6,base:'Signet Chip',mods:{gold:[60,90],armor:[5,10]},sp:'Credits you carry grow as fast as prices rise',fl:'The rich were never holding cash.'},
- {id:'deadline',n:'Deadline',slot:'boots',il:5,base:'Steel-Toes',mods:{mspd:[20,25],armorP:[30,50]},sp:'+25% damage while moving',fl:'It was due yesterday. So were you.'},
- {id:'whistle',n:'The Whistle',slot:'helm',il:7,base:'Riot Helm',mods:{armorP:[30,50],shock:[4,8]},sp:'Slain machines explode, wounding others nearby',fl:'She blew it once. The echo is still going.'},
- {id:'nda',n:'Nondisclosure',slot:'helm',il:3,base:'Hard Hat',mods:{armorP:[40,60],en:[10,20]},sp:'15% chance to avoid any damage',fl:'You saw nothing. You were never here.'},
- {id:'blackout',n:'Blackout',slot:'weapon',il:3,base:'Box Cutter',bi:2,mods:{shock:[6,10],aspd:[10,18]},sp:'12% chance to stun on hit',fl:'The last thing the grid ever said.'},
- {id:'pension',n:'The Pension',slot:'amulet',il:5,base:'Dog Tag',mods:{hp:[45,70]},sp:'Replenish 2% of your life every second',fl:'A myth from the old world, worn as a charm.'},
- {id:'handshake',n:'Golden Handshake',slot:'gloves',il:16,base:'Servo Fists',mods:{aspd:[18,26],dmg:[30,45]},sp:'Ordinary machines you destroy have a 13% chance to drop a satoshi',fl:'A firm grip, and something left in your palm.'},
- {id:'fineprint',n:'Fine Print',slot:'amulet',il:18,base:'Sigil Core',mods:{skills:[1,2],en:[30,45]},sp:'Your skills recover 20% faster',fl:'It was all there. It was very small.'},
- {id:'cloud9',n:'Cloud Nine',slot:'boots',il:17,base:'Mag Greaves',mods:{mspd:[22,25],hp:[40,60]},sp:'+10% chance to avoid any hit',fl:'One floor above the weather.'},
- {id:'clock',n:'Dead Man’s Alarm',slot:'belt',il:19,base:'Power Girdle',mods:{hp:[50,80],regenH:[4,6]},sp:'Below 30% life, every machine near you is slowed for 4 seconds (once a minute)',fl:'The battery has been dead for fifty years. It rings anyway.'},
- {id:'offer',n:'The Offer',slot:'ring',il:20,base:'Null Ring',bossOnly:1,mods:{crit:[10,14],mf:[40,55],hp:[30,50]},sp:'You cannot be slowed, and your energy cannot be drained',fl:'It was a very good offer. That was never the point.'},
- {id:'seat',n:'Board Seat',slot:'armor',il:30,base:'Seraph Plate',mods:{hp:[90,130],armorP:[60,90],skills:[1,1]},sp:null,fl:'Nine chairs. One was always empty.'},
- {id:'quorum',n:'Quorum',slot:'ring',il:32,base:'Halo Band',mods:{skills:[1,2],crit:[8,12],dmg:[30,45]},sp:'Each companion or summoned ally adds 5% to your damage, up to six',fl:'Nothing may be decided alone.'},
- {id:'still',n:'Still Water',slot:'amulet',il:34,base:'Cloud Core',bossOnly:1,mods:{hp:[80,120],regenH:[6,9],skills:[1,1]},sp:'Once every 90 seconds, a killing blow heals you fully instead',fl:'It watched. That was all. It was enough.'},
- {id:'lines',n:'Forty-Four Lines',slot:'ring',il:4,base:'Signet Chip',bossOnly:1,mods:{hp:[44,44],regenH:[4,4],mf:[19,19]},sp:'Mediators cannot mend machines while you wear this',fl:'Nobody asked for it. It cost nineteen minutes a night.'},
- {id:'exit',n:'Exit Interview',slot:'weapon',il:9,base:'Signal Baton',bi:0,bossOnly:1,mods:{dmg:[60,90],crit:[8,12],leech:[4,6]},sp:'+50% damage to champions, lieutenants and executives',fl:'“Any feedback for management?”'},
- {id:'cipher',n:'The Cipher Mantle',slot:'armor',il:66,base:'Cloud Mantle',tc:'late',isk:100,mods:{skills:[1,1],mspd:[14,18],pdr:[8,8],armorP:[40,70]},per:{mgt:.25,mf:.4},sp:'+1 to Teleport (item skill)',fl:'A short blink, not a map. The cipher is the point. The coat is where it sits.'},
- {id:'call',n:'The Standing Call',slot:'amulet',il:44,base:'Sigil Core',tc:'high',isk:101,mods:{skills:[1,1],hp:[40,70],regenH:[2,4]},sp:'+1 to Standing Call (item skill)',fl:'Everyone in earshot stands up straighter. It wears off.'},
- {id:'book',n:'The Open Book',slot:'weapon',il:52,base:'Null Sceptre',tc:'high',isk:102,mods:{skills:[1,1],dmg:[35,60],shock:[6,14]},sp:'+1 to Open Book (item skill)',fl:'The page is open. It does not close their eyes. It only helps you hit.'},
- {id:'ledger',n:'The Quiet Ledger',slot:'belt',il:28,base:'Power Girdle',tc:'mid',isk:103,mods:{regen:[2,4],en:[18,30],mf:[8,16]},sp:'+1 to Quiet Ledger (item skill)',fl:'The books balance if you sit with them. Not for long.'},
- {id:'bear',n:'The Bear Market',slot:'helm',il:40,base:'Praetor Visor',tc:'high',isk:104,mods:{armorP:[50,80],hp:[36,64],dmg:[8,16]},sp:'+1 to Bear Market (item skill)',fl:'You wear the downturn. It is not a shape the verge taught you.'},
- {id:'chair',n:'The Spare Chair',slot:'weapon',il:34,base:'Arc Sceptre',tc:'mid',isk:105,mods:{skills:[1,1],hp:[18,36],thorns:[4,9]},sp:'+1 to Spare Chair (item skill)',fl:'Someone has to sit in. They do not get a vote.'},
- {id:'majeure',n:'Force Majeure',slot:'weapon',il:70,base:'Last-Mile Cannon',tc:'late',mods:{dmg:[180,250],aspd:[15,20],enleech:[6,8],mgt:[8,12],ref:[4,8],sk_courier:[1,1]},sp:'Knocks ordinary machines back. Bosses, lieutenants, and players get one short shove, and a second within 1.5s does nothing.',fl:'An act of God, as defined by the party that can afford the lawyer.'},
- {id:'allhands',n:'The All-Hands',slot:'helm',il:62,base:'Halo Circuit',tc:'late',mods:{skills:[2,2],hpL:[1.5,1.5],enL:[1.5,1.5],pdr:[10,10],mf:[40,50],mgt:[2,2],ref:[2,2],vit:[2,2],bnd:[2,2]},sp:null,fl:'Attendance was mandatory. The hat was not. Everyone wore it anyway.'},
- {id:'output',n:'The Unspent Output',slot:'ring',il:29,base:'Signet Chip',tc:'mid',mods:{skills:[1,1],enPct:[25,25],shock:[4,10],en:[15,25]},sp:null,fl:'An output nobody posted. Sats are still what things cost.'},
- {id:'remote',n:'Remote Hands',slot:'weapon',il:42,base:'Zero-Day Rig',tc:'mid',cls:'hacker',mods:{sk_hacker:[3,3],enKill:[5,5],r_all:[15,20],cdr:[25,25],vit:[15,15],bnd:[15,15],mf:[40,50]},sp:'When struck, 25% chance to dash about 3 paces along your facing. 2s between dashes, 6s against a player. Will not fire while you are stunned.',fl:'You were at your desk. The desk disagrees.'},
- {id:'rate',n:'The Rate Card',slot:'armor',il:29,base:'Aegis Shell',tc:'mid',mods:{skills:[1,1],armorP:[80,120],r_all:[20,30],cdr:[25,25],pdr:[4,4]},sp:null,fl:'The rate is the rate. The coat just itemises it.'},
- {id:'audit',n:'The Night Audit',slot:'helm',il:41,base:'Riot Helm',tc:'high',mods:{armorP:[80,100],leech:[6,8],enleech:[4,6],pdr:[12,18],shock:[6,16]},sp:null,fl:'They close the books at night. Something else opens them.'},
- {id:'indemnity',n:'The Indemnity',slot:'armor',il:68,base:'Seraph Plate',tc:'late',mods:{pdr:[25,25],r_surge:[20,20],mgt:[20,30],thorns:[8,14],armorP:[80,120]},sp:'Attacks against you cannot crit.',fl:'The policy pays. It does not pay all of it. Read the exclusion.'},
- {id:'coupon',n:'The Coupon',slot:'weapon',il:4,base:'Box Cutter',tc:'early',mods:{mf:[80,100],en:[-8,-8],dmg:[0,10]},sp:null,fl:'Expires. Not accepted on the thing you actually wanted.'}
-];
-const SETS={striker:{n:'The Striker’s Vigil',b2:'+20% Enhanced Damage (2 pieces)',b3:'+1 to All Skills, and kills restore 3% life (3 pieces)',items:[
- {id:'st1',n:'Striker’s Placard',slot:'weapon',il:2,base:'Stop Sign',bi:1,mods:{dmg:[20,30],hp:[10,18]}},
- {id:'st2',n:'Striker’s Hard Hat',slot:'helm',il:2,base:'Hard Hat',mods:{armorP:[25,40],crit:[3,5]}},
- {id:'st3',n:'Striker’s Boots',slot:'boots',il:2,base:'Worn Sneakers',mods:{mspd:[10,15],hp:[10,18]}}]}};
+/* Uniques and sets live in data/uniques.tsv and data/sets.tsv, baked to src/items.js. */
 const QN=['Normal','Magic','Rare','Set','Unique'];
 
 /* ================= world ================= */

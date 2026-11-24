@@ -9,6 +9,7 @@
    data/monstats.tsv -> src/monstats.js   (ET, ETY, RES, BOSSES)
    data/treasure.tsv -> src/treasure.js   (TC: what a kill or a box drops)
    data/levels.tsv   -> src/levels.js     (ZONES, HUB_TOWNS; D2's levels.txt)
+   data/itemtypes.tsv, affixes.tsv, uniques.tsv, sets.tsv -> src/items.js (BASE, AFX, AFX2, UNI, SETS)
 
    One row per monster. Blank cells mean "not set". Columns:
      id        key used everywhere in code (max 16 characters, the server's limit)
@@ -190,7 +191,114 @@ if (typeof module !== 'undefined' && module.exports) module.exports = { ZONES, H
 `;
 }
 
-const out = { 'src/monstats.js': monstats(), 'src/treasure.js': treasure(), 'src/levels.js': levels() };
+/* Items: D2 kept these as weapons/armor.txt, magicprefix/suffix.txt, uniqueitems.txt
+   and setitems.txt. Here they are four sheets baked into one file. */
+function items() {
+  const SLOTS = ['weapon', 'helm', 'armor', 'gloves', 'boots', 'belt', 'ring', 'amulet'];
+  const numOr = (file, r, c) => {
+    if (r[c] === '') return undefined;
+    const x = Number(r[c]);
+    if (!Number.isFinite(x)) throw new Error(`${file} row ${r._row}: ${c} is "${r[c]}", not a number`);
+    return x;
+  };
+  const need = (file, r, c) => { const x = numOr(file, r, c); if (x === undefined) throw new Error(`${file} row ${r._row}: ${c} is blank`); return x; };
+  const slot = (file, r, s) => { if (!SLOTS.includes(s)) throw new Error(`${file} row ${r._row}: slot "${s}" is not one of ${SLOTS.join(', ')}`); return s; };
+  /* mods are written stat=min/max, separated by spaces */
+  const mods = (file, r) => {
+    const o = {};
+    for (const m of r.mods.split(/\s+/).filter(Boolean)) {
+      const hit = /^([A-Za-z_]+)=(-?[\d.]+)\/(-?[\d.]+)$/.exec(m);
+      if (!hit) throw new Error(`${file} row ${r._row}: mod "${m}" should look like hp=40/60`);
+      o[hit[1]] = [Number(hit[2]), Number(hit[3])];
+    }
+    return o;
+  };
+
+  let file = 'data/itemtypes.tsv';
+  const BASE = {};
+  for (const r of readTsv(path.join(root, file))) {
+    const tiers = BASE[slot(file, r, r.slot)] || (BASE[r.slot] = []);
+    const t = need(file, r, 'tier');
+    if (t > tiers.length) throw new Error(`${file} row ${r._row}: tier ${t} skips a tier`);
+    const b = { n: r.name };
+    const dm = numOr(file, r, 'dmg'), sp = numOr(file, r, 'speed');
+    if (dm !== undefined) b.d = dm;
+    if (sp !== undefined) b.s = sp;
+    (tiers[t] || (tiers[t] = [])).push(b);
+  }
+  /* A unique's base is the name it shows, and class weapons (p10 FAM) have bases of their own, so it is not checked. */
+  const base = (f, r) => { if (!r.base) throw new Error(`${f} row ${r._row}: base is blank`); return r.base; };
+
+  file = 'data/affixes.tsv';
+  const AFX = [], AFX2 = [];
+  let cur = null;
+  for (const r of readTsv(path.join(root, file))) {
+    if (r.list) {
+      if (r.list !== 'AFX' && r.list !== 'AFX2') throw new Error(`${file} row ${r._row}: list is "${r.list}", not AFX or AFX2`);
+      cur = { k: r.stat };
+      const pre = numOr(file, r, 'prefix');
+      if (pre !== undefined) cur.pre = pre;
+      cur.t = r.text;
+      if (r.slots) cur.sl = r.slots.split(/\s+/).map(s => slot(file, r, s));
+      const w = numOr(file, r, 'weight');
+      if (w !== undefined) cur.w = w;
+      if (r.group) cur.grp = r.group;
+      cur.tiers = [];
+      (r.list === 'AFX' ? AFX : AFX2).push(cur);
+    } else if (!cur) throw new Error(`${file} row ${r._row}: a tier row before any affix`);
+    cur.tiers.push([r.tier_name, need(file, r, 'tier_level'), need(file, r, 'min'), need(file, r, 'max')]);
+  }
+
+  file = 'data/uniques.tsv';
+  const UNI = [], ids = new Set();
+  for (const r of readTsv(path.join(root, file))) {
+    if (ids.has(r.id)) throw new Error(`${file} row ${r._row}: id "${r.id}" appears twice`);
+    ids.add(r.id);
+    const u = { id: r.id };
+    if (r.class) u.cls = r.class;
+    Object.assign(u, { n: r.name, slot: slot(file, r, r.slot), il: need(file, r, 'ilvl'), base: base(file, r) });
+    for (const [c, k] of [['ind', 'ind'], ['bi', 'bi'], ['patch', 'patch'], ['boss_only', 'bossOnly'], ['isk', 'isk']]) {
+      const x = numOr(file, r, c);
+      if (x !== undefined) u[k] = x;
+    }
+    if (r.drops) u.tc = r.drops;
+    if (r.per_level) {
+      u.per = {};
+      for (const m of r.per_level.split(/\s+/)) { const [k, x] = m.split('='); u.per[k] = Number(x); }
+    }
+    if (r.grant) u.grant = r.grant.split(/\s+/).map(Number);
+    u.mods = mods(file, r);
+    u.sp = r.special || null; /* blank: no special property */
+    u.fl = r.flavor;
+    UNI.push(u);
+  }
+
+  file = 'data/sets.tsv';
+  const SETS = {};
+  let set = null;
+  for (const r of readTsv(path.join(root, file))) {
+    if (r.set) set = SETS[r.set] = { n: r.set_name, b2: r.bonus2, b3: r.bonus3, items: [] };
+    else if (!set) throw new Error(`${file} row ${r._row}: an item before any set`);
+    const it = { id: r.id, n: r.name, slot: slot(file, r, r.slot), il: need(file, r, 'ilvl'), base: base(file, r) };
+    const bi = numOr(file, r, 'bi');
+    if (bi !== undefined) it.bi = bi;
+    it.mods = mods(file, r);
+    set.items.push(it);
+  }
+
+  const j = o => JSON.stringify(o);
+  return `/* Generated by tools/data/bake.js from data/itemtypes.tsv, affixes.tsv, uniques.tsv and
+   sets.tsv -- edit the sheets, not this file. */
+const BASE=${j(BASE)};
+const AFX=${j(AFX)};
+const AFX2=${j(AFX2)};
+const UNI=${j(UNI)};
+const SETS=${j(SETS)};
+if (typeof module !== 'undefined' && module.exports) module.exports = { BASE, AFX, AFX2, UNI, SETS };
+`;
+}
+
+const out = { 'src/monstats.js': monstats(), 'src/treasure.js': treasure(), 'src/levels.js': levels(), 'src/items.js': items() };
 const check = process.argv.includes('--check');
 let stale = 0;
 for (const [rel, text] of Object.entries(out)) {

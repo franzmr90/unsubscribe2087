@@ -1,0 +1,117 @@
+list	stat	prefix	text	slots	weight	group	tier_name	tier_level	min	max
+AFX	dmg	1	+{v}% Enhanced Damage	weapon gloves ring amulet			Jagged	1	8	15
+							Vicious	5	16	28
+							Brutal	10	29	45
+							Merciless	16	46	70
+							Ruinous	22	71	100
+							Apocalyptic	34	101	140
+AFX	armorP	1	+{v}% Enhanced Armor	helm armor gloves boots belt			Sturdy	1	15	30
+							Hardened	6	31	55
+							Ironclad	12	56	90
+							Unbreakable	22	91	130
+							Adamant	34	131	180
+AFX	shock	1	Adds {v} Shock Damage	weapon gloves ring amulet			Static	1	2	4
+							Arcing	6	5	10
+							Thunderous	12	11	20
+							Cataclysmic	22	21	34
+AFX	en	1	+{v} to Energy	helm armor belt ring amulet			Humming	1	6	12
+							Charged	6	13	24
+							Surging	12	25	40
+AFX	mf	1	{v}% Better Chance of Finding Magic Items	helm gloves boots ring amulet			Lucky	2	5	12
+							Fortuitous	8	13	24
+AFX	thorns	1	Attacker Takes Damage of {v}	armor helm belt			Barbed	1	2	5
+							Spiked	7	6	14
+							Razorwire	13	15	30
+AFX	skills	1	+{v} to All Skills	amulet helm weapon	0.25		Adept’s	8	1	1
+AFX	hp		+{v} to Life	weapon helm armor gloves boots belt ring amulet			of the Rat	1	5	12
+							of the Hound	5	13	28
+							of the Ox	10	29	50
+							of the Mammoth	16	51	85
+							of the Leviathan	22	86	130
+							of the Titan	34	131	190
+AFX	leech		{v}% Life Stolen per Hit	weapon gloves ring amulet			of the Tick	3	2	3
+							of the Leech	8	4	6
+							of the Lamprey	14	7	9
+AFX	aspd		+{v}% Increased Attack Speed	weapon gloves ring			of Readiness	1	6	10
+							of Alacrity	6	11	18
+							of Frenzy	12	19	28
+							of Fury	22	29	38
+AFX	mspd		+{v}% Faster Run	boots belt			of Pacing	1	6	10
+							of Stride	6	11	17
+							of the Gale	12	18	25
+AFX	crit		+{v}% Chance of Deadly Strike	weapon helm gloves ring amulet			of Aim	1	2	4
+							of Precision	6	5	8
+							of Execution	12	9	13
+							of Annihilation	22	14	18
+AFX	regenH		Replenish Life +{v}	armor belt boots ring amulet			of Mending	2	1	2
+							of Regrowth	9	3	5
+AFX	regen		+{v} Energy per Second	helm ring amulet belt			of the Spark	1	1	1
+							of the Current	7	2	3
+AFX	stun		{v}% Chance to Stun on Hit	weapon gloves			of the Jolt	4	4	8
+							of Thunder	11	9	14
+AFX	gold		{v}% Extra Credits from Machines	helm gloves boots belt ring amulet			of Thrift	1	15	30
+							of Greed	6	31	60
+							of Avarice	12	61	100
+AFX	courier	0	+4 stims and −1 charm slot	belt	0.8	lean	of the Courier	1	1	1
+AFX	collection	0	+1 charm slot and −4 stims	belt	0.8	lean	of the Collection	1	1	1
+AFX	armor		+{v} Armor	ring amulet			of Warding	1	3	8
+							of the Bastion	8	9	20
+AFX	t_x	1	+{v}% typed damage	weapon gloves ring amulet helm			Tuned	3	10	18
+							Tuned	12	19	32
+							Tuned	24	33	50
+							Tuned	36	51	70
+AFX	r_x	0	+{v}% resistance	armor helm boots belt ring amulet		res	of Proofing	3	6	12
+							of Proofing	12	13	20
+							of Proofing	24	21	30
+							of Proofing	36	31	45
+AFX	r_all	0	+{v}% to all resistances	armor helm belt ring amulet	0.3	res	of Coverage	12	5	8
+							of Coverage	24	9	15
+							of Coverage	36	16	20
+AFX	cdr		+{v}% Faster Cast Rate	gloves			of the Quill	8	8	12
+AFX	cdr		+{v}% Faster Cast Rate	armor weapon			of the Quill	8	15	20
+AFX	cdr		+{v}% Faster Cast Rate	amulet			of the Quill	8	8	12
+AFX	patch	0	Self-patching	weapon helm armor gloves boots belt	0.4		of the Patch	8	1	1
+AFX2	t_impact	1	+{v}% Impact damage				Tuned	3	10	18
+							Tuned	12	19	32
+							Tuned	24	33	50
+							Tuned	36	51	70
+AFX2	r_impact	0	+{v}% Impact resistance			res	of Proofing	3	6	12
+							of Proofing	12	13	20
+							of Proofing	24	21	30
+							of Proofing	36	31	45
+AFX2	t_surge	1	+{v}% Surge damage				Tuned	3	10	18
+							Tuned	12	19	32
+							Tuned	24	33	50
+							Tuned	36	51	70
+AFX2	r_surge	0	+{v}% Surge resistance			res	of Proofing	3	6	12
+							of Proofing	12	13	20
+							of Proofing	24	21	30
+							of Proofing	36	31	45
+AFX2	t_rust	1	+{v}% Rust damage				Tuned	3	10	18
+							Tuned	12	19	32
+							Tuned	24	33	50
+							Tuned	36	51	70
+AFX2	r_rust	0	+{v}% Rust resistance			res	of Proofing	3	6	12
+							of Proofing	12	13	20
+							of Proofing	24	21	30
+							of Proofing	36	31	45
+AFX2	t_heat	1	+{v}% Heat damage				Tuned	3	10	18
+							Tuned	12	19	32
+							Tuned	24	33	50
+							Tuned	36	51	70
+AFX2	r_heat	0	+{v}% Heat resistance			res	of Proofing	3	6	12
+							of Proofing	12	13	20
+							of Proofing	24	21	30
+							of Proofing	36	31	45
+AFX2	t_noise	1	+{v}% Noise damage				Tuned	3	10	18
+							Tuned	12	19	32
+							Tuned	24	33	50
+							Tuned	36	51	70
+AFX2	r_noise	0	+{v}% Noise resistance			res	of Proofing	3	6	12
+							of Proofing	12	13	20
+							of Proofing	24	21	30
+							of Proofing	36	31	45
+AFX2	t_sound	1	+{v}% Sound damage				Tuned	3	10	18
+							Tuned	12	19	32
+							Tuned	24	33	50
+							Tuned	36	51	70
