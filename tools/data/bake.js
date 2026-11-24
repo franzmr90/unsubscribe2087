@@ -309,16 +309,25 @@ if (typeof module !== 'undefined' && module.exports) module.exports = { BASE, AF
      class row name button (\n = line break) kind (active, passive, aura) cost cd
      calc   named formulas in the rank L, "dmg=pct(1.3+.15*L); chance=15+2*L"
      desc   the tooltip; {name} shows that formula's value at the current rank
+            a name that starts with _ is for the casting code and is not shown
    pct() and fixed1() only change how a number is shown; the casting code reads the bare number.
    A formula may use numbers, + - * / ( ), comparisons, a ? b : c, 'quoted text', L, the
-   names before it on the row, the functions below, and the game values below. Nothing else. */
+   names before it on the row, the functions below, and the game values below. Nothing else.
+   A game value is a number src/formulas.js owns because the server needs it too (the
+   damage-reduction braces); the sheet reads it rather than keeping a copy. */
 const SK_FN = { pct: 'pct', min: 'Math.min', max: 'Math.max', floor: 'Math.floor', round: 'Math.round' };
 const SK_FIX = { fixed1: 1, fixed2: 2 };
 const SK_GV = {
   cpi: '(G&&G.cpi||1)',
   schema: "(G&&G.schema?': '+DTY[G.schema].n:'')",
   ward_sec: 'FORMULAS.brace.ward.sec', ward_pct: 'FORMULAS.brace.ward.pct',
-  cipher_cap: 'FORMULAS.brace.cipher.cap', cipher_per: 'FORMULAS.brace.cipher.per'
+  cipher_cap: 'FORMULAS.brace.cipher.cap', cipher_per: 'FORMULAS.brace.cipher.per',
+  colophon_pdr: 'FORMULAS.brace.colophon.pdr', colophon_pdrL: 'FORMULAS.brace.colophon.pdrL',
+  colophon_hi: 'FORMULAS.brace.colophon.hi', colophon_hiPer: 'FORMULAS.brace.colophon.hiPer',
+  million_pdr: 'FORMULAS.brace.million.pdr', million_pdrL: 'FORMULAS.brace.million.pdrL',
+  pail_life: 'FORMULAS.pail.life', pail_lifeL: 'FORMULAS.pail.lifeL', pail_rate: 'FORMULAS.pail.rate', pail_rateL: 'FORMULAS.pail.rateL',
+  toxic_aspd: 'FORMULAS.aura.toxic.aspd', toxic_aspdL: 'FORMULAS.aura.toxic.aspdL',
+  mark_base: 'FORMULAS.aura.mark.base', mark_per: 'FORMULAS.aura.mark.per'
 };
 function skFormula(src, names, where, raw) {
   const toks = [];
@@ -394,7 +403,7 @@ function skills() {
     }
     const used = new Set();
     r.desc.replace(/\{(\w+)\}/g, (m, k) => { if (!names.has(k)) throw new Error(`${where}: the desc has {${k}} and the calc has no ${k}`); used.add(k); });
-    for (const k of names) if (!used.has(k)) throw new Error(`${where}: ${k} is worked out and never shown`);
+    for (const k of names) if (!used.has(k) && k[0] !== '_') throw new Error(`${where}: ${k} is worked out and never shown (start a name with _ to keep it for the code only)`);
     s.dv = parts.length ? `L=>{const ${parts.join(',')};return{${[...names].join(',')}}}` : null;
     s.f = rawParts.length ? `(()=>{const ${rawParts.join(',')};return{${[...names].join(',')}}})()` : '{}';
     c.sk.push(s);

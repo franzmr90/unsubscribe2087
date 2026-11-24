@@ -98,13 +98,13 @@ function auraFoes(h) {
 function toxicSwing(body) {
   const L = body && body.toxL;
   if (!(L > 0)) return 1;
-  return 1 + (15 + 3 * L) / 100;
+  return 1 + SKN.maxi[3].faster(L) / 100;
 }
 /* Damage half of the same card: +20% and +5% per rank. pdmg already applies it
    to whoever is swinging through hit(). A hireling's shot is raw, so it multiplies here. */
 function toxicDmg(L) {
   if (!(L > 0)) return 1;
-  return 1 + .2 + .05 * L;
+  return 1 + SKN.maxi[3].dmg(L);
 }
 function maxiAura(dt) {
   if (!G || !P) return;
@@ -130,7 +130,7 @@ function maxiAura(dt) {
       /* The card prints max(30, 20+4*L). Orange Pill, Signed For, and Dox already
          print +30% and share the mark timer, so a low rank stays at that 30%
          and a higher rank uses the card once it passes 30%. They do not stack. */
-      const bonus = .2 + .04 * h.L;
+      const bonus = SKN.maxi[4]._mark(h.L) / 100;
       for (const e of auraFoes(h)) {
         e.mark = Math.max(e.mark || 0, .4);
         e.mkP = Math.max(e.mkP || 0, bonus);
@@ -144,7 +144,7 @@ function maxiAura(dt) {
       let ready = false;
       if (P.aura.t <= 0) { P.aura.t = .5; ready = true; }
       if (!ready) continue;
-      const m = (.3 + .07 * h.L) * syn(7);
+      const m = SKN.maxi[7].dmg(h.L) * syn(7);
       const prevSk = P.hitSk;
       P.hitSk = 7;
       P.areaTick = 1;

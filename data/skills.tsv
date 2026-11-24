@@ -8,7 +8,7 @@ scrapper	6	War Horn	WAR\nHORN	active	16	10	sec=fixed1(1+.2*L)	Stun enemies aroun
 scrapper	7	Overtime	OVER-\nTIME	active	25	18	sec=6+L; leech=6+L	For {sec}s: +40% attack speed and {leech}% life stolen per hit.
 scrapper	8	Earthbreaker	EARTH-\nBREAKER	active	20	7	dmg=pct(2.2+.35*L)	Leap to the nearest enemy and slam for {dmg}. Anyone else in the slam takes 22% of that.
 scrapper	9	Solidarity		passive			damage=3*L	Passive. +{damage}% damage for each enemy near you, up to five.
-scrapper	10	Lunch Pail	LUNCH\nPAIL	active	16	14	regen=fixed1(2+.4*L); stores=round(28+6*L)	Set it down. You and anyone fighting beside it recover {regen}% of their life each second from the pail, until its stores ({stores}% of your life) run out.
+scrapper	10	Lunch Pail	LUNCH\nPAIL	active	16	14	regen=fixed1((pail_rate+pail_rateL*L)*100); stores=round((pail_life+pail_lifeL*L)*100)	Set it down. You and anyone fighting beside it recover {regen}% of their life each second from the pail, until its stores ({stores}% of your life) run out.
 scrapper	11	Seniority		passive			bonus=6*L	Passive. The damage type on the weapon in your hand gains +{bonus}%.
 scrapper	12	Hold the Line		passive			armor=4*L	Passive. Each second you have not dashed adds {armor} armour and 5% damage reduction, up to six seconds. A dash spends it.
 scrapper	13	Call the Strike	CALL THE\nSTRIKE	active	18	11	dmg=pct(.55+.08*L)	A horn. Ordinary machines are pushed back. Elites and bosses are pulled in. Everyone caught takes {dmg} noise.
@@ -100,19 +100,19 @@ witness	8	Redaction	REDACT	active	12	8		Spend 30 Record. For 2s machines can see
 witness	9	The Footnote		passive			faster=8*L; lower=4*L	Passive. The Record fills {faster}% faster. Maximum life is {lower}% lower.
 witness	10	On the Record	ON THE\nRECORD	active	16	10	more=12*L	Spend 25 Record. A machine with high Testimony takes {more}% more damage from everyone for 8s, including people with no points in this class.
 witness	11	Unnamed Source	UNNAMED\nSOURCE	active	14	12		Spend 20 Record. Grant one ally, or your hireling, a single swing that deals Sound. Then it is gone. You never deal Sound.
-witness	12	Colophon		passive			dr=14+3*L; less=min(45,4*L); more=3*L	Passive. {dr}% damage reduction. Record above 80: you take {less}% less on top of that. Record below 20: you take {more}% more. The meter is the defence.
+witness	12	Colophon		passive			dr=colophon_pdr+colophon_pdrL*L; less=min(colophon_hi*100,colophon_hiPer*100*L); more=3*L	Passive. {dr}% damage reduction. Record above 80: you take {less}% less on top of that. Record below 20: you take {more}% more. The meter is the defence.
 witness	13	Publish	PUBLISH	active	18	14	dmg=pct(1.6+.25*L)	Consume all Testimony on screen. Each second you watched is {dmg} Impact. The Record drops to 0. 1% more for each level you have.
 witness	14	Named Party		passive			damage=5*L	Passive. Allies deal +{damage}% damage to machines you have Testimony on. You do not.
 witness	15	Retraction		passive				Passive. If you would die with Record above 80, you drop to 1 life, the Record hits 0, and this cannot happen again for a long time. If you would die with an empty Record, you die.
 maxi	1	Tick Tock Next Block	TICK\nTOCK	active	9	2.4	dmg=pct(.5+.08*L); dmg2=pct(4+.8*L)	Nine quick strikes of {dmg}. The tenth is a block and lands for {dmg2}. While the strikes are landing, and for 2.2s after the block, you take 22% less.
 maxi	2	Have Fun Staying Poor	HAVE FUN\nSTAYING\nPOOR	active	12	4	dmg=pct(1.4+.25*L); sec=fixed1(1.2+.15*L)	Close range, {dmg}. It cannot miss, and it stuns for {sec}s.
 maxi	3	Few Understand This		passive			damage=3*L	Passive. +{damage}% damage for every machine still standing on screen, up to eight. Each one within six paces also cuts the damage you take by 6%, up to five.
-maxi	4	Toxic Maximalism	TOXIC\nMAXI	aura	0	1.5	faster=15+3*L; dmg=pct(.2+.05*L)	Aura. Stays on until you put on another. You attack {faster}% faster and hit {dmg} harder, and so does anybody fighting beside you. You run 50% faster.
-maxi	5	Marked to Market	MARKED\nMKT	aura	0	1.5	bonus=max(30,20+4*L); paces=fixed1(3.5+.15*L)	Aura. Everything within {paces} paces of you takes +{bonus}% damage from every source.
+maxi	4	Toxic Maximalism	TOXIC\nMAXI	aura	0	1.5	faster=toxic_aspd+toxic_aspdL*L; dmg=pct(.2+.05*L)	Aura. Stays on until you put on another. You attack {faster}% faster and hit {dmg} harder, and so does anybody fighting beside you. You run 50% faster.
+maxi	5	Marked to Market	MARKED\nMKT	aura	0	1.5	_mark=20+4*L; bonus=max(30,_mark); paces=fixed1(mark_base+mark_per*L)	Aura. Everything within {paces} paces of you takes +{bonus}% damage from every source.
 maxi	6	Orange Pill	ORANGE\nPILL	active	11	5	sec=round((6+.3*L)*10)/10; dmg=pct(1.6+.3*L)	Charge through the line, untouchable, for {dmg} to everything you pass. Whatever survives takes +30% damage for {sec}s.
 maxi	7	Blessed Hashrate	BLESSED\nHASHRATE	active	16	1.1	dmg=pct(1.1+.22*L)	Hammers spiral out from you, {dmg} each, and they do not stop at the first thing they meet.
 maxi	8	Proof of Work	PROOF\nOF WORK	aura	0	1.5	dmg=pct(.3+.07*L)	Aura. Everything near you takes {dmg} twice a second, for as long as you are near it.
-maxi	9	Twenty-One Million		passive			damage=3*L; armor=8*L; dr=8+2*L	Passive. +{damage}% damage, +{armor}% armour, and +{dr}% damage reduction. The difficulty cannot dilute what you hit for.
+maxi	9	Twenty-One Million		passive			damage=3*L; armor=8*L; dr=million_pdr+million_pdrL*L	Passive. +{damage}% damage, +{armor}% armour, and +{dr}% damage reduction. The difficulty cannot dilute what you hit for.
 maxi	10	The Halving	THE\nHALVING	active	16	8	loss=fixed1(8+1.2*L)	Sound. Each machine within 4.2 paces loses {loss}% of its current life. It will not be pushed below 35% of its maximum.
 maxi	11	Running a Node		passive			damage=6+2*L	Passive. While an aura is on, allies and your hireling gain +{damage}% damage. You gain half of that. With the aura off, nothing.
 maxi	12	Cite Your Sources	CITE YOUR\nSOURCES	active	14	6		A volley of Sound, and only while an aura is on. Toxic Maximalism makes it fast and light. Marked to Market makes it slow and heavy. Proof of Work makes it tick. No aura, no volley.

@@ -476,7 +476,7 @@ let DT=null;
 /* returns the damage after type bonuses, weakness and resistance; applies the type's side effect */
 function typed(e,d){let ty=DT||(P.fm&&P.fm.t>0&&P.fm.dt)||(typeof hsForm==='function'&&hsForm()==='worn'?(P&&P.tag?P.formDt:G.formDt):null)||baseType();
   /* holdTy keeps a hireling hit, a thorns slap, or an acqui-hired strike on its own type. Priced in Sound converts what you swing, not what they swing. */
-  if(!P.holdTy&&G.cls==='maxi'&&sl(12)&&ty!=='sound'){d*=.55+.03*sl(12);ty='sound'}
+  if(!P.holdTy&&G.cls==='maxi'&&sl(12)&&ty!=='sound'){d*=SKN.maxi[12].keep(sl(12))/100;ty='sound'}
   if(ty==='sound'){/* no table, no multiplier, no argument */
     e.snd=1;e.lt=ty;return d*(1+(S.t_sound||0)/100)}
   let m=((RES[e.k]||{})[ty]);if(!P.holdTy&&P.k9===ty){P.k9=null;if(m!==0&&m<1)m=1}const mul=m===undefined?1:m;d*=(1+(P.holdTy?0:(S['t_'+ty]||0))/100)*mul;

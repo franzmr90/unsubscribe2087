@@ -16588,8 +16588,8 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {regen} is a number that changes with the skill rank (fixed1(2+.4*L)).
-- {stores} is a number that changes with the skill rank (round(28+6*L)).
+- {regen} is a number that changes with the skill rank (fixed1((pail_rate+pail_rateL*L)*100)).
+- {stores} is a number that changes with the skill rank (round((pail_life+pail_lifeL*L)*100)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
@@ -22261,8 +22261,8 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {dr} is a number that changes with the skill rank (14+3*L).
-- {less} is a number that changes with the skill rank (min(45,4*L)).
+- {dr} is a number that changes with the skill rank (colophon_pdr+colophon_pdrL*L).
+- {less} is filled in when the line is shown (min(colophon_hi*100,colophon_hiPer*100*L)).
 - {more} is a number that changes with the skill rank (3*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
@@ -22735,7 +22735,7 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {faster} is a number that changes with the skill rank (15+3*L).
+- {faster} is a number that changes with the skill rank (toxic_aspd+toxic_aspdL*L).
 - {dmg} is a percent that changes with the skill rank (pct(.2+.05*L)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
@@ -22797,8 +22797,8 @@ MODE: both. Shown in both layouts.
 
 PLACEHOLDERS:
 
-- {paces} is a number that changes with the skill rank (fixed1(3.5+.15*L)).
-- {bonus} is a number that changes with the skill rank (max(30,20+4*L)).
+- {paces} is a number that changes with the skill rank (fixed1(mark_base+mark_per*L)).
+- {bonus} is filled in when the line is shown (max(30,_mark)).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 
@@ -23026,7 +23026,7 @@ PLACEHOLDERS:
 
 - {damage} is a number that changes with the skill rank (3*L).
 - {armor} is a number that changes with the skill rank (8*L).
-- {dr} is a number that changes with the skill rank (8+2*L).
+- {dr} is a number that changes with the skill rank (million_pdr+million_pdrL*L).
 
 LIMIT: none. Skill tooltip. Placeholders fill in from the rank. No hard limit.
 

@@ -443,12 +443,12 @@ function strictUp(it){
   return sheetAvg(B)>sheetAvg(A)&&B.armor>A.armor&&B.maxHp>A.maxHp}
 /* Primary blow of the bound skill. A coefficient that already counts a volley keeps the count. Splashes that are a fraction of the same blow are the one blow. */
 const SKHIT={
-  scrapper:{0:L=>1.3+.15*L,1:L=>1.2+.2*L,3:L=>1.5+.22*L,4:L=>1.2+.3*L,7:L=>2.2+.35*L,12:L=>.55+.08*L},
-  hacker:{0:L=>1.2+.18*L,1:L=>1.4+.2*L,3:L=>.9+.2*L,14:L=>2.8+.4*L},
-  courier:{0:(L,s)=>(3+Math.floor(L/2)+((s.sp&&s.sp.pod)?2:0))*(.9+.1*L),7:L=>3+.5*L,9:L=>1.1+.16*L,12:L=>1+.14*L},
-  maxi:{1:L=>1.4+.25*L,5:L=>1.6+.3*L,6:L=>(1.1+.22*L)*5},
-  anon:{1:L=>1.6+.25*L,5:L=>1+.2*L,6:L=>1.4+.2*L,9:L=>.7+.1*L},
-  founder:{1:L=>.8+.15*L,8:L=>2+.4*L}};
+  scrapper:{0:L=>SKN.scrapper[0].dmg(L),1:L=>SKN.scrapper[1].dmg(L),3:L=>SKN.scrapper[3].dmg(L),4:L=>SKN.scrapper[4].dmg(L),7:L=>SKN.scrapper[7].dmg(L),12:L=>SKN.scrapper[12].dmg(L)},
+  hacker:{0:L=>SKN.hacker[0].dmg(L),1:L=>SKN.hacker[1].dmg(L),3:L=>SKN.hacker[3].dmg(L),14:L=>SKN.hacker[14].dmg(L)},
+  courier:{0:(L,s)=>(SKN.courier[0].blades(L)+((s.sp&&s.sp.pod)?2:0))*SKN.courier[0].dmg(L),7:L=>SKN.courier[7].dmg(L),9:L=>SKN.courier[9].dmg(L),12:L=>SKN.courier[12].dmg(L)},
+  maxi:{1:L=>SKN.maxi[1].dmg(L),5:L=>SKN.maxi[5].dmg(L),6:L=>SKN.maxi[6].dmg(L)*5},
+  anon:{1:L=>SKN.anon[1].dmg(L),5:L=>SKN.anon[5].dmg(L),6:L=>SKN.anon[6].dmg(L),9:L=>SKN.anon[9].dmg(L)},
+  founder:{1:L=>SKN.founder[1].dmg(L),8:L=>SKN.founder[8].dmg(L)}};
 function boundIndex(){
   if(G.mouse&&G.mouse.L>=0&&G.mouse.L<100&&G.sk&&G.sk[G.mouse.L])return G.mouse.L;
   if(G.slots&&G.slots[0]>=0&&G.slots[0]<100&&G.sk&&G.sk[G.slots[0]])return G.slots[0];
