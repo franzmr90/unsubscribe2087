@@ -1,6 +1,6 @@
 # Unsubscribe 2087 — Game Text
 
-Total entries: 5256
+Total entries: 5260
 
 ## How to edit
 
@@ -37,7 +37,7 @@ To bring an edit back: `node tools/text/import.js path/to/file` where the file i
 - Mercenaries (18)
 - Cinematics and Endings (171)
 - Tutorial and Walkthrough (48)
-- UI and System (2501)
+- UI and System (2505)
 - Multiplayer and LAN (521)
 
 # Act I — The Regional Office
@@ -15936,7 +15936,7 @@ The eight wanderers. Each class is its blurb, then its skills in tree order.
 
 ID: class.scrapper.name
 
-SOURCE: src/skills.js line 4
+SOURCE: src/skills.js line 6
 
 CONTEXT: The Scrapper class name, on the title screen and the hero sheet. Shown in both layouts.
 
@@ -15954,7 +15954,7 @@ END
 
 ID: class.scrapper.blurb
 
-SOURCE: src/skills.js line 4
+SOURCE: src/skills.js line 6
 
 CONTEXT: The blurb under Scrapper on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
 
@@ -15972,7 +15972,7 @@ END
 
 ID: class.scrapper.good
 
-SOURCE: src/skills.js line 4
+SOURCE: src/skills.js line 6
 
 CONTEXT: The “Good at:” line under Scrapper on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -15990,7 +15990,7 @@ END
 
 ID: class.scrapper.weak
 
-SOURCE: src/skills.js line 4
+SOURCE: src/skills.js line 6
 
 CONTEXT: The “Weak to:” line under Scrapper on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -16008,7 +16008,7 @@ END
 
 ID: class.scrapper.bld
 
-SOURCE: src/skills.js line 4
+SOURCE: src/skills.js line 6
 
 CONTEXT: The “Builds:” line under Scrapper on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -16030,7 +16030,7 @@ END
 
 ID: class.scrapper.skill.01.name
 
-SOURCE: src/skills.js line 5
+SOURCE: src/skills.js line 7
 
 CONTEXT: Stop Sign, a Scrapper skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16048,7 +16048,7 @@ END
 
 ID: class.scrapper.skill.01.button
 
-SOURCE: src/skills.js line 5
+SOURCE: src/skills.js line 7
 
 CONTEXT: The short label on the skill button for Scrapper’s Stop Sign. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -16067,7 +16067,7 @@ END
 
 ID: class.scrapper.skill.01.desc
 
-SOURCE: src/skills.js line 5
+SOURCE: src/skills.js line 7
 
 CONTEXT: Tooltip for Scrapper’s Stop Sign. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16092,7 +16092,7 @@ END
 
 ID: class.scrapper.skill.02.name
 
-SOURCE: src/skills.js line 6
+SOURCE: src/skills.js line 8
 
 CONTEXT: Hurl, a Scrapper skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16110,7 +16110,7 @@ END
 
 ID: class.scrapper.skill.02.button
 
-SOURCE: src/skills.js line 6
+SOURCE: src/skills.js line 8
 
 CONTEXT: The short label on the skill button for Scrapper’s Hurl. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -16128,7 +16128,7 @@ END
 
 ID: class.scrapper.skill.02.desc
 
-SOURCE: src/skills.js line 6
+SOURCE: src/skills.js line 8
 
 CONTEXT: Tooltip for Scrapper’s Hurl. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16152,7 +16152,7 @@ END
 
 ID: class.scrapper.skill.03.name
 
-SOURCE: src/skills.js line 7
+SOURCE: src/skills.js line 9
 
 CONTEXT: Iron Hide, a Scrapper skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16170,7 +16170,7 @@ END
 
 ID: class.scrapper.skill.03.desc
 
-SOURCE: src/skills.js line 7
+SOURCE: src/skills.js line 9
 
 CONTEXT: Tooltip for Scrapper’s Iron Hide. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16195,7 +16195,7 @@ END
 
 ID: class.scrapper.skill.04.name
 
-SOURCE: src/skills.js line 8
+SOURCE: src/skills.js line 10
 
 CONTEXT: Turnstile, a Scrapper skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16213,7 +16213,7 @@ END
 
 ID: class.scrapper.skill.04.button
 
-SOURCE: src/skills.js line 8
+SOURCE: src/skills.js line 10
 
 CONTEXT: The short label on the skill button for Scrapper’s Turnstile. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -16232,7 +16232,7 @@ END
 
 ID: class.scrapper.skill.04.desc
 
-SOURCE: src/skills.js line 8
+SOURCE: src/skills.js line 10
 
 CONTEXT: Tooltip for Scrapper’s Turnstile. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16256,7 +16256,7 @@ END
 
 ID: class.scrapper.skill.05.name
 
-SOURCE: src/skills.js line 9
+SOURCE: src/skills.js line 11
 
 CONTEXT: Picket Rush, a Scrapper skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16274,7 +16274,7 @@ END
 
 ID: class.scrapper.skill.05.button
 
-SOURCE: src/skills.js line 9
+SOURCE: src/skills.js line 11
 
 CONTEXT: The short label on the skill button for Scrapper’s Picket Rush. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -16293,7 +16293,7 @@ END
 
 ID: class.scrapper.skill.05.desc
 
-SOURCE: src/skills.js line 9
+SOURCE: src/skills.js line 11
 
 CONTEXT: Tooltip for Scrapper’s Picket Rush. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16317,7 +16317,7 @@ END
 
 ID: class.scrapper.skill.06.name
 
-SOURCE: src/skills.js line 10
+SOURCE: src/skills.js line 12
 
 CONTEXT: War Horn, a Scrapper skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16335,7 +16335,7 @@ END
 
 ID: class.scrapper.skill.06.button
 
-SOURCE: src/skills.js line 10
+SOURCE: src/skills.js line 12
 
 CONTEXT: The short label on the skill button for Scrapper’s War Horn. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -16354,7 +16354,7 @@ END
 
 ID: class.scrapper.skill.06.desc
 
-SOURCE: src/skills.js line 10
+SOURCE: src/skills.js line 12
 
 CONTEXT: Tooltip for Scrapper’s War Horn. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16378,7 +16378,7 @@ END
 
 ID: class.scrapper.skill.07.name
 
-SOURCE: src/skills.js line 11
+SOURCE: src/skills.js line 13
 
 CONTEXT: Overtime, a Scrapper skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16396,7 +16396,7 @@ END
 
 ID: class.scrapper.skill.07.button
 
-SOURCE: src/skills.js line 11
+SOURCE: src/skills.js line 13
 
 CONTEXT: The short label on the skill button for Scrapper’s Overtime. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -16415,7 +16415,7 @@ END
 
 ID: class.scrapper.skill.07.desc
 
-SOURCE: src/skills.js line 11
+SOURCE: src/skills.js line 13
 
 CONTEXT: Tooltip for Scrapper’s Overtime. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16440,7 +16440,7 @@ END
 
 ID: class.scrapper.skill.08.name
 
-SOURCE: src/skills.js line 12
+SOURCE: src/skills.js line 14
 
 CONTEXT: Earthbreaker, a Scrapper skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16458,7 +16458,7 @@ END
 
 ID: class.scrapper.skill.08.button
 
-SOURCE: src/skills.js line 12
+SOURCE: src/skills.js line 14
 
 CONTEXT: The short label on the skill button for Scrapper’s Earthbreaker. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -16477,7 +16477,7 @@ END
 
 ID: class.scrapper.skill.08.desc
 
-SOURCE: src/skills.js line 12
+SOURCE: src/skills.js line 14
 
 CONTEXT: Tooltip for Scrapper’s Earthbreaker. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16501,7 +16501,7 @@ END
 
 ID: class.scrapper.skill.09.name
 
-SOURCE: src/skills.js line 13
+SOURCE: src/skills.js line 15
 
 CONTEXT: Solidarity, a Scrapper skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16519,7 +16519,7 @@ END
 
 ID: class.scrapper.skill.09.desc
 
-SOURCE: src/skills.js line 13
+SOURCE: src/skills.js line 15
 
 CONTEXT: Tooltip for Scrapper’s Solidarity. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16543,7 +16543,7 @@ END
 
 ID: class.scrapper.skill.10.name
 
-SOURCE: src/skills.js line 14
+SOURCE: src/skills.js line 16
 
 CONTEXT: Lunch Pail, a Scrapper skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16561,7 +16561,7 @@ END
 
 ID: class.scrapper.skill.10.button
 
-SOURCE: src/skills.js line 14
+SOURCE: src/skills.js line 16
 
 CONTEXT: The short label on the skill button for Scrapper’s Lunch Pail. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -16580,7 +16580,7 @@ END
 
 ID: class.scrapper.skill.10.desc
 
-SOURCE: src/skills.js line 14
+SOURCE: src/skills.js line 16
 
 CONTEXT: Tooltip for Scrapper’s Lunch Pail. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16605,7 +16605,7 @@ END
 
 ID: class.scrapper.skill.11.name
 
-SOURCE: src/skills.js line 15
+SOURCE: src/skills.js line 17
 
 CONTEXT: Seniority, a Scrapper skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16623,7 +16623,7 @@ END
 
 ID: class.scrapper.skill.11.desc
 
-SOURCE: src/skills.js line 15
+SOURCE: src/skills.js line 17
 
 CONTEXT: Tooltip for Scrapper’s Seniority. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16647,7 +16647,7 @@ END
 
 ID: class.scrapper.skill.12.name
 
-SOURCE: src/skills.js line 16
+SOURCE: src/skills.js line 18
 
 CONTEXT: Hold the Line, a Scrapper skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16665,7 +16665,7 @@ END
 
 ID: class.scrapper.skill.12.desc
 
-SOURCE: src/skills.js line 16
+SOURCE: src/skills.js line 18
 
 CONTEXT: Tooltip for Scrapper’s Hold the Line. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16689,7 +16689,7 @@ END
 
 ID: class.scrapper.skill.13.name
 
-SOURCE: src/skills.js line 17
+SOURCE: src/skills.js line 19
 
 CONTEXT: Call the Strike, a Scrapper skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16707,7 +16707,7 @@ END
 
 ID: class.scrapper.skill.13.button
 
-SOURCE: src/skills.js line 17
+SOURCE: src/skills.js line 19
 
 CONTEXT: The short label on the skill button for Scrapper’s Call the Strike. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -16726,7 +16726,7 @@ END
 
 ID: class.scrapper.skill.13.desc
 
-SOURCE: src/skills.js line 17
+SOURCE: src/skills.js line 19
 
 CONTEXT: Tooltip for Scrapper’s Call the Strike. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16750,7 +16750,7 @@ END
 
 ID: class.scrapper.skill.14.name
 
-SOURCE: src/skills.js line 18
+SOURCE: src/skills.js line 20
 
 CONTEXT: Two-Handed, a Scrapper skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16768,7 +16768,7 @@ END
 
 ID: class.scrapper.skill.14.button
 
-SOURCE: src/skills.js line 18
+SOURCE: src/skills.js line 20
 
 CONTEXT: The short label on the skill button for Scrapper’s Two-Handed. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -16787,7 +16787,7 @@ END
 
 ID: class.scrapper.skill.14.desc
 
-SOURCE: src/skills.js line 18
+SOURCE: src/skills.js line 20
 
 CONTEXT: Tooltip for Scrapper’s Two-Handed. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16809,7 +16809,7 @@ END
 
 ID: class.scrapper.skill.15.name
 
-SOURCE: src/skills.js line 19
+SOURCE: src/skills.js line 21
 
 CONTEXT: Last Shift, a Scrapper skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16827,7 +16827,7 @@ END
 
 ID: class.scrapper.skill.15.button
 
-SOURCE: src/skills.js line 19
+SOURCE: src/skills.js line 21
 
 CONTEXT: The short label on the skill button for Scrapper’s Last Shift. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -16846,7 +16846,7 @@ END
 
 ID: class.scrapper.skill.15.desc
 
-SOURCE: src/skills.js line 19
+SOURCE: src/skills.js line 21
 
 CONTEXT: Tooltip for Scrapper’s Last Shift. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -16869,7 +16869,7 @@ END
 
 ID: class.hacker.name
 
-SOURCE: src/skills.js line 20
+SOURCE: src/skills.js line 22
 
 CONTEXT: The Technomancer class name, on the title screen and the hero sheet. Shown in both layouts.
 
@@ -16887,7 +16887,7 @@ END
 
 ID: class.hacker.blurb
 
-SOURCE: src/skills.js line 20
+SOURCE: src/skills.js line 22
 
 CONTEXT: The blurb under Technomancer on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
 
@@ -16905,7 +16905,7 @@ END
 
 ID: class.hacker.good
 
-SOURCE: src/skills.js line 20
+SOURCE: src/skills.js line 22
 
 CONTEXT: The “Good at:” line under Technomancer on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -16923,7 +16923,7 @@ END
 
 ID: class.hacker.weak
 
-SOURCE: src/skills.js line 20
+SOURCE: src/skills.js line 22
 
 CONTEXT: The “Weak to:” line under Technomancer on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -16941,7 +16941,7 @@ END
 
 ID: class.hacker.bld
 
-SOURCE: src/skills.js line 20
+SOURCE: src/skills.js line 22
 
 CONTEXT: The “Builds:” line under Technomancer on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -16963,7 +16963,7 @@ END
 
 ID: class.hacker.skill.01.name
 
-SOURCE: src/skills.js line 21
+SOURCE: src/skills.js line 23
 
 CONTEXT: Arc Chain, a Technomancer skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -16981,7 +16981,7 @@ END
 
 ID: class.hacker.skill.01.button
 
-SOURCE: src/skills.js line 21
+SOURCE: src/skills.js line 23
 
 CONTEXT: The short label on the skill button for Technomancer’s Arc Chain. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -17000,7 +17000,7 @@ END
 
 ID: class.hacker.skill.01.desc
 
-SOURCE: src/skills.js line 21
+SOURCE: src/skills.js line 23
 
 CONTEXT: Tooltip for Technomancer’s Arc Chain. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17027,7 +17027,7 @@ END
 
 ID: class.hacker.skill.02.name
 
-SOURCE: src/skills.js line 22
+SOURCE: src/skills.js line 24
 
 CONTEXT: Spark Lance, a Technomancer skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17045,7 +17045,7 @@ END
 
 ID: class.hacker.skill.02.button
 
-SOURCE: src/skills.js line 22
+SOURCE: src/skills.js line 24
 
 CONTEXT: The short label on the skill button for Technomancer’s Spark Lance. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -17064,7 +17064,7 @@ END
 
 ID: class.hacker.skill.02.desc
 
-SOURCE: src/skills.js line 22
+SOURCE: src/skills.js line 24
 
 CONTEXT: Tooltip for Technomancer’s Spark Lance. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17088,7 +17088,7 @@ END
 
 ID: class.hacker.skill.03.name
 
-SOURCE: src/skills.js line 23
+SOURCE: src/skills.js line 25
 
 CONTEXT: Cipher Ward, a Technomancer skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17106,7 +17106,7 @@ END
 
 ID: class.hacker.skill.03.desc
 
-SOURCE: src/skills.js line 23
+SOURCE: src/skills.js line 25
 
 CONTEXT: Tooltip for Technomancer’s Cipher Ward. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17130,7 +17130,7 @@ END
 
 ID: class.hacker.skill.04.name
 
-SOURCE: src/skills.js line 24
+SOURCE: src/skills.js line 26
 
 CONTEXT: Null Nova, a Technomancer skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17148,7 +17148,7 @@ END
 
 ID: class.hacker.skill.04.button
 
-SOURCE: src/skills.js line 24
+SOURCE: src/skills.js line 26
 
 CONTEXT: The short label on the skill button for Technomancer’s Null Nova. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -17167,7 +17167,7 @@ END
 
 ID: class.hacker.skill.04.desc
 
-SOURCE: src/skills.js line 24
+SOURCE: src/skills.js line 26
 
 CONTEXT: Tooltip for Technomancer’s Null Nova. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17192,7 +17192,7 @@ END
 
 ID: class.hacker.skill.05.name
 
-SOURCE: src/skills.js line 25
+SOURCE: src/skills.js line 27
 
 CONTEXT: Watchdog, a Technomancer skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17210,7 +17210,7 @@ END
 
 ID: class.hacker.skill.05.button
 
-SOURCE: src/skills.js line 25
+SOURCE: src/skills.js line 27
 
 CONTEXT: The short label on the skill button for Technomancer’s Watchdog. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -17229,7 +17229,7 @@ END
 
 ID: class.hacker.skill.05.desc
 
-SOURCE: src/skills.js line 25
+SOURCE: src/skills.js line 27
 
 CONTEXT: Tooltip for Technomancer’s Watchdog. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17254,7 +17254,7 @@ END
 
 ID: class.hacker.skill.06.name
 
-SOURCE: src/skills.js line 26
+SOURCE: src/skills.js line 28
 
 CONTEXT: Overclock, a Technomancer skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17272,7 +17272,7 @@ END
 
 ID: class.hacker.skill.06.desc
 
-SOURCE: src/skills.js line 26
+SOURCE: src/skills.js line 28
 
 CONTEXT: Tooltip for Technomancer’s Overclock. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17297,7 +17297,7 @@ END
 
 ID: class.hacker.skill.07.name
 
-SOURCE: src/skills.js line 27
+SOURCE: src/skills.js line 29
 
 CONTEXT: Black Storm, a Technomancer skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17315,7 +17315,7 @@ END
 
 ID: class.hacker.skill.07.button
 
-SOURCE: src/skills.js line 27
+SOURCE: src/skills.js line 29
 
 CONTEXT: The short label on the skill button for Technomancer’s Black Storm. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -17334,7 +17334,7 @@ END
 
 ID: class.hacker.skill.07.desc
 
-SOURCE: src/skills.js line 27
+SOURCE: src/skills.js line 29
 
 CONTEXT: Tooltip for Technomancer’s Black Storm. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17358,7 +17358,7 @@ END
 
 ID: class.hacker.skill.08.name
 
-SOURCE: src/skills.js line 28
+SOURCE: src/skills.js line 30
 
 CONTEXT: Botnet, a Technomancer skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17376,7 +17376,7 @@ END
 
 ID: class.hacker.skill.08.button
 
-SOURCE: src/skills.js line 28
+SOURCE: src/skills.js line 30
 
 CONTEXT: The short label on the skill button for Technomancer’s Botnet. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -17394,7 +17394,7 @@ END
 
 ID: class.hacker.skill.08.desc
 
-SOURCE: src/skills.js line 28
+SOURCE: src/skills.js line 30
 
 CONTEXT: Tooltip for Technomancer’s Botnet. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17419,7 +17419,7 @@ END
 
 ID: class.hacker.skill.09.name
 
-SOURCE: src/skills.js line 29
+SOURCE: src/skills.js line 31
 
 CONTEXT: Zero Day, a Technomancer skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17437,7 +17437,7 @@ END
 
 ID: class.hacker.skill.09.desc
 
-SOURCE: src/skills.js line 29
+SOURCE: src/skills.js line 31
 
 CONTEXT: Tooltip for Technomancer’s Zero Day. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17462,7 +17462,7 @@ END
 
 ID: class.hacker.skill.10.name
 
-SOURCE: src/skills.js line 30
+SOURCE: src/skills.js line 32
 
 CONTEXT: Ground Fault, a Technomancer skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17480,7 +17480,7 @@ END
 
 ID: class.hacker.skill.10.button
 
-SOURCE: src/skills.js line 30
+SOURCE: src/skills.js line 32
 
 CONTEXT: The short label on the skill button for Technomancer’s Ground Fault. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -17499,7 +17499,7 @@ END
 
 ID: class.hacker.skill.10.desc
 
-SOURCE: src/skills.js line 30
+SOURCE: src/skills.js line 32
 
 CONTEXT: Tooltip for Technomancer’s Ground Fault. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17524,7 +17524,7 @@ END
 
 ID: class.hacker.skill.11.name
 
-SOURCE: src/skills.js line 31
+SOURCE: src/skills.js line 33
 
 CONTEXT: Packet Storm, a Technomancer skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17542,7 +17542,7 @@ END
 
 ID: class.hacker.skill.11.button
 
-SOURCE: src/skills.js line 31
+SOURCE: src/skills.js line 33
 
 CONTEXT: The short label on the skill button for Technomancer’s Packet Storm. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -17561,7 +17561,7 @@ END
 
 ID: class.hacker.skill.11.desc
 
-SOURCE: src/skills.js line 31
+SOURCE: src/skills.js line 33
 
 CONTEXT: Tooltip for Technomancer’s Packet Storm. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17585,7 +17585,7 @@ END
 
 ID: class.hacker.skill.12.name
 
-SOURCE: src/skills.js line 32
+SOURCE: src/skills.js line 34
 
 CONTEXT: Schema, a Technomancer skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17603,7 +17603,7 @@ END
 
 ID: class.hacker.skill.12.desc
 
-SOURCE: src/skills.js line 32
+SOURCE: src/skills.js line 34
 
 CONTEXT: Tooltip for Technomancer’s Schema. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17628,7 +17628,7 @@ END
 
 ID: class.hacker.skill.13.name
 
-SOURCE: src/skills.js line 33
+SOURCE: src/skills.js line 35
 
 CONTEXT: Step Back, a Technomancer skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17646,7 +17646,7 @@ END
 
 ID: class.hacker.skill.13.button
 
-SOURCE: src/skills.js line 33
+SOURCE: src/skills.js line 35
 
 CONTEXT: The short label on the skill button for Technomancer’s Step Back. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -17665,7 +17665,7 @@ END
 
 ID: class.hacker.skill.13.desc
 
-SOURCE: src/skills.js line 33
+SOURCE: src/skills.js line 35
 
 CONTEXT: Tooltip for Technomancer’s Step Back. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17687,7 +17687,7 @@ END
 
 ID: class.hacker.skill.14.name
 
-SOURCE: src/skills.js line 34
+SOURCE: src/skills.js line 36
 
 CONTEXT: Patched, a Technomancer skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17705,7 +17705,7 @@ END
 
 ID: class.hacker.skill.14.desc
 
-SOURCE: src/skills.js line 34
+SOURCE: src/skills.js line 36
 
 CONTEXT: Tooltip for Technomancer’s Patched. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17730,7 +17730,7 @@ END
 
 ID: class.hacker.skill.15.name
 
-SOURCE: src/skills.js line 35
+SOURCE: src/skills.js line 37
 
 CONTEXT: Kill Dash Nine, a Technomancer skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17748,7 +17748,7 @@ END
 
 ID: class.hacker.skill.15.button
 
-SOURCE: src/skills.js line 35
+SOURCE: src/skills.js line 37
 
 CONTEXT: The short label on the skill button for Technomancer’s Kill Dash Nine. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -17766,7 +17766,7 @@ END
 
 ID: class.hacker.skill.15.desc
 
-SOURCE: src/skills.js line 35
+SOURCE: src/skills.js line 37
 
 CONTEXT: Tooltip for Technomancer’s Kill Dash Nine. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17788,7 +17788,7 @@ END
 
 ID: class.courier.name
 
-SOURCE: src/skills.js line 36
+SOURCE: src/skills.js line 38
 
 CONTEXT: The Runner class name, on the title screen and the hero sheet. Shown in both layouts.
 
@@ -17806,7 +17806,7 @@ END
 
 ID: class.courier.blurb
 
-SOURCE: src/skills.js line 36
+SOURCE: src/skills.js line 38
 
 CONTEXT: The blurb under Runner on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
 
@@ -17824,7 +17824,7 @@ END
 
 ID: class.courier.good
 
-SOURCE: src/skills.js line 36
+SOURCE: src/skills.js line 38
 
 CONTEXT: The “Good at:” line under Runner on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -17842,7 +17842,7 @@ END
 
 ID: class.courier.weak
 
-SOURCE: src/skills.js line 36
+SOURCE: src/skills.js line 38
 
 CONTEXT: The “Weak to:” line under Runner on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -17860,7 +17860,7 @@ END
 
 ID: class.courier.bld
 
-SOURCE: src/skills.js line 36
+SOURCE: src/skills.js line 38
 
 CONTEXT: The “Builds:” line under Runner on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -17882,7 +17882,7 @@ END
 
 ID: class.courier.skill.01.name
 
-SOURCE: src/skills.js line 37
+SOURCE: src/skills.js line 39
 
 CONTEXT: Scatter Shot, a Runner skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17900,7 +17900,7 @@ END
 
 ID: class.courier.skill.01.button
 
-SOURCE: src/skills.js line 37
+SOURCE: src/skills.js line 39
 
 CONTEXT: The short label on the skill button for Runner’s Scatter Shot. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -17918,7 +17918,7 @@ END
 
 ID: class.courier.skill.01.desc
 
-SOURCE: src/skills.js line 37
+SOURCE: src/skills.js line 39
 
 CONTEXT: Tooltip for Runner’s Scatter Shot. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -17944,7 +17944,7 @@ END
 
 ID: class.courier.skill.02.name
 
-SOURCE: src/skills.js line 38
+SOURCE: src/skills.js line 40
 
 CONTEXT: Fleet Step, a Runner skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -17962,7 +17962,7 @@ END
 
 ID: class.courier.skill.02.button
 
-SOURCE: src/skills.js line 38
+SOURCE: src/skills.js line 40
 
 CONTEXT: The short label on the skill button for Runner’s Fleet Step. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -17981,7 +17981,7 @@ END
 
 ID: class.courier.skill.02.desc
 
-SOURCE: src/skills.js line 38
+SOURCE: src/skills.js line 40
 
 CONTEXT: Tooltip for Runner’s Fleet Step. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18005,7 +18005,7 @@ END
 
 ID: class.courier.skill.03.name
 
-SOURCE: src/skills.js line 39
+SOURCE: src/skills.js line 41
 
 CONTEXT: Evasion, a Runner skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18023,7 +18023,7 @@ END
 
 ID: class.courier.skill.03.desc
 
-SOURCE: src/skills.js line 39
+SOURCE: src/skills.js line 41
 
 CONTEXT: Tooltip for Runner’s Evasion. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18048,7 +18048,7 @@ END
 
 ID: class.courier.skill.04.name
 
-SOURCE: src/skills.js line 40
+SOURCE: src/skills.js line 42
 
 CONTEXT: Lure, a Runner skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18066,7 +18066,7 @@ END
 
 ID: class.courier.skill.04.button
 
-SOURCE: src/skills.js line 40
+SOURCE: src/skills.js line 42
 
 CONTEXT: The short label on the skill button for Runner’s Lure. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -18084,7 +18084,7 @@ END
 
 ID: class.courier.skill.04.desc
 
-SOURCE: src/skills.js line 40
+SOURCE: src/skills.js line 42
 
 CONTEXT: Tooltip for Runner’s Lure. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18108,7 +18108,7 @@ END
 
 ID: class.courier.skill.05.name
 
-SOURCE: src/skills.js line 41
+SOURCE: src/skills.js line 43
 
 CONTEXT: Tack Strip, a Runner skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18126,7 +18126,7 @@ END
 
 ID: class.courier.skill.05.button
 
-SOURCE: src/skills.js line 41
+SOURCE: src/skills.js line 43
 
 CONTEXT: The short label on the skill button for Runner’s Tack Strip. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -18145,7 +18145,7 @@ END
 
 ID: class.courier.skill.05.desc
 
-SOURCE: src/skills.js line 41
+SOURCE: src/skills.js line 43
 
 CONTEXT: Tooltip for Runner’s Tack Strip. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18169,7 +18169,7 @@ END
 
 ID: class.courier.skill.06.name
 
-SOURCE: src/skills.js line 42
+SOURCE: src/skills.js line 44
 
 CONTEXT: Scavenger, a Runner skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18187,7 +18187,7 @@ END
 
 ID: class.courier.skill.06.desc
 
-SOURCE: src/skills.js line 42
+SOURCE: src/skills.js line 44
 
 CONTEXT: Tooltip for Runner’s Scavenger. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18212,7 +18212,7 @@ END
 
 ID: class.courier.skill.07.name
 
-SOURCE: src/skills.js line 43
+SOURCE: src/skills.js line 45
 
 CONTEXT: Rush Order, a Runner skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18230,7 +18230,7 @@ END
 
 ID: class.courier.skill.07.button
 
-SOURCE: src/skills.js line 43
+SOURCE: src/skills.js line 45
 
 CONTEXT: The short label on the skill button for Runner’s Rush Order. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -18249,7 +18249,7 @@ END
 
 ID: class.courier.skill.07.desc
 
-SOURCE: src/skills.js line 43
+SOURCE: src/skills.js line 45
 
 CONTEXT: Tooltip for Runner’s Rush Order. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18273,7 +18273,7 @@ END
 
 ID: class.courier.skill.08.name
 
-SOURCE: src/skills.js line 44
+SOURCE: src/skills.js line 46
 
 CONTEXT: Signed For, a Runner skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18291,7 +18291,7 @@ END
 
 ID: class.courier.skill.08.button
 
-SOURCE: src/skills.js line 44
+SOURCE: src/skills.js line 46
 
 CONTEXT: The short label on the skill button for Runner’s Signed For. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -18310,7 +18310,7 @@ END
 
 ID: class.courier.skill.08.desc
 
-SOURCE: src/skills.js line 44
+SOURCE: src/skills.js line 46
 
 CONTEXT: Tooltip for Runner’s Signed For. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18334,7 +18334,7 @@ END
 
 ID: class.courier.skill.09.name
 
-SOURCE: src/skills.js line 45
+SOURCE: src/skills.js line 47
 
 CONTEXT: Deadeye, a Runner skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18352,7 +18352,7 @@ END
 
 ID: class.courier.skill.09.desc
 
-SOURCE: src/skills.js line 45
+SOURCE: src/skills.js line 47
 
 CONTEXT: Tooltip for Runner’s Deadeye. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18377,7 +18377,7 @@ END
 
 ID: class.courier.skill.10.name
 
-SOURCE: src/skills.js line 46
+SOURCE: src/skills.js line 48
 
 CONTEXT: Return to Sender, a Runner skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18395,7 +18395,7 @@ END
 
 ID: class.courier.skill.10.button
 
-SOURCE: src/skills.js line 46
+SOURCE: src/skills.js line 48
 
 CONTEXT: The short label on the skill button for Runner’s Return to Sender. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -18414,7 +18414,7 @@ END
 
 ID: class.courier.skill.10.desc
 
-SOURCE: src/skills.js line 46
+SOURCE: src/skills.js line 48
 
 CONTEXT: Tooltip for Runner’s Return to Sender. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18438,7 +18438,7 @@ END
 
 ID: class.courier.skill.11.name
 
-SOURCE: src/skills.js line 47
+SOURCE: src/skills.js line 49
 
 CONTEXT: Route Knowledge, a Runner skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18456,7 +18456,7 @@ END
 
 ID: class.courier.skill.11.desc
 
-SOURCE: src/skills.js line 47
+SOURCE: src/skills.js line 49
 
 CONTEXT: Tooltip for Runner’s Route Knowledge. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18481,7 +18481,7 @@ END
 
 ID: class.courier.skill.12.name
 
-SOURCE: src/skills.js line 48
+SOURCE: src/skills.js line 50
 
 CONTEXT: Second Drop, a Runner skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18499,7 +18499,7 @@ END
 
 ID: class.courier.skill.12.button
 
-SOURCE: src/skills.js line 48
+SOURCE: src/skills.js line 50
 
 CONTEXT: The short label on the skill button for Runner’s Second Drop. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -18518,7 +18518,7 @@ END
 
 ID: class.courier.skill.12.desc
 
-SOURCE: src/skills.js line 48
+SOURCE: src/skills.js line 50
 
 CONTEXT: Tooltip for Runner’s Second Drop. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18540,7 +18540,7 @@ END
 
 ID: class.courier.skill.13.name
 
-SOURCE: src/skills.js line 49
+SOURCE: src/skills.js line 51
 
 CONTEXT: Manifest, a Runner skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18558,7 +18558,7 @@ END
 
 ID: class.courier.skill.13.button
 
-SOURCE: src/skills.js line 49
+SOURCE: src/skills.js line 51
 
 CONTEXT: The short label on the skill button for Runner’s Manifest. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -18576,7 +18576,7 @@ END
 
 ID: class.courier.skill.13.desc
 
-SOURCE: src/skills.js line 49
+SOURCE: src/skills.js line 51
 
 CONTEXT: Tooltip for Runner’s Manifest. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18600,7 +18600,7 @@ END
 
 ID: class.courier.skill.14.name
 
-SOURCE: src/skills.js line 50
+SOURCE: src/skills.js line 52
 
 CONTEXT: Hazard Pay, a Runner skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18618,7 +18618,7 @@ END
 
 ID: class.courier.skill.14.desc
 
-SOURCE: src/skills.js line 50
+SOURCE: src/skills.js line 52
 
 CONTEXT: Tooltip for Runner’s Hazard Pay. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18643,7 +18643,7 @@ END
 
 ID: class.courier.skill.15.name
 
-SOURCE: src/skills.js line 51
+SOURCE: src/skills.js line 53
 
 CONTEXT: Missed Connection, a Runner skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18661,7 +18661,7 @@ END
 
 ID: class.courier.skill.15.button
 
-SOURCE: src/skills.js line 51
+SOURCE: src/skills.js line 53
 
 CONTEXT: The short label on the skill button for Runner’s Missed Connection. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -18680,7 +18680,7 @@ END
 
 ID: class.courier.skill.15.desc
 
-SOURCE: src/skills.js line 51
+SOURCE: src/skills.js line 53
 
 CONTEXT: Tooltip for Runner’s Missed Connection. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18702,7 +18702,7 @@ END
 
 ID: class.anon.name
 
-SOURCE: src/skills.js line 52
+SOURCE: src/skills.js line 54
 
 CONTEXT: The Anon class name, on the title screen and the hero sheet. Shown in both layouts.
 
@@ -18720,7 +18720,7 @@ END
 
 ID: class.anon.blurb
 
-SOURCE: src/skills.js line 52
+SOURCE: src/skills.js line 54
 
 CONTEXT: The blurb under Anon on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
 
@@ -18738,7 +18738,7 @@ END
 
 ID: class.anon.good
 
-SOURCE: src/skills.js line 52
+SOURCE: src/skills.js line 54
 
 CONTEXT: The “Good at:” line under Anon on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -18756,7 +18756,7 @@ END
 
 ID: class.anon.weak
 
-SOURCE: src/skills.js line 52
+SOURCE: src/skills.js line 54
 
 CONTEXT: The “Weak to:” line under Anon on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -18774,7 +18774,7 @@ END
 
 ID: class.anon.bld
 
-SOURCE: src/skills.js line 52
+SOURCE: src/skills.js line 54
 
 CONTEXT: The “Builds:” line under Anon on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -18796,7 +18796,7 @@ END
 
 ID: class.anon.skill.01.name
 
-SOURCE: src/skills.js line 53
+SOURCE: src/skills.js line 55
 
 CONTEXT: Honeypot, a Anon skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18814,7 +18814,7 @@ END
 
 ID: class.anon.skill.01.button
 
-SOURCE: src/skills.js line 53
+SOURCE: src/skills.js line 55
 
 CONTEXT: The short label on the skill button for Anon’s Honeypot. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -18833,7 +18833,7 @@ END
 
 ID: class.anon.skill.01.desc
 
-SOURCE: src/skills.js line 53
+SOURCE: src/skills.js line 55
 
 CONTEXT: Tooltip for Anon’s Honeypot. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18857,7 +18857,7 @@ END
 
 ID: class.anon.skill.02.name
 
-SOURCE: src/skills.js line 54
+SOURCE: src/skills.js line 56
 
 CONTEXT: Proxy Hop, a Anon skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18875,7 +18875,7 @@ END
 
 ID: class.anon.skill.02.button
 
-SOURCE: src/skills.js line 54
+SOURCE: src/skills.js line 56
 
 CONTEXT: The short label on the skill button for Anon’s Proxy Hop. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -18894,7 +18894,7 @@ END
 
 ID: class.anon.skill.02.desc
 
-SOURCE: src/skills.js line 54
+SOURCE: src/skills.js line 56
 
 CONTEXT: Tooltip for Anon’s Proxy Hop. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18918,7 +18918,7 @@ END
 
 ID: class.anon.skill.03.name
 
-SOURCE: src/skills.js line 55
+SOURCE: src/skills.js line 57
 
 CONTEXT: OpSec, a Anon skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18936,7 +18936,7 @@ END
 
 ID: class.anon.skill.03.desc
 
-SOURCE: src/skills.js line 55
+SOURCE: src/skills.js line 57
 
 CONTEXT: Tooltip for Anon’s OpSec. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -18961,7 +18961,7 @@ END
 
 ID: class.anon.skill.04.name
 
-SOURCE: src/skills.js line 56
+SOURCE: src/skills.js line 58
 
 CONTEXT: Logic Bomb, a Anon skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -18979,7 +18979,7 @@ END
 
 ID: class.anon.skill.04.button
 
-SOURCE: src/skills.js line 56
+SOURCE: src/skills.js line 58
 
 CONTEXT: The short label on the skill button for Anon’s Logic Bomb. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -18998,7 +18998,7 @@ END
 
 ID: class.anon.skill.04.desc
 
-SOURCE: src/skills.js line 56
+SOURCE: src/skills.js line 58
 
 CONTEXT: Tooltip for Anon’s Logic Bomb. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19022,7 +19022,7 @@ END
 
 ID: class.anon.skill.05.name
 
-SOURCE: src/skills.js line 57
+SOURCE: src/skills.js line 59
 
 CONTEXT: Incognito, a Anon skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19040,7 +19040,7 @@ END
 
 ID: class.anon.skill.05.button
 
-SOURCE: src/skills.js line 57
+SOURCE: src/skills.js line 59
 
 CONTEXT: The short label on the skill button for Anon’s Incognito. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -19059,7 +19059,7 @@ END
 
 ID: class.anon.skill.05.desc
 
-SOURCE: src/skills.js line 57
+SOURCE: src/skills.js line 59
 
 CONTEXT: Tooltip for Anon’s Incognito. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19084,7 +19084,7 @@ END
 
 ID: class.anon.skill.06.name
 
-SOURCE: src/skills.js line 58
+SOURCE: src/skills.js line 60
 
 CONTEXT: Dox, a Anon skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19102,7 +19102,7 @@ END
 
 ID: class.anon.skill.06.button
 
-SOURCE: src/skills.js line 58
+SOURCE: src/skills.js line 60
 
 CONTEXT: The short label on the skill button for Anon’s Dox. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -19120,7 +19120,7 @@ END
 
 ID: class.anon.skill.06.desc
 
-SOURCE: src/skills.js line 58
+SOURCE: src/skills.js line 60
 
 CONTEXT: Tooltip for Anon’s Dox. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19145,7 +19145,7 @@ END
 
 ID: class.anon.skill.07.name
 
-SOURCE: src/skills.js line 59
+SOURCE: src/skills.js line 61
 
 CONTEXT: Zip Bomb, a Anon skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19163,7 +19163,7 @@ END
 
 ID: class.anon.skill.07.button
 
-SOURCE: src/skills.js line 59
+SOURCE: src/skills.js line 61
 
 CONTEXT: The short label on the skill button for Anon’s Zip Bomb. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -19182,7 +19182,7 @@ END
 
 ID: class.anon.skill.07.desc
 
-SOURCE: src/skills.js line 59
+SOURCE: src/skills.js line 61
 
 CONTEXT: Tooltip for Anon’s Zip Bomb. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19207,7 +19207,7 @@ END
 
 ID: class.anon.skill.08.name
 
-SOURCE: src/skills.js line 60
+SOURCE: src/skills.js line 62
 
 CONTEXT: Sockpuppet, a Anon skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19225,7 +19225,7 @@ END
 
 ID: class.anon.skill.08.button
 
-SOURCE: src/skills.js line 60
+SOURCE: src/skills.js line 62
 
 CONTEXT: The short label on the skill button for Anon’s Sockpuppet. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -19244,7 +19244,7 @@ END
 
 ID: class.anon.skill.08.desc
 
-SOURCE: src/skills.js line 60
+SOURCE: src/skills.js line 62
 
 CONTEXT: Tooltip for Anon’s Sockpuppet. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19271,7 +19271,7 @@ END
 
 ID: class.anon.skill.09.name
 
-SOURCE: src/skills.js line 61
+SOURCE: src/skills.js line 63
 
 CONTEXT: Legion, a Anon skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19289,7 +19289,7 @@ END
 
 ID: class.anon.skill.09.button
 
-SOURCE: src/skills.js line 61
+SOURCE: src/skills.js line 63
 
 CONTEXT: The short label on the skill button for Anon’s Legion. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -19307,7 +19307,7 @@ END
 
 ID: class.anon.skill.09.desc
 
-SOURCE: src/skills.js line 61
+SOURCE: src/skills.js line 63
 
 CONTEXT: Tooltip for Anon’s Legion. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19331,7 +19331,7 @@ END
 
 ID: class.anon.skill.10.name
 
-SOURCE: src/skills.js line 62
+SOURCE: src/skills.js line 64
 
 CONTEXT: Rehearsal, a Anon skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19349,7 +19349,7 @@ END
 
 ID: class.anon.skill.10.button
 
-SOURCE: src/skills.js line 62
+SOURCE: src/skills.js line 64
 
 CONTEXT: The short label on the skill button for Anon’s Rehearsal. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -19368,7 +19368,7 @@ END
 
 ID: class.anon.skill.10.desc
 
-SOURCE: src/skills.js line 62
+SOURCE: src/skills.js line 64
 
 CONTEXT: Tooltip for Anon’s Rehearsal. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19392,7 +19392,7 @@ END
 
 ID: class.anon.skill.11.name
 
-SOURCE: src/skills.js line 63
+SOURCE: src/skills.js line 65
 
 CONTEXT: The Dump, a Anon skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19410,7 +19410,7 @@ END
 
 ID: class.anon.skill.11.button
 
-SOURCE: src/skills.js line 63
+SOURCE: src/skills.js line 65
 
 CONTEXT: The short label on the skill button for Anon’s The Dump. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -19429,7 +19429,7 @@ END
 
 ID: class.anon.skill.11.desc
 
-SOURCE: src/skills.js line 63
+SOURCE: src/skills.js line 65
 
 CONTEXT: Tooltip for Anon’s The Dump. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19453,7 +19453,7 @@ END
 
 ID: class.anon.skill.12.name
 
-SOURCE: src/skills.js line 64
+SOURCE: src/skills.js line 66
 
 CONTEXT: No Attribution, a Anon skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19471,7 +19471,7 @@ END
 
 ID: class.anon.skill.12.desc
 
-SOURCE: src/skills.js line 64
+SOURCE: src/skills.js line 66
 
 CONTEXT: Tooltip for Anon’s No Attribution. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19493,7 +19493,7 @@ END
 
 ID: class.anon.skill.13.name
 
-SOURCE: src/skills.js line 65
+SOURCE: src/skills.js line 67
 
 CONTEXT: Dead Drop, a Anon skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19511,7 +19511,7 @@ END
 
 ID: class.anon.skill.13.button
 
-SOURCE: src/skills.js line 65
+SOURCE: src/skills.js line 67
 
 CONTEXT: The short label on the skill button for Anon’s Dead Drop. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -19530,7 +19530,7 @@ END
 
 ID: class.anon.skill.13.desc
 
-SOURCE: src/skills.js line 65
+SOURCE: src/skills.js line 67
 
 CONTEXT: Tooltip for Anon’s Dead Drop. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19552,7 +19552,7 @@ END
 
 ID: class.anon.skill.14.name
 
-SOURCE: src/skills.js line 66
+SOURCE: src/skills.js line 68
 
 CONTEXT: Cutout, a Anon skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19570,7 +19570,7 @@ END
 
 ID: class.anon.skill.14.desc
 
-SOURCE: src/skills.js line 66
+SOURCE: src/skills.js line 68
 
 CONTEXT: Tooltip for Anon’s Cutout. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19592,7 +19592,7 @@ END
 
 ID: class.anon.skill.15.name
 
-SOURCE: src/skills.js line 67
+SOURCE: src/skills.js line 69
 
 CONTEXT: We Were Never Here, a Anon skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19610,7 +19610,7 @@ END
 
 ID: class.anon.skill.15.button
 
-SOURCE: src/skills.js line 67
+SOURCE: src/skills.js line 69
 
 CONTEXT: The short label on the skill button for Anon’s We Were Never Here. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -19629,7 +19629,7 @@ END
 
 ID: class.anon.skill.15.desc
 
-SOURCE: src/skills.js line 67
+SOURCE: src/skills.js line 69
 
 CONTEXT: Tooltip for Anon’s We Were Never Here. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19649,7 +19649,7 @@ END
 
 ID: class.founder.name
 
-SOURCE: src/skills.js line 68
+SOURCE: src/skills.js line 70
 
 CONTEXT: The Founder class name, on the title screen and the hero sheet. Shown in both layouts.
 
@@ -19667,7 +19667,7 @@ END
 
 ID: class.founder.blurb
 
-SOURCE: src/skills.js line 68
+SOURCE: src/skills.js line 70
 
 CONTEXT: The blurb under Founder on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
 
@@ -19687,7 +19687,7 @@ END
 
 ID: class.founder.good
 
-SOURCE: src/skills.js line 68
+SOURCE: src/skills.js line 70
 
 CONTEXT: The “Good at:” line under Founder on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -19705,7 +19705,7 @@ END
 
 ID: class.founder.weak
 
-SOURCE: src/skills.js line 68
+SOURCE: src/skills.js line 70
 
 CONTEXT: The “Weak to:” line under Founder on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -19723,7 +19723,7 @@ END
 
 ID: class.founder.bld
 
-SOURCE: src/skills.js line 68
+SOURCE: src/skills.js line 70
 
 CONTEXT: The “Builds:” line under Founder on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -19745,7 +19745,7 @@ END
 
 ID: class.founder.skill.01.name
 
-SOURCE: src/skills.js line 69
+SOURCE: src/skills.js line 71
 
 CONTEXT: Interns, a Founder skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19763,7 +19763,7 @@ END
 
 ID: class.founder.skill.01.button
 
-SOURCE: src/skills.js line 69
+SOURCE: src/skills.js line 71
 
 CONTEXT: The short label on the skill button for Founder’s Interns. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -19781,7 +19781,7 @@ END
 
 ID: class.founder.skill.01.desc
 
-SOURCE: src/skills.js line 69
+SOURCE: src/skills.js line 71
 
 CONTEXT: Tooltip for Founder’s Interns. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19806,7 +19806,7 @@ END
 
 ID: class.founder.skill.02.name
 
-SOURCE: src/skills.js line 70
+SOURCE: src/skills.js line 72
 
 CONTEXT: Cease & Desist, a Founder skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19824,7 +19824,7 @@ END
 
 ID: class.founder.skill.02.button
 
-SOURCE: src/skills.js line 70
+SOURCE: src/skills.js line 72
 
 CONTEXT: The short label on the skill button for Founder’s Cease & Desist. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -19843,7 +19843,7 @@ END
 
 ID: class.founder.skill.02.desc
 
-SOURCE: src/skills.js line 70
+SOURCE: src/skills.js line 72
 
 CONTEXT: Tooltip for Founder’s Cease & Desist. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19868,7 +19868,7 @@ END
 
 ID: class.founder.skill.03.name
 
-SOURCE: src/skills.js line 71
+SOURCE: src/skills.js line 73
 
 CONTEXT: Equity, a Founder skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19886,7 +19886,7 @@ END
 
 ID: class.founder.skill.03.desc
 
-SOURCE: src/skills.js line 71
+SOURCE: src/skills.js line 73
 
 CONTEXT: Tooltip for Founder’s Equity. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19911,7 +19911,7 @@ END
 
 ID: class.founder.skill.04.name
 
-SOURCE: src/skills.js line 72
+SOURCE: src/skills.js line 74
 
 CONTEXT: Contractors, a Founder skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19929,7 +19929,7 @@ END
 
 ID: class.founder.skill.04.button
 
-SOURCE: src/skills.js line 72
+SOURCE: src/skills.js line 74
 
 CONTEXT: The short label on the skill button for Founder’s Contractors. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -19948,7 +19948,7 @@ END
 
 ID: class.founder.skill.04.desc
 
-SOURCE: src/skills.js line 72
+SOURCE: src/skills.js line 74
 
 CONTEXT: Tooltip for Founder’s Contractors. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -19973,7 +19973,7 @@ END
 
 ID: class.founder.skill.05.name
 
-SOURCE: src/skills.js line 73
+SOURCE: src/skills.js line 75
 
 CONTEXT: Crunch, a Founder skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -19991,7 +19991,7 @@ END
 
 ID: class.founder.skill.05.button
 
-SOURCE: src/skills.js line 73
+SOURCE: src/skills.js line 75
 
 CONTEXT: The short label on the skill button for Founder’s Crunch. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20009,7 +20009,7 @@ END
 
 ID: class.founder.skill.05.desc
 
-SOURCE: src/skills.js line 73
+SOURCE: src/skills.js line 75
 
 CONTEXT: Tooltip for Founder’s Crunch. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20033,7 +20033,7 @@ END
 
 ID: class.founder.skill.06.name
 
-SOURCE: src/skills.js line 74
+SOURCE: src/skills.js line 76
 
 CONTEXT: Mech Suit, a Founder skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20051,7 +20051,7 @@ END
 
 ID: class.founder.skill.06.button
 
-SOURCE: src/skills.js line 74
+SOURCE: src/skills.js line 76
 
 CONTEXT: The short label on the skill button for Founder’s Mech Suit. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20070,7 +20070,7 @@ END
 
 ID: class.founder.skill.06.desc
 
-SOURCE: src/skills.js line 74
+SOURCE: src/skills.js line 76
 
 CONTEXT: Tooltip for Founder’s Mech Suit. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20095,7 +20095,7 @@ END
 
 ID: class.founder.skill.07.name
 
-SOURCE: src/skills.js line 75
+SOURCE: src/skills.js line 77
 
 CONTEXT: Chief of Staff, a Founder skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20113,7 +20113,7 @@ END
 
 ID: class.founder.skill.07.button
 
-SOURCE: src/skills.js line 75
+SOURCE: src/skills.js line 77
 
 CONTEXT: The short label on the skill button for Founder’s Chief of Staff. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20131,7 +20131,7 @@ END
 
 ID: class.founder.skill.07.desc
 
-SOURCE: src/skills.js line 75
+SOURCE: src/skills.js line 77
 
 CONTEXT: Tooltip for Founder’s Chief of Staff. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20155,7 +20155,7 @@ END
 
 ID: class.founder.skill.08.name
 
-SOURCE: src/skills.js line 76
+SOURCE: src/skills.js line 78
 
 CONTEXT: Acqui-hire, a Founder skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20173,7 +20173,7 @@ END
 
 ID: class.founder.skill.08.button
 
-SOURCE: src/skills.js line 76
+SOURCE: src/skills.js line 78
 
 CONTEXT: The short label on the skill button for Founder’s Acqui-hire. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20192,7 +20192,7 @@ END
 
 ID: class.founder.skill.08.desc
 
-SOURCE: src/skills.js line 76
+SOURCE: src/skills.js line 78
 
 CONTEXT: Tooltip for Founder’s Acqui-hire. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20217,7 +20217,7 @@ END
 
 ID: class.founder.skill.09.name
 
-SOURCE: src/skills.js line 77
+SOURCE: src/skills.js line 79
 
 CONTEXT: Layoffs, a Founder skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20235,7 +20235,7 @@ END
 
 ID: class.founder.skill.09.button
 
-SOURCE: src/skills.js line 77
+SOURCE: src/skills.js line 79
 
 CONTEXT: The short label on the skill button for Founder’s Layoffs. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20254,7 +20254,7 @@ END
 
 ID: class.founder.skill.09.desc
 
-SOURCE: src/skills.js line 77
+SOURCE: src/skills.js line 79
 
 CONTEXT: Tooltip for Founder’s Layoffs. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20278,7 +20278,7 @@ END
 
 ID: class.founder.skill.10.name
 
-SOURCE: src/skills.js line 78
+SOURCE: src/skills.js line 80
 
 CONTEXT: Garden Leave, a Founder skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20296,7 +20296,7 @@ END
 
 ID: class.founder.skill.10.button
 
-SOURCE: src/skills.js line 78
+SOURCE: src/skills.js line 80
 
 CONTEXT: The short label on the skill button for Founder’s Garden Leave. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20315,7 +20315,7 @@ END
 
 ID: class.founder.skill.10.desc
 
-SOURCE: src/skills.js line 78
+SOURCE: src/skills.js line 80
 
 CONTEXT: Tooltip for Founder’s Garden Leave. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20340,7 +20340,7 @@ END
 
 ID: class.founder.skill.11.name
 
-SOURCE: src/skills.js line 79
+SOURCE: src/skills.js line 81
 
 CONTEXT: Non-Compete, a Founder skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20358,7 +20358,7 @@ END
 
 ID: class.founder.skill.11.button
 
-SOURCE: src/skills.js line 79
+SOURCE: src/skills.js line 81
 
 CONTEXT: The short label on the skill button for Founder’s Non-Compete. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20377,7 +20377,7 @@ END
 
 ID: class.founder.skill.11.desc
 
-SOURCE: src/skills.js line 79
+SOURCE: src/skills.js line 81
 
 CONTEXT: Tooltip for Founder’s Non-Compete. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20401,7 +20401,7 @@ END
 
 ID: class.founder.skill.12.name
 
-SOURCE: src/skills.js line 80
+SOURCE: src/skills.js line 82
 
 CONTEXT: Vesting, a Founder skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20419,7 +20419,7 @@ END
 
 ID: class.founder.skill.12.desc
 
-SOURCE: src/skills.js line 80
+SOURCE: src/skills.js line 82
 
 CONTEXT: Tooltip for Founder’s Vesting. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20443,7 +20443,7 @@ END
 
 ID: class.founder.skill.13.name
 
-SOURCE: src/skills.js line 81
+SOURCE: src/skills.js line 83
 
 CONTEXT: Term Sheet, a Founder skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20461,7 +20461,7 @@ END
 
 ID: class.founder.skill.13.button
 
-SOURCE: src/skills.js line 81
+SOURCE: src/skills.js line 83
 
 CONTEXT: The short label on the skill button for Founder’s Term Sheet. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20480,7 +20480,7 @@ END
 
 ID: class.founder.skill.13.desc
 
-SOURCE: src/skills.js line 81
+SOURCE: src/skills.js line 83
 
 CONTEXT: Tooltip for Founder’s Term Sheet. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20504,7 +20504,7 @@ END
 
 ID: class.founder.skill.14.name
 
-SOURCE: src/skills.js line 82
+SOURCE: src/skills.js line 84
 
 CONTEXT: Org Debt, a Founder skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20522,7 +20522,7 @@ END
 
 ID: class.founder.skill.14.desc
 
-SOURCE: src/skills.js line 82
+SOURCE: src/skills.js line 84
 
 CONTEXT: Tooltip for Founder’s Org Debt. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20547,7 +20547,7 @@ END
 
 ID: class.founder.skill.15.name
 
-SOURCE: src/skills.js line 83
+SOURCE: src/skills.js line 85
 
 CONTEXT: Liquidation, a Founder skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20565,7 +20565,7 @@ END
 
 ID: class.founder.skill.15.button
 
-SOURCE: src/skills.js line 83
+SOURCE: src/skills.js line 85
 
 CONTEXT: The short label on the skill button for Founder’s Liquidation. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20584,7 +20584,7 @@ END
 
 ID: class.founder.skill.15.desc
 
-SOURCE: src/skills.js line 83
+SOURCE: src/skills.js line 85
 
 CONTEXT: Tooltip for Founder’s Liquidation. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20606,7 +20606,7 @@ END
 
 ID: class.homesteader.name
 
-SOURCE: src/skills.js line 84
+SOURCE: src/skills.js line 86
 
 CONTEXT: The Homesteader class name, on the title screen and the hero sheet. Shown in both layouts.
 
@@ -20624,7 +20624,7 @@ END
 
 ID: class.homesteader.blurb
 
-SOURCE: src/skills.js line 84
+SOURCE: src/skills.js line 86
 
 CONTEXT: The blurb under Homesteader on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
 
@@ -20642,7 +20642,7 @@ END
 
 ID: class.homesteader.good
 
-SOURCE: src/skills.js line 84
+SOURCE: src/skills.js line 86
 
 CONTEXT: The “Good at:” line under Homesteader on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -20660,7 +20660,7 @@ END
 
 ID: class.homesteader.weak
 
-SOURCE: src/skills.js line 84
+SOURCE: src/skills.js line 86
 
 CONTEXT: The “Weak to:” line under Homesteader on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -20678,7 +20678,7 @@ END
 
 ID: class.homesteader.bld
 
-SOURCE: src/skills.js line 84
+SOURCE: src/skills.js line 86
 
 CONTEXT: The “Builds:” line under Homesteader on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -20700,7 +20700,7 @@ END
 
 ID: class.homesteader.skill.01.name
 
-SOURCE: src/skills.js line 85
+SOURCE: src/skills.js line 87
 
 CONTEXT: Cold Frame, a Homesteader skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20718,7 +20718,7 @@ END
 
 ID: class.homesteader.skill.01.button
 
-SOURCE: src/skills.js line 85
+SOURCE: src/skills.js line 87
 
 CONTEXT: The short label on the skill button for Homesteader’s Cold Frame. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20737,7 +20737,7 @@ END
 
 ID: class.homesteader.skill.01.desc
 
-SOURCE: src/skills.js line 85
+SOURCE: src/skills.js line 87
 
 CONTEXT: Tooltip for Homesteader’s Cold Frame. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20761,7 +20761,7 @@ END
 
 ID: class.homesteader.skill.02.name
 
-SOURCE: src/skills.js line 86
+SOURCE: src/skills.js line 88
 
 CONTEXT: Wear the Hound, a Homesteader skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20779,7 +20779,7 @@ END
 
 ID: class.homesteader.skill.02.button
 
-SOURCE: src/skills.js line 86
+SOURCE: src/skills.js line 88
 
 CONTEXT: The short label on the skill button for Homesteader’s Wear the Hound. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20797,7 +20797,7 @@ END
 
 ID: class.homesteader.skill.02.desc
 
-SOURCE: src/skills.js line 86
+SOURCE: src/skills.js line 88
 
 CONTEXT: Tooltip for Homesteader’s Wear the Hound. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20819,7 +20819,7 @@ END
 
 ID: class.homesteader.skill.03.name
 
-SOURCE: src/skills.js line 87
+SOURCE: src/skills.js line 89
 
 CONTEXT: Strays, a Homesteader skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20837,7 +20837,7 @@ END
 
 ID: class.homesteader.skill.03.button
 
-SOURCE: src/skills.js line 87
+SOURCE: src/skills.js line 89
 
 CONTEXT: The short label on the skill button for Homesteader’s Strays. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20855,7 +20855,7 @@ END
 
 ID: class.homesteader.skill.03.desc
 
-SOURCE: src/skills.js line 87
+SOURCE: src/skills.js line 89
 
 CONTEXT: Tooltip for Homesteader’s Strays. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20880,7 +20880,7 @@ END
 
 ID: class.homesteader.skill.04.name
 
-SOURCE: src/skills.js line 88
+SOURCE: src/skills.js line 90
 
 CONTEXT: Compost, a Homesteader skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20898,7 +20898,7 @@ END
 
 ID: class.homesteader.skill.04.button
 
-SOURCE: src/skills.js line 88
+SOURCE: src/skills.js line 90
 
 CONTEXT: The short label on the skill button for Homesteader’s Compost. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20916,7 +20916,7 @@ END
 
 ID: class.homesteader.skill.04.desc
 
-SOURCE: src/skills.js line 88
+SOURCE: src/skills.js line 90
 
 CONTEXT: Tooltip for Homesteader’s Compost. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20940,7 +20940,7 @@ END
 
 ID: class.homesteader.skill.05.name
 
-SOURCE: src/skills.js line 89
+SOURCE: src/skills.js line 91
 
 CONTEXT: Wear the Hull, a Homesteader skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -20958,7 +20958,7 @@ END
 
 ID: class.homesteader.skill.05.button
 
-SOURCE: src/skills.js line 89
+SOURCE: src/skills.js line 91
 
 CONTEXT: The short label on the skill button for Homesteader’s Wear the Hull. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -20976,7 +20976,7 @@ END
 
 ID: class.homesteader.skill.05.desc
 
-SOURCE: src/skills.js line 89
+SOURCE: src/skills.js line 91
 
 CONTEXT: Tooltip for Homesteader’s Wear the Hull. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -20998,7 +20998,7 @@ END
 
 ID: class.homesteader.skill.06.name
 
-SOURCE: src/skills.js line 90
+SOURCE: src/skills.js line 92
 
 CONTEXT: The Bull, a Homesteader skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21016,7 +21016,7 @@ END
 
 ID: class.homesteader.skill.06.button
 
-SOURCE: src/skills.js line 90
+SOURCE: src/skills.js line 92
 
 CONTEXT: The short label on the skill button for Homesteader’s The Bull. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21034,7 +21034,7 @@ END
 
 ID: class.homesteader.skill.06.desc
 
-SOURCE: src/skills.js line 90
+SOURCE: src/skills.js line 92
 
 CONTEXT: Tooltip for Homesteader’s The Bull. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21058,7 +21058,7 @@ END
 
 ID: class.homesteader.skill.07.name
 
-SOURCE: src/skills.js line 91
+SOURCE: src/skills.js line 93
 
 CONTEXT: Hedgerow, a Homesteader skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21076,7 +21076,7 @@ END
 
 ID: class.homesteader.skill.07.button
 
-SOURCE: src/skills.js line 91
+SOURCE: src/skills.js line 93
 
 CONTEXT: The short label on the skill button for Homesteader’s Hedgerow. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21094,7 +21094,7 @@ END
 
 ID: class.homesteader.skill.07.desc
 
-SOURCE: src/skills.js line 91
+SOURCE: src/skills.js line 93
 
 CONTEXT: Tooltip for Homesteader’s Hedgerow. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21116,7 +21116,7 @@ END
 
 ID: class.homesteader.skill.08.name
 
-SOURCE: src/skills.js line 92
+SOURCE: src/skills.js line 94
 
 CONTEXT: Shed, a Homesteader skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21134,7 +21134,7 @@ END
 
 ID: class.homesteader.skill.08.button
 
-SOURCE: src/skills.js line 92
+SOURCE: src/skills.js line 94
 
 CONTEXT: The short label on the skill button for Homesteader’s Shed. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21152,7 +21152,7 @@ END
 
 ID: class.homesteader.skill.08.desc
 
-SOURCE: src/skills.js line 92
+SOURCE: src/skills.js line 94
 
 CONTEXT: Tooltip for Homesteader’s Shed. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21174,7 +21174,7 @@ END
 
 ID: class.homesteader.skill.09.name
 
-SOURCE: src/skills.js line 93
+SOURCE: src/skills.js line 95
 
 CONTEXT: Go Feral, a Homesteader skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21192,7 +21192,7 @@ END
 
 ID: class.homesteader.skill.09.desc
 
-SOURCE: src/skills.js line 93
+SOURCE: src/skills.js line 95
 
 CONTEXT: Tooltip for Homesteader’s Go Feral. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21216,7 +21216,7 @@ END
 
 ID: class.homesteader.skill.10.name
 
-SOURCE: src/skills.js line 94
+SOURCE: src/skills.js line 96
 
 CONTEXT: Kill Frost, a Homesteader skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21234,7 +21234,7 @@ END
 
 ID: class.homesteader.skill.10.button
 
-SOURCE: src/skills.js line 94
+SOURCE: src/skills.js line 96
 
 CONTEXT: The short label on the skill button for Homesteader’s Kill Frost. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21253,7 +21253,7 @@ END
 
 ID: class.homesteader.skill.10.desc
 
-SOURCE: src/skills.js line 94
+SOURCE: src/skills.js line 96
 
 CONTEXT: Tooltip for Homesteader’s Kill Frost. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21277,7 +21277,7 @@ END
 
 ID: class.homesteader.skill.11.name
 
-SOURCE: src/skills.js line 95
+SOURCE: src/skills.js line 97
 
 CONTEXT: Wear What You Killed, a Homesteader skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21295,7 +21295,7 @@ END
 
 ID: class.homesteader.skill.11.button
 
-SOURCE: src/skills.js line 95
+SOURCE: src/skills.js line 97
 
 CONTEXT: The short label on the skill button for Homesteader’s Wear What You Killed. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21314,7 +21314,7 @@ END
 
 ID: class.homesteader.skill.11.desc
 
-SOURCE: src/skills.js line 95
+SOURCE: src/skills.js line 97
 
 CONTEXT: Tooltip for Homesteader’s Wear What You Killed. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21336,7 +21336,7 @@ END
 
 ID: class.homesteader.skill.12.name
 
-SOURCE: src/skills.js line 96
+SOURCE: src/skills.js line 98
 
 CONTEXT: Rootbound, a Homesteader skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21354,7 +21354,7 @@ END
 
 ID: class.homesteader.skill.12.desc
 
-SOURCE: src/skills.js line 96
+SOURCE: src/skills.js line 98
 
 CONTEXT: Tooltip for Homesteader’s Rootbound. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21376,7 +21376,7 @@ END
 
 ID: class.homesteader.skill.13.name
 
-SOURCE: src/skills.js line 97
+SOURCE: src/skills.js line 99
 
 CONTEXT: Salt the Earth, a Homesteader skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21394,7 +21394,7 @@ END
 
 ID: class.homesteader.skill.13.button
 
-SOURCE: src/skills.js line 97
+SOURCE: src/skills.js line 99
 
 CONTEXT: The short label on the skill button for Homesteader’s Salt the Earth. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21412,7 +21412,7 @@ END
 
 ID: class.homesteader.skill.13.desc
 
-SOURCE: src/skills.js line 97
+SOURCE: src/skills.js line 99
 
 CONTEXT: Tooltip for Homesteader’s Salt the Earth. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21436,7 +21436,7 @@ END
 
 ID: class.homesteader.skill.14.name
 
-SOURCE: src/skills.js line 98
+SOURCE: src/skills.js line 100
 
 CONTEXT: Too Big for the Door, a Homesteader skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21454,7 +21454,7 @@ END
 
 ID: class.homesteader.skill.14.desc
 
-SOURCE: src/skills.js line 98
+SOURCE: src/skills.js line 100
 
 CONTEXT: Tooltip for Homesteader’s Too Big for the Door. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21478,7 +21478,7 @@ END
 
 ID: class.homesteader.skill.15.name
 
-SOURCE: src/skills.js line 99
+SOURCE: src/skills.js line 101
 
 CONTEXT: Slaughter Weight, a Homesteader skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21496,7 +21496,7 @@ END
 
 ID: class.homesteader.skill.15.button
 
-SOURCE: src/skills.js line 99
+SOURCE: src/skills.js line 101
 
 CONTEXT: The short label on the skill button for Homesteader’s Slaughter Weight. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21515,7 +21515,7 @@ END
 
 ID: class.homesteader.skill.15.desc
 
-SOURCE: src/skills.js line 99
+SOURCE: src/skills.js line 101
 
 CONTEXT: Tooltip for Homesteader’s Slaughter Weight. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21537,7 +21537,7 @@ END
 
 ID: class.witness.name
 
-SOURCE: src/skills.js line 100
+SOURCE: src/skills.js line 102
 
 CONTEXT: The Witness class name, on the title screen and the hero sheet. Shown in both layouts.
 
@@ -21555,7 +21555,7 @@ END
 
 ID: class.witness.blurb
 
-SOURCE: src/skills.js line 100
+SOURCE: src/skills.js line 102
 
 CONTEXT: The blurb under Witness on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
 
@@ -21573,7 +21573,7 @@ END
 
 ID: class.witness.good
 
-SOURCE: src/skills.js line 100
+SOURCE: src/skills.js line 102
 
 CONTEXT: The “Good at:” line under Witness on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -21591,7 +21591,7 @@ END
 
 ID: class.witness.weak
 
-SOURCE: src/skills.js line 100
+SOURCE: src/skills.js line 102
 
 CONTEXT: The “Weak to:” line under Witness on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -21609,7 +21609,7 @@ END
 
 ID: class.witness.bld
 
-SOURCE: src/skills.js line 100
+SOURCE: src/skills.js line 102
 
 CONTEXT: The “Builds:” line under Witness on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -21631,7 +21631,7 @@ END
 
 ID: class.witness.skill.01.name
 
-SOURCE: src/skills.js line 101
+SOURCE: src/skills.js line 103
 
 CONTEXT: Look, a Witness skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21649,7 +21649,7 @@ END
 
 ID: class.witness.skill.01.button
 
-SOURCE: src/skills.js line 101
+SOURCE: src/skills.js line 103
 
 CONTEXT: The short label on the skill button for Witness’s Look. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21667,7 +21667,7 @@ END
 
 ID: class.witness.skill.01.desc
 
-SOURCE: src/skills.js line 101
+SOURCE: src/skills.js line 103
 
 CONTEXT: Tooltip for Witness’s Look. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21689,7 +21689,7 @@ END
 
 ID: class.witness.skill.02.name
 
-SOURCE: src/skills.js line 102
+SOURCE: src/skills.js line 104
 
 CONTEXT: The Sentence, a Witness skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21707,7 +21707,7 @@ END
 
 ID: class.witness.skill.02.button
 
-SOURCE: src/skills.js line 102
+SOURCE: src/skills.js line 104
 
 CONTEXT: The short label on the skill button for Witness’s The Sentence. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21726,7 +21726,7 @@ END
 
 ID: class.witness.skill.02.desc
 
-SOURCE: src/skills.js line 102
+SOURCE: src/skills.js line 104
 
 CONTEXT: Tooltip for Witness’s The Sentence. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21750,7 +21750,7 @@ END
 
 ID: class.witness.skill.03.name
 
-SOURCE: src/skills.js line 103
+SOURCE: src/skills.js line 105
 
 CONTEXT: Margin, a Witness skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21768,7 +21768,7 @@ END
 
 ID: class.witness.skill.03.desc
 
-SOURCE: src/skills.js line 103
+SOURCE: src/skills.js line 105
 
 CONTEXT: Tooltip for Witness’s Margin. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21792,7 +21792,7 @@ END
 
 ID: class.witness.skill.04.name
 
-SOURCE: src/skills.js line 104
+SOURCE: src/skills.js line 106
 
 CONTEXT: Cross-reference, a Witness skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21810,7 +21810,7 @@ END
 
 ID: class.witness.skill.04.button
 
-SOURCE: src/skills.js line 104
+SOURCE: src/skills.js line 106
 
 CONTEXT: The short label on the skill button for Witness’s Cross-reference. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21829,7 +21829,7 @@ END
 
 ID: class.witness.skill.04.desc
 
-SOURCE: src/skills.js line 104
+SOURCE: src/skills.js line 106
 
 CONTEXT: Tooltip for Witness’s Cross-reference. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21853,7 +21853,7 @@ END
 
 ID: class.witness.skill.05.name
 
-SOURCE: src/skills.js line 105
+SOURCE: src/skills.js line 107
 
 CONTEXT: Pull the Thread, a Witness skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21871,7 +21871,7 @@ END
 
 ID: class.witness.skill.05.button
 
-SOURCE: src/skills.js line 105
+SOURCE: src/skills.js line 107
 
 CONTEXT: The short label on the skill button for Witness’s Pull the Thread. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21890,7 +21890,7 @@ END
 
 ID: class.witness.skill.05.desc
 
-SOURCE: src/skills.js line 105
+SOURCE: src/skills.js line 107
 
 CONTEXT: Tooltip for Witness’s Pull the Thread. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21914,7 +21914,7 @@ END
 
 ID: class.witness.skill.06.name
 
-SOURCE: src/skills.js line 106
+SOURCE: src/skills.js line 108
 
 CONTEXT: Filed, a Witness skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21932,7 +21932,7 @@ END
 
 ID: class.witness.skill.06.desc
 
-SOURCE: src/skills.js line 106
+SOURCE: src/skills.js line 108
 
 CONTEXT: Tooltip for Witness’s Filed. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -21956,7 +21956,7 @@ END
 
 ID: class.witness.skill.07.name
 
-SOURCE: src/skills.js line 107
+SOURCE: src/skills.js line 109
 
 CONTEXT: Correction, a Witness skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -21974,7 +21974,7 @@ END
 
 ID: class.witness.skill.07.button
 
-SOURCE: src/skills.js line 107
+SOURCE: src/skills.js line 109
 
 CONTEXT: The short label on the skill button for Witness’s Correction. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -21992,7 +21992,7 @@ END
 
 ID: class.witness.skill.07.desc
 
-SOURCE: src/skills.js line 107
+SOURCE: src/skills.js line 109
 
 CONTEXT: Tooltip for Witness’s Correction. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22014,7 +22014,7 @@ END
 
 ID: class.witness.skill.08.name
 
-SOURCE: src/skills.js line 108
+SOURCE: src/skills.js line 110
 
 CONTEXT: Redaction, a Witness skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22032,7 +22032,7 @@ END
 
 ID: class.witness.skill.08.button
 
-SOURCE: src/skills.js line 108
+SOURCE: src/skills.js line 110
 
 CONTEXT: The short label on the skill button for Witness’s Redaction. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22050,7 +22050,7 @@ END
 
 ID: class.witness.skill.08.desc
 
-SOURCE: src/skills.js line 108
+SOURCE: src/skills.js line 110
 
 CONTEXT: Tooltip for Witness’s Redaction. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22072,7 +22072,7 @@ END
 
 ID: class.witness.skill.09.name
 
-SOURCE: src/skills.js line 109
+SOURCE: src/skills.js line 111
 
 CONTEXT: The Footnote, a Witness skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22090,7 +22090,7 @@ END
 
 ID: class.witness.skill.09.desc
 
-SOURCE: src/skills.js line 109
+SOURCE: src/skills.js line 111
 
 CONTEXT: Tooltip for Witness’s The Footnote. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22115,7 +22115,7 @@ END
 
 ID: class.witness.skill.10.name
 
-SOURCE: src/skills.js line 110
+SOURCE: src/skills.js line 112
 
 CONTEXT: On the Record, a Witness skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22133,7 +22133,7 @@ END
 
 ID: class.witness.skill.10.button
 
-SOURCE: src/skills.js line 110
+SOURCE: src/skills.js line 112
 
 CONTEXT: The short label on the skill button for Witness’s On the Record. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22152,7 +22152,7 @@ END
 
 ID: class.witness.skill.10.desc
 
-SOURCE: src/skills.js line 110
+SOURCE: src/skills.js line 112
 
 CONTEXT: Tooltip for Witness’s On the Record. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22176,7 +22176,7 @@ END
 
 ID: class.witness.skill.11.name
 
-SOURCE: src/skills.js line 111
+SOURCE: src/skills.js line 113
 
 CONTEXT: Unnamed Source, a Witness skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22194,7 +22194,7 @@ END
 
 ID: class.witness.skill.11.button
 
-SOURCE: src/skills.js line 111
+SOURCE: src/skills.js line 113
 
 CONTEXT: The short label on the skill button for Witness’s Unnamed Source. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22213,7 +22213,7 @@ END
 
 ID: class.witness.skill.11.desc
 
-SOURCE: src/skills.js line 111
+SOURCE: src/skills.js line 113
 
 CONTEXT: Tooltip for Witness’s Unnamed Source. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22235,7 +22235,7 @@ END
 
 ID: class.witness.skill.12.name
 
-SOURCE: src/skills.js line 112
+SOURCE: src/skills.js line 114
 
 CONTEXT: Colophon, a Witness skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22253,7 +22253,7 @@ END
 
 ID: class.witness.skill.12.desc
 
-SOURCE: src/skills.js line 112
+SOURCE: src/skills.js line 114
 
 CONTEXT: Tooltip for Witness’s Colophon. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22279,7 +22279,7 @@ END
 
 ID: class.witness.skill.13.name
 
-SOURCE: src/skills.js line 113
+SOURCE: src/skills.js line 115
 
 CONTEXT: Publish, a Witness skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22297,7 +22297,7 @@ END
 
 ID: class.witness.skill.13.button
 
-SOURCE: src/skills.js line 113
+SOURCE: src/skills.js line 115
 
 CONTEXT: The short label on the skill button for Witness’s Publish. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22315,7 +22315,7 @@ END
 
 ID: class.witness.skill.13.desc
 
-SOURCE: src/skills.js line 113
+SOURCE: src/skills.js line 115
 
 CONTEXT: Tooltip for Witness’s Publish. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22339,7 +22339,7 @@ END
 
 ID: class.witness.skill.14.name
 
-SOURCE: src/skills.js line 114
+SOURCE: src/skills.js line 116
 
 CONTEXT: Named Party, a Witness skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22357,7 +22357,7 @@ END
 
 ID: class.witness.skill.14.desc
 
-SOURCE: src/skills.js line 114
+SOURCE: src/skills.js line 116
 
 CONTEXT: Tooltip for Witness’s Named Party. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22381,7 +22381,7 @@ END
 
 ID: class.witness.skill.15.name
 
-SOURCE: src/skills.js line 115
+SOURCE: src/skills.js line 117
 
 CONTEXT: Retraction, a Witness skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22399,7 +22399,7 @@ END
 
 ID: class.witness.skill.15.desc
 
-SOURCE: src/skills.js line 115
+SOURCE: src/skills.js line 117
 
 CONTEXT: Tooltip for Witness’s Retraction. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22419,7 +22419,7 @@ END
 
 ID: class.maxi.name
 
-SOURCE: src/skills.js line 116
+SOURCE: src/skills.js line 118
 
 CONTEXT: The The Maximalist class name, on the title screen and the hero sheet. Shown in both layouts.
 
@@ -22437,7 +22437,7 @@ END
 
 ID: class.maxi.blurb
 
-SOURCE: src/skills.js line 116
+SOURCE: src/skills.js line 118
 
 CONTEXT: The blurb under The Maximalist on the character select screen. The name is the line above it. {He}, {His} and {him} become she or he, her or his, her or him, by the hero chosen. Shown in both layouts.
 
@@ -22459,7 +22459,7 @@ END
 
 ID: class.maxi.good
 
-SOURCE: src/skills.js line 116
+SOURCE: src/skills.js line 118
 
 CONTEXT: The “Good at:” line under The Maximalist on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -22481,7 +22481,7 @@ END
 
 ID: class.maxi.weak
 
-SOURCE: src/skills.js line 116
+SOURCE: src/skills.js line 118
 
 CONTEXT: The “Weak to:” line under The Maximalist on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -22501,7 +22501,7 @@ END
 
 ID: class.maxi.bld
 
-SOURCE: src/skills.js line 116
+SOURCE: src/skills.js line 118
 
 CONTEXT: The “Builds:” line under The Maximalist on the character select screen and in the Shift menu. It follows the label, so it starts in lower case. {He}, {his} and {him} follow the hero chosen. Shown in both layouts.
 
@@ -22523,7 +22523,7 @@ END
 
 ID: class.maxi.skill.01.name
 
-SOURCE: src/skills.js line 117
+SOURCE: src/skills.js line 119
 
 CONTEXT: Tick Tock Next Block, a The Maximalist skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22541,7 +22541,7 @@ END
 
 ID: class.maxi.skill.01.button
 
-SOURCE: src/skills.js line 117
+SOURCE: src/skills.js line 119
 
 CONTEXT: The short label on the skill button for The Maximalist’s Tick Tock Next Block. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22560,7 +22560,7 @@ END
 
 ID: class.maxi.skill.01.desc
 
-SOURCE: src/skills.js line 117
+SOURCE: src/skills.js line 119
 
 CONTEXT: Tooltip for The Maximalist’s Tick Tock Next Block. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22585,7 +22585,7 @@ END
 
 ID: class.maxi.skill.02.name
 
-SOURCE: src/skills.js line 118
+SOURCE: src/skills.js line 120
 
 CONTEXT: Have Fun Staying Poor, a The Maximalist skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22603,7 +22603,7 @@ END
 
 ID: class.maxi.skill.02.button
 
-SOURCE: src/skills.js line 118
+SOURCE: src/skills.js line 120
 
 CONTEXT: The short label on the skill button for The Maximalist’s Have Fun Staying Poor. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22623,7 +22623,7 @@ END
 
 ID: class.maxi.skill.02.desc
 
-SOURCE: src/skills.js line 118
+SOURCE: src/skills.js line 120
 
 CONTEXT: Tooltip for The Maximalist’s Have Fun Staying Poor. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22648,7 +22648,7 @@ END
 
 ID: class.maxi.skill.03.name
 
-SOURCE: src/skills.js line 119
+SOURCE: src/skills.js line 121
 
 CONTEXT: Few Understand This, a The Maximalist skill. Row 1 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22666,7 +22666,7 @@ END
 
 ID: class.maxi.skill.03.desc
 
-SOURCE: src/skills.js line 119
+SOURCE: src/skills.js line 121
 
 CONTEXT: Tooltip for The Maximalist’s Few Understand This. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22690,7 +22690,7 @@ END
 
 ID: class.maxi.skill.04.name
 
-SOURCE: src/skills.js line 120
+SOURCE: src/skills.js line 122
 
 CONTEXT: Toxic Maximalism, a The Maximalist skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22708,7 +22708,7 @@ END
 
 ID: class.maxi.skill.04.button
 
-SOURCE: src/skills.js line 120
+SOURCE: src/skills.js line 122
 
 CONTEXT: The short label on the skill button for The Maximalist’s Toxic Maximalism. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22727,7 +22727,7 @@ END
 
 ID: class.maxi.skill.04.desc
 
-SOURCE: src/skills.js line 120
+SOURCE: src/skills.js line 122
 
 CONTEXT: Tooltip for The Maximalist’s Toxic Maximalism. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22752,7 +22752,7 @@ END
 
 ID: class.maxi.skill.05.name
 
-SOURCE: src/skills.js line 121
+SOURCE: src/skills.js line 123
 
 CONTEXT: Marked to Market, a The Maximalist skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22770,7 +22770,7 @@ END
 
 ID: class.maxi.skill.05.button
 
-SOURCE: src/skills.js line 121
+SOURCE: src/skills.js line 123
 
 CONTEXT: The short label on the skill button for The Maximalist’s Marked to Market. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22789,7 +22789,7 @@ END
 
 ID: class.maxi.skill.05.desc
 
-SOURCE: src/skills.js line 121
+SOURCE: src/skills.js line 123
 
 CONTEXT: Tooltip for The Maximalist’s Marked to Market. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22814,7 +22814,7 @@ END
 
 ID: class.maxi.skill.06.name
 
-SOURCE: src/skills.js line 122
+SOURCE: src/skills.js line 124
 
 CONTEXT: Orange Pill, a The Maximalist skill. Row 2 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22832,7 +22832,7 @@ END
 
 ID: class.maxi.skill.06.button
 
-SOURCE: src/skills.js line 122
+SOURCE: src/skills.js line 124
 
 CONTEXT: The short label on the skill button for The Maximalist’s Orange Pill. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22851,7 +22851,7 @@ END
 
 ID: class.maxi.skill.06.desc
 
-SOURCE: src/skills.js line 122
+SOURCE: src/skills.js line 124
 
 CONTEXT: Tooltip for The Maximalist’s Orange Pill. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22876,7 +22876,7 @@ END
 
 ID: class.maxi.skill.07.name
 
-SOURCE: src/skills.js line 123
+SOURCE: src/skills.js line 125
 
 CONTEXT: Blessed Hashrate, a The Maximalist skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22894,7 +22894,7 @@ END
 
 ID: class.maxi.skill.07.button
 
-SOURCE: src/skills.js line 123
+SOURCE: src/skills.js line 125
 
 CONTEXT: The short label on the skill button for The Maximalist’s Blessed Hashrate. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22913,7 +22913,7 @@ END
 
 ID: class.maxi.skill.07.desc
 
-SOURCE: src/skills.js line 123
+SOURCE: src/skills.js line 125
 
 CONTEXT: Tooltip for The Maximalist’s Blessed Hashrate. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22937,7 +22937,7 @@ END
 
 ID: class.maxi.skill.08.name
 
-SOURCE: src/skills.js line 124
+SOURCE: src/skills.js line 126
 
 CONTEXT: Proof of Work, a The Maximalist skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -22955,7 +22955,7 @@ END
 
 ID: class.maxi.skill.08.button
 
-SOURCE: src/skills.js line 124
+SOURCE: src/skills.js line 126
 
 CONTEXT: The short label on the skill button for The Maximalist’s Proof of Work. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -22974,7 +22974,7 @@ END
 
 ID: class.maxi.skill.08.desc
 
-SOURCE: src/skills.js line 124
+SOURCE: src/skills.js line 126
 
 CONTEXT: Tooltip for The Maximalist’s Proof of Work. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -22998,7 +22998,7 @@ END
 
 ID: class.maxi.skill.09.name
 
-SOURCE: src/skills.js line 125
+SOURCE: src/skills.js line 127
 
 CONTEXT: Twenty-One Million, a The Maximalist skill. Row 3 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -23016,7 +23016,7 @@ END
 
 ID: class.maxi.skill.09.desc
 
-SOURCE: src/skills.js line 125
+SOURCE: src/skills.js line 127
 
 CONTEXT: Tooltip for The Maximalist’s Twenty-One Million. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -23042,7 +23042,7 @@ END
 
 ID: class.maxi.skill.10.name
 
-SOURCE: src/skills.js line 126
+SOURCE: src/skills.js line 128
 
 CONTEXT: The Halving, a The Maximalist skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -23060,7 +23060,7 @@ END
 
 ID: class.maxi.skill.10.button
 
-SOURCE: src/skills.js line 126
+SOURCE: src/skills.js line 128
 
 CONTEXT: The short label on the skill button for The Maximalist’s The Halving. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -23079,7 +23079,7 @@ END
 
 ID: class.maxi.skill.10.desc
 
-SOURCE: src/skills.js line 126
+SOURCE: src/skills.js line 128
 
 CONTEXT: Tooltip for The Maximalist’s The Halving. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -23103,7 +23103,7 @@ END
 
 ID: class.maxi.skill.11.name
 
-SOURCE: src/skills.js line 127
+SOURCE: src/skills.js line 129
 
 CONTEXT: Running a Node, a The Maximalist skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -23121,7 +23121,7 @@ END
 
 ID: class.maxi.skill.11.desc
 
-SOURCE: src/skills.js line 127
+SOURCE: src/skills.js line 129
 
 CONTEXT: Tooltip for The Maximalist’s Running a Node. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -23145,7 +23145,7 @@ END
 
 ID: class.maxi.skill.12.name
 
-SOURCE: src/skills.js line 128
+SOURCE: src/skills.js line 130
 
 CONTEXT: Cite Your Sources, a The Maximalist skill. Row 4 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -23163,7 +23163,7 @@ END
 
 ID: class.maxi.skill.12.button
 
-SOURCE: src/skills.js line 128
+SOURCE: src/skills.js line 130
 
 CONTEXT: The short label on the skill button for The Maximalist’s Cite Your Sources. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -23182,7 +23182,7 @@ END
 
 ID: class.maxi.skill.12.desc
 
-SOURCE: src/skills.js line 128
+SOURCE: src/skills.js line 130
 
 CONTEXT: Tooltip for The Maximalist’s Cite Your Sources. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -23204,7 +23204,7 @@ END
 
 ID: class.maxi.skill.13.name
 
-SOURCE: src/skills.js line 129
+SOURCE: src/skills.js line 131
 
 CONTEXT: Priced in Sound, a The Maximalist skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -23222,7 +23222,7 @@ END
 
 ID: class.maxi.skill.13.desc
 
-SOURCE: src/skills.js line 129
+SOURCE: src/skills.js line 131
 
 CONTEXT: Tooltip for The Maximalist’s Priced in Sound. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -23246,7 +23246,7 @@ END
 
 ID: class.maxi.skill.14.name
 
-SOURCE: src/skills.js line 130
+SOURCE: src/skills.js line 132
 
 CONTEXT: The Dip, a The Maximalist skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -23264,7 +23264,7 @@ END
 
 ID: class.maxi.skill.14.button
 
-SOURCE: src/skills.js line 130
+SOURCE: src/skills.js line 132
 
 CONTEXT: The short label on the skill button for The Maximalist’s The Dip. The full name is on the sheet; this is what the thumb sees. Shown in both layouts.
 
@@ -23282,7 +23282,7 @@ END
 
 ID: class.maxi.skill.14.desc
 
-SOURCE: src/skills.js line 130
+SOURCE: src/skills.js line 132
 
 CONTEXT: Tooltip for The Maximalist’s The Dip. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -23304,7 +23304,7 @@ END
 
 ID: class.maxi.skill.15.name
 
-SOURCE: src/skills.js line 131
+SOURCE: src/skills.js line 133
 
 CONTEXT: Not Your Keys, a The Maximalist skill. Row 5 of the tree. The button label and the tooltip follow. Shown in both layouts.
 
@@ -23322,7 +23322,7 @@ END
 
 ID: class.maxi.skill.15.desc
 
-SOURCE: src/skills.js line 131
+SOURCE: src/skills.js line 133
 
 CONTEXT: Tooltip for The Maximalist’s Not Your Keys. Shown on the Skills sheet and when the skill is on a button. Shown in both layouts.
 
@@ -43520,7 +43520,7 @@ END
 
 Buttons, sheets, toasts, death, options, and the bug report.
 
-2501 entries.
+2505 entries.
 
 ## Options
 
@@ -68297,11 +68297,11 @@ END
 
 ## Messages
 
-ID: ui.line.skills_js.60.159
+ID: ui.line.skills_js.62.159
 
-SOURCE: src/skills.js line 60
+SOURCE: src/skills.js line 62
 
-CONTEXT: Player-facing line in skills.js at line 60. Shown in both layouts.
+CONTEXT: Player-facing line in skills.js at line 62. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68315,11 +68315,11 @@ TEXT
 
 END
 
-ID: ui.line.skills_js.60.172
+ID: ui.line.skills_js.62.172
 
-SOURCE: src/skills.js line 60
+SOURCE: src/skills.js line 62
 
-CONTEXT: Player-facing line in skills.js at line 60. Shown in both layouts.
+CONTEXT: Player-facing line in skills.js at line 62. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68333,11 +68333,47 @@ TEXT
 
 END
 
-ID: ui.line.skills_js.76.159
+ID: ui.line.skills_js.62.287
 
-SOURCE: src/skills.js line 76
+SOURCE: src/skills.js line 62
 
-CONTEXT: Player-facing line in skills.js at line 76. Shown in both layouts.
+CONTEXT: Player-facing line in skills.js at line 62. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    Two copies
+
+END
+
+ID: ui.line.skills_js.62.300
+
+SOURCE: src/skills.js line 62
+
+CONTEXT: Player-facing line in skills.js at line 62. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+    A copy
+
+END
+
+ID: ui.line.skills_js.78.159
+
+SOURCE: src/skills.js line 78
+
+CONTEXT: Player-facing line in skills.js at line 78. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
@@ -68351,11 +68387,47 @@ TEXT
 
 END
 
-ID: ui.line.skills_js.76.177
+ID: ui.line.skills_js.78.177
 
-SOURCE: src/skills.js line 76
+SOURCE: src/skills.js line 78
 
-CONTEXT: Player-facing line in skills.js at line 76. Shown in both layouts.
+CONTEXT: Player-facing line in skills.js at line 78. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+     Champions resist until rank 5.
+
+END
+
+ID: ui.line.skills_js.78.280
+
+SOURCE: src/skills.js line 78
+
+CONTEXT: Player-facing line in skills.js at line 78. Shown in both layouts.
+
+MODE: both. Shown in both layouts.
+
+PLACEHOLDERS: none
+
+LIMIT: none. Shown to the player. If it is a toast, it fades; if it is a dialog, it waits.
+
+TEXT
+
+     Champions too.
+
+END
+
+ID: ui.line.skills_js.78.298
+
+SOURCE: src/skills.js line 78
+
+CONTEXT: Player-facing line in skills.js at line 78. Shown in both layouts.
 
 MODE: both. Shown in both layouts.
 
