@@ -725,6 +725,8 @@ function isJunk(text) {
   const s = String(text == null ? '' : text);
   if (s.length > 5000) return true;
   if (/\$\{/.test(s)) return true;
+  /* A module path handed to require(), not a line anyone reads. */
+  if (/^\.\.?\/[\w./-]+$/.test(s)) return true;
   /* Placeholders are not code. {class} is a name the game fills in. */
   const bare = s.replace(/\{[A-Za-z_][A-Za-z0-9_]*\}/g, ' ').trim();
   if (/=>/.test(bare)) return true;

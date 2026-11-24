@@ -76,6 +76,7 @@ function main() {
   const srcFiles = walk(path.join(ROOT, 'src'), [])
     .concat(walk(path.join(ROOT, 'server'), []))
     .concat(walk(path.join(ROOT, 'lan'), []))
+    .concat(walk(path.join(ROOT, 'data'), []))
     .concat([MD, DOCX, CAT]);
   const saved = snap(srcFiles);
 
@@ -106,7 +107,9 @@ function main() {
     const skill = cat.entries.find(e => e.id === 'class.scrapper.skill.01.desc')
       || cat.entries.find(e => e.placeholders.some(p => p.name === 'percent') && e.placeholders.some(p => p.name === 'rank'));
     const limited = cat.entries.find(e => e.hardMax != null && e.hardMax < 80 && e.placeholders.length === 0);
-    if (!plain || !skill || !limited) fail('could not find sample entries for the round trip');
+    /* A line that lives in a design sheet: the edit has to land in data/levels.tsv. */
+    const sheet = cat.entries.find(e => e.file === 'src/levels.js' && e.text.length > 40 && !e.placeholders.length);
+    if (!plain || !skill || !limited || !sheet) fail('could not find sample entries for the round trip');
     process.stdout.write('edit ' + plain.id + '\nedit ' + skill.id + '\nlimit ' + limited.id + '\n');
 
     const md = fs.readFileSync(MD, 'utf8');
@@ -145,11 +148,15 @@ function main() {
     if (!/\{percent\}/.test(skilled) || !/\{rank\}/.test(skilled)) fail('edit dropped a placeholder');
     let next = replaceBlock(md, plain.id, quoted);
     next = replaceBlock(next, skill.id, skilled);
+    const sheetLine = sheet.text + ' The sheet remembers.';
+    next = replaceBlock(next, sheet.id, sheetLine);
     const edited = path.join(ROOT, '.tmp', 'game-text-edit.md');
     fs.writeFileSync(edited, next);
     const applied = run('node', ['tools/text/import.js', edited]);
     process.stdout.write(applied);
-    must(applied, /changed: 2/, 'expected two edits');
+    must(applied, /changed: 3/, 'expected three edits');
+    if (!fs.readFileSync(path.join(ROOT, 'data', 'levels.tsv'), 'utf8').includes(sheetLine)) fail('the sheet edit did not land in data/levels.tsv');
+    if (!fs.readFileSync(path.join(ROOT, 'src', 'levels.js'), 'utf8').includes(sheetLine)) fail('the sheet edit was not baked into src/levels.js');
     const now = fs.readFileSync(srcPath, 'utf8');
     if (!now.includes('🔥') || !/Don\\?'t say \\?"never\\?"/.test(now)) fail('quotes, apostrophe, or emoji did not land in ' + plain.file);
     const skillSrc = fs.readFileSync(path.join(ROOT, skill.file), 'utf8');

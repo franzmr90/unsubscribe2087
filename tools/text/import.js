@@ -77,6 +77,9 @@ function parseEntries(md) {
   return out;
 }
 
+/* Generated files and the sheet each is baked from (tools/data/bake.js). */
+const SHEETS = { 'src/monstats.js': 'data/monstats.tsv', 'src/treasure.js': 'data/treasure.tsv', 'src/levels.js': 'data/levels.tsv' };
+
 function main() {
   const args = process.argv.slice(2);
   const dry = args.includes('--dry-run');
@@ -147,9 +150,33 @@ function main() {
     else apply.push(ed);
   }
 
+  /* Lines that live in a design sheet (data/*.tsv) are baked into src/; the edit goes
+     into the sheet's cell, and the bake writes src/ again. A cell is found by its text. */
+  const sheetEdits = {};
+  for (const ed of apply.slice()) {
+    const tsv = SHEETS[ed.cat.file];
+    if (!tsv) continue;
+    apply.splice(apply.indexOf(ed), 1);
+    if (/[\t\r\n]/.test(ed.text)) { skipped.push({ id: ed.cat.id, why: 'a line in ' + tsv + ' cannot hold a tab or a line break' }); continue; }
+    (sheetEdits[tsv] || (sheetEdits[tsv] = [])).push(ed);
+  }
+  const sheetText = {};
+  for (const tsv of Object.keys(sheetEdits)) {
+    const rows = fs.readFileSync(path.join(ROOT, tsv), 'utf8').split('\n').map(l => l.split('\t'));
+    for (const ed of sheetEdits[tsv]) {
+      let hits = 0;
+      rows.forEach((r, i) => { if (i > 0) r.forEach((c, j) => { if (c === ed.cat.text) { r[j] = ed.text; hits++; } }); });
+      if (!hits) skipped.push({ id: ed.cat.id, why: 'no cell in ' + tsv + ' holds this line any more' });
+      else apply.push(ed);
+    }
+    sheetText[tsv] = rows.map(r => r.join('\t')).join('\n');
+  }
+
   const byFile = {};
-  for (const ed of apply) (byFile[ed.cat.file] || (byFile[ed.cat.file] = [])).push(ed);
+  for (const ed of apply) if (!SHEETS[ed.cat.file]) (byFile[ed.cat.file] || (byFile[ed.cat.file] = [])).push(ed);
   if (!dry) {
+    for (const tsv of Object.keys(sheetText)) fs.writeFileSync(path.join(ROOT, tsv), sheetText[tsv]);
+    if (Object.keys(sheetText).length) require('child_process').execFileSync(process.execPath, [path.join(ROOT, 'tools', 'data', 'bake.js')], { stdio: 'inherit' });
     for (const rel of Object.keys(byFile)) {
       let src = read(rel);
       const list = byFile[rel].slice().sort((a, b) => b.cat.start - a.cat.start);

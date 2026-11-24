@@ -6,7 +6,8 @@
 'use strict';
 
 /* Same towns as live.js: the act hub towns from data/levels.tsv. */
-const TOWNS = new Set(require('../../src/levels').HUB_TOWNS);
+const { HUB_TOWNS } = require('../../src/levels');
+const TOWNS = new Set(HUB_TOWNS);
 
 const { FORMULAS, braceKeep, toxicSwingMul, auraRadius } = require('../../src/formulas');
 const CLS = FORMULAS.cls;
