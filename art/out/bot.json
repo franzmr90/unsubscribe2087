@@ -1,0 +1,31 @@
+{
+ "actor": "bot",
+ "size": 56,
+ "scale": 2,
+ "dirs": 8,
+ "anims": {
+  "idle": {
+   "row": 0,
+   "count": 4
+  },
+  "walk": {
+   "row": 4,
+   "count": 6
+  }
+ },
+ "frames": [],
+ "by": "blender 5.3.0",
+ "cell": 112,
+ "cols": 8,
+ "rows": 10,
+ "foot": 0.8,
+ "shadow": 12,
+ "glow": [
+  {
+   "y": 38,
+   "r": 14,
+   "c": "#ff3b30",
+   "a": 0.45
+  }
+ ]
+}

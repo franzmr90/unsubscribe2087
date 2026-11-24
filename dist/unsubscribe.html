@@ -6883,10 +6883,15 @@ function sprActor(k,e,X,Y,s,flash){
   const f=Math.floor((tNow*(moving?11:4)+(e.ph||0))%an.count);
   const d=sprDir(e,m.dirs);
   const k2=L*s*1.1;                      /* sized to the footprint the drawn art had */
-  /* z=0 in the model sits at 62% down the cell, so that point lands on the feet */
-  ctx.drawImage(S.img,d*cell,(an.row+f)*cell,cell,cell,X-k2/2,Y-k2*0.62,k2,k2);
+  /* z=0 in the model sits FOOT of the way down the cell (62% unless the
+     manifest says otherwise), so that point lands on the feet */
+  const ft=m.foot||0.62;
+  if(m.shadow)shadow(X,Y,m.shadow*s);
+  ctx.drawImage(S.img,d*cell,(an.row+f)*cell,cell,cell,X-k2/2,Y-k2*ft,k2,k2);
+  /* the drawn art's glows (eyes, screens) are light, not paint: the atlas can't carry them */
+  if(m.glow)for(const g of m.glow){glow(X,Y-g.y*s,g.r*s,g.c,g.a||.5);if(g.l)light(X,Y-g.y*s,g.l,g.c)}
   if(flash){ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.55;
-    ctx.drawImage(S.img,d*cell,(an.row+f)*cell,cell,cell,X-k2/2,Y-k2*0.62,k2,k2);ctx.restore()}
+    ctx.drawImage(S.img,d*cell,(an.row+f)*cell,cell,cell,X-k2/2,Y-k2*ft,k2,k2);ctx.restore()}
   return true;
 }
 /* ---------------- Maximalist auras, on the ground ----------------
@@ -7184,7 +7189,9 @@ function drawEnemy(e,X,Y){
   if(e.mark>0){ctx.strokeStyle='#ff5d4d';ctx.beginPath();ctx.ellipse(X,Y,14*s,7*s,0,0,6.283);ctx.stroke();ctx.strokeStyle=OL}
   if(e.ward>0||e.k==='aegis'){ctx.strokeStyle='rgba(159,208,255,.75)';ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(X,Y-22*s,17*s,25*s,0,0,6.283);ctx.stroke();ctx.strokeStyle=OL;ctx.lineWidth=1.4}
   if(e.mods.shield){ctx.fillStyle='rgba(140,170,255,.16)';ctx.beginPath();ctx.ellipse(X,Y-24*s,22*s,30*s,0,0,6.283);ctx.fill()}
-  if(OPT.spr!==false&&sprReady(k)&&sprActor(k,e,X,Y,s,fl)){}
+  /* keyed by the monster's own id, not its body: daemon borrows the tick's body
+     in another colour, and must not wear the tick's atlas */
+  if(OPT.spr!==false&&sprReady(e.k)&&sprActor(e.k,e,X,Y,s,fl)){}
   else if(e.k==='boss4'){/* She built this body out of the only parts the machines here know how
        to make, which is an executive, and she said sorry for it. So: the frame, with
        nothing on it to hurt you, and the attending lights she cannot help sending. */

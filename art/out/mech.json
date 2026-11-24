@@ -1,0 +1,31 @@
+{
+ "actor": "mech",
+ "size": 92,
+ "scale": 2,
+ "dirs": 8,
+ "anims": {
+  "idle": {
+   "row": 0,
+   "count": 4
+  },
+  "walk": {
+   "row": 4,
+   "count": 6
+  }
+ },
+ "frames": [],
+ "by": "blender 5.3.0",
+ "cell": 184,
+ "cols": 8,
+ "rows": 10,
+ "foot": 0.82,
+ "shadow": 26,
+ "glow": [
+  {
+   "y": 70,
+   "r": 24,
+   "c": "#ff3b30",
+   "a": 0.5
+  }
+ ]
+}

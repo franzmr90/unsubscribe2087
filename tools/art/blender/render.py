@@ -8,8 +8,12 @@ z=0 at 62% down each cell, the same top-left key light, and the same dark rim.
   python tools/art/blender/render.py tick            (needs `pip install bpy pillow`)
 
 Actors are Python modules in tools/art/blender/actors/. Each exposes
-FRAMES = {'idle': n, 'walk': n}, FIT (model units from the centre to the cell
-edge) and build(t, moving), which adds the objects for one frame.
+FRAMES = {'idle': n, 'walk': n} and build(sc, root, t, moving), which adds the
+objects for one frame, and either FIT (model units from the centre to the cell
+edge) or PX (screen px at s=1 per model unit; the newer actors use PX = 10, so a
+model unit is ten of the drawn art's pixels). Optional: SIZE (the cell in screen
+px, default 40; tall actors need more), FOOT (where z=0 sits, as a fraction down
+the cell, default 0.62), EXPOSURE (stops, default 0), SHADOW and GLOW (drawn by the game around the sprite).
 """
 import importlib.util, json, math, os, sys, tempfile
 import bpy
@@ -38,12 +42,12 @@ def clear_scene():
     bpy.ops.wm.read_factory_settings(use_empty=True)
 
 
-def setup_render(sc, fit):
+def setup_render(sc, fit, size, foot):
     sc.render.engine = 'CYCLES'
     sc.cycles.device = 'CPU'
     sc.cycles.samples = 24
     sc.cycles.use_denoising = False
-    sc.render.resolution_x = sc.render.resolution_y = S
+    sc.render.resolution_x = sc.render.resolution_y = size * SCALE
     sc.render.film_transparent = True
     sc.render.image_settings.file_format = 'PNG'
     sc.render.image_settings.color_mode = 'RGBA'
@@ -56,7 +60,7 @@ def setup_render(sc, fit):
     # The camera of render-actor.js, which is mirrored: build the real camera with
     # right = -x and flip the finished image, so screen x = model x afterwards.
     cam = bpy.data.cameras.new('cam'); cam.type = 'ORTHO'; cam.ortho_scale = 2 * fit
-    cam.shift_y = 0.12                      # z=0 lands 62% down the cell
+    cam.shift_y = foot - 0.5                # z=0 lands FOOT of the way down the cell
     co = bpy.data.objects.new('cam', cam); sc.collection.objects.link(co); sc.camera = co
     view = Vector((0, CE, SE)); up = Vector((0, -SE, CE)); right = Vector((-1, 0, 0))
     from mathutils import Matrix
@@ -116,16 +120,21 @@ def main():
     actor = load_actor(name)
     anims = list(actor.FRAMES)
     rows = sum(actor.FRAMES.values())
+    size = getattr(actor, 'SIZE', SIZE); foot = getattr(actor, 'FOOT', 0.62)
+    S = size * SCALE
+    # the game draws a cell size*1.1 px wide (sprActor), so PX fixes the model's scale
+    fit = actor.FIT if hasattr(actor, 'FIT') else size * 1.1 / 2 / actor.PX
     sheet = Image.new('RGBA', (DIRS * S, rows * S)); nsheet = Image.new('RGBA', (DIRS * S, rows * S))
     tmp = tempfile.mkdtemp()
-    manifest = {'actor': name, 'size': SIZE, 'scale': SCALE, 'dirs': DIRS, 'anims': {}, 'frames': [], 'by': 'blender ' + bpy.app.version_string}
+    manifest = {'actor': name, 'size': size, 'scale': SCALE, 'dirs': DIRS, 'anims': {}, 'frames': [], 'by': 'blender ' + bpy.app.version_string}
     row = 0
     for anim in anims:
         n = actor.FRAMES[anim]
         manifest['anims'][anim] = {'row': row, 'count': n}
         for f in range(n):
             clear_scene(); sc = bpy.context.scene
-            setup_render(sc, actor.FIT)
+            setup_render(sc, fit, size, foot)
+            sc.view_settings.exposure = getattr(actor, 'EXPOSURE', 0.0)   # stops; for dark metal bodies
             root = bpy.data.objects.new('root', None); sc.collection.objects.link(root)
             actor.build(sc, root, f / n, anim == 'walk')
             nmat = normal_material()
@@ -142,8 +151,15 @@ def main():
                 print(f'{name} {anim} {f + 1}/{n} dir {d}', flush=True)
         row += n
     manifest.update(cell=S, cols=DIRS, rows=rows)
+    if foot != 0.62: manifest['foot'] = foot
+    # extras the game draws around the sprite: a ground shadow and glows (screen px at 1x)
+    if hasattr(actor, 'SHADOW'): manifest['shadow'] = actor.SHADOW
+    if hasattr(actor, 'GLOW'): manifest['glow'] = actor.GLOW
     os.makedirs(OUT, exist_ok=True)
-    sheet.save(os.path.join(OUT, name + '.png'), optimize=True)
+    # 256 colours per actor, as D2's palettes were: about a third of the bytes, and the
+    # atlas is inlined in the page as base64, so bytes are what a phone downloads
+    sheet.quantize(256, method=Image.Quantize.FASTOCTREE, dither=Image.Dither.NONE).save(
+        os.path.join(OUT, name + '.png'), optimize=True)
     nsheet.save(os.path.join(OUT, name + '-n.png'), optimize=True)
     with open(os.path.join(OUT, name + '.json'), 'w') as fh: json.dump(manifest, fh, indent=1)
     print(f'{name}: {DIRS}x{rows} cells of {S}px -> art/out/{name}.png')
